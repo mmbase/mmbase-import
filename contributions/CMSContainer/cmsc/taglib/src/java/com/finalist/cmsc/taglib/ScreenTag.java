@@ -52,9 +52,12 @@ public class ScreenTag extends CmscTag {
 			if (frag != null) {
 				frag.invoke(null);
 			}
+            layout = null;
+            page = null;
 		} else {
 			throw new JspException("Couldn't find Screen(Fragment)");
 		}
+        screenFragment = null;
 	}
 
     protected ScreenFragment getScreenFragment() {
@@ -69,10 +72,6 @@ public class ScreenTag extends CmscTag {
 
 	protected Page getPage() {
 		return page;
-	}
-
-	protected String getTitle() {
-		return page.getTitle();
 	}
 
 	protected PortletFragment getPortlet(String layoutId) {

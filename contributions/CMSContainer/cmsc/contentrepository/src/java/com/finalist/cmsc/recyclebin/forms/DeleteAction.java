@@ -17,9 +17,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
 
-import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.services.workflow.Workflow;
+import com.finalist.cmsc.services.publish.Publish;
 
 
 public class DeleteAction extends MMBaseFormlessAction {
@@ -34,12 +35,20 @@ public class DeleteAction extends MMBaseFormlessAction {
             NodeList garbage = RepositoryUtil.getLinkedElements(trash);
             for (Iterator iter = garbage.iterator(); iter.hasNext();) {
                 Node objectNode = (Node) iter.next();
-                ContentElementUtil.removeContentBlock(objectNode);
+                if (Workflow.hasWorkflow(objectNode)) {
+                   // at this time complete is the same as remove
+                   Workflow.complete(objectNode);
+                }
+               objectNode.delete(true);
             }
         }
         else {
             String objectnumber = getParameter(request, "objectnumber");
             Node objectNode = cloud.getNode(objectnumber);
+            if (Workflow.hasWorkflow(objectNode)) {
+               // at this time complete is the same as remove
+               Workflow.complete(objectNode);
+            }
             objectNode.delete(true);
         }
         return mapping.findForward(SUCCESS);

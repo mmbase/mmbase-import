@@ -48,9 +48,11 @@
 	</p>
 
 	<div style="clear:both; height:10px;"></div>
-
-    <div class="ruler_green"><div><fmt:message key="content.content" /></div></div>
-	  <mm:import id="lastotype"/>
+	</div>	
+  <div class="ruler_green"><div><fmt:message key="content.content" /></div></div>
+  <div class="body">
+	 <mm:import id="lastotype"/>
+ 
 	 
 
 <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
@@ -88,7 +90,7 @@
 		</td>
 		<td nowrap>
         	<a href="javascript:info('<mm:field name="number" />')"><img src="../../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/></a>
-			<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>', '<cmsc:staticurl page="/content/" /><mm:field name="number"/>');</mm:import>
+			<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>', '<cmsc:staticurl page="/content/" /><mm:field name="number"/>');</mm:import>
         	<a href="<mm:write referid="url"/>"><img src="../../gfx/icons/link.png" width="16" height="16" alt="<fmt:message key="content.link" />"/></a>
 		</td>
 		<td width="100%">

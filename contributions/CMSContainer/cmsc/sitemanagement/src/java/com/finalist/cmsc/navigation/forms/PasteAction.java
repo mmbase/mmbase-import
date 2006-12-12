@@ -9,21 +9,40 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.navigation.forms;
 
-import org.mmbase.bridge.Node;
+import java.util.Iterator;
+
+import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.TreePasteAction;
 
 
 public class PasteAction extends TreePasteAction {
 
     protected void copy(Node sourcePage, Node destPage) {
-        NavigationUtil.copyPage(sourcePage, destPage);
+        Node newPage = NavigationUtil.copyPage(sourcePage, destPage);
+        addWorkflow(newPage);
+    }
+
+    private void addWorkflow(Node newPage) {
+        if (!Workflow.hasWorkflow(newPage)) {
+            Workflow.create(newPage, null);
+        }
+        
+        NodeList children = NavigationUtil.getOrderedChildren(newPage);
+        for (Iterator iter = children.iterator(); iter.hasNext();) {
+            Node childPage = (Node) iter.next();
+            addWorkflow(childPage);
+        }
     }
 
     protected void move(Node sourcePage, Node destPage) {
         NavigationUtil.movePage(sourcePage, destPage);
+        if (!Workflow.hasWorkflow(sourcePage)) {
+            Workflow.create(sourcePage, null);
+        }
         SecurityUtil.clearUserRoles(sourcePage.getCloud());
     }
 

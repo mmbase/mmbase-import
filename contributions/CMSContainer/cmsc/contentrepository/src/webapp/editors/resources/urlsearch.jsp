@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="../../globals.jsp"%>
-<fmt:setBundle basename="cmsc-repository" scope="request" />
+<%@include file="globals.jsp"%>
 <%@page import="java.util.Iterator,com.finalist.cmsc.mmbase.PropertiesUtil"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -12,6 +11,8 @@
 	<script src="../repository/content.js" type="text/javascript"></script>
 	<script src="../utils/window.js" type="text/javascript"></script>
 	<script src="../utils/rowhover.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../utils/transparent_png.js" ></script>
+	
 	<script type="text/javascript">
 			function selectElement(element, title, src) {
 				if(window.top.opener != undefined) {
@@ -19,6 +20,10 @@
 					window.top.close();
 				}
 			}
+			
+			function showInfo(objectnumber) {
+				openPopupWindow('urlinfo', '500', '500', 'urlinfo.jsp?objectnumber='+objectnumber);
+            }
 		</script>
 	</head>
 	<body>
@@ -46,11 +51,13 @@
 			<%@include file="urlform.jsp"%>
 
 		</html:form>
-
+		</div>
+		
 		<div class="ruler_green">
 		<div><fmt:message key="urls.results" /></div>
 		</div>
-
+		
+		<div class="body">
 		<mm:import externid="results" jspvar="nodeList" vartype="List" /> <mm:import
 			externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import> <mm:import
 			externid="offset" jspvar="offset" vartype="Integer">0</mm:import> <c:if test="${resultCount > 0}">
@@ -62,15 +69,16 @@
 					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
 						key="urlsearch.namecolumn" /></a></th>
 					<th><fmt:message key="urlsearch.urlcolumn" /></th>
+                    <th><fmt:message key="urlsearch.validcolumn" /></th>
 				</tr>
 				<tbody class="hover">
 					<c:set var="useSwapStyle">true</c:set>
 					<mm:listnodes referid="results">
 						<mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-								name="name" />','<mm:field name="url" />');</mm:import>
+								name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
 						<tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
 							<td style="white-space:nowrap;">
-							  <mm:compare referid="action" value="search">
+   						      <c:if test="${action != 'select'}">
 								<a href="<mm:url page="../WizardInitAction.do">
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                                      <mm:param name="returnurl" value="<%="../editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
@@ -83,12 +91,31 @@
 	                                                  </mm:url>">
 									<img src="../gfx/icons/delete.png" title="<fmt:message key="urlsearch.icon.delete" />" /></a>
 								</mm:hasrank>
-							  </mm:compare>
+							  </c:if>
+	                          <a href="javascript:showInfo(<mm:field name="number" />)">
+	                            <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
 							</td>
 							<mm:field name="name" jspvar="name" write="false"/>
 							<td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
 							<mm:field name="url" jspvar="url" write="false"/>
 							<td onMouseDown="objClick(this);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
+                            <mm:field name="valid" write="false" jspvar="isValidUrl"/>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty isValidUrl}">
+                                        <fmt:message key="urlsearch.validurl.unknown" />
+                                    </c:when>
+                                    <c:when test="${isValidUrl eq 0}">
+                                        <fmt:message key="urlsearch.validurl.invalid" />
+                                    </c:when>
+                                    <c:when test="${isValidUrl eq 1}">
+                                        <fmt:message key="urlsearch.validurl.valid" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message key="urlsearch.validurl.unknown" />
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
 						</tr>
 						<c:set var="useSwapStyle">${!useSwapStyle}</c:set>
 					</mm:listnodes>
@@ -98,7 +125,10 @@
 <c:if test="${resultCount == 0 && param.name != null}">
 	<fmt:message key="urlsearch.noresult" />
 </c:if>
-	</mm:cloud>
-	</body>
-	</html:html>
+<c:if test="${resultCount > 0}">
+	<%@include file="../repository/searchpages.jsp" %>
+</c:if>	
+</mm:cloud>
+</body>
+</html:html>
 </mm:content>

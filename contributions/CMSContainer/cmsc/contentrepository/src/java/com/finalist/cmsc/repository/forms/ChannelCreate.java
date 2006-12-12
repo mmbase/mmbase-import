@@ -28,13 +28,14 @@ public class ChannelCreate extends MMBaseFormlessAction {
         
         String parentchannel = getParameter(request, "parentchannel", true);
         String action = getParameter(request, "action");
+        String channeltype = getParameter(request, "channeltype", RepositoryUtil.CONTENTCHANNEL);
         
         if (StringUtil.isEmptyOrWhitespace(action)) {
             request.getSession().setAttribute("parentchannel", parentchannel);
             
             ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() +
                     "?action=create" +
-                    "&contenttype=" + RepositoryUtil.CONTENTCHANNEL +
+                    "&contenttype=" + channeltype +
                     "&returnurl=" + mapping.findForward("returnurl").getPath());
             ret.setRedirect(true);
             return ret;

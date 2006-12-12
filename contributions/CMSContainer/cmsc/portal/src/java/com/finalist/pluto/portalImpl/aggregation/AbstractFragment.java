@@ -76,8 +76,6 @@ public abstract class AbstractFragment implements Fragment {
 
 	public abstract void createURL(PortalURL url);
 
-	public abstract boolean isPartOfURL(PortalURL url);
-
 	// additional methods.
 	public ServletConfig getServletConfig() {
 		return config;

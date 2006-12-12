@@ -26,6 +26,10 @@ public class StyleSheetCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node stylesheetNode = getNode(key);
+        if (stylesheetNode == null) {
+            return null;
+        }
+
         Stylesheet stylesheet = (Stylesheet) MMBaseNodeMapper.copyNode(stylesheetNode, Stylesheet.class);
         return stylesheet;
     }

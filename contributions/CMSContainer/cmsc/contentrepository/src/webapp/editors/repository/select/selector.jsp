@@ -40,6 +40,7 @@
       function loadFunction() {
 		resizeTreeDiv();
 		alphaImages();
+		ajaxTreeLoader.initTree('', 'tree_div');
       }
 		
 	</script>
@@ -62,7 +63,7 @@
 	<body style="overflow: auto" onload="loadFunction();">
 	
 <div id="left">
-   <div class="side_block">
+   <div class="side_block" style="width: 241px;">
       <div class="header">
          <div class="title"><fmt:message key="selector.title" /></div>
          <div class="header_end"></div>
@@ -92,10 +93,10 @@
 					{paramName: "path" });
 			</script>
 			<br />
-		<script type="text/javascript">
-			ajaxTreeLoader.initTree('', 'tree');
-		</script>
-		<div id="tree" style="float: left;width: 310px; height: 100px; overflow:auto"><fmt:message key="selector.loading" /></div>
+		<div id="tree" style="float: left;width: 239px; height: 100px; overflow:auto">
+			<div style="float: left" id="tree_div"><fmt:message key="selector.loading" /></div>
+			<jsp:include page="../../usermanagement/role_legend.jsp"/>
+		</div>
       <div class="side_block_end"></div>
    </div>
 </div>

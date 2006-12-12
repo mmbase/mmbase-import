@@ -9,6 +9,7 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.*;
+import com.finalist.util.module.ModuleUtil;
 
 /**
  * Renderer of the Repository tree.
@@ -16,6 +17,8 @@ import com.finalist.tree.*;
  * @author Nico Klasens (Finalist IT Group)
  */
 public abstract class RepositoryRenderer implements TreeCellRenderer {
+
+    private static final String FEATURE_WORKFLOW = "workflowitem";
 
     private String target;
     private HttpServletRequest request;
@@ -40,9 +43,15 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
         String name = parentNode.getStringValue("name");
         String fragment = parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
 
-        String action = getUrl("Content.do?parentchannel=" + parentNode.getNumber() + "&direction=down");
+        String action;
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            action = getUrl("Content.do?parentchannel=" + parentNode.getNumber() + "&direction=down");
+        }
+        else {
+            action = getUrl("ChannelEdit.do?number=" + parentNode.getNumber() + "&direction=down");
+        }
         
-        TreeElement element = createElement(getIcon(node), id, name, fragment, action, target);
+        TreeElement element = createElement(getIcon(node, role), id, name, fragment, action, target);
 
         int level = parentNode.getIntValue("level");
 
@@ -76,14 +85,23 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
     }
 
     private void addEditorOptions(Node parentNode, TreeElement element, TreeModel model, int level) {
-        String labelEdit = JstlUtil.getMessage(request, "repository.channel.edit");
-        element.addOption(createOption("edit.png", labelEdit, 
-                getUrl("ChannelEdit.do?number=" + parentNode.getNumber()), target));
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            String labelEdit = JstlUtil.getMessage(request, "repository.channel.edit");
+            element.addOption(createOption("edit_defaults.png", labelEdit, 
+                    getUrl("ChannelEdit.do?number=" + parentNode.getNumber()), target));
+        }
+        else {
+            String labelEdit = JstlUtil.getMessage(request, "repository.channel.editcollection");
+            element.addOption(createOption("edit_defaults.png", labelEdit, 
+                    getUrl("ChannelEdit.do?number=" + parentNode.getNumber()), target));
+        }
         
-        if (RepositoryUtil.countLinkedContent(parentNode) >= 2) {
-            String label = JstlUtil.getMessage(request, "repository.content.reorder");
-            element.addOption(createOption("reorder.png", label,
-                    getUrl("ReorderAction.do?parent=" + parentNode.getNumber()), target));
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            if (RepositoryUtil.countLinkedContent(parentNode) >= 2) {
+                String label = JstlUtil.getMessage(request, "repository.content.reorder");
+                element.addOption(createOption("reorder.png", label,
+                        getUrl("ReorderAction.do?parent=" + parentNode.getNumber()), target));
+            }
         }
    
         if (level > 1) {
@@ -93,9 +111,17 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
                         getUrl("ChannelDelete.do?number=" + parentNode.getNumber()), target));
             }
         }
-        String labelNew = JstlUtil.getMessage(request, "repository.channel.new");
-        element.addOption(createOption("new.png", labelNew,
-                getUrl("ChannelCreate.do?parentchannel=" + parentNode.getNumber()), target));
+
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            String labelNew = JstlUtil.getMessage(request, "repository.channel.new");
+            element.addOption(createOption("new.png", labelNew,
+                    getUrl("ChannelCreate.do?parentchannel=" + parentNode.getNumber()), target));
+
+            String labelNewCollection = JstlUtil.getMessage(request, "repository.channel.newcollection");
+            element.addOption(createOption("new.png", labelNewCollection,
+                    getUrl("ChannelCreate.do?parentchannel=" + parentNode.getNumber() +
+                           "&channeltype=" + RepositoryUtil.COLLECTIONCHANNEL), target));
+        }
     }
 
     private void addChiefEditorOptions(Node parentNode, TreeElement element, int level) {
@@ -107,22 +133,36 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
             element.addOption(createOption("copy.png", labelCopy, "javascript:copy('"
                     + parentNode.getNumber() + "');", null));
         }
-        String labelPaste = JstlUtil.getMessage(request, "repository.channel.paste");
-        element.addOption(createOption("paste.png", labelPaste, "javascript:paste('"
-                + parentNode.getNumber() + "');", null));
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            String labelPaste = JstlUtil.getMessage(request, "repository.channel.paste");
+            element.addOption(createOption("paste.png", labelPaste, "javascript:paste('"
+                    + parentNode.getNumber() + "');", null));
+        }
     }
 
     private void addWebmasterOptions(Node parentNode, TreeElement element) {
+        if(RepositoryUtil.isContentChannel(parentNode) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+            String labelPublish = JstlUtil.getMessage(request, "repository.channel.publish");
+            element.addOption(createOption("masspublish.png", labelPublish,
+                getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
+        }
+        
+/* FP: Disabled this because it gave errors and was confusing the end users  
         String label = JstlUtil.getMessage(request, "repository.channel.xml");
         // Only show the xml for admins, because we don't want
         // to bother editors with this kind of information.
         element.addOption(createOption("xml.png", label,
-                getUrl("xmlview/index.jsp?number=" + parentNode.getNumber()), target));
+                getUrl("xmlview/index.jsp?number=" + parentNode.getNumber()), target));*/
     }
     
-    public String getIcon(Object node) {
+    public String getIcon(Object node, UserRole role) {
         Node n = (Node) node;
-        return "type/" + n.getNodeManager().getName() + ".png";
+        if(RepositoryUtil.isContentChannel(n)) {
+            return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
+        }
+        else {
+            return "type/" + n.getNodeManager().getName()+".png";
+        }
     }
 
     private String getUrl(String url) {

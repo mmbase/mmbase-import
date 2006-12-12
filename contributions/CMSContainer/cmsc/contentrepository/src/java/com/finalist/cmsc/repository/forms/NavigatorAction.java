@@ -46,7 +46,7 @@ public class NavigatorAction extends TreeAction {
     }
 
     protected List getOpenChannels(Node channelNode) {
-        if (RepositoryUtil.isChannel(channelNode)) {
+        if (RepositoryUtil.isContentChannel(channelNode)) {
             return RepositoryUtil.getPathToRoot(channelNode);
         }
         return null;

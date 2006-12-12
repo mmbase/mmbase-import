@@ -41,7 +41,7 @@ function openRepositoryWithChannel() {
 </script>
 
 <form name="<portlet:namespace />form" method="post" target="_parent"
-	action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
+	action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 
 <table class="editcontent">
 	<tr>
@@ -152,9 +152,9 @@ function openRepositoryWithChannel() {
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.position" />:</td>
 		<td><cmsc:select var="position">
+			<cmsc:option value="both" message="edit_defaults.position.both" />
 			<cmsc:option value="top" message="edit_defaults.position.top" />
 			<cmsc:option value="bottom" message="edit_defaults.position.bottom" />
-			<cmsc:option value="both" message="edit_defaults.position.both" />
 		</cmsc:select></td>
 	</tr>
 	<tr>

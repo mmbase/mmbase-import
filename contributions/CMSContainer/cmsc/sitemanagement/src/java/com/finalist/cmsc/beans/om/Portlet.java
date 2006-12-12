@@ -1,7 +1,6 @@
 package com.finalist.cmsc.beans.om;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import net.sf.mmapps.commons.beans.NodeBean;
 
@@ -59,6 +58,25 @@ public class Portlet extends NodeBean implements Comparable {
         this.portletparameters.add(parameter);
     }
 
+    public String getParameterValue(String key) {
+        for (Iterator iter = portletparameters.iterator(); iter.hasNext();) {
+            Object param = iter.next();
+            if (param instanceof NodeParameter) {
+                NodeParameter nodeparam = (NodeParameter) param;
+                if (key.equals(nodeparam.getKey())) {
+                    return nodeparam.getValueAsString();
+                }
+            }
+            if (param instanceof PortletParameter) {
+                PortletParameter portletparam = (PortletParameter) param;
+                if (key.equals(portletparam.getKey())) {
+                    return portletparam.getValue();
+                }
+            }
+        }
+        return null;
+    }
+    
     public int compareTo(Object o) {
         return title.compareTo(((Portlet) o).title);
     }

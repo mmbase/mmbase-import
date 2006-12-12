@@ -8,7 +8,8 @@ import net.sf.mmapps.commons.util.StringUtil;
 
 
 import org.mmbase.applications.wordfilter.WordHtmlCleaner;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -16,7 +17,6 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
-import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
@@ -45,6 +45,7 @@ public class RichTextBuilder extends MMObjectBuilder {
     private int imagerelNumber = -1;
 
     private boolean downloadImages = true;
+    private boolean resolveIds = true;
 
     /**
      * @see org.mmbase.module.core.MMObjectBuilder#init()
@@ -56,6 +57,10 @@ public class RichTextBuilder extends MMObjectBuilder {
         String download = (String) map.get("downloadImages");
         if (!StringUtil.isEmpty(download)) {
             downloadImages = Boolean.valueOf(download);
+        }
+        String resolve = (String) map.get("resolveIds");
+        if (!StringUtil.isEmpty(resolve)) {
+            resolveIds = Boolean.valueOf(resolve);
         }
         
         Collection fields = getFields();
@@ -90,11 +95,33 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
     
+    @Override
+    public int insert(String owner, MMObjectNode node) {
+        initInlineBuilders();
+
+        
+        int number = super.insert(owner, node); 
+        if (!resolveIds) {
+            return number;
+        }
+        List fields = getFields(NodeManager.ORDER_EDIT);
+        List<String> idsList = new ArrayList<String>();
+        resolve(node, idsList, fields, true);
+        if (!idsList.isEmpty()) {
+            super.commit(node);
+        }
+        
+        return number;
+    }
+    
     public boolean commit(MMObjectNode node) {
         initInlineBuilders();
 
         log.debug("committing node " + node);
-        List<String> idsList = new ArrayList<String>();
+        if (!resolveIds) {
+            return super.commit(node);
+        }
+        
         // Resolve images
         List fields = getFields(NodeManager.ORDER_EDIT);
 
@@ -110,56 +137,11 @@ public class RichTextBuilder extends MMObjectBuilder {
                 }
             }
         }
+
+        List<String> idsList = new ArrayList<String>();
         
         if (htmlFieldChanged) {
-            Iterator iFields = fields.iterator();
-            while (iFields.hasNext()) {
-                Field field = (Field) iFields.next();
-    
-                if (field != null) {
-                    String fieldName = field.getName();
-                    if(log.isDebugEnabled()) {
-                        log.debug("Got field " + fieldName + " : persistent = " + (!field.isVirtual())
-                            + ", stringtype = " + (field.getType() == Field.TYPE_STRING)
-                            + ", isHtmlField = " + htmlFields.contains(fieldName));
-                    }
-                    
-                    if (htmlFields.contains(fieldName)) {
-                        log.debug("Evaluating " + fieldName);
-                        if (node.getChanged().contains(fieldName)) {
-                            // Persistent string field.
-                            String fieldValue = (String) node.getValues().get(fieldName);
-                            if (!StringUtil.isEmpty(fieldValue)) {
-                                try {
-                                    if (RichText.hasRichtextItems(fieldValue)) {
-                                        Document doc = RichText.getRichTextDocument(fieldValue);
-
-                                        resolveLinks(doc, idsList, node);
-                                        resolveImages(doc, idsList, node);
-
-                                        String out = RichText.getRichTextString(doc);
-                                        out = WordHtmlCleaner.fixEmptyAnchors(out);
-                                        log.debug("final richtext text = " + out);
-
-                                        node.setValue(fieldName, out);
-                                    }
-                                }
-                                catch (Exception e) {
-                                    log.error("An error occured while resolving inline resources!", e);
-                                }
-                            }
-                        }
-                        else {
-                            String fieldValue = (String) node.getValues().get(fieldName);
-                            if (!StringUtil.isEmpty(fieldValue) && RichText.hasRichtextItems(fieldValue)) {
-                                Document doc = RichText.getRichTextDocument(fieldValue);
-                                fillIdFromLinks(doc, idsList);
-                                fillIdFromImages(doc, idsList);
-                            }
-                        }
-                    }
-                }
-            }
+            resolve(node, idsList, fields, false);
         }
 
         boolean committed = super.commit(node);
@@ -191,6 +173,57 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
 
         return committed;
+    }
+
+    private void resolve(MMObjectNode node, List<String> idsList, List fields, boolean isSnsert) {
+        Iterator iFields = fields.iterator();
+        while (iFields.hasNext()) {
+            Field field = (Field) iFields.next();
+   
+            if (field != null) {
+                String fieldName = field.getName();
+                if(log.isDebugEnabled()) {
+                    log.debug("Got field " + fieldName + " : persistent = " + (!field.isVirtual())
+                        + ", stringtype = " + (field.getType() == Field.TYPE_STRING)
+                        + ", isHtmlField = " + htmlFields.contains(fieldName));
+                }
+                
+                if (htmlFields.contains(fieldName)) {
+                    log.debug("Evaluating " + fieldName);
+                    if (isSnsert || node.getChanged().contains(fieldName)) {
+                        // Persistent string field.
+                        String fieldValue = (String) node.getValues().get(fieldName);
+                        if (!StringUtil.isEmpty(fieldValue)) {
+                            try {
+                                if (RichText.hasRichtextItems(fieldValue)) {
+                                    Document doc = RichText.getRichTextDocument(fieldValue);
+
+                                    resolveLinks(doc, idsList, node);
+                                    resolveImages(doc, idsList, node);
+
+                                    String out = RichText.getRichTextString(doc);
+                                    out = WordHtmlCleaner.fixEmptyAnchors(out);
+                                    log.debug("final richtext text = " + out);
+
+                                    node.setValue(fieldName, out);
+                                }
+                            }
+                            catch (Exception e) {
+                                log.error("An error occured while resolving inline resources!", e);
+                            }
+                        }
+                    }
+                    else {
+                        String fieldValue = (String) node.getValues().get(fieldName);
+                        if (!StringUtil.isEmpty(fieldValue) && RichText.hasRichtextItems(fieldValue)) {
+                            Document doc = RichText.getRichTextDocument(fieldValue);
+                            fillIdFromLinks(doc, idsList);
+                            fillIdFromImages(doc, idsList);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void fillIdFromImages(Document doc, List<String> idsList) {

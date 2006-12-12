@@ -29,7 +29,7 @@
 <h3><fmt:message key="edit_defaults.title" /></h3>
 
 <form name="<portlet:namespace />form" method="post" target="_parent"
-	action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
+	action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 
 <table class="editcontent">
 	<tr>

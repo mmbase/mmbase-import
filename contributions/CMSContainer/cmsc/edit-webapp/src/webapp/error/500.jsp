@@ -1,5 +1,5 @@
 <%@ page isErrorPage="true"%>
-<%@ include file="../globals.jsp"%>
+<%@ include file="globals.jsp"%>
 <%@ page import="java.io.*,java.text.*"%>
 <%!
     Logger log = Logging.getLoggerInstance("ERROR-JSP");
@@ -36,7 +36,8 @@
     // write errors to mmbase log
     log.error(ticket+":\n" + msg);
 %>
-<% request.setAttribute("title", "500: internal server error"); %>
+<c:set var="title" scope="request"><fmt:message key="exception.500.message" /></c:set>
+
 <%@include file="header.jsp"%>
 <p>
 <fmt:message key="exception.500.message" /><br />
@@ -53,19 +54,19 @@
 
 <script type="text/javascript">
       function showError() {
-         var errorVisible = document.getElementById('errordiv').style.visibility;
-         if (errorVisible=='hidden') {
-            document.getElementById('errordiv').style.visibility='visible';
+         var errorDisplay = document.getElementById('errordiv').style.display;
+         if (errorDisplay =='none') {
+            document.getElementById('errordiv').style.display='block';
          }
          else {
-            document.getElementById('errordiv').style.visibility='hidden';
+            document.getElementById('errordiv').style.display='none';
          }
       }
 </script>
 <P>
    <a href="javascript:showError();"><fmt:message key="exception.500.showerror" /></a>
 </P>
-<div id="errordiv" style="visibility:hidden">
+<div id="errordiv" style="display:none">
 <pre><%= getDateTimeString(ticket) %> - <%= message %></pre>
 <br /><br />
 <pre><%=msg%></pre>

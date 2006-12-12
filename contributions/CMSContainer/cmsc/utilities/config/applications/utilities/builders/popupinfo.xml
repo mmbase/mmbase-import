@@ -194,8 +194,7 @@ Hoogte</guiname>
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Links</guiname>
+            <guiname xml:lang="nl">Links</guiname>
 				<guiname xml:lang="en">Left</guiname>
          </gui>
          <editor>

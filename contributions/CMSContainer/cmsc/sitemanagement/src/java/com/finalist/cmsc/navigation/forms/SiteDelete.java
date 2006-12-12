@@ -19,37 +19,49 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
 public class SiteDelete extends MMBaseFormlessAction {
 
+    /** name of submit button in jsp to confirm removal */
+    private static final String ACTION_REMOVE = "remove";
+    
+    /** name of submit button in jsp to cancel removal */
+    private static final String ACTION_CANCEL = "cancel";
+    
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
         
-        String objectnumber = getParameter(request, "number", true);
-        String action = getParameter(request, "remove");
-        Node siteNode = cloud.getNode(objectnumber);
+        if (isRemoveAction(request)) {
+            String objectnumber = getParameter(request, "number", true);
+            Node siteNode = cloud.getNode(objectnumber);
+            NavigationUtil.deletePage(siteNode);
 
-        if (StringUtil.isEmptyOrWhitespace(action)) {
-            ActionForward ret = mapping.findForward("sitedelete");
-            return ret;
+            return mapping.findForward(SUCCESS);
         }
-        else {
-            if (NavigationUtil.getChildCount(siteNode) > 0) {
-                ActionForward ret = mapping.findForward("sitedeletewarning");
-                return ret;
-            }
-            else {
-                NavigationUtil.deletePage(siteNode);
-                ActionForward ret = mapping.findForward(SUCCESS);
-                return ret;
-            }
+
+        if (isCancelAction(request)) {
+            return mapping.findForward(SUCCESS);
         }
+
+        // neither remove or cancel, show confirmation page 
+        return mapping.findForward("sitedelete");
     }
     
     public String getRequiredRankStr() {
         return ADMINISTRATOR;
+    }
+
+    private boolean isRemoveAction(HttpServletRequest request) {
+        return getParameter(request, ACTION_REMOVE) != null;
+    }
+
+    private boolean isCancelAction(HttpServletRequest request) {
+        return getParameter(request, ACTION_CANCEL) != null;
     }
 
 }

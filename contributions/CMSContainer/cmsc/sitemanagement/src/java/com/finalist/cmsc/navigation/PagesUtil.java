@@ -9,15 +9,21 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.navigation;
 
+import java.util.*;
+
 import net.sf.mmapps.commons.bridge.*;
 import net.sf.mmapps.commons.util.StringUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
+import com.finalist.cmsc.services.publish.Publish;
 
 
 public class PagesUtil {
@@ -25,6 +31,7 @@ public class PagesUtil {
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(PagesUtil.class.getName());
     
+    private static final String SOURCE = "source";
     private static final String DESTINATION = "DESTINATION";
     
     public static final String PAGE = "page";
@@ -43,6 +50,9 @@ public class PagesUtil {
     public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
     public static final String LASTMODIFIER_FIELD = "lastmodifier";
 
+    public static final String PUBLISHDATE_FIELD = "publishdate";
+    public static final String EXPIREDATE_FIELD = "expiredate";
+    public static final String USE_EXPIRY_FIELD = "use_expirydate";
     
     public static final String RELATED = "related";
     public static final String LAYOUTREL = "layoutrel";
@@ -73,11 +83,11 @@ public class PagesUtil {
     }
     
     /** Is element of page type
-     * @param channelNode node to check
+     * @param node node to check
      * @return is page
      */
-    public static boolean isPageType(Node channelNode) {
-        NodeManager nm = channelNode.getNodeManager();
+    public static boolean isPageType(Node node) {
+        NodeManager nm = node.getNodeManager();
         return isPageType(nm);
     }
     
@@ -96,6 +106,11 @@ public class PagesUtil {
           // Ran out of NodeManager parents
        }
        return false;
+    }
+    
+    public static boolean isPageType(String type) {
+        NodeManager nm = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNodeManager(type);
+        return isPageType(nm);
     }
     
     public static Node createPage(Cloud cloud, String name, String layout) {
@@ -154,16 +169,26 @@ public class PagesUtil {
         String pageTitle = page.getStringValue("title");
         log.debug("Delete page: " + pageTitle);
 
+        if (Workflow.hasWorkflow(page)) {
+            Workflow.remove(page);
+        }
+        if (Publish.isPublished(page)) {
+            Publish.unpublish(page);
+        }
+        
         // Destroy all portlets associated with the page
         NodeList portletList = PortletUtil.getPortlets(page);
         if (portletList != null) {
             for (int i = 0; i < portletList.size(); i++) {
                 Node portlet = portletList.getNode(i);
-                if (!PortletUtil.isSinglePortlet(portlet)) {
-                    PortletUtil.deletePortlet(portlet);
+                if (portlet != null) {
+	                if (!PortletUtil.isSinglePortlet(portlet)) {
+	                    PortletUtil.deletePortlet(portlet);
+	                }
                 }
             }
         }
+
         page.delete(true);
     }
 
@@ -198,9 +223,18 @@ public class PagesUtil {
         stylesheet.commit();
         return stylesheet;
     }
+
+    public static boolean isStylesheet(Node node) {
+        return STYLESHEET.equals(node.getNodeManager().getName());
+    }
     
     public static NodeList getStylesheet(Node pageNode) {
         return pageNode.getRelatedNodes(STYLESHEET, STYLEREL, DESTINATION);
+    }
+    
+
+    public static boolean isLayout(Node node) {
+        return LAYOUT.equals(node.getNodeManager().getName());
     }
     
     public static Node getLayout(Node pageNode) {
@@ -295,4 +329,112 @@ public class PagesUtil {
         }
     }
 
+    public static Node getPage(Node portlet) {
+        if (!PortletUtil.isSinglePortlet(portlet)) {
+            NodeList pages = portlet.getRelatedNodes(PAGE, PortletUtil.PORTLETREL, SOURCE);;
+            if (!pages.isEmpty()) {
+                return pages.getNode(0);
+            }
+        }
+        return null;
+    }
+
+    public static void addNotExpiredConstraint(Node channel, NodeQuery query, long date) {
+        NodeManager pageManager = channel.getCloud().getNodeManager(PAGE);
+
+        Constraint useExpire = getUseExpireConstraint(query, pageManager, Boolean.FALSE);
+        Constraint expirydate = getExpireConstraint(query, date, pageManager, true);
+
+        Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_OR, expirydate);
+        SearchUtil.addConstraint(query, composite);
+    }
+    
+    public static void addLifeCycleConstraint(NodeQuery query, long date) {
+        NodeManager pageManager = query.getCloud().getNodeManager(PAGE);
+
+        Constraint useExpire = getUseExpireConstraint(query, pageManager, Boolean.FALSE);
+        Constraint expirydate = getExpireConstraint(query, date, pageManager, true);
+        Constraint publishdate = getPublishConstraint(query, date, pageManager, false);
+
+        Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
+        
+        Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_OR, lifecycleComposite);
+        SearchUtil.addConstraint(query, composite);
+    }
+
+    public static void addLifeCycleInverseConstraint(NodeQuery query, long date) {
+        NodeManager pageManager = query.getCloud().getNodeManager(PAGE);
+
+        Constraint useExpire = getUseExpireConstraint(query, pageManager, Boolean.TRUE);
+        Constraint expirydate = getExpireConstraint(query, date, pageManager, false);
+        Constraint publishdate = getPublishConstraint(query, date, pageManager, true);
+
+        Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_OR, publishdate);
+        
+        Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_AND, lifecycleComposite);
+        SearchUtil.addConstraint(query, composite);
+    }
+    
+    public static Constraint getUseExpireConstraint(NodeQuery query, NodeManager pageManager, Boolean value) {
+        Field useExpireField = pageManager.getField(USE_EXPIRY_FIELD);
+        Constraint useExpire = query.createConstraint(query.getStepField(useExpireField),
+                FieldCompareConstraint.EQUAL, value);
+        return useExpire;
+    }
+
+    public static Constraint getExpireConstraint(NodeQuery query, long date, NodeManager pageManager, boolean greater) {
+        int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL: FieldCompareConstraint.LESS_EQUAL);
+
+        Field expireField = pageManager.getField(EXPIREDATE_FIELD);
+        Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Constraint expirydate = query.createConstraint(query.getStepField(expireField), operator, expireDateObj);
+        return expirydate;
+    }
+    
+    public static Constraint getPublishConstraint(NodeQuery query, long date, NodeManager pageManager, boolean greater) {
+        int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL: FieldCompareConstraint.LESS_EQUAL);
+        
+        Field publishField = pageManager.getField(PUBLISHDATE_FIELD);
+        Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+        Constraint publishdate = query.createConstraint(query.getStepField(publishField), operator, publishDateObj);
+        return publishdate;
+    }
+    
+    public static void findPageNodes(Node node, List<Node> nodes, boolean withRelation, boolean remove) {
+        if (!remove) {
+            if (!nodes.contains(node)) {
+    	        nodes.add(node);
+	        }
+        }
+
+        NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
+        while (childs.hasNext()) {
+           Node childNode = childs.nextNode();
+           if (PortletUtil.isPortlet(childNode)) {
+               if (!PortletUtil.isSinglePortlet(childNode)) {
+                   findPageNodes(childNode, nodes, withRelation, remove);
+               }
+           }
+           else {
+               if (PortletUtil.isParameter(childNode)) {
+                   findPageNodes(childNode, nodes, withRelation, remove);
+               }
+           }
+        }
+
+        if(withRelation) {
+            RelationIterator relations = node.getRelations().relationIterator();
+            while (relations.hasNext()) {
+               Relation rel = (Relation) relations.next();
+               if (!nodes.contains(rel)) {
+               	  nodes.add(rel);
+               }
+            }
+        }
+        if (remove) {
+            if (!nodes.contains(node)) {
+            	nodes.add(node);
+            }
+        }
+    }
 }

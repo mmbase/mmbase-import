@@ -54,7 +54,7 @@
     	info.collapse(channel);
     }
     
-	RepositoryTreeModel model = new RepositoryTreeModel(cloud);
+	RepositoryTreeModel model = new RepositoryTreeModel(cloud, true);
 	ContentRolesRenderer chr = new ContentRolesRenderer(request, cloud, form);
 	ServerHTMLTree t = new ServerHTMLTree(model, chr, info, "javascript");
 	t.setImgBaseUrl("../gfx/");

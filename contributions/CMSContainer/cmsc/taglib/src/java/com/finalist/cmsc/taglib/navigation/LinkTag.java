@@ -12,6 +12,7 @@ package com.finalist.cmsc.taglib.navigation;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -20,9 +21,15 @@ import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
@@ -31,15 +38,15 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class LinkTag extends SimpleTagSupport {
 
-	/**
-	 * Destination.
-	 */
-	private Object dest;
-
+    /**
+     * element.
+     */
+    private String element;
+    
 	/**
 	 * JSP variable name.
 	 */
@@ -59,15 +66,26 @@ public class LinkTag extends SimpleTagSupport {
 		if (channel != null) {
 			String link = SiteManagement.getPath(channel, !ServerUtil.useServerName());
 			if (link != null) {
-				PortalURL u = new PortalURL(request, link);
-				String newlink = u.toString();
-
 				// handle body, call any nested tags
 				JspFragment frag = getJspBody();
 				if (frag != null) {
 					StringWriter buffer = new StringWriter();
 					frag.invoke(buffer);
 				}
+
+                PortalURL u = new PortalURL(request, link);
+                if (element != null) {
+                    String portletWindowName = getPortletWindow(channel, element);
+                    if (portletWindowName != null) {
+                        u.setRenderParameter(portletWindowName, "elementId", new String[] { element } );
+                    }
+                }
+                
+                String newlink = u.toString();
+                
+                if(newlink != null && newlink.length() == 0) {
+                	newlink = "/";
+                }
 
 				// handle result
 				if (var != null) {
@@ -89,7 +107,45 @@ public class LinkTag extends SimpleTagSupport {
 		}
 	}
 
-	/**
+	private String getPortletWindow(Page pageObject, String elementNumber) {
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        Node node = cloud.getNode(elementNumber);
+        if (ContentElementUtil.isContentElement(node)) {
+            NodeList channels = RepositoryUtil.getContentChannels(node);
+            channels.add(node);
+            
+            NodeManager parameterManager = cloud.getNodeManager(PortletUtil.NODEPARAMETER);
+            NodeManager portletManager = cloud.getNodeManager(PortletUtil.PORTLET);
+            NodeManager pageManager = cloud.getNodeManager(PagesUtil.PAGE);
+
+            Query query = cloud.createQuery();
+            Step parameterStep = query.addStep(parameterManager);
+            RelationStep step2 = query.addRelationStep(portletManager, PortletUtil.PARAMETERREL, "SOURCE");
+            RelationStep step4 = query.addRelationStep(pageManager, PortletUtil.PORTLETREL, "SOURCE");
+            Step pageStep = step4.getNext();
+
+            query.addField(parameterStep, parameterManager.getField(PortletUtil.KEY_FIELD));
+            query.addField(parameterStep, parameterManager.getField(PortletUtil.VALUE_FIELD));
+            query.addField(step4, cloud.getRelationManager(PortletUtil.PORTLETREL).getField(PortletUtil.LAYOUTID_FIELD));
+            query.addField(pageStep, pageManager.getField("number"));
+            
+            SearchUtil.addNodesConstraints(query, parameterManager.getField(PortletUtil.VALUE_FIELD), channels);
+            NodeList pages = cloud.getList(query);
+            if (!pages.isEmpty()) {
+                for (Iterator iter = pages.iterator(); iter.hasNext();) {
+                    Node pageNode = (Node) iter.next();
+                    int pageNumber = pageNode.getIntValue(PagesUtil.PAGE + ".number");
+                    if (pageObject.getId() == pageNumber) {
+                        return pageNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
 	 * Set destination to navigate to.
 	 * 
 	 * @param dest the destination node, list of nodes or comma or slash
@@ -98,7 +154,7 @@ public class LinkTag extends SimpleTagSupport {
 	public void setDest(Object dest) {
 		if (dest != null) {
 			if (dest instanceof Page) {
-				setDestNavChannel((Page) dest);
+				setDestPage((Page) dest);
 			} else if (dest instanceof Integer) {
 				setDestInteger((Integer) dest);
 			} else if (dest instanceof String) {
@@ -109,13 +165,17 @@ public class LinkTag extends SimpleTagSupport {
 		}
 	}
 
+    public void setElement(String element) {
+        this.element = element;
+    }
+    
 	/**
 	 * Set destination node to navigate to.
 	 * 
 	 * @param n the node
 	 */
-	private void setDestNavChannel(Page n) {
-		// TODO WOUTZ
+	private void setDestPage(Page n) {
+        channel = n;
 	}
 
 	/**

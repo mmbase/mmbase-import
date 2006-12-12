@@ -20,7 +20,7 @@
 
 	<relation destination="popupinfo" role="related" />
 	<relation destination="urls" role="posrel" />
-	<relation destination="images" role="posrel" />
+	<relation destination="images" role="imagerel" />
 	<relation destination="attachments" role="posrel" />
 	<relation destination="contentelement" role="posrel" />
 

@@ -167,8 +167,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">use_expirydate</guiname>
-				<guiname xml:lang="en">use_expirydate</guiname>
+				<guiname xml:lang="nl">Gebruik verloop datum</guiname>
+				<guiname xml:lang="en">Use expirydate</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -375,4 +375,11 @@
 			</db>
 		</field>
 	</fieldlist>
+	
+  <indexlist>
+    <index name="expiredate">
+      <indexfield name="use_expirydate" />
+      <indexfield name="expiredate" />
+    </index>
+  </indexlist>
 </builder>

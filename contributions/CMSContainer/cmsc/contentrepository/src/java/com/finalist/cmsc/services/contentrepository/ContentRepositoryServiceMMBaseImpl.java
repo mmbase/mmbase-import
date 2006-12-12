@@ -49,20 +49,21 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 
 	 protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {		
 		this.cloudProvider = CloudProviderFactory.getCloudProvider();
+		
 		log.info("ContentRepositoryService STARTED");
 	}
 
-    private int countContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+    private int countContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
         if (channel != null) {
-            return RepositoryUtil.countLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber); 
+            return RepositoryUtil.countLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day); 
         }
         return -1;
     }
      
-	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
 		List<ContentElement> result = new ArrayList<ContentElement>();
 		if (channel != null) {
-			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber); 
+			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day); 
 			for (int i = 0; i < l.size(); i++) {
 				Node currentNode = l.getNode(i);
 				ContentElement e = (ContentElement) MMBaseNodeMapper.copyNode(currentNode, ContentElement.class);
@@ -73,7 +74,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 	}
 	
     public List<ContentElement> getContentElements(Node channel) {
-        return getContentElements(channel, null, null, null, false, null, -1, -1);
+        return getContentElements(channel, null, null, null, false, null, -1, -1, -1, -1, -1);
     }
     
 	public List<ContentElement> getContentElements(ContentChannel channel) {
@@ -94,20 +95,20 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return null;
     }
 
-    public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+    public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
         Cloud cloud = getCloud();
         if (channel != null) {
             Node chan = cloud.getNode(channel);
-            return countContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+            return countContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
         }
         return -1;
     }
     
-	public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
+	public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
 		Cloud cloud = getCloud();
 		if (channel != null) {
 			Node chan = cloud.getNode(channel);
-			return getContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+			return getContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
 		}
 		return null;
 	}
@@ -167,7 +168,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
             UserRole role = null;
             Cloud cloud = getUserCloud();
             Node node = cloud.getNode(number);
-            if (RepositoryUtil.isChannel(node)) {
+            if (RepositoryUtil.isContentChannel(node)) {
                 role = RepositoryUtil.getRole(cloud, node, false);
             }
             
@@ -199,7 +200,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
     private Cloud getUserCloud() {
         Cloud cloud = CloudUtil.getCloudFromThread();
         if (cloud == null) {
-            log.warn("User cloud not found in thread; make sure that the user cloud is bound");
+            log.debug("User cloud not found in thread; make sure that the user cloud is bound");
             cloud = cloudProvider.getAdminCloud();
         }
         return cloud;

@@ -38,7 +38,7 @@ public class BulkUploadUtil {
 
     private static final Log log = LogFactory.getLog(BulkUploadUtil.class);
 
-    private static final int MAXSIZE = 16 * 1024 * 1024;
+    private static final int MAXSIZE = 256 * 1024 * 1024;
 
     private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
     
@@ -84,12 +84,7 @@ public class BulkUploadUtil {
             
             if (isZipFile(binary)) {
                 log.debug("unzipping content");
-                try {
-                    nodes.addAll(createNodesInZip(manager, new ZipInputStream(binary.getInputStream())));
-                } catch (IOException ex) {
-                    log.error("Failed to read uploaded zipfile, skipping it", ex);
-                    throw new RuntimeException(ex);
-                }
+                nodes.addAll(createNodesInZip(manager, new ZipInputStream(binary.getInputStream())));
             } else {
                 Node node = createNode(manager, binary.getOriginalFileName(), binary.getInputStream(), binary.getLength());
                 nodes.add(node.getNumber());
@@ -117,7 +112,7 @@ public class BulkUploadUtil {
         return node;
     }
 
-    private static ArrayList<Integer> createNodesInZip(NodeManager manager, ZipInputStream zip) throws IOException {
+    private static ArrayList<Integer> createNodesInZip(NodeManager manager, ZipInputStream zip) {
 
         ZipEntry entry = null;
         int count = 0;
@@ -148,10 +143,21 @@ public class BulkUploadUtil {
                 in.close();
                 tempFile.delete();
             }
+            
+        } catch (IOException ex) {
+            log.error("Failed to read uploaded zipfile, skipping it", ex);
         } finally {
-            zip.close();
+            close(zip);
         }
         return nodes;
+    }
+    
+    private static void close(InputStream stream) {
+        try {
+            stream.close();
+        } catch (IOException ignored) {
+            // ignored
+        }
     }
 
     private static boolean isImage(String fileName) {

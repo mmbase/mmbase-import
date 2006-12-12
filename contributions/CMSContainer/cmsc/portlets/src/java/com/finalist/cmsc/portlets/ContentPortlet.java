@@ -10,10 +10,21 @@
 package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Map;
 
 import javax.portlet.*;
 
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Relation;
+
+import com.finalist.pluto.portalImpl.core.CmscPortletMode;
+
 import net.sf.mmapps.commons.util.StringUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 /**
  * Portlet to edit content elements
  * 
@@ -21,9 +32,6 @@ import net.sf.mmapps.commons.util.StringUtil;
  */
 public class ContentPortlet extends AbstractContentPortlet {
 	
-    protected static final String CONTENTELEMENT = "contentelement";
-    protected static final String USE_LIFECYCLE = "useLifecycle";
-
     protected void saveParameters(ActionRequest request, String portletId) {
         setPortletNodeParameter(portletId, CONTENTELEMENT, request.getParameter(CONTENTELEMENT));
         setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
@@ -36,10 +44,14 @@ public class ContentPortlet extends AbstractContentPortlet {
             PortletPreferences preferences = req.getPreferences();
             elementId = preferences.getValue(CONTENTELEMENT, null);
         }
+        getLogger().debug("doView for elementId: " + elementId);
+
         if (!StringUtil.isEmpty(elementId)) {
             setAttribute(req, ELEMENT_ID, elementId);
+            setMetaData(req, elementId);
             super.doView(req, res);
         }
+        
     }
     
     
@@ -49,8 +61,11 @@ public class ContentPortlet extends AbstractContentPortlet {
             PortletPreferences preferences = req.getPreferences();
             elementId = preferences.getValue(CONTENTELEMENT, null);
         }
+        getLogger().debug("doEdit for elementId: " + elementId);
+
         if (!StringUtil.isEmpty(elementId)) {
             setAttribute(req, ELEMENT_ID, elementId);
+            setMetaData(req, elementId);
             doEdit(req, res, elementId);
         }
     }

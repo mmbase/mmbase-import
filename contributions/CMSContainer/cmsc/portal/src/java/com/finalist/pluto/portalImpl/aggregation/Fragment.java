@@ -87,13 +87,5 @@ public interface Fragment {
 	 */
 	public void createURL(PortalURL url);
 
-	/**
-	 * Returns true if the fragment is part of the URL
-	 * 
-	 * @param url the PortalURL object used
-	 * @return true if the fragment is part of the URL
-	 */
-	public boolean isPartOfURL(PortalURL url);
-
 	public String getKey();
 }

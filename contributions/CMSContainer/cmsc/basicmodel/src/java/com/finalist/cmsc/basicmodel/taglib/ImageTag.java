@@ -127,18 +127,20 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 	   if (alt == null || "".equals(alt)) {
 		   return " alt=\"\"";
 	   }
-	   alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt);
+	   alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"');
 	   return " alt=\"" + alt + "\" title=\"" + alt + "\"";
    }
 
    /** Finds the alt attribute to use */
    private String findAltAttribute(Node node) throws JspTagException {
 	   // only use description if this option is selected
-	   if (LEGEND_ALT.equals(getLegendtype())) {
+	   // this an ugly quick fix for nijmegen because of the upcoming deathline
+	   // make a better to pick which field to use in the alt
+//	   if (LEGEND_ALT.equals(getLegendtype())) {
 		   if (node.getNodeManager().hasField("description")) {
 			   return replaceLineFeeds(node.getStringValue("description"), " ");
 		   }
-	   }
+//	   }
 	   // try another one, best match first
 	   if (node.getNodeManager().hasField("alt")) {
 		   return node.getStringValue("alt");

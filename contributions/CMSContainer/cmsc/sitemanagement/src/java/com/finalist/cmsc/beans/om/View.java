@@ -18,7 +18,7 @@ import net.sf.mmapps.commons.beans.NodeBean;
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
-public class View extends NodeBean implements Comparable {
+public class View extends NodeBean implements Comparable<View> {
 
 	private String title;
     private String description;
@@ -57,7 +57,7 @@ public class View extends NodeBean implements Comparable {
         this.contenttypes.add(contenttypes);
     }
 
-    public int compareTo(Object o) {
-        return title.compareTo(((View) o).title);
+    public int compareTo(View o) {
+        return title.compareTo(o.title);
     }
 }

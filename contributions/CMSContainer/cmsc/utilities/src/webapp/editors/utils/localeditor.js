@@ -27,8 +27,10 @@ InPlaceEditor.Local.prototype = {
     this.element = $(element);
 
     this.options = Object.extend({
-      cancelLink: true,
-      cancelText: "cancel",
+      cancelButton: true,
+      cancelText: "Cancel",
+      saveButton: true,
+      saveButtonText: "Opslaan",
       clickToEditText: "Click to edit",
       rows: 1,
       minHeight: 100,
@@ -123,16 +125,23 @@ InPlaceEditor.Local.prototype = {
     if (this.options.textarea) {
       var br = document.createElement("br");
       this.form.appendChild(br);
-    }
+    }    
 
-    if (this.options.cancelLink) {
-      cancelLink = document.createElement("a");
-      cancelLink.href = "#";
-      cancelLink.appendChild(document.createTextNode(this.options.cancelText));
-      cancelLink.onclick = this.onclickCancel.bind(this);
-      cancelLink.className = 'editor_cancel';      
-      this.form.appendChild(cancelLink);
-    }
+	if (this.options.saveButton) {
+		saveButton = document.createElement("input");
+		saveButton.type = "submit";
+		saveButton.className = 'portal_button';
+		saveButton.value = this.options.saveButtonText;
+		this.form.appendChild(saveButton);
+	}
+	if (this.options.cancelButton) {
+    	cancelButton = document.createElement("input");
+    	cancelButton.type = "submit";
+  	    cancelButton.onclick = this.onclickCancel.bind(this);
+  	    cancelButton.className = 'portal_button';
+  	    cancelButton.value = this.options.cancelText;
+  	    this.form.appendChild(cancelButton);
+	}		
   },
   hasHTMLLineBreaks: function(string) {
     if (!this.options.handleLineBreaks) return false;

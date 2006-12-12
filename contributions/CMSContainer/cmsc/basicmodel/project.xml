@@ -40,7 +40,7 @@ See http://www.MMBase.org/license
    		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-cloudcontext</artifactId>
-			<version>${mmbase.version}</version>
+			<version>${mmbase.cloudcontext.version}</version>
 			<type>jar</type>
 		</dependency>
    		<dependency>

@@ -52,15 +52,18 @@ public class PortletModeTag  extends TagSupport {
         PortalURL modeURL = env.getRequestedPortalURL();
         
         PortalControlParameter control = new PortalControlParameter(modeURL);
-        PortletMode currentMode = control.getMode(portletWindow);
-
+        String currentMode = control.getMode(portletWindow).toString();
+        String customPortletMode = (String) request.getAttribute("portletMode");
+        if (customPortletMode != null && !customPortletMode.trim().equals("")) {
+           currentMode = customPortletMode;
+        }
         if (inverse) {
-            if (!currentMode.toString().equals(name)) {
+            if (!currentMode.equals(name)) {
                 return EVAL_BODY_INCLUDE;
             }
         }
         else {
-            if (currentMode.toString().equals(name)) {
+            if (currentMode.equals(name)) {
                 return EVAL_BODY_INCLUDE;
             }
         }

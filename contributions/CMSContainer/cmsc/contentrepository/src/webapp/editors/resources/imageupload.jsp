@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@include file="../../globals.jsp" %>
-<fmt:setBundle basename="cmsc-repository" scope="request" />
+<%@include file="globals.jsp" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.NodeManager"%>
@@ -9,7 +8,7 @@
 <%@page import="com.finalist.util.http.BulkUploadUtil"%>
 <%@page import="org.mmbase.bridge.Cloud"%>
 <%@page import="org.mmbase.bridge.NodeList"%>
-<%@page import="java.util.List"%>
+<%@page import="java.util.List"%> 
 <html>
 <head>
 <link href="../css/main.css" type="text/css" rel="stylesheet" />
@@ -45,7 +44,7 @@
          <div class="tab">
             <div class="body">
                <div>
-                  <a href="imagesearch.jsp"><fmt:message key="images.title" /></a>
+                  <a href="imagesearch.jsp?action=${param.uploadAction}"><fmt:message key="images.title" /></a>
                </div>
             </div>
          </div>
@@ -61,6 +60,7 @@
       <div class="editor" style="height:500px">
           <div class="body">
               <form action="" enctype="multipart/form-data" method="POST">
+          		<input type="hidden" name="uploadAction" value="${param.uploadAction}"/>
                     <table border="0">
                        <tr>
                           <td><fmt:message key="images.upload.explanation" /></td>
@@ -78,7 +78,7 @@
           <div class="ruler_green"><div><fmt:message key="images.upload.results" /></div></div>
           <div class="body">
             <div id="busy" style="visibility:hidden;position:absolute;width:100%;text-alignment:center;">
-                uploading... Please wait.<br />
+                <fmt:message key="uploading.message.wait"/><br />
             </div>
 <%
     // retrieve list op node id's from either the recent upload
@@ -122,22 +122,43 @@
                 <mm:listnodescontainer path="images" nodes="<%= uploadedNodes %>">
                     <mm:listnodes>
 
-                    <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>','<mm:image />');</mm:import>
+					<mm:field name="description" escape="js-single-quotes" jspvar="description">
+						<mm:field name="title" escape="js-single-quotes" jspvar="title">
+							<%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); 
+							description = ((String)description).replaceAll("[\"]","@quot;");
+							title = ((String)title).replaceAll("[\"]","@quot;");
+							%>
+		                    <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+						</mm:field>
+					</mm:field>
+					
                     <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                        <td onclick="if(!blockSelect) {objClick(this);} blockSelect=false;">
                         <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
-                        <a href="<mm:url page="../WizardInitAction.do">
-                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                     <mm:param name="returnurl" value="<%="../editors/resources/imageupload.jsp?uploadedNodes=" + uploadedNodes + "&numberOfUploadedNodes=" + numberOfUploadedNodes%>" />
-                                 </mm:url>" onclick="blockSelect = true">
-                              <img src="../gfx/icons/page_edit.png"/></a>
-                          <a href="javascript:showInfo(<mm:field name="number" />)">
-                              <img src="../gfx/icons/info.png" /></a>
+                        <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=<%=uploadedNodes%>&numberOfUploadedNodes=<%=numberOfUploadedNodes%>&uploadAction=${param.uploadAction}</c:set>
+					    <c:choose>
+					    	<c:when test="${param.uploadAction == 'select'}">
+		                        <a href="<mm:url page="SecondaryEditAction.do">
+	    	                                 <mm:param name="action" value="init"/>
+	        	                             <mm:param name="number"><mm:field name="number" /></mm:param>
+	            	                         <mm:param name="returnUrl" value="${returnUrl}"/>
+	                	                 </mm:url>" onclick="blockSelect = true">
+	                	    </c:when>
+	                	    <c:otherwise>
+	                          <a href="<mm:url page="../WizardInitAction.do">
+                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                                     <mm:param name="returnurl" value="${returnUrl }" />
+                                                  </mm:url>">
+	                	    </c:otherwise>
+                	    </c:choose>
+                    	          <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
+                        <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
+                              <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/></a>
                        </td>
                        <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="itype"/></td>
-                       <td onMouseDown="objClick(this);"><mm:image template="s(100x100)" mode="img" /></td>
+                       <td onMouseDown="objClick(this);"><img src="<mm:image template="s(100x100)"/>" alt="" /></td>
                     </tr>
                     <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                     </mm:listnodes>

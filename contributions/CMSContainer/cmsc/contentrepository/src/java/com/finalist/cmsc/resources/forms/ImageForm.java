@@ -7,6 +7,9 @@ public class ImageForm extends SearchForm {
     private String title;
     private String description;
 
+    public ImageForm() {
+        super("images");
+    }
 
 	public String getTitle() {
 		return title;

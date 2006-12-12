@@ -22,15 +22,16 @@ import org.mmbase.bridge.util.SearchUtil;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.security.forms.RolesInfo;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 public class NavigationUtil {
 
     public static final String NAVREL = "navrel";
     public static final String ALLOWREL = "allowrel";
-    
+
     public static String[] treeManagers = new String[] { PagesUtil.PAGE, SiteUtil.SITE };
     public static String[] fragmentFieldnames = new String[] { PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD };
-    
+
     private NavigationUtil() {
         // utility
     }
@@ -38,7 +39,7 @@ public class NavigationUtil {
     public static RelationManager getRelationManager(Cloud cloud) {
         return TreeUtil.getRelationManager(cloud, PagesUtil.PAGE, NAVREL);
     }
-    
+
     public static void appendChild(Cloud cloud, String parent, String child) {
         TreeUtil.appendChild(cloud, parent, child, NAVREL);
     }
@@ -46,7 +47,7 @@ public class NavigationUtil {
     public static void appendChild(Node parentNode, Node childNode) {
         TreeUtil.appendChild(parentNode, childNode, NAVREL);
     }
-    
+
     public static Node getParent(Node node) {
         return TreeUtil.getParent(node, treeManagers, NAVREL);
     }
@@ -54,15 +55,15 @@ public class NavigationUtil {
     public static Relation getParentRelation(Node node) {
         return TreeUtil.getParentRelation(node, treeManagers, NAVREL);
     }
-    
+
     public static boolean isParent(Node sourcePage, Node destPage) {
         return TreeUtil.isParent(sourcePage, destPage, treeManagers, NAVREL);
     }
-    
+
     public static String getFragmentFieldname(Node page) {
         return TreeUtil.getFragmentFieldname(page.getNodeManager().getName(), treeManagers, fragmentFieldnames);
     }
-    
+
     /**
      * Find path to root
      * @param node - node
@@ -81,7 +82,7 @@ public class NavigationUtil {
     public static String getPathToRootString(Cloud cloud, String node) {
        return getPathToRootString(cloud.getNode(node));
     }
-    
+
     /**
      * Creates a string that represents the root path.
      * @param node - MMbase node
@@ -110,7 +111,7 @@ public class NavigationUtil {
     public static String[] getPathElementsToRoot(Cloud cloud, String node) {
        return getPathElementsToRoot(cloud.getNode(node));
     }
-    
+
     /**
      * Creates a string that represents the root path.
      * @param node - MMbase node
@@ -187,28 +188,28 @@ public class NavigationUtil {
         return null;
     }
 
-	public static Node getSiteFromPath(Cloud cloud, String path) {
-		if (!StringUtil.isEmptyOrWhitespace(path)) {
-			int index = path.indexOf(TreeUtil.PATH_SEPARATOR);
-			if (index == -1) {
-				Node site = SiteUtil.getSite(cloud, path);
-				if (site != null) {
-					return site;
-				}
-				return null;
-			} else {
-				String sitename = path.substring(0, index);
-				Node site = SiteUtil.getSite(cloud, sitename);
-				if (site == null) {
-					return null;
-				}
-				return site;
-			}
-		}
-		return null;
-	}
-	
-    
+   public static Node getSiteFromPath(Cloud cloud, String path) {
+      if (!StringUtil.isEmptyOrWhitespace(path)) {
+         int index = path.indexOf(TreeUtil.PATH_SEPARATOR);
+         if (index == -1) {
+            Node site = SiteUtil.getSite(cloud, path);
+            if (site != null) {
+               return site;
+            }
+            return null;
+         } else {
+            String sitename = path.substring(0, index);
+            Node site = SiteUtil.getSite(cloud, sitename);
+            if (site == null) {
+               return null;
+            }
+            return site;
+         }
+      }
+      return null;
+   }
+
+
     /**
      * Method that finds the Page node using a path as input.
      * @param cloud - MMbase cloud
@@ -219,7 +220,7 @@ public class NavigationUtil {
     public static Node getPageFromPath(Cloud cloud, String path, Node root) {
          return getPageFromPath(cloud, path, root, true);
     }
-    
+
     /**
      * Method that finds the Page node using a path as input.
      * @param cloud - MMbase cloud
@@ -240,14 +241,20 @@ public class NavigationUtil {
     public static NodeList getChildren(Node parentNode, String nodeManager) {
         return TreeUtil.getChildren(parentNode, nodeManager, NAVREL);
      }
-    
+
     public static void reorder(Cloud cloud, String parentNode, String children) {
         Node parent = cloud.getNode(parentNode);
+       if (!Workflow.hasWorkflow(parent)) {
+          Workflow.create(parent, "");
+       }
         RelationUtil.reorder(parent, children, NAVREL, PagesUtil.PAGE);
     }
 
     public static void reorder(Cloud cloud, String parentNode, String[] children) {
         Node parent = cloud.getNode(parentNode);
+       if (!Workflow.hasWorkflow(parent)) {
+          Workflow.create(parent, "");
+       }
         RelationUtil.reorder(parent, children, NAVREL, PagesUtil.PAGE);
     }
 
@@ -255,7 +262,7 @@ public class NavigationUtil {
         RelationUtil.recalculateChildPositions(parent, NAVREL, PagesUtil.PAGE);
     }
 
-    
+
     public static NodeList getVisibleChildren(Node parentNode) {
         NodeList children = getOrderedChildren(parentNode);
         for (Iterator iter = children.iterator(); iter.hasNext();) {
@@ -267,11 +274,11 @@ public class NavigationUtil {
         return children;
     }
 
-    
+
     public static NodeList getOrderedChildren(Node parentNode) {
         return SearchUtil.findRelatedOrderedNodeList(parentNode, PagesUtil.PAGE, NAVREL, NAVREL + ".pos");
      }
-    
+
     public static int getLevel(String path) {
         return TreeUtil.getLevel(path);
     }
@@ -279,12 +286,15 @@ public class NavigationUtil {
     public static int getChildCount(Node parent) {
         return TreeUtil.getChildCount(parent, treeManagers, NAVREL);
     }
-    
+
     public static void movePage(Node sourcePage, Node destPage) {
         if (!isParent(sourcePage, destPage)) {
             Relation parentRelation = getParentRelation(sourcePage);
-            appendChild(destPage, sourcePage);
-            parentRelation.delete();
+            // NIJ-393, don't move if it is the same parent
+            if (parentRelation.getSource().getNumber() != destPage.getNumber()) {
+                appendChild(destPage, sourcePage);
+                parentRelation.delete();
+            }
         }
     }
 
@@ -292,7 +302,7 @@ public class NavigationUtil {
         if (!isParent(sourcePage, destPage)) {
             Node newPage = PagesUtil.copyPage(sourcePage);
             appendChild(destPage, newPage);
-            
+
             NodeList children = getOrderedChildren(sourcePage);
             for (Iterator iter = children.iterator(); iter.hasNext();) {
                 Node childPage = (Node) iter.next();
@@ -302,7 +312,7 @@ public class NavigationUtil {
         }
         return null;
     }
-    
+
     /**
      * Get the role for the user for a page
      *
@@ -324,7 +334,7 @@ public class NavigationUtil {
     public static UserRole getRole(Cloud cloud, int page) {
         return getRole(cloud, cloud.getNode(page), false);
     }
-    
+
     /**
      * Get the role for the user for a page
      *
@@ -364,11 +374,11 @@ public class NavigationUtil {
     public static void addRole(Cloud cloud, String pageNumber, Node group, Role role) {
         SecurityUtil.addRole(cloud, pageNumber, group, role, treeManagers);
     }
-    
+
     public static void addRole(Cloud cloud, Node pageNode, Node group, Role role) {
         SecurityUtil.addRole(cloud, pageNode, group, role, treeManagers);
     }
-    
+
     public static void deletePage(Node pageNode) {
         NodeList children = getOrderedChildren(pageNode);
         for (Iterator iter = children.iterator(); iter.hasNext();) {
@@ -384,16 +394,42 @@ public class NavigationUtil {
         if (info == null) {
             info = new NavigationInfo();
             cloud.setProperty(NavigationInfo.class.getName(), info);
-            TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, NAVREL, fragmentFieldnames);
-            for (String path : pagesWithRole.keySet()) {
-                Node page = getPageFromPath(cloud, path);
-                info.expand(page.getNumber());
-            }
+            addPagesWithRoleToInfo(cloud, info);
+            addAllSiteToInfo(cloud, info);
         }
         return info;
     }
 
-    public static RolesInfo getRolesInfo(Cloud cloud, Node group) {
+	private static void addAllSiteToInfo(Cloud cloud, NavigationInfo info) {
+		NodeList allSites = SiteUtil.getSites(cloud);
+		for(NodeIterator i = allSites.nodeIterator(); i.hasNext(); ) {
+			Node site = i.nextNode();
+			info.expand(site.getNumber());
+		}
+		
+	}
+
+	private static void addPagesWithRoleToInfo(Cloud cloud, NavigationInfo info) {
+		TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, NAVREL, fragmentFieldnames);
+		for (String path : pagesWithRole.keySet()) {
+		    Node page = getPageFromPath(cloud, path);
+		    if(page != null) {
+		       info.expand(page.getNumber());
+		       addParentsToInfo(info, page);
+		    }
+		}
+	}
+
+
+	private static void addParentsToInfo(NavigationInfo info, Node page) {
+   	   Node parent = NavigationUtil.getParent(page);
+   	   if(parent != null) {
+           info.expand(parent.getNumber());
+           addParentsToInfo(info, parent);
+   	   }
+	}
+
+	public static RolesInfo getRolesInfo(Cloud cloud, Node group) {
         RolesInfo info = new RolesInfo();
         TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getRoleMap(treeManagers, NAVREL, fragmentFieldnames, group);
         for (String path : pagesWithRole.keySet()) {
@@ -402,16 +438,18 @@ public class NavigationUtil {
         }
         return info;
     }
- 
+
     /**
      * This is the method for a USER, the old ones want a GROUP...
      * (even although the are called getRoleForUser(..)
      * 
-     * @return
+     * @param page page to get role for
+     * @param user user to get role for
+     * @return User Role
      */
     public static UserRole getUserRole(Node page, Node user) {
-    	TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
-    	SecurityUtil.getUserRoleMap(user, treeManagers, NAVREL, fragmentFieldnames, pagesWithRole);
+       TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
+       SecurityUtil.getUserRoleMap(user, treeManagers, NAVREL, fragmentFieldnames, pagesWithRole);
         return SecurityUtil.getRole(page, true, pagesWithRole);
     }
 

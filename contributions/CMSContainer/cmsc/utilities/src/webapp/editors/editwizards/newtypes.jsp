@@ -12,6 +12,7 @@
 
   <form action="WizardInitAction.do" method="post">
 	 <input type="hidden" name="action" value="create" />
+	 <input type="hidden" name="creation" value="${creation}" />
      <c:if test="${not empty param.sessionkey}">
 		<input type="hidden" name="sessionkey" value="${param.sessionkey}" />
      </c:if>

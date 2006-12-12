@@ -1,28 +1,30 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
 <c:if test="${not empty param.elementId}">
+    <c:set var="elementId" value="${param.elementId}" scope="request"/>
+</c:if>
+
+<c:if test="${not empty elementId}">
 	<c:if test="${not empty elementHeader}">
 		<c:import url="${elementHeader}"/>
 	</c:if>
-   	<c:set var="elementId" value="${param.elementId}" scope="request"/>
     <c:import url="${elementTemplate}"/>
 	<c:if test="${not empty elementFooter}">
 		<c:import url="${elementFooter}"/>
 	</c:if>
 </c:if>
 
-<c:if test="${empty param.elementId}">
+<c:if test="${empty elementId}">
 	<c:if test="${empty pagerIndex}">
 		<c:set var="pagerIndex" value="/WEB-INF/templates/pagerindex.jsp" />
 	</c:if>
 
-	<portlet:renderURL var="renderUrl" />
+	<cmsc:renderURL var="renderUrl" />
 	<pg:pager url="${renderUrl}" maxPageItems="${elementsPerPage}" items="${totalElements}" 
 			index="${pagesIndex}" maxIndexPages="${showPages}" isOffset="true"
 			export="offset,currentPage=pageNumber">
 	<c:if test="${usePaging}">
-		<c:set var="offset" value="${offset}" scope="request"/>
-		<c:set var="startPage" value="${offset + 1}" scope="request"/>  
+		<c:set var="startPage" value="${offset + 1}" scope="request"/>
 		<c:set var="endPage" value="${startPage + (elementsPerPage - 1)}" scope="request"/>
 		<c:if test="${endPage > totalElements}">
 			<c:set var="endPage" value="${totalElements}" scope="request"/>
@@ -31,7 +33,15 @@
 			<c:import url="${pagerIndex}"/>
 		</c:if>
 	</c:if>
-	<c:if test="${not empty listHeader}">
+   <c:choose>
+      <c:when test="${fn:toLowerCase(direction) == 'up'}">
+         <c:set var="offset" value="${offset}" scope="request"/>
+      </c:when>
+      <c:otherwise>
+         <c:set var="offset" value="${totalElements - endPage}" scope="request"/>
+      </c:otherwise>
+   </c:choose>
+   <c:if test="${not empty listHeader}">
 	    <c:import url="${listHeader}"/>
 	</c:if>
 	<c:forEach var="elem" items="${elements}" varStatus="listStatus">

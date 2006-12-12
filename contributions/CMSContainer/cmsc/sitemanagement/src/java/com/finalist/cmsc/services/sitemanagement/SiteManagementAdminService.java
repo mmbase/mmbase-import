@@ -24,9 +24,9 @@ public abstract class SiteManagementAdminService extends Service {
     
 	public abstract boolean setPortletView(String portletId, String viewId);
 
-	public abstract boolean setPagePortlet(String screenId, String portletId, String id);
+	public abstract boolean setPagePortlet(String pageId, String portletId, String id);
 
-	public abstract boolean createPagePortlet(String screenId, String portletName, String definitionName, String id, String viewId);
+	public abstract boolean createPagePortlet(String pageId, String portletName, String definitionName, String id, String viewId);
 
 	public abstract void deletePagePortlet(Page page, Portlet portlet, String layoutId);
 

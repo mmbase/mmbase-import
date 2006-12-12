@@ -58,7 +58,7 @@
 <html:html xhtml="true">
 	<head><title><fmt:message key="repository.title" /></title>
 	</head>
-   <frameset cols="321,*" framespacing="0" border="0">
+   <frameset cols="250,*" framespacing="0" border="0">
 		<frame scrolling="auto" frameborder="0"  src="<mm:url referid="channelsurl"/>" name="channels"/>
 		<frame frameborder="0" src="<mm:url referid="contenturl"/>" name="content" />
 	</frameset>

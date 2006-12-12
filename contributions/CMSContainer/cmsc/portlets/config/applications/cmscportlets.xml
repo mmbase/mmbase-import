@@ -2,7 +2,7 @@
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="cmscportlets" maintainer="finalist.com" version="1" auto-deploy="true">
    <requirements>
-      <requires name="contentrepository" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
       <requires name="sitemanagement" maintainer="finalist.com" version="1" type="application"/>
    </requirements>
 
@@ -34,6 +34,7 @@
       <relationsource builder="posrel" path="cmscportlets/posrel.xml"/>
       <relationsource builder="definitionrel" path="cmscportlets/definitionrel.xml"/>
       <relationsource builder="viewrel" path="cmscportlets/viewrel.xml"/>
+      <relationsource builder="parameterrel" path="cmscportlets/parameterrel.xml"/>
    </relationsourcelist>
 
    <contextsourcelist>

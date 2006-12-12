@@ -13,16 +13,32 @@ import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
 import net.sf.mmapps.commons.util.StringUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationIterator;
+import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.FieldValueDateConstraint;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.security.*;
+import com.finalist.cmsc.security.Role;
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.security.forms.RolesInfo;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 public class RepositoryUtil {
 
@@ -33,22 +49,26 @@ public class RepositoryUtil {
 
     private static final String SOURCE = "SOURCE";
     private static final String DESTINATION = "DESTINATION";
-    
-    public final static String TITLE_FIELD = NAME_FIELD;
-    public final static String FRAGMENT_FIELD = "pathfragment";
 
-    public final static String CONTENTCHANNEL = "contentchannel";
+    public static final String TITLE_FIELD = NAME_FIELD;
+    public static final String FRAGMENT_FIELD = "pathfragment";
+
+    public static final String CONTENTCHANNEL = "contentchannel";
+    public static final String COLLECTIONCHANNEL = "collectionchannel";
     public static final String CONTENTELEMENT = ContentElementUtil.CONTENTELEMENT;
-    
-    public final static String CHILDREL = "childrel";
-    public final static String CONTENTREL = "contentrel";
-    public final static String DELETIONREL = "deletionrel";
-    public static final String CREATIONREL = "creationrel";
-    
-    public final static String ALIAS_ROOT = "repository.root";
-    public final static String ALIAS_TRASH = "repository.trash";
 
-    
+    public static final String CHILDREL = "childrel";
+    public static final String COLLECTIONREL = "collectionrel";
+    public static final String CONTENTREL = "contentrel";
+    public static final String DELETIONREL = "deletionrel";
+    public static final String CREATIONREL = "creationrel";
+
+    public static final String ALIAS_ROOT = "repository.root";
+    public static final String ALIAS_TRASH = "repository.trash";
+
+    public static final String[] treeManagers = new String[] { COLLECTIONCHANNEL, CONTENTCHANNEL };
+    public static final String[] fragmentFieldnames = new String[] { FRAGMENT_FIELD, FRAGMENT_FIELD };
+
     private RepositoryUtil() {
         // utility
     }
@@ -61,8 +81,26 @@ public class RepositoryUtil {
         return TreeUtil.getRelationManager(cloud, CONTENTCHANNEL, CHILDREL);
     }
 
-    public static boolean isChannel(Node node) {
+    public static boolean isContentChannel(Node node) {
         return CONTENTCHANNEL.equals(node.getNodeManager().getName());
+    }
+    
+    public static boolean isContentChannel(String node) {
+        Node channel = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNode(node);
+        return isContentChannel(channel);
+    }
+
+    public static boolean isCollectionChannel(Node node) {
+        return COLLECTIONCHANNEL.equals(node.getNodeManager().getName());
+    }
+
+    public static boolean isCollectionChannel(String node) {
+        Node channel = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNode(node);
+        return isCollectionChannel(channel);
+    }
+
+    public static NodeList getCollectionChannels(Node contentchannel) {
+        return contentchannel.getRelatedNodes(COLLECTIONCHANNEL, COLLECTIONREL, SOURCE);
     }
     
     /** gets the root number
@@ -96,7 +134,7 @@ public class RepositoryUtil {
         return number == getRootNode(cloud).getNumber();
     }
 
-    
+
     /** gets the Trash number
      * @param cloud - MMbase cloud
      * @return trash node number
@@ -128,40 +166,40 @@ public class RepositoryUtil {
        return number == getTrashNode(cloud).getNumber();
    }
 
-    
+
     public static void appendChild(Cloud cloud, String parent, String child) {
         TreeUtil.appendChild(cloud, parent, child, CHILDREL);
     }
-    
+
     public static void appendChild(Node parentNode, Node childNode) {
         TreeUtil.appendChild(parentNode, childNode, CHILDREL);
     }
-    
+
     public static Node getParent(Node node) {
-        return TreeUtil.getParent(node, CHILDREL);
+        return TreeUtil.getParent(node, treeManagers, CHILDREL);
     }
-    
+
     public static Relation getParentRelation(Node node) {
-        return TreeUtil.getParentRelation(node, CHILDREL);
+        return TreeUtil.getParentRelation(node, treeManagers, CHILDREL);
     }
-    
+
     public static boolean isParent(Node sourceChannel, Node destChannel) {
-        return TreeUtil.isParent(sourceChannel, destChannel, CHILDREL);
+        return TreeUtil.isParent(sourceChannel, destChannel, treeManagers, CHILDREL);
     }
 
     public static String getFragmentFieldname(Node parentNode) {
-        return FRAGMENT_FIELD;
+        return TreeUtil.getFragmentFieldname(parentNode.getNodeManager().getName(), treeManagers, fragmentFieldnames);
     }
-    
+
     /**
      * Find path to root
      * @param node - node
      * @return List with the path to the root. First item is the root and last is the node
      */
     public static List getPathToRoot(Node node) {
-        return TreeUtil.getPathToRoot(node, CHILDREL);
+        return TreeUtil.getPathToRoot(node, treeManagers, CHILDREL);
     }
-    
+
     /**
      * Creates a string that represents the root path.
      * @param cloud - MMbase cloud
@@ -169,16 +207,16 @@ public class RepositoryUtil {
      * @return path to root
      */
     public static String getPathToRootString(Cloud cloud, String node) {
-       return TreeUtil.getPathToRootString(cloud.getNode(node), CHILDREL, FRAGMENT_FIELD);
+        return getPathToRootString(cloud.getNode(node));
     }
-    
+
     /**
      * Creates a string that represents the root path.
      * @param node - MMbase node
      * @return path to root
      */
     public static String getPathToRootString(Node node) {
-       return TreeUtil.getPathToRootString(node, CHILDREL, FRAGMENT_FIELD, true);
+        return getPathToRootString(node, true);
     }
 
     /**
@@ -188,7 +226,7 @@ public class RepositoryUtil {
      * @return path to root
      */
     public static String getPathToRootString(Node node, boolean includeRoot) {
-        return TreeUtil.getPathToRootString(node, CHILDREL, FRAGMENT_FIELD, includeRoot);
+        return TreeUtil.getPathToRootString(node, treeManagers, CHILDREL, fragmentFieldnames, includeRoot);
     }
 
     /**
@@ -198,7 +236,7 @@ public class RepositoryUtil {
      * @return titles of nodes in path
      */
     public static String getTitlesString(Cloud cloud, String node) {
-       return TreeUtil.getTitlesString(cloud, node, CHILDREL, TITLE_FIELD, true);
+        return getTitlesString(cloud, node, true);
     }
 
     /**
@@ -209,7 +247,7 @@ public class RepositoryUtil {
      * @return titles of nodes in path
      */
     public static String getTitlesString(Cloud cloud, String node, boolean includeRoot) {
-       return TreeUtil.getTitlesString(cloud.getNode(node), CHILDREL, TITLE_FIELD, includeRoot);
+        return getTitlesString(cloud.getNode(node), includeRoot);
     }
 
     /**
@@ -219,9 +257,9 @@ public class RepositoryUtil {
      * @return titles of nodes in path
      */
     public static String getTitlesString(Node node, boolean includeRoot) {
-        return TreeUtil.getTitlesString(node, CHILDREL, TITLE_FIELD, includeRoot);
+        return TreeUtil.getTitlesString(node, treeManagers, CHILDREL, TITLE_FIELD, includeRoot);
     }
-    
+
     /**
      * Method that finds the Channel node using a path as input.
      * @param cloud - MMbase cloud
@@ -229,7 +267,7 @@ public class RepositoryUtil {
      * @return node with channel path
      */
     public static Node getChannelFromPath(Cloud cloud, String path) {
-        return TreeUtil.getChannelFromPath(cloud, path, getRootNode(cloud), CHILDREL, FRAGMENT_FIELD, true);
+        return getChannelFromPath(cloud, path, getRootNode(cloud));
     }
 
     /**
@@ -240,7 +278,7 @@ public class RepositoryUtil {
      * @return node with channel path
      */
     public static Node getChannelFromPath(Cloud cloud, String path, Node root) {
-         return TreeUtil.getChannelFromPath(cloud, path, root, CHILDREL, FRAGMENT_FIELD, true);
+        return getChannelFromPath(cloud, path, root, true);
     }
 
     /**
@@ -252,25 +290,26 @@ public class RepositoryUtil {
      * @return node with channel path
      */
     public static Node getChannelFromPath(Cloud cloud, String path, Node root, boolean useCache) {
-        return TreeUtil.getChannelFromPath(cloud, path, root, CHILDREL, FRAGMENT_FIELD, useCache);
+        Node node = TreeUtil.getChannelFromPath(cloud, path, root, treeManagers, CHILDREL, fragmentFieldnames, useCache);
+        return node;
     }
-    
+
     /**
      * Get child channel nodes
      * @param parentNode - parent
      * @return List of children
      */
     public static NodeList getChildren(Node parentNode) {
-        return TreeUtil.getChildren(parentNode, CHILDREL);
+        return TreeUtil.getChildren(parentNode, treeManagers, CHILDREL);
      }
 
 
     public static boolean hasChild(Node parentChannel, String fragment) {
-        return TreeUtil.hasChild(parentChannel, fragment, CHILDREL, FRAGMENT_FIELD);
+        return TreeUtil.hasChild(parentChannel, fragment, treeManagers, CHILDREL, fragmentFieldnames);
     }
 
     public static Node getChild(Node parentChannel, String fragment) {
-        return TreeUtil.getChild(parentChannel, fragment, CHILDREL, FRAGMENT_FIELD);
+        return TreeUtil.getChild(parentChannel, fragment, treeManagers, CHILDREL, fragmentFieldnames);
     }
 
     /** Reorder content in channel
@@ -280,6 +319,9 @@ public class RepositoryUtil {
      */
     public static void reorderContent(Cloud cloud, String parentNode, String children) {
         Node parent = cloud.getNode(parentNode);
+       if (!Workflow.hasWorkflow(parent)) {
+          Workflow.create(parent, "");
+       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
@@ -290,22 +332,38 @@ public class RepositoryUtil {
      */
     public static void reorderContent(Cloud cloud, String parentNode, String[] children) {
         Node parent = cloud.getNode(parentNode);
+       if (!Workflow.hasWorkflow(parent)) {
+          Workflow.create(parent, "");
+       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
 
     public static void reorderContent(Cloud cloud, String parentNode, String[] children, int offset) {
         Node parent = cloud.getNode(parentNode);
+       if (!Workflow.hasWorkflow(parent)) {
+          Workflow.create(parent, "");
+       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT, offset);
     }
 
+
+    /** Get sorted ContentChannel child nodes
+     * @param parentNode - parent
+     * @return list of sorted children
+     */
+    public static NodeList getContentChannelOrderedChildren(Node parentNode) {
+        return SearchUtil.findRelatedOrderedNodeList(parentNode, CONTENTCHANNEL, CHILDREL, NAME_FIELD);
+     }
     
     /** Get sorted child nodes
      * @param parentNode - parent
      * @return list of sorted children
      */
     public static NodeList getOrderedChildren(Node parentNode) {
-        return SearchUtil.findRelatedOrderedNodeList(parentNode, CONTENTCHANNEL, CHILDREL, NAME_FIELD);
+        NodeList channels = SearchUtil.findRelatedNodeList(parentNode, "object", CHILDREL);
+        Collections.sort(channels, new NodeFieldComparator(NAME_FIELD));
+        return channels;
      }
 
     /** Depth of path
@@ -315,14 +373,23 @@ public class RepositoryUtil {
     public static int getLevel(String path) {
         return TreeUtil.getLevel(path);
     }
-    
+
     /** Get number of children
      * @param parent - parent
      * @return number of children
      */
     public static int getChildCount(Node parent) {
-        return TreeUtil.getChildCount(parent, CHILDREL);
+        return TreeUtil.getChildCount(parent, "object", CHILDREL);
     }
+
+    /** Get number of ContentChannel children
+     * @param parent - parent
+     * @return number of children
+     */
+    public static int getContentChannelChildCount(Node parent) {
+        return TreeUtil.getChildCount(parent, CONTENTCHANNEL, CHILDREL);
+    }
+
     
     /**
      * Create the relation to the creationchannel.
@@ -332,7 +399,7 @@ public class RepositoryUtil {
     public static void addCreationChannel(Node content, String channelNumber) {
         addCreationChannel(content, content.getCloud().getNode(channelNumber));
     }
-    
+
     /**
      * Create the relation to the creationchannel.
      * @param content - Content Node
@@ -343,7 +410,7 @@ public class RepositoryUtil {
        RelationManager creationChannel = content.getCloud().getRelationManager(CONTENTELEMENT, CONTENTCHANNEL, CREATIONREL);
        content.createRelation(channel, creationChannel).commit();
     }
-    
+
     /**
      * Check if a contentnode has a creationchannel
      * @param content - Content Node 
@@ -365,12 +432,12 @@ public class RepositoryUtil {
        }
        return null;
     }
-    
+
     public static boolean isCreationChannel(Node content, Node channelNode) {
         Node creationNode = getCreationChannel(content);
         return (creationNode != null) && (creationNode.getNumber() == channelNode.getNumber());
     }
-    
+
     /** Remove creation relations for the given contentelement
      * @param content A contentelment
      */
@@ -384,7 +451,7 @@ public class RepositoryUtil {
           creationrel.delete();
        }
     }
-    
+
     /**
      * Create the relation to the creationchannel.
      * @param content - Content Node
@@ -413,13 +480,13 @@ public class RepositoryUtil {
 
            NodeManager nm = cloud.getNodeManager(CONTENTELEMENT);
            RelationManager rm = cloud.getRelationManager(CONTENTREL);
-           
+
            int childCount = channelNode.countRelatedNodes(nm, CONTENTREL, DESTINATION);
-           
+
            Relation relation = channelNode.createRelation(content, rm);
            relation.setIntValue(TreeUtil.RELATION_POS_FIELD, childCount + 1);
            relation.commit();
-           
+
            if(isOrphan) {
               addCreationChannel(content, channelNode);
            }
@@ -452,7 +519,7 @@ public class RepositoryUtil {
     public static NodeList getContentChannels(Node content) {
         return content.getRelatedNodes(CONTENTCHANNEL, CONTENTREL, SOURCE);
     }
-    
+
     public static boolean hasCreatedContent(Node channelNode) {
         // check if the content channel has related content elements
         return countCreatedContent(channelNode) != 0;
@@ -466,7 +533,7 @@ public class RepositoryUtil {
     public static NodeList getCreatedElements(Node channel) {
         return channel.getRelatedNodes(CONTENTELEMENT, CREATIONREL, SOURCE);
     }
-    
+
     public static boolean hasLinkedContent(Node channelNode) {
         // check if the content channel has related content elements
         return countLinkedContent(channelNode) != 0;
@@ -478,61 +545,86 @@ public class RepositoryUtil {
         return contentCount;
     }
 
-    public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber);
-        return Queries.count(query);
-    }
-    
-    public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+    public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber, year, month, day);
         return Queries.count(query);
     }
 
-    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber);
+    public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
+        return Queries.count(query);
+    }
+
+    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset, maxNumber, year, month, day);
         return query.getNodeManager().getList(query);
     }
 
 
-    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
-        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber);
+    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
         return query.getNodeManager().getList(query);
     }
 
-    
-    private static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber) {
-        if (orderby == null) {
+
+    public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+        if (orderby == null && isContentChannel(channel)) {
             orderby = CONTENTREL + ".pos";
         }
         String destinationManager = CONTENTELEMENT;
-        
+
         if (contenttypes != null && contenttypes.size() == 1) {
             destinationManager = contenttypes.get(0);
         }
-        
-        NodeQuery query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager,
+
+        NodeQuery query;
+        if (isContentChannel(channel)) {
+            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager,
                 CONTENTREL, null, null, orderby, direction);
+        }
+        else {
+            NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
+            if (contentchannels.isEmpty()) {
+                throw new IllegalArgumentException("contentchannels of collectionchannel is empty. should be at leat one");
+            }
+            query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager,CONTENTREL);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby, direction);
+        }
 
         if (contenttypes != null && contenttypes.size() > 1) {
             SearchUtil.addTypeConstraints(query, contenttypes);
         }
 
         if (useLifecycle) {
-            Long date = new Long(System.currentTimeMillis());
-            ContentElementUtil.addLifeCycleConstraint(channel, query, date);
+            ContentElementUtil.addLifeCycleConstraint(query, System.currentTimeMillis());
         }
         if (!StringUtil.isEmpty(archive)) {
             Long date = new Long(System.currentTimeMillis());
             ContentElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
+
+        if(year != -1 || month != -1 || day != -1) {
+          Field field = query.getCloud().getNodeManager("contentelement").getField("publishdate");
+          StepField basicStepField = query.getStepField(field);
+           if(year != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(year), FieldValueDateConstraint.YEAR));
+           }
+           if(month != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(month), FieldValueDateConstraint.MONTH));
+           }
+           if(day != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
+           }
+        }
+
         SearchUtil.addLimitConstraint(query, offset, maxNumber);
         return query;
     }
 
     public static NodeList getLinkedElements(Node channel) {
-        return getLinkedElements(channel, null, null, null, false, -1, -1);
+        return getLinkedElements(channel, null, null, null, false, -1, -1, -1, -1, -1);
     }
-    
+
     public static void removeContentFromChannel(Node content, Node channelNode) {
         // remove the relations to this content from this channel
         RelationIterator contentRelIter = content.getRelations(CONTENTREL, getNodeManager(content.getCloud()), SOURCE).relationIterator();
@@ -545,7 +637,7 @@ public class RepositoryUtil {
         }
         RepositoryUtil.addDeletionRelation(content, channelNode);
     }
-    
+
     public static void removeContentFromAllChannels(Node content) {
         RelationIterator contentRelIter = content.getRelations(CONTENTREL, getNodeManager(content.getCloud()), SOURCE).relationIterator();
         while (contentRelIter.hasNext()) {
@@ -554,7 +646,7 @@ public class RepositoryUtil {
            relation.delete(true);
         }
     }
-    
+
     /**
      * Makes sure the supplied contentelement will have at least one content
      * and one creation channel. If the node has to little, it will relate
@@ -594,7 +686,7 @@ public class RepositoryUtil {
           log.debug("Set a contentchannel of node " + contentelement.getNumber() + " to the default channel.");
        }
     }
-    
+
     public static boolean hasDeletionChannels(Node contentNode) {
         // check if the content channel has related content elements
         return countDeletionChannels(contentNode) != 0;
@@ -604,11 +696,11 @@ public class RepositoryUtil {
         return contentNode.countRelatedNodes(contentNode.getCloud().getNodeManager(
                 CONTENTCHANNEL), DELETIONREL, DESTINATION);
     }
-    
+
     public static NodeList getDeletionChannels(Node contentNode) {
         return contentNode.getRelatedNodes(CONTENTCHANNEL, DELETIONREL, DESTINATION);
     }
-    
+
     /**
      * Create the relation to the deletion relation with this node.
      * 
@@ -619,16 +711,16 @@ public class RepositoryUtil {
        Node channel = contentNode.getCloud().getNode(channelNumber);
        addDeletionRelation(contentNode, channel);
     }
-    
+
     public static void addDeletionRelation(Node contentNode, Node channel) {
         RelationManager rm = contentNode.getCloud().getRelationManager(
                    CONTENTELEMENT, CONTENTCHANNEL, DELETIONREL);
         contentNode.createRelation(channel, rm).commit();
     }
-    
+
     public static void removeDeletionRels(Node contentNode, String channelNumber) {
        Node channelNode = contentNode.getCloud().getNode(channelNumber);
-       removeDeletionRels(contentNode, channelNode);       
+       removeDeletionRels(contentNode, channelNode);
     }
 
     public static void removeDeletionRels(Node contentNode, Node channelNode) {
@@ -641,7 +733,7 @@ public class RepositoryUtil {
               }
            }
     }
-    
+
     public static Node createChannel(Cloud cloud, String name) {
         return createChannel(cloud, name, null);
     }
@@ -655,7 +747,7 @@ public class RepositoryUtil {
         channel.commit();
         return channel;
     }
-    
+
     public static void moveChannel(Node sourceChannel, Node destChannel) {
         if (!isParent(sourceChannel, destChannel)) {
             Relation parentRelation = getParentRelation(sourceChannel);
@@ -668,7 +760,7 @@ public class RepositoryUtil {
         if (!isParent(sourceChannel, destChannel)) {
             Node newChannel = CloneUtil.cloneNode(sourceChannel);
             appendChild(destChannel, newChannel);
-            
+
             NodeList children = getOrderedChildren(sourceChannel);
             for (Iterator iter = children.iterator(); iter.hasNext();) {
                 Node childChannel = (Node) iter.next();
@@ -681,7 +773,7 @@ public class RepositoryUtil {
         }
         return null;
     }
-    
+
     /**
      * Get the role for the user for a page
      *
@@ -713,7 +805,7 @@ public class RepositoryUtil {
      * @return UserRole - rights of a user
      */
     public static UserRole getRole(Cloud cloud, Node channel, boolean rightsInherited) {
-        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
+        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, CHILDREL, fragmentFieldnames);
         return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
     }
 
@@ -728,7 +820,7 @@ public class RepositoryUtil {
     public static UserRole getRole(Node group, Node channel, boolean rightsInherited) {
        // retrieve a TreeMap where the channels (keys) are ordered on level and path
        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getNewRolesMap();
-       SecurityUtil.fillChannelsWithRole(group, channelsWithRole, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
+       SecurityUtil.fillChannelsWithRole(group, channelsWithRole, treeManagers, CHILDREL, fragmentFieldnames);
        return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
     }
 
@@ -737,7 +829,7 @@ public class RepositoryUtil {
     }
 
     public static List getUsersWithRights(Node channel, Role requiredRole) {
-        return SecurityUtil.getUsersWithRights(channel, requiredRole, CONTENTCHANNEL, CHILDREL);
+        return SecurityUtil.getUsersWithRights(channel, requiredRole, treeManagers, CHILDREL);
     }
 
     public static RepositoryInfo getRepositoryInfo(Cloud cloud) {
@@ -745,7 +837,7 @@ public class RepositoryUtil {
         if (info == null) {
             info = new RepositoryInfo();
             cloud.setProperty(RepositoryInfo.class.getName(), info);
-            TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD);
+            TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, CHILDREL, fragmentFieldnames);
             for (String path : channelsWithRole.keySet()) {
                 Node channel = getChannelFromPath(cloud, path);
                 info.expand(channel.getNumber());
@@ -753,10 +845,10 @@ public class RepositoryUtil {
         }
         return info;
     }
-    
+
     public static RolesInfo getRolesInfo(Cloud cloud, Node group) {
         RolesInfo info = new RolesInfo();
-        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getRoleMap(CONTENTCHANNEL, CHILDREL, FRAGMENT_FIELD, group);
+        TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getRoleMap(treeManagers, CHILDREL, fragmentFieldnames, group);
         for (String path : channelsWithRole.keySet()) {
             Node channel = getChannelFromPath(cloud, path);
             info.expand(channel.getNumber());
@@ -765,17 +857,19 @@ public class RepositoryUtil {
     }
 
 
-    
+
     /**
      * This is the method for a USER, the old ones want a GROUP...
      * (even although the are called getRoleForUser(..)
      * 
-     * @return
+     * @param channel channel to get role for
+     * @param user user to get role for
+     * @return User Role
      */
-    public static UserRole getUserRole(Node page, Node user) {
-    	TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
-    	SecurityUtil.getUserRoleMap(user, new String[]{CONTENTCHANNEL}, CHILDREL, new String[]{FRAGMENT_FIELD}, pagesWithRole);
-        return SecurityUtil.getRole(page, true, pagesWithRole);
+    public static UserRole getUserRole(Node channel, Node user) {
+       TreeMap<String, UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
+       SecurityUtil.getUserRoleMap(user, treeManagers, CHILDREL, fragmentFieldnames, pagesWithRole);
+        return SecurityUtil.getRole(channel, true, pagesWithRole);
     }
-    
+
 }

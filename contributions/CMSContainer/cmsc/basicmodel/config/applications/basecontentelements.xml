@@ -3,7 +3,7 @@
 <application name="basecontentelements" maintainer="finalist.com" version="1" auto-deploy="true">
    <requirements>
       <requires name="cmscrichtext" maintainer="finalist.com" version="1" type="application"/>
-      <requires name="contentrepository" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
       <requires name="sitemanagement" maintainer="finalist.com" version="1" type="application"/>
    </requirements>
    <neededbuilderlist>
@@ -44,7 +44,12 @@
       <relationsource builder="insrel" path="basecontentelements/insrel.xml"/>
       <relationsource builder="posrel" path="basecontentelements/posrel.xml"/>
       <relationsource builder="contentrel" path="basecontentelements/contentrel.xml"/>
+      <relationsource builder="deletionrel" path="basecontentelements/deletionrel.xml"/>
       <relationsource builder="imagerel" path="basecontentelements/imagerel.xml"/>
+      <relationsource builder="imageinlinerel" path="basecontentelements/imageinlinerel.xml"/>
+      <relationsource builder="inlinerel" path="basecontentelements/inlinerel.xml"/>
+      <relationsource builder="ownerrel" path="basecontentelements/ownerrel.xml"/>
+      <relationsource builder="posrel" path="basecontentelements/posrel.xml"/>
    </relationsourcelist>
 
    <contextsourcelist>

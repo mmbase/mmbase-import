@@ -65,6 +65,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         Query q = cloud.createQuery();
         q.addStep(navrel);
         q.addStep(page);
+//        q.removeFields(false);
+        
         StepField sourceField = q.addField(NavigationUtil.NAVREL + ".snumber");
         StepField destField = q.addField(NavigationUtil.NAVREL + ".dnumber");
         StepField posField = q.addField(NavigationUtil.NAVREL + ".pos");

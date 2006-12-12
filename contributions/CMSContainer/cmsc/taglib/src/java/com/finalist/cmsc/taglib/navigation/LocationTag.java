@@ -27,7 +27,7 @@ import com.finalist.cmsc.taglib.CmscTag;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class LocationTag extends CmscTag {
 

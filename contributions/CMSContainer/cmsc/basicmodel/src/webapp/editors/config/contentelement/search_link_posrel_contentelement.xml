@@ -5,7 +5,7 @@
 	<title xml:lang="en">Content element</title>
 
 	<item>
-		<field name="name">
+		<field name="title">
 			<prompt xml:lang="en">Title</prompt>
 			<prompt xml:lang="nl">Titel</prompt>
 		</field>

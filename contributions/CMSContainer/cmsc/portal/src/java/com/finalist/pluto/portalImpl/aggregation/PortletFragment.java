@@ -29,13 +29,11 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinitionCtrl;
 import org.apache.pluto.om.window.*;
-import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
-import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 import com.finalist.pluto.portalImpl.om.entity.impl.PortletEntityImpl;
@@ -64,9 +62,9 @@ public class PortletFragment extends AbstractFragmentSingle {
 	private com.finalist.cmsc.beans.om.Portlet portlet;
     private String layoutId;
 	private PortletWindow portletWindow;
-    private StringWriter storedWriter = new StringWriter();
+    private StringWriter storedWriter;
 
-    private HeaderResource headerResource;
+    private ArrayList<HeaderResource> headerResources;
     
 	public PortletFragment(ServletConfig config, Fragment parent, String layoutId, 
             com.finalist.cmsc.beans.om.Portlet portlet,
@@ -103,11 +101,10 @@ public class PortletFragment extends AbstractFragmentSingle {
                     if (objectParam instanceof NodeParameter) {
                         NodeParameter param = (NodeParameter) objectParam;
                         String key = param.getKey();
-                        Node paramValue = param.getValue();
+                        String paramValue = param.getValueAsString();
                         if (paramValue != null) {
-                            String value = String.valueOf(paramValue.getNumber());
-                            log.debug("key: " + key + " value: " + value);
-                            ps.add(key, value);
+                            log.debug("key: " + key + " value: " + paramValue);
+                            ps.add(key, paramValue);
                         }
                     }
 				}
@@ -136,6 +133,8 @@ public class PortletFragment extends AbstractFragmentSingle {
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.debug("PortletFragment service enters");
+        storedWriter = new StringWriter();
+        
 		HttpServletRequest wrappedRequest = ServletObjectAccess.getServletRequest(request, portletWindow);
 		// load the Portlet
 		// If there is an error loading, then we will save the error message and attempt
@@ -275,15 +274,14 @@ public class PortletFragment extends AbstractFragmentSingle {
             log.error("Error in portlet");
             responseWriter.println("Error in portlet");
         }
+        finally {
+            storedWriter = null;
+        }
     }
 
 	public void createURL(PortalURL url) {
 		getParent().createURL(url);
 		url.addLocalNavigation(getId());
-	}
-
-	public boolean isPartOfURL(PortalURL url) {
-		return true;
 	}
 
 	public PortletWindow getPortletWindow() {
@@ -311,11 +309,15 @@ public class PortletFragment extends AbstractFragmentSingle {
 		return getId(); // "_" + layoutId;
 	}
 
-    public HeaderResource getHeaderResource() {
-        if (headerResource == null) {
-            headerResource = new HeaderResource();
-        }
-        return headerResource;
+    public Collection<HeaderResource> getHeaderResources() {
+        return headerResources;
+    }
+    
+    public void addHeaderResource(HeaderResource resource) {
+    	if(headerResources == null) {
+    		headerResources = new ArrayList<HeaderResource>();
+    	}
+    	headerResources.add(resource);
     }
 
 }

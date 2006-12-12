@@ -2,7 +2,7 @@
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="sitemanagement" maintainer="finalist.com" version="1" auto-deploy="true">
    <requirements>
-      <requires name="contentrepository" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
    </requirements>
    <neededbuilderlist>
       <!-- These are the application specific relation builders -->
@@ -62,6 +62,7 @@
       <relation from="mmbasegroups" to="page" type="rolerel" />
       <relation from="view" to="typedef" type="allowrel" />
       <relation from="contentelement" to="page" type="posrel" />
+      <relation from="contentelement" to="page" type="inlinerel" />
    </allowedrelationlist>
 
 
@@ -79,6 +80,8 @@
       <datasource builder="editwizards" path="sitemanagement/editwizards.xml" />
       <datasource builder="properties" path="sitemanagement/properties.xml" />
       <datasource builder="popupinfo" path="sitemanagement/popupinfo.xml" />
+
+      <datasource builder="typedef" path="sitemanagement/typedef.xml" />
    </datasourcelist>
 
    <relationsourcelist>

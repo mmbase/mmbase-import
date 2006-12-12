@@ -23,7 +23,7 @@ public class Page extends NodeBean implements Comparable {
 	private String title;
     private String description;
     private String urlfragment;
-	private boolean inMenu;
+	private boolean inmenu;
     private boolean secure;
     private Date creationdate;
     private Date lastmodifieddate;
@@ -31,6 +31,7 @@ public class Page extends NodeBean implements Comparable {
     private Date expirydate;
     private boolean use_expiry;
     private String lastmodifier;
+    private String externalurl;
 
     private Map<String,Integer> portlets = new HashMap<String,Integer>();
     private int layout;
@@ -53,12 +54,16 @@ public class Page extends NodeBean implements Comparable {
 		this.description = description;
 	}
 
-	public boolean isInmsenu() {
-		return inMenu;
+	public boolean isInmenu() {
+		return inmenu;
 	}
 
-	public void setInmenu(boolean inMenu) {
-		this.inMenu = inMenu;
+	public boolean getInmenu() {
+		return inmenu;
+	}
+
+	public void setInmenu(boolean inmenu) {
+		this.inmenu = inmenu;
 	}
 
     public int getLayout() {
@@ -96,6 +101,10 @@ public class Page extends NodeBean implements Comparable {
             return portlets.get(layoutId);
         }
         return -1;
+    }
+    
+    public Collection<Integer> getPortlets() {
+        return portlets.values();
     }
     
     public Date getCreationdate() {
@@ -165,6 +174,14 @@ public class Page extends NodeBean implements Comparable {
         this.urlfragment = urlfragment;
     }
     
+    public String getExternalurl() {
+		return externalurl;
+	}
+
+	public void setExternalurl(String externalurl) {
+		this.externalurl = externalurl;
+	}
+	
     public int compareTo(Object o) {
         return title.compareTo(((Page) o).title);
     }

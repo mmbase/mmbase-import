@@ -1,19 +1,18 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
@@ -44,9 +41,13 @@ public class PortalErrorServlet extends PortalServlet {
        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     public static final String ERROR_STATUS_CODE = "javax.servlet.error.status_code";
+
     public static final String ERROR_EXCEPTION_TYPE = "javax.servlet.error.exception_type";
+
     public static final String ERROR_MESSAGE = "javax.servlet.error.message";
+
     public static final String ERROR_EXCEPTION = "javax.servlet.error.exception";
+
     public static final String ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
 
     protected ServletConfig config;
@@ -58,7 +59,7 @@ public class PortalErrorServlet extends PortalServlet {
         ERROR_EXCEPTION,
         ERROR_REQUEST_URI
     };
-    
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         // do not start the portal
@@ -69,7 +70,7 @@ public class PortalErrorServlet extends PortalServlet {
         log.debug("===>PortalErrorServlet.doGet START!");
 
         if (PortletContainerFactory.getPortletContainer().isInitialized()) {
-            PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
+            // PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
             PortalEnvironment env = new PortalEnvironment(request, response, config);
             PortalURL currentURL = env.getRequestedPortalURL();
             try {
@@ -80,28 +81,55 @@ public class PortalErrorServlet extends PortalServlet {
                 Site site = SiteManagement.getSiteFromPath(path);
                 if (site != null && SiteManagement.isNavigation(site.getUrlfragment() + PATH_SP + statusCode)) {
                     screen = getScreen(site.getUrlfragment() + PATH_SP + statusCode);
+                    logError(request);
+                    
+                    // TODO: make this better!
+                    StringBuffer completePath = new StringBuffer(request.getContextPath());
+                    if(!ServerUtil.useServerName()) {
+                    	completePath.append("/");
+                    	completePath.append(site.getUrlfragment());
+                    }
+                    completePath.append("/");
+                    completePath.append(screen.getPage().getUrlfragment());
+                    completePath.append("?");
+                    completePath.append(statusCode);
+                    completePath.append("=");
+                    completePath.append(path);
+                    
+                    response.sendRedirect(completePath.toString());
+
+                    CloudUtil.removeCloudFromThread();
+
+                    // Site site = SiteManagement.getSiteFromPath(path);
+                    // if (site != null && SiteManagement.isNavigation(site.getUrlfragment() +
+                    // PATH_SP + statusCode)) {
+                    // screen = getScreen(site.getUrlfragment() + PATH_SP + statusCode);
+                    // }
+                    // if (screen == null) {
+                    // List<Site> sites = SiteManagement.getSites();
+                    // if (!sites.isEmpty() &&
+                    // SiteManagement.isNavigation(sites.get(0).getUrlfragment() + PATH_SP +
+                    // statusCode)) {
+                    // screen = getScreen(sites.get(0).getUrlfragment() + PATH_SP + statusCode);
+                    // }
+                    // }
+                    // if (screen != null) {
+                    // try {
+                    // logError(request);
+                    // Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+                    // CloudUtil.addCloudToThread(cloud);
+                    // response.setContentType(CONTENT_TYPE);
+                    // reg.setScreen(screen);
+                    // log.debug("===>SERVICE");
+                    // screen.service(request, response);
+                    // log.debug("===>SERVICE DONE");
+                    // }
+                    // finally {
+                    // CloudUtil.removeCloudFromThread();
+                    // }
+                    // }
+
                 }
-                if (screen == null) {
-                    List<Site> sites = SiteManagement.getSites();
-                    if (!sites.isEmpty() && SiteManagement.isNavigation(sites.get(0).getUrlfragment() + PATH_SP + statusCode)) {
-                        screen = getScreen(sites.get(0).getUrlfragment() + PATH_SP + statusCode);
-                    }
-                }
-                if (screen != null) {
-                    try {
-                        logError(request);
-                        Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-                        CloudUtil.addCloudToThread(cloud);
-                        response.setContentType(CONTENT_TYPE);
-                        reg.setScreen(screen);
-                        log.debug("===>SERVICE");
-                        screen.service(request, response);
-                        log.debug("===>SERVICE DONE");
-                    }
-                    finally {
-                        CloudUtil.removeCloudFromThread();
-                    }
-                } 
                 else {
                     RequestDispatcher rd = config.getServletContext().getRequestDispatcher("/error/" + statusCode + ".jsp");
                     if (rd != null) {
@@ -139,13 +167,14 @@ public class PortalErrorServlet extends PortalServlet {
 
     /**
      * Creates String.from given long according to dd-MM-yyyy HH:mm:ss
+     * 
      * @param date the date to format
      * @return Datestring
      */
     public static String getDateTimeString(long date) {
-       return DATE_TIME_FORMAT.format(new Date(date));
+        return DATE_TIME_FORMAT.format(new Date(date));
     }
-    
+
     public void logError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
         Throwable exception = (Throwable) request.getAttribute(ERROR_EXCEPTION);
@@ -153,9 +182,9 @@ public class PortalErrorServlet extends PortalServlet {
             String version = VersionUtil.getVersion(config.getServletContext());
             // prepare error ticket
             long ticket = System.currentTimeMillis();
-        
+
             String msg = HttpUtil.getErrorInfo(request, exception, ticket, version);
-            
+
             String message = "";
             if (exception != null) {
                 message = exception.getMessage();
@@ -164,7 +193,7 @@ public class PortalErrorServlet extends PortalServlet {
                 }
             }
             // write errors to mmbase log
-            log.error(ticket+":\n" + msg);
+            log.error(ticket + ":\n" + msg);
         }
     }
 }

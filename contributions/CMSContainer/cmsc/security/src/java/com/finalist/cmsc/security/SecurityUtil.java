@@ -26,9 +26,6 @@ import com.finalist.cmsc.util.NameUtil;
 
 public class SecurityUtil {
 
-    private static final String RANKREL = "rank";
-
-    private static final String RANK = "mmbaseranks";
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(SecurityUtil.class.getName());
@@ -37,9 +34,11 @@ public class SecurityUtil {
 
     public static final String ROLEREL = "rolerel";
     public static final String CONTAINS = "contains";
+    public static final String RANKREL = "rank";
 
     public static final String USER = "user";
     public static final String GROUP = "mmbasegroups";
+    public static final String RANK = "mmbaseranks";
 
     public static final String NUMBER_FIELD = "number";
     public static final String USERNAME_FIELD = "username";
@@ -206,21 +205,23 @@ public class SecurityUtil {
         for (int i = treeManagers.length - 1; i >= 0; i--) {
             String managerName = treeManagers[i];
 
-            // retrieve a list of all channels with a rolerel to this group
-            NodeList channelNodeList = cloud.getList(null, 
-                    managerName + "," + ROLEREL + "," + GROUP, 
-                    ROLEREL + "." + ROLE_FIELD+ ", " + managerName + "." + NUMBER_FIELD, 
-                    "[" + GROUP + "." + NUMBER_FIELD + "] = " + group.getNumber(),
-                    null, null, null, true);
-
-            NodeIterator nodeIterator = channelNodeList.nodeIterator();
-            while (nodeIterator.hasNext()) {
-                Node channelRoleGroupNode = nodeIterator.nextNode();
-                Node channelNode = cloud.getNode( channelRoleGroupNode.getStringValue(managerName + "." + NUMBER_FIELD));
-                // no path found for this channel in cache retrieve it from mmbase
-                String path = TreeUtil.getPathToRootString(channelNode, treeManagers, relationName, fragmentFieldname, true);
-                int role = channelRoleGroupNode.getIntValue(ROLEREL + "." + ROLE_FIELD);
-                channelsWithRole.put(path, new UserRole(role, false));
+            if (cloud.hasRelationManager(GROUP, managerName, ROLEREL)) {
+                // retrieve a list of all channels with a rolerel to this group
+                NodeList channelNodeList = cloud.getList(null, 
+                        managerName + "," + ROLEREL + "," + GROUP, 
+                        ROLEREL + "." + ROLE_FIELD+ ", " + managerName + "." + NUMBER_FIELD, 
+                        "[" + GROUP + "." + NUMBER_FIELD + "] = " + group.getNumber(),
+                        null, null, null, true);
+    
+                NodeIterator nodeIterator = channelNodeList.nodeIterator();
+                while (nodeIterator.hasNext()) {
+                    Node channelRoleGroupNode = nodeIterator.nextNode();
+                    Node channelNode = cloud.getNode( channelRoleGroupNode.getStringValue(managerName + "." + NUMBER_FIELD));
+                    // no path found for this channel in cache retrieve it from mmbase
+                    String path = TreeUtil.getPathToRootString(channelNode, treeManagers, relationName, fragmentFieldname, true);
+                    int role = channelRoleGroupNode.getIntValue(ROLEREL + "." + ROLE_FIELD);
+                    channelsWithRole.put(path, new UserRole(role, false));
+                }
             }
         }
     }
@@ -239,20 +240,22 @@ public class SecurityUtil {
         
         for (int i = 0; i < treeManagers.length; i++) {
             String managerName = treeManagers[i];
-            RelationList list = group.getRelations(ROLEREL, cloud.getNodeManager(managerName), DESTINATION);
-            for (RelationIterator iter = list.relationIterator(); iter.hasNext();) {
-               Relation rolerel = iter.nextRelation();
-               Integer channelNumber = new Integer(rolerel.getDestination().getNumber());
-               if (rights.containsKey(channelNumber)) {
-                  rolesDone.add(channelNumber);
-                  UserRole role = (UserRole) rights.get(channelNumber);
-                  if (role == null) {
-                     rolerel.delete();
-                  } else {
-                     rolerel.setIntValue(ROLE_FIELD, role.getRole().getId());
-                     rolerel.commit();
-                  }
-               }
+            if (cloud.hasRelationManager(GROUP, managerName, ROLEREL)) {
+                RelationList list = group.getRelations(ROLEREL, cloud.getNodeManager(managerName), DESTINATION);
+                for (RelationIterator iter = list.relationIterator(); iter.hasNext();) {
+                   Relation rolerel = iter.nextRelation();
+                   Integer channelNumber = new Integer(rolerel.getDestination().getNumber());
+                   if (rights.containsKey(channelNumber)) {
+                      rolesDone.add(channelNumber);
+                      UserRole role = (UserRole) rights.get(channelNumber);
+                      if (role == null) {
+                         rolerel.delete();
+                      } else {
+                         rolerel.setIntValue(ROLE_FIELD, role.getRole().getId());
+                         rolerel.commit();
+                      }
+                   }
+                }
             }
         }
 
@@ -528,7 +531,7 @@ public class SecurityUtil {
         Iterator iter = path.iterator();
         while (iter.hasNext()) {
            Node pathChannel = (Node) iter.next();
-           RelationManager rolerelManager = channel.getCloud().getRelationManager(pathChannel.getNodeManager().getName(), GROUP, ROLEREL);
+           RelationManager rolerelManager = channel.getCloud().getRelationManager(GROUP, pathChannel.getNodeManager().getName(), ROLEREL);
 
            RelationList rolerels = rolerelManager.getRelations(pathChannel);
 
@@ -536,13 +539,13 @@ public class SecurityUtil {
            while (rels.hasNext()) {
               Relation relation = rels.nextRelation();
 
-              Node destinationGroup = relation.getDestination();
+              Node sourceGroup = relation.getSource();
 
               if (relation.getIntValue("role") >= requiredRole.getId()) {
-                 addToList(groups, destinationGroup);
+                 addToList(groups, sourceGroup);
               }
               if (relation.getIntValue("role") < requiredRole.getId()) {
-                 removeFromList(groups, destinationGroup);
+                 removeFromList(groups, sourceGroup);
               }
            }
         }

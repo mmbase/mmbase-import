@@ -1,12 +1,12 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <c:if test="${viewtype eq 'list'}">
-	<portlet:renderURL var="renderUrl" />
+	<cmsc:renderURL var="renderUrl" />
 	<a href="${renderUrl}"><fmt:message key="view.back" /></a>
 </c:if>
 
 <mm:cloud>
 <form name="contentportlet" id="contentportlet" method="post"
-	action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
+	action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 	<mm:import externid="elementId" required="true" />
 	<mm:node number="${elementId}" notfound="skip">
 

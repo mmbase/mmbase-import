@@ -42,7 +42,7 @@ Object.extend(Object.extend(AddressBar.prototype, Autocompleter.Base.prototype),
     	}
 	}
 	catch(e) {
-		alert(e);
+		alert("ERROR: AddressBar.onComplete ("+request.responseText+")");
 	}
   },
   setOptions: function(options) {

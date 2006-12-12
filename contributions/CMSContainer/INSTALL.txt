@@ -3,31 +3,28 @@ Follow the following steps:
 Step 0:
 
 Install the following versions of the software:
-- Java 1.5 (of 1.4)
-- Maven 1.0.2  (use this version or it will NOT work!!!)
+- Java 1.5
+- Maven 1.0.2  (use a maven 1 version. Maven 2 is not supported yet.
 - Tomcat 5.5
 - Mysql 4.1
-Include by this project are:
-- MMbase HEAD
-- Pluto 1.0.1
 
 
 Step 1:
 Set the following environment settings:
-(using your install paths)
+(use your install paths)
 # java settings
-  JAVA_HOME=c:\java\1.5.0_03
+  JAVA_HOME=c:\java\1.5
   JAVA_OPTS=-Xmx256M -Dfile.encoding=utf-8
 # Remote debgging
   JPDA_ADDRESS=8000
   JPDA_TRANSPORT=dt_socket
 # maven settings
-  MAVEN_HOME=C:\java\maven-1.0.2
+  MAVEN_HOME=C:\java\maven-1.0
   MAVEN_HOME_LOCAL=c:\projects\.maven
-  Path=%PATH%;C:\java\maven-1.0.2\bin
+  Path=%PATH%;C:\java\maven-1.0\bin
 # tomcat settings
-  TOMCAT_HOME=C:\servers\tomcat-5.5.9
-  CATALINA_HOME=C:\servers\tomcat-5.5.9
+  TOMCAT_HOME=C:\servers\tomcat-5.5
+  CATALINA_HOME=C:\servers\tomcat-5.5
 
 Step 2:
 Make maven work:
