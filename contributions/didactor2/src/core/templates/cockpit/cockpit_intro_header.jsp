@@ -3,7 +3,7 @@
 <mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
 <mm:content postprocessor="reducespace">
-  <mm:cloud authenticate="asis">	
+  <mm:cloud method="delegate" authenticate="asis">	
     <jsp:directive.include file="/shared/setImports.jsp" />
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
