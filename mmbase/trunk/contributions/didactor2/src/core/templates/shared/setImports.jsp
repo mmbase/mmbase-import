@@ -61,15 +61,12 @@
   to make sure that this user may log in. 
 --%>
 <mm:import escape="trimmer" id="validatemessage">
-  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="user"><mm:write referid="user" /></mm:param>
-  </mm:treeinclude>
+  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids, user" />
 </mm:import>
 
 <mm:isnotempty referid="validatemessage">
   <mm:cloud method="delegate"  authenticate="didactor-logout"/>
-  <mm:redirect page="/declined.jsp">
+  <mm:redirect page="/declined.jsp" referids="validatemessage@message">
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
-    <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
   </mm:redirect>
 </mm:isnotempty>
