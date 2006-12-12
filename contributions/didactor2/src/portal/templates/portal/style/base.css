@@ -1,47 +1,70 @@
 @import url(layout.css);
 
 html, body.portal {
-    background-color: #2e72f8;
-    background-image: url("bg_body.gif");
+  background-image: url("bg_body.gif");
+  background-color: #679bff;
+  background-repeat: repeat-x; 
+}
+
+.date { 
+  font-style: italic;
 }
 
 div.x1 {
-    background-color: #2e72f8;
+
 }
 
 div.column div.menu *, div.column div.menu {
-    background-color: #e2641b;
-    color: black;
+  background-color: #e2641b;
+  color: black;
 }
 
 div.x3 {
-    background-color: #2e72f8;
-    
-}
-
-div.column h1 {
-    color: white;
-    background-image: url("bg_title.jpg");
-    background-repeat: no-repeat;
-    background-color: #dc6f8c;
-
+  
 }
 
 div.column * {
-    background-color: white;
+  background-color: white;
+}
+div.column h1 {
+  color: white;
+  background-image: url("bg_title.jpg");
+  background-repeat: no-repeat;
+  background-color: #dc6f8c;
 }
 
 div.poll {
-    padding-bottom: 2ex;
+  padding-bottom: 2ex;
 }
 div.poll .results {
-    background-color: red;
+  overflow: visible;
+  background-color: red;
 }
 div.poll ul {
-    padding-left: 1ex;
-    list-style-type: none;
+  padding-left: 1ex;
+  list-style-type: none;
 }
 div.poll ul li {
-    white-space: nowrap;
-    margin-bottom: 1ex;
+  white-space: nowrap;
+  margin-bottom: 1ex;
+}
+
+.menuItemApplicationMenubar.login {
+  display: block;
+  color: white;
+}
+.menuItemApplicationMenubar.login input {
+  display: inline;
+}
+.menuItemApplicationMenubar.login form {
+  display: inline;
+}
+.menuItemApplicationMenubar.login a {
+  text-decoration: underline;
+  font-weight: bold;
+}
+.menuItemApplicationMenubar.login p {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 3px;
 }
