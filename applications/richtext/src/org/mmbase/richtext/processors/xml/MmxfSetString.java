@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.15 2006-10-11 17:45:32 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.16 2006-12-12 20:54:24 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -203,7 +203,7 @@ public class MmxfSetString implements  Processor {
                 continue;
             }
             if (name.equals("#text")) {
-                if (node.getNodeValue() != null && ! "".equals(node.getNodeValue().trim())) {
+                if (node.getNodeValue() != null) {
                     if (state.mode == MODE_SECTION) {
                         Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
                         log.debug("Appending to " + destination.getNodeName());
@@ -527,7 +527,9 @@ public class MmxfSetString implements  Processor {
             // Images are _always_ on the same server.
             String src = a.getAttribute("src");
             try {
-                href  = (new java.net.URI(src)).getPath();
+                java.net.URI uri = new java.net.URI(src);
+                String q = uri.getQuery();
+                href  = uri.getPath() + (q != null ? "?" + q : "");
             } catch (java.net.URISyntaxException se) {
                 log.warn(se);
                 href = src;
@@ -582,7 +584,10 @@ public class MmxfSetString implements  Processor {
         Cloud cloud = editedNode.getCloud();
         NodeManager images = cloud.getNodeManager("images");
         String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
-        if (! href.startsWith(imageServlet)) return false;
+        if (! href.startsWith(imageServlet)) {
+            log.debug("Not an image because '" + href + "' does not start with '" + imageServlet + "'");
+            return false;
+        }
         String q = "/images/" + href.substring(imageServlet.length());
         log.debug(href + ":This is an image!!-> " + q);
         BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
