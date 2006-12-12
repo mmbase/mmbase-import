@@ -1,10 +1,8 @@
-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="java.util.*"
 %>
 <script src="js/browser_version.js"></script>
-
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
@@ -314,6 +312,24 @@ catch(err){};
 
   //-->
 </script>
+
+<mm:listnodescontainer type="classrel">
+  <mm:constraint field="snumber" value="${user}" />
+  <mm:composite operator="or">
+    <mm:constraint field="dnumber" value="${class}" />
+    <mm:constraint field="dnumber" value="${education}" />
+  </mm:composite>
+  <mm:listnodes>
+    <mm:field id="lastpage" name="lastpage" write="false" />
+  </mm:listnodes>
+</mm:listnodescontainer>
+<mm:present referid="lastpage">
+  <mm:hasnode number="${lastpage}">
+  <script type="text/javascript">
+    openContent("learnblocks", ${lastpage});
+  </script>
+  </mm:hasnode>
+</mm:present>
 
 
 <div class="rows">
