@@ -10,9 +10,9 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"%>
 
-<mm:cloud rank="basic user" >
+<mm:cloud method="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
-<script language="JavaScript1.1" type="text/javascript">
+  <script language="JavaScript1.1" type="text/javascript">
 
 function getUrl(url){
   var i = new Image();

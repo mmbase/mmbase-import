@@ -3,7 +3,7 @@
 <mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
 <mm:content postprocessor="reducespace">
-  <mm:cloud rank="basic user">
+  <mm:cloud authenticate="asis">	
     <jsp:directive.include file="/shared/setImports.jsp" />
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
@@ -14,7 +14,8 @@
       <div>
         <mm:treeinclude page="/cockpit/applicationbarcockpit.jsp" objectlist="$includePath" referids="$referids"/>
         <mm:treeinclude page="/cockpit/providerbar.jsp"          objectlist="$includePath"  referids="$referids" />
-        <mm:treeinclude page="/cockpit/educationbarcockpit.jsp"  objectlist="$includePath"  referids="$referids" />
+        <mm:treeinclude page="/cockpit/educationbarcockpit.jsp"  objectlist="$includePath" referids="$referids" /> 	
+
       </div>
     </mm:cloud>
   </mm:content>
