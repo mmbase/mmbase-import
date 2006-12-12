@@ -78,9 +78,13 @@
           <!--
           <entry value="0" display="Homepage" xml:lang="en" />
           -->
-          <entry value="1" display="Portallinks" xml:lang="en"/>
+          <entry value="1" display="Portallinks" />
           <entry value="6" display="News" xml:lang="en" />
+          <entry value="6" display="Nouvelles" xml:lang="fr" />
+          <entry value="6" display="Nieuws" xml:lang="nl" />
           <!-- 0-80 reserved, (EO Patmos framework) -->
+
+          <entry value="99"  display="Rich News" />
           <entry value="100" display="MMBase component" /><!-- MMBase 1.9 -->
         </enumeration>
       </datatype>
