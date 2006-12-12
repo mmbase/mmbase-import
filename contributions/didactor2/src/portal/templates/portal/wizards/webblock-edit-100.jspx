@@ -8,9 +8,8 @@
   <mm:import externid="webblock" required="true" />
   <p>
     <mm:node referid="webblock">
-      <mm:include page="related-type.jspx">
-        <mm:param name="type">components</mm:param>
-      </mm:include>
+      Just using the 'description' field of the webblock:
+      <mm:field name="description" />
     </mm:node>
   </p>
 </mm:cloud>
