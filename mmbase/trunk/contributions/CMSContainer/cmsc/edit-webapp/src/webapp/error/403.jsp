@@ -1,4 +1,7 @@
-<% request.setAttribute("title", "foutmelding 403: Forbidden"); %>
+<%@ include file="globals.jsp"%>
+
+<c:set var="title" scope="request"><fmt:message key="exception.403.message" /></c:set>
+
 <%@include file="header.jsp"%>
 <p>
 <fmt:message key="exception.403.message" /><br />

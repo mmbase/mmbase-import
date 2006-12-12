@@ -46,6 +46,9 @@ public class WizardInitAction extends MMBaseFormlessAction {
       if (!StringUtil.isEmpty(creation)) {
          session.setAttribute("creation",creation);
       }
+      else {
+         session.removeAttribute("creation");
+      }
 
       String[] contenttypes = request.getParameterValues("contenttype");
       String contenttype = null;

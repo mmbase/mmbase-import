@@ -47,13 +47,44 @@
                <li class="dumpdefaults">
 					<a href="dumpdefaults.jsp" target="rightpane"><fmt:message key="admin.dumpdefaults" /></a>
 				</li>
+				
+            <mm:haspage page="/editors/resources/reactionsearch.jsp">
+                <li class="reactions">
+                	<a href="<mm:url page="../resources/ReactionInitAction.do"/>" target="rightpane"><fmt:message key="admin.reactions" /></a>
+                </li>
+            </mm:haspage>
             <cmsc:hasfeature name="luceusmodule">
-				<li class="dumpdefaults">
+				<li class="luceus">
 					<a href="../luceus/fullindex.jsp" target="rightpane"><fmt:message key="admin.fullindex" /></a>
 				</li>
             </cmsc:hasfeature>
-				
-			</ul>
+			<%-- TODO dit is lelijk, vervangen door iets generieks --%>
+            <cmsc:hasfeature name="spidermodule">
+               <li class="luceus">
+                  <a href="../nijmegen/spiders.jsp" target="rightpane">Nijmegen indexering GNS etc.</a>
+               </li>
+            </cmsc:hasfeature>
+				<mm:haspage page="/editors/publish-remote">
+               <li class="advancedpublish">
+                  <c:url var="publishUrl" value="/editors/publish-remote/index.jsp"/>
+                  <a href="${publishUrl}" target="rightpane"><fmt:message key="admin.publish" /></a>
+               </li>
+            </mm:haspage>
+            <mm:haspage page="/editors/workflow">
+               <li class="workflow">
+                  <c:url var="workflowUrl" value="/editors/workflow/admin/WorkflowAdminAction.do"/>
+                  <a href="${workflowUrl}" target="rightpane"><fmt:message key="admin.workflow" /></a>
+               </li>
+            </mm:haspage>
+            <mm:haspage page="/editors/egemmail">
+               <li class="egem">
+                  <a href="../egemmail/search.jsp" target="rightpane"><fmt:message key="admin.egemmail.export" /></a>
+               </li>
+               <li class="egem">
+                  <a href="<cmsc:property key="egemmail.beheer.path"/>" target="_blank"><fmt:message key="admin.egemmail.admin" /></a>
+               </li>
+            </mm:haspage>
+         </ul>
 			
 			<div class="side_block_end"></div>
 		</div>

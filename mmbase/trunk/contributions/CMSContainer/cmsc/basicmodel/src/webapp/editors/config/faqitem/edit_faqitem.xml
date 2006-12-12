@@ -8,11 +8,11 @@
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
-	<field name="question" dtmaxlength="1024" ftype="html" dtrequired="false">
+	<field name="question" dtmaxlength="1024" ftype="html" dtrequired="false" rows="15">
 		<prompt xml:lang="en">Question</prompt>
 		<prompt xml:lang="nl">Vraag</prompt>
 	</field>
-	<field name="body" dtmaxlength="64000" ftype="html" dtrequired="false">
+	<field name="body" dtmaxlength="64000" ftype="html" dtrequired="false" rows="20">
 		<prompt xml:lang="en">Body</prompt>
 		<prompt xml:lang="nl">Tekst</prompt>
 	</field>

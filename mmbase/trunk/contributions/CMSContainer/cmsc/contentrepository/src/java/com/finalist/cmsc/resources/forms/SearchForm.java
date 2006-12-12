@@ -22,6 +22,14 @@ public class SearchForm extends ActionForm {
 	private int direction;
 	private String objectid;
 
+    public SearchForm() {
+        // empty
+    }
+    
+	public SearchForm(String contenttypes) {
+	    this.contenttypes = contenttypes;
+    }
+    
 	public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
 		// ensure valid direction
 		if (direction != SortOrder.ORDER_DESCENDING) {

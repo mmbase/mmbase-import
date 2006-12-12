@@ -44,7 +44,7 @@ public class ListPagesTag extends AbstractListTag {
             if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
                 for (Iterator iter = pages.iterator(); iter.hasNext();) {
                     Page page = (Page) iter.next();
-                    if (!page.isInmsenu()) {
+                    if (!page.isInmenu()) {
                         iter.remove();
                     }
                 }
@@ -52,7 +52,7 @@ public class ListPagesTag extends AbstractListTag {
             if (MODE_HIDDEN.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
                 for (Iterator iter = pages.iterator(); iter.hasNext();) {
                     Page page = (Page) iter.next();
-                    if (page.isInmsenu()) {
+                    if (page.isInmenu()) {
                         iter.remove();
                     }
                 }

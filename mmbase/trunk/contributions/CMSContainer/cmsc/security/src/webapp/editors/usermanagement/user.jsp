@@ -79,7 +79,18 @@
 					<span class="notvalid"><html:errors bundle="SECURITY" property="password2" /></span>
 				</td>
 			</tr>
-			<tr><td class="fieldname" nowrap><fmt:message key="user.emailsignal" /></td>
+	      <tr>
+	      
+	         <td class="fieldname" nowrap width="150"><fmt:message key="changelanguage.language" /></td>
+		      <td class="fieldname">
+		      	<html:select property="language">
+		      		<html:option value=""><fmt:message key="changelanguage.default" /></html:option>
+		      		<html:option value="en"><fmt:message key="changelanguage.english" /></html:option>
+		      		<html:option value="nl"><fmt:message key="changelanguage.dutch" /></html:option>
+		      	</html:select>
+		      </td>
+		   </tr>
+		   	<tr><td class="fieldname" nowrap><fmt:message key="user.emailsignal" /></td>
 				<td class="field"><html:checkbox property="emailSignal" style="width: auto;"/></td>
 			</tr>
 			<tr>

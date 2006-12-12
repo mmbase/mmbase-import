@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="../../globals.jsp" %>
-<fmt:setBundle basename="cmsc-repository" scope="request" />
+<%@include file="globals.jsp" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <head>
@@ -20,10 +19,10 @@
 
 	<div class="editor">
 		<div class="body">
-			<mm:cloud>
+			<mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 				<mm:node number="${param.objectnumber}">
 					<div style="float:left">
-			           	<img src="<mm:image template="s(430x430)"/>"/><br/>
+			           	<img src="<mm:image template="s(430x430)"/>" alt="<mm:field name="description" />" /><br/>
 			        </div>
 			        <div style="float:left; padding:5px;">
 			            <h1><mm:field name="filename"/></h1>
@@ -34,6 +33,18 @@
 			           	<fmt:message key="imageinfo.width" />: <mm:field name="width"/><br/>
 			           	<fmt:message key="imageinfo.height" />: <mm:field name="height"/><br/>
 			           	<fmt:message key="imageinfo.itype" />: <mm:field name="itype"/><br/>
+			           	<br/>
+			           	<mm:field name="creationdate" id="creationdate" write="false"/>
+			           	<mm:present referid="creationdate">
+				           	<fmt:message key="secondaryinfo.creator" />: <mm:field name="creator"/><br/>
+				           	<fmt:message key="secondaryinfo.creationdate" />: <mm:write referid="creationdate"><mm:time format="dd-MM-yyyy hh:mm"/></mm:write><br/>
+				        </mm:present>
+
+			           	<mm:field name="lastmodifieddate" id="lastmodifieddate" write="false"/>
+			           	<mm:present referid="lastmodifieddate">
+				           	<fmt:message key="secondaryinfo.lastmodifier" />: <mm:field name="lastmodifier"/><br/>
+				           	<fmt:message key="secondaryinfo.lastmodifieddate" />: <mm:write referid="lastmodifieddate"><mm:time format="dd-MM-yyyy hh:mm"/></mm:write><br/>
+				        </mm:present>
 			           	<br/>
 			            <b><fmt:message key="imageinfo.related" /></b>:<br/>
 			            <ul>

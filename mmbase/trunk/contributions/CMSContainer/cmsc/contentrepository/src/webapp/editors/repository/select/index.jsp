@@ -4,6 +4,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <mm:import externid="channel" from="parameters" />
 <mm:import externid="contentnumber" from="parameters" />
+<mm:import externid="action" from="parameters" />
 
 <mm:cloud loginpage="../../login.jsp">
 
@@ -34,6 +35,13 @@
 	</mm:compare>
 </mm:present>
 
+<mm:present referid="action">
+	<mm:url page="/editors/repository/SearchInitAction.do" id="contenturl" write="false" >
+		<mm:param name="action" value="${action}" />
+	</mm:url>
+</mm:present>
+
+
 <mm:notpresent referid="channelsurl">
 	<mm:url page="/editors/repository/select/SelectorContent.do" id="channelsurl" write="false" />
 </mm:notpresent>
@@ -52,11 +60,11 @@
 			  if(document.frames["selectchannels"].resizeTreeDiv) {
 			  	document.frames["selectchannels"].resizeTreeDiv();
 			  }
-			}      
+			}
 		</script>
-			
+
 	</head>
-	<frameset cols="321,*" framespacing="0" border="0">
+	<frameset cols="250,*" framespacing="0" border="0">
 		<frame src="<mm:url referid="channelsurl"/>" name="selectchannels" frameborder="0" scrolling="no"/>
 		<frame src="<mm:url referid="contenturl"/>" name="selectcontent" frameborder="0" />
 	</frameset>

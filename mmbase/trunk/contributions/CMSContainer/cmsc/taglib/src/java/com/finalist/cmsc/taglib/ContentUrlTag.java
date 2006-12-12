@@ -70,8 +70,8 @@ public class ContentUrlTag extends NodeReferrerTag {
     }
     
     private String getContentUrl(Node node) {
-        String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
-        return servletpath + "/" + node.getStringValue("number") + "/" + node.getStringValue("title");
+        return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
+                node.getStringValue("number"), node.getStringValue("title"));
     }
 
     public int doEndTag() throws JspTagException {

@@ -61,9 +61,13 @@ public class SearchAction extends MMBaseAction {
        List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
        List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+       List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
        for (NodeManager manager : types) {
-           LabelValueBean bean = new LabelValueBean(manager.getGUIName(), manager.getName());
-           typesList.add(bean);
+       	String name = manager.getName();
+       	if(!hiddenTypes.contains(name)) {
+       		LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+       		typesList.add(bean);
+       	}
        }
        addToRequest(request, "typesList", typesList);
 
@@ -127,18 +131,20 @@ public class SearchAction extends MMBaseAction {
             }
         }
 
-        // Add the title / keyword constraint:
+        // Add the title constraint:
         if (!StringUtil.isEmpty(searchForm.getTitle())) {
 
             queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle());
             Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
             Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
             SearchUtil.addConstraint(query, titleConstraint);
+        }
 
-            // And some trefwordsearching
-            queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getTitle());
+        // And some keyword searching
+        if (!StringUtil.isEmpty(searchForm.getKeywords())) {
+            queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
             Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
-            List keywords = KeywordUtil.getKeywords(searchForm.getTitle());
+            List keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
             for (int i = 0; i < keywords.size(); i++) {
                String keyword = (String) keywords.get(i);
                Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);

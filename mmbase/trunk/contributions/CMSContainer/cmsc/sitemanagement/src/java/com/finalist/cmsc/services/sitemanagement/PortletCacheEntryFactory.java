@@ -35,7 +35,10 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     private Portlet loadPortlet(Integer key) {
         Node portletNode = getNode(key);
-
+        if (portletNode == null) {
+            return null;
+        }
+        
         Portlet portlet = (Portlet) MMBaseNodeMapper.copyNode(portletNode, Portlet.class);
         
         Node definition = PortletUtil.getDefinition(portletNode);
@@ -57,8 +60,11 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
         NodeList pnodeslist = PortletUtil.getNodeParameters(portletNode);
         for (NodeIterator iter = pnodeslist.nodeIterator(); iter.hasNext();) {
             Node paramNode = iter.nextNode();
-            NodeParameter param = (NodeParameter) MMBaseNodeMapper.copyNode(paramNode, NodeParameter.class);
-            portlet.addPortletparameter(param);
+            int qNodeNumber = paramNode.getIntValue(PortletUtil.VALUE_FIELD);
+            if (paramNode.getCloud().hasNode(qNodeNumber)) {
+                NodeParameter param = (NodeParameter) MMBaseNodeMapper.copyNode(paramNode, NodeParameter.class);
+                portlet.addPortletparameter(param);
+            }
         }
         return portlet;
     }

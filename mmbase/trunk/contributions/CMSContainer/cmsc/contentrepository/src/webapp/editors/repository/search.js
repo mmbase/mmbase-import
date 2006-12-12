@@ -51,10 +51,10 @@ function selectAll(value, formName, elementPrefix) {
 
 function selectChannel(channel, path) {
    document.forms[0].parentchannel.value=channel;
-   document.forms[0].parentchannelpath.value=path;
+   document.forms[0].parentchannelpathdisplay.value=path;
 }
 
-function selectElement(element, title, url) {
-   window.top.opener.selectElement(element, title, url);
+function selectElement(element, title, url, width, height, description) {
+   window.top.opener.selectElement(element, title, url, width, height, description);
    window.top.close();
 }

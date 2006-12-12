@@ -1,11 +1,11 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 
-	<portlet:renderURL var="renderUrl" />
+	<cmsc:renderURL var="renderUrl" />
 	<a href="${renderUrl}"><fmt:message key="view.back" /></a>
 
 <mm:cloud>
 <form name="contentportlet" method="post"
-	action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
+	action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 	<mm:import externid="elementId" required="true" from="request" />
 	<mm:node number="${elementId}" notfound="skip">
 

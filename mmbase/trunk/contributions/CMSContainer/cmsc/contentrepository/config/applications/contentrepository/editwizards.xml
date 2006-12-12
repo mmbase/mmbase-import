@@ -9,6 +9,14 @@
 		<fields>name</fields>
 	</node>
 
+	<node number="31002" owner="admin">
+		<name>Collectionchannel</name>
+		<description>Collectionchannel </description>
+		<wizard>config/collectionchannel/collectionchannel</wizard>
+		<nodepath>collectionchannel</nodepath>
+		<fields>name</fields>
+	</node>
+	
 	<!-- This is an abstract type
  	<node number="31002" owner="admin">
 		<name>Contentelement</name>

@@ -1,38 +1,10 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 
 <div class="portlet-config-canvas">
-<c:if test="${not empty portlets}">
-	<h3><fmt:message key="edit_defaults.selectportlet" /></h3>
-	
-	<form name="<portlet:namespace />select_form" method="post" target="_parent"
-		action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>">
-	<table class="editcontent">
-		<tr>
-			<td>
-				<fmt:message key="edit_defaults.portlet" />:
-			</td>
-			<td>
-				<select name="portlet" id="<portlet:namespace />portlet">
-					<c:forEach var="p" items="${portlets}">
-						<option value="${p.id}">${p.title}</option>
-					</c:forEach>
-				</select> 
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<a href="javascript:document.forms['<portlet:namespace />select_form'].submit()" class="button">
-					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.select" /></a>
-			</td>
-		</tr>
-	</table>
-	</form>
-</c:if>
-
 <c:if test="${not empty definitions}">
 	<h3><fmt:message key="edit_defaults.createportlet" /></h3>
 	<form name="<portlet:namespace />create_form" method="post" target="_parent"
-		action="<portlet:actionURL><portlet:param name="action" value="create"/></portlet:actionURL>">
+		action="<cmsc:actionURL><cmsc:param name="action" value="create"/></cmsc:actionURL>">
 	
 	<table class="editcontent">
 		<tr>
@@ -96,6 +68,34 @@
 			<td colspan="2">
 				<a href="javascript:document.forms['<portlet:namespace />create_form'].submit()" class="button">
 					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.create" /></a>
+			</td>
+		</tr>
+	</table>
+	</form>
+</c:if>
+<c:if test="${not empty portlets}">
+	<h3><fmt:message key="edit_defaults.selectportlet" /></h3>
+	
+	<form name="<portlet:namespace />select_form" method="post" target="_parent"
+		action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
+	<table class="editcontent">
+		<tr>
+			<td>
+				<fmt:message key="edit_defaults.portlet" />:
+			</td>
+			<td>
+				<select name="portlet" id="<portlet:namespace />portlet">
+					<option value=""> - </option>
+					<c:forEach var="p" items="${portlets}">
+						<option value="${p.id}">${p.title}</option>
+					</c:forEach>
+				</select> 
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<a href="javascript:document.forms['<portlet:namespace />select_form'].submit()" class="button">
+					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.select" /></a>
 			</td>
 		</tr>
 	</table>

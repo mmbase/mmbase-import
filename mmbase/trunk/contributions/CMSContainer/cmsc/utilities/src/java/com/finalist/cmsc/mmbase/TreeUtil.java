@@ -467,10 +467,19 @@ public class TreeUtil {
         return parent.countRelatedNodes(nodeManager, relationName, DESTINATION);
     }
 
-    public static boolean hasChild(Node parentChannel, String fragment, String relationName, String fragmentfield) {
-        NodeList children = getChildren(parentChannel, relationName);
+    public static boolean hasChild(Node parent, String fragment, String relationName, String fragmentfield) {
+        String[] treeManagers = new String[] { parent.getNodeManager().getName() };
+        String[] fragmentFieldnames = new String[] { fragmentfield };
+        return hasChild(parent, fragment, treeManagers , relationName, fragmentFieldnames);
+    }
+
+    public static boolean hasChild(Node parent, String fragment, String[] treeManagers,
+            String relationName, String[] fragmentFieldnames) {
+        NodeList children = getChildren(parent, relationName);
         for (Iterator iter = children.iterator(); iter.hasNext();) {
             Node child = (Node) iter.next();
+            String nManagerName = child.getNodeManager().getName();
+            String fragmentfield = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
             String value = child.getStringValue(fragmentfield);
             if (value.equals(fragment)) {
                 return true;
@@ -480,10 +489,19 @@ public class TreeUtil {
         return false;
     }
 
-    public static Node getChild(Node parentChannel, String fragment, String relationName, String fragmentfield) {
+    public static Node getChild(Node parent, String fragment, String relationName, String fragmentfield) {
+        String[] treeManagers = new String[] { parent.getNodeManager().getName() };
+        String[] fragmentFieldnames = new String[] { fragmentfield };
+        return getChild(parent, fragment, treeManagers , relationName, fragmentFieldnames);
+    }
+
+    public static Node getChild(Node parentChannel, String fragment, String[] treeManagers,
+            String relationName, String[] fragmentFieldnames) {
         NodeList children = getChildren(parentChannel, relationName);
         for (Iterator iter = children.iterator(); iter.hasNext();) {
             Node child = (Node) iter.next();
+            String nManagerName = child.getNodeManager().getName();
+            String fragmentfield = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
             String value = child.getStringValue(fragmentfield);
             if (value.equals(fragment)) {
                 return child;

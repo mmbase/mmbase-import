@@ -39,7 +39,7 @@
          </gui>
          <editor>
             <positions>
-                                           <input>4</input>
+               <input>4</input>
                <list>4</list>
                <search>4</search>
             </positions>
@@ -61,9 +61,9 @@
          </gui>
          <editor>
             <positions>
-                                           <input>5</input>
-               <list>-1</list>
-               <search>-1</search>
+               <input>5</input>
+               <list>5</list>
+               <search>5</search>
             </positions>
          </editor>
          <db>

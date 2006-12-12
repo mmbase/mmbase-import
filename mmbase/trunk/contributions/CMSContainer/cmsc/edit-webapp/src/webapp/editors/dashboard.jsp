@@ -10,8 +10,7 @@
    <style type="text/css" xml:space="preserve">
       body { behavior: url(./css/hover.htc);}
    </style>
-   <script>
-         
+   <script type="text/javascript">
       function clearDefaultSearchText(defaultText) {
       	var searchField = document.forms["searchForm"]["title"];
       	if(searchField.value == defaultText) {
@@ -29,16 +28,15 @@
 						<div class="title"><fmt:message key="dashboard.search.header" /></div>
 						<div class="header_end"></div>
 					</div>
-
-
-				<form action="repository/index.jsp" name="searchForm" method="post">
-						<div class="search_form"><input type="text" name="title" value="<fmt:message key="dashboard.search.term" />" onfocus="clearDefaultSearchText('<fmt:message key="dashboard.search.term" />');"/></div>
-
-						<div class="search_form_options">
-							<a href="javascript:document.forms['searchForm'].submit()" class="button"><fmt:message key="dashboard.search.search" /></a>
-						</div>
-					</form>
-
+					<div class="body">
+						<form action="repository/index.jsp" name="searchForm" method="post">
+  							<div class="search_form"><input type="text" name="title" value="<fmt:message key="dashboard.search.term" />" onfocus="clearDefaultSearchText('<fmt:message key="dashboard.search.term" />');"/></div>
+	
+							<div class="search_form_options">
+ 								<a href="javascript:document.forms['searchForm'].submit()" class="button"><fmt:message key="dashboard.search.search" /></a>
+							</div>
+						</form>
+					</div>
 					<!-- einde block -->
 					<div class="side_block_end"></div>
 				</div>
@@ -51,121 +49,16 @@
 						<div class="header_end"></div>
 					</div>
 
-					<br />
-
 					<div class="body">
-						${message} }
+						<br />
+						${message}
 					</div>
 
 					<div class="side_block_end"></div>
 				</div>
             </c:if>
-<%--
-				<!-- Snelkoppeling block -->
-				<div class="side_block_gray">
-					<!-- bovenste balkje -->
-					<div class="header">
-						<div class="title">snelkoppelingen</div>
-						<div class="header_end"></div>
-					</div>
-
-					<ul class="shortcuts">
-						<li class="articles"><a href="">Artikelen</a></li>
-						<li class="images"><a href="">Afbeeldingen</a></li>
-						<li class="contacts"><a href="">Contactpersonen</a></li>
-					</ul>
-
-					<div style="height: auto; float: none; clear:both;">
-
-					</div>
-
-					<!-- einde block -->
-					<div class="side_block_end"></div>
-				</div>
-
-				<!-- tree block -->
-				<div class="side_block_green">
-					<!-- bovenste balkje -->
-					<div class="header">
-						<div class="title">site structuur</div>
-						<div class="header_end"></div>
-					</div>
-
-					<div class="body">
-						<a href="" class="expand_button" style="float: right;">toon ikonen</a>
-					</div>
-
-					<!-- einde block -->
-					<div class="side_block_end"></div>
-				</div>
---%>
 	</div>
 	<div id="content">
-
-
-            <mm:haspage page="workflow/index.jsp">
-				<div class="content_block_purple">
-					<div class="header">
-						<div class="title"><fmt:message key="dashboard.workoverview.header" /></div>
-						<div class="header_end"></div>
-					</div>
-
-					<br />
-
-					<div class="body">
-						dit is een test<br/>
-					</div>
-
-					<div class="content_block_end"></div>
-				</div>
-            </mm:haspage>
-
-<%--
-				<div class="content_block_pink">
-					<div class="header">
-						<div class="title">laatste wijzigingen</div>
-						<div class="header_end"></div>
-					</div>
-
-					<br />
-
-					<div class="body_table">
-						<table>
-							<tr>
-								<th>datum</th>
-								<th>status</th>
-								<th>titel</th>
-								<th>auteur</th>
-							</tr>
-							<tr class="swap">
-								<td>Vandaag</td>
-								<td>Publiceren</td>
-								<td>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc nunc.</td>
-								<td>Arjan Geurts</td>
-							</tr>
-							<tr>
-								<td>Gisteren</td>
-								<td>Publiceren</td>
-								<td>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc nunc.</td>
-								<td>Arjan Geurts</td>
-							</tr>
-							<tr class="swap">
-								<td>Gisteren</td>
-								<td>Publiceren</td>
-								<td>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc nunc.</td>
-								<td>Arjan Geurts</td>
-							</tr>
-						</table>
-
-						<p align="right" style="margin-right: 10px;">
-							<a href="" class="expand_button">Toon het complete werkoverzicht</a>
-						</p>
-					</div>
-
-					<div class="content_block_end"></div>
-            </div>
---%>
-
 
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 

@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 <c:if test="${viewtype eq 'list'}">
-	<portlet:renderURL var="renderUrl" />
+	<cmsc:renderURL var="renderUrl" />
 	<a href="${renderUrl}"><fmt:message key="view.back" /></a>
 </c:if>
 

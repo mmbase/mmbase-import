@@ -18,8 +18,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title><c:out value="${siteTitle}"/> - <cmsc:title/></title>
 
-		<cmsc:meta dublin="true" />
-		<cmsc:headercontent meta="false" />
+		<cmsc:headercontent dublin="true"/>
 
 		<link rel="home" href="<cmsc:staticurl page='/' />" title="<c:out value='${siteTitle}'/>" />
 		<link rel="contents" href="<cmsc:staticurl page='/sitemap' />" title="Sitemap" />

@@ -1,3 +1,32 @@
+/*
+ * this function can get the div of ajaxtree menu
+ */
+var NAVIGATION = "CMSC-NAVIGATION";
+function getContextMenuDiv() {
+   var menudiv = document.getElementById("_contextmenu");
+   if (menudiv==null) {
+		 var contextMenuNode = document.createElement("DIV"); 
+         contextMenuNode.style.position="absolute";
+         contextMenuNode.style.zIndex = 10000;
+         contextMenuNode.style.display = "none";
+         contextMenuNode.style.backgroundColor = "menu";
+         contextMenuNode.className="htmlarea-context-menu";
+         contextMenuNode.id="_contextmenu";
+         contextMenuNode.name="_contextmenu";
+         document.body.appendChild(contextMenuNode);
+		 menudiv = document.getElementById("_contextmenu");         
+  }
+  return menudiv;
+}
+
+/*
+ * this function hide the ajaxtree menu
+ */
+function hideContextMenu () {
+    var menudiv = getContextMenuDiv();
+    menudiv.style.display="none";
+}
+    
 var ajaxTreeConfig = {
     url                 : null,
 	resources           : 'images/',
@@ -20,8 +49,21 @@ var ajaxTreeConfig = {
 	defaultAction       : 'javascript:void(0);',
 	defaultBehavior     : 'classic',
 	usePersistence	    : true,
-	defaultPersistentId : '-1'
+	defaultPersistentId : '-1',
+	role				: '' 
 };
+
+function markNode(firstnode,cssName) {
+	document.getElementById(firstnode.id + '-anchor').className = cssName;
+	var allchildren = firstnode.childNodes; 
+		
+	if (allchildren) {
+		for (var i=0;i<allchildren.length;i++) {
+			markNode(allchildren[i],cssName);
+		}
+		
+	}
+}
 
 var ajaxTreeHandler = {
 	idCounter : 0,
@@ -35,6 +77,90 @@ var ajaxTreeHandler = {
 	select    : function (oItem) { this.all[oItem.id.replace('-icon','')].select(); },
 	focus     : function (oItem) { this.all[oItem.id.replace('-anchor','')].focus(); },
 	blur      : function (oItem) { this.all[oItem.id.replace('-anchor','')].blur(); },
+	isclick   : function () { alldragObject.isover = false;},
+	imouseover: function (oItem) { 
+		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')]
+		return alldragObject.insertitem;
+		},
+	initcopy  : function(oItem) {
+		var copyObject = document.createElement("div");		
+		var inner = copyTreetoString(oItem);
+		copyObject.innerHTML = inner;
+		document.body.appendChild(copyObject);
+		return copyObject;
+	},
+	makeDraggable : function (oItem){	
+		if(!oItem) return;
+		document.onmousedown = function(ev){
+		document.onmousemove = alldragObject.mouseMove(ev);
+		document.onmouseup   = alldragObject.mouseUp(ev);
+		oItem.onclick = ajaxTreeHandler.isclick;
+		alldragObject.dragObject = ajaxTreeHandler.all[oItem.id.replace('-icon','')];		
+		alldragObject.copyObject = ajaxTreeHandler.initcopy(ajaxTreeHandler.all[oItem.id.replace('-icon','')]);
+		return false;
+		}
+	},
+	markSubTree  : function (oItemID,cssName) { 
+		
+		var itemNode = this.all[oItemID];
+		if (itemNode!=null) {
+			markNode(itemNode,cssName);
+		}
+	},
+	showContextMenu : function(oItem,evt) {
+
+		//get all options of the tree node	
+		var menuoptions = this.all[oItem.id].options;
+		if (menuoptions==null || menuoptions.length==0) {
+		  return;
+		}
+		alldragObject.isover = false;
+		//create new contextmenu items
+		var htmlcontent = "<table>";
+		for (var i=0;i<menuoptions.length;i++){
+		    htmlcontent += menuoptions[i].toString(oItem.id); 
+		}
+		htmlcontent += "</table>";
+
+		//add items to context menu		
+		var menudiv = getContextMenuDiv();
+		menudiv.innerHTML = htmlcontent;
+		
+		//setting menu's location
+		menudiv.style.top=evt.clientY + 'px';
+		menudiv.style.left=evt.clientX + 'px';
+
+
+		//show context menu
+		menudiv.style.display="";  
+		
+		// this must be below the display, because otherwise we will not know the dimensions of the div.
+		var leftdiv = document.getElementById("left");
+		if(leftdiv.clientWidth - menudiv.clientWidth < evt.clientX) {
+			menudiv.style.left = (leftdiv.clientWidth - menudiv.clientWidth) + 'px';
+		}
+		if(document.body.clientHeight - menudiv.clientHeight < evt.clientY) {
+			menudiv.style.top = (document.body.clientHeight - menudiv.clientHeight) + 'px';
+		}
+		if (menudiv.focus) {
+			menudiv.focus();
+		}
+		alphaImages();
+   
+		document.onclick=hideContextMenu;
+/*		//when context menu lost focus, it should be hidden       
+ 		window.onfocusout=function() {
+            alert(event.srcElement.tagName); 
+            if (event.srcElement==menudiv) {
+                hideContextMenu();
+                event.cancelBubble=true;
+            } else {
+                event.cancelBubble=false;
+            }
+       }
+*/
+	},
+	
 	keydown   : function (oItem, e) { return this.all[oItem.id].keydown(e.keyCode); },
 	insertHTMLBeforeEnd	:	function (oElement, sHTML) {
 		if (oElement.insertAdjacentHTML != null) {
@@ -115,7 +241,7 @@ AjaxTreeAction.prototype.buildTree = function(request) {
 			// ignore
 		}
 	} catch(e) {
-		alert(e);
+		alert("ERROR: AjaxTreeAction.prototype.buildTree ("+request.responseText+")");
 	}
 }
 
@@ -142,7 +268,7 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 			// ignore
 		}
 	} catch(e) {
-		alert(e);
+		alert("ERROR: AjaxTreeAction.prototype.buildChildren ("+request.responseText+")");
 	}
 }
 
@@ -313,7 +439,10 @@ AjaxTreeAbstractNode.prototype.deSelect = function() {
 }
 
 AjaxTreeAbstractNode.prototype.focus = function() {
-	if ((ajaxTreeHandler.selected) && (ajaxTreeHandler.selected != this)) { ajaxTreeHandler.selected.deSelect(); }
+	if ((ajaxTreeHandler.selected) && (ajaxTreeHandler.selected != this)) {
+		ajaxTreeHandler.selected.deSelect();
+	}
+	
 	ajaxTreeHandler.selected = this;
 	if ((this.openIcon) && (ajaxTreeHandler.behavior != 'classic')) { document.getElementById(this.id + '-icon').src = this.openIcon; }
 	document.getElementById(this.id + '-anchor').className = 'selected';
@@ -481,15 +610,24 @@ AjaxTree.prototype.toString = function() {
 	for (var i = 0; i < this.options.length; i++) {
 		sbOption[i] = this.options[i].toString(i,this.options.length);
 	}
-	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" " +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\">" +
+	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
 			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) 
-			+ "\" onclick=\"ajaxTreeHandler.select(this);\" />" +
-		"<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" " + 
+			+ "\" onclick=\"ajaxTreeHandler.select(this);\" />";
+
+	if(hasRights(this.icon)) {			
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
-		">" + this.text + "</a>" + sbOption.join("") + "</div>" +
+			 ">" + this.text + "</a>"
+	}
+	else {
+		str +=	"<font style='color:#777'>"+this.text+"</font>"
+	}
+		
+		str += "</div>" +
 		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
+
 	var sb = [];
 	for (var i = 0; i < this.childNodes.length; i++) {
 		sb[i] = this.childNodes[i].toString(i, this.childNodes.length);
@@ -498,6 +636,28 @@ AjaxTree.prototype.toString = function() {
 	return str + sb.join("") + "</div>";
 };
 
+function copyTreetoString(oItem) {
+	var sbOption = [];
+	for (var i = 0; i < oItem.options.length; i++) {
+		sbOption[i] = oItem.options[i].toString(i,oItem.options.length);
+	}
+	var str = "<div id=\"" + oItem.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
+		"<img id=\"" + oItem.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
+			((ajaxTreeHandler.behavior == 'classic' && oItem.open)?oItem.openIcon:oItem.icon) 
+			+ "\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />" +
+		"<a href=\"" + oItem.action + "\" id=\"" + oItem.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
+			"onblur=\"ajaxTreeHandler.blur(this);\"" + (oItem.target ? " target=\"" + oItem.target + "\"" : "") +
+		">" + oItem.text + "</a>" + "</div>" +
+		"<div id=\"" + oItem.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((oItem.open)?'block':'none') + ";\">";
+
+	var sb = [];
+	for (var i = 0; i < oItem.childNodes.length; i++) {
+		sb[i] = oItem.childNodes[i].copyItemtoString(i, oItem.childNodes.length);
+	}
+	oItem.rendered = true;
+	return str + sb.join("") + "</div>";
+}
 /*
  * AjaxTreeItem class
  */
@@ -582,6 +742,10 @@ AjaxTreeItem.prototype.getFirst = function() {
 }
 
 AjaxTreeItem.prototype.getLast = function() {
+
+	if(this.childNodes[this.childNodes.length - 1].open == null){
+		return false;
+	}
 	if (this.childNodes[this.childNodes.length - 1].open) { 
 		return this.childNodes[this.childNodes.length - 1].getLast(); } 
 	else { 
@@ -633,7 +797,7 @@ AjaxTreeItem.prototype.keydown = function(key) {
 	return true;
 }
 
-AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
+AjaxTreeItem.prototype.copyItemtoString = function (nItem, nItemCount) {
 	var foo = this.parentNode;
 	var indent = '';
 	if (nItem + 1 == nItemCount) { this.parentNode._last = true; }
@@ -670,16 +834,81 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 		if (this.parentNode._last) { treeIcon = ajaxTreeConfig.lIcon(); } else { treeIcon = ajaxTreeConfig.tIcon(); }
 	}
 
-	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" " +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\">" +
+	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\" >" + 
+		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
+		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
+			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
+			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />" +
+		"<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " + 
+			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
+		">" + label + "</a>" + "</div>" +
+		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
+
+    var sb = [];
+	for (var i = 0; i < this.childNodes.length; i++) {
+		sb[i] = this.childNodes[i].toString(i,this.childNodes.length);
+	}
+	this.plusIcon = ((this.parentNode._last)?ajaxTreeConfig.lPlusIcon():ajaxTreeConfig.tPlusIcon());
+	this.minusIcon = ((this.parentNode._last)?ajaxTreeConfig.lMinusIcon():ajaxTreeConfig.tMinusIcon());
+	return str + sb.join("") + "</div>";
+}
+
+AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
+	var foo = this.parentNode;
+	var indent = '';
+	if (nItem + 1 == nItemCount) { this.parentNode._last = true; }
+	var i = 0;
+	while (foo.parentNode) {
+		foo = foo.parentNode;
+		indent = "<img id=\"" + this.id + "-indent-" + i + "\" src=\"" + 
+				((foo._last)?ajaxTreeConfig.blankIcon():ajaxTreeConfig.iIcon()) + "\" />" + indent;
+		i++;
+	}
+	this._level = i;
+	if (this.childNodes.length || !this.loaded ) { this.folder = 1; }
+	else { this.open = false; }
+	if ((this.folder) || (ajaxTreeHandler.behavior != 'classic')) {
+		if (!this.icon) { this.icon = ajaxTreeConfig.folderIcon(); }
+		if (!this.openIcon) { this.openIcon = ajaxTreeConfig.openFolderIcon(); }
+	}
+	else {
+		if (!this.icon) { this.icon = ajaxTreeConfig.fileIcon(); }
+	}
+	var label = this.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	var sbOption = [];
+	for (var i = 0; i < this.options.length; i++) {
+		sbOption[i] = this.options[i].toString(i,this.options.length);
+	}
+	var treeIcon;
+	if (this.folder) {
+		if (this.open) {
+			if (this.parentNode._last) { treeIcon = ajaxTreeConfig.lMinusIcon(); } else { treeIcon = ajaxTreeConfig.tMinusIcon(); }
+		} else {
+			if (this.parentNode._last) { treeIcon = ajaxTreeConfig.lPlusIcon(); } else { treeIcon = ajaxTreeConfig.tPlusIcon(); }
+		}
+	} else {
+		if (this.parentNode._last) { treeIcon = ajaxTreeConfig.lIcon(); } else { treeIcon = ajaxTreeConfig.tIcon(); }
+	}
+	
+	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" +
 		indent +
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
 			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
-			"\" onclick=\"ajaxTreeHandler.select(this);\" />" +
-		"<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" " + 
-			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
-		">" + label + "</a>" + sbOption.join("") + "</div>" +
+			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />";
+			
+	if(hasRights(this.icon)) {			
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " + 
+			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") + 
+			">" + this.text + "</a>"
+	}
+	else {
+		str +=	"<font style='color:#777'>"+this.text+"</font>"
+	}
+			
+	str += "</div>" +
 		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
 	var sb = [];
 	for (var i = 0; i < this.childNodes.length; i++) {
@@ -701,21 +930,170 @@ function AjaxTreeOption(sText, sAction, sIcon, sTarget) {
 	if (sTarget) this.target = sTarget;
 }
 
-AjaxTreeOption.prototype.toString = function (nOption) {
+function methodpaste(actionstr){
+	if (actionstr.indexOf('paste') == 0) {
+		//alert("paste")
+		eval(actionstr);
+	}
+	
+	
+}
+function methodcut(actionstr){
+	if (actionstr.indexOf('cut') == 0) {
+		//alert("cut")
+		eval(actionstr);
+	}
+}
+function methodWrapper(oItemId,actionstr){
+	var needToBeMarked = false;
+	if (actionstr.indexOf('cut') == 0) {
+		methodcut(actionstr);
+		needToBeMarked = true;	
+	}
+	if (needToBeMarked) {
+    	var oldItemID = readCookie(NAVIGATION, 'copiedItemID', '');
+		if (oldItemID!='') {
+			ajaxTreeHandler.markSubTree(oldItemID,'ajax-tree-item');
+		}
+	    writeCookie(NAVIGATION, 'copiedItemID', oItemId);
+		ajaxTreeHandler.markSubTree(oItemId,'marked');
+	}
+	
+}
+AjaxTreeOption.prototype.toString = function (oItem) {
 	var foo = this.parentNode;
-
-
 	var actionStr;
 	if (this.action.indexOf('javascript:') == 0) {
-		actionStr = "href=\"#\" onclick=\"return " + this.action.substring('javascript:'.length, this.action.length) + "\"";
+		var stroptions = this.action.substring('javascript:'.length, this.action.length - 1)
+		if(stroptions.indexOf('cut') == 0){
+			alldragObject.cutoption = stroptions;
+		}
+		else if(stroptions.indexOf('paste') == 0){
+			alldragObject.pasteoption = stroptions;
+		}	
+		actionStr = "href=\"#\" onclick=\"methodWrapper('"+ oItem + "'," + stroptions + ")\"";
 	}
 	else {
 		actionStr = "href=\"" + this.action + "\"";
 	}
 	var label = this.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	var str = 
-		"<a " + actionStr + " class=\"ajax-tree-option\" title=\"" + label + "\" " +
-		(this.target ? " target=\"" + this.target + "\"" : "") +
-		"><img class=\"ajax-tree-option\" src=\"" + this.icon + "\" alt=\"" + label + "\" /></a>";
+	var str = 	
+      "<tr class=item onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\">"+ //onmousedown=\"this.style.display='none'\"  onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\"
+      "<td class=icon >"+
+      "<a " + actionStr + (this.target ? " target=\"" + this.target + "\"" : "")+">"+
+      "<img src='" + this.icon +"'/>"+
+      "</a>"+
+      "</td>"+
+      "<td class=label nowrap>"+
+      "<a " + actionStr + (this.target ? " target=\"" + this.target + "\"" : "")+">"+
+      label+
+      "</a>"+
+      "</td>"+
+      "</tr>";
 	return str;
 };
+
+var alldragObject = {
+	copyObject : null,
+	insertitem : null,
+	isover     : null,
+	cutoption  : null,
+	pasteoption: null,
+	mouseCoords: function (ev) {var mousaction = new mouseAction(); return mousaction.mouseCoords(ev)},
+	mouseDown  : function (ev,dragObject) {var mousaction = new mouseAction(); mousaction.mouseDown(ev,dragObject)},
+	mouseMove  : function (ev) {var mousaction = new mouseAction(); return mousaction.mouseMove;},
+	mouseUp    : function (ev) {var mousaction = new mouseAction(); return mousaction.mouseUp;},
+	pastenode  : function () {var mousaction = new mouseAction(); mousaction.pastenode()}
+}
+function mouseAction(){
+	
+}
+
+mouseAction.prototype.mouseCoords = function (ev){
+
+	if(ev.clientX || ev.clientY){
+		return {x:ev.clientX, y:ev.clientY};
+	}
+	return {
+		x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+		y:ev.clientY + document.body.scrollTop  - document.body.clientTop
+	};
+}
+
+mouseAction.prototype.mouseDown = function (ev,dragObject){
+	ev = ev || window.event;
+	
+	if(dragObject != null){
+		
+		var itemoption = dragObject.options;
+		if (itemoption == null || itemoption.length == 0) {
+		  return;
+		}	
+		itemoption.toString(dragObject.id);	
+		if(alldragObject.isover == true){
+			methodcut(alldragObject.cutoption);
+			alldragObject.cutoption = null;			
+		}
+		
+	}
+}
+
+mouseAction.prototype.mouseMove = function (ev){
+	ev = ev || window.event;
+	alldragObject.mouseDown(ev,alldragObject.dragObject);
+	alldragObject.isover = true;
+	var target   = ev.target || ev.srcElement;
+	var mousePos = alldragObject.mouseCoords(ev);
+	if(alldragObject.copyObject){
+		alldragObject.copyObject.style.position = 'absolute';
+		alldragObject.copyObject.style.top      = mousePos.y;
+		alldragObject.copyObject.style.left     = mousePos.x;
+		return false;
+	}
+}
+
+mouseAction.prototype.mouseUp = function (ev){
+	alldragObject.dragObject = null;
+	alldragObject.iMouseDown = false;
+	document.onmousemove = null;
+	alldragObject.copyObject.style.display = 'none';
+	alldragObject.pastenode();
+	alldragObject.insertitem = null;
+	alldragObject.cutoption = null;
+}
+
+mouseAction.prototype.pastenode = function (){
+	if(alldragObject.insertitem != null){
+	var itemoption = alldragObject.insertitem.options;
+	if (itemoption == null || itemoption.length == 0) {
+	  return;
+	}
+	itemoption.toString(alldragObject.insertitem.id);
+	if(alldragObject.isover == true){
+		methodpaste(alldragObject.pasteoption);	
+		alldragObject.pasteoption = null;
+		alldragObject.isover = false;
+	}
+}
+}
+
+function hasRights(icon) {
+	var role = ajaxTreeConfig.role;
+	if(role == undefined || role == '' || role == 'none' || role == '-') {
+		return true;
+	}
+	var pageRole = icon.substring(icon.lastIndexOf('_')+1, icon.lastIndexOf('.'));
+	if(pageRole == role) {
+		return true;
+	}
+	if(pageRole == "webmaster") {
+		return true;
+	}
+	if(pageRole == "chiefeditor" && (role == "editor" || role == "writer")) {
+		return true;
+	}
+	if(pageRole == "editor" && (role == "writer")) {
+		return true;
+	}
+	return false;
+}

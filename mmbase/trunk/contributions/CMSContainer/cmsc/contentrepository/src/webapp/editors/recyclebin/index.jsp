@@ -18,7 +18,7 @@
 		}
 	</script>
 </head>
-<body onload="refreshChannels()">
+<body onload="refreshChannels();">
     <div class="tabs">
         <div class="tab_active">
             <div class="body">
@@ -30,7 +30,7 @@
     </div>
 
 	<div class="editor">
-		<div class="body">
+	<div class="body"
 		<mm:cloud jspvar="cloud" rank="administrator" method='http'>
 			<mm:import id="parentchannel" jspvar="parentchannel"><%= RepositoryUtil.ALIAS_TRASH %></mm:import>
 			<mm:import jspvar="returnurl" id="returnurl">/editors/recyclebin/index.jsp</mm:import>
@@ -46,62 +46,58 @@
 					</ul>
 				</form>
 				<div style="clear:both; height:10px;"></div>
-
+	</div>
                 <div class="ruler_green"><div><fmt:message key="recyclebin.content" /></div></div>
    
-			    <mm:import id="lastotype"/>
-     
+	     		<div class="body">	
 				<mm:node number="$parentchannel">
 					<mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
-						<mm:sortorder field="contentelement.otype" direction="up" />
 						<mm:sortorder field="contentelement.title" direction="up" />
 
-						<mm:listnodes jspvar="node">
-
-					        <mm:field name="otype" write="false" id="otype"/>
-					        <mm:field name="number" write="false" id="number"/>
-
-					        <mm:compare referid="lastotype" value="" inverse="true">
-					           </tr>
-					        </mm:compare>
-					        <mm:compare referid="otype" referid2="lastotype" inverse="true">
-					           <mm:compare referid="lastotype" value="" inverse="true">
-					              </table>
-					           </mm:compare>
-
-					           <mm:node referid="otype">
-					              <br />
-						          <fmt:message key="recyclebin.type" >
-					        		  <fmt:param><mm:field name="name" id="nodename"><mm:nodeinfo nodetype="$nodename" type="guitype"/></mm:field></fmt:param>
-						          </fmt:message>
-							   </mm:node>
-				               <mm:import id="lastotype" reset="true"><mm:write referid="otype"/></mm:import>
-
-           					   <table class="listcontent">
-				        	</mm:compare>
-
-					        <tr class="itemrow"><td>
-					           <mm:field name="number"/>
-					        </td>
-
-					        <td style="padding:0px" nowrap>
+						<c:set var="listSize"><mm:size/></c:set>
+						<c:set var="resultsPerPage" value="50"/>
+						<c:set var="offset" value="${param.offset}"/>
+						
+						<mm:listnodes jspvar="node" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
+					      <mm:first>
+ 					         <%@include file="../pages.jsp" %>
+					          <table>
+					            <thead>
+					               <tr>
+					                  <th>
+					                  </th>
+					                  <th><fmt:message key="locate.typecolumn" /></th>
+					                  <th><fmt:message key="locate.titlecolumn" /></th>
+					                  <th><fmt:message key="locate.authorcolumn" /></th>
+					                  <th><fmt:message key="locate.lastmodifiedcolumn" /></th>
+					                  <th><fmt:message key="locate.numbercolumn" /></th>
+					               </tr>
+					            </thead>
+					            <tbody class="hover">
+					      </mm:first>
+					
+					      <tr <mm:even inverse="true">class="swap"</mm:even>>
+					         <td nowrap width="80">
 					        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />"/></a>
-					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />"/></a>
+					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />"/></a>
 							  <% if (RepositoryUtil.hasDeletionChannels(node)) { %>
-						      	<a href="javascript:restore('<mm:field name="number" />');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />"/></a>
+						      	<a href="javascript:restore('<mm:field name="number" />', '${offset}');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />"/></a>
 					          <% } %>
-					        </td>
-
-					        <td width="100%">
-					           <mm:field name="title"/>
-					        </td>
-
-					        <mm:last>
-					           <mm:compare referid="lastotype" value="" inverse="true">
-					              </tr></table>
-					           </mm:compare>
-					        </mm:last>
-
+					         </td>
+				               <td>
+				            	  <mm:nodeinfo type="guitype"/>
+				               </td>
+				               <td><mm:field name="title"/></td>
+				               <td width="50"><mm:field name="lastmodifier" /></td>
+					         <td width="120" nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+					         <td width="60"><mm:field name="number"/></td>
+					      </tr>
+					
+					      <mm:last>
+					            </tbody>
+					         </table>
+ 					         <%@include file="../pages.jsp" %>
+					      </mm:last>
 					  </mm:listnodes>
 					</mm:relatednodescontainer>
 				</mm:node>

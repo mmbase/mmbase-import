@@ -3,7 +3,7 @@
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 
-<form method="POST" name="<portlet:namespace />form" action="<portlet:actionURL><portlet:param name="action" value="edit"/></portlet:actionURL>" target="_parent">
+<form method="POST" name="<portlet:namespace />form" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>" target="_parent">
 
 <table class="editcontent">
 	<tr>

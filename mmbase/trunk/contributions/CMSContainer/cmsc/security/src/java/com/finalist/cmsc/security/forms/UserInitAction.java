@@ -33,6 +33,7 @@ public class UserInitAction extends MMBaseAction {
          userForm.setFunction( node.getStringValue("function"));
          userForm.setNote( node.getStringValue("note"));
          userForm.setEmail( node.getStringValue("emailaddress"));
+         userForm.setLanguage( node.getStringValue("language"));
          userForm.setEmailSignal( node.getBooleanValue("emailsignal"));
          userForm.setWebsite( node.getStringValue("website"));
          userForm.setStatus( node.getIntValue("status"));

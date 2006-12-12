@@ -1,7 +1,8 @@
-   function restore(objectnumber) {
-       var url = "RestoreAction.do";
+   function restore(objectnumber, offset, url) {
+       url = "RestoreAction.do";
        url += "?objectnumber=" + objectnumber;
        url += "&returnurl=" + escape(document.location);
+       url += "&offset=" + offset;
 
        document.location.href = url;
     }
@@ -15,11 +16,12 @@
       w.focus();
     }
     
-    function permanentDelete(objectnumber, message) {
+    function permanentDelete(objectnumber, message, offset) {
        if (confirm(message)) {
           var url = "DeleteAction.do";
           url += "?objectnumber=" + objectnumber;
           url += "&returnurl=" + escape(document.location);
+	      url += "&offset=" + offset;
 
           document.location.href = url;
        }

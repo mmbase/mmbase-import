@@ -3,13 +3,15 @@ var REPOSITORY = "CMSC-REPOSITORY";
   function cut(number) {
     writeCookie(REPOSITORY, 'action', 'move');
     writeCookie(REPOSITORY, 'sourceChannel', number);
-    return false;
+    var cut = "cut("+ "'" + number + "'" +")"
+    return cut;
   }
 
   function copy(number) {
     writeCookie(REPOSITORY, 'action', 'copy');
     writeCookie(REPOSITORY, 'sourceChannel', number);
-    return false;
+    var copy = "copy("+ "'" + number + "'" +")"
+    return copy;
   }
 
   function paste(number) {
@@ -22,5 +24,6 @@ var REPOSITORY = "CMSC-REPOSITORY";
       document.forms['RepositoryPasteForm'].destPasteChannel.value = number;
       document.forms['RepositoryPasteForm'].submit();
     }
-    return false;
+    var paste = "paste("+ "'" + number + "'" +")"
+    return paste;
   }

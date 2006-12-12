@@ -25,7 +25,7 @@ import xmlbs.PropertiesDocumentStructure;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class WordHtmlCleaner {
 
@@ -110,8 +110,10 @@ public class WordHtmlCleaner {
             // xmlbs removes the fonttags
 
             String xmlStr = fixWordpad(textStr);
+            xmlStr = removeHtmlIfComments(textStr);
             xmlStr = fixLists(xmlStr);
             xmlStr = fixBR(xmlStr);
+            xmlStr = removeEmptyFonts(xmlStr);
             xmlStr = replaceParagraph(xmlStr);
             xmlStr = removeXmlNamespace(xmlStr);
             xmlStr = removeEmptyTags(xmlStr);
@@ -123,7 +125,6 @@ public class WordHtmlCleaner {
                      + "</body>", xmlbsDTD);
                xmlbs.setRemoveEmptyTags(false); // Uitgezet omdat de <td/><td/> onterecht werd gemerged
                xmlbs.process();
-//                xmlbs.
                ByteArrayOutputStream bout = new ByteArrayOutputStream();
                xmlbs.write(bout);
                bout.flush();
@@ -151,7 +152,12 @@ public class WordHtmlCleaner {
       return "";
    }
 
-   /**
+   private static String removeHtmlIfComments(String text) {
+      text = text.replaceAll("<!--\\[if.*endif]-->", "");
+      return text;
+   }
+
+/**
     * remove xml namespace declarations
     * 
     * @param text
@@ -167,6 +173,8 @@ public class WordHtmlCleaner {
    }
 
    private static String replaceParagraph(String text) {
+	  // remove <p></p> (empty paragraphs)
+      text = text.replaceAll("<\\s{0,1}[pP]{1}\\s{0,1}></\\s{0,1}[pP]{1}\\s{0,1}>", "");
       // remove all remaining <p>
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
       // replace all remaining </p> with a <br><br>
@@ -338,6 +346,12 @@ public class WordHtmlCleaner {
 
    private static String removeEmptyTags(String text) {
       return text.replaceAll("<[bBiIuU]\\s*/>", "");
+   }
+
+   private static String removeEmptyFonts(String text) {
+	   // do it twice for nested empty font tags 
+	   text = text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
+	   return text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
    }
 
    private static String stripHtml(String text) {

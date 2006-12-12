@@ -11,8 +11,7 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.io.Serializable;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
@@ -54,15 +53,19 @@ public abstract class MMBaseCacheEntryFactory implements CacheEntryFactory, Node
         if (key == null) {
             return null;
         }
-        
-        if (key instanceof Integer) {
-            Integer keyInt = (Integer) key;
-            return getCloud().getNode(keyInt.intValue());
+        try {
+            if (key instanceof Integer) {
+                Integer keyInt = (Integer) key;
+                return getCloud().getNode(keyInt.intValue());
+            }
+            if (key instanceof String) {
+                return getCloud().getNode((String) key);
+            }
+            return getCloud().getNode(key.toString());
         }
-        if (key instanceof String) {
-            return getCloud().getNode((String) key);
+        catch (NotFoundException nfe) {
+            return null;
         }
-        return getCloud().getNode(key.toString());
     }
 
     protected Cloud getAdminCloud() {

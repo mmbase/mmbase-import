@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="../../globals.jsp" %>
-<fmt:setBundle basename="cmsc-repository" scope="request" />
+<%@include file="globals.jsp" %>
 <%@page import="java.util.Iterator,
                  com.finalist.cmsc.mmbase.PropertiesUtil"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
@@ -13,6 +12,8 @@
       <script src="../repository/content.js"type="text/javascript" ></script>
       <script src="../utils/window.js" type="text/javascript"></script>
       <script src="../utils/rowhover.js" type="text/javascript"></script>
+      <script type="text/javascript" src="../utils/transparent_png.js" ></script>
+
 		<script type="text/javascript">
 			function selectElement(element, title, src) {
 				if(window.top.opener != undefined) {
@@ -20,6 +21,10 @@
 					window.top.close();
 				}
 			}
+			
+			function showInfo(objectnumber) {
+				openPopupWindow('attachmentinfo', '500', '500', 'attachmentinfo.jsp?objectnumber='+objectnumber);
+            }
 		</script>
    </head>
    <body>
@@ -38,7 +43,7 @@
          <div class="tab">
             <div class="body">
                <div>
-                  <a href="attachmentupload.jsp"><fmt:message key="attachments.upload.title" /></a>
+                  <a href="attachmentupload.jsp?uploadAction=${action}"><fmt:message key="attachments.upload.title" /></a>
                </div>
             </div>
          </div>
@@ -58,9 +63,11 @@
 <%@include file="attachmentform.jsp" %>
 
          </html:form>
+</div>
 
 <div class="ruler_green"><div><fmt:message key="attachments.results" /></div></div>
 
+<div class="body">
 <mm:import externid="results" jspvar="nodeList" vartype="List" />
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
 <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
@@ -77,10 +84,10 @@
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
 	           	<mm:listnodes referid="results">
-	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title"/>','<mm:attachment />');</mm:import>
+	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment />');</mm:import>
 	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
 	                     <td style="white-space:nowrap;">
-	                       <mm:compare referid="action" value="search">
+  						    <c:if test="${action != 'select'}">
 	                          <a href="<mm:url page="../WizardInitAction.do">
                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                          <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
@@ -93,7 +100,9 @@
                                          </mm:url>">
 	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
 	                          </mm:hasrank>
-	                       </mm:compare>
+	                       </c:if>
+	                       <a href="javascript:showInfo(<mm:field name="number" />)">
+	                              <img src="../gfx/icons/info.png" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
                          </td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
@@ -107,7 +116,10 @@
 <c:if test="${resultCount == 0 && param.title != null}">
 	<fmt:message key="attachmentsearch.noresult" />
 </c:if>
-      </mm:cloud>
+<c:if test="${resultCount > 0}">
+	<%@include file="../repository/searchpages.jsp" %>
+</c:if>	
+</mm:cloud>
    </body>
 </html:html>
 </mm:content>

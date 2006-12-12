@@ -19,6 +19,7 @@ import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 import java.util.Enumeration;
 
@@ -74,6 +75,10 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
             else {
                 RepositoryUtil.removeContentFromChannel(objectNode, channelNode);
             }
+            if (!Workflow.hasWorkflow(channelNode)) {
+               Workflow.create(channelNode, "");
+            }
+
         }
         else {
            // Link them all.
@@ -84,6 +89,9 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
 
               if (parameter.startsWith("link_")) {
                  String link = request.getParameter(parameter);
+                 if (!Workflow.hasWorkflow(channelNode)) {
+                    Workflow.create(channelNode, "");
+                 }
                  RepositoryUtil.addContentToChannel(cloud.getNode(link), channelnumber);
               }
            }

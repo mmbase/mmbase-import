@@ -23,7 +23,9 @@ img
 
 #content
 {
-	margin-left: 315px;
+	position: absolute;
+	left: 322px;
+	margin-right: 2px;
 	margin-bottom: 2px;
 }
 
@@ -335,7 +337,6 @@ div.side_block div.search_form_options .button,
 div.side_block_gray div.search_form_options .button,
 div.side_block_green div.search_form_options .button
 {
-	display: block;
 	margin-bottom: 2px;
 }
 
@@ -379,15 +380,23 @@ div.side_block_green ul.shortcuts li
 
 ul.shortcuts li.images				{	background-image: url('../gfx/icons/images.png');}
 ul.shortcuts li.trashbin			{	background-image: url('../gfx/icons/trashbin.png');}
-ul.shortcuts li.attachements		{	background-image: url('../gfx/icons/attachements.png');}
+ul.shortcuts li.attachements		{	background-image: url('../gfx/icons/attachments.png');}
 ul.shortcuts li.urls				{	background-image: url('../gfx/icons/urls.png');}
+ul.shortcuts li.medialists			{	background-image: url('../gfx/icons/medialists.png');}
+ul.shortcuts li.banners				{	background-image: url('../gfx/icons/banners.png');}
+ul.shortcuts li.guestbook			{	background-image: url('../gfx/icons/guestbook.png');}
 ul.shortcuts li.users				{	background-image: url('../gfx/icons/users.png');}
 ul.shortcuts li.properties			{	background-image: url('../gfx/icons/properties.png');}
 ul.shortcuts li.layouts				{	background-image: url('../gfx/icons/layouts.png');}
 ul.shortcuts li.views				{	background-image: url('../gfx/icons/views.png');}
 ul.shortcuts li.stylesheets			{	background-image: url('../gfx/icons/stylesheets.png');}
 ul.shortcuts li.portletdefinitions	{	background-image: url('../gfx/icons/portletdefinitions.png');}
+ul.shortcuts li.reactions			{	background-image: url('../gfx/icons/reactions.png');}
+ul.shortcuts li.egem				{	background-image: url('../gfx/icons/egem.png');}
 ul.shortcuts li.dumpdefaults		{	background-image: url('../gfx/icons/dumpdefaults.png');}
+ul.shortcuts li.luceus				{	background-image: url('../gfx/icons/luceus.png');}
+ul.shortcuts li.workflow			{	background-image: url('../gfx/icons/workflow.png');}
+ul.shortcuts li.advancedpublish		{	background-image: url('../gfx/icons/workflow.png');}
 ul.shortcuts li.usernew				{	background-image: url('../gfx/icons/user_new.png');}
 ul.shortcuts li.usergroupnew		{	background-image: url('../gfx/icons/usergroup_new.png');}
 ul.shortcuts li.sitenew				{	background-image: url('../gfx/icons/site_new.png');}
@@ -399,7 +408,9 @@ ul.shortcuts li.reorder				{	background-image: url('../gfx/icons/reorder.png');}
 ul.shortcuts li.password			{	background-image: url('../gfx/icons/password.png');}
 ul.shortcuts li.search				{	background-image: url('../gfx/icons/select.png');}
 ul.shortcuts li.delete				{	background-image: url('../gfx/icons/delete.png');}
-
+ul.shortcuts li.tasks				{	background-image: url('../gfx/icons/task.png');}
+ul.shortcuts li.newtask				{	background-image: url('../gfx/icons/task_add.png');}
+ul.shortcuts li.language			{	background-image: url('../gfx/icons/language.png');}
 
 
 div.side_block div.body,
@@ -708,7 +719,8 @@ div.messagebox_red div.box div.bottom div
 	background-repeat: no-repeat;
 }
 
-div.messagebox_red div.box div.body
+div.messagebox_red div.box div.body,
+div.messagebox_red div.box div.body table
 {
 	margin: 0 10px;
 	color: #ffffff;	
@@ -977,6 +989,11 @@ div.editor div.body table
 	width: 99%;
 }
 
+div.editor div.body table.compact
+{
+	width: auto;
+}
+
 div.editor div.body table th
 {
 	text-transform: uppercase;
@@ -990,6 +1007,13 @@ div.editor div.body table td
 	padding: 5px;
 	vertical-align: top;
 }
+
+div.editor div.body table.compact td
+{
+	padding: 0px;
+	padding-right: 10px;
+}
+
 
 div.editor div.body table tr.swap
 {
@@ -1185,7 +1209,7 @@ div.edit_form_red table a
 	font-size: 11px;
 }
 
-input, select
+textarea, input, select
 {
 	font-size: 11px;
 	color: #313728;
@@ -1196,6 +1220,7 @@ input, select
 	background-image: url('../gfx/bg_input.gif');
 	background-repeat: repeat-x;
 	background-color: #ffffff;
+	margin-bottom: 1px;
 }
 
 div.edit_form_red table thead tr
@@ -1414,7 +1439,7 @@ a.button
 div.edit_form_red .button:hover,
 div.edit_form_blue .button:hover,
 div.edit_form_green .button:hover,
-div.edit_form_gray .button:hover,
+div.edit_form_gray .button:hover
 {
 	text-decoration: underline;
 }
@@ -1487,5 +1512,11 @@ div.edit_form_gray .delete_button:hover
 
 #addressbar 
 {
-width: 220px
+width: 149px
+}
+
+label { 
+	display: block; 
+	width: 80px; 
+	float: left;
 }

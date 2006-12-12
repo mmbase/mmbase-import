@@ -43,6 +43,12 @@
 		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
+			<artifactId>cmsc-search</artifactId>
+			<version>${cmsc.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
 			<artifactId>cmsc-security</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
@@ -67,16 +73,22 @@
 		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmsc-tasks</artifactId>
-			<version>${cmsc.version}</version>
+			<artifactId>cmsc-modules-tasks</artifactId>
+			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
+        <dependency>
+            <groupId>finalist</groupId>
+            <artifactId>cmsc-modules-versioning</artifactId>
+            <version>${cmscmodules.version}</version>
+            <type>mmbase-module</type>
+        </dependency>
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-utilities</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-
+		
 	</dependencies>
 </project>

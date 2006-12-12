@@ -8,14 +8,23 @@
    <action include="config/link/delete_link.xml"/>
    <action include="config/link/load_link.xml"/>
 
-   <lists include="config/option_lists/all_optionlists.xml"/>
+   <lists>
+      <optionlist include="config/option_lists/boolean.xml" />
+      <optionlist include="config/option_lists/Legend.xml" />
+      <optionlist include="config/option_lists/ImagePosition.xml" />
+      <optionlist include="config/option_lists/ImageCrop.xml" />
+   </lists>
 
    <steps>
       <step form-schema="edit_link"/>
       <step form-schema="edit_contentfields"/>
+<!-- 
       <step form-schema="edit_contentinfo"/>
+ -->
    </steps>
    <form-schema id="edit_link" extends="config/link/edit_link.xml"/>
    <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
+<!-- 
    <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
+ -->
 </wizard-schema>

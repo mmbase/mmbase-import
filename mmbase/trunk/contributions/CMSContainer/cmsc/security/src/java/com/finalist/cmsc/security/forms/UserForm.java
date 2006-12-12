@@ -28,6 +28,8 @@ public class UserForm extends MMBaseForm {
    private String firstname;
    private String prefix;
    private String surname;
+   
+   private String language;
 
    private String email;
    private boolean emailSignal;
@@ -264,6 +266,16 @@ public class UserForm extends MMBaseForm {
        statusList.add(new Option("Geblokkeerd", "-1"));
        return statusList; 
    }
+
+   public String getLanguage() {
+		return language;
+	}
+	
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+   
    
    public static class Option {
       private String description;

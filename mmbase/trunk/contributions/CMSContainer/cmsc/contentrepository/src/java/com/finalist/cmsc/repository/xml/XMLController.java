@@ -2,6 +2,7 @@ package com.finalist.cmsc.repository.xml;
 
 import java.io.StringWriter;
 import java.util.*;
+import java.text.DateFormat;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -223,6 +224,9 @@ public class XMLController {
                   if (value instanceof Integer) {
                      val = "" + (((Integer) value).intValue() == 1);
                   }
+               }
+               else if (Field.TYPE_DATETIME == type) {
+                  val = DateFormat.getDateTimeInstance().format(value);
                }
                else {
                     val = value.toString();

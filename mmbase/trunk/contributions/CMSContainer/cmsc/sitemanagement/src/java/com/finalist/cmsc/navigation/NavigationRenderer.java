@@ -20,6 +20,8 @@ import com.finalist.util.module.ModuleUtil;
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
     private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+    private static final String FEATURE_WORKFLOW = "workflowitem";
+    
 	private String target = null;
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -71,13 +73,13 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
             action = response.encodeURL(webappuri + path);
         }
         
-        TreeElement element = createElement(getIcon(node), id, name, fragment, action, target);
+        TreeElement element = createElement(getIcon(node, role), id, name, fragment, action, target);
         
         if (role != null && SecurityUtil.isWriter(role)) {
             if (isPage) {
                 if (SecurityUtil.isEditor(role)) {
                     String labelPageEdit = JstlUtil.getMessage(request, "site.page.edit");
-                    element.addOption(createOption("edit.png", labelPageEdit,
+                    element.addOption(createOption("edit_defaults.png", labelPageEdit,
                         getUrl("PageEdit.do?number=" + parentNode.getNumber()), target));
                     
                     if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
@@ -90,10 +92,10 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
             else {
                 if (SecurityUtil.isChiefEditor(role)) {
                     String labelSiteEdit = JstlUtil.getMessage(request, "site.site.edit");
-                    element.addOption(createOption("edit.png", labelSiteEdit,
+                    element.addOption(createOption("edit_defaults.png", labelSiteEdit,
                             getUrl("SiteEdit.do?number=" + parentNode.getNumber()), target));
 
-                    if ((model.getChildCount(parentNode) == 0)) {
+                    if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
                         String labelSiteRemove = JstlUtil.getMessage(request, "site.site.remove");
                         element.addOption(createOption("delete.png", labelSiteRemove,
                             getUrl("SiteDelete.do?number=" + parentNode.getNumber()), target));
@@ -125,16 +127,24 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
                 }
                 
                 
-                String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
-                element.addOption(createOption("rights.png", labelPageRights,
-                    getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
+		        if(ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
+			        String labelPageWizard = JstlUtil.getMessage(request, "site.page.wizard");
+			        element.addOption(createOption("wizard.png", labelPageWizard,
+			            getUrl("../pagewizard/StartPageWizardAction.do?number=" + parentNode.getNumber()), target));
+		        }
             }
-        }
-        
-        if(ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
-	        String labelPageWizard = JstlUtil.getMessage(request, "site.page.wizard");
-	        element.addOption(createOption("wizard.png", labelPageWizard,
-	            getUrl("../pagewizard/StartPageWizardAction.do?number=" + parentNode.getNumber()), target));
+
+            if (SecurityUtil.isWebmaster(role)) {
+		        if(ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+	                String labelPublish = JstlUtil.getMessage(request, "site.page.publish");
+	                element.addOption(createOption("masspublish.png", labelPublish,
+	                    getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
+		        }
+            }
+            
+            String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
+            element.addOption(createOption("rights.png", labelPageRights,
+                getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
         }
 
         return element;
@@ -144,9 +154,9 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
         return response.encodeURL(url);
     }
 
-    public String getIcon(Object node) {
+    public String getIcon(Object node, UserRole role) {
         Node n = (Node) node;
-        return "type/" + n.getNodeManager().getName() + ".png";
+        return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
     }
 
     protected abstract TreeOption createOption(String icon, String label, String action, String target);

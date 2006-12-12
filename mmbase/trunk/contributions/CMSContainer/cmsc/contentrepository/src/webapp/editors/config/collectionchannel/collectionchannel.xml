@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="collectionchannel">
+	<title xml:lang="nl">Verzamelrubriek</title>
+	<title xml:lang="en">Collectionchannel</title>
+
+   <action include="config/collectionchannel/create_collectionchannel.xml"/>
+   <action include="config/collectionchannel/delete_collectionchannel.xml"/>
+   <action include="config/collectionchannel/load_collectionchannel.xml"/>
+
+   <lists include="config/option_lists/all_optionlists.xml"/>
+
+   <steps>
+      <step form-schema="edit_collectionchannel"/>
+   </steps>
+   <form-schema id="edit_collectionchannel" extends="config/collectionchannel/edit_collectionchannel.xml"/>
+</wizard-schema>

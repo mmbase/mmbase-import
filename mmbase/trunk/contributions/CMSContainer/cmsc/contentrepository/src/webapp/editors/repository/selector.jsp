@@ -47,6 +47,7 @@
       window.onresize = resizeTreeDiv;
       
       function loadFunction() {
+		ajaxTreeLoader.initTree('', 'tree_div');
 		resizeTreeDiv();
 		alphaImages();
       }
@@ -71,8 +72,7 @@
 		<mm:import externid="channel" from="request" />
 
 	<div id="left">
-		<div class="side_block">
-			<!-- bovenste balkje -->
+ 		<div class="side_block" style="width: 241px;">
 			<div class="header">
 				<div class="title"><fmt:message key="selector.search.header" /></div>
 				<div class="header_end"></div>
@@ -102,11 +102,10 @@
 				<li class="attachements"><a href="<mm:url page="../resources/AttachmentInitAction.do"/>" target="content"><fmt:message key="selector.attachments" /></a></li>
 				<li class="urls"><a href="<mm:url page="../resources/UrlInitAction.do"/>" target="content"><fmt:message key="selector.urls" /></a></li>
 			</ul>
-			<!-- einde block -->
 			<div class="side_block_end"></div>
 		</div>
 		
-		<div class="side_block_gray">
+		<div class="side_block_gray" style="width: 241px;">
 			<!-- bovenste balkje -->
 			<div class="header">
 				<div class="title"><fmt:message key="selector.title" /></div>
@@ -132,10 +131,11 @@
 					{paramName: "path" });
 			</script>
 			<br />
-			<script type="text/javascript">
-				ajaxTreeLoader.initTree('', 'tree');
-			</script>
-			<div id="tree" style="float: left;width: 310px; height: 100px; overflow:auto"><fmt:message key="selector.loading" /></div>
+			<div id="tree" style="float: left;width: 239px; height: 100px; overflow:auto">
+				<div style="float: left" id="tree_div"><fmt:message key="selector.loading" /></div>
+				
+				<jsp:include page="../usermanagement/role_legend.jsp"/>
+			</div>
 
 			<html:form action="/editors/repository/PasteAction">
 				<html:hidden property="action" />
@@ -146,7 +146,7 @@
 			<div class="side_block_end"></div>
 		</div>
 	</div>
-	</mm:cloud>
+</mm:cloud>
 	</body>
 </html:html>
 </mm:content>

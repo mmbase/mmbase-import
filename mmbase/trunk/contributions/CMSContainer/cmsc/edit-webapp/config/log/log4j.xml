@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
     <!ENTITY mmlevel  "org.mmbase.util.logging.log4j.Log4jLevel" >
-    <!ENTITY logdir   "../logs" >
+    <!ENTITY logdir   "${catalina.base}/logs" >
 ]>
 <log4j:configuration 
   debug="false" 

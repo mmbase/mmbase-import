@@ -30,6 +30,7 @@ input { width: 100px;}
 		<form action="?">
 	   	<input type="hidden" name="number" value="<mm:write referid="number"/>" />
 	   	<input type="submit" name="remove" value="<fmt:message key="sitedelete.yes" />"/>&nbsp;
+        <input type="submit" name="cancel" value="<fmt:message key="sitedelete.no" />"/>
 		</form>
 	</p></div>
 	<div class="side_block_end"></div>

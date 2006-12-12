@@ -31,6 +31,12 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>site</name>
+			<description>Include the title of the site</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>insert-portlet</name>
@@ -62,34 +68,10 @@
 		<body-content>scriptless</body-content>
 		<description>Injects content from portlets in the header of the page</description>
 		<attribute>
-			<name>meta</name>
-			<description>Add meta tags</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>javascript</name>
-			<description>Add meta tags</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>style</name>
-			<description>Add meta tags</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>meta</name>
-		<tag-class>com.finalist.cmsc.taglib.MetaTag</tag-class>
-		<body-content>scriptless</body-content>
-		<description>Add meta information in the header of the page</description>
-		<attribute>
 			<name>dublin</name>
-			<description>Add dublin core meta tags</description>
+			<description>use dublin meta ("true" or "false") (defaults to false)</description>
 			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
@@ -372,6 +354,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>element</name>
+			<description>
+				content element number
+			</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>var</name>
 			<description>JSP variable name to put URL in.</description>
 			<required>false</required>
@@ -437,6 +427,46 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>wizard</name>
+		<tag-class>com.finalist.cmsc.taglib.form.WizardTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>
+			!!! DO NOT USE THIS TAG UNTIL IT USES THE WIZARD INIT ACTION AND IS COMPLETED !!!
+			Just link manually to the wizard init action in the meanwhile.
+			Create an editwizard link
+		</description>
+		<attribute>
+			<name>number</name>
+			<description>Node number</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<description>Create if a new contenttype item is needed</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>contenttype</name>
+			<description>Type of editwizard to start, usually nodemanager name</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>returnurl</name>
+			<description>The return url</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+		<attribute>
+			<name>var</name>
+			<description>JSP variable name to put Wizard link into.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
 
 <!-- ############## -->
 <!-- Portlet Tags -->	
@@ -472,6 +502,24 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>isallowededit</name>
+		<tag-class>com.finalist.cmsc.taglib.portlet.IsAllowedEditTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Conditional tag which test if the current user is allowed to edit this piece content</description>
+		<attribute>
+			<name>channelNumber</name>
+			<description>the node number of the content channel</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+      <attribute>
+         <name>inverse</name>
+         <description>Inverse the result</description>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+   </tag>
 	<tag>
 		<name>portlet-preferences</name>
 		<tag-class>com.finalist.cmsc.taglib.portlet.PortletPreferencesTag</tag-class>
@@ -724,4 +772,57 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+<!-- ################ -->
+<!-- CMSC Workflow Tags -->	
+<!-- ################ -->
+	<tag>
+		<name>publish</name>
+		<tag-class>com.finalist.cmsc.taglib.PublishTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Publish a specific node</description>
+		<attribute>
+			<name>number</name>
+			<description>The number of the node to publish, will add all the secondary items also.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<description>Add recursive children.</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	
+<!-- ################ -->
+<!-- Localization Tags -->	
+<!-- ################ -->
+  <tag>
+    <description>
+        Searches a language string on a page in the editor's language.
+        To be used E.G. on an edit view for the editor buttons.
+    </description>
+    <name>editorMessage</name>
+    <tag-class>com.finalist.cmsc.taglib.EditorMessageTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+        <description>
+Message key to be looked up.
+        </description>
+        <name>key</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+The locale to be used.
+        </description>
+        <name>locale</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+	
 </taglib>

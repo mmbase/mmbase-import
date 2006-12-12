@@ -24,7 +24,7 @@ createDefaultConfig = function() {
   var xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
   xinha_config.registerButton({
     id        : "my-validatesave",
-    tooltip   : HTMLArea._lc("Validate The Form"),
+    tooltip   : HTMLArea._lc("Controleer de html"),
     image     : _editor_url + xinha_config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
@@ -99,23 +99,25 @@ function doCheckHtml() {
 }
 
 function updateValue(editor) {
-  setWidthForTables(editor);
-  value = editor.outwardHtml(editor.getHTML());
-  // These two lines could cause editors to complain about responsetime
-  // when they leave a form with many large htmlarea fields.
-  // this is the case when doCheckHtml() is called by the editwizard.jsp with
-  // doSave, doSaveOnly, gotoForm and doStartWizard
-  value = wizardClean(value);
-  value = clean(value);
-
-  editor._textArea.value = value;
-
-  if (editor._editMode == "wysiwyg") {
-      var html = editor.inwardHtml(value);
-      editor.deactivateEditor();
-      editor.setHTML(html);
-      editor.activateEditor();
-  }
+  if(editor != null && editor.getHTML) {
+	  setWidthForTables(editor);
+	  value = editor.outwardHtml(editor.getHTML());
+	  // These two lines could cause editors to complain about responsetime
+	  // when they leave a form with many large htmlarea fields.
+	  // this is the case when doCheckHtml() is called by the editwizard.jsp with
+	  // doSave, doSaveOnly, gotoForm and doStartWizard
+	  value = wizardClean(value);
+	  value = clean(value);
+	
+	  editor._textArea.value = value;
+	
+	  if (editor._editMode == "wysiwyg") {
+	      var html = editor.inwardHtml(value);
+	      editor.deactivateEditor();
+	      editor.setHTML(html);
+	      editor.activateEditor();
+	  }
+   }
 }
 
 function wizardClean(value) {
@@ -175,11 +177,13 @@ function HTMLEncode(text) {
 }
 
 function setWidthForTables(editor) {
-	var tables = editor._doc.getElementsByTagName('table');
-	for (var i = 0 ; i < tables.length ; i++) {
-		var table = tables[i];
-		if (table.style.width)
-			table.width = table.style.width;
+	if(editor._doc != null) {
+		var tables = editor._doc.getElementsByTagName('table');
+		for (var i = 0 ; i < tables.length ; i++) {
+			var table = tables[i];
+			if (table.style.width)
+				table.width = table.style.width;
+		}
 	}
 }
 
@@ -480,3 +484,5 @@ HTMLArea.prototype._insertTable = function()
     null
   );
 };
+
+

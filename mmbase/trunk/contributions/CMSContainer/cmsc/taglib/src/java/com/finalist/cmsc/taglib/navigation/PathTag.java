@@ -37,7 +37,7 @@ public class PathTag extends AbstractListTag {
                 boolean hideChildren = false;
                 for (Iterator iter = pages.iterator(); iter.hasNext();) {
                     Page page = (Page) iter.next();
-                    if (hideChildren || !page.isInmsenu()) {
+                    if (hideChildren || !page.isInmenu()) {
                         iter.remove();
                         hideChildren = true;
                     }
@@ -47,7 +47,7 @@ public class PathTag extends AbstractListTag {
                 boolean showChildren = false;
                 for (Iterator iter = pages.iterator(); iter.hasNext();) {
                     Page page = (Page) iter.next();
-                    if (showChildren || page.isInmsenu()) {
+                    if (showChildren || page.isInmenu()) {
                         iter.remove();
                         showChildren = true;
                     }

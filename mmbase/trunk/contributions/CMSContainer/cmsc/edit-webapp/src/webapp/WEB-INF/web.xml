@@ -104,7 +104,7 @@
       <filter-class>com.finalist.cmsc.portalImpl.ControllerFilter</filter-class>
       <init-param>
          <param-name>excludes</param-name>
-         <param-value>([.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$|[.]jsp$|[.]html$|[.]do$)|/mmbase|/editors</param-value>
+         <param-value>([.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$|[.]jsp$|[.]html$|[.]do$|[.]ico$)|robots.txt|/mmbase|/editors</param-value>
       </init-param>
    </filter>
    
@@ -156,7 +156,7 @@
     <servlet>
         <servlet-name>CmscRedirectServlet</servlet-name>
         <display-name>Redirect</display-name>
-        <servlet-class>com.finalist.cmsc.portalImpl.RedirectServlet</servlet-class>
+        <servlet-class>com.finalist.cmsc.services.search.RedirectServlet</servlet-class>
         <load-on-startup>4</load-on-startup>
     </servlet>
     
@@ -218,7 +218,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>config</param-name>
-			<param-value>/WEB-INF/struts-config.xml,/WEB-INF/struts-repository.xml,/WEB-INF/struts-security.xml,/WEB-INF/struts-site.xml,/WEB-INF/struts-tasks.xml,/WEB-INF/struts-utils.xml</param-value>
+			<param-value>/WEB-INF/struts-config.xml,/WEB-INF/struts-repository.xml,/WEB-INF/struts-security.xml,/WEB-INF/struts-site.xml,/WEB-INF/struts-utils.xml</param-value>
 		</init-param>
 		<init-param>
 			<param-name>debug</param-name>

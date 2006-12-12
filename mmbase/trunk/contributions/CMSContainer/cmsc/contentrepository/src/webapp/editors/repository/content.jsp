@@ -77,10 +77,18 @@
 				<% } %>
 			</ul>
 			<% } %>
-
+	</div>
    <div class="ruler_green"><div><fmt:message key="content.content" /></div></div>
-
+	<div class="body">
 <mm:import externid="elements" from="request" required="true"/>
+
+ 	<c:set var="listSize" value="${fn:length(elements)}"/>
+	<c:set var="resultsPerPage" value="50"/>
+	<c:set var="offset" value="${param.offset}"/>
+    <c:set var="extraparams" value="&parentchannel=${param.parentchannel}"/>
+
+   <%@include file="../pages.jsp" %>
+
 
    <table>
    <thead>
@@ -95,7 +103,7 @@
       </tr>
    </thead>
    <tbody class="hover">
-   <mm:listnodes referid="elements" jspvar="node">
+   <mm:listnodes referid="elements" jspvar="node"  max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 		<mm:field name="number" write="false" id="number" vartype="String"/>
 		<mm:field name="number" write="false" id="relnumber"/>
 
@@ -105,19 +113,37 @@
 		</mm:url>
       <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
 		<td nowrap>
-        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/></a>
-			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" alt="<fmt:message key="content.edit" />"/></a>
+        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" title="<fmt:message key="content.info" />" alt="<fmt:message key="content.info" />"/></a>
+            <a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="content.preview.title" />" title="<fmt:message key="content.preview.title" />" /></a>
+			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
 			<% if (role != null && SecurityUtil.isWriter(role)) { %>
-				<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');" title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="content.unlink" />"/></a>
+				<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');" title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="content.unlink" />" alt="<fmt:message key="content.unlink" />"/></a>
 			<% } %>
-			<mm:last inverse="true">
-	        	<a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/down.png" width="16" height="16" alt="<fmt:message key="content.move.down" />"/></a>
-        	</mm:last>
-			<mm:first inverse="true">
-		        <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
-	        	<a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" alt="<fmt:message key="content.move.up" />"/></a>
-	        </mm:first>
-		</td>
+         <mm:haspage page="/editors/versioning">
+            <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
+               <c:param name="nodenumber"><mm:field name="number" /></c:param>
+            </c:url>
+            <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />" alt="<fmt:message key="content.icon.versioning.title" />"/></a>
+         </mm:haspage>
+         <mm:last inverse="true">
+            <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />" alt="<fmt:message key="content.move.down" />"/></a>
+         </mm:last>
+               <mm:first inverse="true">
+            <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
+            <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />" alt="<fmt:message key="content.move.up" />"/></a>
+         </mm:first> 
+ 	  	 <cmsc:hasfeature name="savedformmodule">
+			<c:set var="typeval">
+      			<mm:nodeinfo type="type" />          	
+      		</c:set> 
+      		<c:if test="${typeval == 'responseform'}">         
+	       		<c:url value="/editors/savedform/ShowSavedForm.do" var="showSavedForms">
+	            	<c:param name="nodenumber"><mm:field name="number" /></c:param>
+	       		</c:url>                   
+	       		<a href="#" onclick="openPopupWindow('showsavedforms', 850, 650, '${showSavedForms}')"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+	       	</c:if>
+	 	</cmsc:hasfeature>          	
+      </td>
       <td onMouseDown="objClick(this);">
 		   <mm:nodeinfo type="guitype"/>
 		</td>
@@ -142,6 +168,7 @@
    </mm:listnodes>
       </tbody>
    </table>
+   <%@include file="../pages.jsp" %>
       </div>
    </div>
    </mm:node>

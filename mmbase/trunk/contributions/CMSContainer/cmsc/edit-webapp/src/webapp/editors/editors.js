@@ -13,6 +13,10 @@ function openRepositoryWithContent(contentnumber) {
 	window.bottompane.location = repositoryUrl + '?contentnumber=' + contentnumber;
 }
 
+function openRelativeRepositoryWithContent(path, contentnumber) {
+   window.bottompane.location = path + repositoryUrl + '?contentnumber=' + contentnumber;
+}
+
 function openSite() {
 	window.bottompane.location = siteUrl;
 }

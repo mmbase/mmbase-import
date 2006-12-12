@@ -16,10 +16,10 @@ import com.finalist.util.module.ModuleUtil;
  * Check if a named CMSC feature is active or installed
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class FeatureTag extends SimpleTagSupport {
-	private static Log log = LogFactory.getLog(DumpDefaultsTag.class);
+	private static Log log = LogFactory.getLog(FeatureTag.class);
 
 	/**
 	 * Name of feature

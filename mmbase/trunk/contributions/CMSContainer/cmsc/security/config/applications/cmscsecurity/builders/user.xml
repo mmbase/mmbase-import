@@ -26,7 +26,8 @@
 </description>
 	</descriptions>
 	<properties>
-											</properties>
+	    <property name="userNameCaseSensitive">true</property>
+	</properties>
 	<fieldlist>
 		<field>
 			<descriptions>
@@ -247,6 +248,28 @@
 				<name>emailsignal</name>
 				<type key="false" required="true" state="persistent">BOOLEAN</type>
 			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Taal</guiname>
+            <guiname xml:lang="en">Language</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>14</input>
+					<list>14</list>
+					<search>14</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>language</name>
+            <type key="false" notnull="false" size="2" state="persistent">STRING</type>
+         </db>
 		</field>
 	</fieldlist>
 </builder>

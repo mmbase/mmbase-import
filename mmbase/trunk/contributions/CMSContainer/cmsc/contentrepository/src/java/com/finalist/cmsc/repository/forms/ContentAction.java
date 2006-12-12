@@ -20,6 +20,7 @@ import org.apache.struts.action.*;
 import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
@@ -34,9 +35,13 @@ public class ContentAction extends MMBaseAction {
         List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
         List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+        List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
         for (NodeManager manager : types) {
-            LabelValueBean bean = new LabelValueBean(manager.getGUIName(), manager.getName());
-            typesList.add(bean);
+        	String name = manager.getName();
+        	if(!hiddenTypes.contains(name)) {
+        		LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+        		typesList.add(bean);
+        	}
         }
         addToRequest(request, "typesList", typesList);
         
@@ -53,7 +58,7 @@ public class ContentAction extends MMBaseAction {
         
         if (!StringUtil.isEmpty(parentchannel)) {
             Node channel = cloud.getNode(parentchannel);
-            NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, -1, -1);;
+            NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, -1, -1, -1, -1, -1);
             addToRequest(request, "elements", elements);
             
             NodeList created = RepositoryUtil.getCreatedElements(channel);

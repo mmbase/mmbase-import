@@ -18,10 +18,23 @@
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
-		ajaxTreeConfig.url = 'SelectorPage.do';
+		ajaxTreeConfig.url = '<mm:url page="SelectorPage.do"/>';
 		ajaxTreeConfig.addressbarId = 'addressbar';
+		
+		treeNumbers = new Array();
+		treeDivs = new Array();
+		treeSize = 0;
+        function loadFunction() {
+	    	alphaImages();
+	    	for(count = 0; count < treeSize; count++) {
+			    ajaxTreeLoader.initTree(treeNumbers[count], treeDivs[count]);
+			}
+        }
 	</script>
 	<style type="text/css">
+		body {
+			behavior: url(../../css/hover.htc);
+		}
 		.tooltip {
 			position: absolute;
 			display: none;
@@ -34,7 +47,7 @@
 		}
 	</style>
 	</head>
-	<body style="overflow: auto">
+	<body style="overflow: auto" onload="loadFunction();">
 
    <div class="side_block">
       <div class="header">
@@ -42,7 +55,7 @@
          <div class="header_end"></div>
       </div>
 		<mm:cloud jspvar="cloud" loginpage="../../login.jsp">
-			<mm:import externid="channel" from="request" />
+			<mm:import externid="channel" from="parameters" />
 			<mm:compare referid="channel" value="" inverse="true">
 				<mm:node number="${channel}" jspvar="pageNode" notfound="skip">
 					<mm:import id="pagepath">
@@ -75,12 +88,17 @@
 	            Node site = iter.nextNode();
 			%>
 			<script type="text/javascript">
-				ajaxTreeLoader.initTree('<%= site.getNumber() %>', 'tree<%= site.getNumber() %>');
+				treeNumbers[treeSize] = '<%= site.getNumber() %>';
+				treeDivs[treeSize] = 'tree<%= site.getNumber() %>';
+				treeSize++;
+			
+//				ajaxTreeLoader.initTree('<%= site.getNumber() %>', 'tree<%= site.getNumber() %>');
 			</script>
 			<div id="tree<%= site.getNumber() %>">Site loading</div>
 			<br/>
 			<% } %>
 		</mm:cloud>
+		<jsp:include page="../../usermanagement/role_legend.jsp"/>
       <div class="side_block_end"></div>
    </div>
 	</body>

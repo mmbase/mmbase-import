@@ -7,6 +7,7 @@ package com.finalist.cmsc.editwizard;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.applications.editwizard.Config;
+import org.mmbase.applications.editwizard.Config.WizardConfig;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.security.Rank;
@@ -19,6 +20,8 @@ import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.versioning.Versioning;
+import com.finalist.cmsc.services.versioning.VersioningException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -45,11 +48,21 @@ public class WizardController {
      * @param cloud - cloud
      * @return Paramters to pass to the wizard transformation
      */
-    public static Map openWizard(HttpServletRequest request, Config ewconfig,
+    public Map openWizard(HttpServletRequest request, Config ewconfig,
             Config.WizardConfig config, Cloud cloud) {
 
         HttpSession session = request.getSession();
-
+        String objectnr = config.objectNumber;
+        String contenttype = null;
+        if (objectnr != null && "new".equals(objectnr)) {
+            contenttype = (String) session.getAttribute("contenttype");
+        }
+        else {
+            Node node = cloud.getNode(objectnr);
+            contenttype = node.getNodeManager().getName();
+        }
+        log.debug("contenttype " + contenttype);
+        
         String readonly = (String) session.getAttribute("readonly");
         if (StringUtil.isEmptyOrWhitespace(readonly)) {
             readonly = "false";
@@ -59,19 +72,6 @@ public class WizardController {
         params.put("READONLY", readonly);
         params.put("READONLY-REASON", "NONE");
         log.debug("readonly " + readonly);
-
-        String objectnr = config.objectNumber;
-
-        String contenttype = null;
-        if (objectnr != null && "new".equals(objectnr)) {
-            contenttype = (String) session.getAttribute("contenttype");
-        }
-        else {
-            Node node = cloud.getNode(objectnr);
-            contenttype = node.getNodeManager().getName();
-        }
-
-        log.debug("contenttype " + contenttype);
 
         Node creationNode = null;
         if (!StringUtil.isEmpty(contenttype)) {
@@ -97,7 +97,7 @@ public class WizardController {
 
         UserRole userrole = null;
         if (creationNode != null) {
-            if (RepositoryUtil.isChannel(creationNode)) {
+            if (RepositoryUtil.isContentChannel(creationNode)) {
                 userrole = RepositoryUtil.getRole(creationNode.getCloud(), creationNode, false);
             }
             if (PagesUtil.isPageType(creationNode)) {
@@ -131,9 +131,16 @@ public class WizardController {
             }
         }
 
+        openWizard(request, ewconfig, config, cloud, params, userrole, contenttype);
+        
         log.debug("params = " + params);
         return params;
     }
+
+    public void openWizard(HttpServletRequest request, Config ewconfig,
+            Config.WizardConfig config, Cloud cloud, Map<String, String> params, UserRole userrole, String contenttype) {
+    }
+
 
     /**
      * Additional actions to close the wizard
@@ -143,7 +150,7 @@ public class WizardController {
      * @param wizardConfig - wizard config
      * @param cloud - cloud
      */
-    public static void closeWizard(HttpServletRequest request, Config ewconfig,
+    public void closeWizard(HttpServletRequest request, Config ewconfig,
             Config.WizardConfig wizardConfig, Cloud cloud) {
 
         if (ewconfig != null && wizardConfig != null) {
@@ -209,12 +216,24 @@ public class WizardController {
                             }
                         }
                     }
+
+                   try {
+                      if (wizardConfig.wiz.committed()) {
+                        Versioning.addVersion(editNode);
+                      }
+                   } catch (VersioningException e) {
+                      log.error("Problem while adding version for node : " + objectnr, e);
+                   }
                 }
                 contenttype = editNode.getNodeManager().getName();
-
             }
             log.debug("contenttype " + contenttype);
+            
+            closeWizard(request, ewconfig, wizardConfig, cloud, editNode, contenttype);
         }
+    }
+
+    public void closeWizard(HttpServletRequest request, Config ewconfig, WizardConfig wizardConfig, Cloud cloud, Node editNode, String contenttype) {
     }
 
     /**

@@ -52,10 +52,17 @@
       window.onresize = resizeTreeDiv;
       
 
-      function loadFunction() {
-		resizeTreeDiv();
-		alphaImages();
-      }
+		
+		var treeNumbers = new Array();
+		var treeDivs = new Array();
+		var treeSize = 0;
+        function loadFunction() {
+			resizeTreeDiv();
+	    	alphaImages();
+	    	for(count = 0; count < treeSize; count++) {
+			    ajaxTreeLoader.initTree(treeNumbers[count], treeDivs[count]);
+			}
+        }
    </script>
 </head>
 <body style="overflow: auto" onload="loadFunction()">
@@ -73,7 +80,7 @@
 		</mm:compare>
 
 <div id="left">
-		<div class="side_block_gray">
+		<div class="side_block_gray" style="width: 241px;">
 			<!-- bovenste balkje -->
 			<div class="header">
 				<div class="title"><fmt:message key="selector.title" /></div>
@@ -97,12 +104,16 @@
 			</script>
 			<div style="clear:both"></div>
 		
-			<div id="tree" style="float: left;width: 310px; height: 100px; overflow:auto;">
+			<div id="tree" style="float: left;width: 239px; height: 100px; overflow:auto;">
 				<%for (NodeIterator iter = SiteUtil.getSites(cloud).nodeIterator(); iter.hasNext();) {
 	            	Node site = iter.nextNode();
 				%>
 				<script type="text/javascript">
-					ajaxTreeLoader.initTree('<%= site.getNumber() %>', 'tree<%= site.getNumber() %>');
+				treeNumbers[treeSize] = '<%= site.getNumber() %>';
+				treeDivs[treeSize] = 'tree<%= site.getNumber() %>';
+				treeSize++;
+			
+//					ajaxTreeLoader.initTree('<%= site.getNumber() %>', 'tree<%= site.getNumber() %>');
 				</script>
 				<div style="float: left" id="tree<%= site.getNumber() %>">Site loading</div>
 				<div style="height: 15px; clear: both"></div>
@@ -115,6 +126,7 @@
 						</li>
 					</ul>
 				</mm:hasrank>
+				<jsp:include page="../usermanagement/role_legend.jsp"/>
 			</div>
 
 			<html:form action="/editors/site/PasteAction">

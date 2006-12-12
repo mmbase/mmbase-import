@@ -50,9 +50,9 @@ public abstract class BasicURLTag extends TagSupport
     protected String secure;
     protected Boolean secureBoolean;
     protected String windowState;
-    protected PortletURL url;
     protected String var;
 
+    protected PortletURL url;
     protected String contenturl;
     
     /* (non-Javadoc)
@@ -63,9 +63,11 @@ public abstract class BasicURLTag extends TagSupport
         {
             pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
         }
+        // make sure we start with an unset url variable;
+        setUrl(null);
+
         if (StringUtil.isEmpty(page) && StringUtil.isEmpty(window) && !StringUtil.isEmpty(elementId)) {
-            String servletpath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*");
-            contenturl = servletpath + elementId;
+            contenturl = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", elementId, null);
             return EVAL_PAGE;
         }
         
@@ -150,6 +152,19 @@ public abstract class BasicURLTag extends TagSupport
                 pageContext.setAttribute (var, url.toString(), PageContext.PAGE_SCOPE);
             }
         }
+        page = null;
+        window = null;
+        elementId = null;
+
+        portletMode = null;
+        secure = null;
+        secureBoolean = null;
+        windowState = null;
+        var = null;
+
+        url = null;
+        contenturl = null;
+        
         return EVAL_PAGE;
     }
 

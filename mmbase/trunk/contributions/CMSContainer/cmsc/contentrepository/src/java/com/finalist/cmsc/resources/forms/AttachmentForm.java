@@ -8,6 +8,10 @@ public class AttachmentForm extends SearchForm {
     private String description;
     private String filename;
 
+    public AttachmentForm() {
+        super("attachments");
+    }
+    
 	public String getTitle() {
 		return title;
 	}

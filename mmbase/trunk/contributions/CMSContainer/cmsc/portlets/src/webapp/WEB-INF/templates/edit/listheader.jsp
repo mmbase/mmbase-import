@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 <div id="<portlet:namespace />list">
-<portlet:renderURL var="renderUrl"/>
+<cmsc:renderURL var="renderUrl"/>
 
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 
@@ -26,6 +26,6 @@
 </mm:url>
 <a href="<mm:write referid="newurl"/>" onclick="openPopupWindow('cmsc_element_edit', '750', '550')"
    class="portal_button" target="cmsc_element_edit" style="float: left;">
-	<fmt:message key="edit.new" />
+	<cmsc:editorMessage key="edit.new" />
 </a>
 </mm:cloud>

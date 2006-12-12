@@ -1,4 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
+<%@page import="com.finalist.cmsc.navigation.*"%>
 <%@include file="../globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -18,14 +19,18 @@
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
-		ajaxTreeConfig.url = '<mm:url page="SelectorChannel.do"/>';
+		ajaxTreeConfig.url = '<mm:url page="${actionname}.do"/>';
 		ajaxTreeConfig.addressbarId = 'addressbar';
-	</script>
-	<script type="text/javascript">
+		ajaxTreeConfig.role = '${param.role}';
+
 		function selectItem(channel, path) {
 			opener.selectChannel(channel, path);
 			close();
 		}
+      function loadFunction() {
+		alphaImages();
+		ajaxTreeLoader.initTree('', 'tree_div');
+      }
 	</script>
 
 	<style type="text/css">
@@ -44,7 +49,7 @@
 		}
 	</style>
 	</head>
-	<body style="overflow: auto">
+	<body style="overflow: auto" onload="loadFunction();">
 
    <div class="side_block">
       <div class="header">
@@ -53,11 +58,15 @@
       </div>
       <div class="body">
         <c:if test="${param.message != null}"><h2>${param.message}</h2></c:if>
-		<mm:import externid="channel" from="request" />
+		<mm:cloud jspvar="cloud" loginpage="../../login.jsp">
+		<mm:import externid="channel" from="parameters" />
+		<mm:isnotempty referid="channel">
 		<mm:node referid="channel">
 			<mm:field name="path" id="channelPath" write="false" />
+		</mm:node>
+		</mm:isnotempty>
 	
-			<form action="SelectorChannel.do" id="addressBarForm">
+			<form action="<mm:url page="${actionname}.do" />" id="addressBarForm">
 				   <div class="search_form">
 						<input type="text" name="path" value="${channelPath}" id="addressbar" class="width80" />
 					</div>
@@ -72,13 +81,12 @@
 					ajaxTreeConfig.url + "?action=autocomplete",
 					{paramName: "path" });
 			</script>
-		</mm:node>
+		</mm:cloud>	
 		<div style="clear:both"></div>
-	
-		<script type="text/javascript">
-			ajaxTreeLoader.initTree('', 'tree');
-		</script>
-		<div style="float: left" id="tree">Repository loading</div>
+		<div style="float: left" id="tree">
+			<div style="float: left" id="tree_div"><fmt:message key="selector.loading" /></div>
+			<jsp:include page="../../usermanagement/role_legend.jsp"/>
+		</div>
       </div>
       <div class="side_block_end"></div>
    </div>

@@ -14,10 +14,17 @@ import com.finalist.tree.TreeModel;
  */
 public class RepositoryTreeModel implements TreeModel {
    private Cloud cloud;
+   private boolean contentChannelOnly = false;
 
    public RepositoryTreeModel(Cloud c) {
       this.cloud = c;
    }
+
+   public RepositoryTreeModel(Cloud c, boolean contentChannelOnly) {
+       this.cloud = c;
+       this.contentChannelOnly = contentChannelOnly;
+    }
+
    
    /**
     * @see javax.swing.tree.TreeModel#getRoot()
@@ -30,7 +37,12 @@ public class RepositoryTreeModel implements TreeModel {
     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
     */
    public int getChildCount(Object parent) {
-      return RepositoryUtil.getChildCount((Node) parent);
+       if (contentChannelOnly) {
+           return RepositoryUtil.getContentChannelChildCount((Node) parent);
+       }
+       else {
+           return RepositoryUtil.getChildCount((Node) parent);
+       }
    }
  
    /**
@@ -45,13 +57,19 @@ public class RepositoryTreeModel implements TreeModel {
     */
    public Object getChild(Object parent, int index) {
       Node parentNode = (Node)parent;
-      NodeList contentChannels = RepositoryUtil.getOrderedChildren(parentNode); 
-      
-      if (contentChannels.size() > index) {
-         return contentChannels.get(index);
+      NodeList channels; 
+      if (contentChannelOnly) {
+          channels = RepositoryUtil.getContentChannelOrderedChildren(parentNode); 
       }
       else {
-          throw new IndexOutOfBoundsException("Child " + index + "is not available. Node " + parentNode.getNumber() + " has " + contentChannels.size() + "children.");
+         channels = RepositoryUtil.getOrderedChildren(parentNode); 
+      }
+      
+      if (channels.size() > index) {
+         return channels.get(index);
+      }
+      else {
+          throw new IndexOutOfBoundsException("Child " + index + "is not available. Node " + parentNode.getNumber() + " has " +channels.size() + "children.");
       }
    }
 

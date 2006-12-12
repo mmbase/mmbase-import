@@ -19,6 +19,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
 public class UserAction extends MMBaseAction {
     
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+    	boolean changedOwnLanguage = false;
        if (!isCancelled(request)) {
          boolean isNewUser = false;
          
@@ -28,6 +29,7 @@ public class UserAction extends MMBaseAction {
              isNewUser = true;
              userNode.setStringValue("username", userForm.getUsername());
          }
+
          userNode.setStringValue("firstname", userForm.getFirstname());
          userNode.setStringValue("prefix", userForm.getPrefix());
          userNode.setStringValue("surname", userForm.getSurname());
@@ -37,6 +39,13 @@ public class UserAction extends MMBaseAction {
          userNode.setBooleanValue("emailsignal", userForm.isEmailSignal());
          userNode.setStringValue("emailaddress", userForm.getEmail() );
          userNode.setStringValue("website", userForm.getWebsite() );
+         
+         String oldLanguage = userNode.getStringValue("language");
+         String newLanguage = userForm.getLanguage();
+         changedOwnLanguage = changedOwnPassword(oldLanguage, newLanguage, cloud, userNode);
+         userNode.setStringValue("language", newLanguage);
+         
+         
          if (!StringUtil.isEmpty(userForm.getPassword())) {
             userNode.setStringValue("password", userForm.getPassword());
 //          TODO: what should we do with an admin password change?
@@ -88,7 +97,22 @@ public class UserAction extends MMBaseAction {
          }
       }
        removeFromSession(request, form);
-      return mapping.findForward(SUCCESS);
+
+       if(changedOwnLanguage) {
+           return mapping.findForward("changedLanguage");
+       }
+       else {
+    	   return mapping.findForward(SUCCESS);
+       }
    }
+
+	private boolean changedOwnPassword(String oldLanguage, String newLanguage, Cloud cloud, Node userNode) {
+		
+		if(cloud.getUser().getIdentifier().equals(userNode.getStringValue("username"))) {
+			if(oldLanguage == null) oldLanguage = "";
+			return !oldLanguage.equals(newLanguage);
+		}
+		return false;
+	}
 
 }

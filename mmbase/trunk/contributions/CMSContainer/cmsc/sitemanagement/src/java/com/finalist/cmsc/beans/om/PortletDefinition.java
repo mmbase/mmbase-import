@@ -16,7 +16,7 @@ import net.sf.mmapps.commons.beans.NodeBean;
 
 
 @SuppressWarnings("serial")
-public class PortletDefinition extends NodeBean implements Comparable {
+public class PortletDefinition extends NodeBean implements Comparable<PortletDefinition> {
 
     private String title;
     private String description;
@@ -82,8 +82,8 @@ public class PortletDefinition extends NodeBean implements Comparable {
         return "multiple".equals(type);
     }
 
-    public int compareTo(Object o) {
-        return title.compareTo(((PortletDefinition) o).title);
+    public int compareTo(PortletDefinition o) {
+        return title.compareTo(o.title);
     }
 
     public int getRank() {

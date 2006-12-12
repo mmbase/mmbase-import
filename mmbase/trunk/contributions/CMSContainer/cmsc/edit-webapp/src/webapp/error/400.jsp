@@ -1,4 +1,7 @@
-<% request.setAttribute("title", "foutmelding 400: Not found"); %>
+<%@ include file="globals.jsp"%>
+
+<c:set var="title" scope="request"><fmt:message key="exception.400.message" /></c:set>
+
 <%@include file="header.jsp"%>
 <P>
 <fmt:message key="exception.400.message" /><br />

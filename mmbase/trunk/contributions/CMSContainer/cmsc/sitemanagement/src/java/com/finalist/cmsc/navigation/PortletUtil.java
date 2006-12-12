@@ -11,14 +11,14 @@ package com.finalist.cmsc.navigation;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.bridge.*;
+import net.sf.mmapps.commons.bridge.CloneUtil;
+import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 
 
 public class PortletUtil {
@@ -74,6 +74,12 @@ public class PortletUtil {
         return plist;
     }
 
+    public static NodeList getParameters(Node portlet) {
+        NodeList paramList = getPortletParameters(portlet);
+        paramList.addAll( getNodeParameters(portlet) );
+        return paramList;
+    }
+    
     public static NodeList getNodeParameters(Node portlet) {
         return portlet.getRelatedNodes(NODEPARAMETER, PARAMETERREL, DESTINATION);
     }
@@ -154,6 +160,13 @@ public class PortletUtil {
     }
 
     public static Node copyPortlet(Node sourcePortlet) {
+    	
+    	Node definition = getDefinition(sourcePortlet);
+    	if(definition != null && isSingleDefinition(definition)) {
+    		return sourcePortlet;
+    	}
+    	
+    	
         Node newPortlet = CloneUtil.cloneNode(sourcePortlet);
         NodeList portletParameterList = getPortletParameters(sourcePortlet);
         if (portletParameterList != null) {
@@ -173,6 +186,7 @@ public class PortletUtil {
         }
 
         CloneUtil.cloneRelations(sourcePortlet, newPortlet, VIEWREL, VIEW);
+        CloneUtil.cloneRelations(sourcePortlet, newPortlet, DEFINITIONREL, PORTLETDEFINITION);
         
         return newPortlet;
     }
@@ -434,12 +448,55 @@ public class PortletUtil {
         return definitionNode.getRelatedNodes(VIEW, ALLOWREL, DESTINATION);
     }
 
+    public static boolean isView(Node node) {
+        return VIEW.equals(node.getNodeManager().getName());
+    }
+    
+    public static boolean isDefinition(Node node) {
+        return PORTLETDEFINITION.equals(node.getNodeManager().getName());
+    }
+
+    public static boolean isPortlet(Node node) {
+        return isPortletType(node.getNodeManager());
+    }
+
+    public static boolean isPortletType(NodeManager nodeManager) {
+        return PORTLET.equals(nodeManager.getName());
+    }
+    
+    public static boolean isParameter(Node node) {
+        return isParameterType(node.getNodeManager());
+    }
+    
+    public static boolean isPortletParameter(Node node) {
+        return isPortletParameterType(node.getNodeManager());
+    }
+    
+    public static boolean isNodeParameter(Node node) {
+        return isNodeParameterType(node.getNodeManager());
+    }
+    
+    public static boolean isParameterType(NodeManager nodeManager) {
+        return isPortletParameterType(nodeManager) || isNodeParameterType(nodeManager);
+    }
+    
+    public static boolean isPortletParameterType(NodeManager nodeManager) {
+        return PORTLETPARAMETER.equals(nodeManager.getName());
+    }
+    
+    public static boolean isNodeParameterType(NodeManager nodeManager) {
+        return NODEPARAMETER.equals(nodeManager.getName());
+    }
+    
     public static boolean isSingleDefinition(Node definition) {
         return SINGLE.equals(definition.getStringValue(TYPE_FIELD));
     }
 
     public static boolean isSinglePortlet(Node portlet) {
         Node definition = getDefinition(portlet);
+        if(definition == null) {
+        	return false;
+        }
         return isSingleDefinition(definition);
     }
 
@@ -473,4 +530,31 @@ public class PortletUtil {
         definitionNode.commit();
         return definitionNode;
     }
+
+    public static void findPortletNodes(Node node, Set<Node> nodes, boolean withRelation, boolean remove) {
+        if (!remove) {
+            nodes.add(node);
+        }
+
+        NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
+        while (childs.hasNext()) {
+           Node childNode = childs.nextNode();
+           if (PortletUtil.isParameter(childNode)) {
+               findPortletNodes(childNode, nodes, withRelation, remove);
+           }
+        }
+
+        if(withRelation) {
+            RelationIterator relations = node.getRelations().relationIterator();
+            while (relations.hasNext()) {
+               Relation rel = (Relation) relations.next();
+               nodes.add(rel);
+            }
+        }
+        if (remove) {
+            nodes.add(node);
+        }
+    }
+
+
 }
