@@ -1,0 +1,33 @@
+<mm:node
+    xmlns:mm-rich="http://www.mmbase.org/tags/mm/rich"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <!--
+      MMBase 'components' will only existing in MMBase &gt; 1.8
+      This tries to do something similar already with mmbase 1.8, just be using a 
+      dynamic include (which abuses the 'description' field of the webblock).
+  -->
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="education" required="true" />
+  <div class="rich">
+    <h1><mm:field name="name" /></h1>
+    <mm:relatednodescontainer type="xmlnews">
+      <mm:sortorder field="begin" />
+      <mm:relatednodes>
+        <h1><mm:field name="title" /></h1>
+        <h2><mm:field name="subtitle" /></h2>
+        <div class="intro">
+          <span class="date"><mm:field name="date"><mm:time format=":LONG" /></mm:field></span>        
+          <mm:field name="intro" escape="p"  />
+        </div>
+        <mm:link referids="_node@article">
+          <mm:param name="col2" value="rich-article" />
+          <mm:param name="col3" value="ignore" />
+          <a href="${_}">&gt;&gt;</a>
+        </mm:link>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </div>
+</mm:node>

@@ -1,0 +1,21 @@
+<mm:cloud
+    method="delegate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+	>
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="webblock" required="true" />
+  <p>
+    <mm:node referid="webblock">
+      <mm:link referids="_node@objectnumber"
+               page="/mmbase/edit/wizard/jsp/wizard.jsp">
+        <mm:param name="templates">/editwizards/data/</mm:param>
+        <mm:param name="wizard">webblocks/news</mm:param>
+        <a href="${_}">
+          <mm:nodeinfo nodetype="xmlnews" type="plural_guinodemanager" />
+          (#<mm:countrelations  role="posrel" type="news" searchdir="destination" />)
+        </a>
+      </mm:link>
+    </mm:node>
+  </p>
+</mm:cloud>

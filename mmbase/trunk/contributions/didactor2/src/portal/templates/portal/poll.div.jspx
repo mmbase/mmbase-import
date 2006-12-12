@@ -5,6 +5,8 @@
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="yes" />
   <!--
+      xmlns:mm-poll="urn:jsptagdir:/WEB-INF/tags/mm/poll"     
+
        Poll 'component'.
        It works when
        - mmbase-poll.jar is present
@@ -14,7 +16,9 @@
   -->
   <mm:content expires="0" type="application/xhtml+xml">
     <mm:node>
+
       <mm-poll:vote  checkip="- 5 day"/>
+
       <mm:time id="now" precision="minutes" write="false" time="now" />
       <mm:relatednodescontainer type="poll">
         <mm:constraint field="begin" operator="LESS" value="$now" />

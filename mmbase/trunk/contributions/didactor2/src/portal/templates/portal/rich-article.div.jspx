@@ -1,4 +1,5 @@
 <mm:cloud
+    xmlns:mm-rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,9 +12,10 @@
       <h1><mm:field name="title" /></h1>
       <h2><mm:field name="subtitle" /></h2>
       <div class="intro">
-        <mm:field name="intro" escape="p,links" />
+        <span class="date"><mm:field name="date"><mm:time format=":LONG" /></mm:field></span>
+        <mm:field name="intro" escape="p"  />
       </div>
-      <mm:field name="body" escape="p,links" />
+      <mm-rich:body />
     </mm:node>
     <mm:link>
       <a href="${_}">back</a>
