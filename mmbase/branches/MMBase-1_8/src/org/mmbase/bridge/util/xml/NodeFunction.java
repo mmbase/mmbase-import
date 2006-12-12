@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.16 2005-11-04 13:11:06 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.16.2.1 2006-12-12 21:15:17 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -90,7 +90,19 @@ public  class NodeFunction {
         }
     }
 
-    
+    /**
+     * Saxon cannot distinguish the above two functions ({@link #function(String, String, String)},
+     * {@link #function(Cloud, String, String)}). So, you can help it and use this one in stead.
+     * @since MMBase-1.8.4
+     */
+    public static String saxonFunction(Object cloud, String number, String function) {
+        if (cloud instanceof Cloud) {
+            return function((Cloud) cloud, number, function);
+        } else {
+            return function((String) cloud, number, function);
+        }
+    }
+
     /**
      * @since MMBase-1.8
      */
