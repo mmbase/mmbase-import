@@ -13,7 +13,6 @@
 
 <%
 /*
-   System.out.println("------------");
    Enumeration enumTest = request.getAttributeNames();
    while(enumTest.hasMoreElements())
    {
