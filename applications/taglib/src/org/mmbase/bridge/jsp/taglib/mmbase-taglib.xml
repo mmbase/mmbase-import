@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.385 2006-12-08 18:12:07 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.386 2006-12-13 11:08:20 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2601,6 +2601,12 @@ access the value of title:
       <info>
         Name of the field.
       </info>
+    </attribute>
+    <attribute>
+      <name>nodetype</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.4</since>
     </attribute>
     <since>MMBase-1.8</since>
     <example><![CDATA[<mm:listnodes type="object">
@@ -5892,15 +5898,24 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </p>
       <pre>
 <![CDATA[
-   <xsl:stylesheet xmlns:xsl ="http://www.w3.org/1999/XSL/Transform" version ="1.0"
+   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                    xmlns:mm="org.mmbase.bridge.jsp.taglib.functions.Functions"
-                   extension-element-prefixes="mm">
+                   xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
+                   xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+                   xmlns:o="http://www.mmbase.org/xmlns/objects"
+                   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
+                   extension-element-prefixes="mm taglib node"
+                   exclude-result-prefixes="node mmxf o mm taglib node"
+                   version="1.0">
+
    ...
    </xsl:stylesheet>
 ]]>
       </pre>
       <p>
-       Which means that you have access to some static too, which main goal is to provide the `escape' method:
+       Which means that you have access to some functions (see <a
+       href="http://www.mmbase.org/api/org/mmbase/bridge/jsp/taglib/functions/Functions.html:>Javadoc
+       of 'Functions'</a>too, which main goal is to provide the `escape' method:
       </p>
       <pre>
 <![CDATA[
@@ -7558,6 +7573,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.tree.list</type>
     <extends>querycontainerreferrer</extends>
     <extends>nodeprovider</extends>
+    <extends>listprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
