@@ -78,11 +78,10 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="32" notnull="true" key="false">STRING</type>
       </db>
@@ -116,9 +115,7 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>4</list>
-          <search>-1</search>
         </positions>
       </editor>
       <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -142,7 +139,7 @@
       </db>
     </field>
 
-    <field name="date">
+    <field name="date" state="system">
       <descriptions>
         <description xml:lang="en">The date the attachment is created</description>
         <description xml:lang="nl">De datum waarop de bijlage is gecreeerd</description>
