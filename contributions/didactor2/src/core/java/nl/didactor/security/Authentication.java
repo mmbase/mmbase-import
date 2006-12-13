@@ -19,6 +19,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 import nl.didactor.events.*;
 import nl.didactor.builders.*;
 import nl.didactor.security.UserContext;
+import nl.didactor.security.plain.*;
 
 /**
  * Didactor authentication routines. This class authenticates users against the
@@ -44,8 +45,8 @@ public class Authentication extends org.mmbase.security.Authentication {
     protected void load() {
         String[] securityClasses = {
                 "nl.didactor.security.aselect.ASelectSecurityComponent", // if available, use aselect first
-                "nl.didactor.security.plain.PlainSecurityComponent"      // always fall back on plain
-                };
+                PlainSecurityComponent.class.getName()      // always fall back on plain
+        };
         for (int i=0; i<securityClasses.length; i++) {
             try {
                 Class cls = Class.forName(securityClasses[i]);
@@ -58,7 +59,7 @@ public class Authentication extends org.mmbase.security.Authentication {
     static final UserContext ANONYMOUS;
     static {
         Rank.createRank(0, "didactor-anonymous");
-        ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
+        ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"), "anonymous");
         Rank.createRank(200, "people");
     }
 
@@ -111,7 +112,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             // so if you do _not_ provide any credentials you get admin!?
 
             log.debug("No request/response; returning system login");
-            return new UserContext(this.doSystemLogin(), application);
+            return this.doSystemLogin(application);
         }
 
         // If the action is logging-out, try to find the component on which the
@@ -190,7 +191,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         if ("asis".equals(application)  && (desiredRank == null || desiredRank.getInt() == Rank.ANONYMOUS.getInt())) {
             log.debug("Asis application and not logged in: returning anonymous cloud");
             // wrapping in new user context because application should be correct.
-            return new UserContext(new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous")), "asis");
+            return new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"), "asis");
         }
 
         // Still nothing, that means that we have to redirect to the loginpage
@@ -209,7 +210,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 try {
                     String referUrl = loginPage;
                     if (referUrl.indexOf("?") > -1) {
-                        referUrl += "&"; 
+                        referUrl += "&";
                     } else {
                         referUrl += "?";
                     }
@@ -241,37 +242,43 @@ public class Authentication extends org.mmbase.security.Authentication {
      * @todo this problable can be dropped in favour of a 'class security' implementation.
      * @return UserContext
      */
-    private UserContext doSystemLogin() {
+    private UserContext doSystemLogin(String app) {
         checkBuilder();
         MMObjectNode user = users.getUser("admin");
         if (user == null) {
             return null;
         }
 
-        return new UserContext(user);
+        return new UserContext(user, app);
     }
 
     public static Node getCurrentUserNode(Cloud cloud){
        try{
-              NodeList nlUsers = cloud.getList("",
-                  "people",
-                  "people.number",
-                  "people.username='" + cloud.getUser().getIdentifier() + "'",
-                  null, null, null, false);
-
-              if(nlUsers.size() == 1){
-                 Node nodeUser = cloud.getNode(nlUsers.getNode(0).getStringValue("people.number"));
-                 return nodeUser;
-              }
+           NodeList nlUsers = cloud.getList("",
+                                            "people",
+                                            "people.number",
+                                            "people.username='" + cloud.getUser().getIdentifier() + "'",
+                                            null, null, null, false);
+           if(nlUsers.size() == 1){
+               Node nodeUser = cloud.getNode(nlUsers.getNode(0).getStringValue("people.number"));
+               return nodeUser;
+           }
        }
        catch(Exception e){
        }
        return null;
     }
-
     public Parameters createParameters(String application) {
-        // TODO think more deeply about this, and return an actual Parametrs object!
-        return new AutodefiningParameters();
+        application = application.toLowerCase();
+        if ("anonymous".equals(application)) {
+            return new Parameters(PARAMETERS_ANONYMOUS);
+        } else if ("class".equals(application)) {
+            return Parameters.VOID;
+        } else if ("name/password".equals(application)) {
+            return new Parameters(PARAMETERS_NAME_PASSWORD);
+        } else {
+            return new AutodefiningParameters();
+        }
     }
 
     /**

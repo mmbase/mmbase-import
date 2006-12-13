@@ -17,6 +17,7 @@ import java.util.HashSet;
  * contains all information about a user, it can also report back
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: UserContext.java,v 1.5 2006-12-13 09:21:36 mmeeuwissen Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -52,8 +53,8 @@ public class UserContext extends org.mmbase.security.BasicUser {
     /**
      * From the org.mmbase.security.UserContext interface
      */
-    public UserContext(String identifier, String owner, Rank rank) {
-        super("name/password");
+    public UserContext(String identifier, String owner, Rank rank, String app) {
+        super(app);
         this.identifier = identifier;
         this.owner = owner;
         this.rank = rank;
@@ -64,8 +65,8 @@ public class UserContext extends org.mmbase.security.BasicUser {
      * Initialize the usercontext for a given user node. This checks
      * the rank of the user by looking at the node type
      */
-    public UserContext(MMObjectNode node) {
-        super("name/password");
+    public UserContext(MMObjectNode node, String app) {
+        super(app);
         //wrappedNode = node.getCloud().getNode(node.getNumber());
         owner = node.getStringValue("username");
         identifier = owner;
@@ -77,7 +78,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         } else {
             rank = Rank.getRank(rankstring);
         }
-    } 
+    }
 
     /**
      * From the org.mmbase.security.UserContext interface
@@ -99,7 +100,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
     public Rank getRank() throws org.mmbase.security.SecurityException {
         return rank;
     }
-    
+
     public Integer getUserNumber() {
         try {
             if ( wrappedNode != null )
