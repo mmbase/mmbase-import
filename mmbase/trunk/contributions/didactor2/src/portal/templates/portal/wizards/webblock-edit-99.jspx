@@ -21,9 +21,12 @@
             <mm:param name="origin">${_node}</mm:param>
             <mm:param name="startnodes">${_node}</mm:param>
             <mm:param name="wizard">config/${wizarddir}/${type}</mm:param>
-            <mm:param name="wizardjsp"><mm:url page="/mmbase/kupu/mmbase/" /></mm:param>
+            <mm:param name="wizardjsp"><mm:url page="/mmbase/kupu/mmbase/"><mm:param name="link_nodetypes">images,attachments,urls,news,xmlnews</mm:param>
+</mm:url></mm:param>
             <mm:param name="nodepath">webblocks,${empty role ? '' : role + ','}${type}</mm:param>
             <mm:param name="searchdirs">destination</mm:param>
+            <mm:param name="orderby"><mm:hasfield nodetype="${type}" name="date">${type}.date,</mm:hasfield>${type}.number</mm:param>
+            <mm:param name="directions">down</mm:param>
             <a href="${_}">
               <mm:nodeinfo nodetype="${type}" type="plural_guinodemanager" />
               (#<mm:countrelations  role="${empty role ? '' : role}" type="${type}" searchdir="destination" />)

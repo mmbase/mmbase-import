@@ -8,6 +8,10 @@ html, body.portal {
 
 .date { 
   font-style: italic;
+  font-weight: normal;
+}
+.intro { 
+  font-weight: bold;
 }
 
 div.x1 {
@@ -17,6 +21,21 @@ div.x1 {
 div.column div.menu *, div.column div.menu {
   background-color: #e2641b;
   color: black;
+}
+div.column div.menu ul { 
+  padding-left: 1ex;
+  list-style-type: none;
+}
+div.column div.menu a { 
+  text-decoration: none;
+  color: #003bc5;
+  font-size: larger;
+}
+div.column div.menu a:hover { 
+  color: #000;
+}
+div.column div.menu { 
+  padding-bottom: 1ex;
 }
 
 div.x3 {
@@ -67,4 +86,9 @@ div.poll ul li {
   display: block;
   margin-top: 0;
   margin-bottom: 3px;
+}
+
+div.article.selection h3 { 
+  margin-bottom: 0px;
+  
 }
