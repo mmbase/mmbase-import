@@ -298,6 +298,27 @@
          <echo message="no templates dir in ${component}" />
        </else>
     </if>
+    <if>
+     <available file="src/${component}/templates.zip" type="dir" />
+     <then>
+        <unzip dest="${build.dir}/webapp">
+          <fileset dir="src/${component}/templates.zip">
+            <include name="*.zip" />
+            <include name="*.war" />
+          </fileset>
+        </unzip>
+
+
+       <foreach target="mergewizards" param="file">
+         <path>
+           <fileset dir="src/${component}/templates/editwizards/data/config/">
+             <include name="**/extra_*.xml" />
+           </fileset>
+         </path>
+       </foreach>
+     </then>
+    </if>
+    
 
     <!-- copy webinf -->
     <if>
