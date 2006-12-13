@@ -7,6 +7,7 @@
   <jsp:directive.attribute name="answer"   />
   <jsp:directive.attribute name="redirect"  />
   <jsp:directive.attribute name="checkip" />
+
   <c:if test="${empty poll}">
     <mm:import externid="poll" />
   </c:if>
@@ -19,9 +20,8 @@
     <mm:compare referid="havethis" value="Hello World">
       <mm:import id="cookie" from="cookie" externid="poll$poll" />
       <mm:compare referid="cookie" value="canvote">
-        <mm:cloud method="delegate" authenticate="class" rank="basic user">
+        <mm:cloud method="delegate" authenticate="class">
           <c:choose>
-
             <c:when test="${empty checkip}">
               <mm:import id="ips">0</mm:import>
             </c:when>
@@ -38,7 +38,7 @@
               <mm:listnodescontainer type="ip">
                 <mm:constraint field="IP" value="$ip" />
                 <mm:constraint field="poll" value="${poll}" />
-                <mm:time id="yesterday" time="now ${checkip}" />
+                <mm:time id="yesterday" time="now ${checkip}" write="false" />
                 <mm:constraint field="date" operator="GREATER" value="$yesterday" />
                 <mm:size id="ips" write="false" />
               </mm:listnodescontainer>
