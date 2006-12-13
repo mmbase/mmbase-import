@@ -17,12 +17,20 @@
         <mm:constraint field="blockposrel.x" value="${col}" />
         <mm:sortorder field="blockposrel.y" />
         <mm:relatednodes>
+          <jsp:scriptlet>
+            try {
+          </jsp:scriptlet>
           <mm:haspage page="webblock-${_node.type}.jspx">
             <mm:include page="webblock-${_node.type}.jspx" />
           </mm:haspage>
           <mm:haspage page="webblock-${_node.type}.jspx" inverse="true">
             <mm:include page="webblock.jspx" />
           </mm:haspage>
+          <jsp:scriptlet>
+            } catch (Exception e) {
+               out.println(e.getMessage());
+            }
+          </jsp:scriptlet>
         </mm:relatednodes>
       </mm:relatednodescontainer>
     </mm:node>
