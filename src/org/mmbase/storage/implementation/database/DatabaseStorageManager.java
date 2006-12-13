@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.1 2006-09-26 13:01:55 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.2 2006-12-13 14:49:31 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2782,39 +2782,56 @@ public class DatabaseStorageManager implements StorageManager {
                                 } finally {
                                     releaseActiveConnection();
                                 }
-                                List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
-                                log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
-                                Iterator i = nodes.iterator();
-                                while (i.hasNext()) {
-                                    MMObjectNode node = (MMObjectNode)i.next();
-                                    File storeFile = getBinaryFile(node, fieldName);
-                                    if (!storeFile.exists()) { // not found!
-                                        File legacyFile = getLegacyBinaryFile(node, fieldName);
-                                        if (legacyFile != null) {
-                                            storeFile.getParentFile().mkdirs();
-                                            if (legacyFile.renameTo(storeFile)) {
-                                                log.service("Renamed " + legacyFile + " to " + storeFile);
-                                                result++;
+                                //List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                                //log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
+                                //org.mmbase.bridge.NodeQuery nq = cloud.getNodeManager(builder.getTableName()).createQuery();
+
+                                try {
+                                    getActiveConnection();
+                                    String tableName = (String)factory.getStorageIdentifier(builder);
+                                    Statement s = activeConnection.createStatement();
+                                    ResultSet numbers = s.executeQuery("select number from " + tableName);
+                                    while (numbers.next()) {
+                                        int number = numbers.getInt("number");
+                                        MMObjectNode node = builder.getNode(number);
+                                        //MMObjectNode node = (MMObjectNode)i.next();
+                                        File storeFile = getBinaryFile(node, fieldName);
+                                        if (!storeFile.exists()) { // not found!
+                                            File legacyFile = getLegacyBinaryFile(node, fieldName);
+                                            if (legacyFile != null) {
+                                                storeFile.getParentFile().mkdirs();
+                                                if (legacyFile.renameTo(storeFile)) {
+                                                    log.service("Renamed " + legacyFile + " to " + storeFile);
+                                                    result++;
+                                                } else {
+                                                    log.warn("Could not rename " + legacyFile + " to " + storeFile);
+                                                }
                                             } else {
-                                                log.warn("Could not rename " + legacyFile + " to " + storeFile);
-                                            }
-                                        } else {
-                                            if (foundColumn) {
+                                                if (foundColumn) {
+                                                    //Blob b = numbers.getBlob(fieldName);
+                                                    Blob b = getBlobFromDatabase(node, field, false);
+                                                    byte[] bytes = new byte[0];
+                                                    log.warn("Getting bytes 0 - " + b.length());
+                                                    if (b.length() > 0) {
+                                                        bytes = b.getBytes(1L, (int) b.length());
+                                                    }
+                                                    node.setValue(fieldName, bytes);
+                                                    storeBinaryAsFile(node, field);
 
-                                                Blob b = getBlobFromDatabase(node, field, false);
-                                                byte[] bytes = b.getBytes(0L, (int) b.length());
-                                                node.setValue(fieldName, bytes);
-                                                storeBinaryAsFile(node, field);
-
-                                                node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                                // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                                result++;
-                                                fromDatabase++;
-                                                log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                                    node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                                    // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                                    result++;
+                                                    fromDatabase++;
+                                                    log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                                }
                                             }
                                         }
                                     }
-                                } // nodes
+                                } catch (Exception e) {
+                                    log.error(e.getMessage());
+                                } finally {
+                                    releaseActiveConnection();
+                                }
                             } // if type = byte
                         } // fields
                     }
