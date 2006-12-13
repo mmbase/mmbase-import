@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.5 2006-10-11 19:55:59 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.6 2006-12-13 10:17:30 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -22,17 +22,30 @@
     <div class="mmxf">
       <xsl:choose>
         <xsl:when test="*">
-          <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol" />
+          <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol|text()" mode="root" />
         </xsl:when>      
         <xsl:otherwise>
-          <p />
+          <p></p>
         </xsl:otherwise>
       </xsl:choose>
     </div>
   </xsl:template>
+
+  <xsl:template match = "text()" mode="root">
+    <p>
+      <xsl:copy-of select="." />
+    </p>
+  </xsl:template>
+
+  <xsl:template match="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol" mode="root" >
+    <xsl:element name="{name()}">
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates select="node()" />
+    </xsl:element>
+  </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:a|mmxf:table|mmxf:th|mmxf:td|mmxf:caption|mmxf:br" >
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:a|mmxf:table|mmxf:th|mmxf:td|mmxf:caption|mmxf:br"  >
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
