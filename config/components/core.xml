@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="core"
+    defaultblock="welcome"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
@@ -37,9 +38,13 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Information about the database and its connections</description>
-    <body jsp="/mmbase/admin/admin/databases.jsp">
+    <body jsp="/mmbase/admin/admin/databases.div.jsp" />
+  </block>
 
-    </body>
+  <block name="databases-connections" 
+         mimetype="text/html">
+    <description xml:lang="en">View of the database connections</description>
+    <body jsp="/mmbase/admin/admin/database/connections.jsp" />
   </block>
   
   <block name="modules" 
@@ -101,7 +106,7 @@
   <block name="email" 
          classification="mmbase.tools"
          mimetype="text/html">
-    <description xml:lang="en">Tool to monitor the emails that are schedules and sned with the email applications.</description>
+    <description xml:lang="en">Tool to monitor emails that are scheduled and/or send with the email application.</description>
     <body jsp="/mmbase/admin/tools/email.jsp">
     </body>
   </block>
