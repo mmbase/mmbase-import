@@ -8,8 +8,14 @@
   <mm:import externid="webblock" required="true" />
   <p>
     <mm:node referid="webblock">
-      <mm:include page="related-type.jspx">
+      <mm:include page="wizard.jspx">
         <mm:param name="type">urls</mm:param>
+      </mm:include>
+      <mm:include page="wizard.jspx">
+        <mm:param name="type">news</mm:param>
+      </mm:include>
+      <mm:include page="wizard.jspx">
+        <mm:param name="type">xmlnews</mm:param>
       </mm:include>
     </mm:node>
   </p>

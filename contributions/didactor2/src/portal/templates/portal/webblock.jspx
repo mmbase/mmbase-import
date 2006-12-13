@@ -1,22 +1,48 @@
-<mm:node
+<mm:node id="block"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
   <jsp:output omit-xml-declaration="yes" />
   <!-- generic code to deplay a webblock -->
-  <div class="${_node.name}">
-    <h1><mm:field name="name" /></h1>
-    <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
-    <mm:relatednodes type="news" role="posrel">
-      <h2><mm:field name="title" /></h2>
+  <mm:relatednodescontainer type="news" role="posrel">
+    <mm:hasfield nodetype="news" name="date">
+      <mm:sortorder field="date" direction="down" />
+      <mm:time id="now" time="now" precision="minutes" write="false" />
+      <mm:composite operator="or">
+        <mm:constraint field="date" operator="LESS" value="$now" />
+        <mm:constraint field="date" operator="NULL"  />
+      </mm:composite>
+    </mm:hasfield>
+    <mm:relatednodes>
+    <div class="${block.name} article">
+      <h1><mm:field name="title" /></h1>
+      <mm:relatednodes type="images" role="posrel" max="1" orderby="posrel.pos">
+        <mm:image mode="img" template="s(250)" />
+      </mm:relatednodes>
       <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
-      <mm:field name="intro" escape="p,links" />
+      <div class="intro">
+        <p>
+          <mm:hasfield name="date">
+            <span class="date">
+              <mm:field name="date">
+                <mm:isnotempty>
+                  <mm:time format=":LONG" />
+                  <jsp:text> - </jsp:text>
+                </mm:isnotempty>
+              </mm:field>
+            </span>
+          </mm:hasfield>
+          <mm:field name="intro" escape="p-ommit-surrounding,links" />
+        </p>
+      </div>
       <mm:link referids="_node@article">
         <mm:param name="col2" value="article" />
         <mm:param name="col3" value="ignore" />
-        <a href="${_}">&gt;&gt;</a>
+        <a href="${_}" class="navigate">&gt;&gt;</a>
       </mm:link>
+      <hr />
+    </div>
     </mm:relatednodes>
-  </div>
+  </mm:relatednodescontainer>
 </mm:node>
