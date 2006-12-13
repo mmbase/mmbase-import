@@ -36,6 +36,6 @@ But it needs the following command-line tools
 - xsltprc  (libxml2, libxslt, used to compose the kupu-page from .kupu source). I tried to use xalan
    here, but no luck. Used to build /mmbase/kupu/mmbase/index.jspx from *.kupu files.
 
-The target is 'dependent.package' to create a fresh mmbase-richtext.zip. 
+The target is 'package' to create a fresh mmbase-richtext.zip. 
 
 Michiel Meeuwissen <richtext@meeuw.org>
