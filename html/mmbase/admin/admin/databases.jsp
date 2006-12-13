@@ -64,7 +64,7 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
 </mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
 </mm:hasfunction>
-<mm:hasfunction module="jdbc" name="POOL" inverse="true">
+<mm:hasfunction module="jdbc" name="POOLS" inverse="true">
   <tr>
     <td>Function for database pool inspection not available</td>
   </tr>
