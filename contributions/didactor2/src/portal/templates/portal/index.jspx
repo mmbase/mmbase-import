@@ -4,13 +4,16 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <jsp:directive.page buffer="80kb" />
+  <!-- 
+       using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
+       to please IE, which is a nasty, lousy browser
+  -->
 
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/> 
 
-  <mm:content type="text/html" postprocessor="none">
+  <mm:content type="text/html" postprocessor="none" expires="0">
     <jsp:directive.include file="/shared/findProvider.jspx" />
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
@@ -20,6 +23,10 @@
         </mm:treefile>
         <mm:treefile page="/portal/style/base.css"  objectlist="$includePath" write="false">
           <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:treefile>
+        <mm:treefile page="/portal/style/print.css"  objectlist="$includePath" write="false">
+          <link href="${_}" rel="alternate stylesheet" title="Print-vriendelijk" type="text/css" media="screen" /> 
+          <link href="${_}" rel="stylesheet" type="text/css"  media="print"/> 
         </mm:treefile>
         <mm:haspage page="/mmbase/style/css/mmxf.css">
           <mm:link page="/mmbase/style/css/mmxf.css">
