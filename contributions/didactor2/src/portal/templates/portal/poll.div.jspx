@@ -5,7 +5,7 @@
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="yes" />
   <!--
-      xmlns:mm-poll="urn:jsptagdir:/WEB-INF/tags/mm/poll"     
+      xmlns:mm-poll="urn:jsptagdir:/WEB-INF/tags/mm/poll" 
 
        Poll 'component'.
        It works when
@@ -20,7 +20,7 @@
       <mm-poll:vote  checkip="- 5 day"/>
 
       <mm:time id="now" precision="minutes" write="false" time="now" />
-      <mm:relatednodescontainer type="poll">
+      <mm:relatednodescontainer type="poll" role="posrel">
         <mm:constraint field="begin" operator="LESS" value="$now" />
         <mm:constraint field="end"   operator="GREATER" value="$now" />
         <mm:sortorder field="begin" direction="down" />
