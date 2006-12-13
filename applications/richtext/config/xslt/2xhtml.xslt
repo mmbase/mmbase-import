@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.23 2006-10-11 14:39:37 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.24 2006-12-13 10:17:30 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -90,13 +90,13 @@
           </xsl:when>
           <xsl:otherwise>
             <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-            <p />
+            <p></p>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise><!-- null -->
         <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-        <p />
+        <p></p>
       </xsl:otherwise>
     </xsl:choose>
 
@@ -448,11 +448,12 @@
   
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
-    <!-- store all 'relation' nodes of this node for convenience in $rels:-->
+     <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
     <!-- also for conveniences: all related nodes to this node-->
     <xsl:variable name="related_to_node"   select="id($rels/@related)" />
+
 
     <xsl:variable name="relations" select="id($rels/@object)[o:field[@name='id'] = current()/@id]" />
 

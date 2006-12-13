@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.12 2006-09-29 16:08:55 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.13 2006-12-13 10:17:30 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -40,12 +40,12 @@
 
 
   <xsl:template match="/o:objects">
-    <xsl:apply-templates select="o:object[1]" />
+    <xsl:apply-templates select="o:object[1]" mode="top" />
   </xsl:template>
 
 
   <!-- how to present a node -->
-  <xsl:template match="o:object">
+  <xsl:template match="o:object" mode="top">
     <xsl:choose>
       <xsl:when test="o:field[@format='xml'][1]/mmxf:mmxf">
         <xsl:apply-templates select="o:field[@format='xml'][1]/mmxf:mmxf" />
@@ -60,7 +60,7 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="o:field[@format='xml']">
+  <xsl:template match="o:field[@format='xml']" mode="top">
     <xsl:choose>
       <xsl:when test="mmxf:mmxf">
         <xsl:choose>
@@ -69,12 +69,12 @@
           </xsl:when>
           <xsl:otherwise>
             <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-            <p />
+            <p><xsl:text> </xsl:text></p>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise><!-- null -->
-        <p />
+        <p><xsl:text> </xsl:text></p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -94,6 +94,18 @@
     <body>
       <xsl:text>&#xA;</xsl:text>
       <xsl:choose>
+        <xsl:when test="count(*) = 1 and mmxf:p">
+          <xsl:for-each select="mmxf:p">
+            <xsl:choose>
+              <xsl:when test="*|text()">
+                <xsl:apply-templates select="." />
+              </xsl:when>
+              <xsl:otherwise>
+                <p><xsl:text disable-output-escaping="yes">&amp;#160;</xsl:text></p>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:when>
         <xsl:when test="*">
           <xsl:apply-templates select="mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
         </xsl:when>
@@ -195,7 +207,7 @@
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:attribute name="id">
         <xsl:value-of select="$relation/o:field[@name='id']" />
-        <xsl:if test="$position &gt; 1">bla<xsl:value-of select="$position" /></xsl:if>
+        <xsl:if test="$position &gt; 1"><xsl:value-of select="$position" /></xsl:if>
       </xsl:attribute>
       <!--
       <xsl:if test="$icache/o:field[@name='width']">
@@ -210,7 +222,7 @@
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'urls' or @type='segments']" mode="inline">
+  <xsl:template match="o:object[@type = 'urls']|o:object[@type='segments']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
