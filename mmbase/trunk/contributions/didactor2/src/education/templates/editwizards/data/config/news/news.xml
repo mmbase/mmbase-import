@@ -24,6 +24,6 @@
     <field name="intro" />
     <field name="body" />
     <field name="date" />
-    <list destination="news" extends="config/image/positionedimages.xml" />
+    <list destination="images" extends="config/image/positionedimages.xml" />
   </form-schema>
 </wizard-schema>
