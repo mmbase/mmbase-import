@@ -93,6 +93,9 @@
     <replace file="${build.config.dir}/modules/mmbaseroot.xml"
              token="$${mmbaseroot.multicastport}"
              value="${mmbaseroot.multicastport}"/>
+    <replace file="${build.config.dir}/modules/mmbaseroot.xml"
+             token="$${mmbaseroot.language}"
+             value="${mmbaseroot.language}"/>
     <replace file="${build.config.dir}/applications/Resources/builders/images.xml"
              token="$${imageconvert.converterroot}"
              value="${imageconvert.converterroot}"/>
