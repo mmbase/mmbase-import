@@ -9,10 +9,11 @@ import org.mmbase.util.*;
 import java.io.InputStream;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.security.classsecurity.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
+import org.mmbase.security.*;
 import nl.didactor.builders.PeopleBuilder;
 import nl.didactor.security.AuthenticationComponent;
 
@@ -21,7 +22,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.7 2006-12-12 13:22:59 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.8 2006-12-13 09:21:36 mmeeuwissen Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -68,6 +69,28 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         checkBuilder();
 
+        if ("class".equals(application)) {
+            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
+            if (li == null) {
+                throw new org.mmbase.security.SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
+            }
+            String userName = (String) li.getMap().get(AuthenticationData.PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(AuthenticationData.PARAMETER_RANK.getName());
+            if (userName != null) {
+                MMObjectNode user = users.getUser(userName);
+                UserContext uc = new UserContext(user, "class");
+                if (rank != null) {
+                    if (uc.getRank().getInt() < Rank.getRank(rank).getInt()) {
+                        return null;
+                    }
+                }
+            } else {
+                if (rank == null) rank = "basic user";
+                UserContext uc = new UserContext("classuser", "classuser", Rank.getRank(rank), "class");
+                return uc;
+            }
+        }
+
         String sLogin = request.getParameter("username");
         String sPassword = request.getParameter("password");
 
@@ -83,20 +106,22 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         }
 
         log.debug("Found matching credentials, so user is now logged in.");
-        HttpSession session = request.getSession( true ); 
+        HttpSession session = request.getSession(true);
         session.setAttribute("didactor-plainlogin-userid", "" + user.getNumber());
-        return new UserContext(user);
+        session.setAttribute("didactor-plainlogin-application", application);
+        return new UserContext(user, application);
     }
 
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             String onum = (String) session.getAttribute("didactor-plainlogin-userid");
+            String app  = (String) session.getAttribute("didactor-plainlogin-application");
             if (onum != null) {
                 checkBuilder();
                 MMObjectNode user = users.getNode(onum);
                 log.debug("Found 'didactor-plainlogin-userid' in session");
-                return new UserContext(user);
+                return new UserContext(user, app == null ? "name/password" : app);
             } else {
                 log.debug("There is a session, but no 'didactor-plainlogin-userid' in it");
             }
@@ -117,7 +142,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         if (page == null) {
             org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
             if (mmb.getRootBuilder().getNode("component.portal") != null) {
-                page = request.getContextPath() + "/portal";
+                page = "/portal";
             }
         }
         return page == null ? "/login_plain.jsp" : page;
