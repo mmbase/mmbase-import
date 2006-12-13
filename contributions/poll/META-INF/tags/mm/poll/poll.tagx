@@ -4,7 +4,6 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.attribute name="poll"   required="true" type="org.mmbase.bridge.Node" />
-  <jsp:directive.attribute name="voted"   fragment="true" />
   <jsp:directive.attribute name="canvote"   fragment="true" />
   
   <mm:node referid="poll">
