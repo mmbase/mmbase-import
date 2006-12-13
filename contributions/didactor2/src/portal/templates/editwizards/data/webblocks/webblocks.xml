@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title xml:lang="nl">Homepage elementen editor</title>
+  <title xml:lang="nl">Hoamepage elementen editor</title>
 
   <action type="load">
-    <relation destination="webblocks" role="blockposrel">
+    <relation  role="blockposrel" >
+      <object />
     </relation>
   </action>
+  <action type="delete" />
   <action type="create">
     <object type="webblocks">
       <field name="name">Title</field>
