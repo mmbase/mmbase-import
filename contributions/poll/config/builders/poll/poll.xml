@@ -60,7 +60,7 @@
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="today" />
+        <default value="now + 1 hour" />
       </datatype>
     </field>
 
