@@ -35,31 +35,31 @@ public class DidactorBuilder extends MMObjectBuilder {
     public void registerPreInsertComponent(Component c, int priority) {
         EventInstance event = new EventInstance(c, priority);
         preInsertComponents.add(event);
-        log.info("Added listener on " + getTableName() + ".preInsert(): '" + c.getName() + "' with priority " + priority);
+        log.service("Added listener on " + getTableName() + ".preInsert(): '" + c.getName() + "' with priority " + priority);
     }
 
     public void registerPostInsertComponent(Component c, int priority) {
         EventInstance event = new EventInstance(c, priority);
         postInsertComponents.add(event);
-        log.info("Added listener on " + getTableName() + ".postInsert(): '" + c.getName() + "' with priority " + priority);
+        log.service("Added listener on " + getTableName() + ".postInsert(): '" + c.getName() + "' with priority " + priority);
     }
 
     public void registerPreCommitComponent(Component c, int priority) {
         EventInstance event = new EventInstance(c, priority);
         preCommitComponents.add(event);
-        log.info("Added listener on " + getTableName() + ".preCommit(): '" + c.getName() + "' with priority " + priority);
+        log.service("Added listener on " + getTableName() + ".preCommit(): '" + c.getName() + "' with priority " + priority);
     }
 
     public void registerPostCommitComponent(Component c, int priority) {
         EventInstance event = new EventInstance(c, priority);
         postCommitComponents.add(event);
-        log.info("Added listener on " + getTableName() + ".postCommit(): '" + c.getName() + "' with priority " + priority);
+        log.service("Added listener on " + getTableName() + ".postCommit(): '" + c.getName() + "' with priority " + priority);
     }
 
     public void registerPreDeleteComponent(Component c, int priority) {
         EventInstance event = new EventInstance(c, priority);
         preDeleteComponents.add(event);
-        log.info("Added listener on " + getTableName() + ".preDelete(): '" + c.getName() + "' with priority " + priority);
+        log.service("Added listener on " + getTableName() + ".preDelete(): '" + c.getName() + "' with priority " + priority);
     }
 
     /**
@@ -72,7 +72,7 @@ public class DidactorBuilder extends MMObjectBuilder {
         Iterator i = preInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.debug("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
             c.preInsert(node);
         }
         int res = super.insert(owner, node);
@@ -90,7 +90,7 @@ public class DidactorBuilder extends MMObjectBuilder {
         i = postInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.debug("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
             c.postInsert(node);
         }
         return res;
@@ -140,7 +140,7 @@ public class DidactorBuilder extends MMObjectBuilder {
         Iterator i = postCommitComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".postCommit() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.debug("Firing " + c.getName() + ".postCommit() on object of type '" + node.getBuilder().getTableName() + "'");
             c.postCommit(node);
         }
         return bSuperCommit;
