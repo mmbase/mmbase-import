@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="MMBase Richtext" default="jar" basedir=".">
   <property name="project.name"   value="richtext" />
+  <property name="java.source.version" value="1.5" />
   <import file="../buildbase-include.xml" />
   <property name="svnant"         location="svnant.jar" />
   <property name="svnjavahl"      location="svnjavahl.jar" />
