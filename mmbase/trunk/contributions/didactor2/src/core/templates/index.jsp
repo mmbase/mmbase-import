@@ -4,12 +4,19 @@
   <mm:cloud authenticate="login">
     <jsp:directive.include file="/shared/setImports.jsp" />
     <mm:hasnode number="component.portal">
-      <mm:redirect page="/portal" />
+      <mm:hasrank value="anonymous">
+        <mm:redirect page="/portal" />
+      </mm:hasrank>
+      <mm:hasrank value="anonymous" inverse="true">
+        <mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids"
+                     id="redirpage" write="false" />
+        <mm:redirect referid="redirpage" />
+      </mm:hasrank>
     </mm:hasnode>
     <mm:hasnode number="component.portal" inverse="true">
-      <mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids">
-        <mm:redirect page="${_}" />
-      </mm:treefile>
+      <mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids"
+                   id="redirpage" write="false" />
+      <mm:redirect referid="redirpage" />
     </mm:hasnode>
   </mm:cloud>
 </mm:content>
