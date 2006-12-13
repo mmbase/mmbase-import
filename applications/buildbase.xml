@@ -26,6 +26,7 @@ Create a build.xml with a DOCTYPE like this:
   <property file="build.properties" />
   <property file="../buildbase.properties" />
   <property name="source.dir"   location="../.." />
+  <property name="java.source.version" value="1.4" />
   <property file="${source.dir}/build.properties" />
   <property file="${source.dir}/build.properties.version" />
 
@@ -338,7 +339,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            deprecation="${deprecation}"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
-           source="1.4"
+           source="${java.source.version}"
            includeAntRuntime="false"
       >
       <classpath id="compile.classpath">
