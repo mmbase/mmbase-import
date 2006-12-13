@@ -82,6 +82,9 @@
           <entry value="6" display="News" xml:lang="en" />
           <entry value="6" display="Nouvelles" xml:lang="fr" />
           <entry value="6" display="Nieuws" xml:lang="nl" />
+          <entry value="7" display="News (selection)" xml:lang="en" />
+          <entry value="7" display="Nouvelles (selection)" xml:lang="fr" />
+          <entry value="7" display="Nieuws (selectie)" xml:lang="nl" />
           <!-- 0-80 reserved, (EO Patmos framework) -->
 
           <entry value="99"  display="Rich News" />
