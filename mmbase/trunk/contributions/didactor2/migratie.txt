@@ -32,6 +32,15 @@ and restart Tomcat.
     alter table mmb_icaches add width int(11);       
     alter table mmb_icaches add height int(11)
 
+		If you're planning to use the 'portal':
+
+		 alter table mmb_news add date datetime;				
+
+		 
+    To install poll:
+
+		 alter table mmb_versions drop index name;
+     alter table mmb_versions add unique key name (name, m_type);
 
 2006-01-04
 
