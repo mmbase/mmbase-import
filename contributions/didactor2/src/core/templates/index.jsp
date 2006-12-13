@@ -7,9 +7,9 @@
       <mm:redirect page="/portal" />
     </mm:hasnode>
     <mm:hasnode number="component.portal" inverse="true">
-      <mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids" write="false"
-                   id="redirpage" />
-      <mm:redirect referid="redirpage" />
+      <mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids">
+        <mm:redirect page="${_}" />
+      </mm:treefile>
     </mm:hasnode>
   </mm:cloud>
 </mm:content>
