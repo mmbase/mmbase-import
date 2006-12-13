@@ -25,7 +25,12 @@ and restart Tomcat.
    Inspect mmbase log for more alter tables which can be done. Reasonable fall-backs are used if you
    don't do anything.
 
-   
+   Important may be:
+
+    alter table mmb_images add width int(11);       
+    alter table mmb_images add height int(11);    
+    alter table mmb_icaches add width int(11);       
+    alter table mmb_icaches add height int(11)
 
 
 2006-01-04
