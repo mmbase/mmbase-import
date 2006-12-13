@@ -80,5 +80,27 @@
       </datatype>
     </field>
 
+    <field name="date">
+      <gui>
+        <guiname xml:lang="nl">Datum</guiname>
+        <guiname xml:lang="en">Date</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>10</list>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="date">
+        <default value="today"/>
+      </datatype>
+    </field>
+
   </fieldlist>
+
+  <functionlist>
+    <function key="{REQUEST.getContextPath}/portal?article={NODE.number}&amp;col2=article&amp;col3=ignore" name="url">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
+
 </builder>
