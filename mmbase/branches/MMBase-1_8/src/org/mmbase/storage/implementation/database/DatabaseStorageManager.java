@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.2 2006-12-13 14:49:31 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.3 2006-12-13 16:16:14 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2793,6 +2793,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     ResultSet numbers = s.executeQuery("select number from " + tableName);
                                     while (numbers.next()) {
                                         int number = numbers.getInt("number");
+                                        log.debug("Processing " + tableName + " " + number);
                                         MMObjectNode node = builder.getNode(number);
                                         //MMObjectNode node = (MMObjectNode)i.next();
                                         File storeFile = getBinaryFile(node, fieldName);
@@ -2811,9 +2812,13 @@ public class DatabaseStorageManager implements StorageManager {
                                                     //Blob b = numbers.getBlob(fieldName);
                                                     Blob b = getBlobFromDatabase(node, field, false);
                                                     byte[] bytes = new byte[0];
-                                                    log.warn("Getting bytes 0 - " + b.length());
-                                                    if (b.length() > 0) {
-                                                        bytes = b.getBytes(1L, (int) b.length());
+                                                    if (b == null) {
+                                                        log.debug("Blob was NULL");
+                                                    } else {
+                                                        log.debug("Getting bytes 0 - " + b.length());
+                                                        if (b.length() > 0) {
+                                                            bytes = b.getBytes(1L, (int) b.length());
+                                                        }
                                                     }
                                                     node.setValue(fieldName, bytes);
                                                     storeBinaryAsFile(node, field);
@@ -2828,7 +2833,7 @@ public class DatabaseStorageManager implements StorageManager {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    log.error(e.getMessage());
+                                    log.error("Exception while importing [" + builder + "]: " + e.getMessage());
                                 } finally {
                                     releaseActiveConnection();
                                 }
