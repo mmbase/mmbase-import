@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.13 2006-12-08 17:39:09 johannes Exp $;
+ * @version $Id: Url.java,v 1.14 2006-12-14 11:36:39 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -90,8 +90,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             if (block == null) {
                 log.debug("There is no block " + page + " in component " + component);
                 // could give error here if component was explicit?
+            } else {
+                log.debug("found block " + block);
             }
         } else {
+            log.debug("No component");
             block = null;
         }
         if (block != null) {
@@ -180,6 +183,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             }
         } catch (Throwable e){
             string =  e.toString();
+            if (log.isDebugEnabled()) {
+                log.debug(e.getMessage(), e);
+            }
         }
         return string;
     }
