@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.21 2006-12-11 17:15:18 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.22 2006-12-14 11:54:31 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -116,6 +116,7 @@ public class BasicFramework implements Framework {
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
             map.putAll(state.getMap(blockParameters.toMap()));
+            map.putAll(frameworkParameters.toMap());
             StringBuilder sb = getUrl(page, map, req, writeamp);
             return sb;
         }
