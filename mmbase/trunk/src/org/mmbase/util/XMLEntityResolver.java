@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
+import java.lang.reflect.*;
+
 import org.mmbase.util.xml.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.ModuleReader;
@@ -30,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.61 2006-12-09 16:01:49 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.62 2006-12-15 13:40:21 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -176,26 +178,102 @@ public class XMLEntityResolver implements EntityResolver {
         validate    = v;
         resolveBase = base;
     }
-
+    protected static StringBuilder camelAppend(StringBuilder sb, String s) {
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isUpperCase(c)) {
+                sb.append(Character.toLowerCase(c));
+            } else {
+                sb.append(s.substring(i));
+                break;
+            }
+        }
+        return sb;
+    }
+    protected static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
+        os.add(o);
+        if (o instanceof Map) {
+            Set<Map.Entry> map = ((Map) o).entrySet();
+            for (Map.Entry entry : map) {
+                Object value = entry.getValue();
+                if (value != null && Casting.isStringRepresentable(value.getClass()) && entry.getKey() instanceof String) {
+                    sb.append("<!ENTITY ");
+                    sb.append(prefix);
+                    sb.append('.');
+                    String k = (String) entry.getKey();
+                    k = k.replaceAll("\\s", "");
+                    sb.append(k);
+                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                }
+                if (level < 3 && value != null && !os.contains(value) && ! value.getClass().getName().startsWith("java.lang")) { // recursion to acces also properties of this
+                    appendEntities(sb, value, prefix + "." + entry.getKey(), level + 1, os);
+                }
+            }
+        } else {
+            for (Method m : o.getClass().getMethods()) {
+                String name = m.getName();
+                if (m.getParameterTypes().length == 0 && 
+                    ! name.equals("getNodes") &&
+                    name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
+                    try {
+                        Object value = m.invoke(o);
+                        if (value != null && Casting.isStringRepresentable(value.getClass())) {
+                            sb.append("<!ENTITY ");
+                            sb.append(prefix);
+                            sb.append('.');
+                            camelAppend(sb, name.substring(3));
+                            sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                        }
+                        if (level < 3 && value != null && !os.contains(value) && ! value.getClass().getName().startsWith("java.lang")) { // recursion to acces also properties of this
+                        appendEntities(sb, value, prefix + "." + camelAppend(new StringBuilder(), name.substring(3)), level + 1, os);
+                        }
+                    } catch (IllegalAccessException ia) {
+                        log.debug(ia);
+                    } catch (InvocationTargetException ite) {
+                        log.debug(ite);
+                    }
+                }
+            }
+        }
+    }
+    protected static String ents = null;
+    protected static boolean logEnts = false;
+    protected static synchronized String getMMEntities() {
+        if (ents == null) {
+            StringBuilder sb = new StringBuilder();
+            appendEntities(sb, org.mmbase.module.core.MMBase.getMMBase(), "mmbase", 0, new HashSet<Object>());
+            ents = sb.toString();
+            if (logEnts) {
+                log.service("Using entities\n" + ents);
+            }
+        }
+        return ents;
+    }
+    public static void clearMMEntities(boolean le) {
+        ents = null;
+        logEnts = le;
+    }
 
     /**
      * Takes the systemId and returns the local location of the dtd/xsd
      */
-    public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(final String publicId, final String systemId) {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
-
+        
         InputStream definitionStream = null;
 
         if ("http://www.mmbase.org/mmentities.ent".equals(systemId)) {
             //StringBuilder sb = new StringBuilder();
             //Class c = org.mmbase.framework.Framework.class;
-            new StringResource("<!ENTITY framework.userBuilder \"" + org.mmbase.module.core.MMBase.getMMBase().getFramework().getUserBuilder() + "\">").getStream();
-        }
-
-        // first try with publicID or namespace
-        if (publicId != null) {
+            String ents = getMMEntities();
+            if (log.isDebugEnabled()) {
+                log.debug("Using entities\n" + ents);
+            }
+            definitionStream = new StringResource(ents).getStream();
+        } else  if (publicId != null) {
+            // first try with publicID or namespace
             Resource res = publicIDtoResource.get(publicId);
             log.debug("Found publicId " + publicId + " -> " + res);
             definitionStream = res == null ? null : res.getStream();
@@ -241,7 +319,7 @@ public class XMLEntityResolver implements EntityResolver {
                     if (res != null) {
                         definitionStream = res.getStream();
                         if (definitionStream == null) {
-                            log.warn("Could not find " + res.toString() + " in " + base.getName() + ", falling back to " + MMRESOURCES);
+                            log.warn("Could not find " + res.toString() + " in " + base.getName() + ", falling back to " + MMRESOURCES + " while resolving " + systemId + " " + publicId);
                             base = null; // try it in org.mmbase.resources too.
                         }
                     }
