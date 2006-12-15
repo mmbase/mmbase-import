@@ -1,5 +1,6 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../request_parameters.jsp" %>
+<%@include file="../shoppingcart/vars.jsp" %>
 <mm:cloud jspvar="cloud">
 <%
 LinkedList shop_items = new LinkedList();
@@ -12,7 +13,9 @@ LinkedList shop_items = new LinkedList();
 
 while(shop_items.size()>0) {
 
-   String paginaUrl =  ph.createPaginaUrl(paginaID,request.getContextPath());
+  PaginaHelper ph = new PaginaHelper(cloud);
+  
+  String paginaUrl =  ph.createPaginaUrl(paginaID,request.getContextPath());
 	String leftShop_itemNumber = (String) shop_items.removeFirst();
 	String leftShop_itemHref =  paginaUrl + "?u=" + leftShop_itemNumber;
 	
@@ -29,7 +32,7 @@ while(shop_items.size()>0) {
 	<tr>
 		<mm:node number="<%= leftShop_itemNumber %>"
 			><td class="middle" style="padding-right:3px;"><%@include file="price.jsp"%></td></mm:node>
-		<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
+		<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 		<% if(rightShop_itemExists) { 
 			%><mm:node number="<%= rightShop_itemNumber %>"
 			><td class="middle" style="padding-right:3px;"><%@include file="price.jsp" %></td></mm:node><% 
@@ -43,7 +46,7 @@ while(shop_items.size()>0) {
 		// don't use urlConversion here because shop_items are not related to the page "bestel"
 		shop_itemHref = "shoppingcart.jsp?p=bestel&u=" + leftShop_itemNumber;
 		%><mm:node number="<%= leftShop_itemNumber %>"><%@include file="shoppingcart.jsp"%></mm:node>
-		<td><img src="media/spacer.gif" height="40" width="8" border="0" alt=""></td>
+		<td><img src="media/trans.gif" height="40" width="8" border="0" alt=""></td>
 		<% 
 		if(rightShop_itemExists) {
 			shop_itemHref =  "shoppingcart.jsp?p=bestel&u=" + rightShop_itemNumber;
@@ -53,7 +56,7 @@ while(shop_items.size()>0) {
 		} %>
 	</tr>
    </table>
-   <img src="media/spacer.gif" width="1" height="16" border="0" alt=""><br>
+   <img src="media/trans.gif" width="1" height="16" border="0" alt=""><br>
    <% 
 } %>
 </mm:cloud>

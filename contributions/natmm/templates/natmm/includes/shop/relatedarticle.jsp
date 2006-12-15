@@ -28,12 +28,12 @@
 				if(image_position==7) {
 					imageTemplate = "+s(368)";
 				%><table cellspacing="0" cellpadding="0" border="0" align="center">
-					<tr><td colspan="3" class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
-					<tr><td class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
+					<tr><td colspan="3" class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td></tr>
+					<tr><td class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td>
 						<td><img src="<%@include file="../imagessource.jsp" %>" alt="" border="0"></td>
-						<td class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
-					<tr><td colspan="3" class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
-					<tr><td colspan="3"><img src="media/spacer.gif" alt="" border="0" width="1" height="5"></td></tr>
+						<td class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td></tr>
+					<tr><td colspan="3" class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td></tr>
+					<tr><td colspan="3"><img src="media/trans.gif" alt="" border="0" width="1" height="5"></td></tr>
 					</table><br><%
 
 				// medium or small image, spacer between table and text
@@ -44,22 +44,22 @@
 					if((image_position%2)==1){	rightAlign = true; }
 				%><table cellspacing="0" cellpadding="0" border="0" width="1" <%
 					if(rightAlign){	%> align="right" <%	} else { %> align="left" <%	} %>>
-					<tr><td colspan="4"><img src="media/spacer.gif" alt="" border="0" width="1" height="4"></td></tr>
-					<tr><% if(rightAlign){ %><td rowspan="4"><img src="media/spacer.gif" alt="" border="0" width="10" height="1"></td><% } %>
-						<td colspan="3" class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-						<% if(!rightAlign){ %><td rowspan="4"><img src="media/spacer.gif" alt="" border="0" width="10" height="1"></td><% } %>
+					<tr><td colspan="4"><img src="media/trans.gif" alt="" border="0" width="1" height="4"></td></tr>
+					<tr><% if(rightAlign){ %><td rowspan="4"><img src="media/trans.gif" alt="" border="0" width="10" height="1"></td><% } %>
+						<td colspan="3" class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td>
+						<% if(!rightAlign){ %><td rowspan="4"><img src="media/trans.gif" alt="" border="0" width="10" height="1"></td><% } %>
 					</tr>
-					<tr><td class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
+					<tr><td class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td>
 						<td><a href="#" onClick="javascript:launchCenter('includes/slideshow.jsp?w=<%= subsiteID 
 								%>&p=<%= paginaID %>&u=-1&i=<mm:field name="images.number" />', 'center', 550, 740);setTimeout('newwin.focus();',250);">
 							<img src="<%@include file="../imagessource.jsp" %>" alt="" border="0"></a></td>
-						<td class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
-					<tr><td colspan="3" class="titlebar"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
+						<td class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td></tr>
+					<tr><td colspan="3" class="titlebar"><img src="media/trans.gif" alt="" border="0" width="1" height="1"></td></tr>
 					<mm:field name="images.title" jspvar="images_title" vartype="String" write="false"
 						><% if(!images_title.equals("")&&images_title.indexOf("#NZ#")==-1) {
 							%><tr><td colspan="3" class="subtitlebar"><%= images_title %></td></tr><%
 						} %></mm:field
-					><tr><td colspan="3"><img src="media/spacer.gif" alt="" border="0" width="1" height="5"></td></tr>
+					><tr><td colspan="3"><img src="media/trans.gif" alt="" border="0" width="1" height="5"></td></tr>
 					</table><% 
 				}%></mm:field
 	></mm:list

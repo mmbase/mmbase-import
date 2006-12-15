@@ -1,32 +1,40 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../request_parameters.jsp" %>
+<%@include file="../time.jsp" %>
+<%@include file="../shoppingcart/vars.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="../calendar.jsp" %>
-<% pageUrl = request.getParameter("pu");
-	String memberId = request.getParameter("mi");
-	int shippingCosts = Integer.parseInt(request.getParameter("sc"));
-	int totalSum = Integer.parseInt(request.getParameter("ts"));
-	int donation = Integer.parseInt(request.getParameter("dn"));
-   TreeMap products = (TreeMap) session.getAttribute("products"); %>
-<%  String formScript = "function changeIt(url) {"
-				+ "\nvar href = \"&pst=\";"
-				+ "\nvar valM = document.shoppingcart.elements[\"memberid\"].value;"
-				+ "\nhref += \"$valM=\" + escape(valM);";
+<% 
+PaginaHelper ph = new PaginaHelper(cloud);  
+String pageUrl = ph.createPaginaUrl("bestel",request.getContextPath());
+
+String subsiteID = request.getParameter("si");
+String memberId = request.getParameter("mi");
+String imageTemplate ="";
+int shippingCosts = Integer.parseInt(request.getParameter("sc"));
+int totalSum = Integer.parseInt(request.getParameter("ts"));
+int donation = Integer.parseInt(request.getParameter("dn"));
+TreeMap products = (TreeMap) session.getAttribute("products"); 
+String formScript = "function changeIt(url) {"
+      + "\nvar href = \"&pst=\";"
+      + "\nvar valM = document.shoppingcart.elements[\"memberid\"].value;"
+      + "\nhref += \"|valM=\" + escape(valM);";
 				
 // ************************** the membershipshorm ***************************
 
 %><table width="100%" cellspacing="0" cellpadding="0">
 <form name="shoppingcart" method="post" target="" onKeyPress="javascript:useEnterKey();"
-	action="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=change" %>" />');">
+	action="javascript:changeIt('<mm:url page="<%= pageUrl + "?t=change" %>" />');">
 <tr>
 	<td width="20%"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td>
 	<td width="60%">
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
-	<% String articleConstraint = "contentrel.pos=10"; 
-		TreeMap productsIterator = (TreeMap) session.getAttribute("productsIterator"); 
-		if(productsIterator.size()==0) {
-			articleConstraint = "contentrel.pos=11"; 
-		} 
+	<%
+  String articleConstraint = "contentrel.pos=10"; 
+	TreeMap productsIterator = (TreeMap) session.getAttribute("productsIterator"); 
+	if(productsIterator.size()==0) {
+		articleConstraint = "contentrel.pos=11"; 
+	} 
 	%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
 		><%@include file="../shop/relatedarticle.jsp" 
 	%></mm:list><br>
@@ -44,7 +52,7 @@
 if(productsIterator.size()>0) {
 
 formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
-		+ "\nif(valD!='') { href += \"$valD=\" + escape(valD); }";
+		+ "\nif(valD!='') { href += \"|valD=\" + escape(valD); }";
 %><table width="100%" cellspacing="0" cellpadding="0">
 	<tr><td colspan="6" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
 	<tr>
@@ -71,32 +79,32 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 		int discount = 0;
 		
 		formScript += "\nvar val" + thisProduct + " = document.shoppingcart.elements[\"numberof" + thisProduct + "\"].value;\n"
-				+ "if(val" + thisProduct + "!='') { href += \"$valP" + thisProduct + "=\" + escape(val" + thisProduct + "); } \n"; 
+				+ "if(val" + thisProduct + "!='') { href += \"|valP" + thisProduct + "=\" + escape(val" + thisProduct + "); } \n"; 
 		
 		%><mm:node number="<%= thisProduct %>" notfound="skipbody"
 		><%@include file="getprice.jsp"
 		%><%@include file="getdiscount.jsp" 
 		%><tr>
 			<td class="cart<%= rowParity %>" style="text-align:left;padding-right:0px;">
-				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&u=" + thisProduct %>" 
-					/>');"><mm:field name="title" /></a><br>
+				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "?u=" + thisProduct %>" 
+					/>');"><mm:field name="titel" /></a><br>
 			</td>
 			<td class="cart<%= rowParity %>" style="padding-right:0px;">
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<tr>
 				<td width="45%"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 				<td class="titlebar" style="vertical-align:middle;padding-left:1px;padding-right:1px;"><input type="text" name="numberof<%= thisProduct %>" class="cart" value="<%= numberOfItems %>"></td>
-				<td width="45%" background="media/pointer.gif" style="background-repeat:repeat-x;background-position: right center;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+				<td width="45%" background="media/shop/pointer.gif" style="background-repeat:repeat-x;background-position: right center;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 				</tr>
 			</table>
 			</td>
 			<td class="cart<%= rowParity %>" style="padding-left:0px;">
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<tr>
-				<td width="45%" background="media/pointer.gif" style="background-repeat:repeat-x;background-position: right center;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+				<td width="45%" background="media/shop/pointer.gif" style="background-repeat:repeat-x;background-position: right center;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 				<td style="vertical-align:middle;"><a href="javascript:changeIt('<mm:url 
-					page="<%= pageUrl + "&p=bestel&t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();" 
-					><img src="media/pointer_oranje_<%= rowParity %>.gif" border="0" alt="aantal wijzigen"></a></td>
+					page="<%= pageUrl + "?t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();" 
+					><img src="media/shop/pointer_oranje_<%= rowParity %>.gif" border="0" alt="aantal wijzigen"></a></td>
 				<td width="45%"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 				</tr>
 			</table>
@@ -117,8 +125,8 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 					%>nog onbekend<% 
 				} %></td>
 			<td class="cart<%= rowParity %>"><a href="javascript:changeIt('<mm:url
-				page="<%= pageUrl + "&p=bestel&u=" + thisProduct + "&t=delete" %>" />');" 
-				><img src="media/delete_<%= rowParity %>.gif" border="0" alt="verwijder dit artikel"></a></td>
+				page="<%= pageUrl + "?u=" + thisProduct + "&t=delete" %>" />');" 
+				><img src="media/shop/delete_<%= rowParity %>.gif" border="0" alt="verwijder dit artikel"></a></td>
 			</tr>
 			<tr><td colspan="6" width="100%" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
 		<%
@@ -198,12 +206,12 @@ if(generaldiscount>0) {
 	<td class="carteven" style="padding:0px;padding-top:1px;">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
-			<td background="media/pointer.gif" style="width:10%;background-repeat:repeat-x;background-position: right center;"></td>
+			<td background="media/shop/pointer.gif" style="width:10%;background-repeat:repeat-x;background-position: right center;"></td>
 			<td style="vertical-align:middle;"><a href="javascript:changeIt('<mm:url 
-				page="<%= pageUrl + "&p=bestel&t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();">
-				<img src="media/pointer_oranje_even.gif" border="0" alt="bevestig extra gift"></a></td>
+				page="<%= pageUrl + "?t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();">
+				<img src="media/shop/pointer_oranje_even.gif" border="0" alt="bevestig extra gift"></a></td>
 			<td style="vertical-align:middle;font-size:10px;padding-left:2px;padding-right:2px;"><a href="javascript:changeIt('<mm:url 
-				page="<%= pageUrl + "&p=bestel&t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();" class="nav">gift bevestigen</a></td>
+				page="<%= pageUrl + "?t=change" %>" />');document.shoppingcart.target='';document.shoppingcart.submit();" class="nav">gift bevestigen</a></td>
 			</tr>
 		</table>
 	</td>
@@ -254,7 +262,7 @@ formScript += "if(url!=null) { document.location =  url + href; return false; } 
 <%= "<!--" %>
 <%= formScript %>
 function useEnterKey() 
-{	if (window.event.keyCode == 13) changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=change" %>" />');
+{	if (window.event.keyCode == 13) changeIt('<mm:url page="<%= pageUrl + "?t=change" %>" />');
 } 
 <%= "//-->" %>
 </script> 

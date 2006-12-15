@@ -12,11 +12,10 @@
 	<td colspan="3" width="70%">
 		<jsp:include page="includes/shop/discount.jsp">
 			<jsp:param name="p" value="<%= paginaID %>" />
-			<jsp:param name="pu" value="<%= pageUrl %>" />
 		</jsp:include>
 		<%@include file="includes/shop/relatedpools.jsp" %>
 	</td>
-	<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
+	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 	<td width="180">
 		<jsp:include page="includes/shop/relatedteasers.jsp">
 			<jsp:param name="p" value="<%= paginaID %>" />

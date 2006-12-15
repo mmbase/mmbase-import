@@ -21,7 +21,7 @@
 %>
 		<td colspan="5" style="text-align:right;"> 
 		<table width="90%" cellspacing="0" cellpadding="0"><tr>
-		<td><img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+		<td><img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
 		<table width="100%" cellspacing="0" cellpadding="0">
 			<tr><td colspan="2" style="padding:4px;">
 			<% if(!searchId.equals("")||!keyId.equals("")||!poolId.equals("")) {
@@ -46,13 +46,13 @@
 				om een artikel te zoeken in de Natuurmonumenten winkel.<br><br><% 
 			} %>
 			</td></tr>
-			<tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
+			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr><form name="searchform" method="post" action="javascript:searchOn();">
 				<td class="titlebar" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Zoekterm</td>
 				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
 					<input type="text" name="search" style="width:100%;height:15px;" value="<%= searchId %>"></td>
 			</tr>
-			<tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
+			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr>
 				<td class="titlebar" style="width:40%;ertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Categorie</td>
 				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
@@ -72,7 +72,7 @@
 					></mm:list		
 					></select></td>
 			</tr>
-			<tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
+			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr>
 				<td class="titlebar" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Trefwoord</td>
 				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
@@ -87,8 +87,8 @@
 						></mm:list
 						></select></td>
 			</tr>
-			<tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
-			<tr><td style="width:40%;"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td>
+			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
+			<tr><td style="width:40%;"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td>
 				<td style="width:60%;">
 				<table width="100%" cellspacing="0" cellpadding="0" align="right">
 					<tr>
@@ -101,7 +101,7 @@
 				<script language="JavaScript" type="text/javascript">
 				<%= "<!--" %>
 				function searchOn() {
-					var href = "<mm:url page="<%= pageUrl + "&p=zoek" %>" />";
+					var href = "<mm:url page="<%= ph.createPaginaUrl("zoek",request.getContextPath()) %>" />";
 					var search = document.searchform.elements["search"].value;
 					if(search != '') {
 						var hasQuote = search.indexOf('\'');
@@ -118,9 +118,9 @@
 				<%= "//-->" %>
 				</script>
 			</td></tr>
-		<tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
+		<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 		<tr><td colspan="2">
-		<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+		<img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
 		<%	if(!searchResults.equals("")) { 
 				%>De volgende artikelen zijn gevonden<br><br><%
 			} else {
@@ -129,18 +129,17 @@
 		%></td></tr>
 		</table>
 		</td>
-		<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-		<td width="180" valign="top"><img src="media/spacer.gif" height="1" width="180" border="0" alt=""></td>
+		<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
+		<td width="180" valign="top"><img src="media/trans.gif" height="1" width="180" border="0" alt=""></td>
 		</tr></table>
 		<%	
     if(!searchResults.equals("")) {
 			%><mm:list nodes="<%= searchResults %>" path="products" orderby="products.titel" directions="UP"
 				><mm:first><table width="100%" cellspacing="0" cellpadding="0">
-				<tr><td class="titlebar" colspan="4"><img src="media/spacer.gif" border="0" alt="" width="1" height="1"></td></tr>
+				<tr><td class="titlebar" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
 				</mm:first
 				><mm:field name="products.number" jspvar="shop_itemId" vartype="String" write="false"
 					><jsp:include page="includes/relatedfoundproduct.jsp">
-						<jsp:param name="pu" value="<%= pageUrl %>" />
 						<jsp:param name="u" value="<%= shop_itemId %>" />
 					</jsp:include
 					></mm:field

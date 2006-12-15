@@ -1,4 +1,5 @@
-<%--
+<%
+/*
 Discounts are given in two includes:
 - getdiscount.jsp for the product specific discounts
 - getgeneraldiscount.jsp for the general discounts
@@ -8,13 +9,14 @@ Discounts are given in two includes:
 7: (alg) via internet een korting van het kortings percentage
 8: (alg) via internet geen verzendkosten
 
-*************** 5,6,7,8: general discounts ********************** 
---%><%
+*************** 5,6,7,8: general discounts **********************
+*/
+%><%
 int generaldiscount = 0;
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,discounts"
-><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
-><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
-if(Long.parseLong(startdate)<=nowSec && nowSec<=Long.parseLong(enddate)) { 
+><mm:field name="discounts.startdate" jspvar="startdate" vartype="Long" write="false"
+><mm:field name="discounts.enddate" jspvar="enddate" vartype="Long" write="false"><%
+if(startdate.longValue()<=nowSec && nowSec<=enddate.longValue()) { 
 	%><mm:field name="discounts.type" jspvar="type" vartype="String" write="false"
 	><mm:field name="discounts.amount" jspvar="discounts_amount" vartype="String" write="false"
 	><mm:field name="discounts.threshold" jspvar="discounts_threshold" vartype="String" write="false"><%
