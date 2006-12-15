@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.1 2006-10-03 14:40:40 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.2 2006-12-15 16:03:13 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -340,9 +340,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             }
             // get configuration
-            log.service("Configuration used for database storage: " + databaseResourcePath);
+            java.net.URL url = ResourceLoader.getConfigurationRoot().getResource(databaseResourcePath);
+            log.service("Configuration used for database storage: " + url);
             try {
-                InputSource in = ResourceLoader.getConfigurationRoot().getInputSource(databaseResourcePath);
+                InputSource in = ResourceLoader.getInputSource(url);
                 reader = new StorageReader(this, in);
             } catch (java.io.IOException ioe) {
                 throw new StorageConfigurationException(ioe);
