@@ -19,6 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.module.core.MMBase;
 
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
@@ -28,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.22 2006-12-14 11:54:31 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.23 2006-12-15 13:39:14 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -124,7 +125,8 @@ public class BasicFramework implements Framework {
 
 
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
-
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        request.setAttribute("fw_title", block.getDescription());
         frameworkParameters.set(COMPONENT, component.getName());
         frameworkParameters.set(BLOCK, block.getName());
         if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
