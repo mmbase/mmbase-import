@@ -128,6 +128,13 @@
     <body jsp="/mmbase/events/index.jspx">
     </body>
   </block>
+
+  <block name="entities" 
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">A tool to view all 'mmbase entities' which are avaiable in config-files.</description>
+    <body jsp="/mmbase/admin/entities.div.jspx" />
+  </block>
   
   <!-- components -->
   <block name="components" 
