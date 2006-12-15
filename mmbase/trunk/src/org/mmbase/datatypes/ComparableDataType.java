@@ -20,10 +20,10 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.23 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: ComparableDataType.java,v 1.24 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public abstract class ComparableDataType extends BasicDataType {
+public abstract class ComparableDataType<E extends java.io.Serializable> extends BasicDataType<E> {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
@@ -32,7 +32,7 @@ public abstract class ComparableDataType extends BasicDataType {
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
 
-    protected ComparableDataType(String name, Class classType) {
+    protected ComparableDataType(String name, Class<E> classType) {
         super(name, classType);
     }
 
@@ -70,7 +70,7 @@ public abstract class ComparableDataType extends BasicDataType {
 
     /**
      */
-    public DataType.Restriction getMinRestriction() {
+    public DataType.Restriction<E> getMinRestriction() {
         return minRestriction;
     }
 
@@ -84,7 +84,7 @@ public abstract class ComparableDataType extends BasicDataType {
 
     /**
      */
-    public DataType.Restriction getMaxRestriction() {
+    public DataType.Restriction<E> getMaxRestriction() {
         return maxRestriction;
     }
 
@@ -102,8 +102,8 @@ public abstract class ComparableDataType extends BasicDataType {
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    public final Object getDefaultValue() {
-        Object def = super.getDefaultValue();
+    public final E getDefaultValue() {
+        E def = super.getDefaultValue();
         if (! minRestriction.valid(def, null, null)) {
             def = minRestriction.getValue();
         } else if (! maxRestriction.valid(def, null, null)) {
@@ -139,11 +139,11 @@ public abstract class ComparableDataType extends BasicDataType {
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public void setMin(Comparable value, boolean inclusive) {
+    public void setMin(E value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != minRestriction.isInclusive()) minRestriction = new MinRestriction(inclusive);
-        minRestriction.setValue((java.io.Serializable) value);
+        minRestriction.setValue(value);
     }
 
 
@@ -153,11 +153,11 @@ public abstract class ComparableDataType extends BasicDataType {
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public void setMax(Comparable value, boolean inclusive) {
+    public void setMax(E value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != maxRestriction.isInclusive()) maxRestriction = new MaxRestriction(inclusive);
-        maxRestriction.setValue((java.io.Serializable) value);
+        maxRestriction.setValue(value);
     }
 
 
@@ -202,7 +202,7 @@ public abstract class ComparableDataType extends BasicDataType {
         return buf;
     }
 
-    protected class MinRestriction extends AbstractRestriction {
+    protected class MinRestriction extends AbstractRestriction<E> {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
             super(source);
@@ -231,7 +231,7 @@ public abstract class ComparableDataType extends BasicDataType {
             return inclusive;
         }
     }
-    protected class MaxRestriction extends AbstractRestriction {
+    protected class MaxRestriction extends AbstractRestriction<E>  {
         private boolean inclusive;
         MaxRestriction(MaxRestriction source) {
             super(source);

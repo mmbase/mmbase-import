@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.57 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DataType.java,v 1.58 2006-12-15 13:38:01 michiel Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
@@ -83,7 +83,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * Inherit properties and processors from the passed datatype.
      */
-    public void inherit(BasicDataType origin);
+    public void inherit(BasicDataType<C> origin);
 
     /**
      * Return the DataType from which this one inherited, or <code>null</code>
@@ -247,7 +247,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *
      */
-    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+    public Iterator<Map.Entry<C, Object>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
     /**
      * Returns a (gui) value from a list of retsricted enumerated values, or
@@ -259,13 +259,13 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
      */
-    public C getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
      * #getEnumerationValues}. Never <code>null</code>. This can be used to add more possible values.
      */
-    public LocalizedEntryListFactory getEnumerationFactory();
+    public LocalizedEntryListFactory<C> getEnumerationFactory();
 
     /**
      * The enumeration for this datatype as a {@link Restriction}.
@@ -341,7 +341,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
      */
-    public interface Restriction extends Serializable {
+    public interface Restriction<D extends Serializable> extends Serializable {
 
         /**
          * @javadoc
@@ -352,12 +352,12 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
          * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type (as long as it is Serializable)
          */
-        public Serializable getValue();
+        public D getValue();
 
         /**
          * @javadoc
          */
-        public void setValue(Serializable value);
+        public void setValue(D value);
 
         /**
          * If the restriction does not hold, the following error description can be used. On default

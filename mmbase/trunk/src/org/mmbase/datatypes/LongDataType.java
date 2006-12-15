@@ -15,19 +15,19 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.9 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.10 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class LongDataType extends NumberDataType {
+public class LongDataType extends NumberDataType<Long> {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     /**
      * @param primitive indicate if a primitive type should be used
      */
     public LongDataType(String name, boolean primitive) {
         super(name, primitive ? Long.TYPE : Long.class);
-        setMin(new Long(Long.MIN_VALUE), true);
+        setMin(Long.valueOf(Long.MIN_VALUE), true);
         minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
-        setMax(new Long(Long.MAX_VALUE), true);
+        setMax(Long.valueOf(Long.MAX_VALUE), true);
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
@@ -36,7 +36,7 @@ public class LongDataType extends NumberDataType {
      * @return the minimum value as an <code>long</code>, or {@link Long#MIN_VALUE} if there is no minimum.
      */
     public long getMin() {
-        Object min = getMinRestriction().getValue(); 
+        Long min = getMinRestriction().getValue();
         return min == null ? Long.MIN_VALUE : Casting.toLong(min); // casting, mainly to anticipate dates
     }
 
@@ -44,7 +44,7 @@ public class LongDataType extends NumberDataType {
      * @return the maximum value as an <code>long</code>, or {@link Long#MAX_VALUE} if there is no maximum.
      */
     public long getMax() {
-        Object max = getMaxRestriction().getValue(); 
+        Long max = getMaxRestriction().getValue();
         return max == null ? Long.MAX_VALUE : Casting.toLong(max); // casting, mainly to anticipate dates
     }
 
