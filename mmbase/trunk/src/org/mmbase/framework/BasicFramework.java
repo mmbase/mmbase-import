@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.23 2006-12-15 13:39:14 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.24 2006-12-15 14:44:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -39,7 +39,7 @@ public class BasicFramework implements Framework {
 
     public final static String KEY = "org.mmbase.framework.state";
 
-    public static final Parameter<Node> N = new Parameter<Node>("n", Node.class);
+    public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
     public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
     public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
 
@@ -124,18 +124,21 @@ public class BasicFramework implements Framework {
     }
 
 
-    public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        request.setAttribute("fw_title", block.getDescription());
+    public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters,
+                                     Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
+
+        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+        String page = req.getServletPath();
+        req.setAttribute("fw_title", block.getDescription());
         frameworkParameters.set(COMPONENT, component.getName());
-        frameworkParameters.set(BLOCK, block.getName());
+        frameworkParameters.set(BLOCK,     block.getName());
         if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
             frameworkParameters.set(N, blockParameters.get(Parameter.NODE));
-            StringBuilder sb = getInternalUrl("/mmbase/framework/render-node.jspx",
+            StringBuilder sb = getInternalUrl(page,
                                               component, blockParameters, frameworkParameters, writeamp);
             return sb;
         } else {
-            StringBuilder sb = getInternalUrl("/mmbase/framework/render.jspx",
+            StringBuilder sb = getInternalUrl(page,
                                               component, blockParameters, frameworkParameters, writeamp);
             return sb;
         }
@@ -179,14 +182,9 @@ public class BasicFramework implements Framework {
         state.render(renderer);
         request.setAttribute(COMPONENT_ID_KEY, state.getPrefix());
         setBlockParameters(state, blockParameters);
-        String bundle = renderer.getBlock().getComponent().getBundle();
-        if (bundle != null) {
-            ResourceBundle b = ResourceBundle.getBundle(bundle);
-            if (b != null) {
-                LocalizationContext ctx = new LocalizationContext(b, Locale.getDefault());
-                request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", ctx);
-            }
-        }
+        request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", 
+                             new LocalizationContext(renderer.getBlock().getComponent().getBundle(), Locale.getDefault())); 
+        // should _not_ use default locale!
 
         try {
             renderer.render(blockParameters, frameworkParameters, w, windowState);
