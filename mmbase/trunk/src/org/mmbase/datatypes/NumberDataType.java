@@ -16,10 +16,10 @@ import org.mmbase.util.Casting;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.21 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.22 2006-12-15 13:58:16 michiel Exp $
  * @since MMBase-1.8
  */
-abstract public class NumberDataType<E extends Number> extends ComparableDataType<E> {
+abstract public class NumberDataType<E extends Number&Comparable> extends ComparableDataType<E> {
 
     private static final long serialVersionUID = 1L;
     /**
