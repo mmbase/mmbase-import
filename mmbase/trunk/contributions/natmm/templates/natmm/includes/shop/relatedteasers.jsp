@@ -55,7 +55,7 @@
 						</td>
 					</tr><%
 				} 
-				%><tr><td><img src="media/spacer.gif" width="1" height="7" border="0" alt=""></td></tr>
+				%><tr><td><img src="media/trans.gif" width="1" height="7" border="0" alt=""></td></tr>
 			</table><%
 		
 		} else { // *************************************** teaser with flag ************************
@@ -64,7 +64,7 @@
 			<tr>
 				<td class="titlebar"><img src="media/discountborder.gif" width="1" height="15" border="0" alt=""></td>
 				<td style="padding:4px;">
-				<img src="media/spacer.gif" width="1" height="15" border="0" alt=""><br>
+				<img src="media/trans.gif" width="1" height="15" border="0" alt=""><br>
 				<% if(!type.equals("border")) { %><img style="float:right;margin-top:-11px;" src="media/<%= type %>.gif"><% }
 				if(!shop_itemHref.equals("")) {
 					%><a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle"><mm:field name="title" /></a><%
@@ -83,7 +83,7 @@
 
 			if(!shop_itemHref.equals("")) {
 				%><tr>
-					<td class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+					<td class="titlebar"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 					<td class="footer" width="100%">
 					<table cellspacing="0" cellpadding="0" width="100%"><tr>
 						<td class="nav" style="padding-left:4px;text-align:right;width:100%">
@@ -92,10 +92,10 @@
 							/>"><img src="media/pijl_oranje_op_lichtoranje.gif" border="0" alt=""></a></td>
 					</tr></table>
 					</td>
-					<td class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+					<td class="titlebar"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 				</tr><%
 			} 
-			%><tr><td class="titlebar" colspan="3"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
+			%><tr><td class="titlebar" colspan="3"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td></tr>
 			</table><%
 		}
 	}

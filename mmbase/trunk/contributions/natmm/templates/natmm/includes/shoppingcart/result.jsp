@@ -5,9 +5,9 @@
 ><mm:node element="artikel"
 ><table width="100%" cellspacing="0" cellpadding="0">
 <tr>
-    <td width="20%"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+    <td width="20%"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
     <td width="60%">
-    <img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+    <img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
     <%  String responseText = "";
         %><mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
                 ><% responseText = articles_intro;
@@ -122,7 +122,7 @@
                 
         paragraphConstraint = "posrel.pos = 1";
         formMessage +=  " " + article_titel_fra;
-        formMessageHref = pageUrl;
+        formMessageHref = ph.createPaginaUrl(paginaID,request.getContextPath());
         session.setAttribute("totalitems","0");
     } else { 
         paragraphConstraint = "posrel.pos = 2";
@@ -144,9 +144,9 @@
     ><div class="subtitle"><mm:field name="titel" /></div>
     <%= formMessage %><br><br>
     <a class="subtitle" href="<mm:url page="<%= formMessageHref 
-            %>" />"><%= formMessageLinktext %></a><img src="media/spacer.gif" width="10" height="1"></div>
-    <td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-    <td width="180"><img src="media/spacer.gif" height="1" width="180" border="0" alt=""><br>
+            %>" />"><%= formMessageLinktext %></a><img src="media/trans.gif" width="10" height="1"></div>
+    <td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
+    <td width="180"><img src="media/trans.gif" height="1" width="180" border="0" alt=""><br>
     <table width="100%" cellspacing="0" cellpadding="0">
     <tr><td style="padding:4px;padding-top:14px;">
         <mm:import id="isfirst"

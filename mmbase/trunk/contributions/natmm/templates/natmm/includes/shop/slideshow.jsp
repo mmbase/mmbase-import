@@ -34,7 +34,7 @@
         <a href="#" onClick="window.close()" class="white">Sluit dit venster</a></td>
 		</tr>
 		<tr>
-			<td><img src="../media/spacer.gif" width="1" height="57" border="0" alt=""></td>
+			<td><img src="../media/trans.gif" width="1" height="57" border="0" alt=""></td>
 			<td class="titlebar" style="vertical-align:bottom;padding-left:8px;padding-top:2px;">
 			<mm:list nodes="<%= subsiteID %>" path="websites,posrel1,articles,posrel2,paragraphs"
 					constraints="posrel1.pos=1 AND posrel2.pos=6" fields="paragraphs.title"
@@ -137,7 +137,7 @@
 			</table>
 		</mm:node><% 
 	} else {
-		%><img src="media/spacer.gif" alt="" border="0" width="1" height="7"><%
+		%><img src="media/trans.gif" alt="" border="0" width="1" height="7"><%
 	} %>
 	</td>
 </tr>

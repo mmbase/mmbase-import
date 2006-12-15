@@ -9,7 +9,8 @@
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <td colspan="5" style="text-align:right;">
-	<%	int shippingCosts = 350;
+	  <%	
+    int shippingCosts = 350;
 		%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
 			constraints="contentrel.pos=15" fields="artikel.titel_fra"
 			><mm:field name="artikel.titel_fra" jspvar="articles_titel_fra" vartype="String" write="false"><%
@@ -36,8 +37,9 @@
 		if(memberId==null) { memberId = ""; }
 	
 		TreeMap productsIterator = (TreeMap) products.clone();
-		try { session.setAttribute("productsIterator",productsIterator);
-			} catch(Exception e) { } 
+		try { 
+      session.setAttribute("productsIterator",productsIterator);
+	  } catch(Exception e) { } 
 		int totalSum = 0;
 	
 		if(actionId.equals("proceed")) {
@@ -51,7 +53,7 @@
 		} else {
 			%><jsp:include page="includes/shoppingcart/table.jsp">
 				<jsp:param name="p" value="<%= paginaID %>" />
-				<jsp:param name="pu" value="<%= pageUrl %>" />
+				<jsp:param name="si" value="<%= subsiteID %>" />
 				<jsp:param name="mi" value="<%= memberId %>" />
 				<jsp:param name="sc" value="<%= shippingCosts %>" />
 				<jsp:param name="ts" value="<%= totalSum %>" />

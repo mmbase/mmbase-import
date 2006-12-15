@@ -5,8 +5,8 @@
 				><mm:notpresent referid="isfirst"
 					><table width="100%" cellspacing="0" cellpadding="0">
 					<tr><td style="padding:4px;padding-top:14px;"><mm:import id="isfirst"
-				/></mm:notpresent
-				><% shop_itemHref = pageUrl + "&p=" + pagina_number; 
+				/></mm:notpresent><% 
+        shop_itemHref = ph.createPaginaUrl(pagina_number,request.getContextPath()); 
 				%><a href="<mm:url page="<%= shop_itemHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
 			</mm:field
 		></mm:related
@@ -16,8 +16,8 @@
 				><mm:notpresent referid="isfirst"
 					><table width="100%" cellspacing="0" cellpadding="0">
 					<tr><td style="padding:4px;padding-top:14px;"><mm:import id="isfirst"
-				/></mm:notpresent
-				><% shop_itemHref = pageUrl + "&p=" + pagina_number + "&u=" + products_number; 
+				/></mm:notpresent><%
+        shop_itemHref = ph.createPaginaUrl(pagina_number,request.getContextPath()) + "?u=" + products_number; 
 				%><a href="<mm:url page="<%= shop_itemHref %>" />"  class="subtitle"><mm:field name="readmore.readmore" /></a><br>
 			</mm:field
 			></mm:field

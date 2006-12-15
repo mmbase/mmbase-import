@@ -1,7 +1,14 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../request_parameters.jsp" %>
+<%@include file="../shoppingcart/vars.jsp" %>
+<%@include file="../time.jsp" %>
+<%@include file="../calendar.jsp" %>
 <mm:cloud jspvar="cloud">
-<% shop_itemHref =  "shoppingcart.jsp?p=bestel&u=" + shop_itemId; %>
+<%
+String styleSheet = request.getParameter("rs");
+PaginaHelper ph = new PaginaHelper(cloud);
+shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemId;
+%>
 <mm:node number="<%= shop_itemId %>">
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<tr>
@@ -35,15 +42,15 @@
 			</td>
 		</tr>
 		<tr><%@include file="shoppingcart.jsp"%></tr>
-		<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+		<tr><td class="titlebar" colspan="2"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
 	</table>
 	<table width="100%" cellspacing="0" cellpadding="0"><%
 	  // ************************************* Show discounts (if any) *******************************
 	  String timestr = "-1";
      %><mm:related path="posrel,discounts"
-			><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
-			><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
-			if(nowSec<=Long.parseLong(enddate)) { // do not show old discounts
+			><mm:field name="discounts.startdate" jspvar="startdate" vartype="Long" write="false"
+			><mm:field name="discounts.enddate" jspvar="enddate" vartype="Long" write="false"><%
+			if(nowSec<=enddate.longValue()) { // do not show old discounts
 					%><tr><td style="padding:3px;">
 					<div class="subtitle"
 						><mm:field name="discounts.title" jspvar="discounts_title" vartype="String" write="false"
@@ -52,15 +59,15 @@
 					></div>
 					<mm:field name="discounts.body" /><br>
 					 Deze actie loopt <%
-						if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
+						if(startdate.longValue()>=nowSec) { // only show startdate if discount is not started
 							%> van <%
-							timestr = startdate; %><%@include file="timestring.jsp" %><%
+							timestr = startdate.toString(); %><%@include file="timestring.jsp" %><%
 						} 
 						%> tot en met <%
-						timestr = enddate; %><%@include file="timestring.jsp" %>.
+						timestr = enddate.toString(); %><%@include file="timestring.jsp" %>.
 					</tr></td>
-					<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
-					<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
+					<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
+					<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
@@ -68,9 +75,9 @@
 		// ************************************* the combi-discount: the source shop_item **************
 		%>
 		<mm:related path="discountrel,pools"
-			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
-			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
-			if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
+			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="Long" write="false"
+			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
+			if(nowSec<=enddate.longValue()) { // do not show old discountrel
 				%><tr><td style="padding:3px;">
 				<div class="subtitle"
 					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
@@ -92,16 +99,16 @@
 						>"><mm:field name="items.titel" /></a><mm:last>.</mm:last
 					></mm:list
 				></mm:field> Deze actie loopt <%
-					if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
+					if(startdate.longValue()>=nowSec) { // only show startdate if discount is not started
 						%> van <%
-						timestr = startdate; %><%@include file="timestring.jsp" %><%
+						timestr = startdate.toString(); %><%@include file="timestring.jsp" %><%
 					} 
 					%> tot en met <%
-					timestr = enddate; %><%@include file="timestring.jsp" 
+					timestr = enddate.toString(); %><%@include file="timestring.jsp" 
 				%>.			
 				</tr></td>
-				<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
-				<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
+				<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
+				<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
@@ -109,9 +116,9 @@
 		//  ************************************* the combi-discount: the target shop_item ***************
 		%><mm:list path="items1,discountrel,pools,posrel,items2" 
 			constraints="<%= "items2.number = '" + shop_itemId + "' AND items1.number != '" + shop_itemId + "'" %>"
-			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
-			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
-			if(nowSec<=Long.parseLong(enddate)) { // do not show old discountrel
+			><mm:field name="discountrel.startdate" jspvar="startdate" vartype="Long" write="false"
+			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
+			if(nowSec<=enddate.longValue()) { // do not show old discountrel
 				%><tr><td style="padding:3px;">
 				<div class="subtitle"
 					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
@@ -123,25 +130,25 @@
 						><mm:param name="u"><mm:field name="items1.number" /></mm:param></mm:url
 						>"><mm:field name="items1.titel" /></a>.
 				Deze actie loopt <%
-					if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
+					if(startdate.longValue()>=nowSec) { // only show startdate if discount is not started
 						%> van <%
-						timestr = startdate; %><%@include file="timestring.jsp" %><%
+						timestr = startdate.toString(); %><%@include file="timestring.jsp" %><%
 					} 
 					%> tot en met <%
-					timestr = enddate; %><%@include file="timestring.jsp" 
+					timestr = enddate.toString(); %><%@include file="timestring.jsp" 
 				%>.			
 				</tr></td>
-				<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
-				<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
+				<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
+				<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
 		></mm:list><%
 		// ************************************* Show the body *************************************
-		%><mm:import id="body">BESCHRIJVING</mm:import
+		%><mm:import id="body"><bean:message bundle="LEOCMS" key="items.description" /></mm:import
 		><tr><td style="padding:3px;"><a name="body"></a>
 					<div class="subtitle"><mm:write referid="body" /></div>
-					<mm:field name="body"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
+					<mm:field name="omschrijving"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
 					<mm:related path="posrel,link"  orderby="posrel.pos" directions="UP"
 						><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
 						<mm:field name="link.titel" /></a><br>
@@ -161,7 +168,7 @@
 			<%
    	// ************************************* Show the thumbnails ********************************
    	%><%
-   	imageId = "";
+   	String imageId = "";
    	offsetID= "";
    	int totalNumberOfThumbs = 0;
    	boolean thisIsNotFirst = false; 
@@ -199,27 +206,27 @@
    	String thisImage = "";
    	String otherImages = "";
    	int totalNumberOfImages = 1;
-      int thisImageNumber = 1;
+    int thisImageNumber = 1;
    	
    	int thisThumbNailNumber = 0;
    	int numberInRow = 5;
    	while(thisThumbNailNumber<totalNumberOfThumbs) { 
    		if(thisThumbNailNumber==0) { 
-   			%><mm:import id="thumbs">KIJK DICHTERBIJ</mm:import
-   			><tr><td><a name="thumbs"></a><img src="media/spacer.gif" height="8" width="1" border="0" alt=""></td></tr>
-   			<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+   			%><mm:import id="thumbs"><bean:message bundle="LEOCMS" key="items.lookcloser" /></mm:import
+   			><tr><td><a name="thumbs"></a><img src="media/trans.gif" height="8" width="1" border="0" alt=""></td></tr>
+   			<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
    			<tr><td style="padding:3px;"><div class="subtitle"><mm:write referid="thumbs" /></div></td></tr>
    			<tr><td>
    			<table cellspacing="0" cellpadding="0" width="100%"><tr><%
    		} 
    		if(thisThumbNailNumber%numberInRow!=0) { 
-   			%><td width="16"><img src="media/spacer.gif" height="1" width="16" border="0" alt=""></td><%
+   			%><td width="16"><img src="media/trans.gif" height="1" width="16" border="0" alt=""></td><%
    		} 
    		%><td class="thumbnailparent" width="<%= 100/numberInRow %>%">
    				<table cellspacing="0" cellpadding="0" class="thumbnail">
    					<tr><td class="thumbnail">
    						<%@include file="../splitimagelist.jsp" 
-   						%><a href="<%= pageUrl %>" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
+   						%><a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
    						<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>">
    							<img src="<mm:image template="s(32x54)" />" border="0" alt="">
    						</mm:listnodes
@@ -247,31 +254,31 @@
    						></a>
    					</td></tr>
    				</table>
-   			<a href="<%= pageUrl %>" onClick="javascript:launchCenter('<%=  "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId 
+   			<a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" onClick="javascript:launchCenter('<%=  "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId 
    				%>', 'center', 550, 740);setTimeout('newwin.focus();',250);"><mm:node number="<%= thisImage %>"><mm:field name="title" /></mm:node></a>
    		</td><%
    		imageId = nextImage; 
    		thisThumbNailNumber++;
    		if(thisThumbNailNumber%numberInRow==0) { %></tr>
-   			<tr><td colspan="<%= (numberInRow*2)-2 %>"><img src="media/spacer.gif" height="16" width="1" border="0" alt=""></td></tr>
+   			<tr><td colspan="<%= (numberInRow*2)-2 %>"><img src="media/trans.gif" height="16" width="1" border="0" alt=""></td></tr>
    			<tr><% 
    		} 
    	}
    	if(thisThumbNailNumber>0) {
    		while(thisThumbNailNumber%numberInRow!=0) { 
    			thisThumbNailNumber++;
-   			%><td width="16"><img src="media/spacer.gif" height="1" width="16" border="0" alt=""></td>
-   			<td><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td><%			
+   			%><td width="16"><img src="media/trans.gif" height="1" width="16" border="0" alt=""></td>
+   			<td><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td><%			
    		}
    			%></tr></table>
    		</td></tr>
-   		<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr><%
+   		<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr><%
    	}
    	// ************************************* Show articles ********************************
    	%><mm:remove referid="thumbnailsfound" 
    	/><mm:list nodes="<%= shop_itemId %>" path="items,posrel,artikel" orderby="posrel.pos" directions="UP">
-   	<tr><td><a name="<mm:field name="artikel.number" />"></a><img src="media/spacer.gif" height="8" width="1" border="0" alt=""></td></tr>
-   	<tr><td  class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+   	<tr><td><a name="<mm:field name="artikel.number" />"></a><img src="media/trans.gif" height="8" width="1" border="0" alt=""></td></tr>
+   	<tr><td  class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
    	<tr><td style="padding:3px;">
    				<div class="subtitle"><mm:field name="artikel.titel_fra" jspvar="articles_subtitle" vartype="String" write="false"
    						><%=articles_subtitle.toUpperCase() 
@@ -279,7 +286,7 @@
    				<mm:field name="artikel.intro" />
    			</td>
    	</tr>
-   	<mm:last><tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr></mm:last
+   	<mm:last><tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr></mm:last
    	></mm:list>
    </table>
 </mm:node>
