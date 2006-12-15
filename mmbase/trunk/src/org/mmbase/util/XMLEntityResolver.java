@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.62 2006-12-15 13:40:21 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.63 2006-12-15 17:23:05 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -216,16 +216,24 @@ public class XMLEntityResolver implements EntityResolver {
                     ! name.equals("getNodes") &&
                     name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
                     try {
-                        Object value = m.invoke(o);
-                        if (value != null && Casting.isStringRepresentable(value.getClass())) {
-                            sb.append("<!ENTITY ");
-                            sb.append(prefix);
-                            sb.append('.');
-                            camelAppend(sb, name.substring(3));
-                            sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                        Class rt = m.getReturnType();
+                        boolean invoked = false;
+                        Object value = null;
+                        if (Casting.isStringRepresentable(rt)) {
+                            if (! Map.class.isAssignableFrom(rt) && ! Collection.class.isAssignableFrom(rt)) {
+                                value = m.invoke(o); invoked = true;
+                                sb.append("<!ENTITY ");
+                                sb.append(prefix);
+                                sb.append('.');
+                                camelAppend(sb, name.substring(3));
+                                sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                            }
                         }
-                        if (level < 3 && value != null && !os.contains(value) && ! value.getClass().getName().startsWith("java.lang")) { // recursion to acces also properties of this
-                        appendEntities(sb, value, prefix + "." + camelAppend(new StringBuilder(), name.substring(3)), level + 1, os);
+                        if (! rt.getName().startsWith("java.lang")) {
+                            if (! invoked) value = m.invoke(o);
+                            if (level < 3 && value != null && !os.contains(value)) {
+                                appendEntities(sb, value, prefix + "." + camelAppend(new StringBuilder(), name.substring(3)), level + 1, os);
+                            }
                         }
                     } catch (IllegalAccessException ia) {
                         log.debug(ia);
