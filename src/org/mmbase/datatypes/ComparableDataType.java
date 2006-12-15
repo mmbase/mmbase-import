@@ -20,10 +20,10 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.24 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.25 2006-12-15 13:58:16 michiel Exp $
  * @since MMBase-1.8
  */
-public abstract class ComparableDataType<E extends java.io.Serializable> extends BasicDataType<E> {
+public abstract class ComparableDataType<E extends java.io.Serializable&Comparable> extends BasicDataType<E> {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
