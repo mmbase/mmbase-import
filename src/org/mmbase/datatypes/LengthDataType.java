@@ -16,10 +16,10 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.5 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: LengthDataType.java,v 1.6 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public interface LengthDataType extends DataType {
+public interface LengthDataType<E> extends DataType<E> {
 
 
     /**
@@ -27,7 +27,7 @@ public interface LengthDataType extends DataType {
      * this datatype. There does not exist a generic interface for this, so the implementation
      * will cast to the expected type (String, byte[]..)
      */
-    public long getLength(Object value);
+    public long getLength(E value);
 
     /**
      * Returns the minimum length of binary values for this datatype.
@@ -38,7 +38,7 @@ public interface LengthDataType extends DataType {
      * Returns the 'minLength' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction getMinLengthRestriction();
+    public DataType.Restriction<Long> getMinLengthRestriction();
 
     /**
      * Sets the minimum length of binary values for this datatype.
@@ -58,7 +58,7 @@ public interface LengthDataType extends DataType {
      * Returns the 'maxLength' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction getMaxLengthRestriction();
+    public DataType.Restriction<Long> getMaxLengthRestriction();
 
     /**
      * Sets the maximum length of binary values for this datatype.

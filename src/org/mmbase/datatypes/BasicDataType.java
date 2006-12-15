@@ -38,10 +38,10 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.63 2006-10-04 17:34:06 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.64 2006-12-15 13:38:01 michiel Exp $
  */
 
-public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
+public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
     /**
      * The bundle used by datatype to determine default prompts for error messages when a
      * validation fails.
@@ -60,8 +60,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     protected DataType origin = null;
 
     private Object owner;
-    private Class classType;
-    private Object defaultValue;
+    private Class<C> classType;
+    private C defaultValue;
 
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
@@ -128,9 +128,9 @@ s     */
             classType          =  (Class) in.readObject();
         } catch (Throwable t) {
             // if some unknown class, simply fall back
-            classType         = Object.class;
+            classType         = (Class<C>) Object.class;
         }
-        defaultValue          = in.readObject();
+        defaultValue          = (C) in.readObject();
         commitProcessor       = (CommitProcessor) in.readObject();
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
@@ -148,7 +148,7 @@ s     */
      * {@inheritDoc}
      * Calls both {@link #inheritProperties} and {@link #inheritRestrictions}.
      */
-    public final void inherit(BasicDataType origin) {
+    public final void inherit(BasicDataType<C> origin) {
         edit();
         inheritProperties(origin);
         inheritRestrictions(origin);
@@ -157,7 +157,7 @@ s     */
     /**
      * Properties are members of the datatype that can easily be copied/clones.
      */
-    protected void inheritProperties(BasicDataType origin) {
+    protected void inheritProperties(BasicDataType<C> origin) {
         this.origin     = origin;
 
         defaultValue    = origin.getDefaultValue();
@@ -283,7 +283,7 @@ s     */
      *
      * Override {@link #preCast(Object, Cloud, Node, Field)}
      */
-    public final Object cast(Object value, final Node node, final Field field) {
+    public final C cast(Object value, final Node node, final Field field) {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
@@ -301,10 +301,10 @@ s     */
     /**
      * Utility to avoid repetitive calling of getCloud
      */
-    protected Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+    protected C cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
-        Object cast = Casting.toType(classType, cloud, preCast);
+        C cast = Casting.toType(classType, cloud, preCast);
         return cast;
     }
 
@@ -326,7 +326,7 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public Object getDefaultValue() {
+    public C getDefaultValue() {
         if (defaultValue == null) return null;
         return cast(defaultValue, null, null);
     }
@@ -334,7 +334,7 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public void setDefaultValue(Object def) {
+    public void setDefaultValue(C def) {
         edit();
         defaultValue = def;
     }
@@ -661,10 +661,10 @@ s     */
             // cast to the appropriate datatype value.
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
-            Object keyValue = cast(key, node, field);
+            C keyValue = cast(key, node, field);
             if (keyValue != null) {
-                for (Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry) i.next();
+                for (Iterator<Map.Entry<C, Object>> i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
+                    Map.Entry<C, Object> entry = i.next();
                     if (keyValue.equals(entry.getKey()) ) {
                         value = entry.getValue();
                     }
@@ -677,8 +677,8 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field);
+    public Iterator<Map.Entry<C, Object>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+        Iterator<Map.Entry<C, Object>> i = new RestrictedEnumerationIterator(locale, cloud, node, field);
         return i.hasNext() ? i : null;
     }
 
@@ -776,11 +776,11 @@ s     */
     /**
      * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
-    protected abstract class AbstractRestriction extends StaticAbstractRestriction {
+    protected abstract class AbstractRestriction<D extends Serializable>  extends StaticAbstractRestriction<D> {
         protected AbstractRestriction(AbstractRestriction source) {
             super(BasicDataType.this, source);
         }
-        protected AbstractRestriction(String name, Serializable value) {
+        protected AbstractRestriction(String name, D value) {
             super(BasicDataType.this, name, value);
         }
     }
@@ -794,11 +794,11 @@ s     */
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article about inner classes,
      * cloning in java</a>
      */
-    protected static abstract class StaticAbstractRestriction implements DataType.Restriction {
+    protected static abstract class StaticAbstractRestriction<D extends Serializable>  implements DataType.Restriction<D> {
         protected final String name;
         protected final BasicDataType parent;
         protected LocalizedString errorDescription;
-        protected Serializable value;
+        protected D value;
         protected boolean fixed = false;
         protected int enforceStrength = DataType.ENFORCE_ALWAYS;
 
@@ -829,7 +829,7 @@ s     */
             }
         }
 
-        protected StaticAbstractRestriction(BasicDataType parent, String name, Serializable value) {
+        protected StaticAbstractRestriction(BasicDataType parent, String name, D value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
@@ -839,11 +839,11 @@ s     */
             return name;
         }
 
-        public Serializable getValue() {
+        public D getValue() {
             return value;
         }
 
-        public void setValue(Serializable v) {
+        public void setValue(D v) {
             parent.edit();
             if (fixed) {
                 throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
@@ -949,10 +949,10 @@ s     */
 
         protected abstract boolean simpleValid(Object v, Node node, Field field);
 
-        protected final void inherit(StaticAbstractRestriction source, boolean cast) {
+        protected final void inherit(StaticAbstractRestriction<D> source, boolean cast) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            Serializable inheritedValue = source.getValue();
-            if (cast) inheritedValue = (Serializable) parent.cast(inheritedValue, null, null);
+            D inheritedValue = source.getValue();
+            if (cast) inheritedValue = (D) parent.cast(inheritedValue, null, null);
             setValue(inheritedValue);
             enforceStrength = source.getEnforceStrength();
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
@@ -983,7 +983,7 @@ s     */
     }
 
     // REQUIRED
-    protected class RequiredRestriction extends AbstractRestriction {
+    protected class RequiredRestriction extends AbstractRestriction<Boolean> {
         private static final long serialVersionUID = 1L;
 
         RequiredRestriction(RequiredRestriction source) {
@@ -1005,7 +1005,7 @@ s     */
     }
 
     // UNIQUE
-    protected class UniqueRestriction extends AbstractRestriction {
+    protected class UniqueRestriction extends AbstractRestriction<Boolean> {
         private static final long serialVersionUID = 1L;
         UniqueRestriction(UniqueRestriction source) {
             super(source);
@@ -1072,7 +1072,7 @@ s     */
 
     // TYPE
 
-    protected class TypeRestriction extends AbstractRestriction {
+    protected class TypeRestriction extends AbstractRestriction<Class> {
         private static final long serialVersionUID = 1L;
         TypeRestriction(TypeRestriction source) {
             super(source);
@@ -1094,12 +1094,12 @@ s     */
     }
 
     // ENUMERATION
-    protected class EnumerationRestriction extends AbstractRestriction {
+    protected class EnumerationRestriction extends AbstractRestriction<LocalizedEntryListFactory<C>> {
         private static final long serialVersionUID = 1L;
 
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
-            value = value != null ? (Serializable) ((LocalizedEntryListFactory) value).clone() : null;
+            value = value != null ? (LocalizedEntryListFactory<C>) value.clone() : null;
         }
 
         EnumerationRestriction(LocalizedEntryListFactory entries) {
@@ -1193,11 +1193,11 @@ s     */
      */
     //Also, it 'preCasts' the * keys to the right type.
 
-    protected class RestrictedEnumerationIterator implements Iterator {
-        private final Iterator baseIterator;
+    protected class RestrictedEnumerationIterator implements Iterator<Map.Entry<C, Object>> {
+        private final Iterator<Map.Entry<C, Object>> baseIterator;
         private final Node node;
         private final Field field;
-        private Map.Entry next = null;
+        private Map.Entry<C, Object> next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
             Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
@@ -1213,8 +1213,8 @@ s     */
         protected void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
-                final Map.Entry entry = (Map.Entry) baseIterator.next();
-                Object value = entry.getKey();
+                final Map.Entry<C, Object> entry = baseIterator.next();
+                C value = entry.getKey();
                 Collection validationResult = BasicDataType.this.validate(value, node, field, false);
                 if (validationResult == VALID) {
                     next = entry;
@@ -1246,11 +1246,11 @@ s     */
             return next != null;
         }
 
-        public Object next() {
+        public Map.Entry<C, Object> next() {
             if (next == null) {
                 throw new NoSuchElementException();
             }
-            Object n = next;
+            Map.Entry<C, Object> n = next;
             determineNext();
             return n;
         }
