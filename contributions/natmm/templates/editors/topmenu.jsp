@@ -133,7 +133,7 @@ String sNatuurinNumber = "";
 	<%
 	if (isEventUser) { 
 		%>
-		<td class="fieldname"><a href="/activiteiten" target="_blank" class="menu" title="bekijk de agenda">Agenda</a></td>
+		<td class="fieldname"><a href="<mm:url page="/activiteiten" />" target="_blank" class="menu" title="bekijk de agenda">Agenda</a></td>
 		<%
 		if (isAdmin) {
 			%>

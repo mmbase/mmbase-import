@@ -76,8 +76,10 @@ String userConstraint = "";
                               title='<mm:field name="description"/>'>
                         </mm:compare>
                         <mm:compare referid="type" value="jsp">
-                           <a target="workpane" href="<mm:field name="wizard"/>"
+                           <mm:field name="wizard" jspvar="wizard" vartype="String" write="false">
+                           <a target="workpane" href="<mm:url referids="referrer" page="<%= wizard %>" />"
                                title='<mm:field name="description"/>'>
+                           </mm:field>
                         </mm:compare>
                      </mm:field>
                      <mm:field name="name"/>
