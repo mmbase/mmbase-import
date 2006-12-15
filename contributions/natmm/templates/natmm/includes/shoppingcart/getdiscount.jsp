@@ -1,4 +1,5 @@
-<%--
+<%
+/*
 Discounts are given in two includes:
 - getdiscount.jsp for the product specific discounts
 - getgeneraldiscount.jsp for the general discounts
@@ -8,16 +9,17 @@ Discounts are given in two includes:
 3: in de actieperiode een korting van het kortings bedrag
 4: in de actieperiode geen verzendkosten
 
-*************** 1,2: combi products ********************** 
---%><mm:field name="number" jspvar="thisproduct" vartype="String" write="false"
+*************** 1,2: combi products **********************
+*/
+%><mm:field name="number" jspvar="thisproduct" vartype="String" write="false"
 ><mm:related path="discountrel,pools"
-><mm:field name="discountrel.startdate" jspvar="startdate" vartype="String" write="false"
-><mm:field name="discountrel.enddate" jspvar="enddate" vartype="String" write="false"><%
-	if(Long.parseLong(startdate)<=Now && Now<=Long.parseLong(enddate)) { 
+><mm:field name="discountrel.startdate" jspvar="startdate" vartype="Long" write="false"
+><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
+	if(startdate.longValue()<=nowSec && nowSec<=enddate.longValue()) { 
 		%><mm:node element="pools"
 		><mm:related path="posrel,products"
-			><mm:field name="products.number" jspvar="combiproduct" vartype="String" write="false"
-				><% if(products.get(combiproduct)!=null&&!combiproduct.equals(thisproduct)) { 
+			><mm:field name="products.number" jspvar="combiproduct" vartype="String" write="false"><% 
+        if(products.get(combiproduct)!=null&&!combiproduct.equals(thisproduct)) { 
 					%><mm:remove referid="combiproduct"
 					/><mm:import id= "combiproduct" /><%
 				} 
@@ -38,14 +40,13 @@ Discounts are given in two includes:
 %></mm:field
 ></mm:field
 ></mm:related
-></mm:field
-><%--
+></mm:field><%
 
-*************** 3,4: discount on product ********************** 
---%><mm:related path="posrel,discounts"
-><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
-><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
-if(Long.parseLong(startdate)<=Now && Now<=Long.parseLong(enddate)) { 
+// ************ 3,4: discount on product ********************** 
+%><mm:related path="posrel,discounts"
+><mm:field name="discounts.startdate" jspvar="startdate" vartype="Long" write="false"
+><mm:field name="discounts.enddate" jspvar="enddate" vartype="Long" write="false"><%
+if(startdate.longValue()<=nowSec && nowSec<=enddate.longValue()) { 
 	%><mm:field name="discounts.type" jspvar="type" vartype="String" write="false"
 	><mm:field name="discounts.amount" jspvar="discounts_amount" vartype="String" write="false"><%
 	int amount = Integer.parseInt(discounts_amount);

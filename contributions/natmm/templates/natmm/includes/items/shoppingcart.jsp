@@ -9,7 +9,7 @@
    			<td class="titlebar" width="0%" style="vertical-align:bottom;padding:2px;"><a href="<mm:url page="<%= extendedHref %>" />"><img src="media/shop/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
    		</tr>
    		<%-- <tr>
-   			<td colspan="3"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+   			<td colspan="3"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
    		</tr>
    		<tr>
    			<% extendedHref = shop_itemHref + "&t=fast";

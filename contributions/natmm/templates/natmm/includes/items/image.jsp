@@ -15,10 +15,10 @@
 					   ></mm:compare
 					></mm:isnotempty
 				></mm:field
-				><a href="<mm:url page="<%= shop_itemHref %>" />" style="display:block;width:auto;height:50px;" ><img src="media/spacer.gif" border="0" alt=""></a>
+				><a href="<mm:url page="<%= shop_itemHref %>" />" style="display:block;width:auto;height:50px;" ><img src="media/trans.gif" border="0" alt=""></a>
 			</td>
 			<td class="bottom" style="padding-bottom:10px;padding-right:4px;">
-				<span class="subtitle">Meer</span>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle"><span style="font-weight:normal;">informatie</span></a>
+				<span class="subtitle"><bean:message bundle="LEOCMS" key="items.more" /></span>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle"><span style="font-weight:normal;"><bean:message bundle="LEOCMS" key="items.information" /></span></a>
 			</td>
 			<td class="bottom" style="padding-bottom:10px;padding-right:2px;">
 				<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/shop/pijl_oranje_op_wit.gif" border="0" alt=""></a><br>
@@ -41,5 +41,5 @@
 		   ></mm:compare
 		></mm:isnotempty
 	></mm:field
-	><a style="display:block;width:auto;height:80px;" href="<mm:url page="<%= shop_itemHref %>" />" ><img src="media/spacer.gif" border="0" alt=""></a></td>
+	><a style="display:block;width:auto;height:80px;" href="<mm:url page="<%= shop_itemHref %>" />" ><img src="media/trans.gif" border="0" alt=""></a></td>
 </mm:present>

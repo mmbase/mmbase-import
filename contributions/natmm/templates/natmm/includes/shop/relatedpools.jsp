@@ -23,7 +23,7 @@ while(llPagesWithItems.size()>0) {
 		%></mm:field
 	></mm:list><%
 	
-	leftShop_itemHref = pageUrl + "&p=" + leftPaginaNumber;
+	leftShop_itemHref = ph.createPaginaUrl(leftPaginaNumber,request.getContextPath());
 	
 	String rightPaginaNumber = "";
 	String rightShop_itemNumber = "";
@@ -38,11 +38,11 @@ while(llPagesWithItems.size()>0) {
 			%></mm:field
 		></mm:list><%
 		 
-		rightShop_itemHref = pageUrl + "&p=" + rightPaginaNumber;
+		rightShop_itemHref = ph.createPaginaUrl(rightPaginaNumber,request.getContextPath());
 		rightShop_itemExists = true;
 	} 
 	
-	%><img src="media/spacer.gif" width="1" height="10" border="0" alt=""><br>
+	%><img src="media/trans.gif" width="1" height="10" border="0" alt=""><br>
 	<table cellspacing="0" cellpadding="0" width="100%">
 			<%@include file="../items/titlerow.jsp" 
 			%><%@include file="../items/imagerow.jsp" %>
@@ -52,16 +52,18 @@ while(llPagesWithItems.size()>0) {
 				<mm:node number="<%= leftPaginaNumber %>" 
 					><td class="titlebar"
 						style="width:50%;text-align:right;vertical-align:bottom;padding-left:4px;padding-right:2px;padding-bottom:2px;font-size:12px;">
-						<strong>meer</strong> <a href="<mm:url page="<%= leftShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
+						<strong><bean:message bundle="LEOCMS" key="shop.relatedpools.more" /></strong>
+            <a href="<mm:url page="<%= leftShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
 					<td class="titlebar" width="0%" style="vertical-align:bottom;padding:2px;">
 						<a href="<mm:url page="<%= leftShop_itemHref %>" />"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 				</mm:node>
-				<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
+				<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 				<% if(rightShop_itemExists) { 
 						%><mm:node number="<%= rightPaginaNumber %>" 
 						><td class="titlebar" 
 							style="width:50%;text-align:right;vertical-align:bottom;padding-left:4px;padding-right:2px;padding-bottom:2px;font-size:12px;">
-							<strong>meer</strong> <a href="<mm:url page="<%= rightShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
+							<strong><bean:message bundle="LEOCMS" key="shop.relatedpools.more" /></strong>
+              <a href="<mm:url page="<%= rightShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
 						<td class="titlebar" width="0%" style="vertical-align:bottom;padding:2px;">
 							<a href="<mm:url page="<%= rightShop_itemHref %>" />"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 						</mm:node><% 

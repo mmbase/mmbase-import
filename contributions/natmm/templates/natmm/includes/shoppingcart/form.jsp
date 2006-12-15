@@ -6,9 +6,9 @@ String scriptStr = "";
 int p_number = 1;
 %><table width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="15%"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+	<td width="15%"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 	<td width="65%">
-	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+	<img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
 	
 	<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,paragraaf"
 				constraints="contentrel.pos=13" orderby="posrel.pos" directions="UP"
@@ -17,9 +17,9 @@ int p_number = 1;
 	if(posrel2_pos.equals("1")) {			// **************** total costs ****************************
 		offsetID = (String) session.getAttribute("totalcosts"); 
 		if(offsetID !=null) { 
-			%><img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+			%><img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
 			<table width="100%" cellspacing="0" cellpadding="0">
-			<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+			<tr><td class="titlebar" colspan="2"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
 			<tr><td class="carteven"  style="text-align:left;"><span style="font-size:12px;font-weight:bold;">
 					<mm:field name="paragraaf.titel" /></span></td>
 				<td class="carteven" style="font-size:12px;font-weight:bold;padding-right:5px;text-align:right;"><%
@@ -28,22 +28,23 @@ int p_number = 1;
 				} else {
 					%>nog onbekend<% 
 				} %></td></tr>
-			<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
+			<tr><td class="titlebar" colspan="2"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
 			</table><%
 		} 
 	} else if(posrel2_pos.equals("8")) {	// **************** obligatory fields text ******************
 		%><table width="100%" cellspacing="0" cellpadding="0"><tr>
 			<td class="creditline" style="text-align:left;"><mm:field name="paragraaf.omschrijving" /></td>
 		</tr></table>
-		<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
+		<img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
 		<%
 	} else if(posrel2_pos.equals("9")) {	// **************** send order ******************
 			%><table width="180" cellspacing="0" cellpadding="0" align="right">
 			<tr>
 			<td class="titlebar" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
-				<nowrap><a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=send" %>" />');" class="white"><mm:field name="paragraaf.omschrijving" /></a></td>
+				<nowrap><a href="javascript:changeIt('<mm:url page="<%= 
+            ph.createPaginaUrl("bestel",request.getContextPath()) + "?t=send" %>" />');" class="white"><mm:field name="paragraaf.omschrijving" /></a></td>
 			<td class="titlebar" style="padding:2px;" width="100%">
-				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=send" %>" />');"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
+				<a href="javascript:changeIt('<mm:url page="<%= ph.createPaginaUrl("bestel",request.getContextPath()) + "?t=send" %>" />');"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 			</tr>
 		</table><%
 	} else {								// **************** input fields ****************************
@@ -52,17 +53,18 @@ int p_number = 1;
 			answerValue = (String)  session.getAttribute("q0");
 			if(answerValue==null) answerValue = "";
 			%><table width="100%" cellspacing="0" cellpadding="0">
-			<form name="formulier" method="post" action="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=send&pst=" %>" />');"><tr>
+			<form name="formulier" method="post" action="javascript:changeIt('<mm:url page="<%= 
+          ph.createPaginaUrl("bestel",request.getContextPath()) + "?t=send&pst=" %>" />');"><tr>
 				<td class="titlebar" style="width:40%;vertical-align:middle;background-color:#5D5D5D;">
 				<input type="radio" name="gender" value="m" <% if(answerValue.equals("m")) { %>CHECKED<% } %>>Dhr
 				<input type="radio" name="gender" value="f" <% if(answerValue.equals("f")) { %>CHECKED<% } %>>Mevr</td>
-				<td style="width:60%;height:17px;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+				<td style="width:60%;height:17px;"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 			</tr><%
 			
 		} 
 		answerValue = (String) session.getAttribute("q" + p_number);
 		if(answerValue==null) answerValue = "";
-		%><tr><td colspan="2"><img src="media/spacer.gif" height="7" width="1" border="0" alt=""></td></tr>
+		%><tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 		<tr>
 		<td class="titlebar" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;"><mm:field name="paragraaf.omschrijving" 
 			/><% if(!posrel2_pos.equals("6")) { %>*<% } %></td>
@@ -81,12 +83,12 @@ int p_number = 1;
 	%></mm:field
 	></mm:list>
 	</td>
-	<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-	<td width="180"><img src="media/spacer.gif" height="1" width="180" border="0" alt=""><br>
+	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
+	<td width="180"><img src="media/trans.gif" height="1" width="180" border="0" alt=""><br>
 	<table width="100%" cellspacing="0" cellpadding="0">
 	<tr><td style="padding:4px;padding-top:14px;">
 		<mm:import id="isfirst"
-		/><bean:message bundle="LEOCMS" key="shoppingcartform.back_to_form" 
+		/><bean:message bundle="LEOCMS" key="shoppingcart.back_to_form" 
 			/><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
 			constraints="contentrel.pos=4"
 				><mm:node element="artikel"
@@ -108,7 +110,7 @@ var answer = document.formulier.gender;
 for (var i=0; i < answer.length; i++){
 	if (answer[i].checked) {
 		var rad_val = answer[i].value;
-		if(rad_val != '') {	href += "$q0=" + rad_val; }
+		if(rad_val != '') {	href += "|q0=" + rad_val; }
 	}
 }
 <%= scriptStr %>
