@@ -20,14 +20,14 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.23 2006-12-09 15:24:28 johannes Exp $
+ * @version $Id: BasicComponent.java,v 1.24 2006-12-15 14:43:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
     private static final Logger log = Logging.getLoggerInstance(BasicComponent.class);
 
     private final String name;
-    private String bundle;
+    private ResourceBundle bundle;
     private final LocalizedString description;
     private final Map<String, Block> blocks = new HashMap<String, Block>();
     private Block defaultBlock = null;
@@ -55,9 +55,21 @@ public class BasicComponent implements Component {
         description.fillFromXml("description", el);
 
         NodeList bundleElements = el.getElementsByTagName("bundle");
-        for (int i=0; i<bundleElements.getLength(); i++) {
+        for (int i = 0; i < bundleElements.getLength(); i++) {
             Element element = (Element) bundleElements.item(i);
-            bundle = element.getAttribute("name");
+            bundle = ResourceBundle.getBundle(element.getAttribute("name"));
+        }
+        if (bundle == null) {
+            log.service("No resource bundle defined for block " + name + ". Using empty one.");
+            bundle = new ResourceBundle() {
+                    public Object handleGetObject(String key) {
+                        return null;
+                    }
+                    public Enumeration<String> getKeys() {
+                        Set<String> empty = Collections.emptySet();
+                        return Collections.enumeration(empty);
+                    }
+                };
         }
 
         NodeList blockElements = el.getElementsByTagName("block");
@@ -160,7 +172,7 @@ public class BasicComponent implements Component {
         return getName();
     }
 
-    public String getBundle() {
+    public ResourceBundle getBundle() {
         return bundle;
     }
 }
