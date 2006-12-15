@@ -13,19 +13,19 @@ package org.mmbase.datatypes;
  * DataType associated with {@link java.lang.Float}, as NumberDataType, but provides getMin and getMax as float.
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.8 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.9 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class FloatDataType extends NumberDataType {
+public class FloatDataType extends NumberDataType<Float> {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     /**
      * @param primitive indicate if a primitive type should be used
      */
-    public FloatDataType(String name, boolean primitive) { 
+    public FloatDataType(String name, boolean primitive) {
         super(name, primitive ? Float.TYPE : Float.class);
-        setMin(new Float(Float.NEGATIVE_INFINITY), false);
-        setMax(new Float(Float.POSITIVE_INFINITY), false);
+        setMin(Float.valueOf(Float.NEGATIVE_INFINITY), false);
+        setMax(Float.valueOf(Float.POSITIVE_INFINITY), false);
     }
 
 
@@ -33,7 +33,7 @@ public class FloatDataType extends NumberDataType {
      * @return the minimum value as a <code>float</code>, or {@link Float#NEGATIVE_INFINITY} if there is no minimum.
      */
     public float getMin() {
-        Number min = (Number) getMinRestriction().getValue();
+        Number min = getMinRestriction().getValue();
         return min == null ? Float.NEGATIVE_INFINITY : min.floatValue();
     }
 
@@ -41,7 +41,7 @@ public class FloatDataType extends NumberDataType {
      * @return the maximum value as a <code>float</code>, or {@link Float#POSITIVE_INFINITY} if there is no maximum.
      */
     public float getMax() {
-        Number max = (Number) getMaxRestriction().getValue();
+        Number max = getMaxRestriction().getValue();
         return max == null ? Float.POSITIVE_INFINITY : max.floatValue();
     }
 }

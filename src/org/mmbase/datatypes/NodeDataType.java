@@ -20,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.30 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.31 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class NodeDataType extends BasicDataType {
+public class NodeDataType extends BasicDataType<Node> {
 
     private static final Logger log = Logging.getLoggerInstance(NodeDataType.class);
 
@@ -90,7 +90,7 @@ public class NodeDataType extends BasicDataType {
         return errors;
     }
 
-    private class MustExistRestriction extends AbstractRestriction {
+    private class MustExistRestriction extends AbstractRestriction<Boolean> {
         MustExistRestriction(MustExistRestriction me) {
             super(me);
             enforceStrength = DataType.ENFORCE_ONCHANGE;

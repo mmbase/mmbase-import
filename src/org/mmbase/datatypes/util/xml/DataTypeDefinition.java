@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.56 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.57 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -423,12 +423,12 @@ public class DataTypeDefinition {
             ComparableDataType dDataType = (ComparableDataType) dataType;
             if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                dDataType.setMin(value, "minInclusive".equals(localName));
+                dDataType.setMin((java.io.Serializable) value, "minInclusive".equals(localName));
                 setRestrictionData(dDataType.getMinRestriction(), conditionElement);
                 return true;
             } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                dDataType.setMax(value, "maxInclusive".equals(localName));
+                dDataType.setMax((java.io.Serializable) value, "maxInclusive".equals(localName));
                 setRestrictionData(dDataType.getMaxRestriction(), conditionElement);
                 return true;
             }

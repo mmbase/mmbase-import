@@ -14,11 +14,11 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DoubleDataType.java,v 1.7 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: DoubleDataType.java,v 1.8 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class DoubleDataType extends NumberDataType {
+public class DoubleDataType extends NumberDataType<Double> {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     /**
@@ -26,15 +26,15 @@ public class DoubleDataType extends NumberDataType {
      */
     public DoubleDataType(String name, boolean primitive) {
         super(name, primitive ? Double.TYPE : Double.class);
-        setMin(new Double(Double.NEGATIVE_INFINITY), false);
-        setMax(new Double(Double.POSITIVE_INFINITY), false);
+        setMin(Double.valueOf(Double.NEGATIVE_INFINITY), false);
+        setMax(Double.valueOf(Double.POSITIVE_INFINITY), false);
     }
 
     /**
      * @return the minimum value as a <code>double</code>, or {@link Double#NEGATIVE_INFINITY} if there is no minimum.
      */
     public double getMin() {
-        Number min = (Number) getMinRestriction().getValue();
+        Number min = getMinRestriction().getValue();
         return min == null ? Double.NEGATIVE_INFINITY : min.doubleValue();
     }
 
@@ -42,7 +42,7 @@ public class DoubleDataType extends NumberDataType {
      * @return the maximum value as a <code>double</code>, or {@link Double#POSITIVE_INFINITY} if there is no maximum.
      */
     public double getMax() {
-        Number max = (Number) getMaxRestriction().getValue();
+        Number max = getMaxRestriction().getValue();
         return max == null ? Double.POSITIVE_INFINITY : max.doubleValue();
     }
 

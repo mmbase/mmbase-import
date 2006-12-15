@@ -22,10 +22,10 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.16 2006-07-18 12:58:40 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.17 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
+abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
     private static final Logger log = Logging.getLoggerInstance(LengthDataType.class);
 
     protected MinRestriction minLengthRestriction = new MinRestriction(this, 0);
@@ -65,19 +65,19 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
     /**
      * {@inheritDoc}
      */
-    public abstract long getLength(Object value);
+    public abstract long getLength(E value);
 
     /**
      * {@inheritDoc}
      */
     public long getMinLength() {
-        return Casting.toLong(minLengthRestriction.getValue());
+        return minLengthRestriction.getValue();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getMinLengthRestriction() {
+    public DataType.Restriction<Long> getMinLengthRestriction() {
         return minLengthRestriction;
     }
 
@@ -85,20 +85,20 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      * {@inheritDoc}
      */
     public void setMinLength(long value) {
-        getMinLengthRestriction().setValue(new Long(value));
+        getMinLengthRestriction().setValue(Long.valueOf(value));
     }
 
     /**
      * {@inheritDoc}
      */
     public long getMaxLength() {
-        return Casting.toLong(getMaxLengthRestriction().getValue());
+        return getMaxLengthRestriction().getValue();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getMaxLengthRestriction() {
+    public DataType.Restriction<Long> getMaxLengthRestriction() {
         return maxLengthRestriction;
     }
 
@@ -108,7 +108,7 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      */
     public void setMaxLength(long value) {
-        getMaxLengthRestriction().setValue(new Long(value));
+        getMaxLengthRestriction().setValue(Long.valueOf(value));
     }
 
     protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
@@ -136,13 +136,13 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         return buf;
     }
 
-    static class MinRestriction extends StaticAbstractRestriction {
+    static class MinRestriction extends StaticAbstractRestriction<Long> {
         MinRestriction(BasicDataType dt, MinRestriction source) {
             super(dt, source);
         }
 
         MinRestriction(BasicDataType dt, long min) {
-            super(dt, "minLength", new Long(min));
+            super(dt, "minLength", Long.valueOf(min));
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
@@ -152,13 +152,13 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         }
     }
 
-    static class MaxRestriction extends StaticAbstractRestriction {
+    static class MaxRestriction extends StaticAbstractRestriction<Long> {
         MaxRestriction(BasicDataType dt, MaxRestriction source) {
             super(dt, source);
         }
 
         MaxRestriction(BasicDataType dt, long max) {
-            super(dt, "maxLength", new Long(max));
+            super(dt, "maxLength", Long.valueOf(max));
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {

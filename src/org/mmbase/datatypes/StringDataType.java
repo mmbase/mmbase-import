@@ -22,10 +22,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.36 2006-09-06 18:23:02 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.37 2006-12-15 13:38:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class StringDataType extends ComparableDataType implements LengthDataType {
+public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
@@ -144,8 +144,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         }
     }
 
-    public long getLength(Object value) {
-        return ((String) value).length();
+    public long getLength(String value) {
+        return value.length();
     }
     /**
      * {@inheritDoc}
@@ -157,7 +157,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getMinLengthRestriction() {
+    public DataType.Restriction<Long> getMinLengthRestriction() {
         return minLengthRestriction;
     }
 
@@ -165,7 +165,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * {@inheritDoc}
      */
     public void setMinLength(long value) {
-        getMinLengthRestriction().setValue(new Long(value));
+        getMinLengthRestriction().setValue(Long.valueOf(value));
     }
 
     /**
@@ -178,14 +178,14 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getMaxLengthRestriction() {
+    public DataType.Restriction<Long> getMaxLengthRestriction() {
         return maxLengthRestriction;
     }
     /**
      * {@inheritDoc}
      */
     public void setMaxLength(long value) {
-        getMaxLengthRestriction().setValue(new Long(value));
+        getMaxLengthRestriction().setValue(Long.valueOf(value));
     }
 
 
