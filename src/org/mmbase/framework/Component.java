@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.8 2006-12-11 10:11:52 michiel Exp $
+ * @version $Id: Component.java,v 1.9 2006-12-15 14:43:27 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -28,9 +28,8 @@ public interface Component {
 
     /**
      * The name of the bundle to use for messages
-     * @todo Why not return a ResourceBundle?
      */
-    String getBundle();
+    ResourceBundle getBundle();
 
     /**
      * The description can contain further information about the component, mainly to be displayed
