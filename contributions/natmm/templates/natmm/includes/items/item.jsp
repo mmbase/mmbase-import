@@ -14,8 +14,8 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 		<tr>
 			<td style="padding-left:3px;padding-right:3px;">
 				<strong><mm:field name="titel" /></strong><br>
-				<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
-						><mm:isnotempty><span class="black"><%@include file="../shop/cleanarticleintro.jsp" %></span></mm:isnotempty
+				<mm:field name="intro"
+						><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty
 				></mm:field>
 			</td>
 		</tr>
@@ -42,7 +42,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 			</td>
 		</tr>
 		<tr><%@include file="shoppingcart.jsp"%></tr>
-		<tr><td class="titlebar" colspan="2"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
+		<tr><td class="maincolor" colspan="2"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
 	</table>
 	<table width="100%" cellspacing="0" cellpadding="0"><%
 	  // ************************************* Show discounts (if any) *******************************
@@ -52,7 +52,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 			><mm:field name="discounts.enddate" jspvar="enddate" vartype="Long" write="false"><%
 			if(nowSec<=enddate.longValue()) { // do not show old discounts
 					%><tr><td style="padding:3px;">
-					<div class="subtitle"
+					<divclass="colortitle"
 						><mm:field name="discounts.title" jspvar="discounts_title" vartype="String" write="false"
 							><%= discounts_title.toUpperCase() 
 						%></mm:field
@@ -67,7 +67,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 						timestr = enddate.toString(); %><%@include file="timestring.jsp" %>.
 					</tr></td>
 					<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
-					<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
+					<tr><td class="maincolor"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
@@ -79,7 +79,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
 			if(nowSec<=enddate.longValue()) { // do not show old discountrel
 				%><tr><td style="padding:3px;">
-				<div class="subtitle"
+				<divclass="colortitle"
 					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
 						><%= discountrel_title.toUpperCase() 
 					%></mm:field
@@ -108,7 +108,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 				%>.			
 				</tr></td>
 				<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
-				<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
+				<tr><td class="maincolor"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
@@ -120,7 +120,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 			><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
 			if(nowSec<=enddate.longValue()) { // do not show old discountrel
 				%><tr><td style="padding:3px;">
-				<div class="subtitle"
+				<divclass="colortitle"
 					><mm:field name="discountrel.title" jspvar="discountrel_title" vartype="String" write="false"
 						><%= discountrel_title.toUpperCase() 
 					%></mm:field
@@ -139,7 +139,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 				%>.			
 				</tr></td>
 				<tr><td><img src="media/trans.gif" height="4" width="1" border="0" alt=""></td></tr>
-				<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
+				<tr><td class="maincolor"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr><%
 			} 
 			%></mm:field
 			></mm:field
@@ -147,7 +147,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 		// ************************************* Show the body *************************************
 		%><mm:import id="body"><bean:message bundle="LEOCMS" key="items.description" /></mm:import
 		><tr><td style="padding:3px;"><a name="body"></a>
-					<div class="subtitle"><mm:write referid="body" /></div>
+					<divclass="colortitle"><mm:write referid="body" /></div>
 					<mm:field name="omschrijving"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
 					<mm:related path="posrel,link"  orderby="posrel.pos" directions="UP"
 						><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
@@ -199,7 +199,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    		%></mm:field
    	></mm:list><%
    	
-   	String slideshowUrl = "slideshow.jsp?p=" + paginaID + "&u=" +  shop_itemId + "&offset=" +  offsetID;
+   	String slideshowUrl = "includes/shop/slideshow.jsp?p=" + paginaID + "&u=" +  shop_itemId + "&offset=" +  offsetID;
    
    	String previousImage = "-1";
    	String nextImage = "-1";
@@ -214,8 +214,8 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    		if(thisThumbNailNumber==0) { 
    			%><mm:import id="thumbs"><bean:message bundle="LEOCMS" key="items.lookcloser" /></mm:import
    			><tr><td><a name="thumbs"></a><img src="media/trans.gif" height="8" width="1" border="0" alt=""></td></tr>
-   			<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
-   			<tr><td style="padding:3px;"><div class="subtitle"><mm:write referid="thumbs" /></div></td></tr>
+   			<tr><td class="maincolor"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
+   			<tr><td style="padding:3px;"><divclass="colortitle"><mm:write referid="thumbs" /></div></td></tr>
    			<tr><td>
    			<table cellspacing="0" cellpadding="0" width="100%"><tr><%
    		} 
@@ -226,7 +226,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    				<table cellspacing="0" cellpadding="0" class="thumbnail">
    					<tr><td class="thumbnail">
    						<%@include file="../splitimagelist.jsp" 
-   						%><a href="<%= ph.createPaginaUrl(paginaID,request.getContextPath()) %>" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
+   						%><a href="#" onClick="javascript:launchCenter('<%= "/" + ph.getSubDir(cloud,paginaID) + slideshowUrl + "&i=" + imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
    						<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>">
    							<img src="<mm:image template="s(32x54)" />" border="0" alt="">
    						</mm:listnodes
@@ -278,9 +278,9 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    	%><mm:remove referid="thumbnailsfound" 
    	/><mm:list nodes="<%= shop_itemId %>" path="items,posrel,artikel" orderby="posrel.pos" directions="UP">
    	<tr><td><a name="<mm:field name="artikel.number" />"></a><img src="media/trans.gif" height="8" width="1" border="0" alt=""></td></tr>
-   	<tr><td  class="titlebar"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
+   	<tr><td  class="maincolor"><img src="media/trans.gif" height="1" width="1" border="0" alt=""></td></tr>
    	<tr><td style="padding:3px;">
-   				<div class="subtitle"><mm:field name="artikel.titel_fra" jspvar="articles_subtitle" vartype="String" write="false"
+   				<divclass="colortitle"><mm:field name="artikel.titel_fra" jspvar="articles_subtitle" vartype="String" write="false"
    						><%=articles_subtitle.toUpperCase() 
    				%></mm:field></div>
    				<mm:field name="artikel.intro" />

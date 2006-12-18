@@ -12,6 +12,7 @@
 </style>
 </head>
 <body style="width:100%;padding:5px;">
+<%--
 <% log.info("Changing posrel.pos field from -1 to positive value in pages related to 'shop' node to correct design of Webwinkel Rubriek. First page in this rubriek should be 'Welkom in de Winkel' page, that has value of posrel.pos field equals to '1'."); %>
 <% int iMaxValueOfPosrelPos = 0; %>
 <mm:list nodes="shop" path="rubriek,posrel,pagina">
@@ -134,6 +135,87 @@ log.info("replace shop artikel template by default one"); %>
   <mm:node element="paginatemplate" id="paginatemplate"/>
   <mm:createrelation role="related" source="paginatemplate" destination="new_ed"/>
 </mm:list>
+--%>
+<% 
+log.info("Migrate some articles to teasers"); 
+String sConstraints = "";
+
+String [] migrateToTeaser = {
+  "Introtekst home",
+  "Kalender 2007",
+  "Agenda 2007",
+  "Telefonisch bestellen",
+  "Kerstkaartje sturen en natuurmonumenten steunen",
+};
+String [] teaserRole = {
+  "0",
+  "2",
+  "2",
+  "2",
+  "2",
+};
+
+for(int i=0;i<migrateToTeaser.length;i++) {
+  sConstraints = "artikel.titel = '" + migrateToTeaser[i] + "'"; 
+  %>
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+    <mm:field name="titel" jspvar="titel" vartype="String" write="false">
+    <mm:field name="titel_eng" jspvar="titel_eng" vartype="String" write="false">
+    <mm:field name="intro" jspvar="omschrijving" vartype="String" write="false">
+      <mm:createnode type="teaser" id="thisteaser">
+        <mm:setfield name="size">1</mm:setfield>
+        <mm:setfield name="titel_zichtbaar">0</mm:setfield>
+        <mm:setfield name="reageer">0</mm:setfield>
+        <mm:setfield name="titel"><%= titel %></mm:setfield>
+        <mm:setfield name="titel_eng"><%= titel_eng %></mm:setfield>
+        <mm:setfield name="omschrijving"><%= omschrijving %></mm:setfield>
+      </mm:createnode>
+      <mm:related path="contentrel,pagina">
+          <mm:remove referid="thispage" />
+          <mm:node element="pagina" id="thispage">
+          <mm:createrelation source="thispage" destination="thisteaser" role="rolerel">
+            <mm:setfield name="pos">1</mm:setfield>
+            <mm:setfield name="rol"><%= teaserRole[i] %></mm:setfield>
+          </mm:createrelation>
+        </mm:node>
+      </mm:related>
+      <mm:related path="readmore,pagina">
+        <mm:field name="readmore.readmore" jspvar="readmore" vartype="String" write="false">
+          <mm:remove referid="thispage" />
+          <mm:node element="pagina" id="thispage">
+            <mm:createrelation source="thispage" destination="thisteaser" role="readmore">
+              <mm:setfield name="readmore"><%= readmore %></mm:setfield>
+            </mm:createrelation>
+          </mm:node>
+        </mm:field>
+      </mm:related>
+      <mm:related path="posrel,images">
+        <mm:node element="images" id="thisimage">
+          <mm:createrelation source="thisteaser" destination="thisimage" role="posrel" />
+        </mm:node>
+        <mm:deletenode element="posrel" />
+      </mm:related>
+    </mm:field>
+    </mm:field>
+    </mm:field>
+    <mm:deletenode deleterelations="true" />
+  </mm:listnodes>
+  <%
+}
+log.info("Delete some old articles");
+String [] articlesToDelete = {
+  "Prijsvraag voor kinderen",
+  "Welkom verkoopadres",
+};
+for(int i=0;i<articlesToDelete.length;i++) {
+  sConstraints = "artikel.titel = '" +articlesToDelete[i] + "'"; 
+  %>
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+    <mm:deletenode deleterelations="true" />
+  </mm:listnodes>
+  <%
+}
+%>
 </body>
 </html>
 </mm:log>

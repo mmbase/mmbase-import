@@ -18,7 +18,7 @@
 				><a href="<mm:url page="<%= shop_itemHref %>" />" style="display:block;width:auto;height:50px;" ><img src="media/trans.gif" border="0" alt=""></a>
 			</td>
 			<td class="bottom" style="padding-bottom:10px;padding-right:4px;">
-				<span class="subtitle"><bean:message bundle="LEOCMS" key="items.more" /></span>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />" class="subtitle"><span style="font-weight:normal;"><bean:message bundle="LEOCMS" key="items.information" /></span></a>
+				<span class="colortitle"><bean:message bundle="LEOCMS" key="items.more" /></span>&nbsp;<a href="<mm:url page="<%= shop_itemHref %>" />"class="colortitle"><span style="font-weight:normal;"><bean:message bundle="LEOCMS" key="items.information" /></span></a>
 			</td>
 			<td class="bottom" style="padding-bottom:10px;padding-right:2px;">
 				<a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/shop/pijl_oranje_op_wit.gif" border="0" alt=""></a><br>

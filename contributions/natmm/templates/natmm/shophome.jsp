@@ -8,7 +8,7 @@
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
-   <%@include file="includes/shop/header.jsp" %>
+  <%@include file="includes/shop/header.jsp" %>
 	<td colspan="3" width="70%">
 		<jsp:include page="includes/shop/discount.jsp">
 			<jsp:param name="p" value="<%= paginaID %>" />
@@ -16,12 +16,12 @@
 		<%@include file="includes/shop/relatedpools.jsp" %>
 	</td>
 	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
-	<td width="180">
+	<td width="180" style="vertical-align:top;">
 		<jsp:include page="includes/shop/relatedteasers.jsp">
 			<jsp:param name="p" value="<%= paginaID %>" />
 		</jsp:include>
 	</td>
-   <%@include file="includes/shop/footer.jsp" %>
+  <%@include file="includes/shop/footer.jsp" %>
 <%@include file="includes/footer.jsp" %>
 </mm:locale>
 </cache:cache>

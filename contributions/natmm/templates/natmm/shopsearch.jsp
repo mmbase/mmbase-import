@@ -48,14 +48,14 @@
 			</td></tr>
 			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr><form name="searchform" method="post" action="javascript:searchOn();">
-				<td class="titlebar" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Zoekterm</td>
-				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
+				<td class="maincolor" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Zoekterm</td>
+				<td class="maincolor" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
 					<input type="text" name="search" style="width:100%;height:15px;" value="<%= searchId %>"></td>
 			</tr>
 			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr>
-				<td class="titlebar" style="width:40%;ertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Categorie</td>
-				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
+				<td class="maincolor" style="width:40%;ertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Categorie</td>
+				<td class="maincolor" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
 				<select name="pool" style="width:100%;height:15px;">
 					<option value="">
 					<mm:list path="pagina" orderby="pagina.titel" directions="UP" 
@@ -74,8 +74,8 @@
 			</tr>
 			<tr><td colspan="2"><img src="media/trans.gif" height="7" width="1" border="0" alt=""></td></tr>
 			<tr>
-				<td class="titlebar" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Trefwoord</td>
-				<td class="titlebar" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
+				<td class="maincolor" style="width:40%;vertical-align:middle;padding-left:4px;background-color:#5D5D5D;">Trefwoord</td>
+				<td class="maincolor" style="width:60%;vertical-align:middle;text-align:right;padding-right:1px;background-color:#5D5D5D;">
 					<select name="key" style="width:100%;height:15px;">
 						<option value="">
 						<mm:list path="keys" orderby="keys.word" directions="UP"
@@ -92,9 +92,9 @@
 				<td style="width:60%;">
 				<table width="100%" cellspacing="0" cellpadding="0" align="right">
 					<tr>
-					<td class="titlebar" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
+					<td class="maincolor" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
 						<nowrap><a href="javascript:searchOn();document.searchform.target='';document.searchform.submit();" class="white">OPNIEUW ZOEKEN</a></td>
-					<td class="titlebar" style="padding:2px;" width="100%">
+					<td class="maincolor" style="padding:2px;" width="100%">
 						<a href="javascript:searchOn();document.searchform.target='';document.searchform.submit();"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 					</tr></form>
 				</table>
@@ -136,7 +136,7 @@
     if(!searchResults.equals("")) {
 			%><mm:list nodes="<%= searchResults %>" path="products" orderby="products.titel" directions="UP"
 				><mm:first><table width="100%" cellspacing="0" cellpadding="0">
-				<tr><td class="titlebar" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
+				<tr><td class="maincolor" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
 				</mm:first
 				><mm:field name="products.number" jspvar="shop_itemId" vartype="String" write="false"
 					><jsp:include page="includes/relatedfoundproduct.jsp">

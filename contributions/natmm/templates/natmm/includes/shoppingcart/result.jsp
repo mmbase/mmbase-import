@@ -1,17 +1,12 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../../request_parameters.jsp" %>
 <mm:cloud jspvar="cloud">
-<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="contentrel.pos=14"
-><mm:node element="artikel"
-><table width="100%" cellspacing="0" cellpadding="0">
+<table width="100%" cellspacing="0" cellpadding="0">
 <tr>
     <td width="20%"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
     <td width="60%">
     <img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
-    <%  String responseText = "";
-        %><mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
-                ><% responseText = articles_intro;
-        %></mm:field><%
+    <%  String responseText = "Articles intro";
         
         String warningText = "<ul>";
         boolean isValidAnswer = true;
@@ -34,25 +29,97 @@
             responseText += "Dhr.";
         }
         int questions_number =1;
-    %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,paragraaf" fields="paragraaf.omschrijving"
-                    constraints="contentrel.pos=13 AND posrel.pos > 1 AND posrel.pos < 8"
-                    orderby="posrel.pos" directions="UP"
-        ><mm:field name="posrel.pos" jspvar="posrel2_pos" vartype="String" write="false"
-        ><mm:field name="paragraaf.titel" jspvar="questions_title" vartype="String" write="false"
-        ><% responseText += "<br><br>" + questions_title + ": ";
-            answerValue = (String) session.getAttribute("q" + questions_number);
-            if(answerValue==null) { answerValue = ""; }
-            if(answerValue.equals("")) {
-                answerValue = "niet ingevuld";
-                if(!posrel2_pos.equals("6")) {
-                    isValidAnswer = false;
-                    warningText += "<li>" + questions_title + "</li>";
-                }
-            }
-            responseText += answerValue;
-            questions_number++;
-        %></mm:field
-        ></mm:field
+    %><mm:list nodes="<%= paginaID %>" path="posrel,formulierveld" orderby="posrel.pos" directions="UP"
+   				><mm:first><% responseText += "<ol>\n<li>"; %></mm:first
+   				><mm:first inverse="true"><% responseText += "</li>\n<li>"; %></mm:first>
+					<mm:node element="formulierveld" jspvar="thisQuestion"><%
+   				
+						String questions_number = thisQuestion.getStringValue("number"); 
+						String questions_title = thisQuestion.getStringValue("label"); 
+						if(numberOrdered>1) { questions_title += " (item nummer " + (i+1) + ")"; }
+						String questions_type = thisQuestion.getStringValue("type");
+						boolean isRequired = thisQuestion.getStringValue("verplicht").equals("1");
+						
+						responseText += questions_title + " : "; 
+						
+						if(questions_type.equals("6")) { // *** date ***
+						
+							responseText += "(Dag,Maand,Jaar) ";
+							String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_day",postingStr);
+							if(answerValue.equals("")) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Dag in " + questions_title + "<br>";
+								}
+							} else {
+								responseText += answerValue;
+							}
+							answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_month",postingStr);
+							if(answerValue.equals("")) {
+								responseText += ", " + noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Maand in " + questions_title + "<br>";
+								}
+							} else {
+								responseText += ", " + answerValue;
+							}
+							answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_year",postingStr);
+							if(answerValue.equals("")) {
+								responseText +=  ", " + noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; Jaar in " + questions_title + "<br>";
+								}
+							} else {
+								responseText +=  ", " + answerValue;
+							}
+		
+						} else if(questions_type.equals("5")) { // *** check boxes ***
+							boolean hasSelected = false; 
+							%><mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP"
+								><mm:field name="formulierveldantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
+								String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i + "_" + answer_number,postingStr);
+								if(!answerValue.equals("")) { 
+									hasSelected = true;
+									responseText += "<br>&#149; " + answerValue;
+								}
+								%></mm:field
+							></mm:related><%
+							if(!hasSelected) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; " + questions_title + "<br>";
+								}
+							} 
+		
+						} else { // *** textarea, textline, dropdown, radio buttons ***
+							String answerValue = getResponseVal("q_" + thisForm + "_" + questions_number + "_" + i,postingStr);
+							if(answerValue.equals("")) {
+								responseText += noAnswer;
+								if(isRequired) {
+									isValidAnswer = false;
+									warningMessage += "&#149; " + questions_title + "<br>";
+								}
+							}
+							responseText += answerValue;
+							// *** check whether this question provides the client email address ***
+							// *** the object cloud has to contain a question with alias client_email ***
+							%><mm:list nodes="client_email" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+									clientEmail = answerValue;
+							%></mm:list><%
+							
+							// *** check whether this question provides the client email address ***
+							// *** the object cloud has to contain a question with alias client_department ***
+							%><mm:list nodes="client_department" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+									clientDept = answerValue;
+							%></mm:list><%
+						} 
+   				%>
+					</mm:node>
+					<mm:last><% responseText += "</li>\n</ol>\n"; %></mm:last
     ></mm:list><%
     
     responseText += "<br><br>Lidmaatschapsnr.: ";
@@ -141,9 +208,9 @@
         %></mm:field
     ></mm:related
     
-    ><div class="subtitle"><mm:field name="titel" /></div>
+    ><divclass="colortitle"><mm:field name="titel" /></div>
     <%= formMessage %><br><br>
-    <a class="subtitle" href="<mm:url page="<%= formMessageHref 
+    <aclass="colortitle" href="<mm:url page="<%= formMessageHref 
             %>" />"><%= formMessageLinktext %></a><img src="media/trans.gif" width="10" height="1"></div>
     <td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
     <td width="180"><img src="media/trans.gif" height="1" width="180" border="0" alt=""><br>
@@ -151,7 +218,7 @@
     <tr><td style="padding:4px;padding-top:14px;">
         <mm:import id="isfirst"
         /><a href="<mm:url page="<%= formMessageHref 
-            %>" />" class="subtitle"><%= formMessageLinktext%></a>&nbsp;<a href="<mm:url page="<%= formMessageHref 
+            %>" />"class="colortitle"><%= formMessageLinktext%></a>&nbsp;<a href="<mm:url page="<%= formMessageHref 
             %>" />"><img src="media/back.gif" border="0" alt=""></a><br>
         <%@include file="../includes/relatedlinks.jsp" %>
     </td></tr>

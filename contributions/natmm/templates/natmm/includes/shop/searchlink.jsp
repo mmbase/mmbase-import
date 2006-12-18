@@ -3,25 +3,25 @@
 <mm:cloud jspvar="cloud">
 <%
 PaginaHelper ph = new PaginaHelper(cloud);
-String shop_itemHref = "javascript:searchIt();document.search.target='';document.search.submit();";
-%><table width="180" cellspacing="0" cellpadding="0">
+%><table width="165" cellspacing="0" cellpadding="0">
 	<form name="search" method="post" target="" action="javascript:searchIt();">
 	<tr>
-		<td width="180">
-		<table width="180" cellspacing="0" cellpadding="0">
+		<td width="165">
+		<table width="165" cellspacing="0" cellpadding="0">
 			<tr> <!-- the input box gets a default 1px top and bottom border in IE -->
-			<td class="titlebar" style="vertical-align:middle"><img src="media/trans.gif" width="1" height="1" border="0" alt=""><input type="text" name="search" style="width:88px;height:15px;"></td>
-			<td class="titlebar" width="100%" style="vertical-align:middle;text-align:center;"><a href="<%= shop_itemHref %>" class="white"><bean:message bundle="LEOCMS" key="shop.searchlink.search" /></a></td>
-			<td class="titlebar" width="0%" style="padding-right:2px;padding-top:2px;padding-bottom:2px;"><a href="<%= shop_itemHref %>"><img src="media/shop/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
+			<td class="maincolor" style="vertical-align:middle;padding-left:1px;">
+        <input type="text" name="search" style="width:82px;height:15px;"></td>
+			<td class="maincolor" style="vertical-align:middle;text-align:center;">
+        <input type="submit" value="<bean:message bundle="LEOCMS" key="shop.searchlink.search" />" class="submit_image" style="width:82px;" /></td>
 			</tr>
 		</table>
 		</td>
 	</tr>
 	<tr>
-		<td width="180" colspan="2"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
+		<td width="165" colspan="2"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 	<tr>
 	<tr>
-		<td class="subtitlebar" width="180" colspan="2" style="padding-right:3px;text-align:right;">
+		<td class="subtitlebar" width="165" colspan="2" style="padding-right:3px;text-align:right;">
 		   <bean:message bundle="LEOCMS" key="shop.searchlink.intheshop" />
 		</td>
 	<tr>
