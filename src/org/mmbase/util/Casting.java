@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.98 2006-12-05 23:21:31 michiel Exp $
+ * @version $Id: Casting.java,v 1.99 2006-12-18 19:01:22 michiel Exp $
  */
 
 import java.util.*;
@@ -124,7 +124,7 @@ public class Casting {
      * @return value the converted value
      * @since MMBase-1.8
      */
-    public static Object toType(Class type, Object value) {
+    public static <C> C toType(Class<C> type, Object value) {
         return toType(type, null, value);
     }
 
@@ -141,31 +141,31 @@ public class Casting {
      * @return value the converted value
      * @since MMBase-1.8
      */
-    public static Object toType(Class type, Cloud cloud, Object value) {
+    public static <C> C toType(Class<C> type, Cloud cloud, Object value) {
         if (value != null && isType(type, value))  {
-            return value;
+            return (C) value;
         } else {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
-                return Boolean.valueOf(toBoolean(value));
+                return (C) Boolean.valueOf(toBoolean(value));
             } else if (type.equals(Byte.TYPE) || type.equals(Byte.class)) {
-                return Byte.valueOf(toInteger(value).byteValue());
+                return (C) Byte.valueOf(toInteger(value).byteValue());
             } else if (type.equals(Character.TYPE) || type.equals(Character.class)) {
                 String chars = toString(value);
                 if (chars.length() > 0) {
-                    return Character.valueOf(chars.charAt(0));
+                    return (C) Character.valueOf(chars.charAt(0));
                 } else {
-                    return Character.valueOf(Character.MIN_VALUE);
+                    return (C) Character.valueOf(Character.MIN_VALUE);
                 }
             } else if (type.equals(Short.TYPE) || type.equals(Short.class)) {
-                return Short.valueOf(toInteger(value).shortValue());
+                return (C) Short.valueOf(toInteger(value).shortValue());
             } else if (type.equals(Integer.TYPE) || type.equals(Integer.class)) {
-                return toInteger(value);
+                return (C) toInteger(value);
             } else if (type.equals(Long.TYPE) || type.equals(Long.class)) {
-                return Long.valueOf(toLong(value));
+                return (C) Long.valueOf(toLong(value));
             } else if (type.equals(Float.TYPE) || type.equals(Float.class)) {
-                return Float.valueOf(toFloat(value));
+                return (C) Float.valueOf(toFloat(value));
             } else if (type.equals(Double.TYPE) || type.equals(Double.class)) {
-                return Double.valueOf(toDouble(value));
+                return (C) Double.valueOf(toDouble(value));
             } else if (type.equals(Number.class)) {
                 Number res;
                 try {
@@ -177,32 +177,32 @@ public class Casting {
                         res = Integer.valueOf(-1);
                     }
                 }
-                return res;
+                return (C) res;
             } else if (type.equals(byte[].class)) {
-                return toByte(value);
+                return (C) toByte(value);
             } else if (type.equals(String.class)) {
-                return toString(value);
+                return (C) toString(value);
             } else if (type.equals(Date.class)) {
-                return toDate(value);
+                return (C) toDate(value);
             } else if (type.equals(Node.class)) {
                 try {
                     if (cloud == null) {
                         if (anonymousCloud == null) anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
                         cloud = anonymousCloud;
                     }
-                    return toNode(value, cloud);
+                    return (C) toNode(value, cloud);
                 } catch (Exception e) {
                     // suppose that that was because mmbase not running
-                    return value instanceof Node ? value : null;
+                    return (C) (value instanceof Node ? value : null);
                 }
             } else if (type.equals(Document.class)) {
-                return toXML(value);
+                return (C) toXML(value);
             } else if (type.equals(List.class)) {
-                return toList(value);
+                return (C) toList(value);
             } else if (type.equals(Map.class)) {
-                return toMap(value);
+                return (C) toMap(value);
             } else if (type.equals(Collection.class)) {
-                return toCollection(value);
+                return (C) toCollection(value);
             } else {
                 if (value == null || "".equals(value)) {
                     // just to avoid the error
@@ -210,7 +210,7 @@ public class Casting {
                 }
                 log.error("Dont now how to convert to " + type);
                 // don't know
-                return value;
+                return (C) value;
             }
         }
     }
