@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.167 2006-12-02 17:44:25 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.168 2006-12-18 19:14:21 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -1030,9 +1030,30 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     /**
+     * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
+     */
+    int  add(BasicNode node) {
+        return node.getNumber();
+    }
+    void createAlias(BasicNode node, String aliasName) {
+        String owner = getUser().getOwnerField();
+        if (! node.getNode().getBuilder().createAlias(node.getNumber(), aliasName, owner)) {
+            Node otherNode = getNode(aliasName);
+            if (otherNode != null) {
+                throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
+            } else {
+                throw new BridgeException("Alias " + aliasName + " could not be created.");
+            }
+        }
+    }
+    
+    /**
      * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
      */
     void remove(String currentObjectContext) {
+    }
+    void remove(MMObjectNode node) {
+        node.remove(getUser());
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

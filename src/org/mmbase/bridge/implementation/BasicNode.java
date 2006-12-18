@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.214 2006-11-10 14:19:59 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.215 2006-12-18 19:14:21 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -62,15 +62,15 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * This is necessary since there is otherwise no sure (and quick) way to determine
      * whether a node is in 'edit' mode (i.e. has a temporary node).
      * Basically, a temporarynodeid is either -1 (invalid), or a negative number smaller than -1
-     * (a temporary number assigend by the system).
+     * (a temporary number assigned by the system).
      */
-    private int temporaryNodeId = -1;
+    protected int temporaryNodeId = -1;
 
     /**
      * The account this node is edited under.
      * This is needed to check whether people have not switched users during an edit.
      */
-    private String account = null;
+    protected String account = null;
 
 
 
@@ -118,7 +118,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         setNodeManager(node);
         temporaryNodeId = id;
         init();
-        edit(ACTION_CREATE);
+        checkCreate();
     }
 
     /**
@@ -218,69 +218,51 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public boolean isChanged() {
         return getNode().isChanged();
     }
-    public Set getChanged() {
+    public Set<String> getChanged() {
         return Collections.unmodifiableSet(getNode().getChanged());
     }
 
-    /**
-     * Edit this node.
-     * Check whether edits are allowed and prepare a node for edits if needed.
-     * The type of edit is determined by the action specified, and one of:<br />
-     * ACTION_CREATE (create a node),<br />
-     * ACTION_EDIT (edit node, or change aliasses),<br />
-     * ACTION_DELETE (delete node),<br />
-     * ACTION_COMMIT (commit a node after changes)
-     *
-     * @param action The action to perform.
-     */
-    // there is little common for the 4 actions (code is full of if/else code), I think it would
-    // perhaps be clearer to remove this method, and simply resolve it on the places where it is
-    // used.
-    protected void edit(int action) {
+
+    protected void checkAccount()  {
         if (account == null) {
             account = cloud.getAccount();
         } else if (!account.equals(cloud.getAccount())) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
+    }
 
-        int realnumber = getNode().getNumber();
-        if (realnumber != -1) {
-            if (action == ACTION_DELETE) {
-                cloud.verify(Operation.DELETE, realnumber);
-            } else if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
-                cloud.verify(Operation.WRITE, realnumber);
-            }
+
+    protected void checkDelete() {
+        checkAccount();
+        int realNumber = getNode().getNumber();
+        if (realNumber != -1) {
+            cloud.verify(Operation.DELETE, realNumber);
         }
-
-        // check for the existence of a temporary node
         if (temporaryNodeId == -1) {
-            // when committing a temporary node id must exist (otherwise fail).
-            if (action == ACTION_COMMIT) {
-                // throw new BasicBridgeException("This node cannot be comitted (not changed).");
-            }
-            // when adding a temporary node id must exist (otherwise fail).
-            // this should not occur (hence internal error notice), but we test it anyway.
-
-            if (action == ACTION_CREATE) {
-                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error).");
-            }
-
-            // when editing a temporary node id must exist (otherwise create one)
-            // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
-            //
-            // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
-            // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
-            if ((action == ACTION_EDIT) || ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
-                int id = getNumber();
-                String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
-                // store new temporary node in transaction
-                cloud.add(currentObjectContext);
-                setNode(BasicCloudContext.tmpObjectManager.getNode(account, "" + id));
-                //  check nodetype afterwards?
-                temporaryNodeId = id;
-            }
+            temporaryNodeId = cloud.add(this);
         }
     }
+    /**
+     * @inheritDoc
+     */
+    protected void checkWrite() {
+        checkAccount();
+        int realNumber = getNode().getNumber();
+        if (realNumber != -1 && temporaryNodeId == -1) {
+            cloud.verify(Operation.WRITE, realNumber);
+        }
+        if (temporaryNodeId == -1) {
+            temporaryNodeId = cloud.add(this);
+        }
+    }
+
+    protected void checkCreate() {
+        checkAccount();
+    }
+    protected void checkCommit() {
+        checkAccount();
+    }
+
 
     /**
      * Protected method to be able to set rnumber when creating a relation.
@@ -300,12 +282,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (v == null) {
             return null;
         } else if (v instanceof Node) {
-            return new Integer(((Node)v).getNumber());
+            return Integer.valueOf(((Node)v).getNumber());
         } else if (v instanceof MMObjectNode) {
-            return new Integer(((MMObjectNode)v).getNumber());
+            return Integer.valueOf(((MMObjectNode)v).getNumber());
         } else {
             // giving up
-            return new Integer(cloud.getNode(v.toString()).getNumber());
+            return Integer.valueOf(cloud.getNode(v.toString()).getNumber());
         }
     }
 
@@ -399,7 +381,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public int getIntValue(String fieldName) {
-        Integer result = new Integer(getNode().getIntValue(fieldName));
+        Integer result = Integer.valueOf(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result = (Integer) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result);
@@ -479,7 +461,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (isNew()) {
             cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
-        edit(ACTION_COMMIT);
+        checkCommit();
 
         Collection<String> errors = validate();
         if (errors.size() > 0) {
@@ -508,7 +490,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void cancel() {
-        edit(ACTION_COMMIT);
+        checkCommit();
         // when in a transaction, let the transaction cancel
         if (cloud instanceof Transaction) {
             ((Transaction)cloud).cancel();
@@ -526,7 +508,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     public void delete(boolean deleteRelations) {
-        edit(ACTION_DELETE);
+        checkDelete();
         if (isNew()) {
             // remove from the Transaction
             // note that the node is immediately destroyed !
@@ -584,7 +566,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @param type  the type of relation (-1 = don't care)
      */
     private void deleteRelations(int type) {
-        List relations = null;
+        List<MMObjectNode> relations;
         try {
             if (type == -1) {
                 relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber(), false);
@@ -593,28 +575,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             }
         } catch (SearchQueryException  sqe) {
             log.error(sqe.getMessage()); // should not happen
+            return;
         }
-        if (relations != null) {
-            // check first
-            for (Iterator i = relations.iterator(); i.hasNext();) {
-                MMObjectNode node = (MMObjectNode)i.next();
-                cloud.verify(Operation.DELETE, node.getNumber());
-            }
-            // then delete
-            for (Iterator i = relations.iterator(); i.hasNext();) {
-                MMObjectNode node = (MMObjectNode)i.next();
-                if ((type == -1) || (node.getIntValue("rnumber") == type)) {
-                    if (cloud instanceof Transaction) {
-                        String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        ((BasicTransaction)cloud).add(currentObjectContext);
-                        ((BasicTransaction)cloud).delete(currentObjectContext);
-                    } else {
-                        node.remove(cloud.getUser());
-                    }
-                }
+        // check first
+        checkAccount();
+        for (MMObjectNode node : relations) {
+            cloud.verify(Operation.DELETE, node.getNumber());
+        }
+
+        // then delete
+        for (MMObjectNode node : relations) {
+            if ((type == -1) || (node.getIntValue("rnumber") == type)) {
+                cloud.remove(node);
             }
         }
+
     }
 
     public void deleteRelations(String type) throws NotFoundException {
@@ -722,7 +697,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 MMObjectNode relDefNode = ((BasicRelationManager) insrel).relDefNode;
                 if (relDefNode != null) {
                     StepField rnumber = query.getStepField(insrel.getField("rnumber"));
-                    query.setConstraint(query.createConstraint(rnumber, new Integer(relDefNode.getNumber())));
+                    query.setConstraint(query.createConstraint(rnumber, Integer.valueOf(relDefNode.getNumber())));
                 }
             }
 
@@ -734,7 +709,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             StepField snumber = query.getStepField(insrel.getField("snumber"));
             StepField dnumber = query.getStepField(insrel.getField("dnumber"));
 
-            Integer number = new Integer(getNumber());
+            Integer number = Integer.valueOf(getNumber());
 
             switch(dir) {
             case RelationStep.DIRECTIONS_DESTINATION: {
@@ -838,7 +813,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public StringList getAliases() {
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
-        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
+        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
         q.setConstraint(c);
         NodeList aliases = oalias.getList(q);
         StringList result = new BasicStringList();
@@ -870,23 +845,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void createAlias(String aliasName) {
-        edit(ACTION_EDIT);
-        if (cloud instanceof Transaction) {
-            String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
-            ((BasicTransaction)cloud).add(aliasContext); // sigh
-        } else if (isNew()) {
-            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
-        } else {
-            String owner = cloud.getUser().getOwnerField();
-            if (!getNode().getBuilder().createAlias(getNumber(), aliasName, owner)) {
-                Node otherNode = cloud.getNode(aliasName);
-                if (otherNode != null) {
-                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
-                } else {
-                    throw new BridgeException("Alias " + aliasName + " could not be created.");
-                }
-            }
-        }
+        checkWrite();
+        cloud.createAlias(this, aliasName);
     }
 
     /**
@@ -902,7 +862,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (!isNew()) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
-            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
+            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
             if (aliasName != null) {
                 Constraint c2 = q.createConstraint(q.getStepField(oalias.getField("name")), aliasName);
                 c = q.createConstraint (c,CompositeConstraint.LOGICAL_AND,c2);
@@ -918,7 +878,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void deleteAlias(String aliasName) {
-        edit(ACTION_EDIT);
+        checkWrite();
         deleteAliases(aliasName);
     }
 
@@ -967,16 +927,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 cancel();
             }
         }
-    }
-
-
-    /**
-     * @see java.lang.Object#hashCode()
-     *
-     * @since MMBase-1.6.2
-     */
-    public int hashCode() {
-        return getNode().hashCode();
     }
 
     public Collection  getFunctions() {
