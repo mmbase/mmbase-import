@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.40 2006-01-24 12:29:27 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.41 2006-12-18 19:15:04 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -180,7 +180,7 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     public void setValueWithoutProcess(String fieldName, Object value) {
-        edit(ACTION_EDIT);
+        checkWrite();
         if ("rnumber".equals(fieldName)) {
             throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
         } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
