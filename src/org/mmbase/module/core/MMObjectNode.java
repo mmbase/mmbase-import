@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.200 2006-11-29 09:51:36 johannes Exp $
+ * @version $Id: MMObjectNode.java,v 1.201 2006-12-18 17:54:41 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -370,7 +370,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public String getContext(UserContext user) {
         if (newContext != null) return newContext;
         if (getNumber() < 0) return user.getOwnerField();
-        return parent.getMMBase().getMMBaseCop().getAuthorization().getContext(user, getNumber());
+        try {
+            return parent.getMMBase().getMMBaseCop().getAuthorization().getContext(user, getNumber());
+        } catch (Exception e) {
+            log.warn(e);
+            return getStringValue("owner");
+        }
     }
 
     /**
@@ -1127,7 +1132,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
      * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though.
      */
-    public Set getChanged() {
+    public Set<String> getChanged() {
         return changed;
     }
 
