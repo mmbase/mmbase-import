@@ -306,7 +306,7 @@ DoubleDateNode ddn = new DoubleDateNode();
             String source = parent_number;
             if(isEditor && isGroupExcursion) {
                %>
-               <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/evenement/evenement_medewerker&nodepath=evenement&objectnumber=<%= nodenr %>&referrer=<%= sReferrer %>&language=nl">
+               <a href="<mm:url page="<%= editwizard_location %>"/>/jsp/wizard.jsp?wizard=config/evenement/evenement_medewerker&nodepath=evenement&objectnumber=<%= nodenr %>&referrer=<%= sReferrer %>&language=nl">
                   <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk betrokken personen'>
                </a>
                <%
@@ -822,7 +822,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                <td colspan="10" style="vertical-align:top;text-align:right;">bijzonderheden
                   <%
                   if(isEditor) {
-                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_descr&nodepath=inschrijvingen&objectnumber=<%= snumber %>&referrer=<%= sReferrer %>&language=nl">
+                     %><a href="<mm:url page="<%= editwizard_location %>"/>/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_descr&nodepath=inschrijvingen&objectnumber=<%= snumber %>&referrer=<%= sReferrer %>&language=nl">
                         <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bijzonderheden'>
                      </a><%
                   } %>
@@ -835,7 +835,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                <td colspan="10" style="vertical-align:top;text-align:right;">aard van de groep
                   <%
                   if(isEditor) {
-                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_addcategorie&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referrer=<%= sReferrer %>&language=nl">
+                     %><a href="<mm:url page="<%= editwizard_location %>"/>/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_addcategorie&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referrer=<%= sReferrer %>&language=nl">
                         <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer aanmeldingscategorie'>
                      </a><%
                   } %>
@@ -850,7 +850,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                <td colspan="10" style="vertical-align:top;text-align:right;">bevestigings tekst en afwijkende kosten
                   <%
                   if(isEditor) {
-                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_confirmationtexts&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referrer=<%= sReferrer %>&language=nl">
+                     %><a href="<mm:url page="<%= editwizard_location %>"/>/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_confirmationtexts&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referrer=<%= sReferrer %>&language=nl">
                         <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer bevestigingstekst'>
                      </a><%
                   } %>
