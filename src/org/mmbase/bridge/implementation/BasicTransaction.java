@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25 2006-06-22 07:52:14 nklasens Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.1 2006-12-18 19:11:39 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -40,6 +40,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     protected final BasicCloud parentCloud;
 
+    protected final Collection coreNodes;
+
     /*
      * Constructor to call from the CloudContext class.
      * Package only, so cannot be reached from a script.
@@ -57,17 +59,22 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         // due to additional administration
         if (parentCloud instanceof BasicTransaction) {
             transactionContext = ((BasicTransaction)parentCloud).transactionContext;
+            coreNodes = ((BasicTransaction)parentCloud).coreNodes;
         } else {
             try {
                 // XXX: the current transaction manager does not allow multiple transactions with the
                 // same name for different users
                 // We solved this here, but this should really be handled in the Transactionmanager.
                 transactionContext = account + "_" + transactionName;
-                BasicCloudContext.transactionManager.createTransaction(transactionContext);
+                coreNodes = BasicCloudContext.transactionManager.createTransaction(transactionContext);
             } catch (TransactionManagerException e) {
                 throw new BridgeException(e.getMessage(), e);
             }
         }
+    }
+
+    public NodeList getNodes() {
+        return new BasicNodeList(coreNodes, this);
     }
 
 
@@ -90,17 +97,29 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             try {
                 Collection col = BasicCloudContext.transactionManager.getTransaction(transactionContext);
                 // BasicCloudContext.transactionManager.commit(account, transactionContext);
-                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
                 // This is a hack to call the commitprocessors which are only available in the bridge.
                 // The EXISTS_NOLONGER check is required to prevent committing of deleted nodes.
-                Iterator i = col.iterator();
+                NodeIterator i = getNodes().nodeIterator();
                 while (i.hasNext()) {
-                    MMObjectNode n = (MMObjectNode) i.next();
-                    if (!TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
-                        Node node = parentCloud.makeNode(n, "" + n.getNumber());
-                        node.commit();
+                    Node n = i.nextNode();
+                    log.debug("Commiting " + n);
+                    if (n == null) {
+                        log.warn("Found null in transaction");
+                        continue;
                     }
+                    if (! n.isChanged() && ! n.isNew()) {
+                        log.debug("Ignored because not changed " + n.isChanged() + "/" + n.isNew());
+                        continue;
+                    }
+                    if (TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
+                        log.debug("Ignored because exists no longer.");
+                        continue;
+                    }
+                    n.commit();
                 }
+
+                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
