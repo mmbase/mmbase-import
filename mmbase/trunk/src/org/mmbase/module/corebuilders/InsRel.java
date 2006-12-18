@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.52 2006-12-18 17:53:54 michiel Exp $
+ * @version $Id: InsRel.java,v 1.53 2006-12-18 18:02:35 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -321,14 +321,14 @@ public class InsRel extends MMObjectBuilder {
             query.setConstraint(constraint);
             return count(query) != 0;
         } catch (SearchQueryException sqe) {
-            log.error(sqe.getMessage()); // should not happen
+            log.error(sqe.getMessage(), sqe); // should not happen
             return true; // perhaps yes?
         }
     }
 
     // creates a constraint for a numeric field on a query
     private BasicFieldValueConstraint getNumberConstraint(NodeSearchQuery query, String fieldName, int value) {
-        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), new Integer(value));
+        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), Integer.valueOf(value));
     }
 
     /**
@@ -351,7 +351,7 @@ public class InsRel extends MMObjectBuilder {
         try {
             return new Vector<MMObjectNode>(getRelationNodes(source, -1, usesdir));
         } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
+            log.error(sqe.getMessage(), sqe); // should not happen
             return new Vector<MMObjectNode>(); //
         }
     }
@@ -377,7 +377,7 @@ public class InsRel extends MMObjectBuilder {
         try {
             return new Vector<MMObjectNode>(getRelationNodes(source, role, usesdir));
         } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
+            log.error(sqe.getMessage(), sqe); // should not happen
             return new Vector<MMObjectNode>(); //
         }
     }
@@ -400,12 +400,12 @@ public class InsRel extends MMObjectBuilder {
      * Get all relation(s) for a MMObjectNode.
      * @deprecated use {@link #getRelationNodes(int, boolean)}
      */
-    public Vector getAllRelationsVector(int source) {
+    public Vector<MMObjectNode> getAllRelationsVector(int source) {
         try {
-            return new Vector(getRelationNodes(source, -1, false));
+            return new Vector<MMObjectNode>(getRelationNodes(source, -1, false));
         } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
-            return new Vector(); //
+            log.error(sqe.getMessage(), sqe); // should not happen
+            return new Vector<MMObjectNode>(); //
         }
     }
 
@@ -453,12 +453,12 @@ public class InsRel extends MMObjectBuilder {
      * Get all relation(s) for a MMObjectNode.
      * @deprecated use {@link #getRelationNodes(int, int, boolean)}
      */
-    public Vector getAllRelationsVector(int source, int role) {
+    public Vector<MMObjectNode> getAllRelationsVector(int source, int role) {
         try {
-            return new Vector(getRelationNodes(source, role, false));
+            return new Vector<MMObjectNode>(getRelationNodes(source, role, false));
         } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
-            return new Vector(); //
+            log.error(sqe.getMessage(), sqe); // should not happen
+            return new Vector<MMObjectNode>(); //
         }
     }
 
@@ -733,7 +733,7 @@ public class InsRel extends MMObjectBuilder {
     * @param source the number of the relation to remove from the cache
     **/
     public void deleteRelationCache(int source) {
-        relatedCache.remove(new Integer(source));
+        relatedCache.remove(Integer.valueOf(source));
     }
 
     /**
