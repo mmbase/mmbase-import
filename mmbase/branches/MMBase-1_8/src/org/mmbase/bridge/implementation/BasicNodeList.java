@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.47 2006-07-09 14:14:39 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.47.2.1 2006-12-18 19:11:39 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -142,18 +142,38 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
             } else {
-                int n = coreNode.getNumber();
-                if (cloud.hasNode(n)) {
-                    node = cloud.getNode(n);
-                } else {
-                    log.warn("No node with number " + n + " converting to null");
-                    node = null;
-                }
+                node =  getNode(cloud, coreNode);
             }
         }
         set(index, node);
         return node;
     }
+    /**
+     * @since MMBase-1.8.4
+     */
+    protected Node getNode(Cloud c, MMObjectNode coreNode) {
+        Node node;
+        int n = coreNode.getNumber();
+        try {
+            if (n == -1) {
+                String[] na  = coreNode.getStringValue("_number").split("_");
+                if (na.length == 2) {
+                    node = cloud.getNode(na[1]);
+                } else {
+                    log.error("Could not make a Node of " + coreNode);
+                    node = null;
+                }
+            } else {
+                node = cloud.getNode(n);
+            }
+        } catch (Exception e) {
+            log.error(e);
+            log.error(coreNode.getClass() + "" + coreNode.getValues());
+            node = null;
+        }
+        return node;
+    }
+
 
     protected Object validate(Object o) throws ClassCastException {
         if (o instanceof MMObjectNode || o instanceof String) {
