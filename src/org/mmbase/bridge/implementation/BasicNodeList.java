@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.49 2006-11-11 20:54:04 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.50 2006-12-18 19:14:46 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList  {
 
@@ -151,6 +151,9 @@ public class BasicNodeList extends BasicList implements NodeList  {
         return node;
     }
 
+    /**
+     * @since MMBase-1.8.4
+     */
     protected Node getNode(Cloud c, MMObjectNode coreNode) {
         Node node;
         int n = coreNode.getNumber();
