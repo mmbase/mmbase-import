@@ -157,6 +157,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/*"/>                           <!-- of course -->
         <include name="org/mmbase/bridge/util/**"       />              <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
         <include name="org/mmbase/storage/search/*"/>                   <!-- those interfaces are  part of bridge -->
+        <exclude name="org/mmbase/storage/search/SearchQueryHandler"/>  <!-- Has a dependency on MMObjectNode -->
         <include name="org/mmbase/datatypes/**" />                      <!-- datatype classes are bridge -->
         <include name="org/mmbase/security/UserContext.class"/>         <!-- security classes are bridge -->
         <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
