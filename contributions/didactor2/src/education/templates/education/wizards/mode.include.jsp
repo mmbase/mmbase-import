@@ -9,9 +9,12 @@
 <mm:treefile id="wizardjsp" write="false" 
              page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="wizardlang@language,templates">
   <mm:param name="referrer">/education/wizards/ok.jsp</mm:param>
+  <mm:param name="loginmethod">delegate</mm:param>
 </mm:treefile>
 
-<mm:treefile id="listjsp" page="/mmbase/edit/wizard/jsp/list.jsp" objectlist="$includePath" referids="wizardlang@language,templates" write="false" />
+<mm:treefile id="listjsp" page="/mmbase/edit/wizard/jsp/list.jsp" objectlist="$includePath" referids="wizardlang@language,templates" write="false">
+  <mm:param name="loginmethod">delegate</mm:param>
+</mm:treefile>
 
 <mm:node number="component.pdf" notfound="skip">
   <mm:relatednodes type="providers" constraints="providers.number=$provider">
