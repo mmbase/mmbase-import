@@ -10,12 +10,12 @@
 <tr>
 	<mm:node number="<%= leftShop_itemNumber %>"
 		><td style="padding-right:3px;"><a href="<mm:url page="<%= leftShop_itemHref %>" />" class="bold"><mm:field name="titel" /></a><br>
-		<mm:notpresent referid="nointro"><%@include file="../shop/cleanarticleintro.jsp" %></mm:notpresent></td></mm:node>
+		<mm:notpresent referid="nointro"><mm:field name="intro" /></mm:notpresent></td></mm:node>
 	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 	<% if(rightShop_itemExists) { 
 		%><mm:node number="<%= rightShop_itemNumber %>" 
 			><td style="padding-right:3px;"><a href="<mm:url page="<%= rightShop_itemHref %>" />" class="bold"><mm:field name="titel" /></a><br>
-			<mm:notpresent referid="nointro"><%@include file="../shop/cleanarticleintro.jsp" %></mm:notpresent></td></mm:node><% 
+			<mm:notpresent referid="nointro"><mm:field name="intro" /></mm:notpresent></td></mm:node><% 
 	} else {
 		%><td>&nbsp;</td><%
 	} %>

@@ -1,6 +1,6 @@
 <img src="media/trans.gif" height="14" width="1" alt="" border="0" alt=""><br>
 <table cellspacing="0" cellpadding="0" width="100%">
-<tr><td class="titlebar"><img src="media/trans.gif" height="1" width="1" alt="" border="0" alt=""></td></tr>
+<tr><td class="maincolor"><img src="media/trans.gif" height="1" width="1" alt="" border="0" alt=""></td></tr>
 <tr><td class="internalnav">Overige producten onder <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node></td></tr>
 <tr><form name="selectform" method="post" action=""><td>
 	<select name="shop_item" onChange="javascript:postIt();" style="width:180px;height:16px;">

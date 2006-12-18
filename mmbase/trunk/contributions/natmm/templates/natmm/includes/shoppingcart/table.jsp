@@ -10,6 +10,7 @@ String pageUrl = ph.createPaginaUrl("bestel",request.getContextPath());
 
 String subsiteID = request.getParameter("si");
 String memberId = request.getParameter("mi");
+String styleSheet = request.getParameter("rs");
 String imageTemplate ="";
 int shippingCosts = Integer.parseInt(request.getParameter("sc"));
 int totalSum = Integer.parseInt(request.getParameter("ts"));
@@ -30,14 +31,20 @@ String formScript = "function changeIt(url) {"
 	<td width="60%">
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
 	<%
-  String articleConstraint = "contentrel.pos=10"; 
+  String articleConstraint = "contentrel.pos='1'";
 	TreeMap productsIterator = (TreeMap) session.getAttribute("productsIterator"); 
 	if(productsIterator.size()==0) {
-		articleConstraint = "contentrel.pos=11"; 
+		articleConstraint = "contentrel.pos='2'"; 
 	} 
 	%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
-		><%@include file="../shop/relatedarticle.jsp" 
-	%></mm:list><br>
+		><mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false"
+      ><jsp:include page="../includes/artikel_1_column.jsp">
+         <jsp:param name="o" value="<%= artikel_number %>" />
+         <jsp:param name="r" value="<%= rubriekID %>" />
+         <jsp:param name="rs" value="<%= styleSheet %>" />
+       </jsp:include
+     ></mm:field> 
+	%></mm:list><br/>
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
 	<%@include file="membershipsform.jsp"%><br>
 	<img src="media/spacer.gif" width="1" height="25" border="0" alt=""><br>
@@ -54,7 +61,7 @@ if(productsIterator.size()>0) {
 formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 		+ "\nif(valD!='') { href += \"|valD=\" + escape(valD); }";
 %><table width="100%" cellspacing="0" cellpadding="0">
-	<tr><td colspan="6" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
+	<tr><td colspan="6" class="maincolor"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
 	<tr>
 		<td class="cartheader">ARTIKEL</td>
 		<td class="cartheader">AANTAL</td>
@@ -67,7 +74,7 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 		<td class="cartheader" style="text-align:right;">TOTAAL</td>
 		<td class="cartheader">VERWIJDER<br>dit artikel</td>
 	</tr>
-	<tr><td colspan="6" width="100%" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr><%
+	<tr><td colspan="6" width="100%" class="maincolor"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr><%
 
 	String rowParity = "even";
 	while(productsIterator.size()>0) { 
@@ -93,7 +100,7 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<tr>
 				<td width="45%"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
-				<td class="titlebar" style="vertical-align:middle;padding-left:1px;padding-right:1px;"><input type="text" name="numberof<%= thisProduct %>" class="cart" value="<%= numberOfItems %>"></td>
+				<td class="maincolor" style="vertical-align:middle;padding-left:1px;padding-right:1px;"><input type="text" name="numberof<%= thisProduct %>" class="cart" value="<%= numberOfItems %>"></td>
 				<td width="45%" background="media/shop/pointer.gif" style="background-repeat:repeat-x;background-position: right center;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 				</tr>
 			</table>
@@ -128,7 +135,7 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 				page="<%= pageUrl + "?u=" + thisProduct + "&t=delete" %>" />');" 
 				><img src="media/shop/delete_<%= rowParity %>.gif" border="0" alt="verwijder dit artikel"></a></td>
 			</tr>
-			<tr><td colspan="6" width="100%" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
+			<tr><td colspan="6" width="100%" class="maincolor"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr>
 		<%
 		if(discount>0) {
 			if(rowParity.equals("even")) { rowParity = "odd"; } else { rowParity = "even"; }
@@ -140,7 +147,7 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 			<td class="cart<%= rowParity %>" style="font-size:12px;padding-right:5px;padding-left:0px;text-align:right;">&euro;&nbsp;<%= nf.format(((double) totaldiscount  )/100) %></td>
 			<td class="cart<%= rowParity %>"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 			</tr>
-			<tr><td colspan="6" width="100%" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr><%
+			<tr><td colspan="6" width="100%" class="maincolor"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td></tr><%
 		} 
 		%></mm:node><%
 	} 
@@ -149,7 +156,7 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 <tr>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	<td colspan="3" class="carteven"  style="text-align:left;">
-		<span class="subtitle" style="font-size:12px;font-weight:bold;">SUBTOTAAL</span></td>
+		<span class="colortitle" style="font-size:12px;font-weight:bold;">SUBTOTAAL</span></td>
 	<td class="carteven" style="font-size:12px;padding-right:5px;text-align:right;"><% 
 		if(totalSum!=-1) { 
 			%>&euro;&nbsp;<%= nf.format(((double) totalSum  )/100) %><%
@@ -165,7 +172,7 @@ if(generaldiscount>0) {
 	%><tr>
 		<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 		<td colspan="3" class="carteven"  style="text-align:left;">
-			<span class="subtitle" style="font-size:12px;font-weight:bold;">KORTING</span></td>
+			<span class="colortitle" style="font-size:12px;font-weight:bold;">KORTING</span></td>
 		<td class="carteven" style="font-size:12px;padding-right:5px;padding-left:0px;text-align:right;"><% 
 			if(totalSum!=-1) { 
 				%>&euro;&nbsp;<%= nf.format(((double) generaldiscount  )/100) %><%
@@ -179,7 +186,7 @@ if(generaldiscount>0) {
 %><tr>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	<td colspan="3" class="carteven"  style="text-align:left;padding-top:0px;">
-		<span class="subtitle" style="font-size:12px;font-weight:bold;">VERZENDKOSTEN</span></td>
+		<span class="colortitle" style="font-size:12px;font-weight:bold;">VERZENDKOSTEN</span></td>
 	<td class="carteven" style="font-size:12px;padding-right:5px;padding-left:0px;text-align:right;padding-top:0px;">
 		&euro;&nbsp;<%= nf.format(((double) shippingCosts)/100) %></td>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
@@ -187,18 +194,13 @@ if(generaldiscount>0) {
 <tr>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	<td colspan="3" class="carteven"  style="text-align:left;padding-top:0px;">
-		<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="contentrel.pos=12"
-			><mm:node element="artikel">
-			   <span class="subtitle" style="font-size:12px;font-weight:bold;"><mm:field name="titel" /></span><br>
-			   <%@include file="../shop/cleanarticleintro.jsp" %>
-			</mm:node>
-	   </mm:list>
+		afsluitend tekstje
 	</td>
 	<td class="carteven" style="padding:0px;">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 			<td style="text-align:right;padding-right:2px;width:99%;">&euro;</td>
-			<td class="titlebar" style="vertical-align:middle;padding-left:1px;padding-right:1px;">
+			<td class="maincolor" style="vertical-align:middle;padding-left:1px;padding-right:1px;">
 				<input type="text" name="donation" class="cart" style="width:43px;text-align:right;" value="<%= nf.format(((double) donation)/100) %>"></td>
 			</tr>
 		</table>
@@ -218,7 +220,7 @@ if(generaldiscount>0) {
 </tr>
 <tr>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
-	<td colspan="3" class="titlebar"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
+	<td colspan="3" class="maincolor"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	<td>
 		<table cellspacing="0" cellpadding="0" width="80%" align="right"><tr>
 			<td style="background-color:#000000;"><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
@@ -244,7 +246,7 @@ if(generaldiscount>0) {
 	<tr>
 		<td width="80%"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td>
 		<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-		<td width="180" class="titlebar"><img src="media/spacer.gif" height="1" width="180" border="0" alt=""></td>
+		<td width="180" class="maincolor"><img src="media/spacer.gif" height="1" width="180" border="0" alt=""></td>
 	</tr>
 	<tr>
 		<td width="80%"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td>

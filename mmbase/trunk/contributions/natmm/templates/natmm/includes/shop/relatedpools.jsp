@@ -50,22 +50,22 @@ while(llPagesWithItems.size()>0) {
 				<td style="width:100%;" colspan="3">
 				<table cellspacing="0" cellpadding="0" style="width:100%"><tr>
 				<mm:node number="<%= leftPaginaNumber %>" 
-					><td class="titlebar"
+					><td class="maincolor"
 						style="width:50%;text-align:right;vertical-align:bottom;padding-left:4px;padding-right:2px;padding-bottom:2px;font-size:12px;">
 						<strong><bean:message bundle="LEOCMS" key="shop.relatedpools.more" /></strong>
-            <a href="<mm:url page="<%= leftShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
-					<td class="titlebar" width="0%" style="vertical-align:bottom;padding:2px;">
-						<a href="<mm:url page="<%= leftShop_itemHref %>" />"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
+            <a href="<mm:url page="<%= leftShop_itemHref %>" />" class="klikpad"><mm:field name="titel" /></a></td>
+					<td class="maincolor" width="0%" style="vertical-align:bottom;padding:2px;">
+						<a href="<mm:url page="<%= leftShop_itemHref %>" />"><img src="media/shop/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 				</mm:node>
 				<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 				<% if(rightShop_itemExists) { 
 						%><mm:node number="<%= rightPaginaNumber %>" 
-						><td class="titlebar" 
+						><td class="maincolor" 
 							style="width:50%;text-align:right;vertical-align:bottom;padding-left:4px;padding-right:2px;padding-bottom:2px;font-size:12px;">
 							<strong><bean:message bundle="LEOCMS" key="shop.relatedpools.more" /></strong>
-              <a href="<mm:url page="<%= rightShop_itemHref %>" />" class="readmore"><mm:field name="name" /></a></td>
-						<td class="titlebar" width="0%" style="vertical-align:bottom;padding:2px;">
-							<a href="<mm:url page="<%= rightShop_itemHref %>" />"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
+              <a href="<mm:url page="<%= rightShop_itemHref %>" />" class="klikpad"><mm:field name="titel" /></a></td>
+						<td class="maincolor" width="0%" style="vertical-align:bottom;padding:2px;">
+							<a href="<mm:url page="<%= rightShop_itemHref %>" />"><img src="media/shop/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 						</mm:node><% 
 				} else {
 					%><td width="50%">&nbsp;</td><td width="0%">&nbsp;</td><%
