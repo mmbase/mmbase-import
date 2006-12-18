@@ -6,17 +6,17 @@
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:import externid="webblock" required="true" />
-  <p>
-    <mm:node referid="webblock">
-      <mm:include page="wizard.jspx">
-        <mm:param name="type">urls</mm:param>
-      </mm:include>
-      <mm:include page="wizard.jspx">
-        <mm:param name="type">news</mm:param>
-      </mm:include>
-      <mm:include page="wizard.jspx">
+  
+  <p>On the front-end, following are presented mixed, sorted on position. </p>
+  <mm:node referid="webblock">
+    <mm:include page="wizard.jspx">
+      <mm:param name="type">urls</mm:param>
+    </mm:include>
+    <mm:include page="wizard.jspx">
+      <mm:param name="type">news</mm:param>
+    </mm:include>
+    <mm:include page="wizard.jspx">
         <mm:param name="type">xmlnews</mm:param>
-      </mm:include>
-    </mm:node>
-  </p>
+    </mm:include>
+  </mm:node>
 </mm:cloud>

@@ -6,6 +6,7 @@ html, body.portal {
 }
 
 div.x1, div.x3 { 
+  width: 33%;
   background-color: #ddd;
 }
 div.x1 { 
@@ -15,8 +16,8 @@ div.x3 {
   margin-right: 0px;
 } 
 div.x2 {
-  padding-left: 200px;
-  padding-right: 200px;
+  padding-left: 33%;
+  padding-right: 33%;
   background-color: #eee;
 }
 div.column h1 { 
