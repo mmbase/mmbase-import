@@ -9,11 +9,11 @@
 		<td width="180">
 		<table width="180" cellspacing="0" cellpadding="0">
 			<tr>
-			<td class="titlebar" width="0%"><a href="<%@include file="../includes/extendedhref.jsp" 
+			<td class="maincolor" width="0%"><a href="<%@include file="../includes/extendedhref.jsp" 
 				%>"><img src="media/telefoon.gif" border="0" alt=""></a></td>
-			<td class="titlebar" style="vertical-align:middle;padding-right:2px;" width="100%"><nowrap><a href="<%@include file="../includes/extendedhref.jsp" 
+			<td class="maincolor" style="vertical-align:middle;padding-right:2px;" width="100%"><nowrap><a href="<%@include file="../includes/extendedhref.jsp" 
 				%>" class="white"><bean:message bundle="LEOCMS" key="shop.phonelink.order_by_phone" /></a></nowrap></td>
-			<td class="titlebar" style="padding:2px;" width="100%"><a href="<%@include file="../includes/extendedhref.jsp" 
+			<td class="maincolor" style="padding:2px;" width="100%"><a href="<%@include file="../includes/extendedhref.jsp" 
 				%>"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 			</tr>
 		</table>

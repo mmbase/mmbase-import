@@ -81,14 +81,8 @@
           }
       };
     
-      if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) < 4 )) {
-         document.write("<link rel=stylesheet href=\"../hoofdsite/themas/ie3_main.css\" type=\"text/css\">"); 
-      } else {
-         document.write("<link rel=stylesheet href=\"../hoofdsite/themas/main.css\" type=\"text/css\">");
-      }
-      // -->
-      
    </script>
+   <link rel="stylesheet" type="text/css" href="../hoofdsite/themas/main.css"  title="default" />
    <% if(styleSheet!=null) { %><link rel="stylesheet" type="text/css" href="../<%= styleSheet %>" /><% } %>
    </head>
    <body style="padding:0px;margin:0px;overflow:no;text-align:center;" class="maincolor" onLoad="javascript:resizeDiv()">

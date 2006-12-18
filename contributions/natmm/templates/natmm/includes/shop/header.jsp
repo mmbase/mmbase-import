@@ -5,7 +5,7 @@
 <br />
 <table width="744" border="1" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
-	<td width="180"><img src="media/trans.gif" width="180" height="1" border="0" alt=""></td>
+	<td width="165"><img src="media/trans.gif" width="165" height="1" border="0" alt=""></td>
 	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 	<td width="100%"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 	<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
@@ -32,12 +32,15 @@
 	</td>
 </tr>
 <tr>
-   <td width="180">
-      <jsp:include page="includes/shop/welcome.jsp">
-        <jsp:param name="p" value="<%= paginaID %>" />
-      </jsp:include> 
+   <td width="180" style="vertical-align:top;">
+      <jsp:include page="includes/teaser.jsp">
+         <jsp:param name="s" value="<%= paginaID %>" />
+         <jsp:param name="r" value="<%= rubriekID %>" />
+         <jsp:param name="rs" value="<%= styleSheet %>" />
+         <jsp:param name="sr" value="0" />
+      </jsp:include>
       <jsp:include page="includes/shop/searchlink.jsp" />
-      <jsp:include page="includes/shop/nav.jsp" />
+      <%@include file="../navleft.jsp" %>
    </td>
    <td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 </mm:cloud>

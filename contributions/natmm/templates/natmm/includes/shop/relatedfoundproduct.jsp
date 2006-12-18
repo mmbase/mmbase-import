@@ -23,16 +23,14 @@
 		><a style="display:block;width:100px;height:40px;" href="<mm:url page="<%= shop_itemHref %>" />" ><img src="media/trans.gif" border="0" alt=""></a></td>
 		<td colspan="3" style="width:80%;padding:3px;">
 			<a href="<mm:url page="<%= shop_itemHref %>" />" class="bold"><mm:field name="title" /></a><br>
-			<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
-				><mm:isnotempty><%@include file="../shop/cleanarticleintro.jsp" %></mm:isnotempty
-			></mm:field>
+			<mm:field name="intro"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
 		</td></tr>
 	<tr><td style="width:35%;padding-left:3px;padding-right:3px;padding-top:2px;"><%@include file="../includes/relatedprice.jsp" %></td>
 		<td style="width:5%;"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td><% 
 		shop_itemHref += "&p=bestel";
 		%><%@include file="../includes/relatedshoppingcart.jsp"%></tr>
 	<tr><td colspan="3"><img src="media/trans.gif" border="0" alt="" width="1" height="6"></td></tr>
-	<tr><td class="titlebar" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
+	<tr><td class="maincolor" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
 </mm:field
 ></mm:node
 ></mm:cloud>

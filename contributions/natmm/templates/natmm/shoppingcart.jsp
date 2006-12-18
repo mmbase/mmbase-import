@@ -58,6 +58,7 @@
 				<jsp:param name="sc" value="<%= shippingCosts %>" />
 				<jsp:param name="ts" value="<%= totalSum %>" />
 				<jsp:param name="dn" value="<%= donation %>" />
+        <jsp:param name="rs" value="<%= styleSheet %>" />
 			</jsp:include><%
 			session.setAttribute("totalcosts","" + totalSum);
 	} %>

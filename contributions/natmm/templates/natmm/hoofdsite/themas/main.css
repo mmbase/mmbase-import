@@ -170,3 +170,46 @@ A.navbutton {
 	vertical-align: bottom;
 	height:18px;
 }
+/* styles for the shop */
+.subtitlebar {
+	color: #595959;
+	background-color: #DFDFDF;
+	font-size: 10px;
+	letter-spacing: 2px;
+	text-align: center;
+}
+td.nav {
+	color: #F37021;
+	font-size: 13px;
+	font-weight: bold;
+	background-repeat:no-repeat;
+	background-position: right bottom;
+}
+td.cartheader {
+	color: #F37021;
+	padding: 4px;
+	padding-top: 8px;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	line-height : 85%;	
+}
+td.cartodd {
+	background-color: #FFF5EC;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 14px;
+	padding-bottom: 9px;
+	font-size: 10px;
+	text-align: center;
+	vertical-align: middle;
+}
+td.carteven {
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 14px;
+	padding-bottom: 9px;
+	font-size: 10px;
+	text-align: center;
+	vertical-align: middle;
+}
