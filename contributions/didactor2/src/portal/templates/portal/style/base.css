@@ -23,13 +23,14 @@ div.column div.menu *, div.column div.menu {
   color: black;
 }
 div.column div.menu ul { 
-  padding-left: 1ex;
+  padding-top: 2ex;
+  padding-left: 0ex;
   list-style-type: none;
 }
 div.column div.menu a { 
   text-decoration: none;
   color: #003bc5;
-  font-size: larger;
+  font-size: 170%;
 }
 div.column div.menu a:hover { 
   color: #000;
