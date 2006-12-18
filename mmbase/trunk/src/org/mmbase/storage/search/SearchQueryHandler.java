@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryHandler.java,v 1.4 2005-12-10 14:21:57 michiel Exp $
+ * @version $Id: SearchQueryHandler.java,v 1.5 2006-12-18 18:57:22 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SearchQueryHandler {
@@ -70,8 +70,7 @@ public interface SearchQueryHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(int feature, SearchQuery query)
-    throws SearchQueryException;
+    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException;
 
     /**
      * Gets the level at which a constraint is supported for a query
@@ -84,8 +83,7 @@ public interface SearchQueryHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(Constraint constraint, SearchQuery query)
-    throws SearchQueryException;
+    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException;
 
     /**
      * Processes a search query, returns the result as a list of nodes.
@@ -113,6 +111,5 @@ public interface SearchQueryHandler {
      * @see ResultNode
      * @see org.mmbase.module.core.ClusterNode
      */
-    public List getNodes(SearchQuery query, MMObjectBuilder builder)
-    throws SearchQueryException;
+    public List<org.mmbase.module.core.MMObjectNode> getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException;
 }
