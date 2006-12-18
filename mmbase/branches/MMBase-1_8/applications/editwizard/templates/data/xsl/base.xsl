@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.35 2005-11-28 12:42:37 michiel Exp $
+    @version $Id: base.xsl,v 1.35.2.1 2006-12-18 20:39:49 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -36,6 +36,7 @@
   <xsl:param name="country"></xsl:param>
   <xsl:param name="sessionid" />
   <xsl:param name="popupid" />
+  <xsl:param name="loginmethod" />
 
   <xsl:param name="debug">false</xsl:param>
   <xsl:param name="sessionkey">editwizard</xsl:param>
@@ -113,9 +114,9 @@
     </xsl:choose>    
   </xsl:variable>
 
-  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;country=<xsl:value-of select="$country" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
+  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;loginmethod=<xsl:value-of select="$loginmethod" />&amp;language=<xsl:value-of select="$language" />&amp;country=<xsl:value-of select="$country" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
 
-  <xsl:variable name="listpage">list.jsp?<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
+  <xsl:variable name="listpage">list.jsp?<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" />&amp;loginmethod=<xsl:value-of select="$loginmethod" /></xsl:variable>
   
 
 
@@ -124,11 +125,13 @@
 
   <xsl:template name="formwizardargs">
     <input type="hidden" name="proceed" value="true" />
+    <input type="hidden" name="loginmethod" value="{$loginmethod}" />
     <input type="hidden" name="sessionkey" value="{$sessionkey}" />
     <input type="hidden" name="language" value="{$language}" />
     <input type="hidden" name="country" value="{$country}" />
     <input type="hidden" name="debug" value="{$debug}" />
     <input type="hidden" name="popupid" value="{$popupid}" />
+
   </xsl:template>
 
   <xsl:variable name="popuppage">wizard.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
