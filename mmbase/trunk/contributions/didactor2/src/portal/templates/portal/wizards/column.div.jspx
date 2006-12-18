@@ -19,6 +19,7 @@
         <mm:param name="nodepath">educations,blockposrel,webblocks</mm:param>
         <mm:param name="fields">blockposrel.y,webblocks.name,webblocks.type</mm:param>
         <mm:param name="title">Blocks for column ${col}</mm:param>
+        <mm:param name="loginmethod">delegate</mm:param>
         <a href="${_}"><mm:nodeinfo type="plural_guinodemanager" nodetype="webblocks" /></a>
       </mm:link>
       <ul>
