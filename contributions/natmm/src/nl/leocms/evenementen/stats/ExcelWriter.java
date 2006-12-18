@@ -22,6 +22,8 @@ import nl.leocms.applications.NatMMConfig;
 
 public class ExcelWriter {
    private static final Logger log = Logging.getLoggerInstance(ExcelWriter.class);
+   
+   private ArrayList eventFlyerList = new ArrayList();
 
    public String createEventSubscribeAttachment(Cloud cloud, String sEvenementNumber) throws IOException, WriteException {
       // writes all the subscriptions for this date (used in subscribe.jsp)
@@ -31,7 +33,7 @@ public class ExcelWriter {
       WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
 
       Evenement ev = new Evenement();
-      String sParentEvent = ev.findParentNumber(sEvenementNumber);
+      String sParentEvent = Evenement.findParentNumber(sEvenementNumber);
       Node nParentNode = cloud.getNode(sParentEvent);
 
       createEventSubscribeSheet(cloud,nParentNode,sEvenementNumber,workbook,ddn,0);
@@ -45,13 +47,13 @@ public class ExcelWriter {
    public String createEventDatesAttachment(Cloud cloud, String sEvenementNumber) throws IOException, WriteException {
       // writes all the dates for this event (used in subscribe.jsp)
       Evenement ev = new Evenement();
-      String sParentEvent = ev.findParentNumber(sEvenementNumber);
+      String sParentEvent = Evenement.findParentNumber(sEvenementNumber);
       String fileName = "alle_data_voor_activiteit_" + sParentEvent + ".xls";
       WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
 
       HtmlCleaner hc = new HtmlCleaner();
       Node nParentNode = cloud.getNode(sParentEvent);
-      String sSheetTitle = hc.stripText(nParentNode.getStringValue("titel"));
+      String sSheetTitle = HtmlCleaner.stripText(nParentNode.getStringValue("titel"));
       if (sSheetTitle.length()>30) {
          sSheetTitle = sSheetTitle.substring(0,30);
       }
@@ -68,7 +70,7 @@ public class ExcelWriter {
       // writes all subscriptions of the selected event (used in evenementen.jsp)
       log.debug("createAllEventSubsribeAttachment for data " + sEvenementNumber);
       Evenement ev = new Evenement();
-      String sParentEvent = ev.findParentNumber(sEvenementNumber);
+      String sParentEvent = Evenement.findParentNumber(sEvenementNumber);
       Node nParentNode = cloud.getNode(sParentEvent);
       DoubleDateNode ddnParent = new DoubleDateNode(nParentNode);
 
@@ -82,7 +84,7 @@ public class ExcelWriter {
       if(bOneDateWithoutSubscriptions) {
          String sThisEvenementNumber = (String)nl.getNode(0).getStringValue("evenement1.number");
          HtmlCleaner hc = new HtmlCleaner();
-         String sSheetTitle = hc.stripText(nParentNode.getStringValue("titel"));
+         String sSheetTitle = HtmlCleaner.stripText(nParentNode.getStringValue("titel"));
          if (sSheetTitle.length()>28) {
             sSheetTitle = sSheetTitle.substring(0,28);
          }
@@ -139,16 +141,23 @@ public class ExcelWriter {
       String fileName = "alle_geselecteerde_activiteiten_" + sDate + ".xls";
       WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
 
+      // create flyersheet
+      WritableSheet sheetFlyer = workbook.createSheet("flyer", 9999);
+      sheetFlyer.setColumnView(0,40);
+      sheetFlyer.setColumnView(1,40);
+      sheetFlyer.setColumnView(2,40);
+      sheetFlyer.setColumnView(3,20);
+      
       ArrayList alXlsListTitles = new ArrayList();
+      
       int i = 0;
       Iterator it = ll.iterator();
       while (it.hasNext()){
          String sEvenementNumber = (String)it.next();
-         Evenement ev = new Evenement();
-         String sParentEvent = ev.findParentNumber(sEvenementNumber);
+         String sParentEvent = Evenement.findParentNumber(sEvenementNumber);
          Node nParentNode = cloud.getNode(sParentEvent);
          HtmlCleaner hc = new HtmlCleaner();
-         String sSheetTitle = hc.stripText(nParentNode.getStringValue("titel"));
+         String sSheetTitle = HtmlCleaner.stripText(nParentNode.getStringValue("titel"));
          if (sSheetTitle.length()>28) {
             sSheetTitle = sSheetTitle.substring(0,28);
          }
@@ -159,17 +168,37 @@ public class ExcelWriter {
             j++;
          }
          alXlsListTitles.add(sSheetRealTitle);
-         createEventDatesSheet(cloud,hc,nParentNode,workbook,i,sSheetRealTitle);
+         createEventDatesSheet(cloud, hc, nParentNode, workbook, i, sSheetRealTitle);         
          i++;
       }
-
+ 
+      // create events flyer
+      int j = 0;
+      // sort events by DoubleDateNode
+      Collections.sort(eventFlyerList);
+      
+      Iterator itEventList = eventFlyerList.iterator();    
+      while (itEventList.hasNext()){        
+         EventData event = (EventData) itEventList.next();
+         
+         // get location of the event
+         NodeList nl1 = cloud.getList(event.getEventNumber(),"evenement,related,natuurgebieden","natuurgebieden.naam",null,null,null,null,false);
+         for(int k = 0; k < nl1.size(); k++){
+            sheetFlyer.addCell(new Label(0, j, nl1.getNode(k).getStringValue("natuurgebieden.naam")));
+         }         
+         
+         sheetFlyer.addCell(new Label(1, j, event.getEventName()));
+         sheetFlyer.addCell(new Label(2, j, event.getEventDate().getReadableDate(" ", true)));
+         sheetFlyer.addCell(new Label(3, j, event.getEventDate().getReadableTime()));
+         j++;
+      }
+      
       workbook.write();
       workbook.close();
 
       return createAttachmentNode(cloud,fileName,"All Event dates " + sDate);
    }
-
-
+   
    public int writeNameString(LinkedList llXlsData, int counter, Node nParentNode){
       llXlsData.add(new Label(0,counter,"Naam"));
       llXlsData.add(new Label(1,counter,nParentNode.getStringValue("titel")));
@@ -372,6 +401,10 @@ public class ExcelWriter {
          DoubleDateNode ddn = new DoubleDateNode(cloud.getNode(nl7.getNode(i).getStringValue("evenement.number")));
          llXlsData.add(new Label(1,counter,ddn.getReadableDate()));
          llXlsData.add(new Label(2,counter,ddn.getReadableTime()));
+         
+         // add data tot eventFlyerList
+         eventFlyerList.add(new EventData(sParentNumber, nParentNode.getStringValue("titel"), ddn));
+         
          if (nParentNode.getRelatedNodes("inschrijvingen").size()==0){
             llXlsData.add(new Label(3,counter,"geen aanmeldingen"));
          }
@@ -593,4 +626,44 @@ public class ExcelWriter {
       return sAttachmentId;
 
    }
+   
+   // inner class to store event data in
+   class EventData implements Comparable {
+
+      final String eventNumber;
+      final String eventName;
+      final DoubleDateNode eventDate;
+      
+      public EventData(final String eventNumber, final String eventName, final DoubleDateNode eventDate) {
+         super();
+         this.eventNumber = eventNumber;         
+         this.eventName = eventName;
+         this.eventDate = eventDate;
+      }
+
+      public int compareTo(Object o) {
+         if (o instanceof EventData) {
+            EventData that = (EventData) o;
+            DoubleDateNode ddn1 = this.getEventDate();
+            DoubleDateNode ddn2 = that.getEventDate();
+
+            return ddn1.compareTo(ddn2);
+         }
+         return toString().compareTo(o.toString());         
+      }
+
+      public DoubleDateNode getEventDate() {
+         return eventDate;
+      }
+
+      public String getEventName() {
+         return eventName;
+      }
+
+      public String getEventNumber() {
+         return eventNumber;
+      }
+      
+   }
+   
 }
