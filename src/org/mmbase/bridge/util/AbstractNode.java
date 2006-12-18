@@ -31,19 +31,13 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.15 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: AbstractNode.java,v 1.16 2006-12-18 19:14:21 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
 public abstract class AbstractNode implements Node {
     private static final Logger log = Logging.getLoggerInstance(AbstractNode.class);
 
-    protected static final int ACTION_CREATE = 1; // create a node
-    protected static final int ACTION_EDIT   = 2; // edit node, or change aliasses
-    protected static final int ACTION_DELETE = 3; // delete node
-    protected static final int ACTION_COMMIT = 10; // commit a node after changes
-
-    protected abstract void edit(int action);
 
     public boolean isRelation() {
         return false;
@@ -107,6 +101,12 @@ public abstract class AbstractNode implements Node {
             }
         }
     }
+    /**
+     * Throws exception if may not write current node
+     * @since MMBase-1.9
+     */
+    protected void checkWrite() {
+    }
 
     /**
      * Like setObjectValue, but without processing, this is called by the other set-values.
@@ -117,7 +117,7 @@ public abstract class AbstractNode implements Node {
      * @since MMBase-1.7
      */
     public void setValueWithoutProcess(String fieldName, Object value) {
-        edit(ACTION_EDIT);
+        checkWrite();
         if ("owner".equals(fieldName)) {
             setContext(Casting.toString(value));
             return;
@@ -162,10 +162,10 @@ public abstract class AbstractNode implements Node {
         if (v == null) {
             return null;
         } else if (v instanceof Node) {
-            return new Integer(((Node)v).getNumber());
+            return Integer.valueOf(((Node)v).getNumber());
         } else {
             // giving up
-            return new Integer(getCloud().getNode(v.toString()).getNumber());
+            return Integer.valueOf(getCloud().getNode(v.toString()).getNumber());
         }
     }
 
@@ -177,25 +177,25 @@ public abstract class AbstractNode implements Node {
 
     public final void setIntValue(String fieldName, final int value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, new Integer(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, Integer.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public final void setLongValue(String fieldName, final long value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, new Long(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, Long.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public final void setFloatValue(String fieldName, final float value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, new Float(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, Float.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public final void setDoubleValue(String fieldName, final double value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, new Double(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, Double.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -270,17 +270,17 @@ public abstract class AbstractNode implements Node {
             switch(type) {
                 case Field.TYPE_STRING:  return getStringValue(fieldName);
                 case Field.TYPE_BINARY:    return getByteValue(fieldName);
-                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+                case Field.TYPE_INTEGER: return Integer.valueOf(getIntValue(fieldName));
+                case Field.TYPE_FLOAT:   return Float.valueOf(getFloatValue(fieldName));
+                case Field.TYPE_DOUBLE:  return Double.valueOf(getDoubleValue(fieldName));
+                case Field.TYPE_LONG:    return Long.valueOf(getLongValue(fieldName));
                 case Field.TYPE_XML:     return getXMLValue(fieldName);
                 case Field.TYPE_NODE:   {
                     // number is a NODE field, but should be returned as
                     // a number (in this case, a long)
                     // in the future, we may change the basic MMBase type for the number field to ID
                     if ("number".equals(fieldName)) {
-                        return new Long(getLongValue(fieldName));
+                        return Long.valueOf(getLongValue(fieldName));
                     } else {
                         return getNodeValue(fieldName);
                     }
@@ -354,7 +354,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public float getFloatValue(String fieldName) {
-        Float result = new Float(Casting.toFloat(getValueWithoutProcess(fieldName)));
+        Float result = Float.valueOf(Casting.toFloat(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
@@ -364,7 +364,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public long getLongValue(String fieldName) {
-        Long result = new Long(Casting.toLong(getValueWithoutProcess(fieldName)));
+        Long result = Long.valueOf(Casting.toLong(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
@@ -374,7 +374,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public double getDoubleValue(String fieldName) {
-        Double result = new Double(Casting.toDouble(getValueWithoutProcess(fieldName)));
+        Double result = Double.valueOf(Casting.toDouble(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
@@ -449,7 +449,7 @@ public abstract class AbstractNode implements Node {
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
 
-    protected final void processCommit() {
+    public final void processCommit() {
         FieldIterator fi = getNodeManager().getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
@@ -457,8 +457,8 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    public Collection validate() {
-        List errors = new ArrayList();
+    public Collection<String> validate() {
+        List<String> errors = new ArrayList();
         FieldIterator fi = getNodeManager().getFields().fieldIterator();
         Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
@@ -468,10 +468,8 @@ public abstract class AbstractNode implements Node {
                 // the _number_ field must not be validated, because for new nodes it does not yet
                 // point to an existing node... I think the number field should not be a NODE field...
                 Object value = getValueWithoutProcess(field.getName());
-                Collection fieldErrors = field.getDataType().validate(value, this, field);
-                Iterator i = fieldErrors.iterator();
-                while(i.hasNext()) {
-                    LocalizedString error = (LocalizedString) i.next();
+                Collection<LocalizedString> fieldErrors = field.getDataType().validate(value, this, field);
+                for (LocalizedString error : fieldErrors) {
                     errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
                                error.get(locale));
                 }
@@ -686,6 +684,9 @@ public abstract class AbstractNode implements Node {
      */
     public final boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && getCloud().equals(((Node)o).getCloud());
+    }
+    public final int hashCode() {
+        return 127 * getNumber();
     }
 
 

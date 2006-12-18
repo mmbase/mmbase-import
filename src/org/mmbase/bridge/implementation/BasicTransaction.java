@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.27 2006-11-11 13:59:57 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.28 2006-12-18 19:14:21 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -74,7 +74,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    public NodeList getNodes() {
+    public NodeList<Node> getNodes() {
         return new BasicNodeList(coreNodes, this);
     }
 
@@ -98,16 +98,27 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             try {
                 Collection<MMObjectNode> col = BasicCloudContext.transactionManager.getTransaction(transactionContext);
                 // BasicCloudContext.transactionManager.commit(account, transactionContext);
-                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
                 // This is a hack to call the commitprocessors which are only available in the bridge.
-                // The EXISTS_NOLONGER check is required to prevent committing of deleted nodes.
-                for (MMObjectNode n : col) {
-                    if (! n.isChanged()) continue;
-                    if (!TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS))) {
-                        Node node = parentCloud.makeNode(n, "" + n.getNumber());
-                        node.commit();
+
+                for (Node n : getNodes()) {
+                    log.debug("Commiting " + n);
+                    if (n == null) {
+                        log.warn("Found null in transaction");
+                        continue;
                     }
+                    if (! n.isChanged() && ! n.isNew()) {
+                        log.debug("Ignored because not changed " + n.isChanged() + "/" + n.isNew());
+                        continue;
+                    }
+                    if (TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
+                        log.debug("Ignored because exists no longer.");
+                        continue;
+                    }
+                    log.debug("Calling commit on " + n);
+                    n.commit();
                 }
+                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
@@ -145,6 +156,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         canceled = true;
     }
 
+
     /*
      * Transaction-notification: add a new temporary node to a transaction.
      * @param currentObjectContext the context of the object to add
@@ -158,6 +170,26 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
     /*
+     */
+    int add(BasicNode node) {
+        int id = node.getNumber();
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
+        // store new temporary node in transaction
+        add(currentObjectContext);
+        node.setNode(BasicCloudContext.tmpObjectManager.getNode(account, "" + id));
+        //  check nodetype afterwards?
+        return  id;
+    }
+
+    void createAlias(BasicNode node, String aliasName) {
+        try {
+            String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + node.temporaryNodeId, "" + node.temporaryNodeId);
+            BasicCloudContext.transactionManager.addNode(transactionContext, account, aliasContext);
+        } catch (TransactionManagerException e) {
+            throw new BridgeException(e.getMessage(), e);
+        }
+    }
+    /*
      * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
      * @param currentObjectContext the context of the object to remove
      */
@@ -167,6 +199,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
+    }
+    void remove(MMObjectNode node) {
+        String oMmbaseId = "" + node.getValue("number");
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
+        add(currentObjectContext);
+        delete(currentObjectContext);
     }
 
     void delete(String currentObjectContext, MMObjectNode node) {
