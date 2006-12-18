@@ -16,6 +16,7 @@
     <mm:param name="orderby"><mm:hasfield nodetype="${type}" name="date">${type}.date,</mm:hasfield>${type}.number</mm:param>
     <mm:param name="directions">down</mm:param>
     <mm:param name="searchdirs">destination</mm:param>
+    <mm:param name="loginmethod">delegate</mm:param>
     <a href="${_}">
       <mm:nodeinfo nodetype="${type}" type="plural_guinodemanager" />
       (#<mm:countrelations  role="${empty role ? '' : role}" type="${type}" searchdir="destination" />)
