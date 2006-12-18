@@ -10,7 +10,7 @@
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title><di:translate key="portal.portal" /></title>
-        <mm:link page="/portal/style/layout.css">
+        <mm:link page="/portal/style/edit.css">
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:link>
       </head>

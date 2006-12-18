@@ -7,8 +7,10 @@
   <jsp:output omit-xml-declaration="yes" />
 
   <div class="menu">
+    <!--
     <h1><di:translate key="education.learnenvironmenttitle" /></h1>
     <h2><mm:field name="name" /></h2>
+    -->
     <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
     <ul>
 
