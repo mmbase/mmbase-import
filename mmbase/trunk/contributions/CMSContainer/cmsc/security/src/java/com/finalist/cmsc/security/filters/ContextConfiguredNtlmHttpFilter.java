@@ -30,7 +30,6 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
- * @version $Revision: 1.1 $, $Date: 2006-12-12 09:38:28 $
  */
 public class ContextConfiguredNtlmHttpFilter implements Filter {
    private static Logger log = Logging.getLoggerInstance(ContextConfiguredNtlmHttpFilter.class);

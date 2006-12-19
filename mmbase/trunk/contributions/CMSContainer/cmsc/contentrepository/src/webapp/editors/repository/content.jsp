@@ -12,7 +12,12 @@
 		<script src="../utils/rowhover.js" type="text/javascript"></script>
 	    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
 	</head>
-	<body>
+	<body 
+		<c:if test="${not empty param.message}">      
+			onload="alert('${param.message}');"
+		</c:if>
+	>
+	
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
       <mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write referid="parentchannel"/>&direction=down</mm:import>
@@ -27,6 +32,7 @@
             </div>
          </div>
       </div>
+      
 
     <div class="editor">
       <div class="body">
@@ -117,6 +123,10 @@
             <a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="content.preview.title" />" title="<fmt:message key="content.preview.title" />" /></a>
 			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
 			<% if (role != null && SecurityUtil.isWriter(role)) { %>
+				<a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
+					target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )"> 
+	                   <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />" /></a>
+
 				<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');" title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="content.unlink" />" alt="<fmt:message key="content.unlink" />"/></a>
 			<% } %>
          <mm:haspage page="/editors/versioning">
@@ -125,14 +135,16 @@
             </c:url>
             <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />" alt="<fmt:message key="content.icon.versioning.title" />"/></a>
          </mm:haspage>
-         <mm:last inverse="true">
-            <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />" alt="<fmt:message key="content.move.down" />"/></a>
-         </mm:last>
-               <mm:first inverse="true">
-            <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
-            <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />" alt="<fmt:message key="content.move.up" />"/></a>
-         </mm:first> 
- 	  	 <cmsc:hasfeature name="savedformmodule">
+			<% if (role != null && SecurityUtil.isWriter(role)) { %>
+	         <mm:last inverse="true">
+	            <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />" alt="<fmt:message key="content.move.down" />"/></a>
+	         </mm:last>
+	         <mm:first inverse="true">
+	            <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
+	            <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />" alt="<fmt:message key="content.move.up" />"/></a>
+	         </mm:first> 
+	      <% } %>
+ 	  	   <cmsc:hasfeature name="savedformmodule">
 			<c:set var="typeval">
       			<mm:nodeinfo type="type" />          	
       		</c:set> 
@@ -148,7 +160,11 @@
 		   <mm:nodeinfo type="guitype"/>
 		</td>
 		<td  onMouseDown="objClick(this);">
-		   <mm:field name="title"/>
+         <mm:field jspvar="title" write="false" name="title" />
+			<c:if test="${fn:length(title) > 50}">
+				<c:set var="title">${fn:substring(title,0,49)}...</c:set>
+			</c:if>
+			${title}
 		</td>
 		<td onMouseDown="objClick(this);"><mm:field name="lastmodifier" /></td>
         <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>

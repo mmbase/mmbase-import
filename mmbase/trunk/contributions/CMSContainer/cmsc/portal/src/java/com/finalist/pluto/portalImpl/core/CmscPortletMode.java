@@ -9,7 +9,6 @@ import javax.portlet.PortletMode;
  * CMSC supported Portlet modes
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
  */
 public class CmscPortletMode extends PortletMode {
 

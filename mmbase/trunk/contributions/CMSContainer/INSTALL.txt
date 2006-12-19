@@ -28,7 +28,21 @@ Set the following environment settings:
 
 Step 2:
 Make maven work:
-First upgrade your maven ear plugin from version 1.6 to 1.6.1 with the following 
+
+2a
+Create a file build.properties in your HOME dir which maven will use for its default settings
+on windows: %HOMEPATH%\build.properties
+on linux: $HOME/build.properties
+
+Add the below line to the file 
+
+maven.repo.remote=http://www.mmbase.org/maven/,http://mmapps.sourceforge.net/distributions,http://mirrors.ibiblio.org/pub/mirrors/maven,http://maven-plugins.sourceforge.net/maven,http://www.codeczar.com/maven
+
+note that it is http://mirrors.ibiblio.org which replaces the maven default http://www.ibiblio.org/maven/
+At the moment, downloads with maven1 fail on http://www.ibiblio.org/maven/ with a response code 301
+
+2b
+Upgrade your maven ear plugin from version 1.6 to 1.6.1 with the following 
 command:
 maven plugin:download -DgroupId=maven -DartifactId=maven-ear-plugin -Dversion=1.6.1
 

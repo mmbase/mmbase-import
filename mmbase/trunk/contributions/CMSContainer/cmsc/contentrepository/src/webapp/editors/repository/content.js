@@ -39,3 +39,15 @@
       document.location = url;
    }
    
+   var moveContentNumber;
+   var moveParentChannel;
+   function moveContent(objectNumber, parentChannel) {
+      moveContentNumber = objectNumber;
+      moveParentChannel = parentChannel;
+      openPopupWindow('selectchannel', 340, 400);
+   }
+   
+	function selectChannel(channel, path) {
+		document.location="../MoveContentToChannel.do?parentchannel="+moveParentChannel+"&newparentchannel="+channel+"&objectnumber="+moveContentNumber;
+	}
+   

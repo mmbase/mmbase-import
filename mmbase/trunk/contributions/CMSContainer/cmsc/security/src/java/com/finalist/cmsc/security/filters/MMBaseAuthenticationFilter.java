@@ -17,7 +17,6 @@ import java.security.Principal;
 
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
- * @version $Revision: 1.1 $, $Date: 2006-12-12 09:38:28 $
  */
 public class MMBaseAuthenticationFilter implements Filter {
 

@@ -4,8 +4,4 @@
 	<field name="key" />
 	<field name="description" />
 	<field name="value" />
-	<field name="prod" />
-	<field name="preprod" />
-	<field name="test" />
-	<field name="dev" />
 </action>

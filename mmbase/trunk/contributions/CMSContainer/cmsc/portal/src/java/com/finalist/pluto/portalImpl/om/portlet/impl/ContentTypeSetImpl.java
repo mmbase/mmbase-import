@@ -21,10 +21,6 @@ import org.apache.pluto.util.StringUtils;
 import com.finalist.pluto.portalImpl.om.common.AbstractSupportSet;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class ContentTypeSetImpl extends AbstractSupportSet implements ContentTypeSet, Serializable, Support {
 
 	private ContentType anyContentType;

@@ -62,10 +62,11 @@
 
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 
+<c:set var="dashboardRepositorySize" value="10"/>
 	<mm:haspage page="/editors/repository/">
       <div class="content_block_pink">
          <div class="header">
-            <div class="title"><fmt:message key="dashboard.repository.header" /></div>
+            <div class="title"><fmt:message key="dashboard.repository.header"><fmt:param>${dashboardRepositorySize}</fmt:param></fmt:message></div>
             <div class="header_end"></div>
          </div>
 
@@ -77,7 +78,7 @@
 
       <mm:listnodescontainer type="contentelement">
 			<mm:constraint field="lastmodifier" operator="EQUAL" referid="cloudusername" />
-         <mm:maxnumber value="10" />
+         <mm:maxnumber value="${dashboardRepositorySize}" />
          <mm:sortorder field="lastmodifieddate" direction="down" />
 
 		<table>

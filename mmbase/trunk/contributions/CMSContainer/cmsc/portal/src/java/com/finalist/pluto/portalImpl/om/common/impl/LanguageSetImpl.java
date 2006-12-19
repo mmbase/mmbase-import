@@ -21,9 +21,6 @@ import org.apache.pluto.util.StringUtils;
 import com.finalist.pluto.portalImpl.om.common.AbstractSupportSet;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
-/**
- * @version $Revision: 1.1 $
- */
 public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, Serializable, Support {
 	private static Log log = LogFactory.getLog(LanguageSetImpl.class);
 

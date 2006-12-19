@@ -270,11 +270,6 @@ public class PagesUtil {
                     NAMEDALLOWEDREL, NAME_FIELD, "UP");
     }
     
-    public static NodeList getAllowedDefintions(Node layoutNode, String name) {
-        return SearchUtil.findRelatedNodeList(layoutNode, PortletUtil.PORTLETDEFINITION,
-                                              NAMEDALLOWEDREL, NAME_FIELD, name);
-    }
-    
     public static void addAllowedNamedRelation(Node layoutNode, Node definitionNode, String position) {
         Relation relation = RelationUtil.createRelation(layoutNode, definitionNode, NAMEDALLOWEDREL);
         relation.setStringValue(NAME_FIELD, position);
@@ -284,49 +279,43 @@ public class PagesUtil {
     public static void linkPortlets(Node newPage, Node layoutNode) {
         RelationList namedRelations = PagesUtil.getAllowedNamedRelations(layoutNode);
         if (!namedRelations.isEmpty()) {
-            Relation previousRelation = namedRelations.getRelation(0);
-            String previoueName = previousRelation.getStringValue(PagesUtil.NAME_FIELD);
-            int count = 1;
-            
-            for (int i = 1; i < namedRelations.size(); i++) {
-                Relation relation = namedRelations.getRelation(i);
+            Map<String,List<Node>> defpositions = new HashMap<String,List<Node>>();
+            for (Iterator iter = namedRelations.iterator(); iter.hasNext();) {
+                Relation relation = (Relation) iter.next();
                 String name = relation.getStringValue(PagesUtil.NAME_FIELD);
-                if (previoueName.equals(name)) {
-                    count++;
+                Node definition = relation.getDestination();
+                String[] names = name.split(",");
+                for (int i = 0; i < names.length; i++) {
+                    String position = names[i].trim();
+                    List<Node> definitions;
+                    if (defpositions.containsKey(position)) {
+                        definitions = defpositions.get(position);
+                    }
+                    else {
+                        definitions = new ArrayList<Node>();
+                        defpositions.put(position, definitions);
+                    }
+                    definitions.add(definition);
                 }
-                else {
-                    if (count == 1) {
-                        Node definition = previousRelation.getDestination();
-                        if (PortletUtil.isSingleDefinition(definition)) {
-                            Node portlet = PortletUtil.getPortletForDefinition(definition);
-                            if (portlet != null) {
-                                PortletUtil.addPortlet(newPage, portlet, previoueName);
-                            }
-                            else {
-                                throw new NullPointerException("Single portletdefinition does not have a portlet instance");
-                            }
+            }
+
+            for (Map.Entry<String, List<Node>> defpos : defpositions.entrySet()) {
+                String name = defpos.getKey();
+                List<Node> definitions = defpos.getValue();
+                if (definitions.size() == 1) {
+                    Node definition = definitions.get(0);
+                    if (PortletUtil.isSingleDefinition(definition)) {
+                        Node portlet = PortletUtil.getPortletForDefinition(definition);
+                        if (portlet != null) {
+                            PortletUtil.addPortlet(newPage, portlet, name);
+                        }
+                        else {
+                            throw new NullPointerException("Single portletdefinition does not have a portlet instance");
                         }
                     }
-                    else {
-                        count = 1;
-                    }
-                    previousRelation = relation;
-                    previoueName = name;
                 }
             }
-            if (count == 1) {
-                Node definition = previousRelation.getDestination();
-                if (PortletUtil.isSingleDefinition(definition)) {
-                    Node portlet = PortletUtil.getPortletForDefinition(definition);
-                    if (portlet != null) {
-                        PortletUtil.addPortlet(newPage, portlet, previoueName);
-                    }
-                    else {
-                        throw new NullPointerException("Single portletdefinition does not have a portlet instance");
-                    }
-                }
-            }
-        }
+        }            
     }
 
     public static Node getPage(Node portlet) {
