@@ -11,7 +11,7 @@
   <mm:import id="email"><mm:field name="email" /></mm:import>
   <mm:import id="location"><mm:field name="city" /></mm:import>
   <mm:import id="gender">male</mm:import>
-  <mm:import id="feedback" reset="true"><mm:function set="mmbob"  name="createPoster"referids="forumid,account,password,password@confirmpassword,firstname,lastname,email,gender,location"
+  <mm:import id="feedback" reset="true"><mm:function set="mmbob"  name="createPoster" referids="forumid,account,password,password@confirmpassword,firstname,lastname,email,gender,location"
   /></mm:import>
 
   <mm:write referid="feedback">
