@@ -40,10 +40,6 @@ import com.finalist.pluto.portalImpl.om.portlet.impl.PortletApplicationDefinitio
 import com.finalist.pluto.portalImpl.om.portlet.impl.PortletDefinitionImpl;
 import com.finalist.pluto.portalImpl.services.portletdefinitionregistry.rule.PortletApplicationRule;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.2 $
- */
 public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinitionRegistryService {
 	private static Log log = LogFactory.getLog(PortletDefinitionRegistryServiceDigesterImpl.class);
 

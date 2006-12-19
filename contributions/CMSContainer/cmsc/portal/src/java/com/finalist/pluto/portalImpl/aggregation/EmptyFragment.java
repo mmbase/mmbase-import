@@ -22,7 +22,6 @@ import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
  * Fragment for creating and adding portlets to a Screen
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
  */
 public class EmptyFragment extends PortletFragment {
 

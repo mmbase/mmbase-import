@@ -24,8 +24,6 @@ import xmlbs.PropertiesDocumentStructure;
  * a result of copy&paste from ms word to the mmbase editwizards wysiwyg input
  * 
  * @author Nico Klasens (Finalist IT Group)
- * 
- * @version $Revision: 1.4 $
  */
 public class WordHtmlCleaner {
 
@@ -115,6 +113,7 @@ public class WordHtmlCleaner {
             xmlStr = fixBR(xmlStr);
             xmlStr = removeEmptyFonts(xmlStr);
             xmlStr = replaceParagraph(xmlStr);
+            xmlStr = replaceHeaders(xmlStr);
             xmlStr = removeXmlNamespace(xmlStr);
             xmlStr = removeEmptyTags(xmlStr);
             xmlStr = fixEmptyAnchors(xmlStr);
@@ -178,11 +177,21 @@ public class WordHtmlCleaner {
       // remove all remaining <p>
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
       // replace all remaining </p> with a <br><br>
-      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br /><br />");
+	      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br />");
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
    }
+
+   private static String replaceHeaders(String text) {
+	      // remove the starting header tags ( <h1> till <h7>)
+	      text = text.replaceAll("<\\s*[hH]{1}[1-7]{1}\\s*.*?>", "<strong>");
+	      // replace all remaining </p> with a <br><br>
+	      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong><br />");
+	      // remove all <br> at the end
+	      text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
+	      return text;
+	   }
 
     private static String shrinkBR(String text) {
         // remove all br's which are caused by more than one empty p

@@ -61,6 +61,11 @@
 			<forward name="success" path="/editors/repository/Content.do" redirect="false" />
 		</action>
 
+		<action path="/editors/repository/MoveContentToChannel" type="com.finalist.cmsc.repository.forms.MoveContentToChannelAction" 
+			unknown="false" validate="false">
+			<forward name="success" path="/editors/repository/Content.do" redirect="false" />
+		</action>
+
 		<action path="/editors/repository/Navigator" type="com.finalist.cmsc.repository.forms.NavigatorAction" 
 			unknown="false" validate="false">
 			<forward name="success" path="/editors/repository/selector.jsp" redirect="false" />

@@ -4,7 +4,6 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.4 $
 -->
 <xsl:stylesheet 
   version="1.0"

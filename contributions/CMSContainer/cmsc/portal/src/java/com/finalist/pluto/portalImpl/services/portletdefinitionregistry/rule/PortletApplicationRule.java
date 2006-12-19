@@ -14,10 +14,6 @@ import org.xml.sax.Attributes;
 
 import com.finalist.pluto.portalImpl.om.portlet.impl.PortletApplicationDefinitionImpl;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class PortletApplicationRule extends Rule {
 	protected String appName;
 

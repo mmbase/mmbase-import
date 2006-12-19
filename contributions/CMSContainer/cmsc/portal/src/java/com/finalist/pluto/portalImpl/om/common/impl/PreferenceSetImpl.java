@@ -26,9 +26,6 @@ import org.apache.pluto.util.StringUtils;
 
 /**
  * Set preferences for portlets
- * 
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class PreferenceSetImpl extends HashSet implements PreferenceSet, PreferenceSetCtrl, Serializable {
 	private static Log log = LogFactory.getLog(PreferenceSetImpl.class);

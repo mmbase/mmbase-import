@@ -7,9 +7,6 @@ import org.apache.pluto.services.log.Logger;
 
 /**
  * Direct Commons logging for Pluto
- * 
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
  */
 public class CommonsLogging implements LogService {
 	private static Log log;

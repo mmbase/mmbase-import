@@ -53,6 +53,11 @@
                 	<a href="<mm:url page="../resources/ReactionInitAction.do"/>" target="rightpane"><fmt:message key="admin.reactions" /></a>
                 </li>
             </mm:haspage>
+            <mm:haspage page="/editors/versioning/admin.jsp">
+                <li class="versioning">
+                	<a href="<mm:url page="../versioning/admin.jsp"/>" target="rightpane"><fmt:message key="admin.versioning" /></a>
+                </li>
+            </mm:haspage>
             <cmsc:hasfeature name="luceusmodule">
 				<li class="luceus">
 					<a href="../luceus/fullindex.jsp" target="rightpane"><fmt:message key="admin.fullindex" /></a>

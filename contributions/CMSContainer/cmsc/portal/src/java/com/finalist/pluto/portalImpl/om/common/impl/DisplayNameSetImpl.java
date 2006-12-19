@@ -20,10 +20,6 @@ import org.apache.pluto.util.StringUtils;
 import com.finalist.pluto.portalImpl.om.common.AbstractSupportSet;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class DisplayNameSetImpl extends AbstractSupportSet implements DisplayNameSet, Serializable, Support {
 	// DisplayNameSet implementation.
 	public DisplayName get(Locale locale) {

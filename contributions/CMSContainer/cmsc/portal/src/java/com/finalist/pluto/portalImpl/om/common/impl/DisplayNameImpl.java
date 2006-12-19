@@ -17,10 +17,6 @@ import org.apache.pluto.util.StringUtils;
 
 import com.finalist.pluto.portalImpl.om.common.Support;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class DisplayNameImpl implements DisplayName, Serializable, Support {
 
 	private String displayName;

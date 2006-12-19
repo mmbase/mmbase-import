@@ -2,12 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@include file="globals.jsp" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.NodeManager"%>
-<%@page import="org.mmbase.bridge.Node"%>
 <%@page import="com.finalist.util.http.BulkUploadUtil"%>
-<%@page import="org.mmbase.bridge.Cloud"%>
-<%@page import="org.mmbase.bridge.NodeList"%>
 <%@page import="java.util.List"%> 
 <html>
 <head>
