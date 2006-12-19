@@ -30,38 +30,39 @@ import org.mmbase.util.SizeOf;
 import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 
 /**
+ * @javqdoc
  * @author Daniel Ockeloen
- * 
+ * @version $Id: PostThread.java,v 1.40.2.1 2006-12-19 10:52:21 michiel Exp $
  */
 public class PostThread {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(PostThread.class); 
+    static private final Logger log = Logging.getLoggerInstance(PostThread.class); 
 
-   private String subject;
-   private String creator;
-   private String state;
-   private String mood;
-   private String ttype;
-   private int id;
-   private int viewcount;
-   private int postcount;
+    private String subject;
+    private String creator;
+    private String state;
+    private String mood;
+    private String ttype;
+    private int id;
+    private int viewcount;
+    private int postcount;
 
-   private int lastposttime;
-   private int lastpostnumber;
-   private int lastposternumber;
-   private String lastposter;
-   private String lastpostsubject;
+    private int lastposttime;
+    private int lastpostnumber;
+    private int lastposternumber;
+    private String lastposter;
+    private String lastpostsubject;
  
-   private PostArea parent;
-   private Vector postings=null;
-   private int threadpos=0;
-   private Vector writers=new Vector();
-   private PostingBody postingBody = new PostingBody();
-   private boolean loaded = false;
-   private int lastused;
+    private PostArea parent;
+    private Vector postings=null;
+    private int threadpos=0;
+    private Vector writers=new Vector();
+    private PostingBody postingBody = new PostingBody();
+    private boolean loaded = false;
+    private int lastused;
 
-   public PostThread(PostArea parent,Node node,boolean prefixwanted) {
+    public PostThread(PostArea parent,Node node,boolean prefixwanted) {
         String prefix="";
         if (prefixwanted) prefix = "postthreads.";
 	this.parent=parent;
@@ -81,145 +82,145 @@ public class PostThread {
 	lastpostnumber=node.getIntValue(prefix+"lastpostnumber");
 	mood=node.getStringValue(prefix+"mood");
 	ttype=node.getStringValue(prefix+"ttype");
-   }
+    }
 
-   public void setId(int id) {
+    public void setId(int id) {
 	this.id=id;
-   }
+    }
 
-   public int getId() {
+    public int getId() {
 	return id;
-   }
+    }
 
-   public String getSubject() {
+    public String getSubject() {
 	return subject;
-   }
+    }
 
-   public void setSubject(String subject) {
+    public void setSubject(String subject) {
 	this.subject = subject;
-   }
+    }
 
-   public String getState(Poster ap) {
+    public String getState(Poster ap) {
 	boolean isnew=true;
 	int lastsessionend=ap.getLastSessionEnd();
 
 	// was the post older than my last session ?
 	if (lastposttime<lastsessionend) {
-		isnew=false;
+            isnew=false;
 	} 
 
 	// of did i read it in this session ?
 	if (ap.viewedThread(id,new Integer(lastposttime))) {
-		isnew=false;
+            isnew=false;
 	}
 
 	
 	String state=getState();
 	if (state.equals("normal")) {
-		if (isnew) state="normalnew";
+            if (isnew) state="normalnew";
 	} else if (state.equals("hot")) {
-		if (isnew) state="hotnew";
+            if (isnew) state="hotnew";
 	}
 
 	// even extra lets see if im in this thread;
 	if (isWriter(ap.getNick())) {
-		state+="me";
+            state+="me";
 	}
 
 	return state;
-   }
+    }
 
-   public String getState() {
+    public String getState() {
 	// weird
 	String staten=state;
 	if (staten==null || staten.equals("")) {
-		staten="normal";
+            staten="normal";
 	}
 	
 	// figure out if its hot
 	boolean hot=false;
 	if (postcount>parent.getPostThreadCountAvg()) {
-		hot=true;
+            hot=true;
 	}
 
 	if (staten.equals("normal") && hot) staten="hot";
 	
 	return staten;
-   }
+    }
 
-   public void setState(String staten) {
+    public void setState(String staten) {
 	String oldstate=state;
 	if (oldstate.equals("pinned") && !staten.equals("pinned")) parent.decPinnedCount();
 	if (oldstate.equals("pinnedclosed") && !staten.equals("pinnedclosed")) parent.decPinnedCount();
 	if (!oldstate.equals("pinned") && staten.equals("pinned")) parent.incPinnedCount();
 	if (!oldstate.equals("pinnedclosed") && staten.equals("pinnedclosed")) parent.incPinnedCount();
 	state=staten;
-   }
+    }
 
-   public void setMood(String mood) {
+    public void setMood(String mood) {
 	this.mood = mood;
-   }
+    }
 
-   public void setType(String ttype) {
+    public void setType(String ttype) {
 	this.ttype = ttype;
-   }
+    }
 
-   public String getMood() {
+    public String getMood() {
 	if (mood==null || mood.equals("")) {
-		return "normal";
+            return "normal";
 	}
 	return mood;
-   }
+    }
 
-   public String getType() {
+    public String getType() {
 	if (ttype==null || ttype.equals("")) {
-		return "normal";
+            return "normal";
 	}
 	return ttype;
-   }
+    }
 
-   public String getCreator() {
+    public String getCreator() {
 	return creator;
-   }
+    }
 
-   public int getPostCount() {
+    public int getPostCount() {
 	return postcount;
-   }
+    }
 
-   public int getViewCount() {
+    public int getViewCount() {
 	return viewcount;
-   }
+    }
 
-   public String getLastPoster() {
+    public String getLastPoster() {
 	return lastposter;
-   }
+    }
 
-   public int getLastPosterNumber() {
+    public int getLastPosterNumber() {
         if (parent.getParent().hasPoster(lastposternumber)) {
-                return lastposternumber;
+            return lastposternumber;
         } else {
-                return -1;
+            return -1;
         }
-   }
+    }
 
-   public int getLastPostNumber() {
+    public int getLastPostNumber() {
 	return lastpostnumber;
-   }
+    }
 
-   public int getLastPostTime() {
+    public int getLastPostTime() {
 	return lastposttime;
-   }
+    }
 
 
-   public String getLastSubject() {
+    public String getLastSubject() {
 	return lastpostsubject;
-   }
+    }
 
-   public void setLastSubject(String subject) {
+    public void setLastSubject(String subject) {
 	lastpostsubject = subject;
-   }
+    }
 
-   public Iterator getPostings(int page,int pagecount) {
+    public Iterator getPostings(int page,int pagecount) {
 	if (postings==null) readPostings();
 	
 	lastused = (int)(System.currentTimeMillis() / 1000);
@@ -228,13 +229,13 @@ public class PostThread {
 	int start=(page-1)*pagecount;
 	int end=page*pagecount;
 	if (end>postcount) {
-		end=postings.size();
+            end=postings.size();
 	}
 	List result;
 	if (start<end) {
-		result=postings.subList(start,end);
+            result=postings.subList(start,end);
 	} else {
-		result=postings;
+            result=postings;
 	}
 
 	viewcount++;
@@ -242,18 +243,18 @@ public class PostThread {
 	parent.signalViewsChanged(this);
 
 	return result.iterator();
-   }
+    }
 
 
-   public Posting getPostingPos(int pos) {
+    public Posting getPostingPos(int pos) {
 	if (postings==null) readPostings();
 	if (postings.size()>pos) {
-		return (Posting)postings.elementAt(pos);
+            return (Posting)postings.elementAt(pos);
 	}
 	return null;
-   }
+    }
 
-   public boolean save() {
+    public boolean save() {
         Node node = ForumManager.getCloud().getNode(id);
 	node.setValue("subject",subject);
 	node.setValue("creator",creator);
@@ -270,94 +271,94 @@ public class PostThread {
         node.commit();
 	parent.resort(this);
         return true;
-   }
+    }
 
 
-   public int postReply(String nsubject,Poster poster,String nbody,boolean parsed) {
+    public int postReply(String nsubject,Poster poster,String nbody,boolean parsed) {
 	if (postings==null) readPostings();
 	
         NodeManager nm=ForumManager.getCloud().getNodeManager("postings");
         if (nm!=null) {
-                Node pnode=nm.createNode();
-		if (subject!=null && !subject.equals("")) {
-			pnode.setStringValue("subject",subject);
-		} else {
-			pnode.setStringValue("subject",nsubject);
-		}
-		if (poster!=null) {
-			pnode.setStringValue("c_poster",poster.getNick());
-			pnode.setIntValue("posternumber",poster.getId());
-		} else {
-			pnode.setStringValue("c_poster","gast");
-			pnode.setIntValue("posternumber",-1);
-		}
+            Node pnode=nm.createNode();
+            if (subject!=null && !subject.equals("")) {
+                pnode.setStringValue("subject",subject);
+            } else {
+                pnode.setStringValue("subject",nsubject);
+            }
+            if (poster!=null) {
+                pnode.setStringValue("c_poster",poster.getNick());
+                pnode.setIntValue("posternumber",poster.getId());
+            } else {
+                pnode.setStringValue("c_poster","gast");
+                pnode.setIntValue("posternumber",-1);
+            }
+            
+            // This must be it, please do not change the line below. If somebody's having problems
+            // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
+            if (parsed) {
+                pnode.setStringValue("body",nbody);
+            } else {
+                pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
+            }
+            
+            pnode.setStringValue("c_body",""); 
+            pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
+            pnode.setIntValue("edittime",-1);
+            pnode.commit();
+            Node node = ForumManager.getCloud().getNode(id);
+            RelationManager rm=ForumManager.getCloud().getRelationManager("postthreads","postings","related");
+            if (rm!=null) {
+                Node rel=rm.createRelation(node,pnode);
+                rel.commit();
+                Posting posting=new Posting(pnode,this,false);
+                posting.setThreadPos(threadpos++);
+                postings.add(posting);
 
-                // This must be it, please do not change the line below. If somebody's having problems
-                // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
-		if (parsed) {
-                	pnode.setStringValue("body",nbody);
-		} else {
-                	pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
-		}
+                // update stats and signal parent of change
+                if (poster!=null) poster.addPostCount();
+                addWriter(posting);
 
-	        pnode.setStringValue("c_body",""); 
-		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
-		pnode.setIntValue("edittime",-1);
-                pnode.commit();
-	        Node node = ForumManager.getCloud().getNode(id);
-                RelationManager rm=ForumManager.getCloud().getRelationManager("postthreads","postings","related");
-                if (rm!=null) {
-                        Node rel=rm.createRelation(node,pnode);
-                        rel.commit();
-        		Posting posting=new Posting(pnode,this,false);
-			posting.setThreadPos(threadpos++);
-		        postings.add(posting);
+                // update the counters
+                postcount++;
 
-			// update stats and signal parent of change
-			if (poster!=null) poster.addPostCount();
-			addWriter(posting);
+                lastposttime=pnode.getIntValue("createtime");
+                lastposter=pnode.getStringValue("c_poster");
+                lastposternumber=pnode.getIntValue("posternumber");
+                lastpostnumber=pnode.getIntValue("number");
+                lastpostsubject=pnode.getStringValue("subject");
 
-			// update the counters
-			postcount++;
+                syncNode(ForumManager.FASTSYNC);
+                parent.signalNewReply(this);
+                // signal the threadobservers
+                ThreadObserver to = parent.getParent().getThreadObserver(id);
+                if (to!=null) to.signalContentAdded(this);
 
-			lastposttime=pnode.getIntValue("createtime");
-			lastposter=pnode.getStringValue("c_poster");
-			lastposternumber=pnode.getIntValue("posternumber");
-			lastpostnumber=pnode.getIntValue("number");
-			lastpostsubject=pnode.getStringValue("subject");
-
-			syncNode(ForumManager.FASTSYNC);
-			parent.signalNewReply(this);
-			// signal the threadobservers
-			ThreadObserver to = parent.getParent().getThreadObserver(id);
-			if (to!=null) to.signalContentAdded(this);
-
-			return pnode.getNumber();
-                } else {
-                        log.error("Forum can't load relation nodemanager postthreads/postings/related");
-			return -1;
-                }
+                return pnode.getNumber();
+            } else {
+                log.error("Forum can't load relation nodemanager postthreads/postings/related");
+                return -1;
+            }
         } else {
-                log.error("Forum can't load postings nodemanager");
-		return -1;
+            log.error("Forum can't load postings nodemanager");
+            return -1;
         }
-   }
+    }
 
     /**
      * add the postarea-node to the given syncQueue
      * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
-     Node node = ForumManager.getCloud().getNode(id);
-     node.setIntValue("postcount",postcount);
-     node.setIntValue("viewcount",viewcount);
-     node.setIntValue("lastposternumber",lastposternumber);
-     node.setIntValue("lastpostnumber",lastpostnumber);
-     node.setIntValue("c_lastposttime",lastposttime);
-     node.setStringValue("c_lastposter",lastposter);
-     node.setStringValue("c_lastpostsubject",lastpostsubject);
+        Node node = ForumManager.getCloud().getNode(id);
+        node.setIntValue("postcount",postcount);
+        node.setIntValue("viewcount",viewcount);
+        node.setIntValue("lastposternumber",lastposternumber);
+        node.setIntValue("lastpostnumber",lastpostnumber);
+        node.setIntValue("c_lastposttime",lastposttime);
+        node.setStringValue("c_lastposter",lastposter);
+        node.setStringValue("c_lastpostsubject",lastpostsubject);
      
-     ForumManager.syncNode(node,queue);
+        ForumManager.syncNode(node,queue);
     }
 
     /**
@@ -365,91 +366,91 @@ public class PostThread {
      */
     public void readPostings() {
 	if (postings!=null) return;
-	 postings=new Vector();
-        	long start=System.currentTimeMillis();
-		//NodeIterator i=node.getRelatedNodes("postings").nodeIterator();
+        postings=new Vector();
+        long start=System.currentTimeMillis();
+        //NodeIterator i=node.getRelatedNodes("postings").nodeIterator();
 
 
-            	NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
-            	NodeManager postingsmanager = ForumManager.getCloud().getNodeManager("postings");
-            	Query query = ForumManager.getCloud().createQuery();
-            	Step step1 = query.addStep(postthreadsmanager);
-            	RelationStep step2 = query.addRelationStep(postingsmanager);
-            	StepField f1 = query.addField(step1, postthreadsmanager.getField("number"));
-            	StepField f3 = query.addField(step2.getNext(), postingsmanager.getField("number"));
-            	query.addField(step2.getNext(), postingsmanager.getField("c_body"));
-            	query.addField(step2.getNext(), postingsmanager.getField("body"));
-            	query.addField(step2.getNext(), postingsmanager.getField("c_poster"));
-            	query.addField(step2.getNext(), postingsmanager.getField("subject"));
-            	query.addField(step2.getNext(), postingsmanager.getField("createtime"));
-            	query.addField(step2.getNext(), postingsmanager.getField("edittime"));
-            	query.setConstraint(query.createConstraint(f1, new Integer(getId())));
-                query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
+        NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
+        NodeManager postingsmanager = ForumManager.getCloud().getNodeManager("postings");
+        Query query = ForumManager.getCloud().createQuery();
+        Step step1 = query.addStep(postthreadsmanager);
+        RelationStep step2 = query.addRelationStep(postingsmanager);
+        StepField f1 = query.addField(step1, postthreadsmanager.getField("number"));
+        StepField f3 = query.addField(step2.getNext(), postingsmanager.getField("number"));
+        query.addField(step2.getNext(), postingsmanager.getField("c_body"));
+        query.addField(step2.getNext(), postingsmanager.getField("body"));
+        query.addField(step2.getNext(), postingsmanager.getField("c_poster"));
+        query.addField(step2.getNext(), postingsmanager.getField("subject"));
+        query.addField(step2.getNext(), postingsmanager.getField("createtime"));
+        query.addField(step2.getNext(), postingsmanager.getField("edittime"));
+        query.setConstraint(query.createConstraint(f1, new Integer(getId())));
+        query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
 		
-	        NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
-        	long end=System.currentTimeMillis();
-		int newcount = 0;
-        	//log.info("getting list="+(end-start));
-		while (i.hasNext()) {
-			Node node=i.nextNode();
-        		//start=System.currentTimeMillis();
-                        Posting posting=new Posting(node,this,true);
-			newcount++;
-        		//end=System.currentTimeMillis();
-			posting.setThreadPos(threadpos++);
-			addWriter(posting);
-                      	postings.add(posting);
-		}
+        NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
+        long end=System.currentTimeMillis();
+        int newcount = 0;
+        //log.info("getting list="+(end-start));
+        while (i.hasNext()) {
+            Node node=i.nextNode();
+            //start=System.currentTimeMillis();
+            Posting posting=new Posting(node,this,true);
+            newcount++;
+            //end=System.currentTimeMillis();
+            posting.setThreadPos(threadpos++);
+            addWriter(posting);
+            postings.add(posting);
+        }
 
-		// check the count number
-		if (postcount!=newcount) {
-			log.info("resync of posttreadcount : "+postcount+" "+newcount);
-			postcount = newcount;
-			save();
-		}
+        // check the count number
+        if (postcount!=newcount) {
+            log.info("resync of posttreadcount : "+postcount+" "+newcount);
+            postcount = newcount;
+            save();
+        }
 
-		// very raw way to zap the cache
-		Cache cache = RelatedNodesCache.getCache();
-		cache.clear();
-		cache = NodeCache.getCache();
-		cache.clear();
-		cache = NodeCache.getCache();
-		cache.clear();
-		cache = MultilevelCache.getCache();
-		cache.clear();
-		cache = NodeListCache.getCache();
-		cache.clear();
+        // very raw way to zap the cache
+        Cache cache = RelatedNodesCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = MultilevelCache.getCache();
+        cache.clear();
+        cache = NodeListCache.getCache();
+        cache.clear();
 	loaded = true;
 	lastused = (int)(System.currentTimeMillis() / 1000);
-   }
+    }
 
-   public boolean isLastPage(int page,int pagesize) {
+    public boolean isLastPage(int page,int pagesize) {
 
 	int pagecount=postcount/pagesize;
 	if ((pagecount*pagesize)!=postcount) pagecount++;
 	if (page==pagecount) {
-		return true;
+            return true;
 	}
 	return false;
-   }
+    }
 
-   public int getPageCount(int pagesize) {
+    public int getPageCount(int pagesize) {
 	int pagecount=postcount/pagesize;
 	if ((pagecount*pagesize)!=postcount) pagecount++;
 	return pagecount;
-   }
+    }
 
-   /**
-   * I hate how this is done but don't see a way to get this fast enough
-   * any other way.
-   */
-   public String getNavigationLine(String baseurl, int page,int pagesize,int overflowpage,String cssclass) {
+    /**
+     * I hate how this is done but don't see a way to get this fast enough
+     * any other way.
+     */
+    public String getNavigationLine(String baseurl, int page,int pagesize,int overflowpage,String cssclass) {
 	int f=parent.getParent().getId();
 	int a=parent.getId();
 	int p=getId();
 
 	if (!cssclass.equals("")) {
-		cssclass=" class=\""+cssclass+"\"";	
+            cssclass=" class=\""+cssclass+"\"";	
 	}
 
 	// weird way must be a better way for pagecount
@@ -464,35 +465,35 @@ public class PostThread {
 	String result = "<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+c+"\""+cssclass+">&lt</a>";
 	int i=1;
 	for (i=1;i<=pagecount;i++) {
-	  result+=" <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">";
-	  if (i<overflowpage || i==pagecount) {
+            result+=" <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">";
+            if (i<overflowpage || i==pagecount) {
 	  	if (i==page) {
-			result+="["+i+"]";
+                    result+="["+i+"]";
 	  	} else {
-			result+=""+i;
+                    result+=""+i;
 	  	}
-	  } else {
+            } else {
 		if (i==overflowpage) {
-			result+="...";
+                    result+="...";
 		}
-	  }
-	  result+="</a>";
+            }
+            result+="</a>";
         } 
         String lastword = "last";
         if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
 	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
 	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+n+"\""+cssclass+">&gt</a>";
 	return result;
-   }
+    }
 
 
-   public String getNavigationLine(String baseurl, int pagesize,int overflowpage,String cssclass) {
+    public String getNavigationLine(String baseurl, int pagesize,int overflowpage,String cssclass) {
 	int f=parent.getParent().getId();
 	int a=parent.getId();
 	int p=getId();
 
 	if (cssclass!=null && !cssclass.equals("")) {
-		cssclass=" class=\""+cssclass+"\"";	
+            cssclass=" class=\""+cssclass+"\"";	
 	}
 
 	// weird way must be a better way for pagecount
@@ -505,36 +506,36 @@ public class PostThread {
 	String result = "(";
 	int i=1;
 	for (i=1;i<=pagecount;i++) {
-	  if (i!=1) result+=" ";
-	  if (i<overflowpage || i==pagecount) {
+            if (i!=1) result+=" ";
+            if (i<overflowpage || i==pagecount) {
 	  	result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">"+i+"</a>";
-	  } else {
+            } else {
 		if (i==overflowpage) {
-			result+="...";
+                    result+="...";
 		}
-	  }
+            }
         } 
 	if (i>1) {
-        	String lastword = "last";
-        	if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
-	  	result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
+            String lastword = "last";
+            if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
+            result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
 	}
 	result += ")";
 	return result;
-   }
+    }
 
-   public Posting getPosting(int postingid) {
+    public Posting getPosting(int postingid) {
 	if (postings==null) readPostings();
 
 	Enumeration e=postings.elements();
 	while (e.hasMoreElements()) {
-		Posting p=(Posting)e.nextElement();
-		if(p.getId()==postingid) {
-			return p;
-		}
+            Posting p=(Posting)e.nextElement();
+            if(p.getId()==postingid) {
+                return p;
+            }
 	}
 	return null;
-   }
+    }
 
     /**
      * remove the whole PostThread
@@ -558,16 +559,16 @@ public class PostThread {
         }
 
 	try {	
-		// this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
-		// it should already been deleted by the above loop this is done in case of a 0 postings
-		if (ForumManager.getCloud().hasNode(id)) {
+            // this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
+            // it should already been deleted by the above loop this is done in case of a 0 postings
+            if (ForumManager.getCloud().hasNode(id)) {
         	Node node = ForumManager.getCloud().getNode(id);
         	node.delete(true);
         	ForumManager.nodeDeleted(node);
-		}
+            }
 	} catch(Exception e2) {
-		//e2.printStackTrace();
-		//return false;
+            //e2.printStackTrace();
+            //return false;
 	}
 
         return true;
@@ -652,15 +653,15 @@ public class PostThread {
 
     public int getMemorySize() {
         if (postings == null) {
-		return 0;
+            return 0;
 	} else {
-		int size = 0;
-        	Iterator i = postings.iterator();
-		while (i.hasNext()) {
-			Posting p = (Posting)i.next();
-			size += p.getMemorySize();
-		}
-		return size;
+            int size = 0;
+            Iterator i = postings.iterator();
+            while (i.hasNext()) {
+                Posting p = (Posting)i.next();
+                size += p.getMemorySize();
+            }
+            return size;
 	}
     }
 
@@ -670,15 +671,15 @@ public class PostThread {
 	return searchPostings(results,searchkey,posterid);
     }
 
-   public Vector searchPostings(Vector results,String searchkey,int posterid) {
+    public Vector searchPostings(Vector results,String searchkey,int posterid) {
 	if (postings!=null) {
-        	Enumeration e = postings.elements();
-        	while (e.hasMoreElements()) {
+            Enumeration e = postings.elements();
+            while (e.hasMoreElements()) {
             	Posting posting = (Posting) e.nextElement();
 	    	if (posting.inBody(searchkey) || posting.inSubject(searchkey)) {
-			results.add(posting);
+                    results.add(posting);
 	    	}
-		}
+            }
 	}
 	return results;
     }
