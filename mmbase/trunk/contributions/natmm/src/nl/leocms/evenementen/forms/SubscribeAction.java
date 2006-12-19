@@ -50,7 +50,7 @@ import nl.leocms.connectors.UISconnector.output.orders.process.Sender;
  * SubscribeAction
  */
 public class SubscribeAction extends Action {
-   private static final Logger log = Logging.getLoggerInstance(EvenementAction.class);
+   private static final Logger log = Logging.getLoggerInstance(SubscribeAction.class);
    public static int NO_COSTS = 0;
    public static int UNKNOWN_COSTS = -1;
    public static int GROUP_EXCURSION_COSTS = -2;
@@ -437,6 +437,44 @@ public class SubscribeAction extends Action {
       return message;
    }
 
+   private static void sendDescriptionToBackOffice(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant) {
+
+      if(thisEvent!=null && thisSubscription !=null && thisParticipant!=null) {
+         
+         String thisParticipantName =  thisParticipant.getStringValue("firstname")
+         + (thisParticipant.getStringValue("initials").equals("") ? "" : " " +  thisParticipant.getStringValue("initials"))
+         + (thisParticipant.getStringValue("suffix").equals("") ? "" : " " +  thisParticipant.getStringValue("suffix"))
+         + (thisParticipant.getStringValue("lastname").equals("") ? "" : " " +  thisParticipant.getStringValue("lastname"));         
+         
+         // compose email message
+         StringBuffer emailMsg = new StringBuffer();
+
+         emailMsg.append("\nBetreft: \n");
+         emailMsg.append("Aanmelding " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue() + "\n");
+         
+         emailMsg.append("\nAanmelder: \n");
+         emailMsg.append(thisParticipantName + "\n");
+         emailMsg.append(thisParticipant.getStringValue("email") + "\n");         
+         emailMsg.append(thisParticipant.getStringValue("privatephone") + "\n");
+
+         emailMsg.append("\nBijzonderheden: \n");
+         emailMsg.append(thisSubscription.getStringValue("description") + "\n");
+ 
+         emailMsg.append("\nA.u.b. contact opnemen met " + thisParticipantName);
+         
+         Node emailNode = cloud.getNodeManager("email").createNode();
+         emailNode.setValue("to", NatMMConfig.fromCADAddress);
+         emailNode.setValue("from", NatMMConfig.fromCADAddress);
+         emailNode.setValue("subject", "Internet aanmelding ontvangen met bijzonderheden");
+         emailNode.setValue("replyto", NatMMConfig.fromCADAddress);
+         emailNode.setValue("body", emailMsg.toString());
+         emailNode.commit();
+         emailNode.getValue("mail(oneshotkeep)");         
+         
+      }
+   }
+   
+   
    private static void sendConfirmEmail(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl) {
 
       String fromEmailAddress = NatMMConfig.fromCADAddress;
@@ -744,7 +782,17 @@ public class SubscribeAction extends Action {
                String confirmUrl = NatMMConfig.liveUrl[0] + "/events.jsp";
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
+               
+               //log.info("send mail: " + thisEvent + " " + thisParent + " " + thisSubscription + " " + thisParticipant + " ");
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
+               
+               // if a participant added extra information during the subscription,
+               // this information should be mailed to the backoffice employees
+               if ( (thisSubscription.getStringValue("description") != null)
+                    && (!"".equals(thisSubscription.getStringValue("description"))) ) {
+                   sendDescriptionToBackOffice(cloud, thisEvent, thisParent, thisSubscription, thisParticipant);
+               }
+               
                subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
             
