@@ -32,11 +32,10 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.40.2.2 2006-12-19 11:02:44 michiel Exp $
+ * @version $Id: PostThread.java,v 1.40.2.3 2006-12-19 11:14:48 michiel Exp $
  */
 public class PostThread {
 
-    // logger
     static private final Logger log = Logging.getLoggerInstance(PostThread.class);
 
     private String subject;
@@ -62,30 +61,32 @@ public class PostThread {
     private boolean loaded = false;
     private int lastused;
 
-    public PostThread(PostArea parent,Node node,boolean prefixwanted) {
+    public PostThread(PostArea parent, Node node, boolean prefixwanted) {
         String prefix="";
-        if (prefixwanted) prefix = "postthreads.";
-	this.parent=parent;
-	this.subject=node.getStringValue(prefix+"subject");
-	this.creator=node.getStringValue(prefix+"creator");
-	this.id=node.getIntValue(prefix+"number");
-	this.viewcount=node.getIntValue(prefix+"viewcount");
-	if (viewcount==-1) viewcount=0;
-	this.postcount=node.getIntValue(prefix+"postcount");
-	this.state=node.getStringValue(prefix+"state");
-	if (postcount==-1) postcount=0;
+        if (prefixwanted) {
+            prefix = "postthreads.";
+        }
+	this.parent  = parent;
+	this.subject = node.getStringValue(prefix + "subject");
+	this.creator = node.getStringValue(prefix + "creator");
+	this.id      = node.getIntValue(prefix + "number");
+	this.viewcount = node.getIntValue(prefix + "viewcount");
+	if (viewcount == -1) viewcount = 0;
+	this.postcount = node.getIntValue(prefix + "postcount");
+	this.state    = node.getStringValue(prefix + "state");
+	if (postcount == -1) postcount = 0;
 
-	lastpostsubject=node.getStringValue(prefix+"c_lastpostsubject");
-	lastposter=node.getStringValue(prefix+"c_lastposter");
-	lastposttime=node.getIntValue(prefix+"c_lastposttime");
-	lastposternumber=node.getIntValue(prefix+"lastposternumber");
-	lastpostnumber=node.getIntValue(prefix+"lastpostnumber");
-	mood=node.getStringValue(prefix+"mood");
-	ttype=node.getStringValue(prefix+"ttype");
+	lastpostsubject  = node.getStringValue(prefix + "c_lastpostsubject");
+	lastposter       = node.getStringValue(prefix + "c_lastposter");
+	lastposttime     = node.getIntValue(prefix + "c_lastposttime");
+	lastposternumber = node.getIntValue(prefix + "lastposternumber");
+	lastpostnumber   = node.getIntValue(prefix + "lastpostnumber");
+	mood  = node.getStringValue(prefix + "mood");
+	ttype = node.getStringValue(prefix + "ttype");
     }
 
     public void setId(int id) {
-	this.id=id;
+	this.id = id;
     }
 
     public int getId() {
@@ -101,30 +102,30 @@ public class PostThread {
     }
 
     public String getState(Poster ap) {
-	boolean isnew=true;
-	int lastsessionend=ap.getLastSessionEnd();
+	boolean isnew = true;
+	int lastsessionend = ap.getLastSessionEnd();
 
 	// was the post older than my last session ?
-	if (lastposttime<lastsessionend) {
-            isnew=false;
+	if (lastposttime < lastsessionend) {
+            isnew = false;
 	}
 
 	// of did i read it in this session ?
-	if (ap.viewedThread(id,new Integer(lastposttime))) {
-            isnew=false;
+	if (ap.viewedThread(id, new Integer(lastposttime))) {
+            isnew = false;
 	}
 
 
-	String state=getState();
+	String state = getState();
 	if (state.equals("normal")) {
-            if (isnew) state="normalnew";
+            if (isnew) state = "normalnew";
 	} else if (state.equals("hot")) {
-            if (isnew) state="hotnew";
+            if (isnew) state = "hotnew";
 	}
 
 	// even extra lets see if im in this thread;
 	if (isWriter(ap.getNick())) {
-            state+="me";
+            state += "me";
 	}
 
 	return state;
@@ -132,18 +133,18 @@ public class PostThread {
 
     public String getState() {
 	// weird
-	String staten=state;
-	if (staten==null || staten.equals("")) {
-            staten="normal";
+	String staten = state;
+	if (staten == null || staten.equals("")) {
+            staten = "normal";
 	}
 
 	// figure out if its hot
-	boolean hot=false;
-	if (postcount>parent.getPostThreadCountAvg()) {
-            hot=true;
+	boolean hot = false;
+	if (postcount > parent.getPostThreadCountAvg()) {
+            hot = true;
 	}
 
-	if (staten.equals("normal") && hot) staten="hot";
+	if (staten.equals("normal") && hot) staten = "hot";
 
 	return staten;
     }
@@ -154,7 +155,7 @@ public class PostThread {
 	if (oldstate.equals("pinnedclosed") && !staten.equals("pinnedclosed")) parent.decPinnedCount();
 	if (!oldstate.equals("pinned") && staten.equals("pinned")) parent.incPinnedCount();
 	if (!oldstate.equals("pinnedclosed") && staten.equals("pinnedclosed")) parent.incPinnedCount();
-	state=staten;
+	state = staten;
     }
 
     public void setMood(String mood) {
@@ -173,7 +174,7 @@ public class PostThread {
     }
 
     public String getType() {
-	if (ttype==null || ttype.equals("")) {
+	if (ttype == null || ttype.equals("")) {
             return "normal";
 	}
 	return ttype;
@@ -221,21 +222,21 @@ public class PostThread {
     }
 
     public Iterator getPostings(int page,int pagecount) {
-	if (postings==null) readPostings();
+	if (postings == null) readPostings();
 
 	lastused = (int)(System.currentTimeMillis() / 1000);
 
 	// get the range we want
-	int start=(page-1)*pagecount;
-	int end=page*pagecount;
-	if (end>postcount) {
-            end=postings.size();
+	int start = (page-1) * pagecount;
+	int end = page * pagecount;
+	if (end > postcount) {
+            end = postings.size();
 	}
 	List result;
-	if (start<end) {
-            result=postings.subList(start,end);
+	if (start < end) {
+            result = postings.subList(start,end);
 	} else {
-            result=postings;
+            result = postings;
 	}
 
 	viewcount++;
