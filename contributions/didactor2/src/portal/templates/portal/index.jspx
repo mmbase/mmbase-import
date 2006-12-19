@@ -4,6 +4,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
+  <jsp:directive.page buffer="1000kb" />
   <!-- 
        using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
        to please IE, which is a nasty, lousy browser
@@ -37,6 +38,7 @@
       <body class="portal">
 
         <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
+        
         <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">
           <mm:param name="escapeamps">true</mm:param>
         </mm:treeinclude>
