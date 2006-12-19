@@ -24,7 +24,7 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 /**
  * Handles events on content
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentElementEventListener implements NodeEventListener, RelationEventListener {
 

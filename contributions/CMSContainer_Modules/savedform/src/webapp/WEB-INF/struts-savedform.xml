@@ -21,6 +21,9 @@
          <action path="/editors/savedform/DeleteSavedForm" type="com.finalist.savedform.DeleteSavedFormAction"
             name="DeleteSecondaryContentForm" scope="request" input="/WEB-INF/templates/view/savedform/list.jsp" unknown="false" validate="false">
         </action>
+        <action path="/editors/savedform/DownloadSavedForm" type="com.finalist.savedform.DownloadSavedFormAction"
+            unknown="false" validate="false">            
+        </action>
 	</action-mappings>
 	
 	<message-resources parameter="savedformmodule" key="SAVEDFORM" />	

@@ -30,7 +30,6 @@ import java.text.ParseException;
  * Implementation of the VersioningService.
  *
  * @author Jeoffrey Bakker, Finalist IT Group
- * @version $Revision: 1.1 $, $Date: 2006-12-12 09:42:31 $
  */
 public class VersioningServiceMMBaseImpl extends VersioningService {
 
@@ -170,16 +169,3 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
       }
    }
 }
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2006/11/06 11:30:40  freek
- * Splitup
- *
- * Revision 1.2  2006/10/03 14:26:12  freek
- * NIJ-532 en NIJ-571 opgelost, wou een workflow aanmaken aan de archive node en niet aan de gerestorede node
- *
- * Revision 1.1  2006/09/15 09:42:09  jeoffrey
- * added versioning
- *
- */

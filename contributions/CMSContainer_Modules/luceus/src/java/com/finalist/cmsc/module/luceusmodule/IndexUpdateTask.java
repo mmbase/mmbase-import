@@ -36,7 +36,7 @@ import com.luceus.core.om.EnvelopeFieldFactory;
  * Task that handles queued updates
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IndexUpdateTask implements Runnable {
 	private static Log log = LogFactory.getLog(IndexUpdateTask.class);
@@ -163,7 +163,7 @@ public class IndexUpdateTask implements Runnable {
 
 	private void executeCreateContentIndex(Node node) {
 		log.debug(id + " Create content index: " + node.getNumber());
-		List<PageInfo> pages = Search.findPagesForContentElement(node);
+		List<PageInfo> pages = Search.findAllDetailPagesForContent(node);
         for (PageInfo info : pages) {
 			int pageId = info.getPageNumber();
 			create(String.valueOf(pageId), node);
@@ -172,7 +172,7 @@ public class IndexUpdateTask implements Runnable {
 
 	private void executeUpdateContentIndex(Node node) {
 		log.debug(id + " Update content index: " + node.getNumber());
-        List<PageInfo> pages = Search.findPagesForContentElement(node);
+        List<PageInfo> pages = Search.findAllDetailPagesForContent(node);
 		if (pages.size() == 0) {
 			log.debug(id + " Unable to find page(s) for update of content element: " + node.getNumber());
 			delete(null, String.valueOf(node.getNumber()));

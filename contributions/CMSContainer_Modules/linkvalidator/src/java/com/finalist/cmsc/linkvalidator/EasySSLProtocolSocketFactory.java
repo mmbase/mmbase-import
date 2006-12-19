@@ -1,7 +1,4 @@
 /*
-   * $Header: /space2/mmbase.org/contributions/CMSContainer_Modules/linkvalidator/src/java/com/finalist/cmsc/linkvalidator/EasySSLProtocolSocketFactory.java,v 1.1 2006-12-12 09:42:32 nklasens Exp $
-   * $Revision: 1.1 $
-   * $Date: 2006-12-12 09:42:32 $
    *
    * ====================================================================
    *

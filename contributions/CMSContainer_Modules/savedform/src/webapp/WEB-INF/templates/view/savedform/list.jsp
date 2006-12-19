@@ -46,6 +46,13 @@
 		                       </mm:url>">
 		           <img src="../gfx/icons/delete.png" title="<fmt:message key="savedform.icon.deleteform" />"/></a>
 		       </mm:hasrank>
+		       
+		       <a href="<mm:url page="DownloadSavedForm.do" >
+		           <mm:param name="nodenumber"><mm:field name="number" /></mm:param>
+		           <mm:param name="returnurl" value="/editors/savedform/ShowSavedForm.do?nodenumber=${param.nodenumber}" />
+		           </mm:url>">   
+		       <img src="../gfx/icons/excel.png" title="<fmt:message key="savedform.icon.downloadform" />"/></a>
+		        		       
             </p>
          </mm:node>
          

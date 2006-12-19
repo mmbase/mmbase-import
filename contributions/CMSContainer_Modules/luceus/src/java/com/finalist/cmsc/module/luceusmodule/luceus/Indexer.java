@@ -24,7 +24,7 @@ import com.luceus.server.util.MBeanHelper;
  * Wrapper around LuceusIndexer, handles remote and local indexers
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class Indexer {
 

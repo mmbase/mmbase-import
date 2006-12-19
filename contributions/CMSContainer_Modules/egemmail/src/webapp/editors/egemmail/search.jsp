@@ -24,11 +24,11 @@
 	<div class="editor">
 		<div class="body">
 			<html:form action="/editors/egemmail/EgemSearchAction">
-				<fmt:message key="egemmail.field.title" />: 
+				<label><fmt:message key="egemmail.field.title" />:</label>
 				<html:text property="title"/><br/>
-				<fmt:message key="egemmail.field.keywords" />: 
+				<label><fmt:message key="egemmail.field.keywords" />:</label>
 				<html:text property="keywords"/><br/>
-				<fmt:message key="egemmail.field.author" />: 
+				<label><fmt:message key="egemmail.field.author" />:</label>
  				<html:select property="author">
 					<html:option value=""><fmt:message key="egemmail.all_users" /></html:option>
  					<mm:listnodes type="mmbaseusers" orderby="username">
