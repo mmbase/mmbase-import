@@ -79,12 +79,12 @@ public class HasroleTag extends CloudReferrerTag {
         if (inverse != null && !"".equals(inverse)) {
             inv = "true".equalsIgnoreCase(inverse);
         }
-        String number = "" + user;
+        String number = "" + org.mmbase.util.Casting.toInt(user);
         if ("0".equals(number)) return inv ? EVAL_BODY : SKIP_BODY;
 
-        MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode("" + user);
+        MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(number);
         if (usernode == null) {
-            throw new JspTagException("User with number '" + user + "' not found");
+            throw new JspTagException("User with number '" + number + "' not found");
         }
         // Get Education no
        int educationno= 0;
