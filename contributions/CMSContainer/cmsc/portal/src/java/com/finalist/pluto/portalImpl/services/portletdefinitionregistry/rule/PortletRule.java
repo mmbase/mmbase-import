@@ -14,10 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.om.portlet.PortletApplicationDefinition;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class PortletRule extends Rule {
 	protected final static Log log = LogFactory.getLog(PortletRule.class);
 

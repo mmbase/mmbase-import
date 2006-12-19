@@ -21,6 +21,8 @@ public abstract class SearchService  extends Service{
 
     public abstract PageInfo findDetailPageForContent(Node node);
 
+    public abstract List<PageInfo> findAllDetailPagesForContent(Node content);
+    
     public abstract List<PageInfo> findPagesForContentElement(Node content);
 
     public abstract List<PageInfo> findPagesForContentElement(Node content, Node channel);

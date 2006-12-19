@@ -45,10 +45,6 @@ import com.finalist.pluto.portalImpl.om.common.impl.SecurityRoleRefSetImpl;
 import com.finalist.pluto.portalImpl.om.servlet.impl.ServletDefinitionImpl;
 import com.finalist.pluto.portalImpl.util.ObjectID;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class PortletDefinitionImpl implements PortletDefinition, PortletDefinitionCtrl, Serializable, Support {
 	private static Log log = LogFactory.getLog(PortletDefinitionImpl.class);
 

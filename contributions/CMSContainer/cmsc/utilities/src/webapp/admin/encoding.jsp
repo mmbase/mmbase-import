@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="sun.io.Converters"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 
 <%
 	try {

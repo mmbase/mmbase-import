@@ -32,7 +32,6 @@ import org.apache.pluto.om.window.PortletWindow;
  * PortalURL to accomodate CMSC's filter/servlet setup.
  * @changes pluto-1.0.1
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
  */
 public class PortalURL {
 	private static Log log = LogFactory.getLog(PortalURL.class);

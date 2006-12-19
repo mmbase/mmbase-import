@@ -340,6 +340,24 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>pagefrompath</name>
+		<tag-class>com.finalist.cmsc.taglib.navigation.PageFromPathTag</tag-class>
+		<body-content>scriptless</body-content>
+		<description>Gets the number of a page from a path</description>
+		<attribute>
+			<name>var</name>
+			<description>JSP variable name to put the pages in.</description>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>path</name>
+			<description>The path to get the page from</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>link</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.LinkTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -425,46 +443,6 @@
 			<description>Site or NavChannel.</description>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>wizard</name>
-		<tag-class>com.finalist.cmsc.taglib.form.WizardTag</tag-class>
-		<body-content>scriptless</body-content>
-		<description>
-			!!! DO NOT USE THIS TAG UNTIL IT USES THE WIZARD INIT ACTION AND IS COMPLETED !!!
-			Just link manually to the wizard init action in the meanwhile.
-			Create an editwizard link
-		</description>
-		<attribute>
-			<name>number</name>
-			<description>Node number</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>action</name>
-			<description>Create if a new contenttype item is needed</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>contenttype</name>
-			<description>Type of editwizard to start, usually nodemanager name</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnurl</name>
-			<description>The return url</description>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
-		<attribute>
-			<name>var</name>
-			<description>JSP variable name to put Wizard link into.</description>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 
@@ -824,5 +802,91 @@ The locale to be used.
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+
 	
+	
+<!-- ################ -->
+<!-- Security Tags -->	
+<!-- ################ -->
+  <tag>
+    <description>
+    	Gets the rights of a user over a certain node
+    </description>
+    <name>rights</name>
+    <tag-class>com.finalist.cmsc.taglib.RightsTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+        <description>
+The nodenumber of the node to get the rights on.
+        </description>
+        <name>nodeNumber</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+The var to write it to.
+        </description>
+        <name>var</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+	<!-- ################ -->
+	<!-- Nedstat Tag -->	
+	<!-- ################ -->
+		<name>nedstat</name>
+		<tag-class>com.finalist.cmsc.taglib.NedstatTag</tag-class>
+		<body-content>empty</body-content>
+		<description>Tag to parse netstat string.</description>
+		<attribute>
+			<name>lable</name>
+			<description>Labels such as 'category=sport'.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<description>The type of the measurement.</description>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>externalUrl</name>
+			<description>The url where the link refers to. Used for clickin measurements and others.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>landCode</name>
+			<description>The landcode. Asumes 'nl' if no landcode is given.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>customerName</name>
+			<description>The name of the customer that is incorporated in the measurement code.</description>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>siteName</name>
+			<description>The name of the site that is incorporated in the measurement code.</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>counterName</name>
+			<description>The name of the counter. The current location is taken (replacing the '/' for a '.') if no countername is given.</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>urlText</name>
+			<description>The urltext, only used when a link is generated (e.g. clickin and clickout measurements).</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>	
 </taglib>

@@ -38,7 +38,6 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.4 $
  */
 public class LinkTag extends SimpleTagSupport {
 

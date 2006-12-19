@@ -18,10 +18,6 @@ import org.apache.pluto.om.common.Parameter;
 import org.apache.pluto.om.common.ParameterCtrl;
 import org.apache.pluto.util.StringUtils;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class ParameterImpl implements Parameter, ParameterCtrl, Serializable {
 
 	private String name;

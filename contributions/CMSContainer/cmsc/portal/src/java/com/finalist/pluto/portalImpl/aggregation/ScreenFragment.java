@@ -18,7 +18,6 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
  */
 public class ScreenFragment extends AbstractFragmentContainer{
 	private static Log log = LogFactory.getLog(ScreenFragment.class);

@@ -15,9 +15,6 @@ import org.apache.pluto.services.information.StaticInformationProvider;
 
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 
-/**
- * @version $Revision: 1.1 $
- */
 public class FactoryAccess {
 
 	public static StaticInformationProvider getStaticProvider() {

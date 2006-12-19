@@ -16,20 +16,4 @@
 		<prompt xml:lang="en">Value</prompt>
 		<prompt xml:lang="nl">Waarde</prompt>
 	</field>
-	<field name="prod" dtmaxlength="255" ftype="text" rows="3">
-		<prompt xml:lang="en">Production</prompt>
-		<prompt xml:lang="nl">Productie</prompt>
-	</field>
-	<field name="preprod" dtmaxlength="255" ftype="text" rows="3">
-		<prompt xml:lang="en">Acceptance</prompt>
-		<prompt xml:lang="nl">Acceptatie</prompt>
-	</field>
-	<field name="test" dtmaxlength="255" ftype="text" rows="3">
-		<prompt xml:lang="en">Test</prompt>
-		<prompt xml:lang="nl">Test</prompt>
-	</field>
-	<field name="dev" dtmaxlength="255" ftype="text" rows="3">
-		<prompt xml:lang="en">Development</prompt>
-		<prompt xml:lang="nl">Development</prompt>
-	</field>
 </form-schema>

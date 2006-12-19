@@ -7,7 +7,6 @@ import org.mmbase.bridge.Node;
  * This service will be used to manage the versions of particular nodes. 
  *
  * @author Jeoffrey Bakker, Finalist IT Group
- * @version $Revision: 1.1 $, $Date: 2006-12-12 09:38:20 $
  */
 public abstract class VersioningService extends Service {
    public static final String ARCHIVE = "archive";

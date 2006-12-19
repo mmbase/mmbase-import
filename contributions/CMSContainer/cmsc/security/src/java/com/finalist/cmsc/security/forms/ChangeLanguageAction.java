@@ -45,6 +45,8 @@ public class ChangeLanguageAction extends MMBaseAction {
             userNode.setStringValue("language", language);
             userNode.commit();
             
+            request.setAttribute("done", Boolean.TRUE);
+            
 	        return mapping.findForward(SUCCESS);
         }
         else {

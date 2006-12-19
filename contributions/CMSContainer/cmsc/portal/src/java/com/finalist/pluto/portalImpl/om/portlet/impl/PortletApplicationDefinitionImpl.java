@@ -20,10 +20,6 @@ import com.finalist.pluto.portalImpl.om.common.Support;
 import com.finalist.pluto.portalImpl.om.servlet.impl.WebApplicationDefinitionImpl;
 import com.finalist.pluto.portalImpl.util.ObjectID;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class PortletApplicationDefinitionImpl implements PortletApplicationDefinition, Serializable, Support {
 
 	private String GUID;

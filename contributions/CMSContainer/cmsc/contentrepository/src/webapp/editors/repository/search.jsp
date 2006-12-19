@@ -317,10 +317,10 @@
          <%@include file="searchpages.jsp" %>
 
 
-            <mm:compare referid="action" value="link" >
-                  <form action="LinkToChannelAction.do" name="linkForm">
-                     <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
-            </mm:compare>
+          <mm:compare referid="action" value="link" >
+             <form action="LinkToChannelAction.do" name="linkForm">
+                <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
+          </mm:compare>
 
           <table>
             <thead>
@@ -344,87 +344,111 @@
             <tbody class="hover">
       </mm:first>
 
-      <tr <mm:even inverse="true">class="swap"</mm:even>>
-         <td nowrap width="80">
-	        <%-- also show the edit icon when we return from an edit wizard! --%>
-         	<mm:write referid="action" jspvar="action" write="false"/>
-         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
-                <a href="<mm:url page="../WizardInitAction.do">
-                                          <mm:param name="objectnumber"><mm:field name="${contenttypes}.number" /></mm:param>
-                                          <mm:param name="returnurl" value="<%="../editors/repository/SearchAction.do" + request.getAttribute("geturl")%>" />
-                                       </mm:url>">
-                   <img src="../gfx/icons/page_edit.png" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
-			</c:if>
-            <mm:compare referid="action" value="link">
-               <input type="checkbox" value="<mm:field name="${contenttypes}.number"/>" name="link_<mm:field name="${contenttypes}.number"/>" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-            </mm:compare>
-            <mm:compare referid="action" value="select">
-            	<script>
-            		function link<mm:field name="${contenttypes}.number"/>() {
-	            		selectElement('<mm:field name="${contenttypes}.number" />', 
-	            					'<mm:field name="${contenttypes}.title" escape="js-single-quotes"/>', 
-	            					'<cmsc:staticurl page="/content/" /><mm:field name="${contenttypes}.number"/>')
-	            	}
-	            </script>
-           	
-               <a href="#" onClick="link<mm:field name="${contenttypes}.number"/>();">
-                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
-            </mm:compare>
-            <mm:compare referid="action" value="selectforwizard">
-               <a href="#" onClick="top.opener.selectContent('<mm:field name="${contenttypes}.number"/>', '', ''); top.close();">
-                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
-            </mm:compare>
-            <a href="#" oncLick="showItem(<mm:field name="${contenttypes}.number"/>);" ><img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" /></a>
-            <mm:field name="${contenttypes}.number"  write="false" id="nodenumber">
-               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
-            </mm:field>
-            <mm:haspage page="/editors/versioning">
-               <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
-                  <c:param name="nodenumber"><mm:field name="${contenttypes}.number" /></c:param>
-               </c:url>
-               <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" alt="<fmt:message key="searchform.icon.versioning.title" />" title="<fmt:message key="searchform.icon.versioning.title" />" /></a>
-            </mm:haspage>
-			<cmsc:hasfeature name="savedformmodule">
-				<c:set var="typeval">
-          			<mm:nodeinfo type="type" />          	
-          		</c:set> 
-          		<c:if test="${typeval == 'responseform'}">         
-	          		<c:url value="/editors/savedform/ShowSavedForm.do" var="showSavedForms">
-	               	<c:param name="nodenumber"><mm:field name="${contenttypes}.number" /></c:param>
-	          		</c:url>                   
-           		<a href="#" onclick="openPopupWindow('showsavedforms', 850, 650, '${showSavedForms}')"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
-           		</c:if>
-			</cmsc:hasfeature>
-         </td>
-         <mm:field name="${contenttypes}.number" id="number">
-            <mm:node number="${number}">
-               <td>
+
+      <mm:field name="${contenttypes}.number" id="number">
+         <mm:node number="${number}">
+
+		      <mm:relatednodes role="creationrel" type="contentchannel">
+		         <mm:field name="number" id="creationnumber" write="false"/>
+		         <mm:compare referid="trashnumber" referid2="creationnumber">
+		         	 <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
+						 <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
+						 <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
+						 <c:set var="channelUrl" value="../recyclebin/index.jsp"/>
+		         </mm:compare>
+		         <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
+			          <mm:field name="number" jspvar="channelNumber" write="false"/>
+			          <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+
+			          <mm:field name="name" jspvar="channelName" write="false"/>
+						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
+						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
+						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
+			      </mm:compare>
+		      </mm:relatednodes>
+
+
+
+		      <tr <mm:even inverse="true">class="swap"</mm:even>>
+		         <td style="white-space: nowrap;" width="80">
+			        <%-- also show the edit icon when we return from an edit wizard! --%>
+		         	<mm:write referid="action" jspvar="action" write="false"/>
+		         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
+		                <a href="<mm:url page="../WizardInitAction.do">
+		                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+		                                          <mm:param name="returnurl" value="<%="../editors/repository/SearchAction.do" + request.getAttribute("geturl")%>" />
+		                                       </mm:url>">
+		                   <img src="../gfx/icons/page_edit.png" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
+					</c:if>
+		            <mm:compare referid="action" value="link">
+		               <input type="checkbox" value="<mm:field name="number" />" name="link_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+		            </mm:compare>
+		            <mm:compare referid="action" value="select">
+		            	<script>
+		            		function link<mm:field name="number"/>() {
+			            		selectElement('<mm:field name="number" />', 
+			            					'<mm:field name="title" escape="js-single-quotes"/>', 
+			            					'<cmsc:staticurl page="/content/" /><mm:field name="number"/>')
+			            	}
+			            </script>
+		           	
+		               <a href="#" onClick="link<mm:field name="number" />();">
+		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
+		            </mm:compare>
+		            <mm:compare referid="action" value="selectforwizard">
+		               <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
+		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
+		            </mm:compare>
+		            <a href="#" onclick="showItem(<mm:field name="number" />);" ><img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" /></a>
+		            <mm:field name="number"  write="false" id="nodenumber">
+		               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
+		            </mm:field>
+		            <mm:compare referid="action" value="search">
+			            <mm:haspage page="/editors/versioning">
+			               <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
+			                  <c:param name="nodenumber"><mm:field name="number" /></c:param>
+			               </c:url>
+			               <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" alt="<fmt:message key="searchform.icon.versioning.title" />" title="<fmt:message key="searchform.icon.versioning.title" />" /></a>
+			            </mm:haspage>
+							<cmsc:hasfeature name="savedformmodule">
+								<c:set var="typeval">
+				          			<mm:nodeinfo type="type" />          	
+				          		</c:set> 
+				          		<c:if test="${typeval == 'responseform'}">         
+					          		<c:url value="/editors/savedform/ShowSavedForm.do" var="showSavedForms">
+					               	<c:param name="nodenumber"><mm:field name="number" /></c:param>
+					          		</c:url>                   
+				           		<a href="#" onclick="openPopupWindow('showsavedforms', 850, 650, '${showSavedForms}')"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+				           		</c:if>
+							</cmsc:hasfeature>
+						</mm:compare>
+		         </td>
+               <td style="white-space: nowrap;">
             	  <mm:nodeinfo type="guitype"/>
                </td>
 	           	<td>
 		            <mm:field jspvar="title" write="false" name="title" />
-					<c:if test="${fn:length(title) > 50}">
-						<c:set var="title">${fn:substring(title,0,49)}...</c:set>
-					</c:if>
-					${title}
+						<c:if test="${fn:length(title) > 50}">
+							<c:set var="title">${fn:substring(title,0,49)}...</c:set>
+						</c:if>
+						${title}
             	</td>
                <td width="50">
-                  <mm:relatednodes role="creationrel" type="contentchannel">
-                     <mm:field name="number" id="creationnumber" write="false"/>
-                     <mm:compare referid="trashnumber" referid2="creationnumber">
-                     	<fmt:message key="search.trash" />
-                     </mm:compare>
-                     <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
-	                     <mm:field name="name"/>
-	                 </mm:compare>
-                  </mm:relatednodes>
+				  <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
+		            <mm:compare referid="action" value="search">
+	                  <a href="${channelUrl}">${channelName}</a>
+	               </mm:compare>
+		            <mm:compare referid="action" value="search" inverse="true">
+	                  ${channelName}
+	               </mm:compare>
                </td>
                <td width="50"><mm:field name="lastmodifier" /></td>
-            </mm:node>
-         </mm:field>
-         <td width="120" nowrap><mm:field name="${contenttypes}.lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
-         <td width="60"><mm:field name="${contenttypes}.number"/></td>
-      </tr>
+		         <td width="120" style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+		         <td width="60"><mm:field name="number"/></td>
+		      </tr>
+
+         </mm:node>
+      </mm:field>
 
       <mm:last>
             </tbody>

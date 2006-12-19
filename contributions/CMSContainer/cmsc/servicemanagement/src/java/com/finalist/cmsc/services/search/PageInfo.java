@@ -31,4 +31,27 @@ public class PageInfo {
     public String getWindowName() {
         return windowName;
     }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + pageNumber;
+        result = PRIME * result + ((windowName == null) ? 0 : windowName.hashCode());
+        return result;
+}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        final PageInfo other = (PageInfo) obj;
+        if (pageNumber != other.pageNumber) return false;
+        if (windowName == null) {
+            if (other.windowName != null) return false;
+        }
+        else
+            if (!windowName.equals(other.windowName)) return false;
+        return true;
+    }
 }

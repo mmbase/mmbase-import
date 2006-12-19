@@ -18,9 +18,6 @@ import org.apache.pluto.om.common.Preference;
 import org.apache.pluto.om.common.PreferenceCtrl;
 import org.apache.pluto.util.StringUtils;
 
-/**
- * @version $Revision: 1.1 $
- */
 public class PreferenceImpl implements Preference, PreferenceCtrl, Serializable {
 
 	private String name;

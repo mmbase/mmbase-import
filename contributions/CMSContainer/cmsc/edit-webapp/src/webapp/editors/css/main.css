@@ -392,6 +392,7 @@ ul.shortcuts li.views				{	background-image: url('../gfx/icons/views.png');}
 ul.shortcuts li.stylesheets			{	background-image: url('../gfx/icons/stylesheets.png');}
 ul.shortcuts li.portletdefinitions	{	background-image: url('../gfx/icons/portletdefinitions.png');}
 ul.shortcuts li.reactions			{	background-image: url('../gfx/icons/reactions.png');}
+ul.shortcuts li.versioning			{	background-image: url('../gfx/icons/versioning.png');}
 ul.shortcuts li.egem				{	background-image: url('../gfx/icons/egem.png');}
 ul.shortcuts li.dumpdefaults		{	background-image: url('../gfx/icons/dumpdefaults.png');}
 ul.shortcuts li.luceus				{	background-image: url('../gfx/icons/luceus.png');}
@@ -729,126 +730,68 @@ div.messagebox_red div.box div.body table
 
 
 /* Rulers voor editwizards */
-div.ruler_red
-{
+div.ruler_red,
+div.ruler_green,
+div.ruler_blue,
+div.ruler_gray {
 	background-color: #ffffff;	
 
 	height: 18px;	
 	
 	text-transform: uppercase;
+	background-position: left top;
+	background-repeat: no-repeat;	
+	
+	margin-right: 3px;
+}
+div.ruler_green div,
+div.ruler_red div,
+div.ruler_blue div,
+div.ruler_gray div {		
+	display: inline;
+	margin-left: 40px;
+	padding-right: 9px;	
+
+	font-size: 14px;
+	letter-spacing: 2px;
+	
+	width: auto;			
+	
+	background-color: #ffffff;
+	background-position: right top;
+	background-repeat: no-repeat;	
+}
+
+div.ruler_red {
 	background-image: url('../gfx/hr_red.gif');
-	background-position: left top;
-	background-repeat: no-repeat;	
-	
-	width: 100%;			
 }
-
-div.ruler_red div
-{		
-	display: inline;
-	margin-left: 40px;
-	padding-right: 9px;	
-
-	font-size: 14px;
-	letter-spacing: 2px;
-	
-	width: auto;			
+div.ruler_red div {		
 	color: #cc0000;
-	
-	background-color: #ffffff;
-	background-position: right top;
 	background-image: url('../gfx/hr_red_end.gif');
-	background-repeat: no-repeat;	
 }
 
-div.ruler_green
-{
-	background-color: #ffffff;	
-
-	height: 18px;	
-	
-	text-transform: uppercase;
+div.ruler_green {
 	background-image: url('../gfx/hr_green.gif');
-	background-position: left top;
-	background-repeat: no-repeat;	
 }
-
-div.ruler_green div
-{
-	display: inline;
-	margin-left: 40px;
-	padding-right: 9px;	
-
-	font-size: 14px;
-	letter-spacing: 2px;
-	
-	width: auto;			
+div.ruler_green div {
 	color: #418001;
-	
-	background-color: #ffffff;
-	background-position: right top;
 	background-image: url('../gfx/hr_green_end.gif');
-	background-repeat: no-repeat;	
 }
 
-div.ruler_blue 
-{
-	background-color: #ffffff;	
-
-	height: 18px;	
-	
-	text-transform: uppercase;
+div.ruler_blue {
 	background-image: url('../gfx/hr_blue.gif');
-	background-position: left top;
-	background-repeat: no-repeat;
 }
-
-div.ruler_blue div
-{
-	display: inline;
-	margin-left: 40px;
-	padding-right: 9px;	
-
-	font-size: 14px;
-	letter-spacing: 2px;
-	
-	width: auto;			
+div.ruler_blue div {
 	color: #144190;
-	
-	background-color: #ffffff;
-	background-position: right top;
 	background-image: url('../gfx/hr_blue_end.gif');
-	background-repeat: no-repeat;
 }
 
-div.ruler_gray
-{
-	background-color: #ffffff;	
-
-	height: 18px;	
-	
-	text-transform: uppercase;
+div.ruler_gray {
 	background-image: url('../gfx/hr_gray.gif');
-	background-position: left top;
-	background-repeat: no-repeat;
 }
-
-div.ruler_gray div
-{
-	display: inline;
-	margin-left: 40px;
-	padding-right: 9px;	
-
-	font-size: 14px;
-	letter-spacing: 2px;
-	
-	width: auto;			
+div.ruler_gray div {
 	color: #737373;
-	
-	background-color: #ffffff;
-	background-position: right top;
 	background-image: url('../gfx/hr_gray_end.gif');
-	background-repeat: no-repeat;
 }
 
 

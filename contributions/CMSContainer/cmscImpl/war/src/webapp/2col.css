@@ -100,6 +100,19 @@ body>.Header {
 	color: #000000;
 }
 
+.Breadcrumb {
+	margin: 0px 0px 0px 220px;
+	padding: 0px;
+}
+
+#breadcrumb a:link { text-decoration: none; color: #50667e; }
+#breadcrumb a:visited { text-decoration: none; color: #50667e; }
+#breadcrumb a:hover { text-decoration: underline; color: #50667e; }
+#breadcrumb a:active { text-decoration: underline; color: #50667e; }
+#breadcrumb         { margin: 1em 0; padding: 0; list-style: none; }
+#breadcrumb li      { display: inline; margin: 0; padding: 0 0.35em 0 0; }
+#breadcrumb li a    { padding: 0 0.3em 0 0; }
+
 .Content {
 	margin: 0px 50px 50px 220px;
 	padding: 10px;

@@ -18,10 +18,6 @@ import org.apache.pluto.om.common.ParameterSet;
 import org.apache.pluto.om.common.ParameterSetCtrl;
 import org.apache.pluto.util.StringUtils;
 
-/**
- * @author Wouter Heijke
- * @version $Revision: 1.1 $
- */
 public class ParameterSetImpl extends HashSet implements ParameterSet, ParameterSetCtrl, Serializable {
 
 	// ParameterSet implementation.

@@ -90,6 +90,20 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
 
     @Override
+    public List<PageInfo> findAllDetailPagesForContent(Node content) {
+        NodeList pages = findPagesForContent(content, null);
+        List<PageInfo> infos = new ArrayList<PageInfo>();
+        for (Iterator iter = pages.iterator(); iter.hasNext();) {
+            Node pageNode = (Node) iter.next();
+            PageInfo pageInfo = getPageInfo(pageNode, true);
+            if (!infos.contains(pageInfo)) {
+                infos.add(pageInfo);
+            }
+        }
+        return infos;
+    }
+    
+    @Override
     public List<PageInfo> findPagesForContentElement(Node content) {
         return findPagesForContentElement(content, null);
     }
