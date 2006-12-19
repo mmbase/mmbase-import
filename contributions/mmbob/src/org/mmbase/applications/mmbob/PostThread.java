@@ -30,14 +30,14 @@ import org.mmbase.util.SizeOf;
 import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 
 /**
- * @javqdoc
+ * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.40.2.1 2006-12-19 10:52:21 michiel Exp $
+ * @version $Id: PostThread.java,v 1.40.2.2 2006-12-19 11:02:44 michiel Exp $
  */
 public class PostThread {
- 
+
     // logger
-    static private final Logger log = Logging.getLoggerInstance(PostThread.class); 
+    static private final Logger log = Logging.getLoggerInstance(PostThread.class);
 
     private String subject;
     private String creator;
@@ -53,7 +53,7 @@ public class PostThread {
     private int lastposternumber;
     private String lastposter;
     private String lastpostsubject;
- 
+
     private PostArea parent;
     private Vector postings=null;
     private int threadpos=0;
@@ -107,14 +107,14 @@ public class PostThread {
 	// was the post older than my last session ?
 	if (lastposttime<lastsessionend) {
             isnew=false;
-	} 
+	}
 
 	// of did i read it in this session ?
 	if (ap.viewedThread(id,new Integer(lastposttime))) {
             isnew=false;
 	}
 
-	
+
 	String state=getState();
 	if (state.equals("normal")) {
             if (isnew) state="normalnew";
@@ -136,7 +136,7 @@ public class PostThread {
 	if (staten==null || staten.equals("")) {
             staten="normal";
 	}
-	
+
 	// figure out if its hot
 	boolean hot=false;
 	if (postcount>parent.getPostThreadCountAvg()) {
@@ -144,7 +144,7 @@ public class PostThread {
 	}
 
 	if (staten.equals("normal") && hot) staten="hot";
-	
+
 	return staten;
     }
 
@@ -222,7 +222,7 @@ public class PostThread {
 
     public Iterator getPostings(int page,int pagecount) {
 	if (postings==null) readPostings();
-	
+
 	lastused = (int)(System.currentTimeMillis() / 1000);
 
 	// get the range we want
@@ -275,63 +275,67 @@ public class PostThread {
 
 
     public int postReply(String nsubject,Poster poster,String nbody,boolean parsed) {
-	if (postings==null) readPostings();
-	
-        NodeManager nm=ForumManager.getCloud().getNodeManager("postings");
-        if (nm!=null) {
-            Node pnode=nm.createNode();
-            if (subject!=null && !subject.equals("")) {
-                pnode.setStringValue("subject",subject);
+	if (postings == null) readPostings();
+
+        NodeManager nm=  ForumManager.getCloud().getNodeManager("postings");
+        if (nm != null) {
+            Node pnode = nm.createNode();
+            if (subject != null && !subject.equals("")) {
+                pnode.setStringValue("subject", subject);
             } else {
-                pnode.setStringValue("subject",nsubject);
+                pnode.setStringValue("subject", nsubject);
             }
             if (poster!=null) {
-                pnode.setStringValue("c_poster",poster.getNick());
-                pnode.setIntValue("posternumber",poster.getId());
+                pnode.setStringValue("c_poster", poster.getNick());
+                pnode.setIntValue("posternumber", poster.getId());
             } else {
-                pnode.setStringValue("c_poster","gast");
-                pnode.setIntValue("posternumber",-1);
+                pnode.setStringValue("c_poster", "gast"); // TODO 'gast' is dutch.
+                pnode.setValue("posternumber", null);
             }
-            
+
             // This must be it, please do not change the line below. If somebody's having problems
             // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
             if (parsed) {
-                pnode.setStringValue("body",nbody);
+                pnode.setStringValue("body", nbody);
             } else {
-                pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
+                pnode.setStringValue("body", "<posting>" + postingBody.transform(nbody) + "</posting>");
             }
-            
-            pnode.setStringValue("c_body",""); 
-            pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
-            pnode.setIntValue("edittime",-1);
+
+            pnode.setStringValue("c_body", "");
+            pnode.setIntValue("createtime", (int)(System.currentTimeMillis()/1000));
+            // can be arranged by Datatypes.
+
+            pnode.setIntValue("edittime", -1);
+            // -1 is a strange time
+
             pnode.commit();
             Node node = ForumManager.getCloud().getNode(id);
-            RelationManager rm=ForumManager.getCloud().getRelationManager("postthreads","postings","related");
-            if (rm!=null) {
-                Node rel=rm.createRelation(node,pnode);
+            RelationManager rm = ForumManager.getCloud().getRelationManager("postthreads", "postings", "related");
+            if (rm != null) {
+                Node rel = rm.createRelation(node, pnode);
                 rel.commit();
-                Posting posting=new Posting(pnode,this,false);
+                Posting posting = new Posting(pnode, this, false);
                 posting.setThreadPos(threadpos++);
                 postings.add(posting);
 
                 // update stats and signal parent of change
-                if (poster!=null) poster.addPostCount();
+                if (poster != null) poster.addPostCount();
                 addWriter(posting);
 
                 // update the counters
                 postcount++;
 
-                lastposttime=pnode.getIntValue("createtime");
-                lastposter=pnode.getStringValue("c_poster");
-                lastposternumber=pnode.getIntValue("posternumber");
-                lastpostnumber=pnode.getIntValue("number");
-                lastpostsubject=pnode.getStringValue("subject");
+                lastposttime     = pnode.getIntValue("createtime");
+                lastposter       = pnode.getStringValue("c_poster");
+                lastposternumber = pnode.getIntValue("posternumber");
+                lastpostnumber   = pnode.getIntValue("number");
+                lastpostsubject  = pnode.getStringValue("subject");
 
                 syncNode(ForumManager.FASTSYNC);
                 parent.signalNewReply(this);
                 // signal the threadobservers
                 ThreadObserver to = parent.getParent().getThreadObserver(id);
-                if (to!=null) to.signalContentAdded(this);
+                if (to != null) to.signalContentAdded(this);
 
                 return pnode.getNumber();
             } else {
@@ -350,14 +354,14 @@ public class PostThread {
      */
     private void syncNode(int queue) {
         Node node = ForumManager.getCloud().getNode(id);
-        node.setIntValue("postcount",postcount);
-        node.setIntValue("viewcount",viewcount);
+        node.setIntValue("postcount", postcount);
+        node.setIntValue("viewcount", viewcount);
         node.setIntValue("lastposternumber",lastposternumber);
-        node.setIntValue("lastpostnumber",lastpostnumber);
-        node.setIntValue("c_lastposttime",lastposttime);
-        node.setStringValue("c_lastposter",lastposter);
-        node.setStringValue("c_lastpostsubject",lastpostsubject);
-     
+        node.setIntValue("lastpostnumber", lastpostnumber);
+        node.setIntValue("c_lastposttime", lastposttime);
+        node.setStringValue("c_lastposter", lastposter);
+        node.setStringValue("c_lastpostsubject", lastpostsubject);
+
         ForumManager.syncNode(node,queue);
     }
 
@@ -386,7 +390,7 @@ public class PostThread {
         query.addField(step2.getNext(), postingsmanager.getField("edittime"));
         query.setConstraint(query.createConstraint(f1, new Integer(getId())));
         query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
-		
+
         NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
         long end=System.currentTimeMillis();
         int newcount = 0;
@@ -444,56 +448,61 @@ public class PostThread {
      * I hate how this is done but don't see a way to get this fast enough
      * any other way.
      */
-    public String getNavigationLine(String baseurl, int page,int pagesize,int overflowpage,String cssclass) {
-	int f=parent.getParent().getId();
-	int a=parent.getId();
-	int p=getId();
+    public String getNavigationLine(String baseurl, int page, int pagesize, int overflowpage, String cssclass) {
+	int f = parent.getParent().getId();
+	int a = parent.getId();
+	int p = getId();
 
 	if (!cssclass.equals("")) {
-            cssclass=" class=\""+cssclass+"\"";	
+            cssclass = " class=\"" + cssclass + "\"";
 	}
 
 	// weird way must be a better way for pagecount
-	int pagecount=postcount/pagesize;
-	if ((pagecount*pagesize)!=postcount) pagecount++;
+	int pagecount = postcount / pagesize;
+	if ((pagecount * pagesize) != postcount) pagecount++;
 
 
-	int c=page-1;
-	if (c<1) c=1;
-	int n=page+1;
-	if (n>pagecount) n=pagecount;
-	String result = "<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+c+"\""+cssclass+">&lt</a>";
-	int i=1;
-	for (i=1;i<=pagecount;i++) {
-            result+=" <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">";
-            if (i<overflowpage || i==pagecount) {
+	int c = page - 1;
+	if (c < 1) c = 1;
+	int n = page + 1;
+	if (n > pagecount) n = pagecount;
+	String result = "<a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + "&page=" + c + "\"" + cssclass + ">&lt</a>";
+        // TODO & is not valid XML, hence not XHTML
+
+	int i = 1;
+	for (i = 1; i <= pagecount; i++) {
+            // TODO should use StringBuilder?
+            result +=" <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + "&page=" + i + "\"" + cssclass + ">";
+            if (i < overflowpage || i == pagecount) {
 	  	if (i==page) {
-                    result+="["+i+"]";
+                    result += "[" + i + "]";
 	  	} else {
-                    result+=""+i;
+                    result += "" + i;
 	  	}
             } else {
-		if (i==overflowpage) {
-                    result+="...";
+		if (i == overflowpage) {
+                    result += "...";
 		}
             }
-            result+="</a>";
-        } 
+            result += "</a>";
+        }
         String lastword = "last";
-        if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
-	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
-	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+n+"\""+cssclass+">&gt</a>";
+        if (parent.getParent().getLanguage().equals("nl")) lastword = "laatste";
+	result += 
+            " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + 
+            "&page=" + (i - 1) + "#reply\"" + cssclass + "> " + lastword + "</a>";
+	result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + "&page=" + n + "\"" + cssclass + ">&gt</a>";
 	return result;
     }
 
 
     public String getNavigationLine(String baseurl, int pagesize,int overflowpage,String cssclass) {
-	int f=parent.getParent().getId();
-	int a=parent.getId();
-	int p=getId();
+	int f = parent.getParent().getId();
+	int a = parent.getId();
+	int p = getId();
 
-	if (cssclass!=null && !cssclass.equals("")) {
-            cssclass=" class=\""+cssclass+"\"";	
+	if (cssclass != null && ! cssclass.equals("")) {
+            cssclass = " class=\"" + cssclass + "\"";
 	}
 
 	// weird way must be a better way for pagecount
@@ -514,7 +523,7 @@ public class PostThread {
                     result+="...";
 		}
             }
-        } 
+        }
 	if (i>1) {
             String lastword = "last";
             if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
@@ -547,7 +556,7 @@ public class PostThread {
         // need to clone the vector, because the postings change while we're removing the thread
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
-        
+
 
         // remove the postings
         while (e.hasMoreElements()) {
@@ -558,7 +567,7 @@ public class PostThread {
             }
         }
 
-	try {	
+	try {
             // this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
             // it should already been deleted by the above loop this is done in case of a 0 postings
             if (ForumManager.getCloud().hasNode(id)) {
@@ -607,7 +616,7 @@ public class PostThread {
         // with a remove-message.
         if (postings.size()>0 && lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
 	    Posting op=(Posting)postings.lastElement();
-	    if (op!=null) {	
+	    if (op!=null) {
 	    	lastpostsubject  = op.getSubject();
 	    	lastposter  = op.getPoster();
 	    	lastposttime  = op.getPostTime();
