@@ -9,6 +9,7 @@ html, body.portal {
 .date { 
   font-style: italic;
   font-weight: normal;
+  display: none;
 }
 .intro { 
   font-weight: bold;
