@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
 <fmt:setBundle basename="cmsc-reactions" scope="request" />
 <%@page import="java.util.Iterator,
