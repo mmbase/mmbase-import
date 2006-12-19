@@ -5,6 +5,11 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
+  <!-- 
+       TODO TODO
+       BUILDER COPIED FROM EMAIL APPLICATION
+       MMBOB should depend on that app in stead.. This XML must be removed.
+  -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
 
