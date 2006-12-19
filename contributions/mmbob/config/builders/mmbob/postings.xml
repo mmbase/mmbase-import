@@ -74,13 +74,16 @@
     </field>
 
     <field  name="posternumber">
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" /> <!-- can post as guest -->
+      </datatype>
     </field>
 
     <field name="editcount">
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
+    <!-- should following fields not be booleans? -->
     <field name="enable_html">
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
