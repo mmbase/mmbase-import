@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="posmboxrel" maintainer="submarine.nl" version="0" extends="insrel">
 
   <names>
@@ -17,23 +17,8 @@
 
   <fieldlist>
 
-    <field>
-      <descriptions>
-      </descriptions>
-      <gui>
-      </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>-1</list>
-          <search>-1</search>
-        </positions>
-      </editor>
+    <field name="pos">
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>pos</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
-      </db>
     </field>
 
   </fieldlist>
