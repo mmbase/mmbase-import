@@ -37,7 +37,8 @@
         border-bottom-width: 1px;
       }
     </style>
-    <script type="text/javascript" src="<mm:treefile page="/editwizards/javascript/list.js" objectlist="$includePath" referids="$referids"/>"></script>
+    <%--
+    <script type="text/javascript" src="<mm:treefile page="/editwizards/javascript/list.js" objectlist="$includePath" referids="$referids"/>"></script>--%>
     <body>
       <mm:import id="editcontextname" reset="true">rollen</mm:import>
       <jsp:directive.include file="roles_chk.jsp" />
