@@ -11,7 +11,14 @@
   <mm:import id="email"><mm:field name="email" /></mm:import>
   <mm:import id="location"><mm:field name="city" /></mm:import>
   <mm:import id="gender">male</mm:import>
-  <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,firstname,lastname,email,gender,location" /></mm:import>
+  <mm:import id="feedback" reset="true"><mm:function set="mmbob"  name="createPoster"referids="forumid,account,password,password@confirmpassword,firstname,lastname,email,gender,location"
+  /></mm:import>
+
+  <mm:write referid="feedback">
+    <mm:compare inverse="true" regexp="ok|inuse">
+      <mm:write />
+    </mm:compare>
+  </mm:write>
   <mm:remove referid="account" />
   <mm:remove referid="password" />
   <mm:remove referid="firstname" />
