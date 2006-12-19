@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.40.2.3 2006-12-19 11:14:48 michiel Exp $
+ * @version $Id: PostThread.java,v 1.40.2.4 2006-12-19 11:26:14 michiel Exp $
  */
 public class PostThread {
 
@@ -54,9 +54,9 @@ public class PostThread {
     private String lastpostsubject;
 
     private PostArea parent;
-    private Vector postings=null;
-    private int threadpos=0;
-    private Vector writers=new Vector();
+    private Vector postings = null;
+    private int threadpos = 0;
+    private List writers = new Vector(); // is synchronization needed?
     private PostingBody postingBody = new PostingBody();
     private boolean loaded = false;
     private int lastused;
@@ -250,7 +250,7 @@ public class PostThread {
     public Posting getPostingPos(int pos) {
 	if (postings==null) readPostings();
 	if (postings.size()>pos) {
-            return (Posting)postings.elementAt(pos);
+            return (Posting)postings.get(pos);
 	}
 	return null;
     }
@@ -537,9 +537,9 @@ public class PostThread {
     public Posting getPosting(int postingid) {
 	if (postings==null) readPostings();
 
-	Enumeration e=postings.elements();
-	while (e.hasMoreElements()) {
-            Posting p=(Posting)e.nextElement();
+	Iterator e = postings.iterator();
+	while (e.hasNext()) {
+            Posting p=(Posting)e.next();
             if(p.getId()==postingid) {
                 return p;
             }
