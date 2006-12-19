@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
  * Perform a Luceus FullIndex
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class FullIndexTag extends LuceusmoduleTag {
 	private static Log log = LogFactory.getLog(FullIndexTag.class);

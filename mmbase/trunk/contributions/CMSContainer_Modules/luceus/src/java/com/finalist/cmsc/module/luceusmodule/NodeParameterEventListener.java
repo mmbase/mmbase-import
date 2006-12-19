@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Handles events on content linked to a portlet
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class NodeParameterEventListener implements NodeEventListener {
 
