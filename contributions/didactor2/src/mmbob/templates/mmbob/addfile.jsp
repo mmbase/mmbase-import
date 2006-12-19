@@ -13,9 +13,6 @@
       <mm:fieldlist fields="handle">
          <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
-      <%-- set upload time --%>
-      <% long currentDate = System.currentTimeMillis() / 1000; %>
-      <mm:setfield name="date"><%=currentDate%></mm:setfield>
    </mm:createnode>
    <mm:list nodes="$postingid" path="postings,related,attachments">
       <mm:node element="related"><mm:deletenode/></mm:node>
