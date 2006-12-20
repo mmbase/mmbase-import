@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.11 2006-08-29 14:47:28 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.11.2.1 2006-12-20 08:46:33 michiel Exp $
  */
 public class StorageConnector {
 
@@ -654,7 +654,9 @@ public class StorageConnector {
                     Iterator converted = conversionBuilder.getStorageConnector().getNodes(nodes).iterator();
                     while(converted.hasNext()) {
                         MMObjectNode current = (MMObjectNode) converted.next();
-                        convertedNodes.put(new Integer(current.getNumber()), current);
+                        if (current != null) {
+                            convertedNodes.put(new Integer(current.getNumber()), current);
+                        }
                     }
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.getMessage() + Logging.stackTrace(sqe));
