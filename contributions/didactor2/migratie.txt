@@ -17,7 +17,6 @@ and restart Tomcat.
    To upgrade mmbob:
 
 	  alter table mmb_postings add column c_body blob;
-	  alter table mmb_postings add column c_body blob;
     alter table mmb_posters modify password varchar(128);
 	  alter table mmb_postings add column c_poster varchar(64);
 		alter table mmb_postings add column posternumber integer;
@@ -25,8 +24,6 @@ and restart Tomcat.
     alter table mmb_postings add column enable_html integer;
     alter table mmb_postings add column enable_sig integer;
     alter table mmb_postings add column enable_bbcode integer;
-
-
 
    If you want the bcc functionality to work:
 
@@ -48,7 +45,6 @@ and restart Tomcat.
 		If you're planning to use the 'portal':
 
 		 alter table mmb_news add date datetime;				
-
 		 
     To install poll:
 
