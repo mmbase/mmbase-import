@@ -233,7 +233,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       %><html:image src="../img/left.gif" property="buttons.goBack" style="width:13px;" alt="Naar overzicht" />
       <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printsubscriptions&orderby=lastname&direction=up" target="_blank">
          <img src='../img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
-      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
+      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 420, 520);setTimeout('newwin.focus();',250);">
          <img src='../img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
    	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400,'resizable=1');setTimeout('newwin.focus();',250);">
 			<img src='../img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
