@@ -89,7 +89,7 @@
       </db>
     </field>
 
-    <field name="remarks">
+    <field name="description">
       <gui>
         <guiname xml:lang="nl">Opmerkingen</guiname>
         <guiname xml:lang="en">Remarks</guiname>
