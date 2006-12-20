@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.1 2006-12-19 15:39:11 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.2 2006-12-20 14:51:27 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -49,7 +49,7 @@ public class BasicSqlHandler implements SqlHandler {
      */
     // XXX must wildcard characters be escaped?
     // XXX  perhaps place this somewhere else?
-    public static String toSqlString(String str) {
+    protected String toSqlString(String str) {
         String result = str;
         if (str != null) {
             int offset = str.indexOf('\'');
