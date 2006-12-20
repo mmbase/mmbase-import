@@ -120,7 +120,7 @@ if(!articleId.equals("-1")) {
                 }
                 listSize = tmapArticles.size(); 
                 for(int i= 0; i< listSize && i < objectPerPage; i++) {
-                  Long nextEmbargoDate = (Long) tmapArticles.firstKey();
+                  Long nextEmbargoDate = (Long) tmapArticles.lastKey();
                   String article = (String) tmapArticles.get(nextEmbargoDate);
                   %>
                   <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
