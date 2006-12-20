@@ -27,16 +27,16 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4 2006-12-01 15:56:55 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.5 2006-12-20 16:22:30 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
     private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
 
-    private int imVersionMajor = 6;
-    private int imVersionMinor = 2;
-    private int imVersionPatch = 4;
+    private int imVersionMajor = 5;
+    private int imVersionMinor = 5;
+    private int imVersionPatch = 0;
 
     // Currently only ImageMagick works, this are the default value's
     private String converterPath = "convert"; // in the path.
