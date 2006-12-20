@@ -3,6 +3,7 @@
 <mm:cloud jspvar="cloud" method="http" rank="basic user">
 <mm:import externid="event" jspvar="nodenr">-1</mm:import>
 <mm:import externid="emailto" jspvar="toAddress">-1</mm:import>
+<mm:import externid="extratekst" jspvar="extraText">-1</mm:import>
 <mm:node number="<%= nodenr %>" jspvar="thisEvent" notfound="skipbody"><%
 DoubleDateNode ddn = new DoubleDateNode(); 
 ddn.setBegin(new Date(thisEvent.getLongValue("begindatum")*1000));
@@ -25,10 +26,23 @@ if(!toAddress.equals("-1")) {
 		<mm:setfield name="body">
 			<multipart id="plaintext" type="text/plain" encoding="UTF-8">
 				Bekijk de aanmeldingen op: <%= sPageURL + sPageURI %>
+                        
+            <% if ((extraText != null) && (!"".equals(extraText))) { %>
+            \n\nExtra opmerkingen:\n
+            <%=extraText%>
+            <% } %>
+            
 			</multipart>
 			<multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
             Slecht leesbaar? Print aanmeldingen vanaf de website: <a href="<%= sPageURL + sPageURI %>">klik hier</a>
             <br/><br/>
+            
+            <% if ((extraText != null) && (!"".equals(extraText))) { %>
+            Extra opmerkingen:<br/>
+            <%=extraText%>
+            <br/><br/>
+            <% } %>
+
 				<mm:include page="<%= sPageURI %>" />
 			</multipart>
 		</mm:setfield>
@@ -75,6 +89,10 @@ if(!toAddress.equals("-1")) {
       <tr>
          <td class="fieldname">Email adres:</td>
          <td><input type="text" name="emailto" value="" style="width:200px;" /><br/><br/></td>
+      </tr>
+      <tr>
+         <td class="fieldname">Extra tekst:</td>
+         <td><textarea cols="60" rows="10" name="extratekst" value=""></textarea><br/><br/></td>
       </tr>
       <tr>
          <td colspan="2"><input type="submit" value="verzend" style="width:100px;text-align:center;" /></td>
