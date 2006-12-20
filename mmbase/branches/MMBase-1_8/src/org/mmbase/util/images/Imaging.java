@@ -1,3 +1,4 @@
+
 /*
 
 This software is OSI Certified Open Source Software.
@@ -11,6 +12,7 @@ package org.mmbase.util.images;
 
 import java.util.*;
 import java.util.regex.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -316,23 +318,26 @@ public abstract class Imaging {
      * Parses a ckey String into a CKey structure.
      */
     public static CKey parseCKey(String ckey) {
+        ckey = unicode.transformBack(ckey);
         int pos = 0;
         while (Character.isDigit(ckey.charAt(pos))) pos ++;
         return new CKey(Integer.parseInt(ckey.substring(0, pos)), ckey.substring(pos)); 
     }
 
+    private static final CharTransformer unicode = new UnicodeEscaper();
+
     /**
      * Structure with node-number and template.
      */
     public static class CKey {
-        public String template;
-        public int    node;
+        public final String template;
+        private final int    node;
         CKey(int n, String t) {
             template = t;
             node = n;
         }
         public String toString() {
-            return "" + node + template;
+            return "" + node + unicode.transform(template);
         }
     }
 
