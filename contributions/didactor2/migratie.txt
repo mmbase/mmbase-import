@@ -51,6 +51,9 @@ and restart Tomcat.
 		 alter table mmb_versions drop index name;
      alter table mmb_versions add unique key name (name, m_type);
 
+		 When using progression/imagemagick 6.3, you may need to re-upload progresstextbackground.png
+		 into the image node with alias="progresstextbackground">
+
 2006-01-04
 
     To add mailbox "drafts" to people, please run /migrate/migrate-2006-01-04.jsp
