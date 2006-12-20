@@ -19,6 +19,11 @@
 <mm:import externid="page">1</mm:import>
 <mm:import id="showreplyform">false</mm:import>
 
+<mm:escaper id="paramsmilies" type="smilies">
+  <mm:param name="themeid">MMBaseTools</mm:param>
+  <mm:param name="imagecontext" referid="imagecontext" />
+</mm:escaper>
+
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
@@ -180,9 +185,8 @@
 
       <td class="<mm:write referid="tdvar" />" valign="top" align="left">
       <mm:field name="edittime"><mm:compare value="-1" inverse="true"><di:translate key="mmbob.lasttimemodify" /> : <mm:field name="edittime"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare><p /></mm:field>
-
       <mm:node referid="postingid">
-        <mm:formatter xslt="xslt/posting2xhtml.xslt" escape="smilies">
+        <mm:formatter xslt="xslt/posting2xhtml.xslt" escape="paramsmilies">
           <mm:param name="wrote">Wrote:</mm:param>
           <mm:field name="body" />
         </mm:formatter>
