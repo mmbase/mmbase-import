@@ -12,7 +12,8 @@
   <mm:content type="application/xhtml+xml">
 
     <mm:node referid="education">
-      <mm:hasrank minvalue="administrator">
+      <jsp:directive.include file="/shared/findUser.jspx" />
+      <di:hasrole role="systemadministrator">
         <mm:link referids="col,_node@origin" page="/mmbase/edit/wizard/jsp/list.jsp">
           <mm:param name="loginmethod">delegate</mm:param>
           <mm:param name="templates">/editwizards/data/</mm:param>
@@ -24,7 +25,7 @@
           <mm:param name="title">Blocks for column ${col}</mm:param>
           <a href="${_}"><mm:nodeinfo type="plural_guinodemanager" nodetype="webblocks" /></a>
         </mm:link>
-      </mm:hasrank>
+      </di:hasrole>
       <ul>
         <mm:relatednodescontainer type="webblocks" role="blockposrel">
           <mm:constraint field="blockposrel.x" value="${col}" />
