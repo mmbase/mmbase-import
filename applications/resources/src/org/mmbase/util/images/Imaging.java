@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 
+import org.mmbase.util.transformers.*;
 import java.util.*;
 import java.util.regex.*;
 import org.mmbase.util.logging.Logging;
@@ -30,6 +31,7 @@ public abstract class Imaging {
     public static final String FIELD_HANDLE  = "handle";
     public static final String FIELD_CKEY    = "ckey";
 
+    private static final CharTransformer unicode = new UnicodeEscaper();
 
     /**
      * Returns the mimetype using ServletContext.getServletContext which returns the servlet context
@@ -163,7 +165,7 @@ public abstract class Imaging {
      * Predict the size of a image after converting it with the given parameters. This will not
      * actually trigger a conversion, but only calculate the dimension of the result, so only
      * involves some basic arithmetic and string-parsing.
-     * 
+     *
      * Most transformations which alter the dimension of an image are supported: geometry, border, rotate, part.
      *
      * Probably because of different rounding strategies, there is sometimes a difference of one or
@@ -197,7 +199,7 @@ public abstract class Imaging {
                     xString = matchX.matches() ? matchX.group(1) : "";
                     Matcher matchY = GEOMETRY.matcher(yString);
                     yString = matchY.matches() ? matchY.group(1) : "";
-                    
+
 
                     String options = (matchX.matches() ? matchX.group(2) : "") + (matchY.matches() ? matchY.group(2) : "");
 
@@ -215,7 +217,7 @@ public abstract class Imaging {
                         if (o == '>') onlyWhenOneBigger = true;
                         if (o == '<') onlyWhenBothSmaller = true;
                     }
-                    
+
                     int x = "".equals(xString) ? 0 : Integer.parseInt(xString);
                     int y = "".equals(yString) ? 0 : Integer.parseInt(yString);
 
@@ -227,7 +229,7 @@ public abstract class Imaging {
                     }
                     if (x == 0) {
                         x = Math.round((float) dim.x * y / dim.y);
-                    } 
+                    }
 
                     if (area) {
                         float a = x;
@@ -237,7 +239,7 @@ public abstract class Imaging {
                             y = (int) Math.floor(Math.sqrt(a / ratio));
                         } else {
                             x = dim.x;
-                            y = dim.y;                        
+                            y = dim.y;
                         }
                         aspectRatio = false; // simply copy this;
                     }
@@ -247,7 +249,7 @@ public abstract class Imaging {
                     }
 
 
-                    boolean skipScale = 
+                    boolean skipScale =
                         (onlyWhenOneBigger &&  dim.x < x &&  dim.y < y) ||
                         (onlyWhenBothSmaller && (dim.x > x || dim.y > y));
 
@@ -255,7 +257,7 @@ public abstract class Imaging {
                         if (! aspectRatio) {
                             dim.x = x;
                             dim.y = y;
-                        } else {                        
+                        } else {
                             if ((float)dim.x/dim.y > (float)x / y) {
                                 dim.y *= ((float) x / dim.x);
                                 dim.x = x;
@@ -296,7 +298,7 @@ public abstract class Imaging {
                     dim.y = y2 - y1;
                 }
             }
-                
+
         }
         return dim;
     }
@@ -306,9 +308,9 @@ public abstract class Imaging {
      * implementation) is very unreliable, because it assumes that the file-size is proportional to the area.
      */
     public static int predictFileSize(Dimension originalDimension, int originalFileSize, Dimension predictedDimension) {
-        // hard, lets guess that the file-size is proportional to the area of an image.        
+        // hard, lets guess that the file-size is proportional to the area of an image.
         return originalFileSize * predictedDimension.getArea() / originalDimension.getArea();
-        
+
 
     }
 
@@ -317,22 +319,23 @@ public abstract class Imaging {
      */
     public static CKey parseCKey(String ckey) {
         int pos = 0;
+        ckey = unicode.transformBack(ckey);
         while (Character.isDigit(ckey.charAt(pos))) pos ++;
-        return new CKey(Integer.parseInt(ckey.substring(0, pos)), ckey.substring(pos)); 
+        return new CKey(Integer.parseInt(ckey.substring(0, pos)), ckey.substring(pos));
     }
 
     /**
      * Structure with node-number and template.
      */
     public static class CKey {
-        public String template;
-        public int    node;
+        public final String template;
+        public final int    node;
         CKey(int n, String t) {
             template = t;
             node = n;
         }
         public String toString() {
-            return "" + node + template;
+            return "" + node + unicode.transform(template);
         }
     }
 
@@ -353,27 +356,27 @@ public abstract class Imaging {
             input.close();
             byte[] ba = bytes.toByteArray();
             ImageInformer   informer   = new ImageMagickImageInformer();
-            
+
             Dimension originalSize = informer.getDimension(ba);
 
             ImageConverter  converter1  = new ImageMagickImageConverter();
             ImageConverter  converter2  = new JAIImageConverter();
-            
+
 
             String[] templates = {
                 "s(100x60)+f(jpeg)",
                 "part(10x10x30x50)",
                 "part(10x10x2000x2000)",
                 "s(10000@)",  "s(100x100@)",
-                "s(10000x2000>)", "s(100000x2000<)", 
+                "s(10000x2000>)", "s(100000x2000<)",
                 "s(4x5<)", "s(4x5>)",
-                "r(90)", "r(45)", "r(198)", "r(-30)", 
+                "r(90)", "r(45)", "r(198)", "r(-30)",
                 "border(5)", "border(5x8)",
                 "r(45)+border(10x20)",
                 "flip",
                 "s(100)", "s(x100)", "s(10x70)", "s(70x10)",  "s(60x70!)", "s(80%x150%)", "s(100x100>)","s(100x100&gt;)",
                 "s(x100)",
-                "s(100)+f(png)+r(20)+s(400x400)"                                
+                "s(100)+f(png)+r(20)+s(400x400)"
             };
 
             System.out.println("original size: " + originalSize);
@@ -400,7 +403,7 @@ public abstract class Imaging {
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
-        
+
     }
 
 }
