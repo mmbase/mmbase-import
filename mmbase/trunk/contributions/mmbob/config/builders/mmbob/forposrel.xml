@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="forposrel" maintainer="submarine.nl" version="0" extends="insrel" .>
+    name="forposrel" maintainer="submarine.nl" version="0" extends="insrel">
 
 
   <names>
