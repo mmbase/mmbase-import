@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.117 2006-08-15 09:55:54 nklasens Exp $
+ * @version $Id: Images.java,v 1.117.2.1 2006-12-20 14:54:55 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -198,7 +198,9 @@ public class Images extends AbstractImages {
             if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
                 Dimension dimension          = getDimension(node);
                 Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
-                log.debug("" + dimension + " " + template + " --> " + predictedDimension);
+                if (log.isDebugEnabled()) {
+                    log.debug("" + dimension + " " + ckey + " --> " + predictedDimension);
+                }
                 if (imageCaches.storesDimension()) {
                     icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());
                     icacheNode.setValue(FIELD_WIDTH,  predictedDimension.getWidth());

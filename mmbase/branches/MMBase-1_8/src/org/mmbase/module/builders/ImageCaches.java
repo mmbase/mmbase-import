@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.55 2006-06-28 11:05:25 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.55.2.1 2006-12-20 14:54:55 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -183,27 +183,27 @@ public class ImageCaches extends AbstractImages {
     public MMObjectNode getCachedNode(int imageNumber, String template) {
         log.debug("Getting cached noded for " + template + " and image " + imageNumber);
         List nodes;
+        String ckey = Factory.getCKey(imageNumber, template).toString();
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
-            StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
-            Object ckey = Factory.getCKey(imageNumber, template);
-            BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey.toString());
+            StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));    
+            BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey);
             bfvc.setCaseSensitive(true);
             query.setConstraint(bfvc);
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             return null;
         }
 
 
         if (nodes.size() > 1) {
-            log.warn("Found more then one cached image with key ("+ template +")");
+            log.warn("Found more then one cached image with key ("+ ckey +")");
         }
 
         if (nodes.size() == 0) {
-            log.debug("Did not find cached images with key ("+ template +")");
+            log.debug("Did not find cached images with key "+ ckey );
             if (checkLegacyCkey) {
                 return getLegacyCachedNode(imageNumber, template);
             } else {
