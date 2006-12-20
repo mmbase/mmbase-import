@@ -340,8 +340,9 @@
         <guiname xml:lang="nl">isLogged</guiname>
         <guiname xml:lang="en">isLogged</guiname>
       </gui>
-      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="false" />
+      <!-- should be boolean -->
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
       </datatype>
     </field>
 
