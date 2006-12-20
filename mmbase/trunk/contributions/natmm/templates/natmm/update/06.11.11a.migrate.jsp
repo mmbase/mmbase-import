@@ -146,14 +146,20 @@ String [] migrateToTeaser = {
   "Agenda 2007",
   "Telefonisch bestellen",
   "Kerstkaartje sturen en natuurmonumenten steunen",
+  "Intro tekst DVD/video",
+  "Welkom agenda/kalender",
+  "Welkom ansichtkaart",
+  "Welkom natuurgids",
+  "Welkom verzamelband",
+  "Welkom wandel en fietskaarten",
+  "Welkom bij de Jeugdproducten. Leuke en leerzame boeken voor de jonge natuurliefhebber.",
+  "Welkom boeken",
+  "Welkom wandel en fietskaarten",
+  "Meer lezen?",
+  "RPI Family Cards",
 };
-String [] teaserRole = {
-  "0",
-  "2",
-  "2",
-  "2",
-  "2",
-};
+String [] teaserRole =   {"0","2","2","2","2","0","0","0","0","0","0","0","0","0","2","2",};
+String [] titleVisible = {"0","1","1","1","1","0","0","0","0","0","0","0","0","0","1","1",};
 
 for(int i=0;i<migrateToTeaser.length;i++) {
   sConstraints = "artikel.titel = '" + migrateToTeaser[i] + "'"; 
@@ -162,8 +168,9 @@ for(int i=0;i<migrateToTeaser.length;i++) {
     <mm:field name="titel" jspvar="titel" vartype="String" write="false">
     <mm:field name="titel_eng" jspvar="titel_eng" vartype="String" write="false">
     <mm:field name="intro" jspvar="omschrijving" vartype="String" write="false">
+      <mm:remove referid="thisteaser" />
       <mm:createnode type="teaser" id="thisteaser">
-        <mm:setfield name="size">1</mm:setfield>
+        <mm:setfield name="size"><%= titleVisible[i] %></mm:setfield>
         <mm:setfield name="titel_zichtbaar">0</mm:setfield>
         <mm:setfield name="reageer">0</mm:setfield>
         <mm:setfield name="titel"><%= titel %></mm:setfield>
@@ -206,16 +213,55 @@ log.info("Delete some old articles");
 String [] articlesToDelete = {
   "Prijsvraag voor kinderen",
   "Welkom verkoopadres",
+  "EXTRA GIFT",
+  "Bestelling Natuurmonumenten",
 };
 for(int i=0;i<articlesToDelete.length;i++) {
   sConstraints = "artikel.titel = '" +articlesToDelete[i] + "'"; 
   %>
   <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+    <mm:relatednodes type="paragraaf">
+       <mm:deletenode deleterelations="true" />
+    </mm:listnodes>
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
   <%
 }
-%>
+log.info("Move some articles");
+String [] articlesToMove = {
+  "#NZ# Geen bestelling",
+  "#NZ# Uw winkelwagen",
+  "#NZ# Dank voor uw bestelling",
+};
+String [] newTitle = {
+  "Geen bestelling",
+  "Uw winkelwagen",
+  "Dank voor uw bestelling"
+};
+String [] articlePosition = {
+  "1",
+  "2",
+  "3"
+};
+for(int i=0;i<articlesToMove.length;i++) {
+  sConstraints = "artikel.titel = '" +articlesToMove[i] + "'"; 
+  %>
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+    <mm:relatednodes type="paragraaf">
+      <mm:deletenode deleterelations="true" />
+    </mm:listnodes>
+    <mm:related path="contentrel,pagina">
+       <mm:node element="contentrel">
+          <mm:setfield name="pos"><%= articlePosition[i] %></mm:setfield>
+       </mm:node>
+     </mm:related>
+     <mm:setfield name="titel"><%= newTitle[i] %></mm:setfield>
+     <mm:setfield name="titel_zichtbaar">0</mm:setfield>
+  </mm:listnodes>
+  <%
+}
+
+
 </body>
 </html>
 </mm:log>

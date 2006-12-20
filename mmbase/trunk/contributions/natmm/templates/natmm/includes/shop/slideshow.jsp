@@ -14,20 +14,20 @@ String otherImages = "";
 int totalNumberOfImages = 1;
 int thisImageNumber = 1;
 %><%@include file="../splitimagelist.jsp" %><% 
-String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + shop_itemId + "&o=" + offsetID+ "&i=";
+String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + shop_itemID + "&o=" + offsetID+ "&i=";
 
 %><html>
 <head>
 <title><mm:node number="<%= subsiteID %>"><mm:field name="naam" /></mm:node
 	><mm:node number="<%= paginaID %>"> -	<mm:field name="titel" /></mm:node
-	><mm:node number="<%= shop_itemId %>" notfound="skipbody"> -	<mm:field name="titel" /></mm:node
+	><mm:node number="<%= shop_itemID %>" notfound="skipbody"> -	<mm:field name="titel" /></mm:node
 	><mm:node number="<%= thisImage %>"> -	<mm:field name="titel" /></mm:node>
 </title>
 <link rel="stylesheet" type="text/css" href="../../hoofdsite/themas/main.css"  title="default" />
 <% if(styleSheet!=null) { %><link rel="stylesheet" type="text/css" href="../../<%= styleSheet %>" /><% } %>
 <meta http-equiv="imagetoolbar" content="no">
 </head>
-<body class="popup">
+<body style="padding:0px;margin:0px;overflow:no;text-align:center;">
 <table width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="maincolor" style="padding:3px;height:79px;">
@@ -37,7 +37,7 @@ String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + sho
 			<td class="maincolor" width="0%" style="padding-left:1px;padding-top:2px;" >
         <a href="#" onClick="window.close()"><img src="../../media/shop/kruis_wit_op_oranje.gif" border="0" alt=""></a></td>
 			<td class="maincolor" style="padding-left:8px;padding-top:2px;">
-        <a href="#" onClick="window.close()" class="white"><bean:message bundle="LEOCMS" key="shop.slideshow.close" /></a></td>
+        <a href="#" onClick="window.close()" class="klikpad"><b><bean:message bundle="LEOCMS" key="shop.slideshow.close" /></b></a></td>
 		</tr>
 		<tr>
 			<td><img src="../../media/trans.gif" width="1" height="57" border="0" alt=""></td>
@@ -49,7 +49,7 @@ String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + sho
 	</td>
 </tr>
 <tr>
-	<td class="middle" style="height:27px;width:100%;text-align:center;">
+	<td style="height:27px;width:100%;text-align:center;vertical-align:middle;">
 		<strong><mm:node number="<%= thisImage %>"><mm:field name="title" /></mm:node></strong>
 		&nbsp[ <%= thisImageNumber %> / <%= totalNumberOfImages  %> ]
 	</td>
@@ -130,12 +130,12 @@ String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + sho
 <tr>
 	<td class="maincolor" style="padding:1px;padding-left:25px;">
 	<%
-  if(!shop_itemId.equals("-1")) { 
-		%><mm:node number="<%= shop_itemId %>">
+  if(!shop_itemID.equals("-1")) { 
+		%><mm:node number="<%= shop_itemID %>">
 			<table cellspacing="0" cellpadding="0">
 				<tr>
-					<td class="maincolor"><mm:field name="intro" /> <span style="font-weight:normal;">|</span></td>
-					<td>&nbsp;&nbsp;<strong><mm:field name="titel" /></strong></td>
+					<td class="maincolor"><mm:field name="intro" /></td>
+					<td><span class="maincolor">|</span>&nbsp;&nbsp;<strong><mm:field name="titel" /></strong></td>
 				</tr>
 			</table>
 		</mm:node><% 
