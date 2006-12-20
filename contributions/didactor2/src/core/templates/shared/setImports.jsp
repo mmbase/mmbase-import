@@ -13,24 +13,8 @@
       the servername
   - template include path (into variable $includePath)
 --%>
-<mm:cloudinfo type="user" id="username" write="false" />
 
-<%-- get the $user --%>
-<mm:listnodescontainer type="people">
-  <mm:constraint operator="equal" field="username" referid="username" />
-  <mm:listnodes>
-    <mm:first>
-      <mm:node>
-        <mm:field id="user" name="number" write="false" />
-      </mm:node>
-    </mm:first>
-  </mm:listnodes>
-  <mm:notpresent referid="user">
-    <mm:import id="user">0</mm:import>
-  </mm:notpresent>
-</mm:listnodescontainer>
-
-
+<jsp:directive.include file="findUser.jspx" />
 <jsp:directive.include file="findProvider.jspx" />
 
 <%--
