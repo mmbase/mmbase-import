@@ -23,11 +23,13 @@ import org.mmbase.applications.thememanager.*;
  * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @version $Id: Smilies.java,v 1.6 2006-10-26 14:15:45 michiel Exp $
+ * @version $Id: Smilies.java,v 1.7 2006-12-20 12:59:45 johannes Exp $
  * @since MMBob-1.0
  */
 public class Smilies extends StringTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(Smilies.class);
+    private String defaultid = "default";
+    private String defaultcontext = "/thememanager/images";
 
     /** All known smilies */
     protected static final Map smilies = new HashMap();
@@ -39,6 +41,11 @@ public class Smilies extends StringTransformer implements CharTransformer {
     protected static final Map smileyMatchers = new HashMap();
 
     public Smilies() {
+    }
+
+    public Smilies(String defaultid, String defaultcontext) {
+        this.defaultid = defaultid;
+        this.defaultcontext = defaultcontext;
     }
 
     /**
@@ -124,7 +131,7 @@ public class Smilies extends StringTransformer implements CharTransformer {
      * @return the transformed string
      */
     public String transform (String originalString) {
-        return transform(originalString, "default", "/thememanager/images");
+        return transform(originalString, defaultid, defaultcontext);
     }
 
     /**
