@@ -31,11 +31,11 @@ while(shop_items.size()>0) {
 	<%@include file="titlerow.jsp" %>
 	<tr>
 		<mm:node number="<%= leftShop_itemNumber %>"
-			><td class="middle" style="padding-right:3px;"><%@include file="price.jsp"%></td></mm:node>
+			><td style="padding-right:3px;vertical-align:middle;"><%@include file="price.jsp"%></td></mm:node>
 		<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
 		<% if(rightShop_itemExists) { 
 			%><mm:node number="<%= rightShop_itemNumber %>"
-			><td class="middle" style="padding-right:3px;"><%@include file="price.jsp" %></td></mm:node><% 
+			><td style="padding-right:3px;vertical-align:middle;"><%@include file="price.jsp" %></td></mm:node><% 
 		} else {
 			%><td>&nbsp;</td><%
 		} %>

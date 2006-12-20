@@ -8,13 +8,13 @@
 <mm:import jspvar="artikelID" externid="a">-1</mm:import>
 <mm:import jspvar="dossierID" externid="d">-1</mm:import>
 <mm:import jspvar="imgID" externid="i">-1</mm:import>
+<mm:import jspvar="shop_itemID" externid="u">-1</mm:import>
 <mm:import jspvar="linkID" externid="l">-1</mm:import>
 <mm:import jspvar="linklijstID" externid="ll">-1</mm:import>
 <mm:import jspvar="natuurgebiedID" externid="n">-1</mm:import>
 <mm:import jspvar="personID" externid="pers">-1</mm:import>
 <mm:import jspvar="provID" externid="prov" id="prov">-1</mm:import>
 <mm:import jspvar="vacatureID" externid="v">-1</mm:import>
-<mm:import jspvar="shop_itemId" externid="u">-1</mm:import>
 <mm:import jspvar="evenementID" externid="e">-1</mm:import>
 <mm:import jspvar="offsetID" externid="offset" id="offset">0</mm:import>
 <mm:import jspvar="ID" externid="id">-1</mm:import>

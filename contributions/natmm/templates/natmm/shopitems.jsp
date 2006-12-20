@@ -10,9 +10,9 @@
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/shop/header.jsp" %>
-<td colspan="3" width="70%">
+<td colspan="3" width="70%" style="vertical-align:top;">
   <img src="media/trans.gif" width="1" height="11" border="0" alt=""><br><% 
-  if(shop_itemId.equals("-1")) {
+  if(shop_itemID.equals("-1")) {
     %>
     <jsp:include page="includes/items/items.jsp">
       <jsp:param name="p" value="<%= paginaID %>" />
@@ -22,16 +22,16 @@
     %>
     <jsp:include page="includes/items/item.jsp">
       <jsp:param name="p" value="<%= paginaID %>" />
-      <jsp:param name="u" value="<%= shop_itemId %>" />
+      <jsp:param name="u" value="<%= shop_itemID %>" />
       <jsp:param name="rs" value="<%= styleSheet %>" />
     </jsp:include>
     <% 
   } %>
 </td>
 <td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
-<td width="180">
+<td width="180" style="vertical-align:top;">
 <%
-if(shop_itemId.equals("-1")) {
+if(shop_itemID.equals("-1")) {
   %>
   <jsp:include page="includes/shop/relatedteasers.jsp">
       <jsp:param name="p" value="<%= paginaID %>" />
@@ -41,23 +41,23 @@ if(shop_itemId.equals("-1")) {
   <% 
 } else {
   boolean hasExtraInfo = false;
-  %><mm:list nodes="<%= shop_itemId %>" path="products,posrel,images" 
+  %><mm:list nodes="<%= shop_itemID %>" path="products,posrel,images" 
       constraints="posrel.pos > 1" max="1"><%
       hasExtraInfo = true;
   %></mm:list><%
   if(!hasExtraInfo) { 
-    %><mm:list nodes="<%= shop_itemId %>"	path="products,posrel,attachments" max="1"><%
+    %><mm:list nodes="<%= shop_itemID %>"	path="products,posrel,attachments" max="1"><%
       hasExtraInfo = true; 
     %></mm:list><% 
   } 
   if(!hasExtraInfo) { 
-    %><mm:list nodes="<%= shop_itemId %>" path="products,posrel,artikel" max="1"><%
+    %><mm:list nodes="<%= shop_itemID %>" path="products,posrel,artikel" max="1"><%
       hasExtraInfo = true; 
     %></mm:list><%
   }
   if(hasExtraInfo) { 
     %><jsp:include page="includes/items/nav.jsp">
-      <jsp:param name="u" value="<%= shop_itemId %>" />
+      <jsp:param name="u" value="<%= shop_itemID %>" />
     </jsp:include><%
   } else { 
     %><jsp:include page="includes/shop/relatedteasers.jsp">
@@ -66,7 +66,7 @@ if(shop_itemId.equals("-1")) {
   } 
   %><jsp:include page="includes/shop/relatedlinkset.jsp">
       <jsp:param name="p" value="<%= paginaID %>" />
-      <jsp:param name="u" value="<%= shop_itemId %>" />
+      <jsp:param name="u" value="<%= shop_itemID %>" />
     </jsp:include><% 
 } 
 %></td>
