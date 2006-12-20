@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import org.mmbase.storage.implementation.database.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
@@ -22,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.64 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.65 2006-12-20 16:20:54 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -48,13 +49,13 @@ public class BasicSqlHandler implements SqlHandler {
      */
     // XXX must wildcard characters be escaped?
     // XXX  perhaps place this somewhere else?
-    public static String toSqlString(String str) {
+    protected String toSqlString(String str) {
         String result = str;
         if (str != null) {
             int offset = str.indexOf('\'');
             if (offset != -1) {
                 // At least one single quote found.
-                StringBuilder sb = new StringBuilder(str.length() + 4);
+                StringBuffer sb = new StringBuffer(str.length() + 4);
                 int start = 0;
                 do {
                     sb.append(str.substring(start, offset)).append("''");
@@ -68,8 +69,30 @@ public class BasicSqlHandler implements SqlHandler {
                 }
             }
         }
-        return result;
+        return forceEncode(result);
     }
+    public static String forceEncode(String st) {
+        DatabaseStorageManagerFactory factory = (DatabaseStorageManagerFactory) MMBase.getMMBase().getStorageManagerFactory();
+        if (factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+            String encoding = factory.getMMBase().getEncoding();
+            byte[] rawchars = null;
+            try {
+                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {
+                    encoding = "CP1252";
+                } else {
+                }
+                rawchars = st.getBytes(encoding);
+                return new String(rawchars, "ISO-8859-1");
+            } catch (Exception e) {
+                return st;
+            }
+
+        } else {
+            return st;
+        }
+    }
+
+
     /**
      * Tests if a case sensitivity for a field constraint is false
      * and relevant, i.e. the constraint is set to case insensitive and

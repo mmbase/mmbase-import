@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.16 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.17 2006-12-20 16:20:54 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -46,6 +46,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      */
     public MySqlSqlHandler() {
         super();
+    }
+
+    protected String toSqlString(String str) {
+        String res =  super.toSqlString(str).replaceAll("\\\\", "\\\\\\\\");
+        return res;
     }
 
     // javadoc is inherited
