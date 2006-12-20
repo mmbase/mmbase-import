@@ -33,7 +33,7 @@
 			%><table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
 					<td style="padding:4px;padding-bottom:2px;padding-top:7px;"class="colortitle">
-					<mm:field name="title" />
+					<mm:field name="titel" />
 					<table width="100%" cellspacing="0" cellpadding="0">
 						<tr>
 							<td><mm:field name="omschrijving"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field></td>

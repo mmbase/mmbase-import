@@ -1,10 +1,10 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../../request_parameters.jsp" %>
 <mm:cloud jspvar="cloud">
-<mm:node number="<%= shop_itemId %>" 
+<mm:node number="<%= shop_itemID %>" 
 ><mm:field name="number" jspvar="products_number" vartype="String" write="false"><% 
 	shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + products_number;
-	%><mm:list nodes="<%= shop_itemId %>" nodes="product,posrel,pagina">
+	%><mm:list nodes="<%= shop_itemID %>" nodes="product,posrel,pagina">
 		  <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
 		  	  <% shop_itemHref += "&p=" + pagina_number; %>
 		  </mm:field>

@@ -14,8 +14,8 @@ if(actionId.equals("fast")||actionId.equals("order")||actionId.equals("delete")|
 		try { session.setAttribute("products",products);
 		} catch(Exception e) { } 
 	}
-	if((actionId.equals("order")||actionId.equals("fast"))&&(products.get(shop_itemId)==null)) { // *** add the product ***
-		products.put(shop_itemId,"1");
+	if((actionId.equals("order")||actionId.equals("fast"))&&(products.get(shop_itemID)==null)) { // *** add the product ***
+		products.put(shop_itemID,"1");
 	} else if(postingStr!=null) { // *** update shoppingcart ***
 		postingStr += "|";
 		if(postingStr.indexOf("|valP")>-1) { // *** update the products in the session ***
@@ -33,7 +33,7 @@ if(actionId.equals("fast")||actionId.equals("order")||actionId.equals("delete")|
 		}
 		String memberId = getResponseVal("valM",postingStr);
 		if(memberId!=null) { // *** add the memberid to the session ***
-			try { session.setAttribute("memberid",memberId);
+			try { session.setAttribute("memberid",memberId); %>setting memberid to <%= memberId %><%
 			} catch(Exception e) { } 
 		}
 		String donationStr = getResponseVal("valD",postingStr); 
@@ -57,7 +57,7 @@ if(actionId.equals("fast")||actionId.equals("order")||actionId.equals("delete")|
 			qpos = postingStr.indexOf("|q",vend);
 		}
 		if(actionId.equals("delete")) { // *** delete the product ***
-			products.remove(shop_itemId);
+			products.remove(shop_itemID);
 		}
 	}
 	// *** count number of items ***

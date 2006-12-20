@@ -93,7 +93,7 @@
 				<table width="100%" cellspacing="0" cellpadding="0" align="right">
 					<tr>
 					<td class="maincolor" style="vertical-align:middle;padding-left:4px;padding-right:2px;" width="100%">
-						<nowrap><a href="javascript:searchOn();document.searchform.target='';document.searchform.submit();" class="white">OPNIEUW ZOEKEN</a></td>
+						<nowrap><a href="javascript:searchOn();document.searchform.target='';document.searchform.submit();" class="klikpad"><b>OPNIEUW ZOEKEN</b></a></td>
 					<td class="maincolor" style="padding:2px;" width="100%">
 						<a href="javascript:searchOn();document.searchform.target='';document.searchform.submit();"><img src="media/pijl_wit_op_oranje.gif" border="0" alt=""></a></td>
 					</tr></form>
@@ -138,9 +138,9 @@
 				><mm:first><table width="100%" cellspacing="0" cellpadding="0">
 				<tr><td class="maincolor" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
 				</mm:first
-				><mm:field name="products.number" jspvar="shop_itemId" vartype="String" write="false"
+				><mm:field name="products.number" jspvar="shop_itemID" vartype="String" write="false"
 					><jsp:include page="includes/relatedfoundproduct.jsp">
-						<jsp:param name="u" value="<%= shop_itemId %>" />
+						<jsp:param name="u" value="<%= shop_itemID %>" />
 					</jsp:include
 					></mm:field
 				><mm:last></table><br><br></mm:last

@@ -10,7 +10,7 @@ while(products.size()>0) {
 	memberId = "";
 	int price = 0;
 	%><mm:node number="<%= thisProduct %>" notfound="skipbody"
-	><%@include file="../includes/getprice.jsp"
+	><%@include file="getprice.jsp"
 	%><mm:field name="title" jspvar="title" vartype="String" write="false"
 	><mm:field name="id" jspvar="id" vartype="String" write="false"><%
 		productsStr += "<td  align=\"center\" valign=\"top\">" + id
@@ -22,9 +22,9 @@ while(products.size()>0) {
 		  		productsStr += "&euro; " + nf.format(((double) price )/100);
 		}
 	%></mm:field
-	></mm:field
-	><% memberId = "dummy";
-	%><%@include file="../includes/getprice.jsp"
+	></mm:field><% 
+  memberId = "dummy";
+	%><%@include file="getprice.jsp"
 	%></mm:node><%
 		productsStr += "</td><td align=\"right\" valign=\"top\">";
 		if(price==-1) { 
