@@ -26,8 +26,11 @@
 </mm:cloud>
 
 <mm:cloud method="delegate"  authenticate="didactor-logout">
-  
   <mm:cloudinfo type="user" />
-
 </mm:cloud>
-<mm:redirect page="/" />
+
+<mm:cloud method="delegate" rank="basic user">
+   <mm:cloudinfo type="user" />
+</mm:cloud>
+
+
