@@ -12,7 +12,13 @@
 </style>
 </head>
 <body style="width:100%;padding:5px;">
-<%--
+<%
+String sConstraints = "";
+log.info("Adding style to 'shop' node. Setting level field of 'shop' node to 2."); %>
+<mm:node number="shop" id="shop">
+  <mm:setfield name="level">2</mm:setfield>
+  <mm:setfield name="style">hoofdsite/themas/naardermeer.css</mm:setfield>
+</mm:node>
 <% log.info("Changing posrel.pos field from -1 to positive value in pages related to 'shop' node to correct design of Webwinkel Rubriek. First page in this rubriek should be 'Welkom in de Winkel' page, that has value of posrel.pos field equals to '1'."); %>
 <% int iMaxValueOfPosrelPos = 0; %>
 <mm:list nodes="shop" path="rubriek,posrel,pagina">
@@ -55,11 +61,6 @@
     <mm:setfield name="verwijderbaar">1</mm:setfield>
   </mm:node>	
 </mm:list>
-<% log.info("Adding style to 'shop' node. Setting level field of 'shop' node to 2."); %>
-<mm:node number="shop" id="shop">
-  <mm:setfield name="level">2</mm:setfield>
-  <mm:setfield name="style">hoofdsite/themas/naardermeer.css</mm:setfield>
-</mm:node>
 <% log.info("Deleting old shop rubriek and the related page"); %>
 <mm:node number="winkel_rubriek" notfound="skipbody">
   <mm:relatednodes type="pagina">
@@ -68,7 +69,7 @@
   <mm:deletenode />
 </mm:node>
 <% log.info("Adding relations between 'shop' node and vereniging Naturmonumenten rubriek"); %>
-<% String sConstraints="rubriek.naam='Vereniging Natuurmonumenten'"; %>
+<% sConstraints="rubriek.naam='Vereniging Natuurmonumenten'"; %>
 <mm:list path="rubriek" constraints="<%= sConstraints %>">	
   <mm:node element="rubriek" id="parent">
     <mm:createrelation role="parent" source="parent" destination="shop">
@@ -135,11 +136,8 @@ log.info("replace shop artikel template by default one"); %>
   <mm:node element="paginatemplate" id="paginatemplate"/>
   <mm:createrelation role="related" source="paginatemplate" destination="new_ed"/>
 </mm:list>
---%>
 <% 
 log.info("Migrate some articles to teasers"); 
-String sConstraints = "";
-
 String [] migrateToTeaser = {
   "Introtekst home",
   "Kalender 2007",
@@ -197,6 +195,7 @@ for(int i=0;i<migrateToTeaser.length;i++) {
         </mm:field>
       </mm:related>
       <mm:related path="posrel,images">
+        <mm:remove referid="thisimage" />
         <mm:node element="images" id="thisimage">
           <mm:createrelation source="thisteaser" destination="thisimage" role="posrel" />
         </mm:node>
@@ -222,7 +221,7 @@ for(int i=0;i<articlesToDelete.length;i++) {
   <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
     <mm:relatednodes type="paragraaf">
        <mm:deletenode deleterelations="true" />
-    </mm:listnodes>
+    </mm:relatednodes>
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
   <%
@@ -249,19 +248,101 @@ for(int i=0;i<articlesToMove.length;i++) {
   <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
     <mm:relatednodes type="paragraaf">
       <mm:deletenode deleterelations="true" />
-    </mm:listnodes>
+    </mm:relatednodes>
     <mm:related path="contentrel,pagina">
        <mm:node element="contentrel">
           <mm:setfield name="pos"><%= articlePosition[i] %></mm:setfield>
        </mm:node>
-     </mm:related>
-     <mm:setfield name="titel"><%= newTitle[i] %></mm:setfield>
-     <mm:setfield name="titel_zichtbaar">0</mm:setfield>
+    </mm:related>
+    <mm:setfield name="titel"><%= newTitle[i] %></mm:setfield>
+    <mm:setfield name="titel_zichtbaar">0</mm:setfield>
   </mm:listnodes>
   <%
 }
 
+String [] pages = {
+  "Welkom in de Winkel", // 1
+  "Jeugdproducten", // 2
+  "Video/dvd", // 3
+  "Boeken", // 4
+  "Agenda/kalender", // 5
+  "Natuurgidsen- en waaiers", // 6
+  "Wandelen en fietsen", // 7
+  "Kerstkaarten", // 8
+  "Verzamelbanden Natuurbehoud", // 9
+  "Verkoopadressen en Bezoekerscentra", // 10
+  "Contact", // 11
+  "Leveringsvoorwaarden", // 12
+  "Disclaimer", // 13
 
+  "Prijsvraag voor kinderen", // 14
+  "Telefonisch bestellen", // 15
+  "Scholen en bedrijven", // 16
+  "Zoeken in de webwinkel", // 17
+  "Winkelwagen" // 18
+};
+String [] pagesPos      = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18" };
+String [] pagesVisible  = {"1","1","1","1","1","1","1","1","1", "1", "1", "1", "1", "0", "0", "0", "0", "0" };
+for(int i=0;i<pages.length;i++) {
+  sConstraints = "pagina.titel = '" +pages[i] + "'"; 
+  %>
+  <mm:listnodes type="pagina" constraints="<%= sConstraints %>">
+    <% if(i==9) { %>
+      <mm:remove referid="thispage" />
+      <mm:node id="thispage" />
+      <mm:createrelation source="shop" destination="thispage" role="posrel" /> 
+    <% } %>
+    <mm:related path="posrel,rubriek">
+       <mm:node element="posrel">
+          <mm:setfield name="pos"><%= pagesPos[i] %></mm:setfield>
+       </mm:node>
+   </mm:related>
+   <% if(pagesVisible[i].equals("0")) { %>
+      <mm:setfield name="verloopdatum">1166310000</mm:setfield>
+   <% } else { %>
+      <mm:setfield name="verloopdatum">2145913200</mm:setfield>
+   <% }%>
+  </mm:listnodes>
+  <%
+}
+
+String [] pagesToDelete = {
+  "Word lid",
+  "Privacy",
+};
+for(int i=0;i<pagesToDelete.length;i++) {
+  sConstraints = "pagina.titel = '" +pagesToDelete[i] + "'"; 
+  %>
+  <mm:listnodes type="pagina" constraints="<%= sConstraints %>">
+    <mm:relatednodes type="artikel">
+      <mm:relatednodes type="paragraaf">
+        <mm:deletenode deleterelations="true" />
+      </mm:relatednodes>
+      <mm:deletenode deleterelations="true" />
+    </mm:relatednodes>
+    <mm:deletenode deleterelations="true" />
+  </mm:listnodes>
+  <%
+}
+%>
+<mm:listnodes type="artikel">
+  <mm:remove referid="intro" />
+  <mm:field name="intro" id="intro" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="tekst"><mm:write referid="intro" /></mm:setfield>
+      <mm:setfield name="intro"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+</mm:listnodes>
+<mm:listnodes type="paragraaf">
+  <mm:remove referid="omschrijving" />
+  <mm:field name="omschrijving" id="omschrijving" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="tekst"><mm:write referid="omschrijving" /></mm:setfield>
+      <mm:setfield name="omschrijving"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+</mm:listnodes>
 </body>
 </html>
 </mm:log>
