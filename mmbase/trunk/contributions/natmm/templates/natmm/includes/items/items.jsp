@@ -6,8 +6,8 @@
 LinkedList shop_items = new LinkedList();
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,items" fields="items.number,items.titel"
 	orderby="posrel.pos,items.titel" directions="UP,UP"
-   ><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"
-   	><% shop_items.add(shop_items_number);
+   ><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"><% 
+    shop_items.add(shop_items_number);
    %></mm:field
 ></mm:list><%
 
@@ -33,7 +33,8 @@ while(shop_items.size()>0) {
 		<mm:node number="<%= leftShop_itemNumber %>"
 			><td style="padding-right:3px;vertical-align:middle;"><%@include file="price.jsp"%></td></mm:node>
 		<td width="8"><img src="media/trans.gif" height="1" width="8" border="0" alt=""></td>
-		<% if(rightShop_itemExists) { 
+		<% 
+    if(rightShop_itemExists) { 
 			%><mm:node number="<%= rightShop_itemNumber %>"
 			><td style="padding-right:3px;vertical-align:middle;"><%@include file="price.jsp" %></td></mm:node><% 
 		} else {
