@@ -147,7 +147,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
 		// ************************************* Show the body (and related articles) *************************************
 		%><tr><td style="padding:3px;"><a name="body"></a>
 					<div class="colortitle"><bean:message bundle="LEOCMS" key="items.description" /></div>
-					<mm:field name="omschrijving"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
+					<mm:field name="body"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
 					<mm:related path="posrel,link"  orderby="posrel.pos" directions="UP"
 						><li><a target="_blank" href="<mm:field name="link.url" />" title="<mm:field name="link.alt_tekst"/>">
 						<mm:field name="link.titel" /></a><br>

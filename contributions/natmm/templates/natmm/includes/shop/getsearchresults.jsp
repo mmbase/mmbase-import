@@ -1,4 +1,18 @@
+<%! public String searchResults(TreeSet searchResultSet) {
+	String searchResults = "";
+	Iterator srsi = searchResultSet.iterator();
+	while(srsi.hasNext())
+	{	if(!searchResults.equals("")) searchResults += ",";
+		searchResults += (String) srsi.next();
+	}
+	return searchResults;
+}
+%>
 <%
+String searchId = request.getParameter("s"); if(searchId==null) { searchId = ""; }
+String keyId = request.getParameter("k"); if(keyId==null) { keyId = ""; }
+String poolId = request.getParameter("c"); if(poolId==null) { poolId = ""; }
+
 boolean debug = false;
 
 // *** calculations for search results ***
@@ -7,9 +21,9 @@ TreeSet searchResultSet = new TreeSet();
 String searchResults = "";
 
 if(!searchId.equals("")) {
-	// fill the result set with all the products that contain the searchterm
+	// fill the result set with all the items that contain the searchterm
 	boolean firstTerm = true;
-	String productConstraint = ""; 
+	String itemConstraint = ""; 
 	String articleConstraint = "";
 	String paragraphConstraint = "";
 	
@@ -32,50 +46,50 @@ if(!searchId.equals("")) {
 		searchTerm = searchTerm.replace('-',' '); // for 'search-fast' search on the string 'search fast'
 		if(!searchTerm.equals("")){
 			if(!firstTerm) {
-				productConstraint += " AND ";
+				itemConstraint += " AND ";
 				articleConstraint += " AND "; 
 				paragraphConstraint += " AND ";
 			}
-			productConstraint += "( UPPER(products.titel) LIKE '%" + searchTerm + "%'"
-				+ " OR UPPER(products.titel_fra) LIKE '%" + searchTerm + "%'"
-				+ " OR UPPER(products.intro) LIKE '%" + searchTerm + "%'"
-				+ " OR UPPER(products.omschrijving) LIKE '%" + searchTerm + "%' )";
+			itemConstraint += "( UPPER(items.titel) LIKE '%" + searchTerm + "%'"
+				+ " OR UPPER(items.titel_fra) LIKE '%" + searchTerm + "%'"
+				+ " OR UPPER(items.intro) LIKE '%" + searchTerm + "%'"
+        + " OR UPPER(items.body) LIKE '%" + searchTerm + "%' )";
 			articleConstraint += "( UPPER(artikel.titel) LIKE '%" + searchTerm + "%'"
-				+ " OR UPPER(artikel.intro) LIKE '%" + searchTerm + "%' )";
+				+ " OR UPPER(artikel.tekst) LIKE '%" + searchTerm + "%' )";
 			paragraphConstraint += "( UPPER(paragraaf.titel) LIKE '%" + searchTerm + "%'"
-				+ " OR UPPER(paragraaf.omschrijving) LIKE '%" + searchTerm + "%' )";
+				+ " OR UPPER(paragraaf.tekst) LIKE '%" + searchTerm + "%' )";
 			searchTermSet.add(searchTerm);
 			firstTerm = false;
 		}
 	}
 
-	%><mm:list nodes="<%= searchResults %>" path="products" constraints="<%= productConstraint %>"
-		><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
-			><% searchResultSet.add(products_number);
+	%><mm:list nodes="<%= searchResults %>" path="items" constraints="<%= itemConstraint %>"
+		><mm:field name="items.number" jspvar="items_number" vartype="String" write="false"><% 
+      searchResultSet.add(items_number);
 		%></mm:field
 	></mm:list
-	><mm:list nodes="<%= searchResults %>" path="products,posrel,artikel" constraints="<%= articleConstraint %>"
-		><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
-			><% searchResultSet.add(products_number);
+	><mm:list nodes="<%= searchResults %>" path="items,posrel,artikel" constraints="<%= articleConstraint %>"
+		><mm:field name="items.number" jspvar="items_number" vartype="String" write="false"><%
+      searchResultSet.add(items_number);
 		%></mm:field
 	></mm:list
-	><mm:list nodes="<%= searchResults %>" path="products,posrel,artikel,posrel,paragraaf"
+	><mm:list nodes="<%= searchResults %>" path="items,posrel,artikel,posrel,paragraaf"
 		constraints="<%= paragraphConstraint %>"
-		><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
-			><% searchResultSet.add(products_number);
+		><mm:field name="items.number" jspvar="items_number" vartype="String" write="false"><% 
+      searchResultSet.add(items_number);
 		%></mm:field
-	></mm:list
-	><%
+	></mm:list><%
+  
 	searchResults = searchResults(searchResultSet);
 	searchResultSet.clear();
 	if(debug) { %>text: <%= searchResults %><br><% }
 }
 
 if(!poolId.equals("")&&(searchId.equals("")||!searchResults.equals(""))) { // use pools to narrow down search results
-	%><mm:list nodes="<%= searchResults %>" path="products,posrel,pagina"
+	%><mm:list nodes="<%= searchResults %>" path="items,posrel,pagina"
 		constraints="<%= "pagina.number = '" + poolId + "'" %>"
-		><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
-			><% searchResultSet.add(products_number);
+		><mm:field name="items.number" jspvar="items_number" vartype="String" write="false"
+			><% searchResultSet.add(items_number);
 		%></mm:field
 	></mm:list><%
 	searchResults = searchResults(searchResultSet);
@@ -83,11 +97,11 @@ if(!poolId.equals("")&&(searchId.equals("")||!searchResults.equals(""))) { // us
 	if(debug) { %>pool: <%= searchResults %><br><% }
 } 
 
-if(!keyId.equals("")&&((searchId.equals("")&&poolId.equals(""))||!searchResults.equals(""))) { // use keys to narrow down search results
-	%><mm:list nodes="<%= searchResults %>" path="products,posrel,keys"
-		constraints="<%= "keys.number = '" + keyId + "'" %>"
-		><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
-			><% searchResultSet.add(products_number);
+if(!keyId.equals("")&&((searchId.equals("")&&poolId.equals(""))||!searchResults.equals(""))) { // use keywords to narrow down search results
+	%><mm:list nodes="<%= searchResults %>" path="items,posrel,keywords"
+		constraints="<%= "keywords.number = '" + keyId + "'" %>"
+		><mm:field name="items.number" jspvar="items_number" vartype="String" write="false"
+			><% searchResultSet.add(items_number);
 		%></mm:field
 	></mm:list><%
 	searchResults = searchResults(searchResultSet);
