@@ -48,7 +48,7 @@
         <mm:import id="subject" reset="true">Re:<mm:field name="subject" escape="none"/></mm:import>
       </mm:present>
       <mm:present referid="forward">
-        <mm:import id="subject" reset="true">Fw:<mm:field name="htmlsubject" escape="none"/></mm:import>
+        <mm:import id="subject" reset="true">Fw:<mm:field name="subject" escape="none"/></mm:import>
       </mm:present>
       
       <mm:field name="body" jspvar="body" vartype="String" write="false">
