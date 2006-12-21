@@ -15,7 +15,7 @@
     <field name="body" ftype="html" rows="24" ><prompt>tekst</prompt></field>
     <field name="quotetitle" ftype="line"><prompt>emailadres voor versturen bestelling (twee of meer adressen scheiden door puntkomma)</prompt></field>
     <field name="type" ftype="enum"><prompt>type</prompt><optionlist select="product_types"></optionlist></field>
-	 <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
+	  <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
     <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
     <!-- <field name="embargo"><prompt>verschijnings datum (producten zijn pas zichtbaar op de verschijningsdatum!)</prompt></field> -->
     <!-- <field name="verloopdatum"><prompt>verwijder datum</prompt></field> -->
