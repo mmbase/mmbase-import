@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.2 2006-12-20 16:31:11 michiel Exp $
+ * @version $Id: Images.java,v 1.3 2006-12-21 09:15:46 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -124,7 +124,7 @@ public class Images extends AbstractImages {
             if (args == null || args.size() < 1) {
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             }
-            return new Integer(getCachedNode(node, (String) args.get(0)).getNumber());
+            return Integer.valueOf(getCachedNode(node, (String) args.get(0)).getNumber());
         } else if ("cachednode".equals(function)) {
             try {
                 return getCachedNode(node, (String) args.get(0));
@@ -135,15 +135,15 @@ public class Images extends AbstractImages {
             }
         } else if ("height".equals(function)) {
             if (args.size() == 0) {
-                return new Integer(getDimension(node).getHeight());
+                return Integer.valueOf(getDimension(node).getHeight());
             } else {
-                return new Integer(getDimension(node, (String) args.get(0)).getHeight());
+                return Integer.valueOf(getDimension(node, (String) args.get(0)).getHeight());
             }
         } else if ("width".equals(function)) {
             if (args.size() == 0) {
-                return new Integer(getDimension(node).getWidth());
+                return Integer.valueOf(getDimension(node).getWidth());
             } else {
-                return new Integer(getDimension(node, (String) args.get(0)).getWidth());
+                return Integer.valueOf(getDimension(node, (String) args.get(0)).getWidth());
             }
         } else if ("dimension".equals(function)) {
             if (args.size() == 0) {
