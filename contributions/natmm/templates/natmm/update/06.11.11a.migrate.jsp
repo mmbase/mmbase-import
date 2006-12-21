@@ -35,26 +35,6 @@ log.info("Adding style to 'shop' node. Setting level field of 'shop' node to 2."
     </mm:listrelations>
   </mm:node>
 </mm:list>
-<% log.info("Creating an editwizard object which points to this pagina_products.xml."); %>
-<mm:createnode type="editwizards" id="editwizards_id">
-    <mm:setfield name="name">producten pagina</mm:setfield>
-    <mm:setfield name="wizard">config/pagina/pagina_products</mm:setfield>
-</mm:createnode>
-<% log.info("Relate this editwizard to the template object with url 'shoppincart.jsp'"); %>
-<mm:list nodes="shop" path="rubriek,posrel,pagina,gebruikt,paginatemplate">
-  <mm:present referid="node">
-    <mm:remove referid="node"/>
-  </mm:present>
-  <mm:node element="paginatemplate" id="node">
-    <% boolean flag=false; %>		
-    <mm:related path="related,editwizards">
-      <% flag=true; %>
-    </mm:related>
-    <% if (!flag) {%>
-      <mm:createrelation role="related" source="node" destination="editwizards_id"/>
-    <% } %>	
-  </mm:node>	
-</mm:list>
 <% log.info("For all pages related to 'shop' node check on field verwijderbaar"); %>
 <mm:list nodes="shop" path="rubriek,posrel,pagina">
   <mm:node element="pagina" >
@@ -214,6 +194,8 @@ String [] articlesToDelete = {
   "Welkom verkoopadres",
   "EXTRA GIFT",
   "Bestelling Natuurmonumenten",
+  "Website teksten",
+  "Link in de rechterkolom winkelwagen",
 };
 for(int i=0;i<articlesToDelete.length;i++) {
   sConstraints = "artikel.titel = '" +articlesToDelete[i] + "'"; 
@@ -340,6 +322,57 @@ for(int i=0;i<pagesToDelete.length;i++) {
     <mm:isnotempty>
       <mm:setfield name="tekst"><mm:write referid="omschrijving" /></mm:setfield>
       <mm:setfield name="omschrijving"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+</mm:listnodes>
+<mm:createnode type="menu" id="ww_menu">
+  <mm:setfield name="naam">Webwinkel</mm:setfield>
+</mm:createnode>
+<% log.info("Create product ew."); %>
+<mm:createnode type="editwizards" id="product_ew">
+  <mm:setfield name="name">producten</mm:setfield>
+  <mm:setfield name="description">Producten in de webwinkel</mm:setfield>
+  <mm:setfield name="type">list</mm:setfield>
+  <mm:setfield name="wizard">config/items/items_shop_natmm</mm:setfield>
+  <mm:setfield name="nodepath">items</mm:setfield>
+  <mm:setfield name="fields">titel,id,type,price1,owner,quotetitle</mm:setfield>
+  <mm:setfield name="orderby">titel</mm:setfield>
+  <mm:setfield name="directions">UP</mm:setfield>
+  <mm:setfield name="search">yes</mm:setfield>
+</mm:createnode>
+<mm:createrelation role="posrel" source="ww_menu" destination="product_ew">
+  <mm:setfield name="pos">1</mm:setfield>
+</mm:createrelation>
+<% log.info("Create productoverview page ew."); %>
+<mm:createnode type="editwizards" id="productpage_ew">
+  <mm:setfield name="name">productoverzicht pagina</mm:setfield>
+  <mm:setfield name="description">Bewerk deze productoverzicht pagina</mm:setfield>
+  <mm:setfield name="type">wizard</mm:setfield>
+  <mm:setfield name="wizard">config/pagina/pagina_items_natmm</mm:setfield>
+  <mm:setfield name="nodepath">paginatemplate,pagina</mm:setfield>
+  <mm:setfield name="fields">pagina.titel,pagina.titel_fra</mm:setfield>
+  <mm:setfield name="orderby">pagina.titel</mm:setfield>
+  <mm:setfield name="directions">UP</mm:setfield>
+  <mm:setfield name="search">yes</mm:setfield>
+</mm:createnode>
+<% log.info("editwizards to the shopitems template"); %>
+<mm:list path="paginatemplate" constraints="paginatemplate.url='shopitems.jsp'">
+  <mm:node element="paginatemplate" id="template"/>
+  <mm:createrelation role="related" source="template" destination="productpage_ew"/>	
+</mm:list>
+<mm:listnodes type="items">
+  <mm:remove referid="omschrijving" />
+  <mm:field name="omschrijving" id="omschrijving" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="body"><mm:write referid="omschrijving" /></mm:setfield>
+      <mm:setfield name="omschrijving"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+  <mm:remove referid="metatags" />
+  <mm:field name="metatags" id="metatags" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="id"><mm:write referid="metatags" /></mm:setfield>
+      <mm:setfield name="metatags"><% %></mm:setfield>
     </mm:isnotempty>
   </mm:field>
 </mm:listnodes>

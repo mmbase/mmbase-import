@@ -31,11 +31,6 @@ PaginaHelper ph = new PaginaHelper(cloud);
 <%= "<!--" %>
 function searchIt() {
 	var href = "<mm:url page="<%= ph.createPaginaUrl("zoek",request.getContextPath()) %>" />";
-	<%
-  if(javax.servlet.http.HttpUtils.getRequestURL(request)!=null && javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("shoppingcart")>-1) { 
-			%>href += changeIt();<%
-	} 
-  %>
 	var search = document.search.elements["search"].value;
 	if(search != '') {
 		var hasQuote = search.indexOf('\'');
@@ -43,8 +38,13 @@ function searchIt() {
 			search = search.substring(0,hasQuote);
 			alert("Error: Uw zoekopdracht mag geen \' bevatten.");
 		}
-		href += "&s=" +escape(search);
+		href += "?s=" +escape(search);
 	}
+  <%
+  if(javax.servlet.http.HttpUtils.getRequestURL(request)!=null && javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("shoppingcart")>-1) { 
+			%>href += changeIt();<%
+	} 
+  %>
 	document.location = href;
 }
 <%= "// -->" %>
