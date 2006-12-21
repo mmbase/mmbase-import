@@ -16,14 +16,40 @@ and restart Tomcat.
 
    To upgrade mmbob:
 
-	  alter table mmb_postings add column c_body blob;
+    alter table mmb_postings add column c_body blob;
     alter table mmb_posters modify password varchar(128);
-	  alter table mmb_postings add column c_poster varchar(64);
-		alter table mmb_postings add column posternumber integer;
+    alter table mmb_postings add column c_poster varchar(64);
+    alter table mmb_postings add column posternumber integer;
     alter table mmb_postings add column editcount integer;
     alter table mmb_postings add column enable_html integer;
     alter table mmb_postings add column enable_sig integer;
     alter table mmb_postings add column enable_bbcode integer;
+    
+
+    alter table mmb_postthreads change lastposttime c_lastposttime int(11);    
+    alter table mmb_postthreads change lastpostsubject c_lastpostsubject varchar(255);
+    alter table mmb_postthreads change lastposter c_lastposter varchar(64);
+      
+    alter table mmb_postthreads add lastposternumber int(11);
+    alter table mmb_postthreads add lastpostnumber int(11);
+
+    alter table mmb_postareas change lastposttime c_lastposttime int(11);    
+    alter table mmb_postareas change lastpostsubject c_lastpostsubject varchar(255);
+    alter table mmb_postareas change lastposter c_lastposter varchar(64);
+
+    alter table mmb_postareas add state int(11);
+    alter table mmb_postareas add lastposternumber int(11);
+    alter table mmb_postareas add lastpostnumber int(11);
+
+
+    alter table mmb_forums change lastposttime c_lastposttime int(11);    
+    alter table mmb_forums change lastpostsubject c_lastpostsubject varchar(255);
+    alter table mmb_forums change lastposter c_lastposter varchar(64);
+
+    alter table mmb_forums add state int(11);
+    alter table mmb_forums add lastposternumber int(11);
+    alter table mmb_forums add lastpostnumber int(11);
+
 
    If you want the bcc functionality to work:
 
@@ -40,19 +66,19 @@ and restart Tomcat.
     alter table mmb_icaches add width int(11);       
     alter table mmb_icaches add height int(11)
 
-		
+    
 
-		If you're planning to use the 'portal':
+    If you're planning to use the 'portal':
 
-		 alter table mmb_news add date datetime;				
-		 
+     alter table mmb_news add date datetime;        
+     
     To install poll:
 
-		 alter table mmb_versions drop index name;
+     alter table mmb_versions drop index name;
      alter table mmb_versions add unique key name (name, m_type);
 
-		 When using progression/imagemagick 6.3, you may need to re-upload progresstextbackground.png
-		 into the image node with alias="progresstextbackground">
+     When using progression/imagemagick 6.3, you may need to re-upload progresstextbackground.png
+     into the image node with alias="progresstextbackground">
 
 2006-01-04
 
@@ -65,10 +91,10 @@ and restart Tomcat.
 
 
 2005-12-05
-		ALTER TABLE mmb_navigationnodes MODIFY order_number int(11);
-		ALTER TABLE mmb_portalpagesnodes MODIFY order_number int(11);
-		ALTER TABLE mmb_helpnodes MODIFY order_number int(11);
-		ALTER TABLE mmb_faqnodes MODIFY order_number int(11);
+    ALTER TABLE mmb_navigationnodes MODIFY order_number int(11);
+    ALTER TABLE mmb_portalpagesnodes MODIFY order_number int(11);
+    ALTER TABLE mmb_helpnodes MODIFY order_number int(11);
+    ALTER TABLE mmb_faqnodes MODIFY order_number int(11);
 
 2005-11-23
     ALTER TABLE mmb_madetests ADD testpath BLOB DEFAULT NULL;
