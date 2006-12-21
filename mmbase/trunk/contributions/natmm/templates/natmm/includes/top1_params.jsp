@@ -10,13 +10,14 @@ ids.put("ads", adID);
 ids.put("artikel", artikelID);
 ids.put("dossier", dossierID);
 ids.put("images", imgID);
+ids.put("items", shop_itemID);
 ids.put("link", linkID);
 ids.put("linklijst", linklijstID);
 ids.put("natuurgebieden", natuurgebiedID);
 ids.put("persoon", personID);
 ids.put("provincies", provID);
 ids.put("vacature", vacatureID);
-ids.put("items", shop_itemId);
+ids.put("items", shop_itemID);
 
 ids = ph.findIDs(ids, path, "nm_pagina");
 
@@ -27,13 +28,14 @@ adID = (String) ids.get("ads");
 artikelID = (String) ids.get("artikel");
 dossierID = (String) ids.get("dossier");
 imgID = (String) ids.get("images");
+shop_itemID = (String) ids.get("items");
 linkID = (String) ids.get("link");
 linklijstID = (String) ids.get("linklijst");
 natuurgebiedID = (String) ids.get("natuurgebieden");
 personID = (String) ids.get("persoon");
 provID = (String) ids.get("provincies");
 vacatureID = (String) ids.get("vacature");
-shop_itemId = (String) ids.get("items");
+shop_itemID = (String) ids.get("items");
 
 Vector breadcrumbs = new Vector();
 String lnRubriekID = "";
