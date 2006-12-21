@@ -19,8 +19,7 @@ if(answerValue.equals("")) {
 } else {
     responseText += "Dhr.";
 }
-%>[<%= memberId %>]<%
-     
+
 String [] fields = { "Naam", "Adres+huisnr.", "Postcode", "Woonplaats", "Telefoon", "E-mail adres" };
 String memberIDMessage = "";
 for(int i=0; i<fields.length; i++) {
