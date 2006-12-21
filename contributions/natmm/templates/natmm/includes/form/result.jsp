@@ -98,6 +98,7 @@ if(referer!=null) {
                if(formulierveld_type.equals("6")) { // *** date ***
 
                   String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_day",postingStr);
+                  if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += noAnswer;
                      if(isRequired) {
@@ -108,6 +109,7 @@ if(referer!=null) {
                      responseText += answerValue;
                   }
                   answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_month",postingStr);
+                  if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += ", " + noAnswer;
                      if(isRequired) {
@@ -118,6 +120,7 @@ if(referer!=null) {
                      responseText +=  "-" + answerValue;
                   }
                   answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_year",postingStr);
+                  if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText +=  ", " + noAnswer;
                      if(isRequired) {
@@ -133,6 +136,7 @@ if(referer!=null) {
                   %><mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP"
                   ><mm:field name="formulierveldantwoord.number" jspvar="formulierveldantwoord_number" vartype="String" write="false"><%   
                         String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_" + formulierveldantwoord_number,postingStr);
+                        if(answerValue==null) { answerValue = ""; }
                         if(!answerValue.equals("")) {
                            if (hasSelected){
                               responseText += ", ";
@@ -143,6 +147,7 @@ if(referer!=null) {
                      %></mm:field
                   ></mm:related><%
                   String answer_else_Value = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_else",postingStr);
+                  if(answer_else_Value==null) { answer_else_Value = ""; }
                   if (!answer_else_Value.equals("")){
                      if (hasSelected){
                         responseText += ", ";
@@ -160,6 +165,7 @@ if(referer!=null) {
 
                } else { // *** textarea, textline, dropdown, radio buttons ***
                   String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number,postingStr);
+                  if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += noAnswer;
                      if(isRequired) {

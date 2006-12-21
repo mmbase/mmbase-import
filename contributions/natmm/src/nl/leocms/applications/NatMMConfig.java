@@ -9,6 +9,7 @@ public class NatMMConfig {
       "artikel",
       "attachments",
       "images",
+      "items",
       "link",
       "natuurgebieden",
       "organisatie",
@@ -34,6 +35,7 @@ public class NatMMConfig {
       "artikel#",       // '#' is used to denote alternative paths to this contentelement
       "dossier",        // extends object
       "images",
+      "items",
       "link",
       "linklijst",      // extends object
       "natuurgebieden",
@@ -48,6 +50,7 @@ public class NatMMConfig {
       "object,posrel1,dossier,posrel2,pagina",                       // artikel
       "object,posrel,pagina",                                        // dossier
       "object,posrel1,dossier,posrel2,pagina",                       // images
+      "object,posrel,pagina",                                        // items
       "object,lijstcontentrel,linklijst,posrel,pagina",              // link
       "object,posrel,pagina",                                        // linklijst
       "object,pos4rel,provincies,contentrel,pagina",                 // natuurgebieden

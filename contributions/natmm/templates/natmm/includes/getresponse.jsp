@@ -1,5 +1,5 @@
 <%! public String getResponseVal(String questionId, String postingStr) {
- 	String answerValue = "";
+ 	String answerValue = null;
 	int qpos = postingStr.indexOf(questionId + "=");
 	if(qpos>-1) {
 		int vstart = postingStr.indexOf("=",qpos)+1;
