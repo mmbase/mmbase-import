@@ -33,7 +33,7 @@ if(actionId.equals("fast")||actionId.equals("order")||actionId.equals("delete")|
 		}
 		String memberId = getResponseVal("valM",postingStr);
 		if(memberId!=null) { // *** add the memberid to the session ***
-			try { session.setAttribute("memberid",memberId); %>setting memberid to <%= memberId %><%
+			try { session.setAttribute("memberid",memberId);
 			} catch(Exception e) { } 
 		}
 		String donationStr = getResponseVal("valD",postingStr); 
