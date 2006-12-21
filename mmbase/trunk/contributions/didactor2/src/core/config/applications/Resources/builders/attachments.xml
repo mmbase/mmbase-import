@@ -20,8 +20,8 @@
   </names>
 
   <descriptions>
-        <description xml:lang="en">Attachment, such as a PDF file</description>
-        <description xml:lang="nl">Bijlage, zoals een PDF bestand</description>
+    <description xml:lang="en">Attachment, such as a PDF file</description>
+    <description xml:lang="nl">Bijlage, zoals een PDF bestand</description>
   </descriptions>
 
   <fieldlist>
@@ -83,7 +83,7 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="128" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
