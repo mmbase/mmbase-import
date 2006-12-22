@@ -179,14 +179,6 @@ String sNatuurinNumber = "";
 </table>
 <div style="position:absolute;right:5px;top:5px;z-index:100">
   <small>
-    <% String docPage = "/doc/index.jsp"; %>
-    <mm:list nodes="root" path="rubriek1,parent,rubriek2" orderby="parent.pos" directions="UP" max="1"
-      ><mm:field name="rubriek2.url_live" jspvar="url_live" vartype="String" write="false"
-         ><mm:isnotempty><%
-            docPage += "/" + url_live; 
-         %></mm:isnotempty
-      ></mm:field
-    ></mm:list>
     <li><a class="menu" target="bottompane" href="<mm:url page="<%= subDir + "/doc/index.jsp" %>" />" title="klik hier om de gebruikershandleidingen te bekijken of te downloaden">gebruikershandleiding</a><br/>
     <% String webmasterMail = ""; %>
     <mm:listnodescontainer type="users"
