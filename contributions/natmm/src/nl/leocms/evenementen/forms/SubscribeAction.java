@@ -386,7 +386,7 @@ public class SubscribeAction extends Action {
       return new String [] { phoneNumbers, emailAddresses };
    }
 
-   public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type) {
+   public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type, String confirmText) {
 
       boolean isGroupExcursion = Evenement.isGroupExcursion(thisParent);
 
@@ -403,6 +403,7 @@ public class SubscribeAction extends Action {
 
       if(isGroupExcursion) {
          message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
+         message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
          message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
          message += yourGroupExcursion(thisParent, thisEvent, thisSubscription, newline, type) + newline + newline;
          message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
@@ -412,6 +413,18 @@ public class SubscribeAction extends Action {
          if(confirmUrl.equals("")||confirmUrl.equals("reminder")) { // *** after the visitor clicks the confirmation url
             message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline);
             message += subscriptionStatus(thisEvent, confirmUrl, phoneAndEmail[0], newline);
+            
+            // add extra confirmation text to the email
+            if ((confirmUrl.equals("")) && (confirmText != null) && (!"".equals(confirmText))) {
+               
+               if(!type.equals("plain")) {
+                  message += newline + newline + confirmText.replaceAll("\n", "<br/>") + newline;
+               } 
+               else {
+                  message += newline + newline + confirmText + newline;
+               }
+            }
+      
             message += newline + newline;
             message += necessaryInfo(thisParent, newline);
 
@@ -475,7 +488,7 @@ public class SubscribeAction extends Action {
    }
    
    
-   private static void sendConfirmEmail(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl) {
+   private static String sendConfirmEmail(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String extraText) {
 
       String fromEmailAddress = NatMMConfig.fromCADAddress;
       String emailSubject = "";
@@ -487,7 +500,7 @@ public class SubscribeAction extends Action {
          if(!toEmailAddress.equals("")) { // ** email field might be empty
 
             if(confirmUrl.equals("")) {
-               emailSubject += "Bevestiging aanmelding";
+               emailSubject += "Bevestiging aanmelding";               
             } else if(confirmUrl.equals("reminder")) {
                emailSubject += "Herinnering aanmelding";
             } else {
@@ -503,11 +516,11 @@ public class SubscribeAction extends Action {
             emailNode.setValue("replyto", fromEmailAddress);
             emailNode.setValue("body",
                             "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
-                               + getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,confirmUrl,"plain")
+                               + getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,confirmUrl,"plain", extraText)
                             + "</multipart>"
                             + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
                             + "<html>"
-                              + getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,confirmUrl,"html") + "</html>"
+                              + getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,confirmUrl,"html", extraText) + "</html>"
                             + "</multipart>");
             emailNode.commit();
             emailNode.getValue("mail(oneshotkeep)");
@@ -530,6 +543,9 @@ public class SubscribeAction extends Action {
             }
          }
       }
+      
+      //return the html emailmessage
+      return getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,confirmUrl,"html", extraText);
    }
 
    public static void sendConfirmEmail(Cloud cloud, String subscriptionNumber, String confirmUrl) {
@@ -550,7 +566,7 @@ public class SubscribeAction extends Action {
          thisParticipant = thisNodeList.getNode(0);
       }
       if(thisEvent!=null&&thisParent!=null&&thisParticipant!=null) {
-         sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
+         sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl, "");
       } else {
          log.info("Could not send confirmation email for subscription " + subscriptionNumber);
       }
@@ -784,7 +800,7 @@ public class SubscribeAction extends Action {
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                
                //log.info("send mail: " + thisEvent + " " + thisParent + " " + thisSubscription + " " + thisParticipant + " ");
-               sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
+               sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl, "");
                
                // if a participant added extra information during the subscription,
                // this information should be mailed to the backoffice employees
@@ -806,15 +822,19 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-       } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // *** Confirm
+       } else if( (subscribeForm.getButtons().getConfirmSubscription().pressed())
+                 || (action.indexOf(subscribeForm.CONFIRM_ACTION)>-1) ) {               // *** Confirm
 
          Node thisEvent = cloud.getNode(subscribeForm.getNode());
          Node thisParent = cloud.getNode(subscribeForm.getParent());
          Node thisSubscription = cloud.getNode(subscribeForm.getSubscriptionNumber());
          Node thisParticipant = cloud.getNode(subscribeForm.getSelectedParticipant());
-         sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant,"");
-
-         forwardAction = mapping.findForward("continue");
+         
+         // store html email message in the form
+         subscribeForm.setLastSentMessage( 
+            sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, "", subscribeForm.getExtraText()+""));
+         
+         forwardAction = mapping.findForward("confirmed");
 
        }
        subscribeForm.setInProcess(false);
