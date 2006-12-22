@@ -55,7 +55,8 @@ public class SubscribeForm extends ActionForm {
    public static String SUBSCRIBE_ACTION        = "Meld aan";
    public static String NEW_SUBSCRIPTION_ACTION = "Nieuwe aanmelding";
    public static String ADDRESS_ACTION          = "Adres en betalingswijze";
-
+   public static String CONFIRM_ACTION          = "Bevestig aanmelding";
+   
    // website subscriptions from /natmm/includes/events/subscribe.jsp
    public static String TO_AGENDA_ACTION        = "Naar agenda";
    public static String CANCEL_ACTION           = "Annuleer";
@@ -103,6 +104,9 @@ public class SubscribeForm extends ActionForm {
    private String paymentType;
    private String pageNumber;
    private String gender;
+   
+   private String extraText;
+   private String lastSentMessage;
    
    private boolean inProcess;
    
@@ -212,9 +216,15 @@ public class SubscribeForm extends ActionForm {
    public String getCity() { return city; }
    public void setCity(String city) { this.city = cleanName(city); }
 
-   public String getCountry() { return country; }
-   public void setCountry(String country) { this.country = cleanName(country); }
+   public String getExtraText() { return extraText; }
+   public void setExtraText(String extraText) { this.extraText = cleanName(extraText); }
 
+   public String getLastSentMessage() { return lastSentMessage; }
+   public void setLastSentMessage(String lastSentMessage) { this.lastSentMessage = cleanName(lastSentMessage); }   
+   
+   public String getCountry() { return country; }
+   public void setCountry(String country) { this.country = cleanName(country); }   
+   
    public String getZipCode() { return zipCode; }
    public void setZipCode(String zipCode) { this.zipCode = cleanZipCode(zipCode); }
    public static String cleanZipCode(String zipCode) {
@@ -314,6 +324,9 @@ public class SubscribeForm extends ActionForm {
       this.country ="";
       this.zipCode = "";
       this.paymentType = "";
+      
+      this.lastSentMessage = "";
+      this.extraText = "";
    }
 
    public void resetNumbers() {
@@ -346,6 +359,10 @@ public class SubscribeForm extends ActionForm {
       this.status = "";
 
       this.TicketOffice = "backoffice";
+
+      this.lastSentMessage = "";
+      this.extraText = "";      
+      
    }
 
    public String findParent() {
