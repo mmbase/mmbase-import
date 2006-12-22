@@ -25,22 +25,22 @@
           suffix=".log" 
           timestamp="false"
         />
-        <Context path="" docBase="ROOT" debug="0">
-           <!-- resource specification as it was before Tomcat 5.5
+        <Context path="/natmm-internet" docBase="natmm-internet" debug="0" reloadable="true" crossContext="true">
            <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
            <ResourceParams name="mail/Session">
              <parameter>
                <name>mail.smtp.host</name>
-               <value>smtp.xs4all.nl</value>
+               <value>exchange</value>
              </parameter>
            </ResourceParams>
-           -->
-           <!-- resource specification as it is now -->
+           <!-- resource specification tomcat 5.5 -->
+           <!-- 
            <Resource name="mail/Session"
                      auth="Container"
                      type="javax.mail.Session"
-                     mail.smtp.host="smtp.xs4all.nl"/>
+                     mail.smtp.host="exchange"/>
            <ResourceLink name="linkToGlobalResource"  global="simpleValue"  type="java.lang.Integer"/>
+           -->
         </Context>
       </Host> 
     </Engine>
