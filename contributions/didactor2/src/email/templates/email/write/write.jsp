@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content postprocessor="none">
 <%-- no reducespace: it messes with the textarea --%>
 <mm:cloud rank="basic user">
@@ -12,11 +13,11 @@
 
   <mm:import externid="mailbox"/>
   <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
-  <mm:import id="to"></mm:import>
-  <mm:import id="cc"></mm:import>
-  <mm:import id="bcc"></mm:import>
-  <mm:import id="subject"></mm:import>
-  <mm:import id="body"></mm:import>
+  <mm:import id="to" />
+  <mm:import id="cc" />
+  <mm:import id="bcc" />
+  <mm:import id="subject" />
+  <mm:import id="body" />
   <mm:import id="emailok">0</mm:import>
   
   <%-- setup data according to some already existing mail --%>
@@ -169,22 +170,20 @@
     <mm:setfield name="type">0</mm:setfield>
   </mm:node>
 
-  <mm:import id="testattachment" externid="att_handle"/>
+  <mm:import id="testattachment" externid="att_handle" from="multipart"/>
   <mm:compare referid="testattachment" value="" inverse="true">
-    <mm:import id="attachmentName" externid="att_handle_name" from="multipart"/>
-    <mm:compare referid="attachmentName" value="" inverse="true">
-      <mm:createnode type="attachments" id="newFile" jspvar="newFile">
-        <mm:setfield name="title"><mm:write referid="attachmentName"/></mm:setfield>
-        <mm:setfield name="filename"><mm:write referid="attachmentName"/></mm:setfield>
-        <mm:fieldlist id="att" nodetype="attachments" fields="handle">
-          <mm:fieldinfo type="useinput" />
-        </mm:fieldlist>
+    <c:if test="${! empty testattachment.name}">
+      <mm:createnode type="attachments" id="newFile">
+        <mm:context>
+          <mm:fieldlist id="att" nodetype="attachments" fields="handle">
+            <mm:fieldinfo type="useinput" />
+          </mm:fieldlist>
+        </mm:context>
       </mm:createnode>
       <mm:createrelation role="related" source="emailNode" destination="newFile"/>
       <mm:remove referid="newFile"/>
-    </mm:compare>
-  </mm:compare>
-  <mm:remove referid="attachmentName"/>
+    </c:if>
+  </mm:compare> 
 
   <mm:import externid="delete_attachments" vartype="List"/>
   <mm:present referid="delete_attachments">
