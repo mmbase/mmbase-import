@@ -3,7 +3,7 @@
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <html>
    <head>
-   <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
+   <LINK rel="stylesheet" type="text/css" href="<mm:url page="/editors/css/editorstyle.css" />">
    <title>Documentatie voor de Natuurmonumenten website</title>
    <style>
      table { width: 100%; }
