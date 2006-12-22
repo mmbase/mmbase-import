@@ -114,7 +114,7 @@ String sNatuurinNumber = "";
 <mm:list nodes="root" path="rubriek1,parent,rubriek2" orderby="parent.pos" directions="UP" max="1">
    <mm:field name="rubriek2.url_live" jspvar="url_live" vartype="String" write="false">
       <mm:isnotempty>
-        <% subDir= url_live; %>
+        <% subDir= "/" + url_live; %>
       </mm:isnotempty>
    </mm:field>
 </mm:list>
