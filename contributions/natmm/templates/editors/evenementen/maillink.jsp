@@ -38,6 +38,6 @@ if(snumber.indexOf("-1")==-1) {
       ></mm:node
    ></mm:cloud
    
-   ><html:image src="<%= emailIcon %>" style="width:16px;" property="buttons.confirmSubscription" alt="<%= altText %>" onclick="<%= "document.forms[0].selectedParticipant.value='" + dnumber + "';document.forms[0].subscriptionNumber.value='" + snumber + "';return doDelete('Weet u zeker dat u een bevestigings email wilt versturen voor aanmelding " + snumber + "?');" %>"  /><%
+   ><html:image src="<%= emailIcon %>" style="width:16px;" property="buttons.confirmSubscription" alt="<%= altText %>" onclick="<%= "javascript:launchCenter('mailconfirmation.jsp?selectedParticipant=" + dnumber + "&subscriptionNumber=" + snumber + "&pressedConfirmed=true', 'mail', 420, 520);setTimeout('newwin.focus();',250);return false;" %>"/><%
 } %>
                      
