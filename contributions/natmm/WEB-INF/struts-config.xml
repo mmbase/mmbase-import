@@ -280,6 +280,11 @@
         path="/editors/evenementen/evenementen.jsp"
         redirect="false"
       />
+      <forward
+        name="confirmed"
+        path="/editors/evenementen/mailconfirmation.jsp"
+        redirect="false"
+      />
     </action>
     <!-- ========== Action Mapping : subscribe (website) =================================== -->
     <action
