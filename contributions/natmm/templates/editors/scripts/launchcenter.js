@@ -11,6 +11,7 @@ function launchCenter(url, name, height, width, features) {
 
     str += ",left=" + xc + ",screenX=" + xc;
     str += ",top=" + yc + ",screenY=" + yc;
+    str += ",scrollbars=1";    
     str += "," + features;
   }
   newwin = window.open(url, name, str);
