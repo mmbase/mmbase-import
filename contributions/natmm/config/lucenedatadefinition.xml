@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <luceneindexdefinition defaultindex="natmmIndexArtikel">
 
-<!-- NatMM index -->
+   <!-- 0 -->
    <index name="natmmIndexArtikel">
       <table name="artikel">
          <field name="titel">indexed.text</field>
@@ -22,10 +22,23 @@
                <field name="titel_fra">indexed.text</field>
                <field name="alt_tekst">indexed.text</field>
             </related>
+            <related name="attachments">
+               <field name="titel">indexed.text</field>
+               <field name="description">indexed.text</field>
+               <field name="filename">indexed.text</field>
+               <field name="handle" type="binary">indexed.text</field>
+            </related>
+         </related>
+         <related name="images">
+            <field name="titel">indexed.text</field>
+            <field name="omschrijving">indexed.text</field>
+            <field name="titel_fra">indexed.text</field>
+            <field name="alt_tekst">indexed.text</field>
          </related>
       </table>
    </index>
    
+   <!-- 1 -->
    <index name="natmmIndexNatuurgebieden_route">
       <table name="natuurgebieden">
          <field name="titel">indexed.text</field>
@@ -41,6 +54,7 @@
       </table>
    </index>
    
+   <!-- 2 -->
    <index name="natmmIndexNatuurgebieden_natuurgebieden">
       <table name="natuurgebieden">
          <field name="titel">indexed.text</field>
@@ -71,6 +85,7 @@
       </table>
    </index>
 
+   <!-- 3 -->
    <index name="natmmFormulier">
       <table name="formulier">
          <field name="titel">indexed.text</field>
@@ -80,6 +95,7 @@
       </table>
    </index>
 
+   <!-- 4 -->
    <index name="natmmIndexEvenement">
       <table name="evenement">
          <field name="titel">indexed.text</field>
@@ -98,21 +114,22 @@
       </table>
    </index>
 
-<!-- NMIntra index -->   
-
-   <index name="natmmIndexTeaser">
+  <!-- 5 -->
+  <index name="natmmIndexTeaser">
       <table name="teaser">
          <field name="titel">indexed.text</field>
          <field name="omschrijving">indexed.text</field>
       </table>
    </index>
    
+   <!-- 6 -->
    <index name="natmmIndexProducttypes">
       <table name="producttypes">
          <field name="title">indexed.text</field>
       </table>
    </index>
-
+   
+   <!-- 7 -->
    <index name="natmmIndexProducts">
       <table name="products">
          <field name="titel">indexed.text</field>
@@ -120,20 +137,41 @@
       </table>
    </index>
    
+   <!-- 8 -->
    <index name="natmmIndexItems">
       <table name="items">
          <field name="titel">indexed.text</field>
          <field name="intro">indexed.text</field>
          <field name="body">indexed.text</field>
+         <related name="link">
+             <field name="titel">indexed.text</field>
+             <field name="omschrijving">indexed.text</field>
+             <field name="url">indexed.text</field>
+             <field name="alt_tekst">indexed.text</field>
+          </related>
+          <related name="images">
+             <field name="titel">indexed.text</field>
+             <field name="omschrijving">indexed.text</field>
+             <field name="titel_fra">indexed.text</field>
+             <field name="alt_tekst">indexed.text</field>
+          </related>
+          <related name="attachments">
+             <field name="titel">indexed.text</field>
+             <field name="description">indexed.text</field>
+             <field name="filename">indexed.text</field>
+             <field name="handle" type="binary">indexed.text</field>
+          </related>
       </table>
    </index>
    
+   <!-- 9 -->
    <index name="natmmIndexDocuments">
       <table name="documents">
          <field name="filename">indexed.text</field>
       </table>
    </index>
 
+   <!-- 10 -->
    <index name="natmmIndexVacature">
       <table name="vacature">
          <field name="titel">indexed.text</field>
@@ -148,22 +186,51 @@
          <field name="competenties">indexed.text</field>
          <field name="salarisschaal">indexed.text</field>
          <field name="metatags">indexed.text</field>
+         <related name="attachments">
+            <field name="titel">indexed.text</field>
+            <field name="description">indexed.text</field>
+            <field name="filename">indexed.text</field>
+            <field name="handle" type="binary">indexed.text</field>
+          </related>
       </table>
    </index>
 
+   <!-- 11 -->
+   <index name="natmmIndexContentBlocks">
+      <table name="contentblocks">
+        <field name="title">indexed.text</field>
+        <field name="subtitle">indexed.text</field>
+        <field name="description">indexed.text</field>
+        <related name="link">
+           <field name="titel">indexed.text</field>
+           <field name="omschrijving">indexed.text</field>
+           <field name="url">indexed.text</field>
+           <field name="alt_tekst">indexed.text</field>
+        </related>
+        <related name="attachments">
+           <field name="titel">indexed.text</field>
+           <field name="description">indexed.text</field>
+           <field name="filename">indexed.text</field>
+           <field name="handle" type="binary">indexed.text</field>
+        </related>
+      </table>
+   </index>
+   
+   <!-- 12 -->
+   <index name="natmmIndexPagina">
+      <table name="pagina">
+        <field name="titel">indexed.text</field>
+        <field name="omschrijving">indexed.text</field>
+      </table>
+   </index>
+   
+   <!-- 13 -->   
    <index name="natmmIndexAttachments">
       <table name="attachments">
         <field name="titel">indexed.text</field>
         <field name="description">indexed.text</field>
         <field name="filename">indexed.text</field>
         <field name="handle" type="binary">indexed.text</field>
-      </table>
-   </index>
-   
-   <index name="natmmIndexPagina">
-      <table name="pagina">
-        <field name="titel">indexed.text</field>
-        <field name="omschrijving">indexed.text</field>
       </table>
    </index>
 

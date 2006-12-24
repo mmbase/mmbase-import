@@ -1,18 +1,18 @@
-<mm:related path="posrel,items">
-  <mm:field name="items.number" jspvar="sID" vartype="String" write="false">
+<mm:related path="readmore,contentblocks">
+  <mm:field name="contentblocks.number" jspvar="sID" vartype="String" write="false">
     <%
-    if(hsetItemsNodes.contains(sID)){
+    if(hsetContentBlockNodes.contains(sID)){
       %>
-      <mm:node element="items">
-        <mm:related path="posrel,attachments" fields="attachments.number">
+      <mm:node element="contentblocks">
+        <mm:related path="readmore,attachments" fields="attachments.number">
           <%@include file="show_attachments.jsp" %>
         </mm:related>
-        <mm:field name="intro" jspvar="dummy" vartype="String" write="false">
+        <mm:field name="subtitle" jspvar="dummy" vartype="String" write="false">
            <%
            textStr = dummy;
            %>
         </mm:field>
-        <mm:field name="body" jspvar="dummy" vartype="String" write="false">
+        <mm:field name="description" jspvar="dummy" vartype="String" write="false">
            <% 
            if (!textStr.equals("")) { textStr += " "; }
            textStr += dummy; 

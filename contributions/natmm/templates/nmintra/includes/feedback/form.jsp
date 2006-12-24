@@ -66,6 +66,7 @@ if(!postingStr.equals("")){
 		</mm:createnode>
 		<mm:node number="<%= objectId %>" id="education"/>
 		<mm:createrelation role="related" source="education" destination="feedback" />
+    <cache:flush scope="application" group="<%= paginaID %>" />
 		<%@include file="../showmessage.jsp" %><%
 	} else {
 		String messageTitle = "Uw mening kon helaas nog niet worden verwerkt";
