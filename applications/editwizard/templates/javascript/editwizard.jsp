@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.67 2006-10-11 09:55:47 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.68 2006-12-24 16:08:52 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -367,6 +367,10 @@ function resizeEditTable() {
     var docWidth = getDimensions().windowWidth;
     document.getElementById("editform").style.width = docWidth
        
+    var textareas = document.getElementsByTagName("textarea");
+    for (var i = 0 ; i < textareas.length ; i++) {
+        textareas[i].style.width = docWidth -100;
+    }
 }
 
 function setParam(name, value) {
