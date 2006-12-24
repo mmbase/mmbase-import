@@ -12,6 +12,14 @@ See http://www.MMBase.org/license
     <package>org.mmbase.bridge.jsp.taglib</package>
     <shortDescription>JSP taglib for MMBase</shortDescription>
     <dependencies>
+
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-resources</artifactId>
+            <version>${mmbase.version}</version>
+            <type>jar</type>
+        </dependency>
+
         <dependency>
             <groupId>maven-taglib</groupId>
             <artifactId>maven-taglib-plugin</artifactId>
@@ -25,8 +33,8 @@ See http://www.MMBase.org/license
             <version>1.0</version>
             <url>http://jakarta.apache.org/commons/</url>
         </dependency>
-        
-		<!-- jsp taglibs, jstl -->
+
+        <!-- jsp taglibs, jstl -->
   		<dependency>
   			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
@@ -63,6 +71,14 @@ See http://www.MMBase.org/license
                     <include>**/*.xml</include>
                     <include>**/*.dtd</include>
                     <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${basedir}/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>**/*.*</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
