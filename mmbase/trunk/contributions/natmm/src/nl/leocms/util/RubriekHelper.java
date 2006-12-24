@@ -422,7 +422,7 @@ public class RubriekHelper {
       } else {
            
          TreeMap subObjects = (TreeMap) getSubObjects(objectNodeNumber);
-         while(subObjects.size()>0&&paginaNodeNumber.equals("-1")) {
+         while(subObjects.size()>0 && paginaNodeNumber.equals("-1")) {
             Integer nextKey = (Integer) subObjects.firstKey();
             String nextObject =  (String) subObjects.get(nextKey);
             
@@ -435,6 +435,9 @@ public class RubriekHelper {
             }
          }
          
+      }
+      if(paginaNodeNumber.equals("-1")) { 
+        log.error("there is no visible page related to object " + objectNodeNumber);
       }
       return paginaNodeNumber;
    }
@@ -457,18 +460,17 @@ public class RubriekHelper {
       
       } else {
            
-         TreeMap subObjects = (TreeMap) getSubObjects(objectNumber);
-         while(subObjects.size()>0) {
-            Integer nextKey = (Integer) subObjects.firstKey();
-            String nextObject =  (String) subObjects.get(nextKey);
-            subObjects.remove(nextKey);
+         TreeSet subObjects = new TreeSet(getSubObjects(objectNumber).values());
+         while(!subObjects.isEmpty()) {
+            String nextObject =  (String) subObjects.first();
+            subObjects.remove(nextObject);
             
             n = cloud.getNode(nextObject);
             nType = n.getNodeManager().getName();
             if(nType.equals("pagina")){
                hm.add(nextObject);
             } else { 
-               hm.addAll(getAllPages(nextObject));
+               subObjects.addAll(getSubObjects(nextObject).values());
             }
          }
          

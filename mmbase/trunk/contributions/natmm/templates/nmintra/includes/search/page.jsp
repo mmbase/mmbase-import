@@ -9,7 +9,7 @@ String titleStr = "";
 String showDate = "1";
 boolean bHasAttachments = false;
 %>
-<mm:node number="<%=sPageID%>">
+<mm:node number="<%= sPageID %>">
   <%= (!bFirst ? "<br/>": "" ) %>
   <mm:related path="gebruikt,template">
     <mm:field name="template.url" jspvar="url" vartype="String" write="false">
@@ -41,7 +41,7 @@ boolean bHasAttachments = false;
     <%@include file="items.jsp" %>
     <%@include file="documents.jsp" %>
     <%@include file="vacature.jsp" %>
-    <%@include file="attachments.jsp" %>
+    <%@include file="contentblocks.jsp" %>
     <% 
     if (bHasAttachments) {
       %>

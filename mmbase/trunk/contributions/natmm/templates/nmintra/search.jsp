@@ -53,7 +53,6 @@
   HashSet hsetPagesNodes = new HashSet();
   HashSet hsetRubrieken = new HashSet();
   
-  HashSet hsetPageDescrNodes = new HashSet();
   HashSet hsetArticlesNodes = new HashSet();
   HashSet hsetTeaserNodes = new HashSet();
   HashSet hsetProducttypesNodes = new HashSet();
@@ -61,10 +60,10 @@
   HashSet hsetItemsNodes = new HashSet();
   HashSet hsetDocumentsNodes = new HashSet();
   HashSet hsetVacatureNodes = new HashSet();
-  HashSet hsetAttachmentsParagraafNodes = new HashSet();
-  HashSet hsetAttachmentsContentblocksNodes = new HashSet();
-  HashSet hsetAttachmentsItemsNodes = new HashSet();
-  HashSet hsetAttachmentsVacaturesNodes = new HashSet();
+  HashSet hsetContentBlockNodes = new HashSet();
+  HashSet hsetPageDescrNodes = new HashSet();
+  
+  HashSet hsetAttachmentsNodes = new HashSet();
 
   LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule");
   if(mod!= null) {
