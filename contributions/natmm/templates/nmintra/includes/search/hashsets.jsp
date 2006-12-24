@@ -28,38 +28,30 @@ if (!sQuery.equals("")){
 	hsetArticlesNodes = su.addPages(cloud, cf, qStr, 0, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetArticlesNodes.addAll(su.addPages(cloud, cf, qStr, 0, "artikel,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes));
 	hsetArticlesNodes.addAll(su.addPages(cloud, cf, qStr, 0, "artikel,pos4rel,images,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes));
-	hsetDocumentsNodes = su.addPages(cloud, cf, qStr, 9, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetItemsNodes = su.addPages(cloud, cf, qStr, 8, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetProductsNodes = su.addPages(cloud, cf, qStr, 7, "products,posrel1,producttypes,posrel2,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetProducttypesNodes = su.addPages(cloud, cf, qStr, 6, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetTeaserNodes = su.addPages(cloud, cf, qStr, 5, "teaser,rolerel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetProducttypesNodes = su.addPages(cloud, cf, qStr, 6, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetProductsNodes = su.addPages(cloud, cf, qStr, 7, "products,posrel1,producttypes,posrel2,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetItemsNodes = su.addPages(cloud, cf, qStr, 8, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetDocumentsNodes = su.addPages(cloud, cf, qStr, 9, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetVacatureNodes = su.addPages(cloud, cf, qStr, 10, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	
-	hsetAttachmentsParagraafNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,paragraaf,posrel,artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsParagraafNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,paragraaf,posrel,artikel,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsContentblocksNodes = su.addPages(cloud, cf, qStr, 11, "attachments,readmore,contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsItemsNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsVacaturesNodes = su.addPages(cloud, cf, qStr, 11, "attachments,posrel,vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	
+	hsetContentBlockNodes = su.addPages(cloud, cf, qStr, 11, "contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+  
 	hsetPageDescrNodes = su.addPages(cloud, cf, qStr, 12, "pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+  hsetAttachmentsNodes = su.addPages(cloud, cf, qStr, 13, null, sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	
 } else if (!sCategory.equals("")||!sPool.equals("")||(fromTime>0)||(toTime>0)){
 
 	hsetArticlesNodes = su.addPages(cloud, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetArticlesNodes.addAll(su.addPages(cloud, "artikel,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes));
 	hsetArticlesNodes.addAll(su.addPages(cloud, "artikel,pos4rel,images,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes));
-	hsetDocumentsNodes = su.addPages(cloud, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetItemsNodes = su.addPages(cloud, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetProductsNodes = su.addPages(cloud, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+  hsetTeaserNodes = su.addPages(cloud, "teaser,rolerel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetProducttypesNodes = su.addPages(cloud, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-   hsetTeaserNodes = su.addPages(cloud, "teaser,rolerel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetProductsNodes = su.addPages(cloud, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetItemsNodes = su.addPages(cloud, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+	hsetDocumentsNodes = su.addPages(cloud, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 	hsetVacatureNodes = su.addPages(cloud, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-
-	hsetAttachmentsParagraafNodes = su.addPages(cloud, "attachments,posrel,paragraaf,posrel,artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsContentblocksNodes = su.addPages(cloud, "attachments,readmore,contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsItemsNodes = su.addPages(cloud, "attachments,posrel,items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	hsetAttachmentsVacaturesNodes = su.addPages(cloud, "attachments,posrel,vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-	
+	hsetContentBlockNodes = su.addPages(cloud, "contentblocks,readmore,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+  
 	hsetPageDescrNodes = su.addPages(cloud, "pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 }
 // *** Create list of categories from list of pages: hsetRubrieken ***
@@ -67,13 +59,9 @@ if (!sQuery.equals("")){
 for (Iterator it = hsetPagesNodes.iterator(); it.hasNext(); ) {
    
    String sPageID = (String) it.next();
-   if((hsetAllowedNodes.size() > 0) && (!hsetAllowedNodes.contains(sPageID)))
-   {
-      continue;
+   if((hsetAllowedNodes.size() == 0) || hsetAllowedNodes.contains(sPageID)) {
+     hsetRubrieken.add(ph.getHoofdRubriek(cloud,sPageID));
    }
-   %><mm:node number="<%=sPageID%>">
-		<% hsetRubrieken.add(ph.getHoofdRubriek(cloud,sPageID));%>
-   </mm:node><%
 }
 %>
 </mm:log>

@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class SearchUtil {
 
@@ -415,12 +415,14 @@ public class SearchUtil {
                   hsetNodes.addAll(calculate(cloud, path, sRubriekNumber, sPoolNumber,
                                docNumber, nowSec, fromTime, toTime,
                                searchArchive, hsetPagesNodes)) ;
+               } else { // add all hits for null path
+                 hsetNodes.add(docNumber);
                }
             }
             if (searcher != null) { searcher.close(); }
             if (ir != null) { ir.close(); }
          }
-         log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
+         log.debug("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes);
       } catch (Exception e) {
          log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e);
       }

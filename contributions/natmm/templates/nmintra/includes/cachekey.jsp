@@ -6,7 +6,7 @@ String cacheKey = rubriekId + "~" + paginaID + "~" + refererId
         + "~" + eventId + "~" + termSearchId + "~" + eTypeId + "~" + pCategorieId + "~" + pAgeId + "~" + nReserveId + "~" + eDistanceId + "~" + eDurationId
         + "~" + printPage;
 String groupName = "page" + paginaID;
-if(isPreview) {
+if(isPreview || !"".equals(actionId)) {
    cacheKey += "~preview";
    expireTime = 0;
    newsExpireTime = 0;
