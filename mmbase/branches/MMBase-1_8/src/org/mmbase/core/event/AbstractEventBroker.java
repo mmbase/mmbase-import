@@ -8,13 +8,10 @@ package org.mmbase.core.event;
 
 import java.util.*;
 
-import javax.swing.border.TitledBorder;
-
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import sun.rmi.runtime.GetThreadPoolAction;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
