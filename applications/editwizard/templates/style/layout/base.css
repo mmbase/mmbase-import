@@ -4,7 +4,7 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version	$Id: base.css,v 1.6 2006-07-06 08:47:50 nklasens Exp $
+  @version	$Id: base.css,v 1.7 2006-12-24 16:08:52 nklasens Exp $
 */
 
 body
@@ -125,7 +125,7 @@ tr.headsubtitle td { white-space: nowrap; }
 
 table.body
 {
-	margin: 0px 0px 0px 0px;
+	margin: 0px 0px 0px *-3px*;
 	padding: 0px 0px 0px 0px;
 	text-align: left;
 	vertical-align: top;
