@@ -12,6 +12,16 @@ See http://www.MMBase.org/license
     <dependencies>
         <dependency>
             <groupId>mmbase</groupId>
+            <artifactId>mmbase-resources</artifactId>
+            <version>${mmbase.version}</version>
+            <type>jar</type>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>mmbase</groupId>
             <artifactId>mmbase-vwms</artifactId>
             <version>${mmbase.version}</version>
             <url>http://www.mmbase.org/</url>
