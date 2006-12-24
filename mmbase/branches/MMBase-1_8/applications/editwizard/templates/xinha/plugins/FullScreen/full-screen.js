@@ -123,6 +123,13 @@ HTMLArea.prototype._fullScreen = function()
       if(HTMLArea.is_ie)
       {
         var bod = document.getElementsByTagName('html');
+
+        // Patch for IE6: hide the selection boxes which are always drawn on top: re-enable them
+        groups = document.getElementsByTagName("select");
+        for(var i=0; i < groups.length; i++) 
+        {    
+    	    groups[i].style.visibility = "visible";
+        }
       }
       else
       {
@@ -173,6 +180,8 @@ HTMLArea.prototype._fullScreen = function()
     this._htmlArea.style.left     = 0;
     this._htmlArea.style.top      = 0;
     this._isFullScreen = true;
+    
+    
     resetScroll();
 
     try
@@ -180,6 +189,13 @@ HTMLArea.prototype._fullScreen = function()
       if(HTMLArea.is_ie)
       {
         var bod = document.getElementsByTagName('html');
+
+        // Patch for IE6: hide the selection boxes which are always drawn on top
+        groups = document.getElementsByTagName("select");
+        for(var i=0; i < groups.length; i++) 
+        {    
+    	    groups[i].style.visibility = "hidden";
+        }
       }
       else
       {
