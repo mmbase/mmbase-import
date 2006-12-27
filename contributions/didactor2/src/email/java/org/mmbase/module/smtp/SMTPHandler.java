@@ -12,7 +12,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.11 2006-12-27 12:47:10 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.12 2006-12-27 14:23:50 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -108,6 +108,8 @@ public class SMTPHandler extends Thread {
         log.debug("SMTP INCOMING: " + line);
         if (line.toUpperCase().startsWith("QUIT")) {
             state = STATE_FINISHED;
+            writer.write("221 Goodbye.\r\n");
+            writer.flush();
             return;
         }
 
