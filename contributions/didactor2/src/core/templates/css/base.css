@@ -834,3 +834,7 @@ a.forumlist:active {
     padding: 0.5em 1em 0.5em 1em;
 }
 
+
+.email .headers { 
+  display: none;
+}
