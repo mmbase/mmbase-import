@@ -1,7 +1,7 @@
-Subject: Simple text/html mail
+Subject: Simple text/html mail...
 Content-Type: text/html
 X-Header-Test: test
-From: foo@bar.nl
+From: ppuk@m.meeuw.org
 
 ab      
 <em>cd</em>
