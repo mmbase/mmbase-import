@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.20 2006-11-12 14:09:41 michiel Exp $
+ * @version $Id: SendMail.java,v 1.21 2006-12-27 16:51:24 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -63,7 +63,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      * {@inheritDoc}
      */
     public String getModuleInfo() {
-        return ("Sends mail through J2EE/JavaMail, supporting MultiPart");
+        return "Sends mail through J2EE/JavaMail, supporting MultiPart";
     }
 
 
@@ -87,6 +87,11 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 mailEncoding = encoding;
 
             String smtpHost = getInitParameter("mailhost");
+            String smtpPort = getInitParameter("mailport");
+
+            String userName  = getInitParameter("user");
+            String password  = getInitParameter("password");
+
             String context = getInitParameter("context");
             String dataSource = getInitParameter("datasource");
             session = null;
@@ -117,22 +122,24 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 if (dataSource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                log.info(
-                    "EMail module is configured using 'mailhost' property.\n"
-                        + "Consider using J2EE compliant 'context' and 'datasource'\n"
-                        + "Which means to put something like this in your web.xml:\n"
-                        + "  <resource-ref>\n"
-                        + "     <description>Email module mail resource</description>\n"
-                        + "     <res-ref-name>mail/MMBase</res-ref-name>\n"
-                        + "     <res-type>javax.mail.Session</res-type>\n"
-                        + "     <res-auth>Container</res-auth>\n"
-                        + "  </resource-ref>\n"
-                        + " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)");
+                log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
 
                 Properties prop = System.getProperties();
+                StringBuilder buf = new StringBuilder(smtpHost);
                 prop.put("mail.smtp.host", smtpHost);
-                session = Session.getInstance(prop, null);
-                log.info("Module SendMail started (smtphost = " + smtpHost + ")");
+
+                if (smtpPort != null && smtpPort.trim().length() > 0) {
+                    prop.put("mail.smtp.port", smtpPort);
+                    buf.append(':').append(smtpPort);
+                }
+                // When username and password are specified, turn on smtp authentication.
+                boolean smtpAuth = userName != null && userName.trim().length() != 0 && password != null;
+                prop.setProperty("mail.smtp.auth", Boolean.toString(smtpAuth));
+                if (smtpAuth) buf.insert(0, userName + "@");
+
+                session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
+
+                log.info("Module SendMail started SMTP: " + buf);
             }
 
         } catch (javax.naming.NamingException e) {
@@ -166,10 +173,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         if (headers.get("Reply-To") != null) {
             msg.setReplyTo(InternetAddress.parse((String)headers.get("Reply-To")));
         }
-
         String sub = (String)headers.get("Subject");
         if (sub == null || "".equals(sub)) sub = "<no subject>";
-        msg.setSubject(sub);
+        msg.setSubject((String)headers.get("Subject"));
 
         return msg;
     }

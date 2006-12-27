@@ -2,7 +2,7 @@
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
-  <classfile>org.mmbase.applications.email.SendMail</classfile>
+  <class>org.mmbase.applications.email.SendMail</class>
   <properties>
     <property name="encoding">ISO-8859-1</property>
     <property name="context">java:comp/env</property>
@@ -11,6 +11,9 @@
     if you don't want to use jndi you can remove the above properties
     and set the mailhost using the mailhost property
     <property name="mailhost">smtp</property>
+    <property name="mailport"></property>
+    <property name="user"></property>
+    <property name="password"></property>
     -->
   </properties>
 </module>

@@ -11,7 +11,7 @@ package org.mmbase.applications.email;
 
 import java.util.*;
 
-import org.mmbase.module.Module;
+import org.mmbase.module.*;
 import org.mmbase.util.*;
 
 /**
@@ -20,9 +20,7 @@ import org.mmbase.util.*;
  * @application Mail
  * @author Michiel Meeuwissen
  */
-abstract public class AbstractSendMail extends Module implements SendMailInterface {
-
-    public void onload() { }
+abstract public class AbstractSendMail extends WatchedReloadableModule implements SendMailInterface {
 
     /**
      * Send mail without extra headers
