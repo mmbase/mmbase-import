@@ -23,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.12 2006-12-27 18:46:14 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.13 2006-12-27 21:19:22 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -304,12 +304,14 @@ public class ExtendedJMSendMail extends SendMail {
 
                 for (int i = 0; i < attachments.size(); i++) {
                     String filename = attachments.getNode(i).getStringValue("filename");
-                    if (filename == null || filename.equals(""))
+                    if (filename == null || filename.equals("")) {
                         filename = "attached file";
+                    }
 
                     String mimetype = attachments.getNode(i).getStringValue("mimetype");
-                    if (mimetype == null || mimetype.equals(""))
+                    if (mimetype == null || mimetype.equals("")) {
                         mimetype = "application/octet-stream";
+                    }
 
                     byte[] handle = attachments.getNode(i).getByteValue("handle");
                     MimeBodyPart mbp = new MimeBodyPart();
@@ -340,7 +342,7 @@ public class ExtendedJMSendMail extends SendMail {
             try {
                 java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
                 msg.writeTo(bos);
-            } catch (java.io.IOException e) {
+            } catch (Exception e) {
                 log.error("Exception: " + e.getMessage(), e);
                 errors.append("\nIO: " + e.getMessage());
             }
@@ -350,16 +352,24 @@ public class ExtendedJMSendMail extends SendMail {
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
             errors.append("\nMessaging: " + e.getMessage());
+        } catch (Exception e) {
+            errors.append(e.getClass() + ": " + e.getMessage());
         }
         if (errors.length() > 0 && ! n.getStringValue("to").equals(n.getStringValue("from"))) {
-            log.service("Sending error mail to " + n.getStringValue("from"));
+            log.service("Sending error mail to " + n.getStringValue("from") + " " + n.getNodeManager());
             // if errors, and this is certainly not an error mail itself....
-            Node errorNode = n.getNodeManager().createNode();
-            errorNode.setStringValue("to", n.getStringValue("from"));
-            errorNode.setStringValue("from", n.getStringValue("from"));
-            errorNode.setStringValue("subject", "****");
-            errorNode.setStringValue("body", errors.toString());
-            errorNode.commit();
+            try {
+                Node errorNode = n.getNodeManager().createNode();
+                errorNode.setStringValue("to", n.getStringValue("from"));
+                errorNode.setStringValue("from", n.getStringValue("from"));
+                errorNode.setStringValue("subject", "****");
+                errorNode.setIntValue("type", 1);
+                errorNode.setStringValue("body", errors.toString());
+                errorNode.commit();
+                log.service("Sent node " + errorNode.getNumber());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 
