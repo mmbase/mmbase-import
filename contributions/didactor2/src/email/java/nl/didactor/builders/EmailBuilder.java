@@ -4,6 +4,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.module.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import nl.didactor.mail.ExtendedJMSendMail;
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class EmailBuilder extends MMObjectBuilder {
-    private static Logger log=Logging.getLoggerInstance(EmailBuilder.class.getName());
+    private static final Logger log=Logging.getLoggerInstance(EmailBuilder.class);
     private ExtendedJMSendMail sendmail;
 
     /**
@@ -42,7 +43,6 @@ public class EmailBuilder extends MMObjectBuilder {
             return node;
 
         if (node.getIntValue("type") == 1) {
-
             // This goes wrong if the node is new, because that it cannot be gotten with
             // cloud.getNode yet....
 
@@ -74,5 +74,31 @@ public class EmailBuilder extends MMObjectBuilder {
 
         return nr;
     }
+
+    public String getGUIIndicator(MMObjectNode node, Parameters pars) {
+        String field = pars.getString("field");
+        if ("body".equals(field)) {
+            String mimeType = hasField("mimetype") ? node.getStringValue("mimetype") : null;
+            if (mimeType == null) mimeType = "text/html";
+
+            String body = node.getStringValue("body");
+            if (mimeType.startsWith("text/plain")) {
+                return org.mmbase.util.transformers.XmlField.richToHTMLBlock(body);
+            } else {
+                //if (mimeType.startsWith("text/html")) {
+
+                // I guess that following stuff
+                // - converts 'pseudo' HTML to better HTML
+                // - removes <script tags and the like
+
+                body = body.replaceAll("\n","<br/>\n");
+                body = body.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
+                return body;
+            }
+        } else {
+            return super.getGUIIndicator(node, pars);
+        }
+    }
+
 }
 
