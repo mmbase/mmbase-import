@@ -23,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.10 2006-11-23 15:48:18 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.11 2006-12-27 13:02:15 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -67,7 +67,7 @@ public class ExtendedJMSendMail extends SendMail {
         if (onlyto != null) {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(onlyto);
-                for (int i=0; i<recipients.length; i++) {
+                for (int i = 0; i < recipients.length; i++) {
                     String domain = recipients[i].getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                     if (domains.containsKey(domain.toLowerCase())) {
@@ -117,22 +117,24 @@ public class ExtendedJMSendMail extends SendMail {
             } catch (Exception e) {
                 log.error(e);
             }
-            String bcc = n.getStringValue("bcc");
-            try {
-                InternetAddress[] recipients = InternetAddress.parse(bcc);
-                for (int i = 0; i < recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
-                    domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.containsKey(domain.toLowerCase())) {
-                        log.debug("Known domain [" + domain + "], processing internally");
-                        localRecipients.add(recipients[i]);
-                    } else {
-                        log.debug("Unknown domain [" + domain + "], processing externally");
-                        remoteRecipients.add(recipients[i]);
+            String bcc     = n.getNodeManager().hasField("bcc") ? n.getStringValue("bcc") : null;
+            if (bcc != null) {
+                try {
+                    InternetAddress[] recipients = InternetAddress.parse(bcc);
+                    for (int i = 0; i < recipients.length; i++) {
+                        String domain = recipients[i].getAddress();
+                        domain = domain.substring(domain.indexOf("@") + 1, domain.length());
+                        if (domains.containsKey(domain.toLowerCase())) {
+                            log.debug("Known domain [" + domain + "], processing internally");
+                            localRecipients.add(recipients[i]);
+                        } else {
+                            log.debug("Unknown domain [" + domain + "], processing externally");
+                            remoteRecipients.add(recipients[i]);
+                        }
                     }
+                } catch (Exception e) {
+                    log.error(e);
                 }
-            } catch (Exception e) {
-                log.error(e);
             }
         }
         if (log.isDebugEnabled()) {
@@ -191,10 +193,15 @@ public class ExtendedJMSendMail extends SendMail {
                     emailNode.setValue("to", n.getValue("to"));
                     emailNode.setValue("from", n.getValue("from"));
                     emailNode.setValue("cc", n.getValue("cc"));
-                    emailNode.setValue("bcc", n.getValue("bcc"));
+                    if (emailNode.getNodeManager().hasField("bcc")) {
+                        emailNode.setValue("bcc", n.getValue("bcc"));
+                    }
                     emailNode.setValue("subject", n.getValue("subject"));
                     emailNode.setValue("date", n.getValue("date"));
                     emailNode.setValue("body", n.getValue("body"));
+                    if (emailNode.getNodeManager().hasField("mimetype")) {
+                        emailNode.setValue("mimetype", n.getValue("mimetype"));
+                    }
                     emailNode.setIntValue("type", 2);
                     emailNode.commit();
                     mailbox.createRelation(emailNode, relatedManager).commit();
@@ -236,19 +243,22 @@ public class ExtendedJMSendMail extends SendMail {
 
     public void sendRemoteMail(InternetAddress[] onlyto, Node n) {
         if (log.isDebugEnabled()) {
-            log.debug("Sending node {" + n + "} to addresses {" + onlyto + "}");
+            log.debug("Sending node {" + n + "} to addresses {" + Arrays.asList(onlyto) + "}");
         }
         StringBuffer errors = new StringBuffer();
+        String from    = n.getStringValue("from");
+        String to      = n.getStringValue("to");
+        String cc      = n.getStringValue("cc");
+        String bcc     = n.getNodeManager().hasField("bcc") ? n.getStringValue("bcc") : null;
+        String body    = n.getStringValue("body");
+        String subject = n.getStringValue("subject");
+        String mimeType = n.getNodeManager().hasField("mimetype") ? n.getStringValue("mimetype") : null;
+        if (mimeType == null) mimeType = "text/html";
+
         try {
-            String from    = n.getStringValue("from");
-            String to      = n.getStringValue("to");
-            String cc      = n.getStringValue("cc");
-            String bcc     = n.getStringValue("bcc");
-            String body    = n.getStringValue("body");
-            String subject = n.getStringValue("subject");
 
             if (log.isServiceEnabled()) {
-                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc);
+                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from);
             }
             // construct a message
             MimeMessage msg = new MimeMessage(session);
@@ -289,7 +299,7 @@ public class ExtendedJMSendMail extends SendMail {
                 MimeBodyPart bodypart = new MimeBodyPart();
                 MimeMultipart mmp = new MimeMultipart("mixed");
 
-                bodypart.setContent(body, "text/html; charset=UTF-8");
+                bodypart.setContent(body, mimeType + "; charset=UTF-8");
                 mmp.addBodyPart(bodypart);
 
                 for (int i = 0; i < attachments.size(); i++) {
@@ -324,7 +334,7 @@ public class ExtendedJMSendMail extends SendMail {
                 }
                 msg.setContent(mmp);
             } else {
-                msg.setContent(body, "text/html; charset=UTF-8");
+                msg.setContent(body, mimeType + "; charset=UTF-8");
             }
 
             try {
