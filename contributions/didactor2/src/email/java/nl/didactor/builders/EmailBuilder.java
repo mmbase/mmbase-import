@@ -48,7 +48,8 @@ public class EmailBuilder extends MMObjectBuilder {
 
             log.debug("Trying to send mail ...");
             org.mmbase.bridge.Cloud cloud = org.mmbase.bridge.LocalContext.getCloudContext().getCloud("mmbase");
-            org.mmbase.bridge.Node n = cloud.getNode(node.getNumber());
+            org.mmbase.bridge.Node n = new org.mmbase.bridge.util.MapNode(node.getValues(), 
+                                                                          cloud.getNodeManager(getTableName())); 
 
             if (sendmail.sendMail(n)) {
                 log.debug("Succeeded!");
@@ -67,9 +68,13 @@ public class EmailBuilder extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         int nr = super.insert(owner, node);
-
-        if (node.getIntValue("type") == 1) {
+        log.debug("Inserted " + nr);
+        int type = node.getIntValue("type");
+        if (type == 1) {
+            log.debug("Calling precommit because type is 1");
             preCommit(node);
+        } else {
+            log.debug("Type " + type);
         }
 
         return nr;
