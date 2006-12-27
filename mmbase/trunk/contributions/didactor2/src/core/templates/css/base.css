@@ -835,6 +835,23 @@ a.forumlist:active {
 }
 
 
-.email .headers { 
+.email .headers.hide .hide { 
   display: none;
+}
+.email .headers.hide .show { 
+  display: inline;
+}
+
+.email .headers.show .hide { 
+  display: inline;
+}
+.email .headers.show .show { 
+  display: none;
+}
+
+.email .headers.hide .values { 
+  display: none;
+}
+.email .headers.show .values { 
+  display: block;
 }
