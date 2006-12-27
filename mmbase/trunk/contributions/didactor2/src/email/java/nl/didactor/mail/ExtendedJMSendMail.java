@@ -23,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.11 2006-12-27 13:02:15 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.12 2006-12-27 18:46:14 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -170,7 +170,7 @@ public class ExtendedJMSendMail extends SendMail {
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         RelationManager relatedManager = cloud.getRelationManager("related");
 
-        for (int i=0; i<to.length; i++) {
+        for (int i = 0; i < to.length; i++) {
             String domain = to[i].getAddress();
             String username = domain.substring(0, domain.indexOf("@"));
             domain = domain.substring(domain.indexOf("@") + 1, domain.length());
@@ -367,60 +367,7 @@ public class ExtendedJMSendMail extends SendMail {
         return "Sends mail through J2EE/JavaMail";
     }
 
-    public void reload() {
-        init();
-    }
 
-    public void init() {
-        try {
-            String smtphost   = getInitParameter("mailhost");
-            String context    = getInitParameter("context");
-            String datasource = getInitParameter("datasource");
-            session = null;
-            if (smtphost == null) {
-                if (context == null) {
-                    context = "java:comp/env";
-                    log.warn("The property 'context' is missing, taking default " + context);
-                }
-                if (datasource == null) {
-                    datasource = "mail/Session";
-                    log.warn("The property 'datasource' is missing, taking default " + datasource);
-                }
-
-                Context initCtx = new InitialContext();
-                Context envCtx = (Context) initCtx.lookup(context);
-                session = (Session) envCtx.lookup(datasource);
-                log.info("Module JMSendMail started (datasource = " + datasource +  ")");
-            } else {
-                if (context != null) {
-                    log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
-                }
-                if (datasource != null) {
-                    log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
-                }
-                log.info("EMail module is configured using 'mailhost' proprerty.\n" +
-                         "Consider using J2EE compliant 'context' and 'datasource'\n" +
-                         "Which means to put something like this in your web.xml:\n" +
-                         "  <resource-ref>\n" +
-                         "     <description>Email module mail resource</description>\n" +
-                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" +
-                         "     <res-type>javax.mail.Session</res-type>\n" +
-                         "     <res-auth>Container</res-auth>\n" +
-                         "  </resource-ref>\n" +
-                         " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)"
-                         );
-
-                Properties prop = System.getProperties();
-                prop.put("mail.smtp.host", smtphost);
-                session = Session.getInstance(prop, null);
-                log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
-            }
-
-        } catch (javax.naming.NamingException e) {
-            log.fatal("JMSendMail failure: " + e.getMessage());
-            log.debug(Logging.stackTrace(e));
-        }
-    }
 
     private class ByteArrayDataSource implements DataSource {
 
