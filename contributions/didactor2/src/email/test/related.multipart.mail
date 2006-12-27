@@ -1,6 +1,6 @@
-Subject: Simple related multipart mail
+Subject: Simple related multipart mail 2
 X-Header-Test: test
-From: foo@bar.nl
+From: ppuk@m.meeuw.org
 Content-Type: multipart/related; boundary="==boundary-1"; type="text/html"
 
 Text displayed only to non-MIME-compliant mailers.
