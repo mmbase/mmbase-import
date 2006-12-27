@@ -65,6 +65,7 @@
         <builder version="0" maintainer="mmbase.org">inschrijvingen</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvings_categorie</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvings_status</builder>
+        <builder version="0" maintainer="mmbase.org">items</builder>
         <builder version="0" maintainer="mmbase.org">jumpers</builder>
         <builder version="0" maintainer="mmbase.org">keywords</builder>
         <builder version="0" maintainer="mmbase.org">leden</builder>
@@ -112,6 +113,7 @@
         <relation from="artikel" to="evenement" type="related" />
         <relation from="artikel" to="flash" type="related" />
         <relation from="artikel" to="formulier" type="posrel" />
+        <relation from="artikel" to="items" type="readmore"/>
         <relation from="artikel" to="paragraaf" type="posrel" />
         <relation from="artikel" to="paragraaf" type="readmore" />
         <relation from="artikel" to="shorty" type="rolerel" />
@@ -164,6 +166,14 @@
         <relation from="inschrijvingen" to="inschrijvings_categorie" type="related" />
         <relation from="inschrijvingen" to="inschrijvings_status" type="related" />
         <relation from="inschrijvingen" to="users" type="schrijver" />
+        <relation from="items" to="artikel" type="posrel"/>
+        <relation from="items" to="attachments" type="posrel"/>
+        <relation from="items" to="discounts" type="posrel"/>
+        <relation from="items" to="formulier" type="posrel"/>
+        <relation from="items" to="images" type="posrel"/>
+        <relation from="items" to="link" type="posrel"/>
+        <relation from="items" to="persoon" type="posrel"/>
+        <relation from="items" to="pools" type="discountrel"/>
         <relation from="lijstcontentrel" to="linklijsttemplate" type="related" />
         <relation from="linklijst" to="contentelement" type="lijstcontentrel" />
         <relation from="linklijst" to="rubriek" type="lijstcontentrel" />
@@ -188,6 +198,7 @@
         <relation from="pagina" to="email" type="related" />
         <relation from="pagina" to="evenement_type" type="posrel" />
         <relation from="pagina" to="formulier" type="posrel" />
+        <relation from="pagina" to="items" type="posrel"/>
         <relation from="pagina" to="linklijst" type="posrel" />
         <relation from="pagina" to="menutemplate" type="related" />
         <relation from="pagina" to="pagina" type="readmore" />
@@ -274,6 +285,7 @@
         <datasource builder="inschrijvingen" path="NatMM/inschrijvingen.xml" />
         <datasource builder="inschrijvings_categorie" path="NatMM/inschrijvings_categorie.xml" />
         <datasource builder="inschrijvings_status" path="NatMM/inschrijvings_status.xml" />
+        <datasource builder="items" path="NatMM/items.xml"/>
         <datasource builder="jumpers" path="NatMM/jumpers.xml" />
         <datasource builder="keywords" path="NatMM/keywords.xml"/>
         <datasource builder="leden" path="NatMM/leden.xml" />
