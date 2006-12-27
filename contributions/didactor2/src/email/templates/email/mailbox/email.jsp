@@ -71,16 +71,20 @@
           <di:translate key="email.to_caption" />: <mm:field name="to" /> <br />
           <di:translate key="email.date" />: <mm:field name="gui(date)" /> <br />
           <di:translate key="email.subject" />: <mm:field name="subject"/> <br />
-          <div class="headers hide" id="email_headers">
-            <a class="show" href="javascript:return void(0);" onclick="document.getElementById('email_headers').className = 'headers show';">+</a>
-            <a class="hide" href="javascript:return void(0);" onclick="document.getElementById('email_headers').className = 'headers hide';">-</a>
-            <div class="values">
-              <mm:functioncontainer>
-                <mm:param name="field">headers</mm:param>
-                <mm:function name="gui" escape="none" />
-              </mm:functioncontainer>
-            </div>
-          </div>
+          <mm:functioncontainer>
+            <mm:param name="field">headers</mm:param>
+            <mm:function name="gui" escape="trimmer">
+              <mm:compare value="<br />" inverse="true">
+                <div class="headers hide" id="email_headers">
+                  <a class="show" href="javascript:return void(0);" onclick="document.getElementById('email_headers').className = 'headers show';">+</a>
+                  <a class="hide" href="javascript:return void(0);" onclick="document.getElementById('email_headers').className = 'headers hide';">-</a>
+                  <div class="values">
+                    <mm:write escape="none"/>
+                  </div>
+                </div>
+              </mm:compare>
+            </mm:function>
+          </mm:functioncontainer>
           <hr />
           <di:translate key="email.text"/>:
           <br />
