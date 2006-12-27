@@ -11,8 +11,8 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- mm:content postprocessor="reducespace"  expires="0" --%>
-<mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
+<mm:cloud method="delegate">
+<jsp:directive.include file="/shared/setImports.jsp" />
 <mm:import externid="mailbox">-1</mm:import>
 
 <mm:compare referid="mailbox" value="-1">
@@ -25,14 +25,15 @@
 </mm:compare>
 
 <mm:node number="$mailbox" notfound="skip">
-  <mm:import id="mailboxtype"><mm:field name="type"/></mm:import>
+  <mm:field name="type" id="mailboxtype" write="false" />
   <mm:relatednodescontainer type="emails">
     <mm:import id="gfx_attachment"><mm:treefile page="/email/gfx/attachment.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 
+    <hr />
     <di:table maxitems="10">
       <di:row>
         <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form,this.checked)"></input></di:headercell>
-        <di:headercell><img src="<mm:write referid="gfx_attachment"/>"/></di:headercell>
+        <di:headercell><img src="${gfx_attachment}" /></di:headercell>
         <di:headercell sortfield="subject"><di:translate key="email.subject" /></di:headercell>
         <%-- show recipient if sentbox --%>
         <mm:compare referid="mailboxtype" value="1">

@@ -34,7 +34,6 @@
 <%-- Check if the yes button is pressed --%>
 <mm:import id="action1text"><di:translate key="email.deleteyes" /></mm:import>
 
-<mm:log>AAAA ${action1} ${action1text}  ${action2} ${action2text}</mm:log>
 
 <mm:compare referid="action1" referid2="action1text">
 
@@ -43,7 +42,6 @@
 
     <mm:field id="type" name="type" write="false" />
 
-    <mm:log>TYPE ${type}</mm:log>
     <%-- from deleted items mailbox: do a real delete --%>
     <mm:compare referid="type" value="2">
       <mm:relatednodescontainer type="object">
@@ -54,7 +52,6 @@
       </mm:relatednodescontainer>
 
       <%-- Show the previous page --%>
-      <mm:log>deleted, now redirecting</mm:log>
       <mm:redirect referids="$referids,mailbox,so?,sf?" page="$callerpage"/>
 
     </mm:compare>
@@ -71,7 +68,6 @@
         </mm:relatednodescontainer>
       </mm:node>
 
-      <mm:log>Redirectin to moveitems.jsp</mm:log>
       <%-- from any other mailbox: do a move items to deleted items mailbox --%>
       <mm:redirect page="/email/moveitems.jsp" referids="$referids,so?,sf?">
         <mm:param name="submitted" value="true"/>
@@ -89,12 +85,9 @@
 </mm:compare>
 
 
-<mm:log>AAAA ${action1} ${action2} ${action2text}</mm:log>
-
 <%-- Check if the no button is pressed --%>
 <mm:import id="action2text"><di:translate key="email.deleteno" /></mm:import>
 <mm:compare referid="action2" referid2="action2text">
-  <mm:log>redirecting</mm:log>
   <mm:redirect referids="$referids,mailbox,so?,sf?" page="$callerpage"/>
 </mm:compare>
 

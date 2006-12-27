@@ -121,7 +121,7 @@
               </a>                  
             </div>
             <div class="contentBody">
-              <mm:treeinclude page="/email/mailbox/mailbox.jsp" objectlist="$includePath" referids="$referids" />
+              <mm:treeinclude page="/email/mailbox/mailbox.jsp" objectlist="$includePath" />
             </div>
           </mm:present>
         </div>
