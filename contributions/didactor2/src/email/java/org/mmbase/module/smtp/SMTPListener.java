@@ -9,14 +9,14 @@ import java.util.Hashtable;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.5 2006-11-23 15:48:18 mmeeuwissen Exp $
+ * @version $Id: SMTPListener.java,v 1.6 2006-12-27 12:48:22 mmeeuwissen Exp $
  */
 public class SMTPListener extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
     private boolean running = true;
     private java.net.ServerSocket ssocket;
-    private Hashtable properties;
-    
+    private final Hashtable properties;
+
     public SMTPListener(Hashtable properties) {
         this.properties = properties;
     }
@@ -41,16 +41,21 @@ public class SMTPListener extends Thread {
             running = false;
             log.error("Cannot listen on port " + port);
         }
+        log.info("SMTP listening on " + ssocket);
 
         while (running) {
             try {
                 java.net.Socket socket = ssocket.accept();
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Accepted connection: " + socket);
+                }
                 SMTPHandler handler = new SMTPHandler(socket, properties, cloud);
                 handler.start();
             } catch (Exception e) {
                 log.error("Exception while accepting connections: " + e);
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ie) {return;}
             }
         }
     }
@@ -65,7 +70,6 @@ public class SMTPListener extends Thread {
             }
             ssocket = null;
         }
-            
         running = false;
     }
 }
