@@ -21,12 +21,14 @@
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
 <mm:import externid="mailboxname"/>
+<mm:import externid="so" />
+<mm:import externid="sf" />
 
 <mm:import externid="idCount"/>
+
+
 <mm:import externid="ids"/>
-
-
-<mm:import id="list" jspvar="list" vartype="List"><mm:write referid="ids"/></mm:import>
+<mm:import id="list" jspvar="list" vartype="list"><mm:write referid="ids"/></mm:import>
 
 <mm:node number="$mailbox" id="mymailbox"/>
 
@@ -73,7 +75,7 @@
     </mm:relatednodescontainer>
   </mm:node>
 
-  <mm:redirect referids="$referids,mailbox" page="$callerpage"/>
+  <mm:redirect referids="$referids,mailbox,so?,sf?" page="$callerpage"/>
 
  </mm:notpresent>
 </mm:present>
@@ -82,7 +84,7 @@
 <%-- Check if the back button is pressed --%>
 <mm:import id="action2text"><di:translate key="email.back" /></mm:import>
 <mm:compare referid="action2" referid2="action2text">
-  <mm:redirect referids="$referids,mailbox" page="$callerpage"/>
+  <mm:redirect referids="$referids,mailbox,so?,sf?" page="$callerpage"/>
 </mm:compare>
 
 <div class="rows">
@@ -179,6 +181,12 @@
       <input type="hidden" name="ids" value="<mm:write referid="ids"/>"/>
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="mailbox" value="<mm:write referid="mailbox"/>"/>
+      <mm:present referid="so">
+        <input type="hidden" name="so" value="${so}" />
+      </mm:present>
+      <mm:present referid="sf">
+        <input type="hidden" name="sf" value="${sf}" />
+      </mm:present>
       <input class="formbutton" type="submit" name="action1" value="<di:translate key="email.move" />"/>
       <input class="formbutton" type="submit" name="action2" value="<di:translate key="email.back" />"/>
     </form>
