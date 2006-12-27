@@ -23,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.13 2006-12-27 21:19:22 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.14 2006-12-27 22:45:00 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -270,6 +270,7 @@ public class ExtendedJMSendMail extends SendMail {
                 InternetAddress[] toRecipients = InternetAddress.parse(to);
                 msg.addRecipients(Message.RecipientType.TO, toRecipients);
             } catch (javax.mail.internet.AddressException ae) {
+                log.warn(ae);
                 errors.append("\nTo: " + to + ": " + ae.getMessage());
             }
 
@@ -278,6 +279,7 @@ public class ExtendedJMSendMail extends SendMail {
                     InternetAddress[] ccRecipients = InternetAddress.parse(cc);
                     msg.addRecipients(Message.RecipientType.CC, ccRecipients);
                 } catch (javax.mail.internet.AddressException ae) {
+                    log.warn(ae);
                     errors.append("\nCc: " + cc  + " " + ae.getMessage());
                 }
             }
@@ -287,20 +289,25 @@ public class ExtendedJMSendMail extends SendMail {
                     InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
                     msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
                 } catch (javax.mail.internet.AddressException ae) {
+                    log.warn(ae);
                     errors.append("\nBcc: " + bcc + " " + ae.getMessage());
                 }
             }
 
             msg.setSubject(subject, "UTF-8");
 
+
             /* add attachments here */
             NodeList attachments = n.getRelatedNodes("attachments");
             if (attachments.size() != 0) {
-                MimeBodyPart bodypart = new MimeBodyPart();
                 MimeMultipart mmp = new MimeMultipart("mixed");
 
-                bodypart.setContent(body, mimeType + "; charset=UTF-8");
-                mmp.addBodyPart(bodypart);
+                {
+                    MimeBodyPart bodypart = new MimeBodyPart();
+                    bodypart.setContent(body, mimeType);
+                    mmp.addBodyPart(bodypart);
+                }
+
 
                 for (int i = 0; i < attachments.size(); i++) {
                     String filename = attachments.getNode(i).getStringValue("filename");
@@ -308,26 +315,29 @@ public class ExtendedJMSendMail extends SendMail {
                         filename = "attached file";
                     }
 
-                    String mimetype = attachments.getNode(i).getStringValue("mimetype");
-                    if (mimetype == null || mimetype.equals("")) {
-                        mimetype = "application/octet-stream";
+                    String attachmentMimeType = attachments.getNode(i).getStringValue("mimetype");
+                    if (attachmentMimeType == null || attachmentMimeType.equals("")) {
+                        attachmentMimeType = "application/octet-stream";
                     }
 
                     byte[] handle = attachments.getNode(i).getByteValue("handle");
                     MimeBodyPart mbp = new MimeBodyPart();
 
-                    mbp.setDataHandler(new DataHandler(new ByteArrayDataSource(handle)));
-                    mbp.setHeader("Content-Type", mimetype);
-
+                    log.debug("Found a part " + attachmentMimeType);
                     // If our attached file is text/html, we will create a new 'normal'
                     // bodypart. The email client will then show the HTML inline.
                     // Note that for this to work, you need a valid doctype definition
                     // in your body.
-                    if (mimetype.equals("text/html")) {
+                    if (attachmentMimeType.startsWith("text/html")) {
                         if (!filename.equals("attached file")) {
                             mbp.setFileName(filename);
                         }
+
+                        log.debug("creating mbp with mimeType " + attachmentMimeType);
+                        mbp.setDataHandler(new DataHandler(new String(handle, "UTF-8"), "text/html"));//new ByteArrayDataSource(handle, mimeType)));
+
                     } else {
+                        mbp.setDataHandler(new DataHandler(handle, attachmentMimeType));//new ByteArrayDataSource(handle, mimeType)));
                         mbp.setFileName(filename);
                         mbp.setDisposition(Part.ATTACHMENT);
                     }
@@ -336,9 +346,18 @@ public class ExtendedJMSendMail extends SendMail {
                 }
                 msg.setContent(mmp);
             } else {
-                msg.setContent(body, mimeType + "; charset=UTF-8");
+                if (mimeType.startsWith("text")) {
+                    //String subType = mimeType.substring(5);
+                    //log.info("Using " + subType);
+                    // msg.setText(body, subType, "UTF-8"); // java mail 1.4...
+                    msg.setContent(body, mimeType + "; charset=UTF-8");
+                } else {
+                    msg.setContent(body, mimeType);
+                }
             }
 
+            // just to test if errors may follow
+            /*
             try {
                 java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
                 msg.writeTo(bos);
@@ -346,6 +365,7 @@ public class ExtendedJMSendMail extends SendMail {
                 log.error("Exception: " + e.getMessage(), e);
                 errors.append("\nIO: " + e.getMessage());
             }
+            */
 
             Transport.send(msg, onlyto);
             log.debug("JMSendMail done.");
@@ -353,10 +373,11 @@ public class ExtendedJMSendMail extends SendMail {
             log.error("JMSendMail failure: " + e.getMessage(), e);
             errors.append("\nMessaging: " + e.getMessage());
         } catch (Exception e) {
+            log.warn(e.getMessage(), e);
             errors.append(e.getClass() + ": " + e.getMessage());
         }
         if (errors.length() > 0 && ! n.getStringValue("to").equals(n.getStringValue("from"))) {
-            log.service("Sending error mail to " + n.getStringValue("from") + " " + n.getNodeManager());
+            log.service("Sending error mail to " + n.getStringValue("from") + " " + n.getNodeManager() + " " + errors);
             // if errors, and this is certainly not an error mail itself....
             try {
                 Node errorNode = n.getNodeManager().createNode();
@@ -378,29 +399,4 @@ public class ExtendedJMSendMail extends SendMail {
     }
 
 
-
-    private class ByteArrayDataSource implements DataSource {
-
-        private byte[] buffer;
-
-        public ByteArrayDataSource(byte[] buffer) {
-            this.buffer = buffer;
-        }
-
-        public java.lang.String getContentType() {
-            return "application/octet-stream";
-        }
-
-        public java.io.InputStream getInputStream() {
-            return new java.io.ByteArrayInputStream(buffer);
-        }
-
-        public java.lang.String getName() {
-            return "Bytearray datasource";
-        }
-
-        public java.io.OutputStream getOutputStream()  {
-            return null;
-        }
-    }
 }
