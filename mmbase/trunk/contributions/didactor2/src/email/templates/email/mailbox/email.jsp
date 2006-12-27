@@ -72,12 +72,19 @@
       <hr />
       <di:translate key="email.text"/>:
       <br />
-      <mm:field name="body" jspvar="dummy" vartype="String" escape="text/plain">
-        <% 
-          dummy = dummy.replaceAll("\n","<br/>\n");
-          dummy = dummy.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
-          out.print(dummy);
-        %>
+      <mm:field name="mimetype">
+        <mm:compare regexp="text/plain.*">
+          <mm:field name="body" escape="p,links" />
+        </mm:compare>
+        <mm:compare regexp="text/plain.*" inverse="true">
+          <mm:field name="body" jspvar="dummy" vartype="String" escape="text/plain">
+            <% 
+            dummy = dummy.replaceAll("\n","<br/>\n");
+            dummy = dummy.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
+            out.print(dummy);
+            %>
+          </mm:field>
+        </mm:compare>
       </mm:field>
       <hr />
       <mm:relatednodes type="attachments">
