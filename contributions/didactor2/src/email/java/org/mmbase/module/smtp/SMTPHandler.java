@@ -12,7 +12,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.12 2006-12-27 14:23:50 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.13 2006-12-27 15:25:26 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -305,12 +305,44 @@ public class SMTPHandler extends Thread {
         return retval;
     }
 
+    protected void nodeSetHeader(Node node, String fieldName, Address[] values) {
+        Field field = node.getNodeManager().getField(fieldName);
+        long maxLength = ((org.mmbase.datatypes.StringDataType) field.getDataType()).getMaxLength();
+        StringBuffer buf = new StringBuffer();
+        if (values != null) {
+            log.debug("Using " + values.length + " values");
+            for (int i = 0 ; i < values.length; i++) {
+                Address value = values[i];
+                if (buf.length() + value.toString().length() + 2 < maxLength) {
+                    buf.append(value.toString());
+                    if (i < values.length) {
+                        buf.append(", ");
+                    }
+                } else {
+                    log.warn("Could not store " + value + " for field '" + fieldName + "' of email node because field can maximully contain " + maxLength + " chars");
+                }
+            }
+        }
+        nodeSetHeader(node, fieldName, buf.toString());
+    }
+    protected void nodeSetHeader(Node node, String fieldName, String value) {
+        Field field = node.getNodeManager().getField(fieldName);
+        int maxLength = (int) ((org.mmbase.datatypes.StringDataType) field.getDataType()).getMaxLength();
+        if (value.length() >= maxLength) {
+            log.warn("Truncating field " + fieldName + " for node " + node);
+            value = value.substring(0, maxLength);
+        }
+        node.setStringValue(fieldName, value);
+    }
+
     /**
      * Handle the data from the DATA command. This method does all the work: it creates
      * objects in mailboxes.
      */
     private boolean handleData(String data) {
-        log.debug("Data: [" + data + "]");
+        if (log.isTraceEnabled()) {
+            log.trace("Data: [" + data + "]");
+        }
         NodeManager emailbuilder = cloud.getNodeManager((String)properties.get("emailbuilder"));
         javax.mail.internet.MimeMessage message = null;
         try {
@@ -336,26 +368,32 @@ public class SMTPHandler extends Thread {
                         headers.append(header).append("\r\n");
                     }
                     log.debug("Using headers " + headers);
-                    email.setStringValue((String)properties.get("emailbuilder.headersfield"), headers.toString());
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.headersfield"), headers.toString());
                 } catch (MessagingException me) {
                     log.warn(me);
-                    email.setStringValue((String)properties.get("emailbuilder.headersfield"), me.getMessage());
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.headersfield"), headers.toString());
                 }
             }
             if (properties.containsKey("emailbuilder.tofield")) {
                 try {
-                    String value = message.getHeader("To", ", ");
-                    if (value == null) value = "";
-                    email.setStringValue((String)properties.get("emailbuilder.tofield"), value);
+                    Address[] value = message.getRecipients(Message.RecipientType.TO);
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.tofield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
             }
             if (properties.containsKey("emailbuilder.ccfield")) {
                 try {
-                    String value = message.getHeader("CC", ", ");
-                    if (value == null) value = "";
-                    email.setStringValue((String)properties.get("emailbuilder.ccfield"), value);
+                    Address[] value = message.getRecipients(Message.RecipientType.CC);
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.ccfield"), value);
+                } catch (MessagingException e) {
+                    log.service(e);
+                }
+            }
+            if (properties.containsKey("emailbuilder.bccfield")) {
+                try {
+                    Address[] value = message.getRecipients(Message.RecipientType.BCC);
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.bccfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -364,7 +402,7 @@ public class SMTPHandler extends Thread {
                 try {
                     String value = message.getHeader("From", ", ");
                     if (value == null) value = "";
-                    email.setStringValue((String)properties.get("emailbuilder.fromfield"), value);
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.fromfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -373,7 +411,7 @@ public class SMTPHandler extends Thread {
                 try {
                     String value = message.getSubject();
                     if (value == null) value = "(empty)";
-                    email.setStringValue((String)properties.get("emailbuilder.subjectfield"), value);
+                    nodeSetHeader(email, (String)properties.get("emailbuilder.subjectfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -395,12 +433,12 @@ public class SMTPHandler extends Thread {
                     if (contentType != null) {
                         int pos = contentType.indexOf(';');
                         String mimeType;
-                    if (pos > 0) {
-                        mimeType = contentType.substring(0, pos);
-                    } else {
-                        mimeType = contentType;
-                    }
-                    email.setStringValue("mimetype", mimeType);
+                        if (pos > 0) {
+                            mimeType = contentType.substring(0, pos);
+                        } else {
+                            mimeType = contentType;
+                        }
+                        nodeSetHeader(email, "mimetype", mimeType);
                     }
                 } catch (MessagingException me) {
                     log.warn(me);
@@ -409,7 +447,7 @@ public class SMTPHandler extends Thread {
             try {
                 if (message.isMimeType("text/plain") || message.isMimeType("text/html")) {
                     if (message.getContent() != null) {
-                        email.setStringValue((String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
+                        nodeSetHeader(email, (String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
                     }
                     email.commit();
                 } else {
@@ -428,8 +466,8 @@ public class SMTPHandler extends Thread {
                     }
                 }
             } catch (Exception e) {
-                log.warn(e);
-                email.setStringValue((String)properties.get("emailbuilder.bodyfield"), "" + data);
+                log.warn(e.getMessage(), e);
+                nodeSetHeader(email, (String) properties.get("emailbuilder.bodyfield"), "" + data);
                 email.commit();
             }
             Relation rel = mailbox.createRelation(email, cloud.getRelationManager("related"));
