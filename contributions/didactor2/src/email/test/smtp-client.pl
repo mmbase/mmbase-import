@@ -1,5 +1,17 @@
 #!/usr/bin/perl
 
+
+# Added by Michiel
+# test smtp-server of didactor e.g. like this:
+# 
+# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=localhost --port=1025 --from=michiel@meeuw.org --to=ppuk@m.meeuw.org --data=simle.mail
+#
+# compare it do other implementations like this (please replace with your own gmail account and smtp server).
+# 
+# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=smtp.omroep.nl --from=michiel@meeuw.org --to=mihxiil@gmail.com --data=multipart.mail 
+
+
+
 # 
 # Simple SMTP client with STARTTLS and AUTH support.
 # Michal Ludvig <michal@logix.cz>, 2003-2006
