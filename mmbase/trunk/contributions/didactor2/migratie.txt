@@ -17,8 +17,9 @@ and restart Tomcat.
    To upgrade mmbob:
 
     alter table mmb_postings add column c_body blob;
-    alter table mmb_posters modify password varchar(128);
-    alter table mmb_postings add column c_poster varchar(64);
+    alter table mmb_posters  modify password varchar(128);
+    alter table mmb_postings change poster c_poster varchar(64);    
+
     alter table mmb_postings add column posternumber integer;
     alter table mmb_postings add column editcount integer;
     alter table mmb_postings add column enable_html integer;
@@ -53,7 +54,10 @@ and restart Tomcat.
 
    If you want the bcc functionality to work:
 
-    alter table mmb_emails add bcc varchar(255);
+    alter table mmb_emails add bcc varchar(2048);
+    alter table mmb_emails change to  varchar(2048);
+    alter table mmb_emails change cc  varchar(2048);
+    alter table mmb_emails add mimetype varchar(128) default "text/html";
 
    Inspect mmbase log for more alter tables which can be done. Reasonable fall-backs are used if you
    don't do anything.
@@ -66,7 +70,7 @@ and restart Tomcat.
     alter table mmb_icaches add width int(11);       
     alter table mmb_icaches add height int(11)
 
-    
+    alter table mmb_attachments modify mimetype varchar(128);  
 
     If you're planning to use the 'portal':
 
