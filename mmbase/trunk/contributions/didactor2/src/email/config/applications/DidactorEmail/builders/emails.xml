@@ -61,7 +61,7 @@
       </editor>
       <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="2048" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <field name="cc">
@@ -75,7 +75,7 @@
       </gui>
       <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="2048" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <field name="bcc">
@@ -89,7 +89,7 @@
       </gui>
       <datatype base="email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="2048" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <field name="subject">
@@ -160,6 +160,17 @@
         <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
       </db>
     </field>
+    
+    <field name="mimetype">
+      <descriptions>
+        <description xml:lang="nl">Mimetype van het body-veld</description>
+        <description xml:lang="en">Mimetype of the body-field</description>
+      </descriptions>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="text/html" />
+        <maxLength value="128" />
+      </datatype>
+    </field>
 
     <field name="type">
       <descriptions>
@@ -181,9 +192,9 @@
           <entry value="0" xml:lang="nl" display="een normale mail" />
           <entry value="1" xml:lang="nl" display="te verzenden mail" />
           <entry value="2" xml:lang="nl" display="binnengekomen (ongelezen) mail" />
-          <entry value="0" xml:lang="en" display="normal mail" />
-          <entry value="1" xml:lang="en" display="to be sent mail" />
-          <entry value="2" xml:lang="en" display="newly arrived (unread) mail" />
+          <entry value="0" display="normal mail" />
+          <entry value="1" display="to be sent mail" />
+          <entry value="2" display="newly arrived (unread) mail" />
         </enumeration>
       </datatype>
     </field>
