@@ -38,8 +38,8 @@ B. How to install NMIntra (Natuurmonumenten intranet)
 4. make sure you have a appropriate mysql connector jar in your tomcat common/lib directory
 
 5. in case you use an already existing database, you are ready to run the application:
-   http://[HOST]:[PORT]/natmm-internet/
-   http://[HOST]:[PORT]/natmm-internet/editors/
+   http://[HOST]:[PORT]/natmm-intranet/
+   http://[HOST]:[PORT]/natmm-intranet/editors/
 
 6. in case you start with an empty database, check the install.txt.old file for instructions
 
