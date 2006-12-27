@@ -73,7 +73,7 @@
             <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
             <mm:param name="callerpage">/email/index.jsp</mm:param>
             </mm:treefile>">
-            <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.createfolder" />" alt="<di:translate key="email.createfolder" />"/>
+            <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.createfolder" />" alt="<di:translate key="email.createfolder" />"/>           
           </a>
 
           <a href="<mm:treefile page="/email/changemailbox.jsp" objectlist="$includePath" referids="$referids">
@@ -109,10 +109,7 @@
           <mm:present referid="mailboxname">
             <div class="contentSubHeader">
               <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,so?,sf?,mailboxname,mailbox" />">
-                <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.writenewemail" />" alt="<di:translate key="email.writenewemail" />"/>
-              </a>
-              
-              
+                <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" title="<di:translate key="email.writenewemail" />" alt="<di:translate key="email.writenewemail" />" /></a>
               <input type="image" src="<mm:treefile page="/email/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids,so?,sf?"/>" border="0" title="<di:translate key="email.moveselected" />" alt="<di:translate key="email.moveselected" />" name="action_move" value=move"/>
               
               <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.deleteselected" />" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
