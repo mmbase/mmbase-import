@@ -6,12 +6,15 @@
 <mm:cloud rank="basic user">
   <jsp:directive.include file="/shared/setImports.jsp" />
 
+  <mm:import externid="so" />
+  <mm:import externid="sf" />
+  <mm:import externid="mailbox" />
+
   <mm:import externid="back"/>
   <mm:present referid="back">
-    <mm:redirect page="/email/index.jsp"/>
+    <mm:redirect page="/email/index.jsp" referids="so?,sf?,mailbox?"/>
   </mm:present>
 
-  <mm:import externid="mailbox"/>
   <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
   <mm:import id="to" />
   <mm:import id="cc" />
@@ -174,6 +177,8 @@
   <mm:compare referid="testattachment" value="" inverse="true">
     <c:if test="${! empty testattachment.name}">
       <mm:createnode type="attachments" id="newFile">
+        <mm:setfield name="filename">${testattachments.name}</mm:setfield>
+        <mm:setfield name="title">${testattachments.name}</mm:setfield>
         <mm:context>
           <mm:fieldlist id="att" nodetype="attachments" fields="handle">
             <mm:fieldinfo type="useinput" />
@@ -211,7 +216,8 @@
       </mm:list>
 
       <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
-      <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids">
+      
+      <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no">
         <mm:param name="provider" value="$provider"/>
         <mm:param name="mailbox" value="$mailbox"/>
       </mm:treefile>
@@ -221,13 +227,13 @@
 
   <mm:import externid="lookup_to_action"/>
   <mm:present referid="lookup_to_action">
-    <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=to</mm:import>
+    <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=to</mm:import>
     <%    response.sendRedirect(redirect_url); %>
   </mm:present>
 
   <mm:import externid="lookup_cc_action"/>
   <mm:present referid="lookup_cc_action">
-    <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
+    <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
     <%    response.sendRedirect(redirect_url); %>
   </mm:present>
   
@@ -333,6 +339,12 @@
                   </mm:treefile>" method="post" enctype="multipart/form-data" name="webmailForm">
                   <mm:present referid="id">
                     <input type="hidden" name="id" value="${id}" />
+                  </mm:present>
+                  <mm:present referid="so">
+                    <input type="hidden" name="so" value="${so}" />
+                  </mm:present>
+                  <mm:present referid="sf">
+                    <input type="hidden" name="sf" value="${sf}" />
                   </mm:present>
                   <table class="font">
                     <tr>
