@@ -1,0 +1,14 @@
+Subject: Simple multipart mail
+X-Header-Test: test
+From: foo@bar.nl
+Content-Type: multipart/alternative; boundary="==boundary-1"
+
+--==boundary-1
+Content-Type: text/plain
+
+ab cd ef gh
+--==boundary-1
+Content-Type: text/html
+
+ab cd <em>ef</em> gh
+--==boundary-1--
