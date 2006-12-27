@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
-
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module>
-
-  <!-- <status>
-	what is the status of this builder options : active or inactive
-  -->
   <status>active</status>
-
-
-  <!-- <classfile>
-	main classfile that this module is defined in
-  -->
-  <classfile>org.mmbase.module.smtp.SMTPModule</classfile>
-
-  <!-- <properties>
-     you can define properties to be used by the classfile (if used) it uses
-     a key/value system. Its a optional tag.
-   -->
+  <class>org.mmbase.module.smtp.SMTPModule</class>
   <properties>
+
     <!-- mandatory properties -->
     <property name="hostname">${smtpmodule.hostname}</property>
     <property name="port">${smtpmodule.port}</property>
     <property name="domains">${smtpmodule.relaydomains}</property>
  
-	<property name="emailbuilder">emails</property>
+    <property name="emailbuilder">emails</property>
     <property name="emailbuilder.bodyfield">body</property>
     
     <property name="usersbuilder">people</property>
