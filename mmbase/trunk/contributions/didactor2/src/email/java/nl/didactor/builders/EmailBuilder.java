@@ -95,9 +95,35 @@ public class EmailBuilder extends MMObjectBuilder {
                 body = body.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
                 return body;
             }
+        } else if ("headers".equals(field)) {
+            StringBuffer buf = new StringBuffer();
+            String[] headers = node.getStringValue("headers").split("[\n\r]+");
+            for (int i = 0 ; i < headers.length; i++) {
+                String header = headers[i];
+
+                // these are stored in separate fields
+                if (header.startsWith("Subject:")) {
+                    continue;
+                }
+                if (header.startsWith("Cc:")) {
+                    continue;
+                }
+                if (header.startsWith("Bcc:")) {
+                    continue;
+                }
+                if (header.startsWith("From:")) {
+                    continue;
+                }
+                buf.append(org.mmbase.util.transformers.Xml.XMLEscape(header)).append("<br />");
+            }
+            return buf.toString();
         } else {
             return super.getGUIIndicator(node, pars);
         }
+    }
+
+    public String toString(MMObjectNode n) {
+        return n.getStringValue("from") + "->" + n.getStringValue("to") + " '" + n.getStringValue("subject") + n.getDateValue("date");
     }
 
 }
