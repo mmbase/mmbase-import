@@ -362,17 +362,27 @@ public class SearchUtil {
     }
     
     public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, String value) {
+        boolean caseSensitive = false;
+        return createEqualConstraint(query, field, value, caseSensitive);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(NodeQuery query, Field field, String value, boolean caseSensitive) {
         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                 FieldCompareConstraint.EQUAL, value);
-        query.setCaseSensitive(constraint, false);
+        query.setCaseSensitive(constraint, caseSensitive);
         return constraint;
     }
 
     public static FieldValueConstraint createEqualConstraint(Query query, Field field, String value) {
+        boolean caseSensitive = false;
+        return createEqualConstraint(query, field, value, caseSensitive);
+    }
+
+    public static FieldValueConstraint createEqualConstraint(Query query, Field field, String value, boolean caseSensitive) {
         StepField equalsField = findField(query, field);
         FieldValueConstraint constraint = query.createConstraint(equalsField,
                 FieldCompareConstraint.EQUAL, value);
-        query.setCaseSensitive(constraint, false);
+        query.setCaseSensitive(constraint, caseSensitive);
         return constraint;
     }
     
