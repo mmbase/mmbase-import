@@ -1,47 +1,53 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+ %><mm:cloud method="delegate">
+<jsp:directive.include file="/shared/setImports.jsp" />
 
 <mm:node number="$user">
-  <mm:relatednodes type="mailboxes" constraints="[mailboxes.type] = 0" max="1">
-    <mm:field write="false" id="inbox" name="number"/>
-    
-    <mm:list nodes="$inbox" path="mailboxes1,subjectmailrule,mailboxes2" constraints="[mailboxes1.type]=0 AND [mailboxes2.type] != 0">
-	<mm:field write="false" id="rule" name="subjectmailrule.rule"/>
-	<mm:field write="false" id="destinationbox" name="mailboxes2.number"/>
-	<mm:list nodes="$inbox" path="mailboxes,related,emails" constraints="[emails.type]=2 AND emails.subject LIKE '%$rule%'">
-	    <mm:field write="false" id="relation" name="related.number"/>
-	    <mm:field write="false" id="mail" name="emails.number"/>
-	    <mm:deletenode number="$relation" deleterelations="false"/>
-	    <mm:createrelation role="related" source="destinationbox" destination="mail"/>
-	    <mm:remove referid="mail"/>
-	    <mm:remove referid="relation"/>
-	    </mm:list>
-	    <mm:remove referid="destinationbox"/>
-	    <mm:remove referid="rule"/>
+  <mm:relatednodescontainer type="mailboxes">
+    <mm:constraint field="type" value="0" />
+    <mm:maxnumber value="1" />      
+    <mm:relatednodes id="mailbox">
+      <mm:listrelationscontainer role="subjectmailrule">
+        <mm:constraint field="mailboxes.type" value="0" inverse="true" />
+        <mm:listrelations>          
+          <mm:field write="false" id="rule" name="rule"/>
+          <mm:relatednode id="destinationbox" />
 
-    </mm:list>
+          <mm:listrelationscontainer node="mailbox" role="related" type="emails">
+            <mm:constraint field="emails.type" value="2" />
+            <mm:constraint field="emails.subject" operator="LIKE" value="%$rule%" />
+            <mm:listrelations>
+              <mm:relatednode id="mail" />
+              <mm:deletenode  deleterelations="false"/>
+            </mm:listrelations>
+            <mm:createrelation role="related" source="destinationbox" destination="mail"/>
+          </mm:listrelationscontainer>
+          
+        </mm:listrelations>
+      </mm:listrelationscontainer>
 
-    <mm:list nodes="$inbox" path="mailboxes1,sendermailrule,mailboxes2" constraints="[mailboxes1.type]=0 AND [mailboxes2.type] != 0">
-	<mm:field write="false" id="rule" name="sendermailrule.rule"/>
-	<mm:field write="false" id="destinationbox" name="mailboxes2.number"/>
-	<mm:list nodes="$inbox" path="mailboxes,related,emails" constraints="[emails.type]=2 AND [emails.from] LIKE '%$rule%'">
-	    <mm:field write="false" id="relation" name="related.number"/>
-	    <mm:field write="false" id="mail" name="emails.number"/>
-	    <mm:deletenode number="$relation" deleterelations="false"/>
-	    <mm:createrelation role="related" source="destinationbox" destination="mail"/>
-	    <mm:remove referid="mail"/>
-	    <mm:remove referid="relation"/>
-	    </mm:list>
-	    <mm:remove referid="destinationbox"/>
-	    <mm:remove referid="rule"/>
-	    
-    </mm:list>
+      <mm:listrelationscontainer role="sendermailrule" type="mailboxes" id="mailbox2">
+        <mm:constraint field="mailboxes.type" value="0" inverse="true" />
+        <mm:listrelations>
+          <mm:field write="false" id="rule" name="rule"/>
+          <mm:relatednodes id="destinationbox" />
 
+          <mm:listrelationscontainer node="mailbox" role="related" type="emails">
+            <mm:constraint field="emails.type" value="2" />
+            <mm:constraint field="emails.from" operator="LIKE" value="%$rule%" />
+            <mm:listrelations>
+              <mm:relatednode id="mail" />
+              <mm:deletenode deleterelations="false"/>
+            </mm:listrelations>
+            <mm:createrelation role="related" source="destinationbox" destination="mail"/>
+          </mm:listrelationscontainer>
 
-	
-  </mm:relatednodes>
+        </mm:listrelations>
+      </mm:listrelationscontainer>
+
+    </mm:relatednodes>
+  </mm:relatednodescontainer>
 </mm:node>
   
 </mm:cloud>
