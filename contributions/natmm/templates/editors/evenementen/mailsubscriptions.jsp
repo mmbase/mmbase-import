@@ -10,7 +10,8 @@ ddn.setBegin(new Date(thisEvent.getLongValue("begindatum")*1000));
 ddn.setEnd(new Date(thisEvent.getLongValue("einddatum")*1000));  
 
 if(!toAddress.equals("-1")) { 
-   String sPageURI = "/editors/evenementen/SubscribeInitAction.eb?number=" + nodenr + "&action=printsubscriptions&orderby=lastname&direction=up&showpastdates=true";
+   String sPageURI = "/SubscribeInitAction.eb?number=" + nodenr + "&action=printsubscriptions&orderby=lastname&direction=up&showpastdates=true";
+   String sPageURI2 = "/editors/evenementen/SubscribeInitAction.eb?number=" + nodenr + "&action=printsubscriptions&orderby=lastname&direction=up&showpastdates=true";
    String sPageURL = HttpUtils.getRequestURL(request).toString(); 
    sPageURL = sPageURL.substring(0,sPageURL.substring(7).indexOf("/")+7); 
    String subject = "Aanmeldingen " + thisEvent.getStringValue("titel") + " " + ddn.getReadableDate() + ", " + ddn.getReadableTime();
@@ -25,7 +26,7 @@ if(!toAddress.equals("-1")) {
 		<mm:setfield name="subject"><%= subject %></mm:setfield>
 		<mm:setfield name="body">
 			<multipart id="plaintext" type="text/plain" encoding="UTF-8">
-				Bekijk de aanmeldingen op: <%= sPageURL + sPageURI %>
+				Bekijk de aanmeldingen op: <%= sPageURL%><mm:url page="/editors/evenementen"/><%=sPageURI %>
                         
             <% if ((extraText != null) && (!"".equals(extraText))) { %>
             \n\nExtra opmerkingen:\n
@@ -34,7 +35,7 @@ if(!toAddress.equals("-1")) {
             
 			</multipart>
 			<multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-            Slecht leesbaar? Print aanmeldingen vanaf de website: <a href="<%= sPageURL + sPageURI %>">klik hier</a>
+            Slecht leesbaar? Print aanmeldingen vanaf de website: <a href="<%= sPageURL%><mm:url page="/editors/evenementen"/><%=sPageURI %>">klik hier</a>
             <br/><br/>
             
             <% if ((extraText != null) && (!"".equals(extraText))) { %>
@@ -43,7 +44,7 @@ if(!toAddress.equals("-1")) {
             <br/><br/>
             <% } %>
 
-				<mm:include page="<%= sPageURI %>" />
+				<mm:include page="<%= sPageURI2 %>" />
 			</multipart>
 		</mm:setfield>
 	</mm:createnode>
