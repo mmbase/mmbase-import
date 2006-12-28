@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.32 2006-12-28 00:00:40 michiel Exp $
+# $Id: build.properties.default,v 1.33 2006-12-28 09:41:11 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -68,8 +68,8 @@ javamail.dir=${expand.dir}/${javamail.version}
 javamail.jar=${javamail.dir}/${javamail.version}/mail.jar
 
 # ----- javaactiovation ----
-javaactivation.version=jaf-1.0.2
-javaactivation.fileversion=jaf-1_0_2
+javaactivation.version=jaf-1.1
+javaactivation.fileversion=jaf-1_1-fr
 javaactivation.file=${javaactivation.fileversion}.zip
 javaactivation.dest=${download.dir}/${javaactivation.file}
 javaactivation.loc=${mmbase.loc}/jaf/${javaactivation.file}
