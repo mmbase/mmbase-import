@@ -401,10 +401,37 @@ public class SubscribeAction extends Action {
 
       String message = dearSir(thisParticipant, thisParticipantName, newline);
 
-      if(isGroupExcursion) {
-         message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
+      if (confirmUrl.equals("confirmation-period-expired")) {
+         message += "Met deze brief herinneren wij u aan uw boeking van een groepsexcursie";
+         
+         NodeList nl = thisParent.getRelatedNodes("natuurgebieden","related",null);
+         if(nl.size()!=0) {
+            message += " op het " + nl.getNode(0).getStringValue("naam");
+         }
+         
+         DoubleDateNode ddn = new DoubleDateNode();
+         ddn.setBegin(new Date(thisEvent.getLongValue("begindatum")*1000));
+         ddn.setEnd(new Date(thisEvent.getLongValue("einddatum")*1000));
+
+         message += ". U heeft voor uw groep " + thisEvent.getStringValue("titel") + " gereserveerd op " +  ddn.getReadableDate() + ". ";
+         message += "De bevestigingstermijn voor deze boeking is inmiddels verlopen." + newline + newline;
+         message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
+ 
+      } else if(isGroupExcursion) {
          message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
          message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
+
+         // add extra confirmation text to the email
+         if ((confirmUrl.equals("")) && (confirmText != null) && (!"".equals(confirmText))) {
+            
+            if(!type.equals("plain")) {
+               message += newline + newline + confirmText.replaceAll("\n", "<br/>") + newline;
+            } 
+            else {
+               message += newline + newline + confirmText + newline;
+            }
+         }         
+         
          message += yourGroupExcursion(thisParent, thisEvent, thisSubscription, newline, type) + newline + newline;
          message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
 
@@ -503,14 +530,23 @@ public class SubscribeAction extends Action {
                emailSubject += "Bevestiging aanmelding";               
             } else if(confirmUrl.equals("reminder")) {
                emailSubject += "Herinnering aanmelding";
+            } else if(confirmUrl.equals("confirmation-period-expired")) {
+               emailSubject += "Bevestigingstermijn verstreken";
             } else {
                emailSubject += "Aanmelding";
             }
-
+            
             emailSubject += " " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue();
             log.debug(confirmUrl);
             Node emailNode = cloud.getNodeManager("email").createNode();
-            emailNode.setValue("to", toEmailAddress);
+
+            // set mail reciever
+            if(confirmUrl.equals("confirmation-period-expired")) {
+               emailNode.setValue("to", toEmailAddress + "," + NatMMConfig.fromCADAddress);
+            } else {
+               emailNode.setValue("to", toEmailAddress);
+            }
+            
             emailNode.setValue("from", fromEmailAddress);
             emailNode.setValue("subject", emailSubject);
             emailNode.setValue("replyto", fromEmailAddress);
@@ -531,11 +567,14 @@ public class SubscribeAction extends Action {
             // this means the inschrijving is made by the backoffice
             // for website bookings the status is set to confirmed in includes/events_doconfirm.jsp
             RelationList relations = thisSubscription.getRelations("related","inschrijvings_status");
-            if(!relations.isEmpty()) {
+            
+            if(!relations.isEmpty() && !confirmUrl.equals("confirmation-period-expired")) {
                Relation  thisRelation = relations.getRelation(0);
+               
                if(thisRelation.getDestination().getStringValue("naam").equals("aangemeld")) {
                   thisRelation.delete(true);
                   Node thisStatus = cloud.getNode("confirmed");
+                  
                   if(thisStatus!=null) {
                      thisSubscription.createRelation(thisStatus,cloud.getRelationManager("related")).commit();
                   }
@@ -580,6 +619,10 @@ public class SubscribeAction extends Action {
       sendConfirmEmail(cloud, subscriptionNumber, "reminder");
    }
 
+   public static void sendConfirmationPeriodExpired(Cloud cloud, String subscriptionNumber) {
+      sendConfirmEmail(cloud, subscriptionNumber, "confirmation-period-expired");
+   }   
+   
    /**
     * The actual perform function: MUST be implemented by subclasses.
     *
