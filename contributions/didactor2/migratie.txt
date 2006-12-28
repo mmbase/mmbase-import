@@ -54,9 +54,9 @@ and restart Tomcat.
 
    If you want the bcc functionality to work:
 
-    alter table mmb_emails add bcc varchar(2048);
-    alter table mmb_emails change to  varchar(2048);
-    alter table mmb_emails change cc  varchar(2048);
+    alter table mmb_emails add bcc      blob;
+    alter table mmb_emails change m_to  blob;
+    alter table mmb_emails change cc    blob;
     alter table mmb_emails add mimetype varchar(128) default "text/html";
 
    Inspect mmbase log for more alter tables which can be done. Reasonable fall-backs are used if you
