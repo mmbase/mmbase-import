@@ -8,12 +8,18 @@
   <jsp:directive.attribute name="months"  />
   <mm:cloud method="asis">
     <mm:listnodes type="calendar_item_types">
-      .ct${_node} {
+      .ct${_node}, .ct${_node} * {
         background-color: ${_node.color};
+        <mm:function name="contrast">
+          color: ${_};
+        </mm:function>
       }
       <!-- cannot use a comma, because IE 6 does not even understand the other one then -->
       select.mm_validate.mm_f_type.mm_nm_calendar_items option[value="${_node}"] {
         background-color: ${_node.color};
+        <mm:function name="contrast">
+          color: ${_};
+        </mm:function>
       }
 
     </mm:listnodes>

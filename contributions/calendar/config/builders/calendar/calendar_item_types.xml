@@ -51,5 +51,8 @@
     <function name="gui" >
       <class>org.mmbase.calendar.GuiFunction</class>
     </function>
+    <function name="contrast">
+      <class>org.mmbase.calendar.ContrastFunction</class>
+    </function>
   </functionlist>  
 </builder>
