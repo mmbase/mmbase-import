@@ -44,6 +44,10 @@
 
     <%-- from deleted items mailbox: do a real delete --%>
     <mm:compare referid="type" value="2">
+
+      <%--
+      MM. Seems like a security-hole. I think you can delete any node from the system with this JSP
+      --%>
       <mm:relatednodescontainer type="object">
         <mm:constraint field="number" referid="list" operator="IN"/>
         <mm:relatednodes>
@@ -63,7 +67,7 @@
         <mm:relatednodescontainer type="mailboxes">
           <mm:constraint field="type" value="2"/>
           <mm:relatednodes>
-            <mm:import id="mailboxname"><mm:field name="name"/></mm:import>
+            <mm:field id="mailboxname" name="number" write="false" />
           </mm:relatednodes>
         </mm:relatednodescontainer>
       </mm:node>
