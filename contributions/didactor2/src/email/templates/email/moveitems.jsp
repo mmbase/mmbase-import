@@ -20,7 +20,7 @@
 <mm:import externid="callerpage"/>
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
-<mm:import externid="mailboxname"/>
+<mm:import externid="mailboxname"/><!-- actually a number -->
 <mm:import externid="so" />
 <mm:import externid="sf" />
 
@@ -133,7 +133,7 @@
               <select name="mailboxname">
             </mm:first>
 
-            <mm:import id="mailboxnumber"><mm:field name="number"/></mm:import>
+            <mm:field id="mailboxnumber" name="number" write="false" />
 
             <%-- Ignore the current folder of the items --%>
             <mm:compare referid="mailbox" value="$mailboxnumber" inverse="true">
