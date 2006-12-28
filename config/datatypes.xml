@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.49 2006-11-06 17:28:48 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.50 2006-12-28 13:59:27 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -184,7 +184,7 @@
       </description>
       <default value="white" />
       <maxLength value="64" />
-      <pattern value="(?i)\A(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purle|red|silver|teal|white|yellow|#[0-9,a-f]{3}|#[0-9,a-f]{6})\z" />
+      <pattern value="(?i)\A(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|#[0-9,a-f]{3}|#[0-9,a-f]{6})\z" />
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.string.colors" />
       </enumeration>
