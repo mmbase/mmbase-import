@@ -9,8 +9,16 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+/**
+ * @javadoc
+ * @version $Id: Util.java,v 1.2 2006-12-28 00:08:48 mmeeuwissen Exp $
+ */
 
 class Util {
+    private static final Logger log = Logging.getLoggerInstance(Util.class);
     private static ArrayList defaultDisallowedParameters;
     private static Properties defaultHtml;
 
@@ -56,6 +64,7 @@ class Util {
     protected static StringBuffer getCurrentUrl(PageContext pageContext, ArrayList disallowed) {
         HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
         StringBuffer url = req.getRequestURL();
+        log.debug("Starting with " + url);
         Map m = req.getParameterMap();
         Iterator params = m.entrySet().iterator();
         char connector = '?';
@@ -64,13 +73,14 @@ class Util {
             String key = (String)entry.getKey();
             if (!disallowed.contains(key) && !defaultDisallowedParameters.contains(key)) {
                 String[] values = (String[])entry.getValue();
-                for (int i=0; i<values.length; i++) {
+                for (int i = 0; i < values.length; i++) {
                     url.append(connector).append(key).append('=').append(values[i]);
                     connector = '&';
                 }
             }
         }
         url.append(connector);
+        log.debug("Using " + url);
         return url;
     }
 }
