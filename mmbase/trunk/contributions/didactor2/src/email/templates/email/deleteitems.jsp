@@ -46,7 +46,7 @@
     <mm:compare referid="type" value="2">
 
       <%--
-      MM. Seems like a security-hole. I think you can delete any node from the system with this JSP
+      MM. Seems like a security-hole. I think you can delete any node related to a node with a 'type' field with this JSP
       --%>
       <mm:relatednodescontainer type="object">
         <mm:constraint field="number" referid="list" operator="IN"/>
