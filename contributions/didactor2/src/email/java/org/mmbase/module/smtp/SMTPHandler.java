@@ -12,7 +12,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.13 2006-12-27 15:25:26 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.14 2006-12-28 09:49:18 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -507,6 +507,12 @@ public class SMTPHandler extends Thread {
             extractPart((Part)p.getContent(), attachments, mail);
         } else if (p.isMimeType("text/plain")) {
             // only adding text/plain - text/html will be stored as attachment!
+
+            // MM I think this goes wrong if the original mimeType was multipart/alternative
+            // when forwarding:
+            // 2006-12-28 10:32:38,758 ERROR nl.didactor.mail.ExtendedJMSendMail sendRemoteMail.373  - JMSendMail failure: MIME part of type "multipart/alternative" contains object of type java.lang.String instead of MimeMultipart
+            // and in the web-interface it still shows 2 attachments, while it should show none.
+
             log.debug("Found attachments with type: some text/plain tomething");
             Object content = null;
             try {
