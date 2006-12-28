@@ -299,6 +299,46 @@ public class EventNotifier implements Runnable {
       }
       return "\n<br>Number of emails for checking accounts is " + nEmailSend + logMessage;
    }
+
+   public String groupEventConfirmationPeriodExpired(Cloud cloud) { 
+      
+      String logMessage = "";
+      int nEmailSend = 0;
+      try {   
+         // list all the group subscription:
+         // - not confirmed
+         // - confirmation period expired
+         long now = (new Date().getTime())/1000;
+         long one_day = 24*60*60;
+         long two_weeks = 14*one_day;
+         
+         NodeIterator iNodes= cloud.getList(null
+            , "evenement,posrel,inschrijvingen,related,inschrijvings_status"
+            , "inschrijvingen.number, evenement.number"
+            , "inschrijvingen.datum_inschrijving < '" + (now - two_weeks) + "'"
+              + " AND evenement.begindatum > '" + now + "'"       
+              + " AND (inschrijvings_status.naam = 'aangemeld' OR"
+              + " (inschrijvings_status.naam = 'website-aanmelding')"
+              + " AND evenement.iscanceled='false'"
+            , null, null, null, false).nodeIterator();
+         
+         while(iNodes.hasNext()) {
+             Node nextNode = iNodes.nextNode();
+             String thisSubscription = nextNode.getStringValue("inschrijvingen.number");
+             String thisEvent= nextNode.getStringValue("evenement.number");
+             
+             // check if event is a group excursion
+             if (Evenement.isGroupExcursion(cloud, thisEvent)) {
+                SubscribeAction.sendConfirmationPeriodExpired(cloud, thisSubscription);
+                nEmailSend++;
+             }
+         }   
+      } catch(Exception e) {
+         log.info(e);
+      }
+      logMessage += "\n<br>Number of groupevent confirmationperiod expired send " + nEmailSend;
+      return logMessage;
+   }   
    
    public void updateEventDB(Cloud cloud) { 
    
@@ -330,6 +370,7 @@ public class EventNotifier implements Runnable {
          if(isFirstDayOfNewQuarter()) {
             logMessage += checkEmailAccounts(cloud);
          }
+         logMessage += groupEventConfirmationPeriodExpired(cloud);
       } else {
          logMessage += "\n<br>'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send";
          log.info("'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send");
