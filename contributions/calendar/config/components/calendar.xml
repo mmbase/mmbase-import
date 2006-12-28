@@ -16,7 +16,8 @@
 
   <block name="months" mimetype="text/html">
     <head jsp="/calendar/head.jspx" />
-    <body jsp="/calendar/index.jspx" />
+    <body jsp="/calendar/index.jspx">
+    </body>
   </block>
 
 </component>
