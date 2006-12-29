@@ -14,6 +14,22 @@
         </layout>
     </appender>
 
+  <!-- 
+  Another example: The sqllog appender can be used for
+  'MultiConnection' (see below), to achieve logging of every SQL
+  query, which is handy during debugging
+  -->
+
+<!--   
+  <appender name="sqllog" class="org.apache.log4j.FileAppender" >
+    <param name="File" value="&logdir;mmbase-sql.log" />
+    <param name="Encoding"   value="UTF-8" />    
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %m%n" />
+    </layout>
+  </appender>
+-->
+
     <logger name="org.mmbase.security" >
         <level class="&mmlevel;" value="@log.level@" />
     </logger>
@@ -30,9 +46,21 @@
        <level class="&mmlevel;" value="@log.level@" />   
     </logger>
 
+    <logger name="security.implementation.cloud.Verify" >
+       <level class="&mmlevel;" value="error" />
+    </logger>
+
     <logger name="org.mmbase.PAGE.LOGTAG" >
         <level class="&mmlevel;" value="service" />
     </logger>
+
+   <!-- SQL logging -->
+<!--  
+   <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
+    <level class="&mmlevel;" value ="info" />   
+    <appender-ref ref="sqllog" />
+   </logger>
+-->
 
     <root>
         <level class="&mmlevel;" value="@log.level@" />
