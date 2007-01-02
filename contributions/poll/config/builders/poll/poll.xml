@@ -7,10 +7,10 @@
   <searchage>9999</searchage>
   <names>
     <singular xml:lang="en">poll</singular>
-    <singular xml:lang="nl">poll</singular>
+    <singular xml:lang="nl">Peiling</singular>
     <singular xml:lang="eo">enketo</singular>
     <plural xml:lang="en">polls</plural>
-    <plural xml:lang="nl">polls</plural>
+    <plural xml:lang="nl">Opiniepeilingen</plural>
     <plural xml:lang="eo">enketoj</plural>
   </names>
   <descriptions>
@@ -77,6 +77,25 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="next month" />
+      </datatype>
+    </field>
+
+    <field name="total" state="system" readonly="true">
+      <description>
+        <description xml:lang="en">This is an automatic field, which will be updated every 10 minues
+        if the crontab module is active. Otherwise it is ignored. Use the 'total' function.</description>
+      </description>
+      <gui>
+        <guiname xml:lang="en">Total answers</guiname>
+        <guiname xml:lang="nl">Totaal aantal antwoorden</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
       </datatype>
     </field>
 

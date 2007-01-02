@@ -4,5 +4,10 @@
   <authenticate class="org\.apache\.jsp\.tag\..*">
     <property name="rank" value="administrator" />
   </authenticate>
+
+  <authenticate class="org\.mmbase\.poll\.TotalUpdater">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
 </security>
  
