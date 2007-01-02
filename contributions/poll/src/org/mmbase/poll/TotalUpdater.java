@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * periodically run to update the 'total' field of the poll builder (if this field exists).
  *
  * @author Michiel Meeuwissen
- * @version $Id: TotalUpdater.java,v 1.1 2007-01-02 15:40:48 michiel Exp $
+ * @version $Id: TotalUpdater.java,v 1.2 2007-01-02 19:19:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class TotalUpdater implements Runnable {
@@ -33,11 +33,11 @@ public class TotalUpdater implements Runnable {
             Queries.addConstraint(q, cons2);
             NodeList nodes = poll.getList(q);
             NodeIterator ne = nodes.nodeIterator();
+            Total total = new Total();
+            total.setCalculate(true);
             while (ne.hasNext()) {
                 Node p = ne.nextNode();
-                Total total = new Total();
                 total.setNode(p);
-                total.setCalculate(true);
                 int t = total.total();
                 if (t != p.getIntValue("total")) {
                     log.service("Updated total of poll " + p.getNumber() + " to " + t);
