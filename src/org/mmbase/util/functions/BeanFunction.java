@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.12 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: BeanFunction.java,v 1.13 2007-01-02 19:37:15 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -87,6 +87,11 @@ public class BeanFunction extends AbstractFunction<Object> {
      * This class of the bean
      */
     private Class  claz   = null;
+
+    /**
+     * @since MMBase-1.9
+     */
+    private Object bean   = null;
 
     /**
      * The method corresponding to the function called in getFunctionValue.
@@ -163,6 +168,14 @@ public class BeanFunction extends AbstractFunction<Object> {
 
     }
 
+    /**
+     * @since MMBase-1.9
+     */
+    public BeanFunction(Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+        this(bean.getClass(), name);
+        this.bean = bean;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -170,15 +183,15 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public Object getFunctionValue(Parameters parameters) {
         try {
-            Object bean = claz.newInstance();
+            Object b = bean == null ? claz.newInstance() : bean;
             Iterator<?> i = parameters.iterator();
             Iterator<Method> j = setMethods.iterator();
             while(i.hasNext() && j.hasNext()) {
                 Object value  = i.next();
                 Method setter = j.next();
-                setter.invoke(bean, value);
+                setter.invoke(b, value);
             }
-            Object ret =  method.invoke(bean);
+            Object ret =  method.invoke(b);
             return ret;
         } catch (Exception e) {
             throw new RuntimeException(e);
