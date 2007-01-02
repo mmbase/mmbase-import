@@ -16,10 +16,14 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
+ * If you use a DelaySetter on a field, than the process of the field will make sure that the field
+ * is not actually changed (the original value is returned). In stead, the field is only scheduled
+ * for update. If another update for this field occurs, only this scheduled task is changed. This
+ * way, very many updates on this field, result in only few updates in the database.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DelayedSetter.java,v 1.1 2007-01-02 19:19:28 michiel Exp $
- * @since MMBase-1.8
+ * @version $Id: DelayedSetter.java,v 1.2 2007-01-02 19:49:19 michiel Exp $
+ * @since MMBase-1.9
  */
 
 public class DelayedSetter implements Processor {
@@ -55,7 +59,7 @@ public class DelayedSetter implements Processor {
             }
         }
         if (log.isTraceEnabled()) {
-            log.info("" + queue);
+            log.trace("" + queue);
         }
         return node.getValueWithoutProcess(field.getName());
     }
