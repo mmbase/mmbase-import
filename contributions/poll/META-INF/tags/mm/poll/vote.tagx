@@ -3,27 +3,70 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.attribute name="poll"     />
-  <jsp:directive.attribute name="answer"   />
+  <!-- poll for which to handle a vote -->
+  <jsp:directive.attribute name="poll"     /> 
+  <!-- answer to use -->
+  <jsp:directive.attribute name="answer"   /> 
+  <!-- answers are 'posrel' related, so you could also identify an answer by pos -->
+  <jsp:directive.attribute name="answerpos"   />
+  <!-- if not empty, after a succesfull vote, you will be redirected to here-->
   <jsp:directive.attribute name="redirect"  />
-  <jsp:directive.attribute name="checkip" />
+<!-- if not empty, the 'ip' builder will be used to check double voting using the ip builder, it must be something link '- 5 day' -->
+  <jsp:directive.attribute name="checkip" />  
+  <!-- if not empty and not 'true', then in the session must be a correct value set by mm-poll:poll -->
+  <jsp:directive.attribute name="checksession" />
+  <!-- if not empty and not 'true', then a cookie with a correct value set by mm-poll:poll must exist -->
+  <jsp:directive.attribute name="checkcookie" />
 
   <c:if test="${empty poll}">
     <mm:import externid="poll" />
   </c:if>
+
   <c:if test="${! empty poll}">
+    <c:if test="${! empty answerpos}">
+      <!-- autodetermining answer by 'pos' -->
+      <mm:cloud method="delegate" authenticate="class">
+        <mm:node referid="poll">
+          <mm:relatednodescontainer role="posrel" type="answer">
+            <mm:constraint field="posrel.pos" value="${answerpos}" />
+            <mm:relatednodes max="1">
+              <mm:node id="answer" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>
+      </mm:cloud>
+    </c:if>
+
     <c:if test="${empty answer}">
       <mm:import externid="answer" required="true" />
     </c:if>
 
-    <mm:import id="havethis" from="session" externid="havethis$poll" />
+    <c:choose>
+      <c:when test="${empty checksession || checksession eq 'true'}">
+        <mm:import id="havethis" from="session" externid="havethis$poll" />
+      </c:when>
+      <c:otherwise>
+        <mm:import id="havethis">Hello World</mm:import>
+      </c:otherwise>
+    </c:choose>
+
+
     <mm:compare referid="havethis" value="Hello World">
-      <mm:import id="cookie" from="cookie" externid="poll$poll" />
+      <c:choose>
+        <c:when test="${empty checkcookie || checkcookie eq 'true'}">
+          <mm:import id="cookie" from="cookie" externid="poll$poll" />
+        </c:when>
+        <c:otherwise>
+          <mm:import id="cookie">canvote</mm:import>
+        </c:otherwise>
+      </c:choose>
+
       <mm:compare referid="cookie" value="canvote">
         <mm:cloud method="delegate" authenticate="class">
           <c:choose>
             <c:when test="${empty checkip}">
               <mm:import id="ips">0</mm:import>
+              <mm:log>BLASAA</mm:log>
             </c:when>
 
             <c:otherwise>
@@ -36,6 +79,7 @@
               <mm:import id="ip"><jsp:expression>ip</jsp:expression></mm:import>
               <mm:time id="now" time="now" precision="minutes" write="false" />
               <mm:listnodescontainer type="ip">
+                <mm:log>balsjklajsdlkf</mm:log>
                 <mm:constraint field="IP" value="$ip" />
                 <mm:constraint field="poll" value="${poll}" />
                 <mm:time id="yesterday" time="now ${checkip}" write="false" />
