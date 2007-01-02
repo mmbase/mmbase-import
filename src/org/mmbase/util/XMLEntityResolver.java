@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.63 2006-12-15 17:23:05 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.64 2007-01-02 12:20:07 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -252,7 +252,7 @@ public class XMLEntityResolver implements EntityResolver {
             appendEntities(sb, org.mmbase.module.core.MMBase.getMMBase(), "mmbase", 0, new HashSet<Object>());
             ents = sb.toString();
             if (logEnts) {
-                log.service("Using entities\n" + ents);
+                log.debug("Using entities\n" + ents);
             }
         }
         return ents;
@@ -269,7 +269,7 @@ public class XMLEntityResolver implements EntityResolver {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
-        
+
         InputStream definitionStream = null;
 
         if ("http://www.mmbase.org/mmentities.ent".equals(systemId)) {
@@ -304,11 +304,15 @@ public class XMLEntityResolver implements EntityResolver {
                 // it's a systemId we can't do anything with,
                 // so let the parser decide what to do
 
-                if (log.isDebugEnabled()) {
+                if (validate) {
                     log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
-                    log.debug("Find culpit: " + Logging.stackTrace(new Exception()));
+                    log.debug("Find culpit: ", new Exception());
+                    return null;
+                } else {
+                    // perhaps this should not be done if it is about resolving _entities_ rather then dtd.
+                    log.debug("Not validating, no need to resolve DTD (?), returning empty resource for " + systemId);
+                    return new InputSource(new ByteArrayInputStream(new byte[0])); 
                 }
-                return null;
             } else {
                 log.debug("mmbase resource");
                 String mmResource = systemId.substring(22);
