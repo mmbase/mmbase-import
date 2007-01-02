@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.168 2006-12-18 19:14:21 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.169 2007-01-02 23:10:50 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -1102,6 +1102,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     public String toString() {
-        return  "BasicCloud '" + getName() + "' of " + getUser().getIdentifier() + " @" + Integer.toHexString(hashCode());
+        String n = getClass().getName();
+        int dot = n.lastIndexOf(".");
+        if (dot > 0) {
+            n = n.substring(dot + 1);
+        }
+        return  n + " '" + getName() + "' of " + getUser().getIdentifier() + " @" + Integer.toHexString(hashCode());
     }
 }
