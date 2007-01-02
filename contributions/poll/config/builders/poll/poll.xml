@@ -81,10 +81,10 @@
     </field>
 
     <field name="total" state="system" readonly="true">
-      <description>
+      <descriptions>
         <description xml:lang="en">This is an automatic field, which will be updated every 10 minues
         if the crontab module is active. Otherwise it is ignored. Use the 'total' function.</description>
-      </description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Total answers</guiname>
         <guiname xml:lang="nl">Totaal aantal antwoorden</guiname>
