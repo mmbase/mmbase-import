@@ -60,6 +60,14 @@
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="0" />
         <required value="true" />
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.DelayedSetter">
+            <param name="delay">10</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.DelayedGetter" />
+        </getprocessor>
       </datatype>
     </field>
 
