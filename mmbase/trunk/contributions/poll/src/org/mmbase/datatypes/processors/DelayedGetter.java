@@ -14,10 +14,13 @@ import org.mmbase.util.Casting;
 import org.apache.commons.fileupload.FileItem;
 
 /**
+ * To be used in conjuction with {@link DelayedSetter}. The process of this processor does nothing
+ * unless an update for the field was scheduled, in which case the value associated with that update
+ * is returned.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DelayedGetter.java,v 1.1 2007-01-02 19:19:28 michiel Exp $
- * @since MMBase-1.8
+ * @version $Id: DelayedGetter.java,v 1.2 2007-01-02 19:49:19 michiel Exp $
+ * @since MMBase-1.9
  */
 
 public class DelayedGetter implements Processor {
