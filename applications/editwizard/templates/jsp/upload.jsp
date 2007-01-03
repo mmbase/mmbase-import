@@ -5,7 +5,7 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.10 2004-05-24 14:02:44 michiel Exp $
+     * @version  $Id: upload.jsp,v 1.10.2.1 2007-01-03 19:36:24 nklasens Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -15,6 +15,11 @@ String did = request.getParameter("did");
 if (did==null) {
     out.write("No valid parameters for the upload routines. Make sure to supply did field.");
     return;
+}
+
+String maxsize = request.getParameter("maxsize");
+if (maxsize == null || maxsize.length() == 0) {
+	maxsize = String.valueOf(ewconfig.maxupload);
 }
 %>
 
@@ -30,8 +35,6 @@ if (did==null) {
     function sayWait() {
         document.getElementById("form").style.visibility="hidden";
         document.getElementById("busy").style.visibility="visible";
-
-//		document.body.innerHTML='uploading... Please wait.<br /><br />Or click <a href="#" onclick="closeIt(); return false;">here</a> to cancel upload.</a>';
     }
 
     function closeIt() {
@@ -47,7 +50,7 @@ if (did==null) {
     }
 %>
 <div id="form">
-    <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
+    <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=maxsize%>" enctype="multipart/form-data" method="POST" >
         <input type="file" name="<%=did%>" onchange="upload();"></input><br />
         <input type="button" onclick="upload();" value="upload"></input><br />
     </form>
