@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.8 2006-11-27 10:43:23 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.9 2007-01-03 19:54:35 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1322,8 +1322,6 @@
   <xsl:template name="listsearch-fields">
     <!-- other search-possibilities are given in the xml -->
     <select name="searchfields_{../command[@name=&apos;add-item&apos;]/@cmd}" class="searchpossibilities" onChange="form[&apos;searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;default&apos;); form[&apos;searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;searchtype&apos;);">
-      <xsl:choose>
-        <xsl:when test="search-filter">
           <xsl:for-each select="search-filter">
             <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
               <xsl:call-template name="i18n">
@@ -1331,14 +1329,6 @@
               </xsl:call-template>
             </option>
           </xsl:for-each>
-        </xsl:when>
-        <!-- if nothing, then search on title -->
-        <xsl:otherwise>
-          <option value="title">
-            <xsl:call-template name="prompt_search_title"/>
-          </option>
-        </xsl:otherwise>
-      </xsl:choose>
       <xsl:call-template name="listsearch-fields-default"/>
     </select>
     <input type="hidden" name="searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/search-fields/@searchtype}"/>
