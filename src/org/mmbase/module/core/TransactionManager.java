@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.38 2006-11-12 09:31:46 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.39 2007-01-03 00:48:59 michiel Exp $
  */
 public class TransactionManager {
 
@@ -101,7 +101,7 @@ public class TransactionManager {
      */
     synchronized public Collection<MMObjectNode> createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
-            List<MMObjectNode> transactionNodes = new ArrayList();
+            List<MMObjectNode> transactionNodes = new ArrayList<MMObjectNode>();
             transactions.put(transactionName, transactionNodes);
             return transactionNodes;
         } else {
@@ -179,22 +179,41 @@ public class TransactionManager {
         return transactionName;
     }
 
-    public String commit(Object user, String transactionName) throws TransactionManagerException {
+    /**
+     * @todo Review this stuff..
+     * @since MMBase-1.9
+     */
+    public boolean resolve(String transactionName) throws TransactionManagerException {
+
+        // MM: I think we need an actual Transaction object! with e.g. a property 'resolved'.
+
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
-        try {
+        if (transaction instanceof ArrayList) { // a bit of a trick to see if it is resolved already
             boolean resolved = getTransactionResolver().resolve(transaction);
-            if (!resolved) {
+            if (resolved) {
+                transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
+            } else {
                 log.error("Can't resolve transaction " + transactionName);
                 log.error("Nodes \n" + transaction);
                 throw new TransactionManagerException("Can't resolve transaction " + transactionName + "" + transaction);
-            } else {
-                resolved = performCommits(user, transaction);
-                if (!resolved) {
-                    log.error("Can't commit transaction " + transactionName);
-                    log.error("Nodes \n" + transaction);
-                    throw new TransactionManagerException("Can't commit transaction " + transactionName);
-                }
             }
+        } else {
+            log.service("Resolved already");
+            return false;
+        }
+        return true;
+    }
+
+    public String commit(Object user, String transactionName) throws TransactionManagerException {
+        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+        try {
+            resolve(transactionName);
+            if (!performCommits(user, transaction)) {
+                log.error("Can't commit transaction " + transactionName);
+                log.error("Nodes \n" + transaction);
+                throw new TransactionManagerException("Can't commit transaction " + transactionName);
+            }
+
         } finally {
             // remove nodes from the temporary node cache
             MMObjectBuilder builder = MMBase.getMMBase().getTypeDef();
