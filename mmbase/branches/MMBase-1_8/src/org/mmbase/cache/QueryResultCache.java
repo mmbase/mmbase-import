@@ -18,7 +18,6 @@ import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
 
-import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.bridge.implementation.BasicQuery;
 
 /**
@@ -33,20 +32,24 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34 2006-06-27 07:31:46 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.34.2.1 2007-01-03 09:16:27 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
 
-abstract public class QueryResultCache extends Cache {
+abstract public class QueryResultCache extends Cache implements NodeEventListener, RelationEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(QueryResultCache.class);
 
     /**
-     * Need reference to all existing these caches, to be able to invalidate
-     * them.
+     * This map contains the possible counts of queries grouped by type in this cache.
+     * A query with multiple steps (types) will increase all counters. 
+     * A relation role name is considered a type
+     * This cache will not invalidate when an event does not mention one of these types
+     * The cache will be evaluated when a parent type is in this map.
      */
-    private static final Map queryCaches = new HashMap();
+    private Map typeCounters = new HashMap();
+    
 
     /**
      * This is the default release strategy. Actually it is a container for any
@@ -54,36 +57,13 @@ abstract public class QueryResultCache extends Cache {
      *
      * @see ChainedReleaseStrategy
      */
-
-    /**
-     * this is only used for logging, to create readable queries out of query objects.
-     */
-    final BasicSqlHandler sqlHandler = new BasicSqlHandler();
-
     private final ChainedReleaseStrategy releaseStrategy;
-
-    /**
-     * Explicitely invalidates all Query caches for a certain builder. This is
-     * used in MMObjectBuilder for 'local' changes, to ensure that imediate
-     * select after update always works.
-     *
-     * @return number of entries invalidated
-     */
-
-
-    // Keep a map of the existing Observers, for each nodemanager one.
-    // @todo I think it can be done with one Observer instance too, (in which
-    // case we can as well
-    // let QueryResultCache implement MMBaseObserver itself)
-    private final Map observers = new HashMap();
 
     QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
         log.debug("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
-        if (queryCaches.put(this.getName(), this) != null) {
-            log.error("" + queryCaches + "already containing " + this + "!!");
-        }
+        MMBase.getMMBase().addNodeRelatedEventsListener("object", this);
     }
 
     /**
@@ -117,20 +97,9 @@ abstract public class QueryResultCache extends Cache {
     }
 
     /**
-     * @return an iterator of all observer instances
-     */
-    public Iterator observerIterator(){
-        List observerList = new ArrayList();
-        synchronized(this){
-            observerList.addAll(observers.values());
-        }
-        return observerList.iterator();
-    }
-
-    /**
      * @throws ClassCastException if key not a SearchQuery or value not a List.
      */
-    public synchronized Object put(Object key, Object value) {
+    public Object put(Object key, Object value) {
         if (key instanceof BasicQuery) {
             return put(((BasicQuery) key).getQuery(), (List) value);
         }
@@ -140,203 +109,233 @@ abstract public class QueryResultCache extends Cache {
 
     /**
      * Puts a search result in this cache.
+     * @param query 
+     * @param queryResult
      */
     public synchronized Object put(SearchQuery query, List queryResult) {
         if (!checkCachePolicy(query)) return null;
-
-        List n = (List) super.get(query);
-        if (n == null) {
-            addObservers(query);
-        }
+        increaseCounters(query, typeCounters);
         return super.put(query, queryResult);
     }
 
+    /**
+     * @throws ClassCastException if key not a SearchQuery or value not a List.
+     */
+    public Object remove(Object key) {
+        if (key instanceof BasicQuery) {
+            return remove(((BasicQuery) key).getQuery());
+        }
+
+        return remove((SearchQuery) key);
+    }
+
+    
     /**
      * Removes an object from the cache. It alsos remove the watch from the
      * observers which are watching this entry.
      *
      * @param key A SearchQuery object.
      */
-    public synchronized Object remove(Object key) {
-        Object result = super.remove(key);
-
-        if (result != null) { // remove the key also from the observers.
-            Iterator i = observers.values().iterator();
-            while (i.hasNext()) {
-                Observer o = (Observer) i.next();
-                o.stopObserving(key);
-            }
-        }
+    public synchronized Object remove(SearchQuery query) {
+        Object result = super.remove(query);
+        decreaseCounters(query, typeCounters);
         return result;
     }
 
-    /**
-     * Adds observers on the entry
-     */
-    private void addObservers(SearchQuery query) {
-        MMBase.getMMBase();
-
-        Iterator i = query.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = (Step) i.next();
-            //if we want to test constraints on relaion steps we have to have observers for them
-//            if (step instanceof RelationStep) {
-//                continue;
-//            }
-            String type = step.getTableName();
-
-            Observer o = (Observer) observers.get(type);
-            if (o == null) {
-                o = new Observer(type);
-                synchronized(this){
-                    observers.put(type, o);
-                }
+    private void increaseCounters(SearchQuery query, Map counters) {
+        for (Iterator iter = query.getSteps().iterator(); iter.hasNext();) {
+            Step step = (Step) iter.next();
+            String stepName = step.getTableName();
+            if (counters.containsKey(stepName)) {
+                int count = ((Integer) counters.get(stepName)).intValue();
+                counters.put(stepName, new Integer(count + 1));
             }
-            o.observe(query);
+            else {
+                counters.put(stepName, new Integer(1));
+            }
         }
     }
 
+    private void decreaseCounters(SearchQuery query, Map counters) {
+        for (Iterator iter = query.getSteps().iterator(); iter.hasNext();) {
+            Step step = (Step) iter.next();
+            String stepName = step.getTableName();
+            if (counters.containsKey(stepName)) {
+                int count = ((Integer) counters.get(stepName)).intValue();
+                if (count > 1) {
+                    counters.put(stepName, new Integer(count - 1));
+                }
+                else {
+                    counters.remove(stepName);
+                }
+            }
+        }
+    }
+
+    
     public String toString() {
         return this.getClass().getName() + " " + getName();
     }
 
     /**
-     * This observer subscribes itself to builder changes, and invalidates the
-     * multilevel cache entries which are dependent on that specific builder.
+     * @see org.mmbase.core.event.RelationEventListener#notify(org.mmbase.core.event.RelationEvent)
      */
-
-    private class Observer implements NodeEventListener, RelationEventListener {
-        /**
-         * This set contains the types (as a string) which are to be
-         * invalidated.
-         */
-        private Set cacheKeys = new HashSet(); // using java default for
-                                                // initial size. Someone tried 50.
-
-        private String type;
-
-        /**
-         * Creates a multilevel cache observer for the speficied type
-         *
-         * @param type Name of the builder which is to be observed.
-         */
-        private Observer(String type) {
-            this.type = type;
-            MMBase mmb = MMBase.getMMBase();
-            // when the type is a role, we need to subscribe
-            // the builder it belongs to..
-            if (mmb.getMMObject(type) == null) {
-                int builderNumber = mmb.getRelDef().getNumberByName(type);
-                String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
-                if (log.isDebugEnabled()) {
-                    log.debug("replaced the type: " + type + " with type:" + newType);
-                }
-                type = newType;
-            }
-            mmb.addNodeRelatedEventsListener(type, this);
-        }
-
-        /**
-         * Start watching the entry with the specified key of this
-         * MultilevelCache (for this type).
-         *
-         * @return true if it already was observing this entry.
-         */
-        protected synchronized boolean observe(Object key) {
-            // assert(MultilevelCache.this.containsKey(key));
-            return cacheKeys.add(key);
-        }
-
-        /**
-         * Stop observing this key of multilevelcache
-         */
-        protected synchronized boolean stopObserving(Object key) {
-            return cacheKeys.remove(key);
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.mmbase.core.event.RelationEventListener#notify(org.mmbase.core.event.RelationEvent)
-         */
-        public void notify(RelationEvent event) {
+    public void notify(RelationEvent event) {
+        if(containsType(event)) {
             nodeChanged(event);
         }
+    }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
-         */
-        public void notify(NodeEvent event) {
+    private boolean containsType(RelationEvent event) {
+        if (typeCounters.containsKey("object")) {
+            return true;
+        }
+        if (typeCounters.containsKey(event.getRelationSourceType())
+                || typeCounters.containsKey(event.getRelationDestinationType())) {
+            return true;
+        }
+        MMBase mmb = MMBase.getMMBase();
+        String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
+        if (typeCounters.containsKey(roleName)) {
+            return true;
+        }
+        MMObjectBuilder srcbuilder = mmb.getMMObject(event.getRelationSourceType());
+        for (Iterator iter = srcbuilder.getAncestors().iterator(); iter.hasNext();) {
+            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+            if (typeCounters.containsKey(parent.getTableName())) {
+                return true;
+            }
+        }
+        MMObjectBuilder destbuilder = mmb.getMMObject(event.getRelationDestinationType());
+        for (Iterator iter = destbuilder.getAncestors().iterator(); iter.hasNext();) {
+            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+            if (typeCounters.containsKey(parent.getTableName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
+     */
+    public void notify(NodeEvent event) {
+        if (containsType(event)) {
             nodeChanged(event);
         }
+    }
 
-        protected int nodeChanged(Event event) throws IllegalArgumentException{
-            if (log.isDebugEnabled()) {
-                log.debug("Considering " + event);
+    private boolean containsType(NodeEvent event) {
+        if (typeCounters.containsKey("object")) {
+            return true;
+        }
+        if (typeCounters.containsKey(event.getBuilderName())) {
+            return true;
+        }
+        MMBase mmb = MMBase.getMMBase();
+        MMObjectBuilder destbuilder = mmb.getMMObject(event.getBuilderName());
+        for (Iterator iter = destbuilder.getAncestors().iterator(); iter.hasNext();) {
+            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+            if (typeCounters.containsKey(parent.getTableName())) {
+                return true;
             }
-            int evaluatedResults = cacheKeys.size();
-            Set removeKeys = new HashSet();
-            long startTime = System.currentTimeMillis();
-            synchronized (QueryResultCache.this) {
-                Iterator i = cacheKeys.iterator();
-                if (log.isDebugEnabled()) {
-                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
-                }
-                while(i.hasNext()) {
-                    SearchQuery key = (SearchQuery) i.next();
+        }
+        return false;
+    }
 
-                    boolean shouldRelease;
-                    if(releaseStrategy.isEnabled()){
-                        if(event instanceof NodeEvent){
-                            shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key)).shouldRelease();
-                        } else if (event instanceof RelationEvent){
-                            shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key)).shouldRelease();
-                        } else {
-                            log.error("event " + event.getClass() + " " + event + " is of unsupported type");
-                            shouldRelease = false;
+    protected int nodeChanged(Event event) throws IllegalArgumentException{
+        if (log.isDebugEnabled()) {
+            log.debug("Considering " + event);
+        }
+        Set cacheKeys;
+        Map oldTypeCounters;
+        synchronized(this) {
+            cacheKeys = new HashSet(keySet());
+            oldTypeCounters = new HashMap(typeCounters);
+        }
+
+        Set removeKeys = new HashSet();
+        Map foundTypeCounters = new HashMap();
+
+        evaluate(event, cacheKeys, removeKeys, foundTypeCounters);
+
+        synchronized(this) {
+            Iterator removeIter = removeKeys.iterator();
+            while(removeIter.hasNext()) {
+                remove(removeIter.next());
+            }
+            
+            // types in the oldTypesCounter which are not in the typeCounters are removed during the 
+            // evaluation of the keys and are not relevant anymore.
+            for (Iterator iter = typeCounters.keySet().iterator(); iter.hasNext();) {
+                String type = (String) iter.next();
+                if (foundTypeCounters.containsKey(type)) {
+                    if (oldTypeCounters.containsKey(type)) {
+                        // adjust counter
+                        int oldValue = ((Integer) oldTypeCounters.get(type)).intValue();
+                        int guessedValue = ((Integer) typeCounters.get(type)).intValue();
+                        int foundValue = ((Integer) foundTypeCounters.get(type)).intValue();
+                        if (guessedValue - oldValue > 0) {
+                            int newValue = foundValue + (guessedValue - oldValue);
+                            foundTypeCounters.put(type, new Integer(newValue));
                         }
-                    } else {
-                        shouldRelease = true;
                     }
-
-                    if (shouldRelease) {
-                        removeKeys.add(key);
-                        i.remove();
+                    else {
+                        int guessedValue = ((Integer) typeCounters.get(type)).intValue();
+                        int foundValue = ((Integer) foundTypeCounters.get(type)).intValue();
+                        int newValue = foundValue + guessedValue;
+                        foundTypeCounters.put(type, new Integer(newValue));
                     }
-
                 }
-
-                // ernst: why is this in a separate loop?
-                // why not chuck em out in the first one?
-                i = removeKeys.iterator();
-                while(i.hasNext()) {
-                    QueryResultCache.this.remove(i.next());
+                else {
+                    Integer guessedValue = (Integer) typeCounters.get(type);
+                    foundTypeCounters.put(type, guessedValue);
                 }
             }
-            if (log.isDebugEnabled()) {
-                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
+            typeCounters = foundTypeCounters;
+        }
+        return removeKeys.size();
+    }
+
+    private void evaluate(Event event, Set cacheKeys, Set removeKeys, Map foundTypeCounters) {
+        int evaluatedResults = cacheKeys.size();
+        long startTime = System.currentTimeMillis();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
+        }
+        Iterator i = cacheKeys.iterator();
+        while(i.hasNext()) {
+            SearchQuery key = (SearchQuery) i.next();
+
+            boolean shouldRelease;
+            if(releaseStrategy.isEnabled()){
+                if(event instanceof NodeEvent){
+                    shouldRelease = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key)).shouldRelease();
+                } else if (event instanceof RelationEvent){
+                    shouldRelease = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key)).shouldRelease();
+                } else {
+                    log.error("event " + event.getClass() + " " + event + " is of unsupported type");
+                    shouldRelease = false;
+                }
+            } else {
+                shouldRelease = true;
             }
-            return removeKeys.size();
-        }
 
-        public String toString() {
-            return "QueryResultCacheObserver for " + type + " watching " + cacheKeys.size() + " queries";
+            if (shouldRelease) {
+                removeKeys.add(key);
+            }
+            else {
+                increaseCounters(key, foundTypeCounters);
+            }
         }
-
-        public void clear() {
-            cacheKeys.clear();
+        if (log.isDebugEnabled()) {
+            log.debug(QueryResultCache.this.getName() + ": event analyzed in " + (System.currentTimeMillis() - startTime)  + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
         }
     }
 
     public void clear(){
         super.clear();
         releaseStrategy.clear();
-        Iterator i = observers.values().iterator();
-        while (i.hasNext()) {
-            Observer o = (Observer) i.next();
-            o.clear();
-        }
     }
 }

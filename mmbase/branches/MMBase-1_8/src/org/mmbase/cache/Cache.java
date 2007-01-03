@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.36 2006-07-31 13:33:05 michiel Exp $
+ * @version $Id: Cache.java,v 1.36.2.1 2007-01-03 09:16:27 nklasens Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -327,6 +327,14 @@ abstract public class Cache implements SizeMeasurable, Map {
      */
     public boolean equals(Object o) {
         // odd, but this is accordinding to javadoc of Map.
+        if (o == this)
+            return true;
+
+        if (!(o instanceof Cache))
+            return false;
+        Cache c = (Cache) o;
+        if (!c.getName().equals(getName()))
+            return false;;
         return implementation.equals(o);
     }
 
@@ -335,7 +343,9 @@ abstract public class Cache implements SizeMeasurable, Map {
      * @see java.util.Map#hashCode()
      */
     public int hashCode() {
-        return implementation.hashCode();
+        int hash = getName().hashCode();
+        hash = HashCodeUtil.hashCode(hash, implementation.hashCode());
+        return hash;
     }
 
 
