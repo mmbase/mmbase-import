@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder maintainer="mmbase.org" name="discounts" version="0" extends="object">
+  <status>active</status>
+  <classfile>Dummy</classfile>
+  <searchage>1000</searchage>
+  <names>
+    <singular xml:lang="nl">Aanbieding</singular>
+    <singular xml:lang="en">Discount</singular>
+    <plural xml:lang="nl">Aanbiedingen</plural>
+    <plural xml:lang="en">Discounts</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">Aanbiedingen</description>
+    <description xml:lang="en">Discounts</description>
+  </descriptions>
+  <properties>
+  </properties>
+  <fieldlist>
+  	<!-- field definition for field 4 : title -->
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Titel van de aanbieding</description>
+        <description xml:lang="en">Title of the discount</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="en">Title</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in the list area of the editor -->
+          <list>1</list>
+          <!-- position in the search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>title</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>  
+  
+  
+    <!-- field definition for field 5 : body -->
+  	<field>
+  	  <descriptions>
+  		<description xml:lang="nl">Tekst bij de aanbieding</description>
+  		<description xml:lang="en">Discount text</description>
+  	  </descriptions>
+  	  <!-- gui related -->
+  	  <gui>
+  		<guiname xml:lang="nl">Tekst bij de aanbieding</guiname>
+  		<guiname xml:lang="en">Discount text</guiname>
+  		<guitype>string</guitype>
+  	  </gui>
+  	  <!-- editor related -->
+  	  <editor>
+  		<positions>
+  		  <!-- position in the input area of the editor -->
+  		  <input>2</input>
+  		  <!-- position in the list area of the editor -->
+  		  <list>-1</list>
+  		  <!-- position in the search area of the editor -->
+  		  <search>2</search>
+  		</positions>
+  	  </editor>
+  	  <!-- database related -->
+  	  <db>
+  		<!-- name of the field in the database -->
+  		<name>body</name>
+  		<!-- MMBase datatype and demands on it -->
+  		<type key="false" notnull="false" size="4096" state="persistent">STRING</type>
+  	  </db>
+    </field>
+	
+	<!-- field definition for field 8 : type -->
+	<field>
+	  <descriptions>
+		<description xml:lang="nl">Type korting</description>
+		<description xml:lang="en">Discount type</description>
+	  </descriptions>
+	  <!-- gui related -->
+	  <gui>
+		<guiname xml:lang="nl">Type korting</guiname>
+		<guiname xml:lang="en">Discount type</guiname>
+		<guitype>string</guitype>
+	  </gui>
+	  <!-- editor related -->
+	  <editor>
+		<positions>
+		  <!-- position in the input area of the editor -->
+		  <input>3</input>
+		  <!-- position in the list area of the editor -->
+		  <list>-1</list>
+		  <!-- position in the search area of the editor -->
+		  <search>3</search>
+		</positions>
+	  </editor>
+	  <!-- database related -->
+	  <db>
+		<!-- name of the field in the database -->
+		<name>type</name>
+		<!-- MMBase datatype and demands on it -->
+		<type key="false" notnull="false" size="255" state="persistent">STRING</type>
+	  </db>
+	</field>
+	
+	<!-- field definition for field 6 : startdate -->
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Begin actieperiode</description>
+        <description xml:lang="en">Start discount</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Begin actieperiode</guiname>
+        <guiname xml:lang="en">Start discount</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>4</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>4</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>startdate</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+	<!-- field definition for field 7 : enddate -->
+    <field>  
+      <descriptions>
+        <description xml:lang="nl">Einde actieperiode</description>
+        <description xml:lang="en">End discount</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Einde actieperiode</guiname>
+        <guiname xml:lang="en">End discount</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>5</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>5</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>enddate</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+	
+	<!-- field definition for field 9 : threshold -->
+	<field>  
+	  <descriptions>
+		<description xml:lang="nl">Grens</description>
+		<description xml:lang="en">Threshold</description>
+	  </descriptions>
+	  <!-- gui related -->
+	  <gui>
+		<guiname xml:lang="nl">Grens</guiname>
+		<guiname xml:lang="en">Threshold</guiname>
+		<guitype>integer</guitype>
+	  </gui>
+	  <!-- editor related -->
+	  <editor>
+		<positions>
+		  <!-- position in the input area of the editor -->
+		  <input>6</input>
+		  <!-- position in the list area of the editor -->
+		  <list>-1</list>
+		  <!-- position in the search area of the editor -->
+		  <search>6</search>
+		</positions>
+	  </editor>
+	  <!-- database related -->
+	  <db>
+		<!-- name of the field in the database -->
+		<name>threshold</name>
+		<!-- MMBase datatype and demands on it -->
+		<type key="false" notnull="false" state="persistent">INTEGER</type>
+	  </db>
+	</field>
+
+	<!-- field definition for field 9 : amount -->
+    <field>  
+      <descriptions>
+        <description xml:lang="nl">Korting</description>
+        <description xml:lang="en">Discount</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Korting</guiname>
+        <guiname xml:lang="en">Discount</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>7</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>7</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>amount</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+  </fieldlist>
+</builder>
+	

@@ -56,6 +56,8 @@
         <builder version="0" maintainer="mmbase.org">bevestigings_teksten</builder>
         <builder version="0" maintainer="mmbase.org">deelnemers</builder>
         <builder version="0" maintainer="mmbase.org">deelnemers_categorie</builder>
+        <builder version="0" maintainer="mmbase.org">discounts</builder>
+		  <builder version="0" maintainer="mmbase.org">discountrel</builder>
         <builder version="0" maintainer="mmbase.org">ecard</builder>
         <builder version="0" maintainer="mmbase.org">email</builder>
         <builder version="0" maintainer="mmbase.org">evenement</builder>
@@ -91,6 +93,7 @@
         <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
         <reldef source="constraints" target="constraints" direction="bidirectional" guisourcename="constraints" guitargetname="constraints" builder="constraints" />
         <reldef source="daterel" target="daterel" direction="bidirectional" guisourcename="daterel" guitargetname="daterel" builder="daterel" />
+        <reldef source="discountrel" target="discountrel" direction="unidirectional" guisourcename="DiscountRel" guitargetname="DiscountRel" builder="discountrel" />
         <reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel" />
         <reldef source="lijstcontentrel" target="lijstcontentrel" direction="bidirectional" guisourcename="lijstcontentrel" guitargetname="lijstcontentrel" builder="lijstcontentrel" />
         <reldef source="maillijst" target="maillijst" direction="bidirectional" guisourcename="maillijst" guitargetname="maillijst" builder="insrel" />
@@ -276,6 +279,7 @@
         <datasource builder="bevestigings_teksten" path="NatMM/bevestigings_teksten.xml" />
         <datasource builder="deelnemers" path="NatMM/deelnemers.xml" />
         <datasource builder="deelnemers_categorie" path="NatMM/deelnemers_categorie.xml" />
+        <datasource builder="discounts" path="NatMM/discounts.xml" />
         <datasource builder="ecard" path="NatMM/ecard.xml" />
         <datasource builder="email" path="NatMM/email.xml"/>
         <datasource builder="evenement" path="NatMM/evenement.xml"/>
@@ -320,6 +324,7 @@
       <relationsource builder="altrel" path="NatMM/altrel.xml"/>
       <relationsource builder="constraints" path="NatMM/constraints.xml"/>
       <relationsource builder="daterel" path="NatMM/daterel.xml"/>
+      <relationsource builder="discountrel" path="NatMM/discountrel.xml" />
       <relationsource builder="partrel" path="NatMM/partrel.xml"/>
       <relationsource builder="pos4rel" path="NatMM/pos4rel.xml"/>
    </relationsourcelist>
