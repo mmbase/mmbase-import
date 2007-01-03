@@ -13,7 +13,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 
@@ -80,14 +80,15 @@ public class BasicSqlHandlerTest extends TestCase {
 
     /** Test of toSqlString method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testToSqlString() throws Exception {
-        assertTrue(BasicSqlHandler.toSqlString(null) == null);
-        assertTrue(BasicSqlHandler.toSqlString("'").equals("''"));
-        assertTrue(BasicSqlHandler.toSqlString("'''''").equals("''''''''''"));
-        assertTrue(BasicSqlHandler.toSqlString("AsDf'").equals("AsDf''"));
-        assertTrue(BasicSqlHandler.toSqlString("AsDf'jkl").equals("AsDf''jkl"));
-        assertTrue(BasicSqlHandler.toSqlString("AsDf'jkl'").equals("AsDf''jkl''"));
-        assertTrue(BasicSqlHandler.toSqlString("'AsDf'jkl").equals("''AsDf''jkl"));
-        assertTrue(BasicSqlHandler.toSqlString("qwerty").equals("qwerty"));
+        BasicSqlHandler basicSqlHandler = new BasicSqlHandler();
+        assertTrue(basicSqlHandler.toSqlString(null) == null);
+        assertTrue(basicSqlHandler.toSqlString("'").equals("''"));
+        assertTrue(basicSqlHandler.toSqlString("'''''").equals("''''''''''"));
+        assertTrue(basicSqlHandler.toSqlString("AsDf'").equals("AsDf''"));
+        assertTrue(basicSqlHandler.toSqlString("AsDf'jkl").equals("AsDf''jkl"));
+        assertTrue(basicSqlHandler.toSqlString("AsDf'jkl'").equals("AsDf''jkl''"));
+        assertTrue(basicSqlHandler.toSqlString("'AsDf'jkl").equals("''AsDf''jkl"));
+        assertTrue(basicSqlHandler.toSqlString("qwerty").equals("qwerty"));
     }
 
     /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
