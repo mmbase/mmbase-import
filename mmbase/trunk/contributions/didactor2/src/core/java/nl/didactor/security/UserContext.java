@@ -17,12 +17,12 @@ import java.util.HashSet;
  * contains all information about a user, it can also report back
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: UserContext.java,v 1.5 2006-12-13 09:21:36 mmeeuwissen Exp $
+ * @version $Id: UserContext.java,v 1.6 2007-01-04 18:12:09 mmeeuwissen Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
 
-    private final MMObjectNode wrappedNode;
+    private final int wrappedNode;
     private final String identifier ;
     private final String owner;
     private final Rank rank;
@@ -47,7 +47,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         identifier = "";
         owner = "";
         rank = null;
-        wrappedNode = null;
+        wrappedNode = 0;
     }
 
     /**
@@ -58,7 +58,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         this.identifier = identifier;
         this.owner = owner;
         this.rank = rank;
-        wrappedNode = null;
+        wrappedNode = 0;
     }
 
     /**
@@ -71,7 +71,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         owner = node.getStringValue("username");
         identifier = owner;
         String rankstring = "people";
-        this.wrappedNode = node;
+        this.wrappedNode = node == null ? 0 : node.getNumber();
 
         if ("admin".equals(owner)) {
             rank = Rank.ADMIN;
@@ -102,10 +102,6 @@ public class UserContext extends org.mmbase.security.BasicUser {
     }
 
     public Integer getUserNumber() {
-        try {
-            if ( wrappedNode != null )
-                return (Integer)wrappedNode.getValue("number");
-        } catch (Exception e) {}
-        return new Integer(0);
+        return new Integer(wrappedNode);
     }
 }
