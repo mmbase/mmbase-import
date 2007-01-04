@@ -1,4 +1,4 @@
-Subject: Simple related multipart mail 2
+Subject: Simple related multipart mail 2 $(CURRENTDATE)
 X-Header-Test: test
 From: ppuk@m.meeuw.org
 Content-Type: multipart/related; boundary="==boundary-1"; type="text/html"
