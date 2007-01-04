@@ -1,6 +1,7 @@
 package nl.didactor.mail;
 import javax.mail.internet.*;
 import javax.mail.*;
+import javax.mail.util.ByteArrayDataSource;
 import javax.activation.*;
 import javax.naming.*;
 import java.util.*;
@@ -23,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.14 2006-12-27 22:45:00 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.15 2007-01-04 14:09:40 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -258,7 +259,7 @@ public class ExtendedJMSendMail extends SendMail {
         try {
 
             if (log.isServiceEnabled()) {
-                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from);
+                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ")");
             }
             // construct a message
             MimeMessage msg = new MimeMessage(session);
@@ -300,27 +301,38 @@ public class ExtendedJMSendMail extends SendMail {
             /* add attachments here */
             NodeList attachments = n.getRelatedNodes("attachments");
             if (attachments.size() != 0) {
-                MimeMultipart mmp = new MimeMultipart("mixed");
-
-                {
-                    MimeBodyPart bodypart = new MimeBodyPart();
-                    bodypart.setContent(body, mimeType);
-                    mmp.addBodyPart(bodypart);
+                String subType;
+                if (mimeType.startsWith("multipart/")) {
+                    subType = mimeType.substring(10);
+                    log.debug("found subype " + subType + " from " + mimeType);
+                } else {
+                    log.debug("Related attachments, but mimeType was " + mimeType + " using multipart/mixed");
+                    subType ="mixed";
                 }
 
+                MimeMultipart mmp = new MimeMultipart(subType);
 
+                if (body != null && ! "".equals("body") && ! mimeType.startsWith("multipart/")) {
+                    MimeBodyPart bodyPart = new MimeBodyPart();
+                    bodyPart.setContent(body, mimeType);
+                    mmp.addBodyPart(bodyPart);
+                }
+
+                log.debug("Adding attachments to " + mmp);
                 for (int i = 0; i < attachments.size(); i++) {
-                    String filename = attachments.getNode(i).getStringValue("filename");
+                    Node attachment = attachments.getNode(i);
+                    String filename = attachment.getStringValue("filename");
                     if (filename == null || filename.equals("")) {
                         filename = "attached file";
                     }
 
-                    String attachmentMimeType = attachments.getNode(i).getStringValue("mimetype");
+                    String attachmentMimeType = attachment.getStringValue("mimetype");
                     if (attachmentMimeType == null || attachmentMimeType.equals("")) {
                         attachmentMimeType = "application/octet-stream";
                     }
 
-                    byte[] handle = attachments.getNode(i).getByteValue("handle");
+
+                    byte[] handle = attachment.getByteValue("handle");
                     MimeBodyPart mbp = new MimeBodyPart();
 
                     log.debug("Found a part " + attachmentMimeType);
@@ -328,24 +340,34 @@ public class ExtendedJMSendMail extends SendMail {
                     // bodypart. The email client will then show the HTML inline.
                     // Note that for this to work, you need a valid doctype definition
                     // in your body.
-                    if (attachmentMimeType.startsWith("text/html")) {
+                    mbp.setDisposition(subType.equals("alternative") || subType.equals("related") ? Part.INLINE : Part.ATTACHMENT);
+
+                    String desc = attachment.getStringValue("description");
+                    if (subType.equals("related") && ! desc.equals("")) {
+                        mbp.setContentID(desc);
+                    }
+
+                    if (attachmentMimeType.startsWith("text")) {
                         if (!filename.equals("attached file")) {
                             mbp.setFileName(filename);
                         }
 
                         log.debug("creating mbp with mimeType " + attachmentMimeType);
-                        mbp.setDataHandler(new DataHandler(new String(handle, "UTF-8"), "text/html"));//new ByteArrayDataSource(handle, mimeType)));
+                        mbp.setDataHandler(new DataHandler(new String(handle, "UTF-8"), attachmentMimeType));//new ByteArrayDataSource(handle, mimeType)));
 
                     } else {
-                        mbp.setDataHandler(new DataHandler(handle, attachmentMimeType));//new ByteArrayDataSource(handle, mimeType)));
+                        
+
+                        // if no ByteArrayDataSource used, then you get: javax.activation.UnsupportedDataTypeException: no object DCH for MIME type image/gif
+                        mbp.setDataHandler(new DataHandler(new ByteArrayDataSource(handle, attachmentMimeType)));
                         mbp.setFileName(filename);
-                        mbp.setDisposition(Part.ATTACHMENT);
                     }
 
                     mmp.addBodyPart(mbp);
                 }
                 msg.setContent(mmp);
             } else {
+                log.debug("Using message with body " + mimeType);
                 if (mimeType.startsWith("text")) {
                     //String subType = mimeType.substring(5);
                     //log.info("Using " + subType);
@@ -372,9 +394,19 @@ public class ExtendedJMSendMail extends SendMail {
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
             errors.append("\nMessaging: " + e.getMessage());
+            Throwable cause = e.getCause();
+            while (cause != null) {
+                errors.append("\ncaused by: " + cause.getMessage());
+                cause = e.getCause();
+            }
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             errors.append(e.getClass() + ": " + e.getMessage());
+            Throwable cause = e.getCause();
+            while (cause != null) {
+                errors.append("\ncaused by: " + cause.getMessage());
+                cause = e.getCause();
+            }
         }
         if (errors.length() > 0 && ! n.getStringValue("to").equals(n.getStringValue("from"))) {
             log.service("Sending error mail to " + n.getStringValue("from") + " " + n.getNodeManager() + " " + errors);
