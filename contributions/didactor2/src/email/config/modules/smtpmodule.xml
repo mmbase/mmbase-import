@@ -36,6 +36,7 @@
          filled with contect by the module -->
     <property name="emailbuilder.tofield">to</property>
     <property name="emailbuilder.ccfield">cc</property>
+    <property name="emailbuilder.bccfield">bcc</property>
     <property name="emailbuilder.fromfield">from</property>
     <property name="emailbuilder.subjectfield">subject</property>
     <property name="emailbuilder.headersfield">headers</property>
