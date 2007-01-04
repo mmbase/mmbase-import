@@ -6,7 +6,7 @@ import org.mmbase.module.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import nl.didactor.mail.ExtendedJMSendMail;
-import java.util.Date;
+import java.util.*;
 
 /**
  * This class handles objects of type 'emails'. When new emails are created,
@@ -80,25 +80,56 @@ public class EmailBuilder extends MMObjectBuilder {
         return nr;
     }
 
+
+    /**
+     * I guess that following stuff
+     *  - converts 'pseudo' HTML to better HTML
+     * - removes <script tags and the like
+     */
+    protected String html(String body) {
+        body = body.replaceAll("\n","<br/>\n");
+        body = body.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
+        return body;
+    }
+
     public String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = pars.getString("field");
         if ("body".equals(field)) {
             String mimeType = hasField("mimetype") ? node.getStringValue("mimetype") : null;
             if (mimeType == null) mimeType = "text/html";
-
             String body = node.getStringValue("body");
             if (mimeType.startsWith("text/plain")) {
                 return org.mmbase.util.transformers.XmlField.richToHTMLBlock(body);
+            } else if (mimeType.startsWith("multipart/")) {
+                if ("".equals(body)) {
+                    log.debug("Multipare message with no explicit body, mime-type compliance.");
+                    String b = null;
+                    String lastMime = "text/plain";
+                    List attachments = node.getRelatedNodes("attachments");
+                    Iterator i = attachments.iterator();
+                    while (i.hasNext()) {
+                        MMObjectNode attachment = (MMObjectNode) i.next();
+                        String attachmentMime = attachment.getStringValue("mimetype");
+                        log.debug("Considering attachment " + attachment.getNumber() + " " + attachmentMime);
+                        if (attachmentMime.startsWith("text") && (b == null || ! lastMime.equals("text/html"))) {
+                            try {
+                                b = new String(attachment.getByteValue("handle"), "UTF-8");
+                            } catch (java.io.UnsupportedEncodingException use) {
+                                // should  not happen
+                                log.warn(use);
+                                b = attachment.getStringValue("handle");
+                            }
+                            lastMime = attachmentMime;
+                        }
+                    }
+                    if (b == null) b = "----";
+                    return html(b);
+                } else {
+                    return html(body);
+                }
             } else {
-                //if (mimeType.startsWith("text/html")) {
-
-                // I guess that following stuff
-                // - converts 'pseudo' HTML to better HTML
-                // - removes <script tags and the like
-
-                body = body.replaceAll("\n","<br/>\n");
-                body = body.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
-                return body;
+                //if (mimeType.startsWith("text/html")) { 
+                return html(body);
             }
         } else if ("headers".equals(field)) {
             StringBuffer buf = new StringBuffer();
@@ -128,7 +159,7 @@ public class EmailBuilder extends MMObjectBuilder {
     }
 
     public String toString(MMObjectNode n) {
-        return n.getStringValue("from") + "->" + n.getStringValue("to") + " '" + n.getStringValue("subject") + n.getDateValue("date");
+        return n.getNumber() + " " + n.getStringValue("from") + "->" + n.getStringValue("to") + " '" + n.getStringValue("subject") + "' " + n.getDateValue("date");
     }
 
 }
