@@ -179,7 +179,7 @@
       </mm:compare>
 
       <mm:compare value="0" inverse="true">
-        <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids,tests@testNo,madetestNo@madetest,user@userNo" />
+        <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids,tests@testNo,madetest@madetestNo,user@userNo" />
       </mm:compare>
 
       </mm:field>
