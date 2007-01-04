@@ -5,6 +5,7 @@ import org.mmbase.bridge.*;
 import java.util.*;
 import java.io.*;
 import javax.mail.*;
+import javax.mail.internet.*;
 import nl.didactor.mail.*;
 
 /**
@@ -12,7 +13,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.14 2006-12-28 09:49:18 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.15 2007-01-04 14:08:57 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -344,9 +345,9 @@ public class SMTPHandler extends Thread {
             log.trace("Data: [" + data + "]");
         }
         NodeManager emailbuilder = cloud.getNodeManager((String)properties.get("emailbuilder"));
-        javax.mail.internet.MimeMessage message = null;
+        MimeMessage message = null;
         try {
-            message = new javax.mail.internet.MimeMessage(null, new ByteArrayInputStream(data.getBytes())); 
+            message = new MimeMessage(null, new ByteArrayInputStream(data.getBytes())); 
             /// which encoding?!
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
@@ -445,7 +446,10 @@ public class SMTPHandler extends Thread {
                 }
             }
             try {
-                if (message.isMimeType("text/plain") || message.isMimeType("text/html")) {
+                if (! message.isMimeType("multipart/*")) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Non multipart mail, simply filling the body of the mail node with " + message);
+                    }
                     if (message.getContent() != null) {
                         nodeSetHeader(email, (String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
                     }
@@ -453,16 +457,16 @@ public class SMTPHandler extends Thread {
                 } else {
                     // now parse the attachments
                     try {
+                        log.debug("Extracting parts for message with mimetype " + message.getContentType());
                         List attachmentsVector = extractPart(message, new ArrayList(), email);
                         email.commit();
-
                         for (Iterator it = attachmentsVector.iterator(); it.hasNext();) {
                             Node attachment = (Node) it.next();
                             Relation rel = email.createRelation(attachment, cloud.getRelationManager("related"));
                             rel.commit();
                         }
                     } catch (Exception e) {
-                        log.error("Exception while parsing attachments: " + e);
+                        log.error("Exception while parsing attachments: " + e.getMessage(), e);
                     }
                 }
             } catch (Exception e) {
@@ -490,22 +494,25 @@ public class SMTPHandler extends Thread {
      * Extract all attachments from a Part of a MultiPart message.
      * @author Gerard van Enk
      * @param p Part object that is being dissected
-     * @param attach Vector of parts that already extracted
+     * @param attachments List of parts that already extracted
      * @param mail Mail Node that describes the mail that is being dissected
-     * @return Vector of attachments that includes the currently extracted ones
+     * @return The given attachments List, but wihth the currently extracted ones added.
      **/
     private List extractPart(final Part p, final List attachments, final Node mail) throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("Extracting attachments from " + p + " from node " + mail);
+        }
         if (p.isMimeType("multipart/*")) {
-            log.debug("Found attachments with type: multipart/*");
+            log.debug("Found attachments with type: " + p.getContentType());
             Multipart mp = (Multipart)p.getContent();
             int count = mp.getCount();
             for (int i = 0; i < count; i++) {
                 extractPart(mp.getBodyPart(i), attachments, mail);
             }
-        } else if (p.isMimeType("message/rfc822")) {
-            log.debug("Found attachments with type: message/rfc822");
+        } else if (p.isMimeType("message/*")) {
+            log.debug("Found attachment with type: " + p.getContentType());
             extractPart((Part)p.getContent(), attachments, mail);
-        } else if (p.isMimeType("text/plain")) {
+        } else if (p.isMimeType("teaxt/*")) {
             // only adding text/plain - text/html will be stored as attachment!
 
             // MM I think this goes wrong if the original mimeType was multipart/alternative
@@ -513,7 +520,7 @@ public class SMTPHandler extends Thread {
             // 2006-12-28 10:32:38,758 ERROR nl.didactor.mail.ExtendedJMSendMail sendRemoteMail.373  - JMSendMail failure: MIME part of type "multipart/alternative" contains object of type java.lang.String instead of MimeMultipart
             // and in the web-interface it still shows 2 attachments, while it should show none.
 
-            log.debug("Found attachments with type: some text/plain tomething");
+            log.debug("Found attachments with type: text/plain");
             Object content = null;
             try {
                 content = p.getContent();
@@ -556,10 +563,6 @@ public class SMTPHandler extends Thread {
      */
     private Node storeAttachment(Part p) throws MessagingException {
         String fileName = p.getFileName();
-        if (fileName == null || fileName.equals("")) {
-            fileName="unknown";
-        }
-
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
 
         if (attachmentManager == null) {
@@ -570,7 +573,14 @@ public class SMTPHandler extends Thread {
         Node attachmentNode = attachmentManager.createNode();
 
         attachmentNode.setStringValue("title", "privatemail Attachment");
-        attachmentNode.setStringValue("mimetype",p.getContentType());
+        if (p instanceof MimeBodyPart) {
+            MimeBodyPart mbp = (MimeBodyPart) p;
+            String contentId = mbp.getContentID();
+            if (contentId != null) {
+                attachmentNode.setStringValue("description", contentId);
+            }
+        }
+        attachmentNode.setStringValue("mimetype", p.getContentType());
         attachmentNode.setStringValue("filename", fileName);
         attachmentNode.setIntValue("size", p.getSize());
 
@@ -587,6 +597,8 @@ public class SMTPHandler extends Thread {
     }
 
 
+
+
     /**
      * This method returns a Node to which the email should be related.
      * This node can be the user object represented by the given string parameter,
@@ -595,6 +607,7 @@ public class SMTPHandler extends Thread {
      * @return whether or not this succeeded
      */
     private boolean addMailbox(String user) {
+
         String usersbuilder = (String)properties.get("usersbuilder");
         NodeManager manager = cloud.getNodeManager(usersbuilder);
         NodeList nodelist = manager.getList(properties.get("usersbuilder.accountfield") + " = '" + user + "'", null, null);
