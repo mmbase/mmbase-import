@@ -13,7 +13,7 @@ import nl.didactor.mail.*;
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.15 2007-01-04 14:08:57 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.16 2007-01-04 14:45:17 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -328,10 +328,13 @@ public class SMTPHandler extends Thread {
     }
     protected void nodeSetHeader(Node node, String fieldName, String value) {
         Field field = node.getNodeManager().getField(fieldName);
-        int maxLength = (int) ((org.mmbase.datatypes.StringDataType) field.getDataType()).getMaxLength();
+        int maxLength = field.getMaxLength();
+        log.debug("max length for " + fieldName + " is " + maxLength);
         if (value.length() >= maxLength) {
-            log.warn("Truncating field " + fieldName + " for node " + node);
-            value = value.substring(0, maxLength);
+            log.warn("Truncating field " + fieldName + " for node " + node + " (" + value.length() + " > " + maxLength + ")");
+            value = value.substring(0, maxLength - 1);
+        } else {
+            log.debug(value.length() + " < " + maxLength);
         }
         node.setStringValue(fieldName, value);
     }
@@ -453,7 +456,11 @@ public class SMTPHandler extends Thread {
                     if (message.getContent() != null) {
                         nodeSetHeader(email, (String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
                     }
-                    email.commit();
+                    try {
+                        email.commit(); 
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
                 } else {
                     // now parse the attachments
                     try {
@@ -471,8 +478,12 @@ public class SMTPHandler extends Thread {
                 }
             } catch (Exception e) {
                 log.warn(e.getMessage(), e);
-                nodeSetHeader(email, (String) properties.get("emailbuilder.bodyfield"), "" + data);
-                email.commit();
+                try {
+                    nodeSetHeader(email, (String) properties.get("emailbuilder.bodyfield"), "" + data);
+                    email.commit();
+                } catch (Exception ee) {
+                    log.error(ee);
+                }
             }
             Relation rel = mailbox.createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
