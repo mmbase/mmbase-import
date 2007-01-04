@@ -1,4 +1,4 @@
-Subject: Simple text/plain mail
+Subject: Simple text/plain mail $(CURRENTDATE)
 Content-Type: text/plain
 X-Header-Test: test
 From: foo@bar.nl
