@@ -307,11 +307,14 @@ sub run_smtp
 			return 0;
 		}
 
+		my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+		my $now = (1900 + $yearOffset) . "/". ($month + 1) . "/$dayOfMonth $hour:$minute:$second";
 		while (<MAIL>)
 		{
 			my $line = $_;
 			$line =~ s/^\.$CRLF$/\. $CRLF/;
 			$line =~ s/^\.\n$/\. $CRLF/;
+			$line =~ s/\$\(CURRENTDATE\)/$now/g;
 			$sock->print ($line);
 		}
 
