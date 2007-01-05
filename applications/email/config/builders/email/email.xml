@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.9 2007-01-05 16:23:57 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.10 2007-01-05 19:58:09 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -50,7 +50,8 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minLength value="1" enforce="never" />
+        <required value="true" />
+        <minLength value="1" enforce="create" />
       </datatype>
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
