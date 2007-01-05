@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.48 2007-01-05 10:31:03 michiel Exp $
+ * @version $Id: XmlField.java,v 1.49 2007-01-05 19:56:46 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -32,14 +32,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int RICHBODY = 6;
 
     // cannot yet be encoded even..
-    public final static int HTML_INLINE = 7;
-    public final static int HTML_BLOCK = 8;
-    public final static int HTML_BLOCK_BR  = 9;
-    public final static int HTML_BLOCK_NOSURROUNDINGP = 10;
-    public final static int HTML_BLOCK_BR_NOSURROUNDINGP = 11;
-    public final static int HTML_BLOCK_LIST = 12;
-    public final static int HTML_BLOCK_LIST_BR = 13;
-    public final static int HTML_BLOCK_LIST_NOSURROUNDINGP = 14;
+    public final static int HTML_INLINE                       = 7;
+    public final static int HTML_BLOCK                        = 8;
+    public final static int HTML_BLOCK_BR                     = 9;
+    public final static int HTML_BLOCK_NOSURROUNDINGP         = 10;
+    public final static int HTML_BLOCK_BR_NOSURROUNDINGP      = 11;
+    public final static int HTML_BLOCK_LIST                   = 12;
+    public final static int HTML_BLOCK_LIST_BR                = 13;
+    public final static int HTML_BLOCK_LIST_NOSURROUNDINGP    = 14;
     public final static int HTML_BLOCK_LIST_BR_NOSURROUNDINGP = 15;
 
     // cannot be decoded:
@@ -354,6 +354,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @param placeListsInsideP (defaults to false) wether a list should be placed inside a &lt;p&gt; (as allowed by xhtml2).
      */
     static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
+
+        log.debug(placeListsInsideP ? "placings lists INSIDE" : "placings lists OUTSIDE");
         // handle paragraphs:
         boolean inParagraph = true;
         int pos = 0;
@@ -685,14 +687,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * Constant for use as argument of {@link #handleRich}
      * @since MMBase-1.9
      */
-    protected final static boolean SECTIONS = true;
-    protected final static boolean NO_SECTIONS = false;
-    protected final static boolean LEAVE_NEWLINES = true;
-    protected final static boolean REMOVE_NEWLINES = false;
-    protected final static boolean SURROUNDING_P = true;
+    protected final static boolean SECTIONS         = true;
+    protected final static boolean NO_SECTIONS      = false;
+    protected final static boolean LEAVE_NEWLINES   = true;
+    protected final static boolean REMOVE_NEWLINES  = false;
+    protected final static boolean SURROUNDING_P    = true;
     protected final static boolean NO_SURROUNDING_P = false;
-    protected final static boolean LISTS_INSIDE_P = true;
-    protected final static boolean LISTS_OUTSIDE_P = false;
+    protected final static boolean LISTS_INSIDE_P   = true;
+    protected final static boolean LISTS_OUTSIDE_P  = false;
 
 
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
@@ -721,11 +723,11 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
-    public static String wikiToXML(String data) {
+    public static String wikiToXML(String data, boolean placeListsInsideP) {
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
-        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P);
+        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P, placeListsInsideP);
         handleFormat(obj, false);
         String string = obj.toString();
         Matcher ps = wikiP.matcher(string);
@@ -735,7 +737,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         Matcher anchors = wikiAnchor.matcher(string);
         string = anchors.replaceAll("<a id=\"$1\" />");
         return string;
+    }
 
+    public static String wikiToXML(String data) {
+        return wikiToXML(data, LISTS_OUTSIDE_P);
     }
 
     /**
@@ -807,7 +812,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP);   // no <section> tags, leave newlines if multipble br's requested
+
+        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP); 
+        // no <section> tags, leave newlines if multipble br's requested
+
         handleNewlines(obj);
         handleFormat(obj, false);
         return obj.toString();
