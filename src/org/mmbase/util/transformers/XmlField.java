@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46 2006-04-10 13:34:19 pierre Exp $
+ * @version $Id: XmlField.java,v 1.47 2007-01-05 10:23:56 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -682,8 +682,22 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return new StringObject(prepareDataString(data));
     }
 
+    /**
+     * Constant for use as argument of {@link #handleRich}
+     * @since MMBase-1.9
+     */
+    protected final static boolean SECTIONS = true;
+    protected final static boolean NO_SECTIONS = false;
+    protected final static boolean LEAVE_NEWLINES = true;
+    protected final static boolean REMOVE_NEWLINES = false;
+    protected final static boolean SURROUNDING_P = true;
+    protected final static boolean NO_SURROUNDING_P = false;
+    protected final static boolean LISTS_INSIDE_P = true;
+    protected final static boolean LISTS_OUTSIDE_P = false;
+
+
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
-        handleRich(obj, sections, leaveExtraNewLines, surroundingP, false);
+        handleRich(obj, sections, leaveExtraNewLines, surroundingP, LISTS_OUTSIDE_P);
     }
 
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
@@ -712,7 +726,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
-        handleRich(obj, true, false, true);
+        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P);
         handleFormat(obj, false);
         String string = obj.toString();
         Matcher ps = wikiP.matcher(string);
@@ -754,7 +768,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String richToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, true, true);
+        handleRich(obj, SECTIONS, LEAVE_NEWLINES, SURROUNDING_P, LISTS_INSIDE_P);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
@@ -769,7 +783,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String poorToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, false,true);
+        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P, LISTS_INSIDE_P);
         handleFormat(obj, format);
         return obj.toString();
     }
@@ -798,7 +812,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
-        return richToHTMLBlock(data, multipibleBrs, surroundingP, true);
+        return richToHTMLBlock(data, multipibleBrs, surroundingP, LISTS_INSIDE_P);
     }
 
     /**
