@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.LocalizedString;
 import org.w3c.dom.Element;
 
 /**
@@ -20,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.25 2006-12-15 13:58:16 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.26 2007-01-05 19:59:57 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable> extends BasicDataType<E> {
@@ -162,7 +163,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
 
 
 
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = minRestriction.validate(errors, castValue, node, field);
         errors = maxRestriction.validate(errors, castValue, node, field);
