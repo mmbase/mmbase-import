@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.68 2006-12-24 16:08:52 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.69 2007-01-05 15:57:54 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -71,8 +71,44 @@ function doOnLoad_ew() {
         }
     }
 
+    setTimeout('heartbeat()',60*1000);
+
     resizeEditTable();
     restoreScroll();
+}
+
+var req;
+
+function loadXMLDoc(url) {
+    req = false;
+    // branch for native XMLHttpRequest object
+    if(window.XMLHttpRequest && !(window.ActiveXObject)) {
+        try {
+            req = new XMLHttpRequest();
+        } catch(e) {
+            req = false;
+        }
+    // branch for IE/Windows ActiveX version
+    } else if(window.ActiveXObject) {
+        try {
+            req = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch(e) {
+            try {
+                req = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch(e) {
+                req = false;
+            }
+        }
+    }
+    if(req) {
+        req.open("GET", url, true);
+        req.send("");
+    }
+}
+
+function heartbeat() {
+    loadXMLDoc("heartbeat.jsp");
+    setTimeout('heartbeat()',60*1000);
 }
 
 // function to initialize a custom element
@@ -85,9 +121,6 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
- 
-// MM: I think it is very necessary though, to attach an unload event, because
-// the current hackery with history.go(1) in list.js is not acceptable. See bug #6810.
 }
 
 //********************************
@@ -366,7 +399,6 @@ function resizeEditTable() {
     }
     var docWidth = getDimensions().windowWidth;
     document.getElementById("editform").style.width = docWidth
-       
     var textareas = document.getElementsByTagName("textarea");
     for (var i = 0 ; i < textareas.length ; i++) {
         textareas[i].style.width = docWidth -100;
