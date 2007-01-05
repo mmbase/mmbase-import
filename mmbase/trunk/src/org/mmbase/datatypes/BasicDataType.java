@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.64 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.65 2007-01-05 14:38:06 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -441,18 +441,18 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public final Collection /*<LocalizedString>*/ validate(Object value) {
+    public final Collection<LocalizedString> validate(Object value) {
         return validate(value, null, null);
     }
 
 
-    public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
+    public final Collection<LocalizedString>  validate(final Object value, final Node node, final Field field) {
         return validate(value, node, field, true);
     }
     /**
      * {@inheritDoc}
      */
-    private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean testEnum) {
+    private final Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
         Collection errors = VALID;
         Object castValue;
         try {
@@ -482,7 +482,7 @@ s     */
         return errors;
     }
 
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node  node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
     }
 
@@ -882,8 +882,8 @@ s     */
          * Restriction. If this error-collection is unmodifiable (VALID), it is replaced with a new
          * empty one first.
          */
-        protected final Collection addError(Collection errors, Object v, Node node, Field field) {
-            if (errors == VALID) errors = new ArrayList();
+        protected final Collection<LocalizedString> addError(Collection<LocalizedString> errors, Object v, Node node, Field field) {
+            if (errors == VALID) errors = new ArrayList<LocalizedString>();
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
             error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
@@ -917,10 +917,10 @@ s     */
         /**
          * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
          */
-        protected Collection validate(Collection errors, Object v, Node node, Field field) {
+        protected Collection<LocalizedString> validate(Collection<LocalizedString> errors, Object v, Node node, Field field) {
             if (absoluteParent != null && ! absoluteParent.valid(v, node, field)) {
                 int sizeBefore = errors.size();
-                Collection res = absoluteParent.addError(errors, v,  node, field);
+                Collection<LocalizedString> res = absoluteParent.addError(errors, v,  node, field);
                 if (res.size() > sizeBefore) {
                     return res;
                 }
@@ -1113,9 +1113,8 @@ s     */
             return (LocalizedEntryListFactory) value;
         }
 
-        public Collection getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
+        public Collection<Map.Entry<C, String>> getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
             if (value == null) return Collections.EMPTY_LIST;
-            LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
             if (cloud == null) {
                 if (node != null) {
                     cloud = node.getCloud();
@@ -1123,7 +1122,7 @@ s     */
                     cloud = field.getNodeManager().getCloud();
                 }
             }
-            return ef.get(locale, cloud);
+            return value.get(locale, cloud);
         }
 
         /**
@@ -1132,7 +1131,7 @@ s     */
         protected Object preCast(Object v, Cloud cloud) {
             if (getValue() == null) return v;
             try {
-                return ((LocalizedEntryListFactory) value).castKey(v, cloud);
+                return value.castKey(v, cloud);
                 //return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
             } catch (NoClassDefFoundError ncdfe) {
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
@@ -1146,7 +1145,7 @@ s     */
                 return true;
             }
             Cloud cloud = BasicDataType.this.getCloud(node, field);
-            Collection validValues = getEnumeration(null, cloud, node, field);
+            Collection<Map.Entry<C, String>> validValues = getEnumeration(null, cloud, node, field);
             if (validValues.size() == 0) {
                 return true;
             }
@@ -1157,9 +1156,7 @@ s     */
                 log.info(ce);
                 return false;
             }
-            Iterator i = validValues.iterator();
-            while (i.hasNext()) {
-                Map.Entry e = (Map.Entry) i.next();
+            for (Map.Entry<C, String> e : validValues) {
                 Object valid = e.getKey();
                 if (valid.equals(candidate)) {
                     return true;
@@ -1169,13 +1166,13 @@ s     */
         }
 
         protected String valueString(Node node, Field field) {
-            Collection col = getEnumeration(null, null, node, field);
+            Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
             if(col.size() == 0) return "";
             StringBuffer buf = new StringBuffer();
-            Iterator it = col.iterator();
+            Iterator<Map.Entry<C, String>> it = col.iterator();
             int i = 0;
             while (it.hasNext() && ++i < 10) {
-                Map.Entry ent = (Map.Entry)it.next();
+                Map.Entry ent = it.next();
                 buf.append(Casting.toString(ent));
                 if (it.hasNext()) buf.append(", ");
             }
@@ -1215,7 +1212,7 @@ s     */
             while (baseIterator.hasNext()) {
                 final Map.Entry<C, Object> entry = baseIterator.next();
                 C value = entry.getKey();
-                Collection validationResult = BasicDataType.this.validate(value, node, field, false);
+                Collection<LocalizedString> validationResult = BasicDataType.this.validate(value, node, field, false);
                 if (validationResult == VALID) {
                     next = entry;
                     /*
@@ -1234,8 +1231,8 @@ s     */
                     break;
                 } else if (log.isDebugEnabled()) {
                     String errors = "";
-                    for (Iterator i = validationResult.iterator(); i.hasNext();) {
-                        errors += ((LocalizedString)i.next()).get(null);
+                    for (Iterator<LocalizedString> i = validationResult.iterator(); i.hasNext();) {
+                        errors += i.next().get(null);
                     }
                     log.debug("Value " + value.getClass() + " " + value + " does not validate : " + errors);
                 }
