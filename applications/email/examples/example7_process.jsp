@@ -5,31 +5,31 @@ import="org.apache.commons.fileupload.*,java.util.*,java.io.*"
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html" escaper="none"><mm:cloud>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Send and process mail with attachments</title>
-<style type="text/css" media="screen">
-/* <![CDATA[ */
-body { font-family: "Lucida Grande", Arial, sans-serif; font-size: 0.8em; }
-label { font-weight: bold; }
-.err { color: #D00021; }
-/* ]]> */
-</style>
-</head>
-<body> 
-<%! // Very low-tech e-mail address validation 
-public boolean isValidEmailAddr(String emailAddrString) {
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Send and process mail with attachments</title>
+    <style type="text/css" media="screen">
+      /* <![CDATA[ */
+      body { font-family: "Lucida Grande", Arial, sans-serif; font-size: 0.8em; }
+      label { font-weight: bold; }
+      .err { color: #D00021; }
+      /* ]]> */
+    </style>
+  </head>
+  <body> 
+    <%! // Very low-tech e-mail address validation 
+    public boolean isValidEmailAddr(String emailAddrString) {
     boolean isValid = false;
     if (emailAddrString != null && 
-        emailAddrString.indexOf("@") != -1 &&
-        emailAddrString.indexOf(".") != -1) {
-        isValid = true;
+    emailAddrString.indexOf("@") != -1 &&
+    emailAddrString.indexOf(".") != -1) {
+    isValid = true;
     }
     return isValid;
-}
-%>
+    }
+    %>
 <mm:log jspvar="log">
-<%
+  <%
 // Variables
 StringBuffer errorMsg = new StringBuffer();
 boolean noError = false;

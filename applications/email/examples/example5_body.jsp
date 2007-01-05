@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-<mm:import externid="usernumber" />
-<mm:node number="$usernumber">
+  <mm:import externid="usernumber" />
+  <mm:node number="$usernumber">
 Hi <mm:field name="firstname" /> <mm:field name="lastname" /> !
 
 Nice to see you again, These are your settings :
