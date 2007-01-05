@@ -20,8 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.47 2007-01-05 10:23:56 michiel Exp $
- * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
+ * @version $Id: XmlField.java,v 1.48 2007-01-05 10:31:03 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -766,13 +765,18 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @return the converted text
      */
 
-    public static String richToXML(String data, boolean format) {
+    public static String richToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, SECTIONS, LEAVE_NEWLINES, SURROUNDING_P, LISTS_INSIDE_P);
+        handleRich(obj, SECTIONS, LEAVE_NEWLINES, SURROUNDING_P, placeListsInsideP);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
     }
+
+    public static String richToXML(String data, boolean format) {
+        return richToXML(data, format, LISTS_OUTSIDE_P);
+    }
+
     public static String richToXML(String data) {
         return richToXML(data, false);
     }
@@ -780,12 +784,15 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * As richToXML but a little less rich. Which means that only one new line is non significant.
      * @see #richToXML
      */
-
-    public static String poorToXML(String data, boolean format) {
+    public static String poorToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P, LISTS_INSIDE_P);
+        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P, placeListsInsideP);
         handleFormat(obj, format);
         return obj.toString();
+    }
+
+    public static String poorToXML(String data, boolean format) {
+        return poorToXML(data, format, LISTS_OUTSIDE_P);
     }
 
     public static String poorToXML(String data) {
@@ -812,7 +819,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
-        return richToHTMLBlock(data, multipibleBrs, surroundingP, LISTS_INSIDE_P);
+        return richToHTMLBlock(data, multipibleBrs, surroundingP, LISTS_OUTSIDE_P);
     }
 
     /**
