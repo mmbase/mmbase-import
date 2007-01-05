@@ -3,9 +3,9 @@
   If you use an application server which does not support web-app version 2.4 (e.g. Tomcat 4.x,
   Orion), then you can use web-2.3.xml in stead of this.
 
-  Web-app 2.4 gives the possibility to  of use EL (Expression Language)
+  Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id: web.xml,v 1.32 2006-11-21 16:10:52 michiel Exp $
+  $Id: web.xml,v 1.33 2007-01-05 12:50:54 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
