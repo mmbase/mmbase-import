@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.11 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.12 2007-01-05 19:59:57 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -52,7 +53,7 @@ public class ConfirmPasswordDataType extends StringDataType {
         }
     }
 
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = passwordRestriction.validate(errors, castValue, node, field);
         return errors;
