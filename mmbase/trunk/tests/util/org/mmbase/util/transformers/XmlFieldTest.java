@@ -1,19 +1,13 @@
-/*
- * Tests for org.mmbase.util.transformers.XmlField
- * Currently only tests a small part of the XmlField functionality.
- * TODO: implement complete test.
- *
- * @author Simon Groenewolt (simon@submarine.nl)
- */
-
 package org.mmbase.util.transformers;
 import org.mmbase.util.*;
 import junit.framework.TestCase;
 
-
 /**
+ * Tests for org.mmbase.util.transformers.XmlField
+ * Currently only tests a small part of the XmlField functionality.
  *
- * @author Administrator
+ * @author Simon Groenewolt (simon@submarine.nl)
+ * @version $Id: XmlFieldTest.java,v 1.4 2007-01-05 12:53:35 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -75,7 +69,11 @@ public class XmlFieldTest  extends TestCase {
         // hallo
 //        result = xmlField.richToHTMLBlock("hallo\n-eending\n-nogeending\nhallo");
         StringObject in = new StringObject("hallo\n-eending\n-nogeending\nhallo");
-        xmlField.handleRich(in, false, false, true, true);
+        xmlField.handleRich(in,
+                            XmlField.NO_SECTIONS,
+                            XmlField.REMOVE_NEWLINES,
+                            XmlField.SURROUNDING_P,
+                            XmlField.LISTS_INSIDE_P);
         result = ignoreNL(in);
         expectedResult = "<p>hallo<ul><li>eending</li><li>nogeending</li></ul>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
@@ -104,6 +102,36 @@ public class XmlFieldTest  extends TestCase {
         expectedResult = "<p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
+
+    public static String[][] RICH_TO_XML_CASES = {
+        {"$TITEL\nhallo\n*eending\n*nogeending\nhallo", 
+         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>"},
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\nhallo",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\n\n\nbla bla",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"}
+    };
+
+    public void testRichToXML() {
+        for (String[] testCase : RICH_TO_XML_CASES) {
+            StringObject in = new StringObject(testCase[0]);
+            xmlField.handleRich(in,
+                                XmlField.SECTIONS,
+                                XmlField.REMOVE_NEWLINES,
+                                XmlField.SURROUNDING_P,
+                                XmlField.LISTS_INSIDE_P);
+            result = ignoreNL(in);
+            expectedResult = testCase[1];
+            assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
+        }
+    }
+
+
+
 
     /**
      * Tests handling lists only
