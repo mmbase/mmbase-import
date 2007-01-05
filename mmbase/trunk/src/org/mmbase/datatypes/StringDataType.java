@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.37 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.38 2007-01-05 19:59:57 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -236,7 +237,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
 
     }
 
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
 
 
@@ -258,7 +259,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         return buf;
     }
 
-    protected class PatternRestriction extends AbstractRestriction {
+    protected class PatternRestriction extends AbstractRestriction<Pattern> {
         PatternRestriction(PatternRestriction source) {
             super(source);
         }
@@ -266,11 +267,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
             super("pattern", v);
         }
         Pattern getPattern() {
-            return (Pattern) value;
+            return value;
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
             String s = Casting.toString(v);
-            boolean res =  value == null ? true : getPattern().matcher(s).matches();
+            boolean res =  value == null ? true : value.matcher(s).matches();
             //log.info("VALIDATING " + v + " with " + getPattern() + " -> " + res);
             return res;
         }
