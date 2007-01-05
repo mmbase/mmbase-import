@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * if not exception, the value is valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InternetAddressDataType.java,v 1.1 2007-01-05 16:22:11 michiel Exp $
+ * @version $Id: InternetAddressDataType.java,v 1.2 2007-01-05 19:57:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class InternetAddressDataType extends StringDataType {
@@ -39,7 +39,7 @@ public class InternetAddressDataType extends StringDataType {
     }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
-        log.info("Validating " + value);
+        log.debug("Validating " + value);
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = restriction.validate(errors, castValue, node, field);
         return errors;
@@ -76,14 +76,15 @@ public class InternetAddressDataType extends StringDataType {
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (v == null) return true;
-            log.info("Validating " + v);
+            log.debug("Validating " + v);
             try {
                 String address = Casting.toString(v);
                 InternetAddress[] ia = InternetAddress.parse(address);
-                log.info("Found " + ia + " this is valid if " + ia.length + " <= " + value);
+                log.debug("Found " + Arrays.asList(ia) + " this is valid if " + ia.length + " <= " + value);
                 return ia.length  <= value;
 
             } catch (AddressException ae) {
+                log.debug("Not valid because " + ae.getMessage());
                 return false;
             }
         }
