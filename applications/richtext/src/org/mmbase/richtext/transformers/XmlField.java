@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.2 2006-01-02 16:57:46 michiel Exp $
+ * @version $Id: XmlField.java,v 1.3 2007-01-05 12:31:07 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -136,15 +136,15 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         try {
             switch (to) {
             case RICH :
-                result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
+                result = XML_TAGSTART + richToXML(r, false, LISTS_INSIDE_P) + XML_TAGEND;
                 // rich will not be validated... Cannot be used yet!!
                 break;
             case POOR :
-                result = XML_TAGSTART + poorToXML(r) + XML_TAGEND;
+                result = XML_TAGSTART + poorToXML(r, false, LISTS_INSIDE_P) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case WIKI :
-                result = XML_TAGSTART + wikiToXML(r) + XML_TAGEND;
+                result = XML_TAGSTART + wikiToXML(r, LISTS_INSIDE_P) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case BODY :
