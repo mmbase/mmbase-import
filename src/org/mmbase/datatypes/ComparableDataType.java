@@ -21,10 +21,10 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.26 2007-01-05 19:59:57 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.27 2007-01-06 15:08:45 nklasens Exp $
  * @since MMBase-1.8
  */
-public abstract class ComparableDataType<E extends java.io.Serializable&Comparable> extends BasicDataType<E> {
+public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
@@ -36,23 +36,23 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
     protected ComparableDataType(String name, Class<E> classType) {
         super(name, classType);
     }
-
-    protected void inheritRestrictions(BasicDataType origin) {
+    @Override
+    protected void inheritRestrictions(BasicDataType<E> origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType compOrigin = (ComparableDataType) origin;
+            ComparableDataType<E> compOrigin = (ComparableDataType<E>) origin;
 
-            Comparable currentMin = (Comparable)minRestriction.getValue();
+            E currentMin = minRestriction.getValue();
             // cast origin minimum type to new datatype type
-            Comparable originMin = (Comparable)cast(compOrigin.minRestriction.getValue(), null, null);
+            E originMin = cast(compOrigin.minRestriction.getValue(), null, null);
             // Only apply the new min if it is higher
             if (currentMin == null || (originMin != null &&  (currentMin.compareTo(originMin) < 0))) {
                 minRestriction.inherit(compOrigin.minRestriction, true);
             }
 
-            Comparable currentMax = (Comparable)maxRestriction.getValue();
+            E currentMax = maxRestriction.getValue();
             // cast origin maximum type to new datatype type
-            Comparable originMax = (Comparable)cast(compOrigin.maxRestriction.getValue(), null, null);
+            E originMax = cast(compOrigin.maxRestriction.getValue(), null, null);
             // Only apply the new max if it is lower
             if (currentMax == null || (originMax != null &&  (currentMax.compareTo(originMax) > 0))) {
                 maxRestriction.inherit(compOrigin.maxRestriction, true);
@@ -60,10 +60,10 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         }
     }
 
-    protected void cloneRestrictions(BasicDataType origin) {
+    protected void cloneRestrictions(BasicDataType<E> origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType dataType = (ComparableDataType) origin;
+            ComparableDataType<E> dataType = (ComparableDataType<E>) origin;
             minRestriction  = new MinRestriction(dataType.minRestriction);
             maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
@@ -170,8 +170,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         return errors;
     }
 
-    public DataType clone(String name) {
-        ComparableDataType clone = (ComparableDataType) super.clone(name);
+    public DataType<E> clone(String name) {
+        ComparableDataType<E> clone = (ComparableDataType<E>) super.clone(name);
         return clone;
     }
 
