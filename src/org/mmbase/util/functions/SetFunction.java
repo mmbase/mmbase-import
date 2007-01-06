@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.17 2006-10-31 21:16:33 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.18 2007-01-06 15:16:38 nklasens Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
-class SetFunction extends AbstractFunction {
+class SetFunction extends AbstractFunction<Object> {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
     public static enum Type {
@@ -46,7 +46,7 @@ class SetFunction extends AbstractFunction {
     private final Object functionInstance ;
     private final Type type;
 
-    SetFunction(String name, Parameter[] def, ReturnType returnType, String className, String methodName, Type type) {
+    SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, String className, String methodName, Type type) {
         super(name, def, returnType);
         this.type = type;
         Class functionClass;
@@ -90,7 +90,7 @@ class SetFunction extends AbstractFunction {
 
         }
         if (returnType == null) {
-            setReturnType(new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName()));
+            setReturnType(new ReturnType<Object>(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName()));
             returnType = getReturnType();
         }
 
@@ -135,11 +135,4 @@ class SetFunction extends AbstractFunction {
         }
     }
 
-    /**
-     * Initializes the function by creating an instance of the function class, and
-     * locating the method to call.
-     */
-    private void initialize(String className, String methodName) {
-
-    }
 }
