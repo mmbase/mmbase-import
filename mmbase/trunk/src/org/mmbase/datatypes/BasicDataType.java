@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.65 2007-01-05 14:38:06 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.66 2007-01-06 15:08:45 nklasens Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -178,7 +178,7 @@ s     */
     /**
      * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), must be reinstantiated.
      */
-    protected void cloneRestrictions(BasicDataType origin) {
+    protected void cloneRestrictions(BasicDataType<C> origin) {
         enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
         requiredRestriction    = new RequiredRestriction(origin.requiredRestriction);
         uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);
@@ -187,7 +187,7 @@ s     */
     /**
      * If a datatype inherits from another datatype all its restrictions inherit too.
      */
-    protected void inheritRestrictions(BasicDataType origin) {
+    protected void inheritRestrictions(BasicDataType<C> origin) {
         if (! origin.getEnumerationFactory().isEmpty()) {
             enumerationRestriction.inherit(origin.enumerationRestriction);
             if (enumerationRestriction.value != null) {
