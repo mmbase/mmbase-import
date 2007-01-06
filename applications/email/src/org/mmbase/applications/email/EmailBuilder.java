@@ -21,9 +21,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
-import org.mmbase.util.functions.Functions;
 import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -289,7 +287,8 @@ public class EmailBuilder extends MMObjectBuilder {
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldCompareConstraint.LESS));
         query.setConstraint(cons);
         try {
-            return getNodes(query);
+            // mailedtime constraints makes it useless to do a cached query.
+            return storageConnector.getNodes(query, false);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage());
             return new ArrayList();
