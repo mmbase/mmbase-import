@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.17 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: AbstractFunction.java,v 1.18 2007-01-06 15:16:38 nklasens Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
  */
-abstract public class AbstractFunction<R> implements Function<R>, Comparable<Function>, java.io.Serializable {
+abstract public class AbstractFunction<R> implements Function<R>, Comparable<Function<R>>, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
     protected String    name;
     protected ReturnType<R>  returnType;
