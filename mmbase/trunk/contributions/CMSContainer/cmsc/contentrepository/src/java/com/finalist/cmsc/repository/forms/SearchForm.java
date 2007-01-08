@@ -1,54 +1,25 @@
 package com.finalist.cmsc.repository.forms;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.storage.search.SortOrder;
-
-
-import java.util.ArrayList;
-import java.util.List;
+import com.finalist.cmsc.struts.PagerForm;
 
 @SuppressWarnings("serial")
-public class SearchForm extends ActionForm {
+public class SearchForm extends PagerForm {
 
-	private String contenttypes = "contentelement";
-	private List results = new ArrayList();
-	private String expiredate = "0";
-	private String creationdate = "0";
-	private String lastmodifieddate = "0";
-	private String publishdate = "0";
-	private String parentchannel;
-	private String linktochannel;
-   private String offset;
-	private int resultCount;
-	private String order = "title";
-	private int direction = 1;
-   private String personal;
-   private String useraccount;
-	private String title;
-	private String keywords;
-	private String objectid;
-   private String mode = "basic";
-   private String search = "true";
-   private String parentchannelpath = "";
-
-	public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
-		// ensure valid direction
-		if (direction != SortOrder.ORDER_DESCENDING) {
-			direction = SortOrder.ORDER_ASCENDING;
-		}
-
-		// set default order field
-		if (StringUtil.isEmpty(order)) {
-			order = "title";
-		}
-		
-
-		return super.validate(actionMapping, httpServletRequest);
-	}
+    private String contenttypes = "contentelement";
+    private String expiredate = "0";
+    private String creationdate = "0";
+    private String lastmodifieddate = "0";
+    private String publishdate = "0";
+    private String parentchannel;
+    private String linktochannel;
+    private String personal;
+    private String useraccount;
+    private String title;
+    private String keywords;
+    private String objectid;
+    private String mode = "basic";
+    private String search = "true";
+    private String parentchannelpath = "";
 
 	public String getContenttypes() {
 		return contenttypes;
@@ -56,14 +27,6 @@ public class SearchForm extends ActionForm {
 
 	public void setContenttypes(String contenttypes) {
 		this.contenttypes = contenttypes;
-	}
-
-	public List getResults() {
-		return results;
-	}
-
-	public void setResults(List results) {
-		this.results = results;
 	}
 
 	public String getExpiredate() {
@@ -114,38 +77,6 @@ public class SearchForm extends ActionForm {
 		this.linktochannel = linktochannel;
 	}
 
-	public String getOffset() {
-		return offset;
-	}
-
-	public int getResultCount() {
-		return resultCount;
-	}
-
-	public void setResultCount(int resultCount) {
-		this.resultCount = resultCount;
-	}
-
-	public void setOffset(String offset) {
-		this.offset = offset;
-	}
-
-	public String getOrder() {
-		return order;
-	}
-
-	public void setOrder(String order) {
-		this.order = order;
-	}
-
-	public int getDirection() {
-		return direction;
-	}
-
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -166,11 +97,9 @@ public class SearchForm extends ActionForm {
        return personal;
    }
 
-
    public void setPersonal(String personal) {
        this.personal = personal;
    }
-
 
    public String getUseraccount() {
        return useraccount;
@@ -204,12 +133,12 @@ public class SearchForm extends ActionForm {
       this.parentchannelpath = parentchannelpath;
    }
 
-public String getKeywords() {
-	return keywords;
-}
+    public String getKeywords() {
+        return keywords;
+    }
 
-public void setKeywords(String keywords) {
-	this.keywords = keywords;
-}
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
    
 }

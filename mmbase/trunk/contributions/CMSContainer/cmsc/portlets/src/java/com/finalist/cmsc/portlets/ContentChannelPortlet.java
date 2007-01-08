@@ -19,6 +19,7 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.ContentElement;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.contentrepository.ContentRepository;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
@@ -77,7 +78,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         setPortletParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
         setPortletParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
         setPortletParameter(portletId, VIEW_TYPE, request.getParameter(VIEW_TYPE));
-        setPortletParameter(portletId, ARCHIVE_PAGE, request.getParameter(ARCHIVE_PAGE));
+        setPortletNodeParameter(portletId, ARCHIVE_PAGE, request.getParameter(ARCHIVE_PAGE));
         setPortletParameter(portletId, START_INDEX, request.getParameter(START_INDEX));        
     }
 
@@ -149,6 +150,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             String orderby = preferences.getValue(ORDERBY, null);
             String direction = preferences.getValue(DIRECTION, null);
             String useLifecycle = preferences.getValue(USE_LIFECYCLE, null);
+
             String archive = preferences.getValue(ARCHIVE, null);
             
             int maxElements = Integer.parseInt( preferences.getValue(MAX_ELEMENTS, "-1") );
@@ -170,14 +172,20 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             String filterDay = req.getParameter(DAY);
             int day = (filterDay == null)?-1:Integer.parseInt(filterDay);
             
+            boolean useLifecycleBool = Boolean.valueOf(useLifecycle).booleanValue();
+            if (useLifecycleBool && ServerUtil.isLive()) {
+                // A live server will remove expired nodes.
+                useLifecycleBool = false;
+            }
+            
             int totalItems = ContentRepository.countContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage, year, month, day);
+                    useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
             if (startIndex > 0) {
             	totalItems = totalItems - startIndex; 
             }
             
             List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction, 
-                    Boolean.valueOf(useLifecycle).booleanValue(), archive, offset, elementsPerPage, year, month, day);
+                    useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
             
             setAttribute(req, ELEMENTS, elements);
             if (contenttypes != null && !contenttypes.isEmpty()) {

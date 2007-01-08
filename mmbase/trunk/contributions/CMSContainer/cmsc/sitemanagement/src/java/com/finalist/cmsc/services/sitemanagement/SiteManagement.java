@@ -139,4 +139,11 @@ public class SiteManagement {
         return cService.getView(view);
     }
 
+    public static String getSite(Page page) {
+       return cService.getSite(page);
+    }
+
+    public static void resetSiteCache() {
+       cService.resetSiteCache();
+   }
 }

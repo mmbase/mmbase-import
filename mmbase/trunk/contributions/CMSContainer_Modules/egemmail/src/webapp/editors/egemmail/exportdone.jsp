@@ -28,12 +28,28 @@
 				<fmt:message key="egemmail.export.intro" />
 				<br/>
 				<br/>
-				<c:if test="${good > 0}">
-					<fmt:message key="egemmail.export.good" />: ${good}<br/>
+				<c:if test="${good == 1}">
+					<fmt:message key="egemmail.export.good.one"/><br/>
 				</c:if>
-				<c:if test="${wrong > 0}">
-					<fmt:message key="egemmail.export.wrong" />:${wrong}
+				<c:if test="${good > 1}">
+					<fmt:message key="egemmail.export.good"><fmt:param>${good}</fmt:param></fmt:message><br/>
 				</c:if>
+
+				<c:if test="${wrong == 1}">
+					<fmt:message key="egemmail.export.wrong.one"/><br/>
+				</c:if>
+				<c:if test="${wrong > 1}">
+					<fmt:message key="egemmail.export.wrong"><fmt:param>${wrong}</fmt:param></fmt:message><br/>
+				</c:if>
+
+				<c:if test="${notOnLive == 1}">
+					<fmt:message key="egemmail.export.good.notOnLive"/><br/>
+				</c:if>
+				<c:if test="${notOnLive > 1}">
+					<fmt:message key="egemmail.export.notOnLive"><fmt:param>${notOnLive}</fmt:param></fmt:message><br/>
+				</c:if>
+				
+				<br/>
 			</p>
 			
 		</div>

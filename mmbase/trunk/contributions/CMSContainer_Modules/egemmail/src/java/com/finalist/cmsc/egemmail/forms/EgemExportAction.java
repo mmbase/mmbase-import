@@ -6,20 +6,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.mmbase.ResourcesUtil;
-import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.util.http.HttpUtil;
 
@@ -28,7 +25,7 @@ public class EgemExportAction extends MMBaseFormlessAction {
     private static final String EGEMMAIL_URL = "egemmail.url";
 	private static final String EGEMMAIL_ADMIN_USER = "egemmail.admin.user";
 	private static final String EGEMMAIL_ADMIN_PASSWORD = "egemmail.admin.password";
-	private static final String EGEMMAIL_BEHEER_URL = "egemmail.beheer.url";
+//	private static final String EGEMMAIL_BEHEER_URL = "egemmail.beheer.url";
 	private static final String EGEMMAIL_LIVEPATH = "egemmail.livepath";
 	
 	
@@ -37,30 +34,33 @@ public class EgemExportAction extends MMBaseFormlessAction {
 	@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
+      String egemmailUrl = PropertiesUtil.getProperty(EGEMMAIL_URL);
+      String egemmailUser = PropertiesUtil.getProperty(EGEMMAIL_ADMIN_USER);
+      String egemmailPassword = PropertiesUtil.getProperty(EGEMMAIL_ADMIN_PASSWORD);
+      
 		int good = 0;
 		int wrong = 0;
+      int notOnLive = 0;
 
 		Map<String,String[]> params = request.getParameterMap();
 		for(Iterator<String> i = params.keySet().iterator();i.hasNext();) {
 			String key = i.next();
 			if(key.startsWith("export_")) {
-				String url = PropertiesUtil.getProperty(EGEMMAIL_URL);
-				String user = PropertiesUtil.getProperty(EGEMMAIL_ADMIN_USER);
-				String password = PropertiesUtil.getProperty(EGEMMAIL_ADMIN_PASSWORD);
-
 				HashMap postParams = new HashMap();
-				postParams.put("user", user);
-				postParams.put("password", password);
 				
 				String number = key.substring(key.indexOf("_")+1);
 				Node node = cloud.getNode(number);
-				postParams.put("title", node.getStringValue("title"));
-				postParams.put("teaser", buildTeaser(node));
-				String liveUrl = getContentUrl(cloud, node);
-				if(liveUrl != null) {
-					postParams.put("url", liveUrl);
-	
-					String response = HttpUtil.doPost(url, postParams).trim();
+            String liveUrl = getContentUrl(cloud, node);
+            if(liveUrl != null) {
+               postParams.put("url", liveUrl);
+               
+               postParams.put("user", egemmailUser);
+               postParams.put("password", egemmailPassword);
+
+               postParams.put("title", node.getStringValue("title"));
+   				postParams.put("teaser", buildTeaser(node));
+               
+					String response = HttpUtil.doPost(egemmailUrl, postParams).trim();
 					
 					if(response.equals("ok")) {
 						good++;
@@ -72,12 +72,14 @@ public class EgemExportAction extends MMBaseFormlessAction {
 				}
 				else {
 					log.warn("Cloud not find live node for: node.number");
+               notOnLive++;
 				}
 			}
 		}
 		
-		request.setAttribute("good", new Integer(good));
-		request.setAttribute("wrong", new Integer(wrong));
+		request.setAttribute("good", good);
+      request.setAttribute("wrong", wrong);
+      request.setAttribute("notOnLive", notOnLive);
 		return mapping.findForward(SUCCESS);
 	}
 
@@ -87,11 +89,25 @@ public class EgemExportAction extends MMBaseFormlessAction {
     		return null;
     	}
     	else {
-			String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
-    		return livePath + "/content/" + remoteNodes.getNode(0).getStringValue("destinationnumber") + "/" + node.getStringValue("title");
+         int remoteNumber = remoteNodes.getNode(0).getIntValue("destinationnumber");
+         Cloud remoteCloud = getRemoteCloud(cloud);
+         Node remoteNode = remoteCloud.getNode(remoteNumber);
+
+         if(Search.hasContentPages(remoteNode)) {
+            String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
+            return livePath + "/content/" + remoteNumber + "/" + node.getStringValue("title");
+         }
+         else {
+            return null;
+         }
     	}
     }
 	
+    public Cloud getRemoteCloud(Cloud cloud) {
+       Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
+       return remoteCloud;
+   }
+    
 	private String buildTeaser(Node node) {
 		if(node.getNodeManager().hasField("intro")) {
 			String intro = node.getStringValue("intro");

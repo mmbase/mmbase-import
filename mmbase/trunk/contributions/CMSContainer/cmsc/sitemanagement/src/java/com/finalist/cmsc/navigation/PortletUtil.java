@@ -461,7 +461,12 @@ public class PortletUtil {
     }
 
     public static boolean isPortletType(NodeManager nodeManager) {
-        return PORTLET.equals(nodeManager.getName());
+        String name = nodeManager.getName();
+        return isPortletType(name);
+    }
+
+    public static boolean isPortletType(String name) {
+        return PORTLET.equals(name);
     }
     
     public static boolean isParameter(Node node) {

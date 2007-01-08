@@ -163,9 +163,10 @@
                     <mm:listnodes referid="errors">
                     <tr>
                        <td><mm:nodeinfo type="guitype" /></td>
-                       <td><mm:field name="title"/></td>
-                       <td><mm:field name="lastmodifier" /></td>
-                       <td><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+                       <td><mm:hasfield name="title"> <mm:field name="title"/> </mm:hasfield>
+	                       <mm:hasfield name="name"> <mm:field name="name"/> </mm:hasfield></td>
+                       <td><mm:hasfield name="lastmodifier"> <mm:field name="lastmodifier" /> </mm:hasfield></td>
+                       <td><mm:hasfield name="lastmodifieddate"> <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field> </mm:hasfield></td>
                     </tr>
                     </mm:listnodes>
                   </tbody>

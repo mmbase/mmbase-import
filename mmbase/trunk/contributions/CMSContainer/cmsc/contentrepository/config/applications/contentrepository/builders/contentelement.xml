@@ -344,6 +344,12 @@
 			</editor>
 			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="today + 1 month" />
+				<commitprocessor>
+					<class name="com.finalist.cmsc.repository.ValueBetweenProcessorFactory">
+						<param name="from">publishdate</param>
+						<param name="to">expiredate</param>
+					</class>
+				</commitprocessor>
 			</datatype>
 			<db>
 				<name>archivedate</name>

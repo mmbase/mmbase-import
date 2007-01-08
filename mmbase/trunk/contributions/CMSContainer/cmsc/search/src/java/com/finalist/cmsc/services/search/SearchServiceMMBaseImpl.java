@@ -13,13 +13,11 @@ import java.util.*;
 
 import javax.servlet.ServletConfig;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.remotepublishing.util.GenericNodeList;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
@@ -34,11 +32,9 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 public class SearchServiceMMBaseImpl extends SearchService {
 
     private static Log log = LogFactory.getLog(SearchServiceMMBaseImpl.class);
-    private CloudProvider cloudProvider;
 
     @Override
     protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {      
-        this.cloudProvider = CloudProviderFactory.getCloudProvider();
         log.info("SearchServiceMMBaseImpl STARTED");
     }
     
@@ -91,16 +87,32 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
     @Override
     public List<PageInfo> findAllDetailPagesForContent(Node content) {
+        List<PageInfo> result = new ArrayList<PageInfo>();
+        
         NodeList pages = findPagesForContent(content, null);
         List<PageInfo> infos = new ArrayList<PageInfo>();
         for (Iterator iter = pages.iterator(); iter.hasNext();) {
             Node pageNode = (Node) iter.next();
             PageInfo pageInfo = getPageInfo(pageNode, true);
-            if (!infos.contains(pageInfo)) {
+            if (pageInfo != null && !infos.contains(pageInfo)) {
                 infos.add(pageInfo);
             }
         }
-        return infos;
+        
+        // The homepage (Site object) has a lower preference than a page deeper in the tree
+        // For detail pages skip the homepage
+        for (PageInfo info : infos) {
+            Page page = SiteManagement.getPage(info.getPageNumber());
+            if (page != null && !(page instanceof Site)) {
+                result.add(info);
+            }
+        }
+        // No pages left then reset
+        if (result.isEmpty()) {
+            result = infos;
+        }
+        
+        return result;
     }
     
     @Override
@@ -116,7 +128,9 @@ public class SearchServiceMMBaseImpl extends SearchService {
         for (Iterator iter = pages.iterator(); iter.hasNext();) {
             Node pageNode = (Node) iter.next();
             PageInfo pageInfo = getPageInfo(pageNode, false);
-            infos.add(pageInfo);
+            if (pageInfo != null) {
+                infos.add(pageInfo);
+            }
         }
         return infos;
     }
@@ -132,10 +146,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
                     Integer portletId = page.getPortlet(portletWindowName);
                     Portlet portlet = SiteManagement.getPortlet(portletId);
                     
-                    String pageNumber = portlet.getParameterValue("page");
-                    if (pageNumber != null) {
-                        page = SiteManagement.getPage(Integer.valueOf(pageNumber));
-                        portletWindowName = portlet.getParameterValue("window");
+                    if (portlet != null) {
+                        String pageNumber = portlet.getParameterValue("page");
+                        if (pageNumber != null) {
+                            page = SiteManagement.getPage(Integer.valueOf(pageNumber));
+                            portletWindowName = portlet.getParameterValue("window");
+                        }
                     }
                 }
             }
@@ -147,11 +163,17 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return null;
     }
     
+    public boolean hasContentPages(Node content) {
+       NodeList pages = findPagesForContent(content, null); 
+       return (pages != null && pages.size() > 0);
+    }
+    
     private NodeList findPagesForContent(Node content, Node channel) {
         NodeList channels;
+        Cloud cloud = content.getCloud();
         
         if (channel != null) {
-            channels = content.getCloud().createNodeList();
+            channels = cloud.createNodeList();
             channels.add(channel);
         }
         else {
@@ -162,7 +184,6 @@ public class SearchServiceMMBaseImpl extends SearchService {
             channels.add(content);
         }
         
-        Cloud cloud = getCloud();
         Query query = createPagesForContentQuery(cloud, channels);
         
         NodeList pages = cloud.getList(query);
@@ -170,7 +191,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
             if (content != null) {
                 channels.remove(content);
             }
-            NodeList collectionchannels = content.getCloud().createNodeList();
+            NodeList collectionchannels = new GenericNodeList();
             for (Iterator iter = channels.iterator(); iter.hasNext();) {
                 Node contentchannel = (Node) iter.next();
                 NodeList cc = RepositoryUtil.getCollectionChannels(contentchannel);
@@ -208,6 +229,15 @@ public class SearchServiceMMBaseImpl extends SearchService {
     
     @Override
     public Set<Node> findContentElementsForPage(Node page) {
+        return findContentElementsForPage(page, false);
+    }
+
+    @Override
+    public Set<Node> findDetailContentElementsForPage(Node page) {
+        return findContentElementsForPage(page, true);
+    }
+
+    private Set<Node> findContentElementsForPage(Node page, boolean detailOnly) {
         Set<Node> result = new HashSet<Node>();
         if (page != null) {
             Cloud cloud = page.getCloud();
@@ -215,7 +245,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
             Page pageObject = SiteManagement.getPage(page.getNumber());
             Collection<Integer> portlets = pageObject.getPortlets();
             for (Integer portletId : portlets) {
-                Portlet portlet = SiteManagement.getPortlet(portletId); 
+                Portlet portlet = SiteManagement.getPortlet(portletId);
+                
+                if (detailOnly && !isDetailPortlet(portlet)) {
+                    continue;
+                }
+                
                 List parameters = portlet.getPortletparameters();
                 for (Iterator iter = parameters.iterator(); iter.hasNext();) {
                     Object param = iter.next();
@@ -226,8 +261,10 @@ public class SearchServiceMMBaseImpl extends SearchService {
                             if (RepositoryUtil.isContentChannel(found)) {
                                 NodeList elements = RepositoryUtil.getLinkedElements(found);
                                 result.addAll(elements);
-                            } else if (ContentElementUtil.isContentElement(found)) {
-                                result.add(found);
+                            } else { 
+                                if (ContentElementUtil.isContentElement(found)) {
+                                    result.add(found);
+                                }
                             }
                         }
                     }
@@ -238,6 +275,18 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return result;
     }
 
+    private boolean isDetailPortlet(Portlet portlet) {
+        String contentchannel = portlet.getParameterValue("contentchannel");
+        if (contentchannel != null) {
+            String pageNumber = portlet.getParameterValue("page");
+            if (pageNumber != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    
     @Override
     public Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager) {
         Set<Node> result = new HashSet<Node>();
@@ -260,10 +309,5 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
         return result;
 
-    }
-
-    private Cloud getCloud() {
-        Cloud cloud = cloudProvider.getAnonymousCloud();
-        return cloud;
     }
 }

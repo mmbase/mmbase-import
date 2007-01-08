@@ -23,21 +23,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.struts.PagerAction;
 
-public abstract class SearchAction extends MMBaseAction {
+public abstract class SearchAction extends PagerAction {
 
     public static final String NUMBER_FIELD = "number";
     
     private static final String GETURL = "geturl";
-    private static final String RESULTS = "results";
-    private static final String RESULT_COUNT = "resultCount";
     
     private static final String OBJECTID = "objectid";
-    private static final String DIRECTION = "direction";
-    private static final String ORDER = "order";
     private static final String CONTENTTYPES = "contenttypes";
-    private static final String OFFSET = "offset";
 
     private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
@@ -63,10 +58,24 @@ public abstract class SearchAction extends MMBaseAction {
         query.setNodeStep(theStep);
 
         // Order the result by:
-        queryStringComposer.addParameter(ORDER, searchForm.getOrder());
-        queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
-        query.addSortOrder(query.getStepField(nodeManager.getField(searchForm.getOrder())),
-                searchForm.getDirection());
+        String order = searchForm.getOrder();
+
+        // set default order field
+        if (StringUtil.isEmpty(order)) {
+            if (nodeManager.hasField("title")) {
+                order = "title";
+            }
+            if (nodeManager.hasField("name")) {
+                order = "name";
+            }
+        }
+        if (StringUtil.isEmpty(order)) {
+            queryStringComposer.addParameter(ORDER, searchForm.getOrder());
+            queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
+            query.addSortOrder(query.getStepField(nodeManager.getField(order)),
+                    searchForm.getDirection());
+        }
+
         query.setDistinct(true);
 
         addConstraints(searchForm, nodeManager, queryStringComposer, query);
@@ -106,12 +115,15 @@ public abstract class SearchAction extends MMBaseAction {
 
         log.debug("QUERY: " + query);
 
+        int resultCount = Queries.count(query);
+        NodeList results = nodeManager.getList(query);
+        
         // Set everyting on the request.
-        request.setAttribute(RESULT_COUNT, new Integer(Queries.count(query)));
-        request.setAttribute(RESULTS, nodeManager.getList(query));
+        searchForm.setResultCount(resultCount);
+        searchForm.setResults(results);
         request.setAttribute(GETURL, queryStringComposer.getQueryString());
 
-        return mapping.getInputForward();
+        return super.execute(mapping, form, request, response, cloud);
     }
 
     protected abstract void addConstraints(SearchForm searchForm, NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query);

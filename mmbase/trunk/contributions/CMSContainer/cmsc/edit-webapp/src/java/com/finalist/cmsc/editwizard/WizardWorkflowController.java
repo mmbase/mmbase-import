@@ -177,7 +177,7 @@ public class WizardWorkflowController extends WizardController {
                 }
 
                 if (!"cancel".equals(workflowCommand)) {
-                   if (RepositoryUtil.isContentChannel(editNode)) {
+                   if (RepositoryUtil.isContentChannel(editNode) || RepositoryUtil.isCollectionChannel(editNode)) {
                       if (!Workflow.hasWorkflow(editNode)) {
                          Publish.publish(editNode);
                       }

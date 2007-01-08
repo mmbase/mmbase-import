@@ -155,7 +155,7 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
         String status = getStatus(node);
         
         boolean deny = WorkflowManager.STATUS_DRAFT.equals(status) 
-                || (userrole.getRole() != Role.CHIEFEDITOR || userrole.getRole() != Role.WEBMASTER);
+                || !(userrole.getRole() == Role.CHIEFEDITOR || userrole.getRole() == Role.WEBMASTER);
 
         return !deny;
     }

@@ -46,16 +46,11 @@ public class PortletDefinitionRegistry {
 
 	/**
 	 * Returns the portlet definition to the given object id
-	 * 
+	 * @param id ObjectID of the portlet definition
 	 * @return the portlet definition
 	 */
 	public static PortletDefinition getPortletDefinition(ObjectID id) {
 		return cService.getPortletDefinition(id);
 	}
 
-	// method added for hot deploy
-	public static void setPortletDefinitionRegistryService() {
-		PortletDefinitionRegistryService cService = (PortletDefinitionRegistryService) ServiceManager
-				.getService(PortletDefinitionRegistryService.class);
-	}
 }

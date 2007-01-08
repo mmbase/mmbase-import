@@ -27,7 +27,11 @@ public abstract class SearchService  extends Service{
 
     public abstract List<PageInfo> findPagesForContentElement(Node content, Node channel);
     
+    public abstract boolean hasContentPages(Node content);
+    
     public abstract Set<Node> findContentElementsForPage(Node page);
 
     public abstract Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager);
+
+    public abstract Set<Node> findDetailContentElementsForPage(Node page);
 }

@@ -38,7 +38,9 @@ function setPortletModeForString(value) {
 	}
 	
 	setElementStyleByClassName('portlet-mode-spacer', 'display', (value == 'preview') ? 'none' : '');
+	setElementStyleByClassName('portlet-header-canvas', 'display', (value == 'preview') ? 'none' : '');
 	setElementStyleByClassName('portlet-canvas', 'borderWidth', (value == 'preview') ? '0px' : '1px');
+	setElementStyleByClassName('portlet-mode-canvas portlet-mode-type-view', 'display', (value == 'preview') ? 'none' : '');
 }
 
 function setPortletMode(admin, edit, view) {

@@ -45,7 +45,7 @@ public class HeaderContentTag  extends CmscTag {
     private boolean dublin = false;
     
     public void setDublin(String dublin) {
-        this.dublin = "true".equals(dublin);
+        this.dublin = Boolean.valueOf(dublin);
     }
     
     public void doTag() throws IOException {

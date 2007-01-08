@@ -37,7 +37,7 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     private Page loadPage(Integer key) {
         Node pageNode = getNode(key);
-        if (pageNode == null) {
+        if (pageNode == null || !PagesUtil.isPageType(pageNode)) {
             log.debug("Page not found: " + key);
             return null;
         }

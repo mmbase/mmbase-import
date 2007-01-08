@@ -29,7 +29,7 @@
   <name>Pager Tag Library</name>
   <artifactId>pager-taglib</artifactId>
   <groupId>jsptags.com</groupId>
-  <currentVersion>2.0</currentVersion>
+  <currentVersion>2.0.1</currentVersion>
   <description>
     The Pager Tag Library is the easy and flexible way to implement paging of
     large data sets in JavaServer Pages (JSP). It can emulate all currently

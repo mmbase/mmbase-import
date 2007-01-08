@@ -81,4 +81,8 @@ public abstract class SiteManagementService extends Service {
     public abstract PortletDefinition getPortletDefinition(int definition);
 
     public abstract View getView(int view);
+
+   public abstract String getSite(Page page);
+   
+   public abstract void resetSiteCache();
 }

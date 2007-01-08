@@ -412,6 +412,7 @@ ul.shortcuts li.delete				{	background-image: url('../gfx/icons/delete.png');}
 ul.shortcuts li.tasks				{	background-image: url('../gfx/icons/task.png');}
 ul.shortcuts li.newtask				{	background-image: url('../gfx/icons/task_add.png');}
 ul.shortcuts li.language			{	background-image: url('../gfx/icons/language.png');}
+ul.shortcuts li.clear				{	background-image: url('../gfx/icons/clear.png');}
 
 
 div.side_block div.body,
@@ -1460,6 +1461,6 @@ width: 149px
 
 label { 
 	display: block; 
-	width: 80px; 
+	width: 100px; 
 	float: left;
 }

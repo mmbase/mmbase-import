@@ -62,6 +62,14 @@ public class Search {
         }
         return cService.findContentElementsForPage(page);
     }
+
+    public static Set<Node> findDetailContentElementsForPage(Node page) {
+        if (cService == null) {
+            log.info("SearchService not started");
+            return null;
+        }
+        return cService.findDetailContentElementsForPage(page);
+    }
     
     public static Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager) {
         if (cService == null) {
@@ -69,5 +77,14 @@ public class Search {
             return null;
         }
         return cService.findLinkedSecondaryContent(contentElement, nodeManager);
+    }
+
+    public static boolean hasContentPages(Node content) {
+       if (cService == null) {
+          log.info("SearchService not started");
+          return false;
+      }
+      return cService.hasContentPages(content);
+       
     }
 }
