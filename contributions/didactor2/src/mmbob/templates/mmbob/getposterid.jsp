@@ -16,7 +16,7 @@
 
   <mm:write referid="feedback">
     <mm:compare inverse="true" regexp="ok|inuse">
-      <mm:write />
+      Error: <mm:write />
     </mm:compare>
   </mm:write>
   <mm:remove referid="account" />
