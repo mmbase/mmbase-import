@@ -1,4 +1,4 @@
-<mm:listnodes type="posters" constraints="account='admin' AND password='admin2k'">
+<mm:listnodes type="posters" constraints="account='admin'" max="1">
   <mm:import id="adminposter" reset="true"><mm:field name="number"/></mm:import>
 </mm:listnodes>
 <mm:import id="classforum" reset="true">-1</mm:import>
