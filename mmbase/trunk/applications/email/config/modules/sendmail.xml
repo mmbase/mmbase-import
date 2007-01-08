@@ -12,14 +12,17 @@
     <!-- 
          deafault, a named datasource can be used (which can be provided by your app-server):
     -->
+    <!--
     <property name="context">java:comp/env</property>
     <property name="datasource">mail/Session</property>
+    -->
 
     <!--
     if you don't want to use jndi you can remove the above properties
     and set the mailhost using the mailhost properties like so:
-
+    -->
     <property name="mailhost">smtp</property>
+    <!--
     <property name="mailport"></property>
     <property name="user"></property>
     <property name="password"></property>
