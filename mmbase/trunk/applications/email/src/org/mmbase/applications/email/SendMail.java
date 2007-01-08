@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.23 2007-01-08 12:01:59 michiel Exp $
+ * @version $Id: SendMail.java,v 1.24 2007-01-08 14:00:25 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -40,7 +40,10 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
     /**
      */
-    public boolean sendMultiPartMail(String from, String to, Map headers, MimeMultipart mmpart) {
+    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) {
+        if (log.isServiceEnabled()) {
+            log.service("Sending (multipart) mail to " + to);
+        }
         try {
 
             MimeMessage msg = constructMessage(from, to, headers);
@@ -154,9 +157,6 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
     protected MimeMessage constructMessage(String from, String to, Map<String, String> headers) throws MessagingException {
-        if (log.isServiceEnabled()) {
-            log.service("SendMail sending mail to " + to);
-        }
         // construct a message
         MimeMessage msg = new MimeMessage(session);
         if (from != null && !from.equals("")) {
@@ -189,9 +189,11 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      * Send mail with headers
      */
     public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
+        if (log.isServiceEnabled()) {
+            log.service("Sending mail to " + to + " Headers " + headers);
+        }
         try {
             MimeMessage msg = constructMessage(from, to, headers);
-
             msg.setText(data, mailEncoding);
             Transport.send(msg);
             log.debug("SendMail done.");
