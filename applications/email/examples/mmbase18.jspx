@@ -4,7 +4,7 @@
   xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <!-- 
        @author  Michiel Meeuwissen
-       @version $Id: mmbase18.jspx,v 1.2 2007-01-05 20:03:32 michiel Exp $
+       @version $Id: mmbase18.jspx,v 1.3 2007-01-08 14:00:25 michiel Exp $
   -->
   <jsp:directive.page session="false" buffer="10kb" />  
   <mm:content language="en" postprocessor="none">
@@ -35,13 +35,16 @@
             <mm:setfield name="subject">Just a demo</mm:setfield>
             <mm:setfield name="to">Michiel.Meeuwissen@omroep.nl</mm:setfield>
             <mm:setfield name="from">&lt;Your address emailadres&gt;</mm:setfield>
-            <mm:setfield name="body">Hello, world!</mm:setfield>
+            <mm:setfield name="body">Hello, world!. Eĥoŝanĝo, ĉiuĵaŭde. Café tweeëntwintig.</mm:setfield>
 
             <!-- start creating actual form-entries -->
-            <mm:fieldlist fields="subject,from,cc,body">
+            <mm:fieldlist fields="subject,from,body">
               <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input" /> <mm:fieldinfo type="errors" /></p>
             </mm:fieldlist>
-            <mm:fieldlist fields="to">
+            
+            <mm:setfield name="cc"><mm:field name="from" escape="none" /></mm:setfield>
+
+            <mm:fieldlist fields="to,cc">
               <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="guivalue" escape="links" /></p>
             </mm:fieldlist>
 
