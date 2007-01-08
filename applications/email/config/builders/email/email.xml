@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.10 2007-01-05 19:58:09 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.11 2007-01-08 14:00:25 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -96,7 +96,9 @@
         </positions>
       </editor>
       <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="local" value="false" />
         <required value="true" />        
+        
       </datatype>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -112,7 +114,9 @@
         <guiname xml:lang="nl">Cc</guiname>
         <guiname xml:lang="eo">Kromsendato</guiname>
       </gui>
-      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="local" value="false" />
+      </datatype>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
@@ -127,7 +131,9 @@
         <guiname xml:lang="nl">Bcc</guiname>
         <guiname xml:lang="eo">Kaŝkromsendato</guiname>
       </gui>
-      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="local" value="false" />
+      </datatype>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>

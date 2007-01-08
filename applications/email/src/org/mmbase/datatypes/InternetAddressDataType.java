@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * if not exception, the value is valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InternetAddressDataType.java,v 1.2 2007-01-05 19:57:17 michiel Exp $
+ * @version $Id: InternetAddressDataType.java,v 1.3 2007-01-08 14:00:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class InternetAddressDataType extends StringDataType {
@@ -63,24 +63,46 @@ public class InternetAddressDataType extends StringDataType {
 
 
     public void setMaxAddress(String i) {
-        log.info("Setting value to " + i);
+        log.service("Setting value to " + i);
         restriction.setValue(Integer.valueOf(i));
+    }
+    public void setLocal(String l) {
+        restriction.setLocal(Boolean.valueOf(l));
     }
 
     class InternetAddressRestriction extends AbstractRestriction<Integer> {
+        protected boolean local = false;
         InternetAddressRestriction(InternetAddressRestriction source) {
             super(source);
+            setLocal(source.isLocal());
         }
         InternetAddressRestriction(int max) {
             super("internetaddress", Integer.valueOf(max));
         }
+        public void setLocal(boolean l) {
+            local = l;
+        }
+        public boolean isLocal() {
+            return local;
+        }
+
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (v == null) return true;
             log.debug("Validating " + v);
             try {
                 String address = Casting.toString(v);
                 InternetAddress[] ia = InternetAddress.parse(address);
-                log.debug("Found " + Arrays.asList(ia) + " this is valid if " + ia.length + " <= " + value);
+                if (log.isDebugEnabled()) {
+                    log.debug("Found " + Arrays.asList(ia) + " this is valid if " + ia.length + " <= " + value);
+                }
+                if (! local) {
+                    for (InternetAddress a : ia) {
+                        if (a.getAddress().indexOf("@") == -1) {
+                            log.debug("Non-local addresses not allowed");
+                            return false;
+                        }
+                    }
+                }
                 return ia.length  <= value;
 
             } catch (AddressException ae) {
