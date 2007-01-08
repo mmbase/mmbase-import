@@ -15,6 +15,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.naming.*;
 
+import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.22 2007-01-05 16:24:22 michiel Exp $
+ * @version $Id: SendMail.java,v 1.23 2007-01-08 12:01:59 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -54,7 +55,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         } catch (javax.mail.MessagingException e) {
             emailFailed++;
             log.error("JMimeSendMail failure: " + e.getMessage());
-            log.debug(Logging.stackTrace(e));
+            log.debug(e);
         }
         return false;
     }
@@ -83,8 +84,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             MMBase mmb = MMBase.getMMBase();
             mailEncoding = mmb.getEncoding();
             String encoding = getInitParameter("encoding");
-            if (encoding != null && !encoding.equals(""))
+            if (encoding != null && !encoding.equals("")) {
                 mailEncoding = encoding;
+            }
 
             String smtpHost = getInitParameter("mailhost");
             String smtpPort = getInitParameter("mailport");
@@ -151,7 +153,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
-    protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
+    protected MimeMessage constructMessage(String from, String to, Map<String, String> headers) throws MessagingException {
         if (log.isServiceEnabled()) {
             log.service("SendMail sending mail to " + to);
         }
@@ -163,19 +165,22 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
         msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
-        if (headers.get("CC") != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("CC")));
+        String cc = headers.get("CC");
+        if (cc != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
         }
-        if (headers.get("BCC") != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("BCC")));
+        String bcc = headers.get("BCC");
+        if (bcc != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(bcc));
         }
 
-        if (headers.get("Reply-To") != null) {
-            msg.setReplyTo(InternetAddress.parse((String)headers.get("Reply-To")));
+        String replyTo = headers.get("Reply-To");
+        if (replyTo != null) {
+            msg.setReplyTo(InternetAddress.parse(replyTo));
         }
         String sub = (String)headers.get("Subject");
         if (sub == null || "".equals(sub)) sub = "<no subject>";
-        msg.setSubject((String)headers.get("Subject"));
+        msg.setSubject(headers.get("Subject"));
 
         return msg;
     }
@@ -183,7 +188,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     /**
      * Send mail with headers
      */
-    public boolean sendMail(String from, String to, String data, Map headers) {
+    public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
         try {
             MimeMessage msg = constructMessage(from, to, headers);
 
@@ -193,7 +198,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             return true;
         } catch (MessagingException e) {
             log.error("SendMail failure: " + e.getMessage() + " from: " + from + " to: " + to);
-            log.debug(Logging.stackTrace(e));
+            log.debug(e);
         }
         return false;
     }

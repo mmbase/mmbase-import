@@ -36,19 +36,5 @@ abstract public class AbstractSendMail extends WatchedReloadableModule implement
         return sendMail(mail.from, mail.to, mail.text, mail.headers);
     }
 
-    /**
-     * checks the e-mail address
-     */
-    public String verify(String name) {
-        throw new UnsupportedOperationException("cannot verify e-mail");
-    }
-
-    /**
-     * gives all the members of a mailinglist
-     */
-    public List expand(String name) {
-        throw new UnsupportedOperationException("cannot expand e-mail");
-    }
-
 
 }
