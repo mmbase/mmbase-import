@@ -1,10 +1,34 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
-
 <project name="MMBase Email Application" default="jar" basedir=".">
   <property name="project.name"   value="email" />
   <property name="project.package"   value="org/mmbase/applications/email" />
-  &base;
+
+  <property name="project.jars.dir"        location="build" />
+  <property name="project.jars.includes"   value="mail.jar" />
+
+  <import file="../buildbase-include.xml" />
+
+  <property file="build.properties.default" />
+
+  
+  <target name="jar" description="Create mmbase-email.jar" depends="mail.jar,buildbase.jar">
+  </target>
+
+  <target name="mail.jar" description="Get JGroups jar">
+    
+    <echo message="mail" />
+
+
+    <antcall target="downloadzip">
+      <param name="sourcefile" value="${javamail.loc}"/>
+      <param name="destfile" value="${javamail.dest}"/>
+      <param name="destdir" value="${javamail.dir}"/>
+      <param name="expandedfile" value="${javamail.jar}"/>
+    </antcall>
+
+    <copy file="${javamail.jar}" todir="${project.jar.dir}" preservelastmodified="true"  />
+
+  </target>
+
+
 </project>
