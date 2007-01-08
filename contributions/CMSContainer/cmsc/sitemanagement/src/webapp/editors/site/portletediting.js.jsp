@@ -1,6 +1,6 @@
 <%@taglib uri="http://finalist.com/csmc" prefix="cmsc"%>
 
-window.onload = fillIframes;
+addLoadEvent(fillIframes)
 
 function fillIframes() {
 	elements = getElementsByClass("portlet-config-canvas", document, "div");

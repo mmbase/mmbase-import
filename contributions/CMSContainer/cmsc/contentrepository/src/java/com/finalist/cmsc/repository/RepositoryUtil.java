@@ -100,7 +100,7 @@ public class RepositoryUtil {
     }
 
     public static NodeList getCollectionChannels(Node contentchannel) {
-        return contentchannel.getRelatedNodes(COLLECTIONCHANNEL, COLLECTIONREL, SOURCE);
+        return contentchannel.getRelatedNodes(COLLECTIONCHANNEL, null, null);
     }
     
     /** gets the root number
@@ -516,8 +516,13 @@ public class RepositoryUtil {
        return count > 0;
     }
 
-    public static NodeList getContentChannels(Node content) {
-        return content.getRelatedNodes(CONTENTCHANNEL, CONTENTREL, SOURCE);
+    public static NodeList getContentChannels(Node node) {
+        if (isCollectionChannel(node)) {
+            return node.getRelatedNodes(CONTENTCHANNEL, COLLECTIONREL, DESTINATION);
+        }
+        else {
+            return node.getRelatedNodes(CONTENTCHANNEL, CONTENTREL, SOURCE);
+        }
     }
 
     public static boolean hasCreatedContent(Node channelNode) {
@@ -595,11 +600,16 @@ public class RepositoryUtil {
             SearchUtil.addTypeConstraints(query, contenttypes);
         }
 
+        // Precision of now is based on minutes.
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Long date = cal.getTimeInMillis();
+        
         if (useLifecycle) {
-            ContentElementUtil.addLifeCycleConstraint(query, System.currentTimeMillis());
+            ContentElementUtil.addLifeCycleConstraint(query, date);
         }
         if (!StringUtil.isEmpty(archive)) {
-            Long date = new Long(System.currentTimeMillis());
             ContentElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
 

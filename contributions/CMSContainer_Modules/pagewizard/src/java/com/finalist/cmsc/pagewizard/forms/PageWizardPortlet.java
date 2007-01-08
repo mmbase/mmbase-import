@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class PageWizardPortlet {
 
 	private String position;
-	private String contentType;
+   private String contentType;
+   private String contentTypeName;
 	private ArrayList<PageWizardChoice> choices = new ArrayList<PageWizardChoice>();
 	
 	public PageWizardPortlet(String position) {
@@ -26,5 +27,10 @@ public class PageWizardPortlet {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	
+   public String getContentTypeName() {
+      return contentTypeName;
+   }
+   public void setContentTypeName(String contentTypeName) {
+      this.contentTypeName = contentTypeName;
+   }
 }

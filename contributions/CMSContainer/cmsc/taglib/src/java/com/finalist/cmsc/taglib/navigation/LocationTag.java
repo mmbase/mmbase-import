@@ -27,7 +27,6 @@ import com.finalist.cmsc.taglib.CmscTag;
  * 
  * @author Wouter Heijke
  * @author R.W. van 't Veer
- * @version $Revision: 1.3 $
  */
 public class LocationTag extends CmscTag {
 
@@ -40,6 +39,11 @@ public class LocationTag extends CmscTag {
 	 * JSP variable name.
 	 */
 	private String sitevar;
+   
+   /**
+    * JSP variable path.
+    */
+   private String path;
 
 	/**
 	 * Find and put location in variable.
@@ -48,8 +52,10 @@ public class LocationTag extends CmscTag {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 
-		String path = getPath();
-        Page result = SiteManagement.getPageFromPath(path);
+      if(path == null) {
+         path = getPath();
+      }
+      Page result = SiteManagement.getPageFromPath(path);
 
 		// handle result
 		if (result == null) {
@@ -81,4 +87,7 @@ public class LocationTag extends CmscTag {
 		this.sitevar = sitevar;
 	}
 
+   public void setPath(String path) {
+      this.path = path;
+   }
 }

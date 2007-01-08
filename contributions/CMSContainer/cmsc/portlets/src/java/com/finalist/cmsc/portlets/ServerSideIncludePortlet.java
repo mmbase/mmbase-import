@@ -61,7 +61,7 @@ public class ServerSideIncludePortlet extends CmscPortlet {
         try {
         	String actionUrl = response.createActionURL().toString();
         	
-        	Map parameterMap = (Map)request.getParameterMap();
+        	Map parameterMap = request.getParameterMap();
         	if(parameterMap == null) {
         		parameterMap = new HashMap();
         	}

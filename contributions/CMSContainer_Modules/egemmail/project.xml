@@ -11,5 +11,15 @@
     <artifactId>cmsc-modules-egemmail</artifactId>
     <name>Egem mail module</name>
     <shortDescription>Integrates the EGEM mail with the CMSc</shortDescription>
+
+    <dependencies>
+        <dependency>
+            <groupId>mmapps</groupId>
+            <artifactId>remotepublishing</artifactId>
+            <version>1.0.10</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+
 </project>
 

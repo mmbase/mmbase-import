@@ -27,6 +27,7 @@ import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -64,6 +65,7 @@ public class LinkTag extends SimpleTagSupport {
 
 		if (channel != null) {
 			String link = SiteManagement.getPath(channel, !ServerUtil.useServerName());
+         
 			if (link != null) {
 				// handle body, call any nested tags
 				JspFragment frag = getJspBody();
@@ -72,7 +74,12 @@ public class LinkTag extends SimpleTagSupport {
 					frag.invoke(buffer);
 				}
 
-                PortalURL u = new PortalURL(request, link);
+                String host = null;
+                if(ServerUtil.useServerName()) {
+                   host = SiteManagement.getSite(channel);
+                }
+                PortalURL u = new PortalURL(host, request, link);
+                
                 if (element != null) {
                     String portletWindowName = getPortletWindow(channel, element);
                     if (portletWindowName != null) {

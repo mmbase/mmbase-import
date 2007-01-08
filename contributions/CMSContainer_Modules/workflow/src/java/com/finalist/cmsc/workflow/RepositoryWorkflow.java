@@ -49,7 +49,7 @@ public abstract class RepositoryWorkflow  extends WorkflowManager {
     
     
     public boolean isWorkflowElement(Node node) {
-        return RepositoryUtil.isContentChannel(node) ||
+        return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node) ||
             (ContentElementUtil.isContentElement(node) && RepositoryUtil.hasContentChannel(node));
     }
     

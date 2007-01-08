@@ -149,6 +149,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         }
         return null;
     }
+
     
     public Integer getPage(String path) {
         PageTreeNode pageTreeNode = getPageTreeNode(path);
@@ -210,6 +211,16 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         return siteIds;
     }
 
+    public String getSite(Page page) {
+       for(String site: trees.keySet()) {
+          PageTree tree = trees.get(site);
+          if(tree.containsPageTreeNode(page.getId())) {
+             return tree.getRoot().getPathStr();
+          }
+       }
+       return null;
+    }
+    
     public List<Integer> getChildren(Page findpage) {
         List<Integer> pageIds = new ArrayList<Integer>();
 
@@ -379,5 +390,4 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
             }
         }
     }
-
 }

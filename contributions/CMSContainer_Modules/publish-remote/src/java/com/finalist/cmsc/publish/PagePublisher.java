@@ -47,23 +47,16 @@ public class PagePublisher extends Publisher {
                 
                 Node valueNode = pnode.getNodeValue(PortletUtil.VALUE_FIELD);
                 if (RepositoryUtil.isContentChannel(valueNode)) {
+                    publishContentChannel(nodes, valueNode, date);
+                }
+                if (RepositoryUtil.isCollectionChannel(valueNode)) {
                     if (!PublishManager.isPublished(valueNode)) {
-                        addContentChannels(nodes, valueNode);
-                        
-                        NodeList contentNodes = getContentElements(valueNode, date);
-                        for (Iterator iter = contentNodes.iterator(); iter.hasNext();) {
-                            Node contentElement = (Node) iter.next();
-                            addContentBlock(nodes, contentElement);
-                        }
+                        addChannels(nodes, valueNode);
                     }
-                    else {
-                        NodeList contentNodes = getContentElements(valueNode, date);
-                        for (Iterator iter = contentNodes.iterator(); iter.hasNext();) {
-                            Node contentElement = (Node) iter.next();
-                            if (!PublishManager.isPublished(contentElement)) {
-                                addContentBlock(nodes, contentElement);
-                            }
-                        }
+                    NodeList contentNodes = RepositoryUtil.getContentChannels(valueNode);
+                    for (Iterator iter = contentNodes.iterator(); iter.hasNext();) {
+                        Node contentChannel = (Node) iter.next();
+                        publishContentChannel(nodes, contentChannel, date);
                     }
                 }
                 if (ContentElementUtil.isContentElement(valueNode)) {
@@ -71,7 +64,7 @@ public class PagePublisher extends Publisher {
                         NodeList channels = RepositoryUtil.getContentChannels(valueNode);
                         for (Iterator iter = channels.iterator(); iter.hasNext();) {
                             Node channel = (Node) iter.next();
-                            addContentChannels(nodes, channel);
+                            addChannels(nodes, channel);
                         }
                         addContentBlock(nodes, valueNode);
                     }
@@ -87,6 +80,27 @@ public class PagePublisher extends Publisher {
             Node pnode = entry.getKey();
             Date publish = entry.getValue();
             PublishUtil.publishOrUpdateNode(cloud, pnode.getNumber(), publish);
+        }
+    }
+
+    private void publishContentChannel(Map<Node, Date> nodes, Node valueNode, Long date) {
+        if (!PublishManager.isPublished(valueNode)) {
+            addChannels(nodes, valueNode);
+            
+            NodeList contentNodes = getContentElements(valueNode, date);
+            for (Iterator iter = contentNodes.iterator(); iter.hasNext();) {
+                Node contentElement = (Node) iter.next();
+                addContentBlock(nodes, contentElement);
+            }
+        }
+        else {
+            NodeList contentNodes = getContentElements(valueNode, date);
+            for (Iterator iter = contentNodes.iterator(); iter.hasNext();) {
+                Node contentElement = (Node) iter.next();
+                if (!PublishManager.isPublished(contentElement)) {
+                    addContentBlock(nodes, contentElement);
+                }
+            }
         }
     }
 
@@ -111,7 +125,7 @@ public class PagePublisher extends Publisher {
         return contentNodes;
     }
 
-    private void addContentChannels(Map<Node, Date> nodes, Node contentChannel) {
+    private void addChannels(Map<Node, Date> nodes, Node contentChannel) {
         List path = RepositoryUtil.getPathToRoot(contentChannel);
         for (Iterator iter = path.iterator(); iter.hasNext();) {
             Node pathElement = (Node) iter.next();

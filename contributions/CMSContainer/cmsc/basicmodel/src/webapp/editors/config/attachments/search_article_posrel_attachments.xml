@@ -29,7 +29,7 @@
 			<prompt xml:lang="nl">Grootte</prompt>
 		</field>
 	 -->
-	   <field name="handle" ftype="file">
+	   <field name="handle" ftype="file" dtmaxsize="16000000">
 			<prompt xml:lang="en">Attachment</prompt>
 			<prompt xml:lang="nl">Bijlage</prompt>
 		</field>
@@ -57,7 +57,7 @@
 
 	<action type="create">
 		<relation destinationtype="attachments" role="posrel">
-			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/field[@name='pos'])-{$pos}}</field>
 			<object type="attachments"></object>
 		</relation>
 	</action>

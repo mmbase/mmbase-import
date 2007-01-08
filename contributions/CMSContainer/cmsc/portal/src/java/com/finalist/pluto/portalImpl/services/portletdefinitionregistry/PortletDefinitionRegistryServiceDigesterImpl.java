@@ -11,9 +11,7 @@ package com.finalist.pluto.portalImpl.services.portletdefinitionregistry;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -47,7 +45,7 @@ public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinit
 
 	private PortletApplicationDefinitionListImpl registry;
 
-	private Map definitions = new HashMap();;
+	private Map<ObjectID,PortletDefinition> definitions = new HashMap<ObjectID,PortletDefinition>();;
 
 	protected void init(ServletConfig config, Properties props) throws Exception {
 		log.debug("PortletDefinitionRegistryServiceDigesterImpl");
@@ -122,18 +120,25 @@ public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinit
 			digester.addBeanPropertySetter("portlet-app/portlet/security-role-ref/description", "description");
 			digester.addSetNext("portlet-app/portlet/security-role-ref/description", "addDescription");
 
-			InputStream stream = context.getResourceAsStream("/WEB-INF/portlet.xml");
-			PortletApplicationDefinitionImpl pd = (PortletApplicationDefinitionImpl) digester.parse(stream);
-			registry.add(pd);
+            Set webInfResources = context.getResourcePaths("/WEB-INF/");
+            for (Iterator iter = webInfResources.iterator(); iter.hasNext();) {
+                String resource = (String) iter.next();
+                if (resource.startsWith("/WEB-INF/portlet")) {
+                    InputStream stream = context.getResourceAsStream(resource);
+                    PortletApplicationDefinitionImpl pd = (PortletApplicationDefinitionImpl) digester.parse(stream);
+                    registry.add(pd);
 
-            for (Iterator i = registry.iterator(); i.hasNext();) {
-				PortletApplicationDefinition application = (PortletApplicationDefinition) i.next();
-				for (Iterator j = application.getPortletDefinitionList().iterator(); j.hasNext();) {
-					PortletDefinition portlet = (PortletDefinition) j.next();
-					definitions.put(portlet.getId(), portlet);
-				}
-			}
-            pd.postLoad(null);
+                    for (Iterator i = registry.iterator(); i.hasNext();) {
+                        PortletApplicationDefinition application = (PortletApplicationDefinition) i.next();
+                        for (Iterator j = application.getPortletDefinitionList().iterator(); j.hasNext();) {
+                            PortletDefinition portlet = (PortletDefinition) j.next();
+                            definitions.put(portlet.getId(), portlet);
+                        }
+                    }
+                    
+                    pd.postLoad(null);
+                }
+            }
 		} catch (IOException e) {
 		    log.error("",e);
 		} catch (SAXException e) {
@@ -146,7 +151,7 @@ public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinit
 	}
 
 	public PortletDefinition getPortletDefinition(ObjectID id) {
-		PortletDefinition pd = (PortletDefinition) definitions.get(id);
+		PortletDefinition pd = definitions.get(id);
 		return pd;
 	}
 

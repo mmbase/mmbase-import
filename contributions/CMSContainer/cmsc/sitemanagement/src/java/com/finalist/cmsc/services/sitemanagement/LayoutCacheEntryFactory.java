@@ -26,7 +26,7 @@ public class LayoutCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node layoutNode = getNode(key);
-        if (layoutNode == null) {
+        if (layoutNode == null || !PagesUtil.isLayout(layoutNode)) {
             return null;
         }
         Layout layout = (Layout) MMBaseNodeMapper.copyNode(layoutNode, Layout.class);

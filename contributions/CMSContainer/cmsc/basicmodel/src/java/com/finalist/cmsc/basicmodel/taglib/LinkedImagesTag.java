@@ -103,21 +103,21 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                    FieldCompareConstraint.EQUAL, parentNode.getValue("number"));
            query.setConstraint(soourceConstraint);
 
+           NodeList list = imagerelManager.getList(query);
+           
            String pos = position.getString(this);
            if (!StringUtil.isEmpty(pos)) {
-               Field posField = imagerelManager.getField("pos");
-               FieldValueConstraint posConstraint = query.createConstraint((query.getStepField(posField)),
-                       FieldCompareConstraint.EQUAL, pos);
-               Constraint constraint = query.getConstraint();
-               if (constraint != null) {
-                   Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, posConstraint);
-                   query.setConstraint(compConstraint);
-               }
-               else {
-                   query.setConstraint(posConstraint);
+               // filter list on position
+               // Other option to filter on position is to add a constraint to the query
+               // This is preferred, because the query will be the same for all positions.
+               // This results in an optimal usage of the MMBase Query Cache 
+               for (Iterator iter = list.iterator(); iter.hasNext();) {
+                   Node imagerelNode = (Node) iter.next();
+                   if (!pos.equals(imagerelNode.getStringValue("pos"))) {
+                       iter.remove();
+                   }
                }
            }
-           NodeList list = imagerelManager.getList(query);
 
            String outputValue = "";
            

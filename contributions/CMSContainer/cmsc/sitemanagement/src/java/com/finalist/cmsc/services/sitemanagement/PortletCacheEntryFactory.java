@@ -16,12 +16,17 @@ import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import org.mmbase.bridge.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.PortletUtil;
 
 
 public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
+    
+    /** MMbase logging system */
+    private static Logger log = Logging.getLoggerInstance(PortletCacheEntryFactory.class.getName());
     
     public PortletCacheEntryFactory() {
         super(PortletUtil.PORTLET);
@@ -35,13 +40,17 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
 
     private Portlet loadPortlet(Integer key) {
         Node portletNode = getNode(key);
-        if (portletNode == null) {
+        if (portletNode == null || !PortletUtil.isPortlet(portletNode)) {
             return null;
         }
         
         Portlet portlet = (Portlet) MMBaseNodeMapper.copyNode(portletNode, Portlet.class);
         
         Node definition = PortletUtil.getDefinition(portletNode);
+        if (definition == null) {
+            log.warn("Portlet " + portletNode.getNumber() + " does not have a definition attached");
+            return null;
+        }
         portlet.setDefinition(definition.getNumber());
 
         NodeList vlist = PortletUtil.getPortletViews(portletNode);

@@ -95,14 +95,6 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
             element.addOption(createOption("edit_defaults.png", labelEdit, 
                     getUrl("ChannelEdit.do?number=" + parentNode.getNumber()), target));
         }
-        
-        if (RepositoryUtil.isContentChannel(parentNode)) {
-            if (RepositoryUtil.countLinkedContent(parentNode) >= 2) {
-                String label = JstlUtil.getMessage(request, "repository.content.reorder");
-                element.addOption(createOption("reorder.png", label,
-                        getUrl("ReorderAction.do?parent=" + parentNode.getNumber()), target));
-            }
-        }
    
         if (level > 1) {
             if ((model.getChildCount(parentNode) == 0)) {
@@ -121,6 +113,14 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
             element.addOption(createOption("new.png", labelNewCollection,
                     getUrl("ChannelCreate.do?parentchannel=" + parentNode.getNumber() +
                            "&channeltype=" + RepositoryUtil.COLLECTIONCHANNEL), target));
+        }
+        
+        if (RepositoryUtil.isContentChannel(parentNode)) {
+            if (RepositoryUtil.countLinkedContent(parentNode) >= 2) {
+                String label = JstlUtil.getMessage(request, "repository.content.reorder");
+                element.addOption(createOption("reorder.png", label,
+                        getUrl("ReorderAction.do?parent=" + parentNode.getNumber()), target));
+            }
         }
     }
 

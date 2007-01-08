@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.taglib;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
@@ -23,11 +24,15 @@ public class ContentUrlTag extends NodeReferrerTag {
 
     /** Holds value of property number. */
     private Attribute number = Attribute.NULL;
+    private boolean absolute = false;
 
     public void setNumber(String t) throws JspTagException {
         number = getAttribute(t);
     }
-
+    
+    public void setAbsolute(String absolute) {
+        this.absolute = Boolean.valueOf(absolute);
+    }
     
     @Override
     public int doStartTag() throws JspException {
@@ -47,12 +52,18 @@ public class ContentUrlTag extends NodeReferrerTag {
         String builderName = node.getNodeManager().getName();
         if ("attachments".equals(builderName)) {
             url = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
+            if (absolute) {
+                url = makeAbsolute(url);
+            }
         } else {
             if ("urls".equals(builderName)) {
                 url = node.getStringValue("url");
             }
             else {
                 url = getContentUrl(node);
+                if (absolute) {
+                    url = makeAbsolute(url);
+                }
             }
         }
         
@@ -63,11 +74,32 @@ public class ContentUrlTag extends NodeReferrerTag {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
-
-
         
         return EVAL_BODY_BUFFERED;
     }
+
+    private String makeAbsolute(String url) {
+        String webapp = getServerDocRoot((HttpServletRequest) pageContext.getRequest());
+        if (url.startsWith("/")) {
+            url = webapp + url.substring(1);
+        }
+        else {
+           url = webapp + url;
+        }
+        return url;
+    }
+    
+    public static String getServerDocRoot(HttpServletRequest request) {
+        StringBuffer s = new StringBuffer();
+        s.append(request.getScheme()).append("://").append(request.getServerName());
+        
+        int serverPort = request.getServerPort();
+        if (serverPort != 80 && serverPort != 443 ) {
+            s.append(':').append(Integer.toString(serverPort));
+        }
+        s.append('/');
+        return s.toString();
+     }
     
     private String getContentUrl(Node node) {
         return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 

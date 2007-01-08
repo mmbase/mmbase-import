@@ -382,6 +382,9 @@
       <xsl:when test="@ftype=&apos;text&apos;">
         <xsl:call-template name="ftype-text"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;mmxf&apos;">
+        <xsl:call-template name="ftype-text"/>
+      </xsl:when>
       <xsl:when test="@ftype=&apos;html&apos;">
         <xsl:call-template name="ftype-html"/>
       </xsl:when>
@@ -402,6 +405,15 @@
       </xsl:when>
       <xsl:when test="@ftype=&apos;file&apos;">
         <xsl:call-template name="ftype-file"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;radio&apos;">
+         <xsl:call-template name="ftype-radio"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;checkbox&apos;">
+         <xsl:call-template name="ftype-checkbox"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;boolean&apos;">
+         <xsl:call-template name="ftype-checkbox"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;realposition&apos;">
         <xsl:call-template name="ftype-realposition"/>

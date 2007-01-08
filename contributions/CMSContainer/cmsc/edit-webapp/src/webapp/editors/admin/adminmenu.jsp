@@ -47,6 +47,9 @@
                <li class="dumpdefaults">
 					<a href="dumpdefaults.jsp" target="rightpane"><fmt:message key="admin.dumpdefaults" /></a>
 				</li>
+               <li class="clear">
+					<a href="resetsitecache.jsp" target="rightpane"><fmt:message key="admin.resetsitecache" /></a>
+				</li>
 				
             <mm:haspage page="/editors/resources/reactionsearch.jsp">
                 <li class="reactions">

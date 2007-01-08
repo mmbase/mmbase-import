@@ -25,6 +25,7 @@ ${requestScope.layoutId}
 		<img src="<cmsc:staticurl page='/editors/gfx/icons/${modeInfo.name}.png'/>" border="0" alt="<fmt:message key='portletmode.${modeInfo.name}' />"/></a>
 </c:forEach>
 </div>
+<br/>
 </div>
 <div class="portlet-mode-spacer"></div>
 </cmsc:portlet>

@@ -18,6 +18,9 @@ import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.PortletUtil;
+
 /**
  * Handles Page events
  * 
@@ -60,7 +63,7 @@ public class PageEventListener implements NodeEventListener, RelationEventListen
 				+ event.getRelationDestinationNumber() + " (" + destinationType + ")");
 
 		// update a page with a changed relation to a portlet
-		if (TYPE_PAGE.equals(sourceType) && TYPE_PORTLET.equals(destinationType)) {
+		if (PagesUtil.isPageType(sourceType) && PortletUtil.isPortletType(destinationType)) {
 			switch (event.getType()) {
 			case Event.TYPE_DELETE:
 			case Event.TYPE_NEW:

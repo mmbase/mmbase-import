@@ -110,6 +110,9 @@
 				<h3><fmt:message key="pagewizard.pickcontent.selectedwizard" />: ${PageWizardForm.definition.name}<br/></h3>
 				<p>
 					${PageWizardForm.definition.description}
+				</p>
+				<p>
+	         	<fmt:message key="pagewizard.pickcontent.intro" />
 					<html:form action="/editors/pagewizard/CompleteWizardAction">
 				        <html:hidden property="wizard"/>
 				        <html:hidden property="parentPage"/>
@@ -122,7 +125,7 @@
 								
 									<c:when test="${choice.type == 'content'}">
 										<fmt:message key="pagewizard.pickcontent.contentportlet"> 
-											<fmt:param>${portlet.contentType}</fmt:param>
+											<fmt:param>${portlet.contentTypeName}</fmt:param>
 											<fmt:param>${portlet.position}</fmt:param>
 										</fmt:message>
 										<br/>
@@ -142,7 +145,7 @@
 									
 									<c:when test="${choice.type == 'contentchannel'}">
 										<fmt:message key="pagewizard.pickcontent.channelportlet"> 
-											<fmt:param>${portlet.contentType}</fmt:param>
+											<fmt:param>${portlet.contentTypeName}</fmt:param>
 											<fmt:param>${portlet.position}</fmt:param>
 										</fmt:message>
 										<br/>
