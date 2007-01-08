@@ -15,7 +15,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.mmbase.module.Module;
+import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.storage.search.*;
@@ -197,7 +197,9 @@ public class EmailBuilder extends MMObjectBuilder {
             String val = node.getStringValue("mailtype");
             return null;
         } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
-            log.debug("We are in startmail - args: " + args);
+            if (log.isDebugEnabled()) {
+                log.debug("We are in startmail - args: " + args);
+            }
             // check if we have arguments ifso call setType()
             setType(node, args);
 
