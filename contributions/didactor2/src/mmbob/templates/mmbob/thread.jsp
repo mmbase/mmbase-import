@@ -84,10 +84,10 @@
       <mm:even><mm:import id="tdvar"></mm:import></mm:even>
       <mm:odd><mm:import id="tdvar">listpaging</mm:import></mm:odd>
 
-
       <tr>
          <td class="<mm:write referid="tdvar" />" align="left">
             <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
+<mm:isnotempty referid="dummyposterid">
             <mm:list nodes="$dummyposterid" path="posters,people">
                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
                            <mm:param name="contact"><mm:field name="people.number"/></mm:param>
@@ -95,6 +95,7 @@
                   <b><mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /></b>
                </a>
             </mm:list>
+</mm:isnotempty>
             <br />
             <di:translate key="mmbob.on" /> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
          </td>
@@ -155,6 +156,7 @@
       <tr>
          <td class="<mm:write referid="tdvar" />" valign="top" align="left">
             <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
+<mm:isnotempty referid="dummyposterid">
             <mm:list nodes="$dummyposterid" path="posters,people,images">
                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
                            <mm:param name="contact"><mm:field name="people.number"/></mm:param>
@@ -164,6 +166,7 @@
                   </mm:node>
                </a>
             </mm:list>
+</mm:isnotempty>
             <p />
 
 
