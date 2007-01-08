@@ -4,7 +4,7 @@
 	<title xml:lang="nl">Popup</title>
 	<title xml:lang="en">Popup</title>
 
-	<field name="windowname" dtmaxlength="40">
+	<field name="windowname" dtrequired="true" dtmaxlength="40" dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
 		<prompt xml:lang="en">Windowname</prompt>
 		<prompt xml:lang="nl">Vensternaam</prompt>
 	</field>

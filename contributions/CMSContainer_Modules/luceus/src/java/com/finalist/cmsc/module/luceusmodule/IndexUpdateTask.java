@@ -36,7 +36,7 @@ import com.luceus.core.om.EnvelopeFieldFactory;
  * Task that handles queued updates
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class IndexUpdateTask implements Runnable {
 	private static Log log = LogFactory.getLog(IndexUpdateTask.class);
@@ -228,21 +228,21 @@ public class IndexUpdateTask implements Runnable {
 		}
 	}
 
-	private void executeUpdatePageIndex(int nodeNumber) {
-		log.debug(id + " Update page: " + nodeNumber);
-		Node node = fetchNode(nodeNumber);
-		if (node != null) {
-			Set<Node> elementen = Search.findContentElementsForPage(node);
+	private void executeUpdatePageIndex(int pageNumber) {
+		log.debug(id + " Update page: " + pageNumber);
+		Node pageNode = fetchNode(pageNumber);
+		if (pageNode != null) {
+			Set<Node> elementen = Search.findDetailContentElementsForPage(pageNode);
 			if (elementen.size() == 0) {
-				log.debug(id + " Unable to find content element(s) for update of page: " + nodeNumber);
-				delete("" + nodeNumber, null);
+				log.debug(id + " Unable to find content element(s) for update of page: " + pageNumber);
+				delete("" + pageNumber, null);
 			}
 			for (Iterator<Node> pIter = elementen.iterator(); pIter.hasNext();) {
 				Node element = pIter.next();
-				update(node, element);
+				update(pageNode, element);
 			}
 		} else {
-			delete("" + nodeNumber, null);
+			delete("" + pageNumber, null);
 		}
 	}
 

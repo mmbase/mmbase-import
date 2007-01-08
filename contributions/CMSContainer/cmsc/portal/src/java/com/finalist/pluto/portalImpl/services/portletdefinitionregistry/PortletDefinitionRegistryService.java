@@ -55,7 +55,7 @@ public abstract class PortletDefinitionRegistryService extends Service {
 
 	/**
 	 * Returns the portlet definition to the given object id
-	 * 
+	 * @param id ObjectID of the portlet definition
 	 * @return the portlet definition
 	 */
 	abstract public PortletDefinition getPortletDefinition(ObjectID id);

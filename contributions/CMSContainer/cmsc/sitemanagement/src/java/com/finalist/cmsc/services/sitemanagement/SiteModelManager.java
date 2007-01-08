@@ -74,6 +74,10 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         
         siteCache = new SiteCache();
     }
+    
+    public void resetSiteCache() {
+       siteCache = new SiteCache();
+    }
 
     public boolean hasPage(String path) {
         if (path != null && path.length() > 0) {
@@ -123,6 +127,12 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         }
         return null;
     }
+
+    public String getSite(Page page) {
+       
+       return siteCache.getSite(page);
+    }
+
     
     public List<Site> getSites() {
         List<Site> sites = new ArrayList<Site>();

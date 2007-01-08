@@ -59,11 +59,13 @@ public class PageWizardForm extends ActionForm {
 				NodeList contentList = ((Node)viewList.get(0)).getRelatedNodes("typedef");
 				if(contentList.size() == 1) {
 					NodeManager nodeManager = cloud.getNodeManager(((Node)contentList.get(0)).getStringValue("name"));
-					portlet.setContentType(nodeManager.getGUIName());
+               portlet.setContentTypeName(nodeManager.getGUIName());
+					portlet.setContentType(nodeManager.getName());
 				}
 			}
 			if(portlet.getContentType() == null) {
-				portlet.setContentType("contentelement");
+            portlet.setContentTypeName("contentelement");
+            portlet.setContentType("contentelement");
 			}
 			
 			portlets.add(portlet);

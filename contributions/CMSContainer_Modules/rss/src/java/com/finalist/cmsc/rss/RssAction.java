@@ -1,30 +1,22 @@
 package com.finalist.cmsc.rss;
 
+import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.FieldIterator;
-import org.mmbase.bridge.FieldList;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.SortOrder;
-import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
@@ -74,28 +66,39 @@ public class RssAction extends MMBaseAction {
         addRssPropertyToRequest(request, feed, "webMaster");
 
         String contentTypes = getProperty(feed, "contenttypes", DEFAULT_CONTENTTYPE);
-        NodeManager nodeManager = cloud.getNodeManager(contentTypes);
-
-        String parentChannel = getParentChannel(cloud, feed);
-        if (StringUtil.isEmpty(parentChannel)) {
+        List<String> contentTypesList = new ArrayList<String>();
+        
+        StringTokenizer tokenizer = new StringTokenizer(contentTypes, ", \t\n\r\f");
+        while (tokenizer.hasMoreTokens()) {
+            String type = tokenizer.nextToken();
+            contentTypesList.add(type);
+        }
+        
+        Node parentChannel = getParentChannel(cloud, feed);
+        if (parentChannel == null) {
             return mapping.findForward("success");
         }
-        NodeQuery query = createQuery(cloud, nodeManager, parentChannel);
-        query.addSortOrder(query.getStepField(nodeManager.getField(ContentElementUtil.PUBLISHDATE_FIELD)), SortOrder.ORDER_ASCENDING);
-        query.setDistinct(true);
-        query.setOffset(0);
-        query.setMaxNumber(getProperty(feed, "max", DEFAULT_MAX_NUMBER));
+
+        int maxNumber = getProperty(feed, "max", DEFAULT_MAX_NUMBER);
+
+        boolean useLifecycle = true;
+        if (useLifecycle && ServerUtil.isLive()) {
+            // A live server will remove expired nodes.
+            useLifecycle = false;
+        }
+        
+        NodeQuery query = RepositoryUtil.createLinkedContentQuery(parentChannel, contentTypesList, ContentElementUtil.PUBLISHDATE_FIELD, "up", useLifecycle, null, 0, maxNumber, -1, -1, -1);
+        NodeManager nodeManager = query.getNodeManager();
+
         addPublicationDateConstraint(nodeManager, query);
         addRssConstraint(nodeManager, query);
         
-        log.debug("QUERY: " + query.toSql());
-
+        NodeList results = query.getNodeManager().getList(query);
+        
         // Set everyting on the request.
         request.setAttribute(RESULT_COUNT, Integer.valueOf(Queries.count(query)));
-        request.setAttribute(RESULTS, cloud.getList(query));
+        request.setAttribute(RESULTS, results);
         
-        // TODO why do we need to set this explicitly again after the searchaction?
-        request.setAttribute("contenttypes", contentTypes);
         return mapping.findForward("success");
 
     }
@@ -108,15 +111,15 @@ public class RssAction extends MMBaseAction {
     /** Finds the channel in the repository mapped to <code>feed</code>.
      * Returns an empty channel if nothing is found.
      */
-    private String getParentChannel(Cloud cloud, String feed) {
+    private Node getParentChannel(Cloud cloud, String feed) {
         String channel = getProperty(feed, "rubriek", DEFAULT_CHANNEL);
         if (!StringUtils.isEmpty(channel)) {
             Node parentNode = RepositoryUtil.getChannelFromPath(cloud, channel);
             if(parentNode != null) {
-                return String.valueOf(parentNode.getNumber());
+                return parentNode;
             }
         }
-        return "";
+        return null;
     }
 
 
@@ -170,15 +173,6 @@ public class RssAction extends MMBaseAction {
         }
         return value;
     }
-    
-    private NodeQuery createQuery(Cloud cloud, NodeManager nodeManager, String parentChannel) {
-        NodeQuery query = cloud.createNodeQuery();
-        Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
-        query.addNode(step, cloud.getNode(parentChannel));
-        Step relationStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
-        query.setNodeStep(relationStep);
-        return query;
-    }
 
     private void addPublicationDateConstraint(NodeManager nodeManager, NodeQuery query) {
         String days = getProperty("publicatiedatum", DEFAULT_DATE);
@@ -187,14 +181,9 @@ public class RssAction extends MMBaseAction {
 
     private void addRssConstraint(NodeManager nodeManager, NodeQuery query) {
         // not all content elements have a use_in_rss flag
-        FieldList fields = nodeManager.getFields();
-        for (FieldIterator iter = fields.fieldIterator(); iter.hasNext(); ) {
-            Field field = iter.nextField();
-            if ("use_in_rss".equals(field.getName())) {
-                Constraint constraint = query.createConstraint(query.getStepField(field), 3, Boolean.valueOf(true));
-                SearchUtil.addConstraint(query, constraint);
-                break;
-            }
+        if (nodeManager.hasField("use_in_rss")) {
+            Field field = nodeManager.getField("use_in_rss");
+            SearchUtil.addEqualConstraint(query, field, Boolean.TRUE);
         }
     }
 }

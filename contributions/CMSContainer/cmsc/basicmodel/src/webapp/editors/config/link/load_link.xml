@@ -23,6 +23,7 @@
 	<relation destination="images" role="imagerel" />
 	<relation destination="attachments" role="posrel" />
 	<relation destination="contentelement" role="posrel" />
+	<relation destination="page" role="posrel" />
 
 	<!-- content info relations -->
 	<relation destination="contentchannel" role="creationrel" />

@@ -34,7 +34,11 @@ import org.apache.pluto.om.window.PortletWindow;
  * @author Wouter Heijke
  */
 public class PortalURL {
-	private static Log log = LogFactory.getLog(PortalURL.class);
+   
+   private static final String SECURE_PROTOCOL = "https://";
+	private static final String INSECURE_PROTOCOL = "http://";
+
+   private static Log log = LogFactory.getLog(PortalURL.class);
 
     private String basePortalURL = null;
     private boolean secure = false;
@@ -42,6 +46,7 @@ public class PortalURL {
 	private List startLocalNavigation = new ArrayList();
 	private HashMap encodedStartControlParameter = new HashMap();
 	private HashMap startStateLessControlParameter = new HashMap();
+   private String host;
 
 	private boolean analyzed = false;
 	private PortalEnvironment environment;
@@ -76,6 +81,11 @@ public class PortalURL {
 	
 		return result.toString();
 	}
+   
+   public PortalURL(String host, HttpServletRequest request, String globalNavigation) {
+      this(request, globalNavigation);
+      this.host = host;
+   }
 
     public PortalURL(HttpServletRequest request, String globalNavigation) {
         this(request.getContextPath(), request.isSecure(), globalNavigation);
@@ -265,7 +275,7 @@ public class PortalURL {
 
 	public String toString(PortalControlParameter controlParam, Boolean p_secure) {
 
-		StringBuffer urlBase = new StringBuffer(256);
+		StringBuffer url = new StringBuffer(256);
 
 		boolean secure = false;
 		if (p_secure != null) {
@@ -273,37 +283,41 @@ public class PortalURL {
 		} else {
 			secure = environment == null ? this.secure : environment.getRequest().isSecure();
 		}
-		urlBase.append(getBasePortalURL(environment));
-		//urlBase.append(secure ? secureServlet : insecureServlet);
+      
+      
+      url.append(getBasePortalURL(environment));
+      if(host != null) {
+         url.append(secure ? SECURE_PROTOCOL : INSECURE_PROTOCOL);
+         url.append(host);
+    }
 
-		String url = urlBase.toString();
 		String global = getGlobalNavigationAsString();
 		if (global.length() > 0) {
-			url += "/";
-			url += global;
+         url.append("/");
+			url.append(global);
 		}
 
 		String control = getControlParameterAsString(controlParam);
 		if (control.length() > 0) {
-			url += control;
+			url.append(control);
 		}
 
 		String requestParam = getRequestParameterAsString(controlParam);
 		if (requestParam.length() > 0) {
-			url += requestParam;
+			url.append(requestParam);
 		}
 
 		String local = getLocalNavigationAsString();
 		if (local.length() > 0) {
-			url += "#";
-			url += local;
+			url.append("#");
+			url.append(local);
 		}
 
         if (environment == null) {
-            return url;
+            return url.toString();
         }
         else {
-            return environment.getResponse().encodeURL(url);
+            return environment.getResponse().encodeURL(url.toString());
         }
 	}
 

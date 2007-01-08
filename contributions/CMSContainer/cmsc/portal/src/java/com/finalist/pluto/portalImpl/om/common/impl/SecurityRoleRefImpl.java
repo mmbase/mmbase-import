@@ -100,7 +100,7 @@ public class SecurityRoleRefImpl implements SecurityRoleRef, Serializable {
         buffer.append(roleLink);
         buffer.append("'");
         StringUtils.newLine(buffer, indent);
-        buffer.append(((DescriptionSetImpl) descriptions).toString(indent));
+        buffer.append((descriptions).toString(indent));
         return buffer.toString();
     }
 }

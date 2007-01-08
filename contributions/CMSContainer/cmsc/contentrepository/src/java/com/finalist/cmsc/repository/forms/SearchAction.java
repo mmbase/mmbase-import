@@ -20,33 +20,25 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.repository.KeywordProcessor;
-import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.resources.forms.QueryStringComposer;
+import com.finalist.cmsc.struts.PagerAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SearchAction extends MMBaseAction {
+public class SearchAction extends PagerAction {
 
     private static final String GETURL = "geturl";
-    private static final String RESULTS = "results";
-    private static final String RESULT_COUNT = "resultCount";
-    
+
     private static final String PERSONAL = "personal";
     private static final String AUTHOR = "author";
     private static final String OBJECTID = "objectid";
-    private static final String DIRECTION = "direction";
-    private static final String ORDER = "order";
     private static final String PARENTCHANNEL = "parentchannel";
     private static final String CONTENTTYPES = "contenttypes";
-    private static final String OFFSET = "offset";
 
     private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
-    /**
-     * MMbase logging system
-     */
+    /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -98,10 +90,24 @@ public class SearchAction extends MMBaseAction {
         }
 
         // Order the result by:
-        queryStringComposer.addParameter(ORDER, searchForm.getOrder());
-        queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
-        query.addSortOrder(query.getStepField(nodeManager.getField(searchForm.getOrder())),
-                searchForm.getDirection());
+        String order = searchForm.getOrder();
+        
+        // set default order field
+        if (StringUtil.isEmpty(order)) {
+            if (nodeManager.hasField("title")) {
+                order = "title";
+            }
+            if (nodeManager.hasField("name")) {
+                order = "name";
+            }
+        }
+        if (StringUtil.isEmpty(order)) {
+            queryStringComposer.addParameter(ORDER, searchForm.getOrder());
+            queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
+            query.addSortOrder(query.getStepField(nodeManager.getField(order)),
+                    searchForm.getDirection());
+        }
+        
         query.setDistinct(true);
 
         // Set some date constraints.
@@ -144,9 +150,8 @@ public class SearchAction extends MMBaseAction {
         if (!StringUtil.isEmpty(searchForm.getKeywords())) {
             queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
             Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
-            List keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
-            for (int i = 0; i < keywords.size(); i++) {
-               String keyword = (String) keywords.get(i);
+            List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
+            for (String keyword : keywords) {
                Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
                SearchUtil.addORConstraint(query, keywordConstraint);
             }
@@ -181,7 +186,6 @@ public class SearchAction extends MMBaseAction {
                 SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
             }
             if (AUTHOR.equals(searchForm.getPersonal())) {
-                Node user = null;
                 if (StringUtil.isEmpty(useraccount)) {
                     useraccount = cloud.getUser().getIdentifier();
                 }
@@ -207,41 +211,15 @@ public class SearchAction extends MMBaseAction {
 
         log.debug("QUERY: " + query);
 
+        int resultCount = Queries.count(query);
+        NodeList results = cloud.getList(query);
+        
         // Set everyting on the request.
-        request.setAttribute(RESULT_COUNT, new Integer(Queries.count(query)));
-        request.setAttribute(RESULTS, cloud.getList(query));
+        searchForm.setResultCount(resultCount);
+        searchForm.setResults(results);
         request.setAttribute(GETURL, queryStringComposer.getQueryString());
 
-        return mapping.getInputForward();
-    }
-
-    class QueryStringComposer {
-
-        private StringBuffer queryString = null;
-
-        public void addParameter(String key, String value) {
-            if (value == null || key == null) { return; }
-
-            if (queryString == null) {
-                queryString = new StringBuffer("?");
-            }
-            else {
-                queryString.append("&");
-            }
-
-            queryString.append(key);
-            queryString.append("=");
-            queryString.append(value);
-        }
-
-        public String getQueryString() {
-            if (queryString != null) {
-                return queryString.toString();
-            }
-            else {
-                return "";
-            }
-        }
+        return super.execute(mapping, form, request, response, cloud);
     }
 
 }

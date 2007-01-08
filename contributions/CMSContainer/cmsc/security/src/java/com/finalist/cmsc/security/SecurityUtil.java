@@ -563,4 +563,13 @@ public class SecurityUtil {
         
         return users;
     }
+
+    public static void changePassword(Node userNode, String newpassword) {
+        userNode.setStringValue("password", newpassword);
+        userNode.commit();
+
+//        if (Publish.isPublished(userNode)) {
+//            Publish.publish(userNode);
+//        }
+    }
 }

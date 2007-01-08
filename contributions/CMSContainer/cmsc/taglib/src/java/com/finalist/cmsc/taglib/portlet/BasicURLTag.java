@@ -170,15 +170,20 @@ public abstract class BasicURLTag extends TagSupport
 
     public String getLink() {
         String link= "";
+        Page pageObject;
         try {
-            Page pageObject = SiteManagement.getPage(Integer.parseInt(page));
-            if (pageObject != null) {
-                link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
-            }
+            pageObject = SiteManagement.getPage(Integer.parseInt(page));
         }
         catch (NumberFormatException e) {
+            pageObject = SiteManagement.getPageFromPath(page);
+        }
+        if (pageObject != null) {
+            link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
+        }
+        else {
             link = page;
         }
+
         return link;
     }
 

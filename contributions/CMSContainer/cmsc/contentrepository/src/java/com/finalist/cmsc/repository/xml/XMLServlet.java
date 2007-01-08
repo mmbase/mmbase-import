@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Nico Klasens
  */
+@SuppressWarnings("serial")
 public class XMLServlet extends HttpServlet {
    /**
     * MMBase logging system

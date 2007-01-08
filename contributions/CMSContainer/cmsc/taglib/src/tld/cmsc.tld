@@ -1,192 +1,193 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+
+	<description>Taglib to support the Finalist CMS Container</description>
+	<display-name>CMS Container tags</display-name>
 	<tlib-version>1.0</tlib-version>
-	<jsp-version>1.2</jsp-version>
 	<short-name>cmsc</short-name>
 	<uri>http://finalist.com/csmc</uri>
-	<display-name>CMS Container tags</display-name>
-	<description>Taglib to support the Finalist CMS Container</description>
 	<tag>
+		<description>Container for a Screen(Fragment) and it's Layout template</description>
 		<name>screen</name>
 		<tag-class>com.finalist.cmsc.taglib.ScreenTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Container for a Screen(Fragment) and it's Layout template</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put a screen in.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Tag to show a Screen's title</description>
 		<name>title</name>
 		<tag-class>com.finalist.cmsc.taglib.TitleTag</tag-class>
 		<body-content>empty</body-content>
-		<description>Tag to show a Screen's title</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the title in.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>site</name>
 			<description>Include the title of the site</description>
+			<name>site</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Tag to insert a portlet</description>
 		<name>insert-portlet</name>
 		<tag-class>com.finalist.cmsc.taglib.InsertPortletTag</tag-class>
 		<body-content>empty</body-content>
-		<description>Tag to insert a portlet</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable to use some day.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>layoutid</name>
 			<description>Display portlet with this layoutid.</description>
+			<name>layoutid</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Container for protected content</description>
 		<name>protected</name>
 		<tag-class>com.finalist.cmsc.taglib.ProtectedTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Container for protected content</description>
 	</tag>
 	<tag>
+		<description>Injects content from portlets in the header of the page</description>
 		<name>headercontent</name>
 		<tag-class>com.finalist.cmsc.taglib.HeaderContentTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Injects content from portlets in the header of the page</description>
 		<attribute>
-			<name>dublin</name>
 			<description>use dublin meta ("true" or "false") (defaults to false)</description>
+			<name>dublin</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Lists the available pages</description>
 		<name>list-pages</name>
 		<tag-class>com.finalist.cmsc.taglib.ListPagesTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available pages</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the page in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>origin</name>
 			<description>Site or Page to start listing from</description>
+			<name>origin</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>mode</name>
 			<description>Mode is all, menu, hidden. Default is menu</description>
+			<name>mode</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Lists the available ContentChannels</description>
 		<name>list-contentchannels</name>
 		<tag-class>com.finalist.cmsc.taglib.ListContentChannelsTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available ContentChannels</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the channels in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Lists the available Portlet definitions</description>
 		<name>list-portletdefinitions</name>
 		<tag-class>com.finalist.cmsc.taglib.ListPortletDefinitionsTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available Portlet definitions</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the portlet definitions in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Lists the available ContentElements</description>
 		<name>list-contentelements</name>
 		<tag-class>com.finalist.cmsc.taglib.ListContentElementsTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available ContentElements</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the views in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>origin</name>
 			<description>ContentChannel to start listing from</description>
+			<name>origin</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Lists the available ContentTypes</description>
 		<name>list-contenttypes</name>
 		<tag-class>com.finalist.cmsc.taglib.ListContentTypesTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available ContentTypes</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the views in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Insert related stylesheet</description>
 		<name>insert-stylesheet</name>
 		<tag-class>com.finalist.cmsc.taglib.InsertStylesheetTag</tag-class>
 		<body-content>empty</body-content>
-		<description>Insert related stylesheet</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable to set stylesheet.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Insert one of the images of a page</description>
 		<name>insert-page-image</name>
 		<tag-class>com.finalist.cmsc.taglib.InsertPageImageTag</tag-class>
 		<body-content>empty</body-content>
-		<description>Insert one of the images of a page</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable to set stylesheet.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>name</name>
 			<description>The name of the position of the image (as given in namedrel builder)</description>
+			<name>name</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Generates urls for static content (No sessionid).</description>
 		<name>staticurl</name>
 		<tag-class>com.finalist.cmsc.taglib.StaticUrlTag</tag-class>
-		<description>Generates urls for static content (No sessionid).</description>
 		<tei-class>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</tei-class>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>referids</name>
 			<required>false</required>
@@ -254,10 +255,10 @@
 		</attribute>
 	</tag>
 	<tag>	
+		<description>Tag to format a date/dates</description>
 		<name>dateformat</name>
 		<tag-class>com.finalist.cmsc.taglib.DateFormatterTag</tag-class>
-		<bodycontent>empty</bodycontent>
-		<description>Tag to format a date/dates</description>
+		<body-content>empty</body-content>
 		<attribute>
         	<name>begindate</name>
 			<required>false</required>
@@ -279,6 +280,7 @@
 		<name>contenturl</name>
 		<tag-class>com.finalist.cmsc.taglib.ContentUrlTag</tag-class>
 		<tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
+		<body-content>scriptless</body-content>
 		<attribute>
 			<name>element</name>
 			<required>false</required>
@@ -314,6 +316,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>absolute</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 
 
@@ -322,125 +329,112 @@
 <!-- ############## -->
 
 	<tag>
+		<description>Lists the available pages in the path</description>
 		<name>path</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.PathTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Lists the available pages in the path</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the pages in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>mode</name>
 			<description>Mode is all, menu, hidden. Default is menu</description>
+			<name>mode</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
-		<name>pagefrompath</name>
-		<tag-class>com.finalist.cmsc.taglib.navigation.PageFromPathTag</tag-class>
-		<body-content>scriptless</body-content>
-		<description>Gets the number of a page from a path</description>
-		<attribute>
-			<name>var</name>
-			<description>JSP variable name to put the pages in.</description>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>path</name>
-			<description>The path to get the page from</description>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
+		<description>Make a link to a Page</description>
 		<name>link</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.LinkTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Make a link to a Page</description>
 		<attribute>
-			<name>dest</name>
 			<description>
 				Node (or list of), node-number or node-alias (or comma, slash or space separated
 				list of) to navigation to.
 			</description>
+			<name>dest</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>content element number</description>
 			<name>element</name>
-			<description>
-				content element number
-			</description>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put URL in.</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Tag to add a param to the surrounding link tag</description>
 		<name>linkparam</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.LinkParamTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Tag to add a param to the surrounding link tag</description>
 		<attribute>
-			<name>name</name>
 			<description>Name of the parameter</description>
+			<name>name</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>value</name>
 			<description>Value of this parameter.</description>
+			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>
+			Tag to determine location by a given type, defaults to Page.
+		   Gets a page object of a certain path or the current page
+		</description>
 		<name>location</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.LocationTag</tag-class>
 		<body-content>empty</body-content>
-		<description>
-			Tag to determine location by a given type, defaults to Page.
-		</description>
 		<attribute>
-			<name>type</name>
 			<description>
 				The CMSC name of the type node to find. This can be a comma separated list of
 				nodemanager names.
 			</description>
+			<name>type</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the current NavChannel in.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>sitevar</name>
 			<description>JSP variable name to put the current Site in.</description>
+			<name>sitevar</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<description>The optional path we want to check from, if empty defaults to the current path.</description>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
+		<description>Check if a object is part ot the current path</description>
 		<name>onpath</name>
 		<tag-class>com.finalist.cmsc.taglib.navigation.OnPathTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Check if a object is part ot the current path</description>
 		<attribute>
-			<name>origin</name>
 			<description>Site or NavChannel.</description>
+			<name>origin</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -451,84 +445,84 @@
 <!-- ############## -->
 
 	<tag>
+		<description>Container for a Portlet(Fragment) and it's modes</description>
 		<name>portlet</name>
 		<tag-class>com.finalist.cmsc.taglib.portlet.PortletTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Container for a Portlet(Fragment) and it's modes</description>
 		<attribute>
-			<name>infovar</name>
 			<description>JSP variable name to put portlet information in.</description>
+			<name>infovar</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Conditional tag which test for mode name</description>
 		<name>portletmode</name>
 		<tag-class>com.finalist.cmsc.taglib.portlet.PortletModeTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Conditional tag which test for mode name</description>
 		<attribute>
-			<name>name</name>
 			<description>name which should be matched</description>
+			<name>name</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>inverse</name>
 			<description>Inverse the outcome of the test</description>
+			<name>inverse</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Conditional tag which test if the current user is allowed to edit this piece content</description>
 		<name>isallowededit</name>
 		<tag-class>com.finalist.cmsc.taglib.portlet.IsAllowedEditTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Conditional tag which test if the current user is allowed to edit this piece content</description>
 		<attribute>
-			<name>channelNumber</name>
 			<description>the node number of the content channel</description>
+			<name>channelNumber</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
       <attribute>
-         <name>inverse</name>
          <description>Inverse the result</description>
+         <name>inverse</name>
          <required>false</required>
          <rtexprvalue>true</rtexprvalue>
       </attribute>
    </tag>
 	<tag>
+		<description>Helper for Portlet preferences</description>
 		<name>portlet-preferences</name>
 		<tag-class>com.finalist.cmsc.taglib.portlet.PortletPreferencesTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Helper for Portlet preferences</description>
 		<attribute>
-			<name>name</name>
 			<description>Name of preference</description>
+			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>value</name>
 			<description>Value of preference if it has no value</description>
+			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>var</name>
 			<description>
 				JSP variable name to put a Map of all PortletPreferences in or the value if name is
 				used.
 			</description>
+			<name>var</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
     <tag>
         <name>param</name>
-        <tagclass>com.finalist.cmsc.taglib.portlet.ParamTag</tagclass>
-        <bodycontent>empty</bodycontent>
+        <tag-class>com.finalist.cmsc.taglib.portlet.ParamTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>true</required>
@@ -542,9 +536,9 @@
     </tag>
     <tag>
         <name>actionURL</name>
-        <tagclass>com.finalist.cmsc.taglib.portlet.ActionURLTag</tagclass>
-        <teiclass>com.finalist.cmsc.taglib.portlet.BasicURLTag$TEI</teiclass>
-        <bodycontent>JSP</bodycontent>
+        <tag-class>com.finalist.cmsc.taglib.portlet.ActionURLTag</tag-class>
+        <tei-class>com.finalist.cmsc.taglib.portlet.BasicURLTag$TEI</tei-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>page</name>
             <required>false</required>
@@ -583,9 +577,9 @@
     </tag>
     <tag>
         <name>renderURL</name>
-        <tagclass>com.finalist.cmsc.taglib.portlet.RenderURLTag</tagclass>
-        <teiclass>com.finalist.cmsc.taglib.portlet.BasicURLTag$TEI</teiclass>
-        <bodycontent>JSP</bodycontent>
+        <tag-class>com.finalist.cmsc.taglib.portlet.RenderURLTag</tag-class>
+        <tei-class>com.finalist.cmsc.taglib.portlet.BasicURLTag$TEI</tei-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>page</name>
             <required>false</required>
@@ -627,109 +621,115 @@
 <!-- HTML Form Tags -->	
 <!-- ############## -->
 	<tag>
+		<description>Generate html select tag</description>
 		<name>select</name>
 		<tag-class>com.finalist.cmsc.taglib.form.SelectTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Generate html select tag</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable to set selected.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Generate html option tag</description>
 		<name>option</name>
 		<tag-class>com.finalist.cmsc.taglib.form.OptionTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Generate html option tag</description>
 		<attribute>
-			<name>message</name>
 			<description>key in Resourcebundle.</description>
+			<name>message</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>name</name>
 			<description>name attribute of html option.</description>
+			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>value</name>
 			<description>value attribute of html option.</description>
+			<name>value</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Generate html input text tag</description>
 		<name>text</name>
 		<tag-class>com.finalist.cmsc.taglib.form.TextTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Generate html input text tag</description>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable to set value.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>value</name>
 			<description>default value.</description>
+			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Writes the version of the application which is implementing the container</description>
 		<name>version</name>
 		<tag-class>com.finalist.cmsc.taglib.VersionTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Writes the version of the application which is implementing the container</description>
 	</tag>
 	<tag>
+		<description>Dumps the data of the framework builders to a certain path on the server.</description>
 		<name>dumpdefaults</name>
 		<tag-class>com.finalist.cmsc.taglib.DumpDefaultsTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Dumps the data of the framework builders to a certain path on the server.</description>
 		<attribute>
-			<name>path</name>
 			<description>the path to dump to.</description>
+			<name>path</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Writes a property to the output</description>
 		<name>property</name>
 		<tag-class>com.finalist.cmsc.taglib.PropertyTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Writes a property to the output</description>
 		<attribute>
-			<name>key</name>
 			<description>the key of the property.</description>
+			<name>key</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>JSP variable name to put the result.</description>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
+		<description>Removes all html tags from a tekst</description>
 		<name>removehtml</name>
 		<tag-class>com.finalist.cmsc.taglib.RemoveHtmlTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Removes all html tags from a tekst</description>
 		<attribute>
-			<name>html</name>
 			<description>The html to put into the tag.</description>
+			<name>html</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>var</name>
 			<description>JSP variable name to put the result.</description>
+			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>maxlength</name>
 			<description>The maximum length allowed, will be cut back to the nearest '.', if not found to the nearest space.</description>
+			<name>maxlength</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
@@ -739,13 +739,13 @@
 <!-- CMSC Engine Tags -->	
 <!-- ################ -->
 	<tag>
+		<description>Check if a specific feature is enabled in the CMS Container</description>
 		<name>hasfeature</name>
 		<tag-class>com.finalist.cmsc.taglib.FeatureTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Check if a specific feature is enabled in the CMS Container</description>
 		<attribute>
-			<name>name</name>
 			<description>Name of feature.</description>
+			<name>name</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -755,19 +755,19 @@
 <!-- CMSC Workflow Tags -->	
 <!-- ################ -->
 	<tag>
+		<description>Publish a specific node</description>
 		<name>publish</name>
 		<tag-class>com.finalist.cmsc.taglib.PublishTag</tag-class>
 		<body-content>scriptless</body-content>
-		<description>Publish a specific node</description>
 		<attribute>
-			<name>number</name>
 			<description>The number of the node to publish, will add all the secondary items also.</description>
+			<name>number</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>children</name>
 			<description>Add recursive children.</description>
+			<name>children</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -832,59 +832,60 @@ The var to write it to.
         <rtexprvalue>false</rtexprvalue>
     </attribute>
   </tag>
+
+<!-- ################ -->
+<!-- Nedstat Tag -->	
+<!-- ################ -->
   <tag>
-	<!-- ################ -->
-	<!-- Nedstat Tag -->	
-	<!-- ################ -->
+		<description>Tag to parse netstat string.</description>
 		<name>nedstat</name>
 		<tag-class>com.finalist.cmsc.taglib.NedstatTag</tag-class>
 		<body-content>empty</body-content>
-		<description>Tag to parse netstat string.</description>
 		<attribute>
-			<name>lable</name>
 			<description>Labels such as 'category=sport'.</description>
+			<name>lable</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>type</name>
 			<description>The type of the measurement.</description>
+			<name>type</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>externalUrl</name>
 			<description>The url where the link refers to. Used for clickin measurements and others.</description>
+			<name>externalUrl</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>landCode</name>
 			<description>The landcode. Asumes 'nl' if no landcode is given.</description>
+			<name>landCode</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>customerName</name>
 			<description>The name of the customer that is incorporated in the measurement code.</description>
+			<name>customerName</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>siteName</name>
 			<description>The name of the site that is incorporated in the measurement code.</description>
+			<name>siteName</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>counterName</name>
 			<description>The name of the counter. The current location is taken (replacing the '/' for a '.') if no countername is given.</description>
+			<name>counterName</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>urlText</name>
 			<description>The urltext, only used when a link is generated (e.g. clickin and clickout measurements).</description>
+			<name>urlText</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>

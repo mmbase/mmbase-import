@@ -11,6 +11,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
+import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -93,7 +94,7 @@ public class PublishTag extends NodeReferrerTag {
                 findNodes(child, toPublishNodes);
             }
         }
-        if (RepositoryUtil.isContentChannel(node)) {
+        else if (RepositoryUtil.isContentChannel(node)) {
             NodeList content = RepositoryUtil.getLinkedElements(node);
             for (Iterator iter = content.iterator(); iter.hasNext();) {
                 Node child = (Node) iter.next();
@@ -102,6 +103,12 @@ public class PublishTag extends NodeReferrerTag {
 
             NodeList channels = RepositoryUtil.getChildren(node);
             for (Iterator iter = channels.iterator(); iter.hasNext();) {
+                Node child = (Node) iter.next();
+                findNodes(child, toPublishNodes);
+            }
+            
+            NodeList collectionChannels = RepositoryUtil.getCollectionChannels(node);
+            for (Iterator iter = collectionChannels.iterator(); iter.hasNext();) {
                 Node child = (Node) iter.next();
                 findNodes(child, toPublishNodes);
             }
@@ -140,7 +147,7 @@ public class PublishTag extends NodeReferrerTag {
         private void publishNode(Node node,  List<Integer> publishNumbers) {
             try {
                 log.debug("Publising node using taglib: "+node.getNumber());
-                if(RepositoryUtil.isContentChannel(node)) {
+                if(RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node)) {
                     Publish.publish(node);
                 }
                 else {

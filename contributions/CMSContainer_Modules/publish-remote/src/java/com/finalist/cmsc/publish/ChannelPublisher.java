@@ -2,6 +2,9 @@ package com.finalist.cmsc.publish;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationIterator;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.remotepublishing.util.PublishUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 
@@ -15,7 +18,7 @@ public class ChannelPublisher extends Publisher{
    }
 
    public boolean isPublishable(Node node) {
-      return RepositoryUtil.isContentChannel(node);
+      return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node);
    }
 
    public void publish(Node node) {

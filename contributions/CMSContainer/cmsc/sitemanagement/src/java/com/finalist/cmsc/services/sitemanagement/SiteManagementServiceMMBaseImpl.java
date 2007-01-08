@@ -263,4 +263,13 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
         return siteModelManager.getView(view);
     }
 
+   @Override
+   public String getSite(Page page) {
+      return siteModelManager.getSite(page);
+   }
+
+   @Override
+   public void resetSiteCache() {
+      siteModelManager.resetSiteCache();
+   }
 }

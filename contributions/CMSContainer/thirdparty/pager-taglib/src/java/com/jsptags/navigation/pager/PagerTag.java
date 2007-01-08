@@ -25,10 +25,18 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import com.jsptags.navigation.pager.parser.*;
 
 public final class PagerTag extends TagSupport {
 
+   /*
+    * The encoding of the parameters in the URL is set to ISO, because tomcat does not want to understand other 
+    * kinds of encoding in the URL. (at least till version 5.5.17). 
+    */
+   public final static String PARAMETER_ENCODING = "ISO-8859-1";
+   
 	static final String
 		DEFAULT_ID = "pager";
 
@@ -191,29 +199,33 @@ public final class PagerTag extends TagSupport {
 
 
 	final void addParam(String name, String value) {
-		if (value != null) {
-			name = java.net.URLEncoder.encode(name);
-			value = java.net.URLEncoder.encode(value);
-
-			uri.append(params == 0 ? '?' : '&')
-			   .append(name).append('=').append(value);
-
-		   params++;
-
-		} else {
-			String[] values = pageContext.getRequest().getParameterValues(name);
-
-			if (values != null) {
-				name = java.net.URLEncoder.encode(name);
-				for (int i = 0, l = values.length; i < l; i++) {
-					value = java.net.URLEncoder.encode(values[i]);
-					uri.append(params == 0 ? '?' : '&')
-					   .append(name).append('=').append(value);
-
-					params++;
-				}
-			}
-		}
+      try {
+         if (value != null) {
+   			name = java.net.URLEncoder.encode(name, PARAMETER_ENCODING);
+   			value = java.net.URLEncoder.encode(value, PARAMETER_ENCODING);
+   
+   			uri.append(params == 0 ? '?' : '&')
+   			   .append(name).append('=').append(value);
+   
+   		   params++;
+   
+   		} else {
+   			String[] values = pageContext.getRequest().getParameterValues(name);
+   			
+   			if (values != null) {
+   				name = java.net.URLEncoder.encode(name, PARAMETER_ENCODING);
+   				for (int i = 0, l = values.length; i < l; i++) {
+                  value = java.net.URLEncoder.encode(values[i], PARAMETER_ENCODING);
+   					uri.append(params == 0 ? '?' : '&')
+   					   .append(name).append('=').append(value);
+   
+   					params++;
+   				}
+   			}
+   		}
+      } catch (UnsupportedEncodingException e) {
+         e.printStackTrace();
+      }
 	}
 
 	final boolean nextItem() {

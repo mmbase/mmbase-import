@@ -10,12 +10,17 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
  * @author Nico Klasens
  */
 public class WizardInitAction extends MMBaseFormlessAction {
+
+    /** MMbase logging system */
+    private static Logger log = Logging.getLoggerInstance(WizardInitAction.class.getName());
 
    private static String DEFAULT_SESSION_KEY = "editwizard";
 
@@ -103,12 +108,19 @@ public class WizardInitAction extends MMBaseFormlessAction {
       }
       
       // Editwizard starten:
-      ActionForward ret = new ActionForward(mapping.findForward("wizard").getPath() +
+      String actionForward = mapping.findForward("wizard").getPath() +
               "?wizard=" + wizardConfigName + "&objectnumber=" + objectNumber +
               "&templates=" + templates + 
               "&referrer=" + mapping.findForward("referrer").getPath() +
               "&sessionkey=" + sessionkey +
-              "&language="+ cloud.getLocale().getLanguage());
+              "&language="+ cloud.getLocale().getLanguage();
+      
+      if (log.isDebugEnabled()) {
+          log.debug("actionForward: " + actionForward);
+          actionForward += "&debug=true";
+      }
+      
+      ActionForward ret = new ActionForward(actionForward);
       ret.setRedirect(true);
       return ret;
    }
