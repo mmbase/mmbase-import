@@ -301,6 +301,9 @@ public class Sender extends Thread{
       emailNode.setValue("to", email.getTo());
       emailNode.setValue("body", email.getBody());
       emailNode.setValue("date", "" + (new Date()).getTime() / 1000);
+      if (emailNode.getNodeManager().hasField("mimetype")) {
+          emailNode.setValue("mimetype", email.getMimeType());
+      }
       emailNode.commit();
 
       // send the email node (Didactor way)
