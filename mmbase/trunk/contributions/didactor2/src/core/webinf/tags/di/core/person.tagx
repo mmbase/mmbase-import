@@ -4,8 +4,8 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.attribute name="education"   required="true" /> 
   <jsp:directive.attribute name="element"    /> 
+  <mm:import externid="education" from="request" /> 
   <!-- it would be nicer if the education was put on the request, this would not be needed then -->
   <mm:node element="${element}">
     <mm:import id="list" vartype="list"><di:getsetting component="core" setting="personfields" /></mm:import>
