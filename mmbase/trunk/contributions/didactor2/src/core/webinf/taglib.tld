@@ -1,37 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE taglib
-  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
-  "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
-
-<!-- a tag library descriptor -->
-
-<taglib>
-  <!-- after this the default space is
-   "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"
-   -->
-
-  <!-- The version number of this tag library -->
-  <tlibversion>1.0</tlibversion>
-
-  <!-- The JSP specification version required to function -->
-  <jspversion>1.1</jspversion>
-
-  <!-- The short name of this tag library -->
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+        version="2.0" xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" 
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
   <shortname>di</shortname>
-
-  <!-- Public URI that uniquely identifies this version of the tag library -->
   <uri>http://www.didactor.nl/ditaglib_1.0</uri>
-
-  <!-- General information about this tag library -->
-  <info>
-    ...
-  </info>
-
-  <!-- ******************** Defined Custom Tags *************************** -->
 
   <tag>
    <name>shuffledlist</name>
-   <tagclass>nl.didactor.taglib.ShuffledListTag</tagclass>
+   <tag-class>nl.didactor.taglib.ShuffledListTag</tag-class>
    <attribute>
      <name>referid</name>
      <required>true</required>
@@ -41,9 +18,8 @@
 
   <tag>
     <name>translate</name>
-    <tagclass>nl.didactor.taglib.TranslateTag</tagclass>
+    <tag-class>nl.didactor.taglib.TranslateTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
-    <info>...</info>
     <attribute>
       <name>key</name>
       <required>false</required>
@@ -88,9 +64,8 @@
 
   <tag>
     <name>getvalue</name>
-    <tagclass>nl.didactor.taglib.GetValueTag</tagclass>
+    <tag-class>nl.didactor.taglib.GetValueTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
-    <info>...</info>
     <attribute>
       <name>component</name>
       <required>true</required>
@@ -109,7 +84,7 @@
   </tag>
   <tag>
     <name>getsetting</name>
-    <tagclass>nl.didactor.taglib.GetSettingTag</tagclass>
+    <tag-class>nl.didactor.taglib.GetSettingTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -130,7 +105,7 @@
   </tag>
   <tag>
     <name>ifsetting</name>
-    <tagclass>nl.didactor.taglib.IfSettingTag</tagclass>
+    <tag-class>nl.didactor.taglib.IfSettingTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -156,7 +131,7 @@
   </tag>
   <tag>
     <name>may</name>
-    <tagclass>nl.didactor.taglib.MayTag</tagclass>
+    <tag-class>nl.didactor.taglib.MayTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -177,7 +152,7 @@
   </tag>
   <tag>
     <name>hasrole</name>
-    <tagclass>nl.didactor.taglib.HasroleTag</tagclass>
+    <tag-class>nl.didactor.taglib.HasroleTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -204,7 +179,7 @@
 
   <tag>
     <name>entity</name>
-    <tagclass>nl.didactor.taglib.EntityTag</tagclass>
+    <tag-class>nl.didactor.taglib.EntityTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -242,7 +217,7 @@
   <!-- Table generation tags -->
   <tag>
     <name>table</name>
-    <tagclass>nl.didactor.taglib.table.TableTag</tagclass>
+    <tag-class>nl.didactor.taglib.table.TableTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -258,7 +233,7 @@
   </tag>
   <tag>
     <name>headercell</name>
-    <tagclass>nl.didactor.taglib.table.HeaderCellTag</tagclass>
+    <tag-class>nl.didactor.taglib.table.HeaderCellTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -274,19 +249,19 @@
   </tag>
   <tag>
     <name>row</name>
-    <tagclass>nl.didactor.taglib.table.RowTag</tagclass>
+    <tag-class>nl.didactor.taglib.table.RowTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
   </tag>
   <tag>
     <name>cell</name>
-    <tagclass>nl.didactor.taglib.table.CellTag</tagclass>
+    <tag-class>nl.didactor.taglib.table.CellTag</tag-class>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
   </tag>
   <tag>
    <name>event</name>
-   <tagclass>nl.didactor.taglib.reports.EventTag</tagclass>
+   <tag-class>nl.didactor.taglib.reports.EventTag</tag-class>
    <attribute>
      <name>eventtype</name>
      <required>true</required>
@@ -312,6 +287,12 @@
      <rtexprvalue>true</rtexprvalue>
    </attribute>
   </tag>
+
+  <tag-file>
+    <name>person</name>
+    <path>/WEB-INF/tags/di/core/person.tagx</path>
+  </tag-file>
+
 
   <!--
     Place for extra tags. The following token will be filled
