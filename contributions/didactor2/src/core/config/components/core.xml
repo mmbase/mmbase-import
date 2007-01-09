@@ -57,6 +57,7 @@
     <setting ref="domainsetting" />
     <setting ref="booleansetting" />
     -->
+    <setting name="personfields" type="string" default="firstname,suffix,lastname" />
   </scope>
   <scope name="classes" referid="class">
     <!-- reference back on class level to settings defined on component level
