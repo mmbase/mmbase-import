@@ -88,7 +88,7 @@
             Component comp = Component.getComponent(cname);
             if (comp != null) {
               Component.Setting setting = (Component.Setting)comp.getSettings().get(settingname);
-              Vector scopes = setting.getScope();
+              List scopes = setting.getScope();
             %>
             <hr />
             <h2>Waarden</h2>
