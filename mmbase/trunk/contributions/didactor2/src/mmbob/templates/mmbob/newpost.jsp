@@ -38,7 +38,7 @@
     <tr><th><di:translate key="mmbob.name" /></th><td colspan="2">
         <mm:compare referid="posterid" value="-1" inverse="true">
         <mm:node number="$posterid">
-        <mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
+        <mm:field name="account" /> (<di:person />)
         <input name="poster" type="hidden" value="<mm:field name="account" />" >
         </mm:node>
         </mm:compare>

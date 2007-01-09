@@ -53,7 +53,7 @@
     <%-- hh
     <b>Moderators</b> :
           <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-            <mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+            <mm:field name="account" /> (<di:person />)<br />
           </mm:nodelistfunction> --%>
     </td>
     </tr>

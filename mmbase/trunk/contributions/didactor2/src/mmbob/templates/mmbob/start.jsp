@@ -110,7 +110,8 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
-    <a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><di:translate key="mmbob.moderatorteam" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><di:translate key="mmbob.membersonline" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><di:translate key="mmbob.allmembers" /></a></a>
+    <a href="<mm:url page="moderatorteam.jsp" referids="forumid" />">
+    <di:translate key="mmbob.moderatorteam" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><di:translate key="mmbob.membersonline" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><di:translate key="mmbob.allmembers" /></a></a>
    </td>
   </tr>
 </table>
