@@ -223,13 +223,13 @@
     <tr><th width="25%"><di:translate key="mmbob.name" /></th><td>
 
         <mm:compare referid="posterid" value="-1" inverse="true">
-        <mm:node number="$posterid">
-        <mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
-        <input name="poster" type="hidden" value="<mm:field name="account" />" >
-        </mm:node>
+          <mm:node number="$posterid">
+            <mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
+            <input name="poster" type="hidden" value="<mm:field name="account" />" >
+          </mm:node>
         </mm:compare>
         <mm:compare referid="posterid" value="-1">
-        <input name="poster" style="width: 100%" value="gast" >
+          <input name="poster" style="width: 100%" value="gast"  />
         </mm:compare>
 
         </td></tr>
