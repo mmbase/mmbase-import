@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.40.2.4 2006-12-19 11:26:14 michiel Exp $
+ * @version $Id: PostThread.java,v 1.40.2.5 2007-01-09 09:39:16 michiel Exp $
  */
 public class PostThread {
 
@@ -227,14 +227,16 @@ public class PostThread {
 	lastused = (int)(System.currentTimeMillis() / 1000);
 
 	// get the range we want
-	int start = (page-1) * pagecount;
+	int start = (page - 1) * pagecount;
+        if (start < 0) start = 0;
+
 	int end = page * pagecount;
 	if (end > postcount) {
             end = postings.size();
 	}
 	List result;
 	if (start < end) {
-            result = postings.subList(start,end);
+            result = postings.subList(start, end);
 	} else {
             result = postings;
 	}
