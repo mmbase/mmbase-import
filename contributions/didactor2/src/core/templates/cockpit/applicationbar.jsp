@@ -35,7 +35,10 @@
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <mm:node number="$user">
-        <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/></a>
+        <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar">
+        <di:translate key="core.logout" />
+        <di:person />
+      </a>
       </mm:node>
     </div>
      
