@@ -19,7 +19,7 @@
       <tr>
         <td style="border-color:#000000; border-top:0px; border-left:0px">
           <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="provider,education,student,class"></mm:treefile>">
-          <mm:field name="firstname"/> <mm:field name="lastname"/>
+          <di:person />
         </a>
       </td>
       <td style="border-color:#000000; border-top:0px; border-left:0px">

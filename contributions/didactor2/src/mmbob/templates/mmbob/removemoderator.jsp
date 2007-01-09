@@ -43,7 +43,7 @@
     <tr><th align="left"><di:translate key="mmbob.possiblemoderators" /></th><td colspan="2">
           <select name="remmoderator">
           <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-                <option value="<mm:field name="id" />"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+                <option value="<mm:field name="id" />"><mm:field name="account" /> (<di:person />)<br />
           </mm:nodelistfunction>
         </select>
     </td></tr>
