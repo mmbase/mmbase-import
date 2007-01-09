@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.65 2006-11-09 10:24:42 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.66 2007-01-09 11:47:29 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -170,14 +170,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     node = nodeProvider.getNodeVar();
                 }
 
-
-                if (element != Attribute.NULL) {
-                    node = node.getNodeValue(element.getString(this));
+                String elString = element.getString(this);
+                if (! elString.equals("")) {
+                    node = node.getNodeValue(elString);
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
                         case Notfound.MESSAGE:
                             try {
-                                getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
+                                getPageContext().getOut().write("Could not find node element '" + elString + "'");
                             } catch (java.io.IOException ioe) {
                                 log.warn(ioe);
                             }
@@ -187,7 +187,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                             node = null;
                             break;
                         default:
-                            throw new JspTagException("Could not find node element '" + element.getString(this) + "'");
+                            throw new JspTagException("Could not find node element '" + elString + "'");
                         }
                     }
                     if (nodeProvider.getNodeVar() != null) {
