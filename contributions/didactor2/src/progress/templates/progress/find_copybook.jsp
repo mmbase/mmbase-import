@@ -1,5 +1,5 @@
    <%// Direct relation people->classrel->education %>
-   <mm:compare referid="class" regexp="|null">
+   <mm:compare referid="class" valueset=",null">
 
       <mm:import id="copybookNo"/>
       <mm:relatedcontainer path="classrel,educations">
@@ -19,7 +19,7 @@
 
 
    <%// people->classrel->class->related->education %>
-   <mm:compare referid="class" regexp="|null" inverse="true">
+   <mm:compare referid="class" valueset=",null" inverse="true">
 
       <mm:import id="copybookNo"/>
       <mm:relatedcontainer path="classrel,classes">

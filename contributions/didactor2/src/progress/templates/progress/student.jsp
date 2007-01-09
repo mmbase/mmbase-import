@@ -39,8 +39,7 @@
     <div class="contentHeader">
       <%--    Some buttons working on this folder--%>
       <mm:node referid="student">
-        <mm:field name="firstname" />
-        <mm:field name="lastname" />
+        <di:person />
         <mm:field name="username" id="usern" />
       </mm:node>
     </div>
@@ -177,7 +176,7 @@
         </di:ifsetting>
   
         <mm:node referid="student">
-          <p><b><di:translate key="progress.testsof" /> <mm:field name="firstname" /> <mm:field name="lastname" /></b></p>
+          <p><b><di:translate key="progress.testsof" /> <di:person /></b></p>
   
           <table class="listTable">
             <tr>
