@@ -1305,9 +1305,9 @@ public class Controller {
             if (f != null) {
                 Poster p = f.getPoster(account);
                 if (p == null) {
-                    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
-                    if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
-                    if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
+                    if (firstname.equals("") || firstname.length() < 2) return "firstnameerror";
+                    if (lastname.equals("") || lastname.length() < 1)   return "lastnameerror";
+                    if (email.equals("") || email.indexOf("@") ==-1 || email.indexOf(".") == -1) return "emailerror";
                     p = f.createPoster(account, password);
                     if (p != null) {
                         p.setFirstName(firstname); 
@@ -1327,7 +1327,7 @@ public class Controller {
             }
             return "ok";
         } else {
-            return ("passwordnotequal");
+            return "passwordnotequal";
         }
     }
 
@@ -1426,8 +1426,8 @@ public class Controller {
      * @param cssclass stylesheet name for the url links
      * @return (map) representing info for the given postarea
      */
-    public HashMap getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
-        HashMap map = new HashMap();
+    public Map getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
+        Map map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -1448,6 +1448,9 @@ public class Controller {
             map.put("pagecount", new Integer(a.getPageCount(pagesize)));
             if (activeid != -1) {
                 Poster ap = f.getPoster(activeid);
+                if (ap == null) {
+                    throw new RuntimeException("No poster object found for id '" + activeid + "'");
+                }
                 ap.signalSeen();
                 if (ap != null && f.isAdministrator(ap.getNick())) {
                     map.put("isadministrator", "true");
@@ -1465,8 +1468,8 @@ public class Controller {
     }
 
 
-    public HashMap getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
-        HashMap map = new HashMap();
+    public Map getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
+        Map map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -1550,8 +1553,8 @@ public class Controller {
      * @param cssclass  stylesheet name for the url links
      * @return (map) containing navline, lastpage, pagecount
      */
-    public HashMap getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
-        HashMap map =  new HashMap();
+    public Map getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
+        Map map =  new HashMap();
 
         if (cssclass == null) cssclass = "";
 
@@ -1667,7 +1670,7 @@ public class Controller {
      * @param body Body of the new post
      * @return  (map) containing the postthreadid of the newly created post
      */
-    public HashMap newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
+    public Map newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
 
         HashMap map = new HashMap();
 
