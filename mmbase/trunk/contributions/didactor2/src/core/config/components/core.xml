@@ -58,6 +58,7 @@
     <setting ref="booleansetting" />
     -->
     <setting name="personfields" type="string" default="firstname,suffix,lastname" />
+    <setting name="personorderfield" type="string" default="lastname" />
   </scope>
   <scope name="classes" referid="class">
     <!-- reference back on class level to settings defined on component level
