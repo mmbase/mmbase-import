@@ -18,12 +18,15 @@
     </di:hasrole>
   </mm:islessthan>
 
+  <di:getsetting id="sort" component="core" setting="personorderfield" write="false" />
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <title><di:translate key="progress.progresstitle"/></title>
     </mm:param>
   </mm:treeinclude>
+
+
 
   <div class="rows">
     <div class="navigationbar">
@@ -116,7 +119,9 @@
                   <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
                 </mm:field>
                 <mm:node number="progresstextbackground">
-                  <th style="border-color:#000000; border-left:0px"><img src="<mm:image template="$template"/>"></th>
+                  <th style="border-color:#000000; border-left:0px">
+                    <mm:image template="$template" mode="img" />
+                  </th>
                 </mm:node>
               </mm:node>
 
@@ -142,23 +147,21 @@
                   <tr>
                     <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
                   </tr>
-                  <mm:related path="classrel,people" orderby="people.lastname">
-                    <mm:node element="people">
-                      <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
+                  <mm:relatednodes role="classrel" type="people" orderby="$sort">
+                    <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
                       <di:hasrole role="student" referid="list_student_number">
                         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
                           <mm:param name="student"><mm:field name="number"/></mm:param>
                           <mm:param name="direct_connection">true</mm:param>
                         </mm:treeinclude>
                       </di:hasrole>
-                    </mm:node>
-                  </mm:related>
+                  </mm:relatednodes>
                   <mm:relatednodes role="classrel" type="classes" orderby="name" id="classNode">
                     <tr>
                       <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
                     </tr>
                     <mm:log>class = ${classNode}</mm:log>
-                    <mm:relatednodes role="classrel" type="people" id="student">
+                    <mm:relatednodes role="classrel" type="people" id="student" orderby="$sort" >
                       <di:hasrole role="student" referid="student">
                         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,student,classNode@class">
                           <mm:param name="direct_connection">false</mm:param>
@@ -175,7 +178,7 @@
               <di:hasrole role="teacher">
                 <mm:compare referid="class" regexp="|null" inverse="true">
                   <mm:node referid="class">
-                    <mm:relatednodes type="people">
+                    <mm:relatednodes type="people" orderby="$sort">
                       <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
                       <di:hasrole role="student" referid="studentnumber">
                         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
@@ -194,9 +197,10 @@
               <di:hasrole role="coach">
                 <mm:compare referid="class" valueset=",null" inverse="true">
                   <mm:node referid="class">
-                    <mm:related path="workgroups,people" constraints="people.number='$user'">
+                    <mm:related path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
                       <mm:node element="workgroups">
-                        <mm:relatednodes type="people">
+                        <!-- oddddd -->
+                        <mm:relatednodes type="people" orderby="$sort">
                           <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
                           <di:hasrole role="student" referid="studentnumber">
                             <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
