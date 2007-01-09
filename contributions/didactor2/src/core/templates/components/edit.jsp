@@ -82,6 +82,7 @@
                   <input type="checkbox" <mm:write referid="checked" escape="none" /> name="chk_<mm:field name="number" />" />
                   <mm:field name="name" />
                   <% if (scopes.contains("educations")) { %>
+                  EDU
                     <mm:relatednodes type="educations">
                       <mm:first><ul></mm:first>
                       <li>
