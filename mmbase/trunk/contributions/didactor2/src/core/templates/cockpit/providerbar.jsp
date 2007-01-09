@@ -77,7 +77,7 @@ keepalive();
     <mm:param name="scope">provider</mm:param>
   </mm:treeinclude>
 </mm:hasrank>
-<mm:hasrank value="anonymous">
+<mm:hasrank value="didactor-anonymous">
   <mm:node referid="provider">
     <mm:nodeinfo type="gui" />
   </mm:node>
