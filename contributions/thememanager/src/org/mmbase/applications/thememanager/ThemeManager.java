@@ -241,7 +241,7 @@ public class ThemeManager {
 
 
     public static String getThemeImage(String context, String id,String imagesetid,String imageid) {
-       	log.info(" getthemeimage =" + imageid);
+       	log.debug(" getthemeimage =" + imageid);
 	String themeid=(String)assigned.get(id);
 	if (themeid!=null) {
             Theme th=(Theme)themes.get(themeid);
