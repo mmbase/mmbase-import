@@ -6,14 +6,14 @@
     version="2.0">
   <jsp:directive.attribute name="element"    /> 
   <mm:import externid="education" from="request" /> 
-  <!-- it would be nicer if the education was put on the request, this would not be needed then -->
   <mm:node element="${element}">
-    <mm:import id="list" vartype="list"><di:getsetting component="core" setting="personfields" /></mm:import>
-    <mm:stringlist referid="list">
-      <mm:hasfield name="${_}">
-        <mm:field name="${_}"/>
-      </mm:hasfield>
-      <mm:last inverse="true"><jsp:text> </jsp:text></mm:last>
-    </mm:stringlist>
+    <di:getsetting component="core" setting="personfields" vartype="list">
+      <mm:stringlist referid="_">
+        <mm:hasfield name="${_}">
+          <mm:field name="${_}"/>
+        </mm:hasfield>
+        <mm:last inverse="true"><jsp:text> </jsp:text></mm:last>
+      </mm:stringlist>
+    </di:getsetting>
   </mm:node>
 </jsp:root>
