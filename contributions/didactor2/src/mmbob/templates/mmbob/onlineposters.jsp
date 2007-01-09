@@ -46,7 +46,7 @@
           <td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
                          <mm:param name="contact"><mm:field name="people.number"/></mm:param>
                        </mm:treefile>" target="_top">
-                       <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a>
+                       <di:person element="posters" /> (<mm:field name="posters.account" />)</a>
           </td>
           <di:ifsetting component="mmbob" setting="showlocation">
             <td><mm:field name="posters.location" /></td>
