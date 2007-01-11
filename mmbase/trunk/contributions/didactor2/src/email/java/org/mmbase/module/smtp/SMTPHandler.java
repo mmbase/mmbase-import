@@ -33,7 +33,7 @@ import nl.didactor.mail.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.17 2007-01-11 13:21:33 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.18 2007-01-11 15:30:35 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -598,14 +598,16 @@ public class SMTPHandler extends Thread {
                 } else if (compareMimeType == 0) {
                     mail.setStringValue(bodyField, currentBody +"\r\n\r\n"+ content);
                 } else {
-                    log.debug("Ignoring part with mimeType " + mimeType + " (not better than already stored part with mimeType " + mailMimeType);
+                    if (p.isMimeType("text/*")) {
+                        log.debug("Ignoring part with mimeType " + mimeType + " (not better than already stored part with mimeType " + mailMimeType);
+                    } else {
+                        log.debug("Found a non-text alternative inline part, cannot handle that, treat it as an ordinary attachment");
+                        Node tempAttachment = storeAttachment(p);
+                        if (tempAttachment != null) {
+                            attachments.add(tempAttachment);
+                        }
+                    }
                 }
-                /*
-                Node tempAttachment = storeAttachment(p);
-                if (tempAttachment != null) {
-                    attachments.add(tempAttachment);
-                }
-                */
             } else {
                 log.debug("Content of part is null, ignored");
             }
