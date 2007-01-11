@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.16 2007-01-11 13:15:58 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.17 2007-01-11 17:21:36 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -245,6 +245,7 @@ public class ExtendedJMSendMail extends SendMail {
     public void sendRemoteMail(InternetAddress[] onlyto, Node n) {
         if (log.isDebugEnabled()) {
             log.debug("Sending node {" + n + "} to addresses {" + Arrays.asList(onlyto) + "}");
+            log.trace("Because ", new Exception());
         }
         StringBuffer errors = new StringBuffer();
         String from    = n.getStringValue("from");
@@ -301,6 +302,9 @@ public class ExtendedJMSendMail extends SendMail {
 
             /* add attachments here */
             NodeList attachments = n.getRelatedNodes("attachments");
+            if (log.isDebugEnabled()) {
+                log.debug("Found attachments " + attachments.size() + " on node " + n.getNumber() + " " + n.getCloud().getUser());
+            }
             if (attachments.size() != 0) {
                 String subType;
                 if (mimeType.startsWith("multipart/")) {
