@@ -21,7 +21,7 @@ Content-Type: text/html;
 <HTML><BODY style="word-wrap: break-word; -khtml-nbsp-mode: space; -khtml-line-break: after-white-space; "><SPAN>Bla bla bla bla (text/html)</SPAN></BODY></HTML>
 --==boundary-2
 Content-Transfer-Encoding: base64
-Content-Type: application/gif;
+Content-Type: image/gif;
         x-mac-type=5738424E;
         x-unix-mode=0644;
         x-mac-creator=4D535744;
