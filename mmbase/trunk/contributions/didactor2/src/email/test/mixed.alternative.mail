@@ -1,4 +1,4 @@
-Subject: Multipart/mixed mail with multipart/alternative $(CURRENTDATE)
+Subject: $(DATA) Multipart/mixed mail with multipart/alternative $(CURRENTDATE)
 X-Header-Test: test
 From: foo@bar.nl
 Content-Type: multipart/mixed; boundary="==boundary-2"

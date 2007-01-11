@@ -1,4 +1,4 @@
-Subject: Simple related multipart mail 2 $(CURRENTDATE)
+Subject: $(DATA): Simple multipart.related mail 2 $(CURRENTDATE)
 X-Header-Test: test
 From: ppuk@m.meeuw.org
 Content-Type: multipart/related; boundary="==boundary-1"; type="text/html"
@@ -17,7 +17,7 @@ Content-Transfer-Encoding: 7bit
 <H1>This is a test message</H1>
 
 <H2>Here comes a red test image:</H2>
-<IMG SRC="cid:image1.mhtml-1@dsv.su.se" BORDER=0 HEIGHT=32 WIDTH=117
+<IMG SRC="cid:image2.mhtml-1@dsv.su.se" BORDER=0 HEIGHT=32 WIDTH=117
 ALT="red test image">
 
 <P>This is the last line of this test message.
@@ -25,7 +25,7 @@ ALT="red test image">
 
 --==boundary-1
 Content-Type: image/gif
-Content-ID: <image1.mhtml-1@dsv.su.se>
+Content-ID: <image2.mhtml-1@dsv.su.se>
 Content-Transfer-Encoding: base64
 Content-Disposition: inline; filename="red-test-image.gif"
 

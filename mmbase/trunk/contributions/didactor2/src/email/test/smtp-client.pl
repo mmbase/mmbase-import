@@ -315,6 +315,7 @@ sub run_smtp
 			$line =~ s/^\.$CRLF$/\. $CRLF/;
 			$line =~ s/^\.\n$/\. $CRLF/;
 			$line =~ s/\$\(CURRENTDATE\)/$now/g;
+			$line =~ s/\$\(DATA\)/$datasrc/g;
 			$sock->print ($line);
 		}
 
