@@ -8,7 +8,7 @@ Text displayed only to non-MIME-compliant mailers.
 --==boundary-1
 Content-Type: text/plain
 
-Bla bla bla bla
+Bla bla bla bla (text/plain)
 
 --==boundary-1
 Content-Type: multipart/mixed; boundary="==boundary-2"
@@ -18,7 +18,7 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/html;
         charset=US-ASCII
 
-<HTML><BODY style="word-wrap: break-word; -khtml-nbsp-mode: space; -khtml-line-break: after-white-space; "><SPAN>Bla bla bla bla </SPAN></BODY></HTML>
+<HTML><BODY style="word-wrap: break-word; -khtml-nbsp-mode: space; -khtml-line-break: after-white-space; "><SPAN>Bla bla bla bla (text/html)</SPAN></BODY></HTML>
 --==boundary-2
 Content-Transfer-Encoding: base64
 Content-Type: application/gif;
