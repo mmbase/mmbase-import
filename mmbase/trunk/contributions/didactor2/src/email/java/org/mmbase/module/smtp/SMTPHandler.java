@@ -9,11 +9,31 @@ import javax.mail.internet.*;
 import nl.didactor.mail.*;
 
 /**
+ * <p>
  * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
+ *</p>
+ * <h1>How are multiparts dispatched to mmbase objects?</h2>
+ * <p> 
+ * If the mimetype of the message itself is not multipart, then the message can simply be stored in
+ * a object of the type 'emails'. The mime-type of the mail can be sotred in the mime-type field of
+ * the message.
+ * </p>
+ * <p>
+ * If the mimetype of the orignal message is multipart/alternative, then only the 'best' part is
+ * stored in the mmbase email node. Currently only text/plain and text/html alternatives are
+ * recognized. text/html is supposed to be better.
+ * </p>
+ * <p>
+ * If the mimetype of the orignal message is multipart/mixed, then the INLINE part can be stored
+ * in the object. If no disposition given on a part, then it is considered INLINE if text/*. If the
+ * disposition if ATTACHMENT, then those are stored as related attachment-objects.
+ * </p>
+ * TODO: What happens which attached mail-messages? Will those not cause a big mess?
+ *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.16 2007-01-04 14:45:17 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.17 2007-01-11 13:21:33 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -329,14 +349,41 @@ public class SMTPHandler extends Thread {
     protected void nodeSetHeader(Node node, String fieldName, String value) {
         Field field = node.getNodeManager().getField(fieldName);
         int maxLength = field.getMaxLength();
-        log.debug("max length for " + fieldName + " is " + maxLength);
+        log.trace("max length for " + fieldName + " is " + maxLength);
         if (value.length() >= maxLength) {
             log.warn("Truncating field " + fieldName + " for node " + node + " (" + value.length() + " > " + maxLength + ")");
             value = value.substring(0, maxLength - 1);
         } else {
-            log.debug(value.length() + " < " + maxLength);
+            log.trace(value.length() + " < " + maxLength);
         }
         node.setStringValue(fieldName, value);
+    }
+    protected String getMimeType(String contentType) {
+        if (contentType == null) return null;
+        int pos = contentType.indexOf(';');
+        String mimeType;
+        if (pos > 0) {
+            mimeType = contentType.substring(0, pos);
+        } else {
+            mimeType = contentType;
+        }
+        return mimeType;
+    }
+
+
+    /**
+     * @return 1 if mt1 bettern then mt2, -1 if mt2 is better, 0 if they are equal. -1 if unknown.
+     */
+
+    protected int compareMimeTypes(String mt1, String mt2) {
+        if (mt1.equals(mt2)) return 0;
+        if (mt1.equals("text/html") && mt2.equals("text/plain")) {
+            return 1;
+        }
+        if (mt2.equals("text/html") && mt1.equals("text/plain")) {
+            return -1;
+        }
+        return -1;
     }
 
     /**
@@ -435,14 +482,7 @@ public class SMTPHandler extends Thread {
                 try {
                     String contentType = message.getContentType();
                     if (contentType != null) {
-                        int pos = contentType.indexOf(';');
-                        String mimeType;
-                        if (pos > 0) {
-                            mimeType = contentType.substring(0, pos);
-                        } else {
-                            mimeType = contentType;
-                        }
-                        nodeSetHeader(email, "mimetype", mimeType);
+                        nodeSetHeader(email, "mimetype", getMimeType(contentType));
                     }
                 } catch (MessagingException me) {
                     log.warn(me);
@@ -510,26 +550,31 @@ public class SMTPHandler extends Thread {
      * @return The given attachments List, but wihth the currently extracted ones added.
      **/
     private List extractPart(final Part p, final List attachments, final Node mail) throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("Extracting attachments from " + p + " from node " + mail);
+
+        String disposition = p.getDisposition();
+        if (disposition == null) {
+            // according to RFC 2183
+            // Content-Disposition is an optional header field. In its absence, the
+            // MUA may use whatever presentation method it deems suitable.
+
+            // this, I deem suitable:
+
+            disposition = p.isMimeType("text/*") ? Part.INLINE : Part.ATTACHMENT;
         }
-        if (p.isMimeType("multipart/*")) {
-            log.debug("Found attachments with type: " + p.getContentType());
-            Multipart mp = (Multipart)p.getContent();
-            int count = mp.getCount();
-            for (int i = 0; i < count; i++) {
-                extractPart(mp.getBodyPart(i), attachments, mail);
-            }
-        } else if (p.isMimeType("message/*")) {
-            log.debug("Found attachment with type: " + p.getContentType());
-            extractPart((Part)p.getContent(), attachments, mail);
-        } else if (p.isMimeType("teaxt/*")) {
+        if (log.isDebugEnabled()) {
+            log.debug("Extracting attachments from " + p + " (" + p.getContentType() + ", disposition " + p.getDisposition() + ") for node " + mail);
+        }
+
+        if (Part.INLINE.equals(disposition)) {
             // only adding text/plain - text/html will be stored as attachment!
+            // should used somehow multipart/alternative
 
             // MM I think this goes wrong if the original mimeType was multipart/alternative
             // when forwarding:
             // 2006-12-28 10:32:38,758 ERROR nl.didactor.mail.ExtendedJMSendMail sendRemoteMail.373  - JMSendMail failure: MIME part of type "multipart/alternative" contains object of type java.lang.String instead of MimeMultipart
             // and in the web-interface it still shows 2 attachments, while it should show none.
+            String mimeType = getMimeType(p.getContentType());
+            String mailMimeType = mail.getStringValue("mimetype");
 
             log.debug("Found attachments with type: text/plain");
             Object content = null;
@@ -542,21 +587,38 @@ public class SMTPHandler extends Thread {
                     content = bos.toString("ISO-8859-1");
                 } catch (IOException e2) {}
             }
+
+            String bodyField = (String)properties.get("emailbuilder.bodyfield");
             if (content != null) {
-                if (mail.getStringValue((String)properties.get("emailbuilder.bodyfield")) == null) {
-                    mail.setStringValue((String)properties.get("emailbuilder.bodyfield"), (String)content);
+                int compareMimeType = compareMimeTypes(mimeType, mailMimeType);
+                String currentBody = mail.getStringValue(bodyField);
+                if (currentBody == null || "".equals(currentBody) || compareMimeType > 0) {
+                    mail.setStringValue(bodyField, (String)content);
+                    mail.setStringValue("mimetype", mimeType);
+                } else if (compareMimeType == 0) {
+                    mail.setStringValue(bodyField, currentBody +"\r\n\r\n"+ content);
                 } else {
-                    String tempPartString = "";
-                    tempPartString = mail.getStringValue((String)properties.get("emailbuilder.bodyfield")) +"\r\n\r\n"+ (String)content;
-                    mail.setStringValue((String)properties.get("emailbuilder.bodyfield"), tempPartString);
+                    log.debug("Ignoring part with mimeType " + mimeType + " (not better than already stored part with mimeType " + mailMimeType);
                 }
+                /*
                 Node tempAttachment = storeAttachment(p);
                 if (tempAttachment != null) {
                     attachments.add(tempAttachment);
                 }
+                */
             } else {
-                log.warn("Failed all attempts to decode the MultiPart");
+                log.debug("Content of part is null, ignored");
             }
+        } else if (p.isMimeType("multipart/*")) {
+            Multipart mp = (Multipart)p.getContent();
+            int count = mp.getCount();
+            log.debug("Found attachment with type: " + p.getContentType() + " it has " + count + " parts, will add those recursively");
+            for (int i = 0; i < count; i++) {
+                extractPart(mp.getBodyPart(i), attachments, mail);
+            }
+        } else if (p.isMimeType("message/*")) {
+            log.debug("Found attachment with type: " + p.getContentType());
+            extractPart((Part)p.getContent(), attachments, mail);
         } else {
             log.debug("Found attachment with type: " + p.getContentType());
             Node tempAttachment = storeAttachment(p);
@@ -591,7 +653,9 @@ public class SMTPHandler extends Thread {
                 attachmentNode.setStringValue("description", contentId);
             }
         }
-        attachmentNode.setStringValue("mimetype", p.getContentType());
+        String mimeType = getMimeType(p.getContentType());
+
+        attachmentNode.setStringValue("mimetype", mimeType);
         attachmentNode.setStringValue("filename", fileName);
         attachmentNode.setIntValue("size", p.getSize());
 
