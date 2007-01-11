@@ -1,6 +1,7 @@
 Subject: $(DATA): Simple multipart.related mail 2 $(CURRENTDATE)
 X-Header-Test: test
 From: ppuk@m.meeuw.org
+X-TODO: This does not work property right now, attachment not property forwarded, not properly displayed in web-interface of didactor.
 Content-Type: multipart/related; boundary="==boundary-1"; type="text/html"
 
 Text displayed only to non-MIME-compliant mailers.
