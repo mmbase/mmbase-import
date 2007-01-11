@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.15 2007-01-04 14:09:40 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.16 2007-01-11 13:15:58 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -267,6 +267,7 @@ public class ExtendedJMSendMail extends SendMail {
             if (from != null && ! from.equals("")) {
                 msg.setFrom(new InternetAddress(from));
             }
+            msg.setHeader("X-mmbase-node", n.getNodeManager().getName() + "/" + n.getNumber());
             try {
                 InternetAddress[] toRecipients = InternetAddress.parse(to);
                 msg.addRecipients(Message.RecipientType.TO, toRecipients);
@@ -312,7 +313,7 @@ public class ExtendedJMSendMail extends SendMail {
 
                 MimeMultipart mmp = new MimeMultipart(subType);
 
-                if (body != null && ! "".equals("body") && ! mimeType.startsWith("multipart/")) {
+                if (body != null && ! "".equals("body")  && ! mimeType.startsWith("multipart/")) {
                     MimeBodyPart bodyPart = new MimeBodyPart();
                     bodyPart.setContent(body, mimeType);
                     mmp.addBodyPart(bodyPart);
@@ -335,6 +336,7 @@ public class ExtendedJMSendMail extends SendMail {
                     byte[] handle = attachment.getByteValue("handle");
                     MimeBodyPart mbp = new MimeBodyPart();
 
+
                     log.debug("Found a part " + attachmentMimeType);
                     // If our attached file is text/html, we will create a new 'normal'
                     // bodypart. The email client will then show the HTML inline.
@@ -354,15 +356,15 @@ public class ExtendedJMSendMail extends SendMail {
 
                         log.debug("creating mbp with mimeType " + attachmentMimeType);
                         mbp.setDataHandler(new DataHandler(new String(handle, "UTF-8"), attachmentMimeType));//new ByteArrayDataSource(handle, mimeType)));
-
                     } else {
-                        
 
                         // if no ByteArrayDataSource used, then you get: javax.activation.UnsupportedDataTypeException: no object DCH for MIME type image/gif
                         mbp.setDataHandler(new DataHandler(new ByteArrayDataSource(handle, attachmentMimeType)));
                         mbp.setFileName(filename);
                     }
-
+                    if (mbp.getContentID() == null) {
+                        mbp.setContentID("mmbase/" + attachment.getNodeManager().getName() + "/" + attachment.getNumber());
+                    }
                     mmp.addBodyPart(mbp);
                 }
                 msg.setContent(mmp);
