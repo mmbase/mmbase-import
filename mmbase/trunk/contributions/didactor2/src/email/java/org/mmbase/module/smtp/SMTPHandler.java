@@ -33,7 +33,7 @@ import nl.didactor.mail.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.19 2007-01-11 17:18:36 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.20 2007-01-11 17:31:58 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -666,15 +666,24 @@ public class SMTPHandler extends Thread {
 
         Node attachmentNode = attachmentManager.createNode();
 
-        attachmentNode.setStringValue("title", "privatemail Attachment");
+
         if (p instanceof MimeBodyPart) {
             MimeBodyPart mbp = (MimeBodyPart) p;
             String contentId = mbp.getContentID();
             if (contentId != null) {
+                // a bit of misuse, of course.
+                // targeting at working of multipart/related messages.
                 attachmentNode.setStringValue("description", contentId);
             }
         }
         String mimeType = getMimeType(p.getContentType());
+
+        String title = fileName;
+
+        if (title == null || "".equals(title)) {
+            title = "attachment " + mimeType;
+        }
+        attachmentNode.setStringValue("title", title);
 
         attachmentNode.setStringValue("mimetype", mimeType);
         attachmentNode.setStringValue("filename", fileName);
