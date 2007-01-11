@@ -1,4 +1,4 @@
-Subject: Simple multipart mail $(CURRENTDATE)
+Subject: $(DATA) Simple multipart mail $(CURRENTDATE)
 X-Header-Test: test
 From: Michiel.Meeuwissen@omroep.nl
 Content-Type: multipart/alternative; boundary="==boundary-1"

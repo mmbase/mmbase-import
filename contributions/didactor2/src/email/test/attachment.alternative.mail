@@ -1,4 +1,4 @@
-Subject: Simple multipart/alternative mail, with an attachment  (apple mail?) $(CURRENTDATE)
+Subject: $(DATA) Simple multipart/alternative mail, with an attachment  (apple mail?) $(CURRENTDATE)
 X-Header-Test: test
 From: ppuk@m.meeuw.org
 Content-Type: multipart/alternative; boundary="==boundary-1"
@@ -25,7 +25,7 @@ Content-Type: application/gif;
         x-mac-type=5738424E;
         x-unix-mode=0644;
         x-mac-creator=4D535744;
-        name=Translation Guidelines for Didactor.gif
+        name=Translation Guidgelines for Didactor.gif
 Content-Disposition: attachment; 
 										 filename="red-test-image.gif"								
 

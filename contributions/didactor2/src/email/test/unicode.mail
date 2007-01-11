@@ -1,4 +1,4 @@
-Subject: Unicode mail $(CURRENTDATE)
+Subject: $(DATA) Unicode mail $(CURRENTDATE)
 Content-Type: text/html; charset=UTF-8
 X-Header-Test: Didactor
 From: ppuk@m.meeuw.org
