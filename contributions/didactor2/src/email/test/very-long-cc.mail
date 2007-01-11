@@ -1,4 +1,4 @@
-Subject: Simple text/plain mail, very long CC $(CURRENTDATE)
+Subject: $(DATA) Simple text/plain mail, very long CC $(CURRENTDATE)
 Cc: ab@foo.bar, cd@foo.bar, ef@foo.bar, 1@foo.bar, 2@foo.bar, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@foo.bar, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb@foo.bar, cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc@foo.bar
 Content-Type: text/plain
 X-Header-Test: test

@@ -1,4 +1,4 @@
-Subject: Simple text/plain mail, with an attachment $(CURRENTDATE)
+Subject: $(DATA) Simple text/plain mail, with an attachment $(CURRENTDATE)
 X-Header-Test: test
 From: ppuk@m.meeuw.org
 Content-Type: multipart/mixed; boundary="==boundary-1"; type="text/html"
