@@ -12,7 +12,6 @@ Bla bla bla bla
 
 --==boundary-1
 Content-Type: image/gif
-Content-ID: <image1.mhtml-1@dsv.su.se>
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="red-test-image.gif"
 
