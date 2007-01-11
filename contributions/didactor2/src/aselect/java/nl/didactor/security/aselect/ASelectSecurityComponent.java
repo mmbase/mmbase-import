@@ -133,7 +133,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
 			    }
 			}
 
-			return new UserContext(user);
+			return new UserContext(user, "delegate");
 		    }
 		} catch (Exception ex) {
 		    throw new SecurityException("Exception while verifying ticket: " + ex.getMessage(), null);
@@ -192,7 +192,7 @@ public class ASelectSecurityComponent extends Component implements Authenticatio
                 }
                 throw new SecurityException("no user (id=" + newUser.getIdentifier() + ") in db", null);
             }
-            return new UserContext(user);
+            return new UserContext(user, application);
         }
         return null;
     }
