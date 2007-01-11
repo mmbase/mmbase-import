@@ -1,13 +1,12 @@
- 
-  <!-- 
+   <!-- 
         this is the domain used for sender addresses
         the sender of emails wil be
 
         username@emailsenderdomain
         
     -->
-    <context-param>
-        <param-name>emailsenderdomain</param-name>
-        <param-value>${emailsenderdomain}</param-value>
-    </context-param>
+<context-param>
+  <param-name>emailsenderdomain</param-name>
+  <param-value>${emailsenderdomain}</param-value>
+</context-param>
 
