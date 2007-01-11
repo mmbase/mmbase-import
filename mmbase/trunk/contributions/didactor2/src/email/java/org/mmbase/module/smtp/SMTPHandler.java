@@ -33,7 +33,7 @@ import nl.didactor.mail.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.18 2007-01-11 15:30:35 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.19 2007-01-11 17:18:36 mmeeuwissen Exp $
  */
 public class SMTPHandler extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -531,14 +531,39 @@ public class SMTPHandler extends Thread {
             //TODO: send to this user if he wants to
             Node user = (Node)users.get(i);
             if (user.getBooleanValue("email-mayforward")) {
-                String mailadres = user.getStringValue("email");
-                log.service("Forwarding " + email + " to " + mailadres);
-                ExtendedJMSendMail sendmail = (ExtendedJMSendMail)org.mmbase.module.Module.getModule("sendmail");
-                sendmail.startModule();
-                sendmail.sendMail(mailadres, email);
+                try {
+                    String mailadres = user.getStringValue("email");
+                    log.service("Forwarding " + email + " to " + mailadres);
+                    ExtendedJMSendMail sendmail = (ExtendedJMSendMail)org.mmbase.module.Module.getModule("sendmail");
+                    sendmail.startModule();
+                    sendmail.sendMail(mailadres, email);
+                } catch (Throwable e) {
+                    log.warn("Exception in forward " + e.getMessage(), e);
+                    return false;
+                }
             }
         }
         return true;
+    }
+
+    protected String getContent(Part p) throws Exception {
+        Object content = null;
+        try {
+            content = p.getContent();
+        } catch (UnsupportedEncodingException e) {
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                p.writeTo(bos);
+                content = bos.toString("ISO-8859-1");
+            } catch (IOException e2) {}
+        }
+        if (content instanceof String) {
+            return (String) content;
+        } else {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            p.writeTo(bos);
+            return  bos.toString("ISO-8859-1");
+        }
     }
 
     /**
@@ -559,7 +584,7 @@ public class SMTPHandler extends Thread {
 
             // this, I deem suitable:
 
-            disposition = p.isMimeType("text/*") ? Part.INLINE : Part.ATTACHMENT;
+            disposition = p.isMimeType("text/*") || p.isMimeType("message/*")  ? Part.INLINE : Part.ATTACHMENT;
         }
         if (log.isDebugEnabled()) {
             log.debug("Extracting attachments from " + p + " (" + p.getContentType() + ", disposition " + p.getDisposition() + ") for node " + mail);
@@ -576,27 +601,20 @@ public class SMTPHandler extends Thread {
             String mimeType = getMimeType(p.getContentType());
             String mailMimeType = mail.getStringValue("mimetype");
 
+
+
             log.debug("Found attachments with type: text/plain");
-            Object content = null;
-            try {
-                content = p.getContent();
-            } catch (UnsupportedEncodingException e) {
-                try {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    p.writeTo(bos);
-                    content = bos.toString("ISO-8859-1");
-                } catch (IOException e2) {}
-            }
+            String content = getContent(p);
 
             String bodyField = (String)properties.get("emailbuilder.bodyfield");
             if (content != null) {
                 int compareMimeType = compareMimeTypes(mimeType, mailMimeType);
                 String currentBody = mail.getStringValue(bodyField);
                 if (currentBody == null || "".equals(currentBody) || compareMimeType > 0) {
-                    mail.setStringValue(bodyField, (String)content);
+                    mail.setStringValue(bodyField, content);
                     mail.setStringValue("mimetype", mimeType);
                 } else if (compareMimeType == 0) {
-                    mail.setStringValue(bodyField, currentBody +"\r\n\r\n"+ content);
+                    mail.setStringValue(bodyField, currentBody +"\r\n\r\n" + content);
                 } else {
                     if (p.isMimeType("text/*")) {
                         log.debug("Ignoring part with mimeType " + mimeType + " (not better than already stored part with mimeType " + mailMimeType);
@@ -612,6 +630,7 @@ public class SMTPHandler extends Thread {
                 log.debug("Content of part is null, ignored");
             }
         } else if (p.isMimeType("multipart/*")) {
+
             Multipart mp = (Multipart)p.getContent();
             int count = mp.getCount();
             log.debug("Found attachment with type: " + p.getContentType() + " it has " + count + " parts, will add those recursively");
@@ -620,7 +639,7 @@ public class SMTPHandler extends Thread {
             }
         } else if (p.isMimeType("message/*")) {
             log.debug("Found attachment with type: " + p.getContentType());
-            extractPart((Part)p.getContent(), attachments, mail);
+            extractPart((Part) p.getContent(), attachments, mail);
         } else {
             log.debug("Found attachment with type: " + p.getContentType());
             Node tempAttachment = storeAttachment(p);
