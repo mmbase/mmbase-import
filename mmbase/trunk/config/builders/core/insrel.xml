@@ -119,7 +119,9 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="2" />
+      </datatype>
     </field>
   </fieldlist>
 
