@@ -7,7 +7,7 @@
 
 <mm:import externid="feedback_n">-1</mm:import>
 <mm:import externid="coachmode">false</mm:import>
-
+<%@include file="includes/geteducation.jsp" %>
 <% 
    String classrelId = "-1";
    String ownerId = "-1";
@@ -101,6 +101,42 @@
             </mm:field>
             <%@ include file="includes/feedbackgoal.jsp" %>
             <%@ include file="includes/feedbacklesson.jsp" %>
+            <tr>
+             <td colspan="2">
+                <!-- show answers to questions in final test -->
+                <mm:node number="$assessment_evaluationtest" notfound="skip">
+                  <mm:node number="<%= ownerId %>">
+                    <mm:compare referid="class" value="null">
+                      <mm:relatednodes type="classes">
+                        <mm:remove referid="class"/>
+                        <mm:import id="class"><mm:field name="number" /></mm:import>
+                      </mm:relatednodes>
+                    </mm:compare>
+                    <%@include file="/education/tests/find_copybook.jsp"%>
+                  </mm:node>
+                  <!-- get madetest -->
+                  <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+                    <mm:constraint field="copybooks.number" referid="copybookNo"/>
+                    <mm:relatednodes>
+                      <mm:field name="number" jspvar="this_madetest" vartype="String" write="false">
+                        <mm:import id="madetest" reset="true"><%= this_madetest %></mm:import>
+                      </mm:field>
+                    </mm:relatednodes>
+                  </mm:relatednodescontainer>
+                  <!-- show question -->
+                  <mm:present referid="madetest">
+                    <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                      <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                      <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+                        <mm:param name="question"><mm:field name="number"/></mm:param>
+                        <mm:param name="testnumber"><mm:write referid="assessment_evaluationtest"/></mm:param>
+                        <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                      </mm:treeinclude>
+                    </mm:relatednodes>
+                  </mm:present>
+                </mm:node>
+              </td>
+            </tr>
           </table>
         </mm:node>
       </div>
