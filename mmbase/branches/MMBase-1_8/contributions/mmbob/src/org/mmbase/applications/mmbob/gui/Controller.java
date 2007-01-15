@@ -69,7 +69,7 @@ public class Controller {
                 Enumeration e = f.getPostAreas();
                 while (e.hasMoreElements()) {
                     PostArea area = (PostArea) e.nextElement();
-                    HashMap map = new HashMap();
+                    Map map = new HashMap();
                     map.put("name", area.getName());
                     map.put("description", area.getDescription());
                     map.put("id", new Integer(area.getId()));
@@ -106,7 +106,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -130,7 +130,7 @@ public class Controller {
                 Iterator i = sa.getAreas();
                 while (i.hasNext()) {
                     PostArea area = (PostArea) i.next();
-                    HashMap  map =  new HashMap();
+                    Map  map =  new HashMap();
                     map.put("nodetype","area");
                     map.put("name", area.getName());
                     map.put("shortname", area.getShortName());
@@ -211,7 +211,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -825,8 +825,8 @@ public class Controller {
      * @return (map) representing info for the given forum
      *
      */
-    public HashMap getForumInfo(String id, String sactiveid) {
-        HashMap map =  new HashMap();
+    public Map getForumInfo(String id, String sactiveid) {
+        Map map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -865,7 +865,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         return map;
@@ -893,7 +893,7 @@ public class Controller {
                 return f.getHeaderPath();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -912,7 +912,7 @@ public class Controller {
                 return f.getFooterPath();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -931,7 +931,7 @@ public class Controller {
                 return f.getFromEmailAddress();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -986,7 +986,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return map;
     }
@@ -1000,7 +1000,7 @@ public class Controller {
      * @return (map) representing the configuration of the given forum
      *
      */
-    public HashMap getPostAreaConfig(String id, String sactiveid,String postareaid) {
+    public Map getPostAreaConfig(String id, String sactiveid,String postareaid) {
         HashMap map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
@@ -1016,7 +1016,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         return map;
@@ -1055,7 +1055,7 @@ public class Controller {
      * @param posterid Id for poster we want (string/account field)
      * @return (map) representing info for the given poster
      */
-    public HashMap getPosterInfo(String id, String posterid) {
+    public Map getPosterInfo(String id, String posterid) {
         HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
@@ -1065,7 +1065,9 @@ public class Controller {
                     try {
                         int tmpi = Integer.parseInt(posterid);
                         po = f.getPoster(tmpi);
-                    } catch(Exception e) {}
+                    } catch(Exception e) {
+                        log.error(e);
+                    }
                 }
                 addPosterInfo(map, po);
             }
@@ -1081,7 +1083,7 @@ public class Controller {
      * @param posterid Id for poster we want (string/account field)
      * @return (map) representing posters quota info
      */
-    public HashMap getQuotaInfo(String id, int posterid,int barsize) {
+    public Map getQuotaInfo(String id, int posterid,int barsize) {
         HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
@@ -2097,8 +2099,8 @@ public class Controller {
      * @param description Description of the new post area
      * @return (map) containing the postareaid of the newly created postarea
      */
-    public HashMap newPostArea(String forumid, String name, String description, int activeid) {
-        HashMap map = new HashMap();
+    public Map newPostArea(String forumid, String name, String description, int activeid) {
+        Map map = new HashMap();
 
         name = filterHTML(name);
         description = filterHTML(description);
@@ -2412,7 +2414,7 @@ public class Controller {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
-            if (f.isAdministrator(ap.getNick())) {
+            if (ap != null && f.isAdministrator(ap.getNick())) {
                 PostArea a = f.getPostArea(postareaid);
                 if (a != null) {
                     a.setName(name);
@@ -2446,7 +2448,7 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addPosterInfo(HashMap map, Poster p) {
+    private void addPosterInfo(Map map, Poster p) {
         map.put("posterid", new Integer(p.getId()));
         map.put("account", p.getAccount());
         map.put("nick", p.getNick());
@@ -2471,7 +2473,7 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addActiveInfo(HashMap map, Poster p) {
+    private void addActiveInfo(Map map, Poster p) {
         map.put("active_id", new Integer(p.getId()));
         map.put("active_account", p.getAccount());
         map.put("active_nick", p.getNick());
@@ -2498,23 +2500,23 @@ public class Controller {
             }
         }
         return true;
-    } 
+    }
 
     /**
      * get login information for this poster
      */
-    public HashMap forumLogin(String forumid,String account,String password) {
+    public Map forumLogin(String forumid,String account,String password) {
         //log.info("going to login with account: " + account + " and password " + password);
-        HashMap map = new HashMap();
-        Forum f=ForumManager.getForum(forumid);
-        if (f!=null) {
-            Poster po=f.getPoster(account);
-            if (po!=null) {
+        Map map = new HashMap();
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Poster po = f.getPoster(account);
+            if (po != null) {
                 org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
                 String md5passwd = md5.transform(password);
                 if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) && !po.isBlocked()) {
                     map.put("state","passed");
-                    map.put("posterid",new Integer(po.getId()));
+                    map.put("posterid", new Integer(po.getId()));
                 } else {
                     map.put("state","failed");
                     if (po.isBlocked() && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
@@ -2522,8 +2524,7 @@ public class Controller {
                     } else {
                         map.put("reason","password not valid");
                     }
-
-                }    
+                }
             } else {
                 map.put("state","failed");
                 map.put("reason","account not valid");
@@ -2533,8 +2534,8 @@ public class Controller {
     }
 
 
-    public HashMap getPosterPassword(String forumid,String account) {
-        HashMap map = new HashMap();
+    public Map getPosterPassword(String forumid,String account) {
+        Map map = new HashMap();
         Forum f=ForumManager.getForum(forumid);
         if (f!=null) {
             Poster po=f.getPoster(account);
@@ -2600,7 +2601,7 @@ public class Controller {
                 if (e!=null)  {
                     while (e.hasNext()) {
                         Signature sig = (Signature) e.next();
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         map.put("id", new Integer(sig.getId()));
                         map.put("body", sig.getBody());
                         map.put("mode", sig.getMode());
@@ -2610,7 +2611,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -2627,7 +2628,7 @@ public class Controller {
                 if (e!=null)  {
                     while (e.hasNext()) {
                         RemoteHost rm = (RemoteHost) e.next();
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         map.put("id", ""+rm.getId());
                         map.put("host",rm.getHost());
                         map.put("lastupdatetime", ""+rm.getLastUpdateTime());
@@ -2637,13 +2638,13 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
 
 
-    public String changeSignature(String forumid,String sactiveid,int sigid,String body,String mode,String encoding) {
+    public String changeSignature(String forumid, String sactiveid, int sigid, String body, String mode, String encoding) {
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -2660,7 +2661,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -2684,14 +2685,14 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
 
 
-    public HashMap getSingleSignature(String forumid,String sactiveid) {
-        HashMap map = new HashMap();
+    public Map getSingleSignature(String forumid,String sactiveid) {
+        Map map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -2707,7 +2708,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return map;
     }
@@ -2725,7 +2726,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -2741,7 +2742,9 @@ public class Controller {
                 } else {
                     f.setBookmarkedChange(id,ap,false);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
         return false;
     }
@@ -2758,7 +2761,9 @@ public class Controller {
                 } else {
                     f.setEmailOnChange(id,ap,false);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
         return false;
     }
@@ -2779,7 +2784,7 @@ public class Controller {
                 Iterator i = f.getProfileDefs();
                 if (i!=null) {
                     while (i.hasNext()) {
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         ProfileEntryDef pd = (ProfileEntryDef) i.next();
                         if (pd.getGuiPos()>=guipos) {
                             map.put("name",pd.getName());
@@ -2812,7 +2817,7 @@ public class Controller {
         List list = new ArrayList();
         Forum f = ForumManager.getForum(forumid);
         if (f!=null) {
-            HashMap words = f.getFilterWords();
+            Map words = f.getFilterWords();
             Iterator i = words.keySet().iterator();
             while (i.hasNext()) {
                 String key =  (String)i.next();
@@ -2828,8 +2833,8 @@ public class Controller {
 
 
 
-    public HashMap setProfileValue(String forumid, int activeid,String name,String value) {
-        HashMap map = new HashMap();
+    public Map setProfileValue(String forumid, int activeid,String name,String value) {
+        Map map = new HashMap();
 
         value = filterHTML(value);
 
@@ -2848,7 +2853,7 @@ public class Controller {
         String day = "1";
         String month = "1";
         String year = "1980";
-        StringTokenizer tok=new StringTokenizer(value,"-\n\r");
+        StringTokenizer tok = new StringTokenizer(value,"-\n\r");
         if (tok.hasMoreTokens()) {
             day = tok.nextToken();
             if (tok.hasMoreTokens()) {
@@ -2858,33 +2863,35 @@ public class Controller {
                 }
             }
         }
-        String body ="<select name=\""+name+"_day\">";
-        for (int i=1;i<32;i++) {
-            if (day.equals(""+i)) {
-                body+="<option selected>"+i;
+
+        // TODO use StringBuilder.
+        String body ="<select name=\"" + name + "_day\">";
+        for (int i = 1; i < 32; i++) {
+            if (day.equals("" + i)) {
+                body += "<option selected>"+i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
         }
-        body+="</select>";
-        body +="<select name=\""+name+"_month\">";
-        for (int i=1;i<13;i++) {
-            if (month.equals(""+i)) {
-                body+="<option selected>"+i;
+        body += "</select>";
+        body += "<select name=\"" + name + "_month\">";
+        for (int i = 1; i < 13; i++) {
+            if (month.equals("" + i)) {
+                body += "<option selected>" + i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
         }
-        body+="</select>";
-        body+="<select name=\""+name+"_year\">";
-        for (int i=1920;i<2004;i++) {
-            if (year.equals(""+i)) {
-                body+="<option selected>"+i;
+        body += "</select>";
+        body += "<select name=\"" + name + "_year\">";
+        for (int i = 1920; i < 2004; i++) {
+            if (year.equals("" + i)) {
+                body += "<option selected>" + i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
         }
-        body+="</select>";
+        body += "</select>";
         return body;
     }
 
