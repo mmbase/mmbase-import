@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.66 2007-01-09 11:47:29 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.67 2007-01-15 15:15:06 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -91,27 +91,27 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 log.debug("Looking up Node with " + referString + " in context");
             }
             switch(Notfound.get(notfound, this)) {
-                case Notfound.MESSAGE:
-                    node = getNodeOrNull(referString);
-                    if (node == null) {
-                        try {
-                            getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
-                        } catch (java.io.IOException ioe) {
-                            log.warn(ioe);
-                        }
-                        return SKIP_BODY;
+            case Notfound.MESSAGE:
+                node = getNodeOrNull(referString);
+                if (node == null) {
+                    try {
+                        getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
+                    } catch (java.io.IOException ioe) {
+                        log.warn(ioe);
                     }
-                    break;
-                case Notfound.SKIP:         {
-                    node = getNodeOrNull(referString);
-                    if (node == null) return SKIP_BODY;
-                    break;
+                    return SKIP_BODY;
                 }
-                case Notfound.PROVIDENULL:  {
-                    node = getNodeOrNull(referString);
-                    break;
-                }
-                default: node = getNode(referString);
+                break;
+            case Notfound.SKIP:         {
+                node = getNodeOrNull(referString);
+                if (node == null) return SKIP_BODY;
+                break;
+            }
+            case Notfound.PROVIDENULL:  {
+                node = getNodeOrNull(referString);
+                break;
+            }
+            default: node = getNode(referString);
             }
             if (node != null) {
                 if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
@@ -190,7 +190,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                             throw new JspTagException("Could not find node element '" + elString + "'");
                         }
                     }
-                    if (nodeProvider.getNodeVar() != null) {
+                    if (nodeProvider != null && nodeProvider.getNodeVar() != null) {
                         if (nodeProvider.getNodeVar().getCloud().hasNodeManager(nodeProvider.getNodeVar().getNodeManager().getName())) {
                             nodeHelper.setGeneratingQuery(nodeProvider.getGeneratingQuery());
                         }
