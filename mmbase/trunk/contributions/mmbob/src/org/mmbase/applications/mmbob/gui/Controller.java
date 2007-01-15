@@ -27,12 +27,13 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: guiController.java
+ * @version $Id: Controller.java,v 1.65 2007-01-15 17:37:00 michiel Exp $
  */
 public class Controller {
 
-    private static Logger log = Logging.getLoggerInstance(Controller.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Controller.class);
     private static Cloud cloud;
+
     NodeManager manager;
     CloudContext context;
 
@@ -68,7 +69,7 @@ public class Controller {
                 Enumeration e = f.getPostAreas();
                 while (e.hasMoreElements()) {
                     PostArea area = (PostArea) e.nextElement();
-            HashMap map = new HashMap();
+                    Map map = new HashMap();
                     map.put("name", area.getName());
                     map.put("description", area.getDescription());
                     map.put("id", new Integer(area.getId()));
@@ -82,8 +83,8 @@ public class Controller {
                     map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
                     map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
                     map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
-                map.put("guestreadmodetype", area.getGuestReadModeType());
-                        map.put("guestwritemodetype", area.getGuestWriteModeType());
+                    map.put("guestreadmodetype", area.getGuestReadModeType());
+                    map.put("guestwritemodetype", area.getGuestWriteModeType());
                     map.put("threadstartlevel", area.getThreadStartLevel());
                     if (mode.equals("stats")) {
                         map.put("postthreadloadedcount",new Integer(area.getPostThreadLoadedCount()));
@@ -105,7 +106,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -129,7 +130,7 @@ public class Controller {
                 Iterator i = sa.getAreas();
                 while (i.hasNext()) {
                     PostArea area = (PostArea) i.next();
-            HashMap  map =  new HashMap();
+                    Map  map =  new HashMap();
                     map.put("nodetype","area");
                     map.put("name", area.getName());
                     map.put("shortname", area.getShortName());
@@ -145,8 +146,8 @@ public class Controller {
                     map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
                     map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
                     map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
-                map.put("guestreadmodetype", area.getGuestReadModeType());
-                        map.put("guestwritemodetype", area.getGuestWriteModeType());
+                    map.put("guestreadmodetype", area.getGuestReadModeType());
+                    map.put("guestwritemodetype", area.getGuestWriteModeType());
                     map.put("threadstartlevel", area.getThreadStartLevel());
                     list.add(map);
 
@@ -175,10 +176,10 @@ public class Controller {
                     Iterator i2 = sa.getAreas();
                     while (i2.hasNext()) {
                         PostArea area = (PostArea) i2.next();
-            map =  new HashMap();
+                        map =  new HashMap();
                         map.put("nodetype","area");
                         map.put("shortname", area.getShortName());
-                       map.put("name", area.getName());
+                        map.put("name", area.getName());
                         map.put("description", area.getDescription());
                         map.put("id",new Integer(area.getId()));
                         map.put("postthreadcount",new Integer(area.getPostThreadCount()));
@@ -191,8 +192,8 @@ public class Controller {
                         map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
                         map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
                         map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
-                    map.put("guestreadmodetype", area.getGuestReadModeType());
-                            map.put("guestwritemodetype", area.getGuestWriteModeType());
+                        map.put("guestreadmodetype", area.getGuestReadModeType());
+                        map.put("guestwritemodetype", area.getGuestWriteModeType());
                         map.put("threadstartlevel", area.getThreadStartLevel());
                         list.add(map);
 
@@ -207,10 +208,10 @@ public class Controller {
                             }
                         }
                     }
-        }
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -227,7 +228,7 @@ public class Controller {
         Enumeration e = ForumManager.getForums();
         while (e.hasMoreElements()) {
             Forum f = (Forum) e.nextElement();
-        HashMap map = new HashMap();
+            HashMap map = new HashMap();
             map.put("name", f.getName());
             map.put("id", new Integer(f.getId()));
             map.put("description", f.getDescription());
@@ -279,7 +280,7 @@ public class Controller {
             Iterator e = a.getPostThreads(page, overviewpagesize);
             while (e.hasNext()) {
                 PostThread thread = (PostThread) e.next();
-        HashMap map =  new HashMap();
+                HashMap map =  new HashMap();
                 String subject = thread.getSubject();
                 map.put("name", subject);
                 if (subject.length()>60) subject = subject.substring(0,57)+"...";
@@ -290,21 +291,21 @@ public class Controller {
                 Poster ap = f.getPoster(activeid);
                 if (ap != null) {
                     map.put("state", thread.getState(ap));
-            ThreadObserver to = f.getThreadObserver(thread.getId());
-            if (to!=null && to.wantsEmailOnChange(ap)) {
-            map.put("emailonchange","true");  
-            } else {
-            map.put("emailonchange","false");  
-            }
-            if (to!=null && to.isBookmarked(ap)) {
-            map.put("bookmarked","true");  
-            } else {
-            map.put("bookmarked","false");  
-            }
+                    ThreadObserver to = f.getThreadObserver(thread.getId());
+                    if (to!=null && to.wantsEmailOnChange(ap)) {
+                        map.put("emailonchange","true");  
+                    } else {
+                        map.put("emailonchange","false");  
+                    }
+                    if (to!=null && to.isBookmarked(ap)) {
+                        map.put("bookmarked","true");  
+                    } else {
+                        map.put("bookmarked","false");  
+                    }
                 } else {
                     map.put("state", thread.getState());
-            map.put("emailonchange","false");  
-            map.put("bookmarked","false");  
+                    map.put("emailonchange","false");  
+                    map.put("bookmarked","false");  
                 }
                 map.put("type", thread.getType());
                 map.put("creator", thread.getCreator());
@@ -317,8 +318,8 @@ public class Controller {
                 map.put("lastsubject", thread.getLastSubject());
                 //newnode.setStringValue("threadnav",thread.getLastSubject());
 
-        // temp until sure if we also want to be able to set this from html
-        int overflowpage = f.getPostingsOverflowPostArea();
+                // temp until sure if we also want to be able to set this from html
+                int overflowpage = f.getPostingsOverflowPostArea();
                 map.put("navline", thread.getNavigationLine(baseurl, pagesize,overflowpage, cssclass));
                 map.put("lastposternumber",new Integer(thread.getLastPosterNumber()));
                 map.put("lastpostnumber",new Integer(thread.getLastPostNumber()));
@@ -364,8 +365,8 @@ public class Controller {
                     int overflowpage = f.getPostingsOverflowPostArea();
                     map.put("navline", thread.getNavigationLine(baseurl,  pagesize,overflowpage, cssclass));
                     list.add(map);
-        }
-        }
+                }
+            }
         }
         return list;
     }
@@ -393,13 +394,13 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-            if (page==-1) page=t.getPageCount(pagesize);
+                    if (page==-1) page=t.getPageCount(pagesize);
                     Iterator e = t.getPostings(page, pagesize);
                     int pos = ((page - 1) * pagesize) + 1;
 
                     while (e.hasNext()) {
                         Posting p = (Posting) e.next();
-            HashMap map =  new HashMap();
+                        HashMap map =  new HashMap();
                         map.put("pos", new Integer(pos++));
                         String subject = p.getSubject();
                         map.put("subject", subject);
@@ -418,12 +419,12 @@ public class Controller {
                         map.put("posttime",new Integer(p.getPostTime()));
                         map.put("id",new Integer(p.getId()));
                         map.put("threadpos",new Integer(p.getThreadPos()));
-            // very weird way need to figure this out
-            if (p.getThreadPos()%2==0) {
+                        // very weird way need to figure this out
+                        if (p.getThreadPos()%2==0) {
                             map.put("tdvar", "threadpagelisteven");
-            } else {
+                        } else {
                             map.put("tdvar", "threadpagelistodd");
-            }
+                        }
                         // should be moved out of the loop
                         if (activeid != -1) {
                             Poster ap = f.getPoster(activeid);
@@ -468,7 +469,7 @@ public class Controller {
         List list = new ArrayList();
         long start = System.currentTimeMillis();
 
-    HashMap map = new HashMap();
+        HashMap map = new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -476,7 +477,7 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     Posting p = t.getPosting(Integer.parseInt(postingid));
-            if (p!=null) {
+                    if (p!=null) {
                         String subject = p.getSubject();
                         map.put("subject", subject);
                         if (subject.length()>60) subject = subject.substring(0,57)+"...";
@@ -543,8 +544,8 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     Posting p = t.getPosting(Integer.parseInt(postingid));
-            int pagenumber = (p.getThreadPos()/pagesize)+1;
-            return ""+pagenumber;
+                    int pagenumber = (p.getThreadPos()/pagesize)+1;
+                    return ""+pagenumber;
                 }
             }
         }
@@ -578,7 +579,7 @@ public class Controller {
                 Enumeration e = a.getModerators();
                 while (e.hasMoreElements()) {
                     Poster p = (Poster) e.nextElement();
-            HashMap map =  new HashMap();
+                    HashMap map =  new HashMap();
                     map.put("id",new Integer(p.getId()));
                     map.put("account", p.getAccount());
                     map.put("nick", p.getNick());
@@ -633,7 +634,7 @@ public class Controller {
             Enumeration e = f.getPostersOnline();
             while (e.hasMoreElements()) {
                 Poster p = (Poster) e.nextElement();
-        HashMap map =  new HashMap();
+                HashMap map =  new HashMap();
                 map.put("id", new Integer(p.getId()));
                 map.put("account", p.getAccount());
                 map.put("nick", p.getNick());
@@ -644,7 +645,7 @@ public class Controller {
                 map.put("levelgui", p.getLevelGui());
                 map.put("levelimage", p.getLevelImage());
                 map.put("lastseen", new Integer(p.getLastSeen()));
-                   map.put("blocked", ""+p.isBlocked());
+                map.put("blocked", ""+p.isBlocked());
                 list.add(map);
             }
         }
@@ -653,7 +654,7 @@ public class Controller {
 
 
     public List getPosters(String forumid,String searchkey,int page,int pagesize) {
-    searchkey=searchkey.toLowerCase();
+        searchkey=searchkey.toLowerCase();
         List list = new ArrayList();
 
         Forum f = ForumManager.getForum(forumid);
@@ -704,9 +705,9 @@ public class Controller {
 
 
     public List searchPostings(String forumid,String searchareaid,String searchpostthreadid,String searchkey,int posterid,int page,int pagesize) {
-    log.info("SEARCH CALLED = "+posterid);
+        log.info("SEARCH CALLED = "+posterid);
         long start = System.currentTimeMillis();
-    searchkey = searchkey.toLowerCase();
+        searchkey = searchkey.toLowerCase();
         List list = new ArrayList();
 
         Forum f = ForumManager.getForum(forumid);
@@ -747,7 +748,7 @@ public class Controller {
                     map.put("posterid", f.getPoster(p.getPoster()));
                     list.add(map);
                     j++;
-        }
+                }
             }
         }
         long end = System.currentTimeMillis();
@@ -773,7 +774,7 @@ public class Controller {
                 Enumeration e = a.getNonModerators(searchkey);
                 while (e.hasMoreElements()) {
                     Poster p = (Poster) e.nextElement();
-            HashMap map =  new HashMap();
+                    HashMap map =  new HashMap();
                     map.put("id", new Integer(p.getId()));
                     map.put("account", p.getAccount());
                     map.put("nick", p.getNick());
@@ -824,8 +825,8 @@ public class Controller {
      * @return (map) representing info for the given forum
      *
      */
-    public HashMap getForumInfo(String id, String sactiveid) {
-    HashMap map =  new HashMap();
+    public Map getForumInfo(String id, String sactiveid) {
+        Map map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -864,18 +865,18 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         return map;
     }
 
     public String getForumAlias(String key) {
-    if (!key.equals("")) {
+        if (!key.equals("")) {
             Forum f = ForumManager.getForumByAlias(key);
             if (f!=null) return ""+f.getId();
-    }
-    return "unknown";
+        }
+        return "unknown";
     }
 
     /**
@@ -892,7 +893,7 @@ public class Controller {
                 return f.getHeaderPath();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -911,7 +912,7 @@ public class Controller {
                 return f.getFooterPath();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -930,7 +931,7 @@ public class Controller {
                 return f.getFromEmailAddress();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -945,7 +946,7 @@ public class Controller {
      *
      */
     public HashMap getForumConfig(String id, String sactiveid) {
-    HashMap map =  new HashMap();
+        HashMap map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -969,9 +970,9 @@ public class Controller {
                 map.put("fromaddress",f.getFromEmailAddress());
                 map.put("headerpath",f.getHeaderPath());
                 map.put("footerpath",f.getFooterPath());
-            map.put("replyoneachpage",new Boolean(f.getReplyOnEachPage()));
-            map.put("navigationmethod",f.getNavigationMethod());
-            map.put("alias",f.getAlias());
+                map.put("replyoneachpage",new Boolean(f.getReplyOnEachPage()));
+                map.put("navigationmethod",f.getNavigationMethod());
+                map.put("alias",f.getAlias());
 
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
@@ -985,7 +986,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return map;
     }
@@ -999,8 +1000,8 @@ public class Controller {
      * @return (map) representing the configuration of the given forum
      *
      */
-    public HashMap getPostAreaConfig(String id, String sactiveid,String postareaid) {
-    HashMap map = new HashMap();
+    public Map getPostAreaConfig(String id, String sactiveid,String postareaid) {
+        HashMap map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -1015,14 +1016,14 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         return map;
     }
 
     public HashMap getForumsConfig() {
-    HashMap map = new HashMap();
+        HashMap map = new HashMap();
         map.put("language", ForumManager.getLanguage());
         map.put("accountcreationtype", ForumManager.getAccountCreationType());
         map.put("accountremovaltype", ForumManager.getAccountRemovalType());
@@ -1054,18 +1055,20 @@ public class Controller {
      * @param posterid Id for poster we want (string/account field)
      * @return (map) representing info for the given poster
      */
-    public HashMap getPosterInfo(String id, String posterid) {
-    HashMap map =  new HashMap();
+    public Map getPosterInfo(String id, String posterid) {
+        HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != null) {
                 Poster po = f.getPoster(posterid);
-        if (po==null) {
+                if (po==null) {
                     try {
-            int tmpi = Integer.parseInt(posterid);
-                    po = f.getPoster(tmpi);
-                    } catch(Exception e) {}
-        }
+                        int tmpi = Integer.parseInt(posterid);
+                        po = f.getPoster(tmpi);
+                    } catch(Exception e) {
+                        log.error(e);
+                    }
+                }
                 addPosterInfo(map, po);
             }
         }
@@ -1080,38 +1083,38 @@ public class Controller {
      * @param posterid Id for poster we want (string/account field)
      * @return (map) representing posters quota info
      */
-    public HashMap getQuotaInfo(String id, int posterid,int barsize) {
-    HashMap map = new HashMap();
+    public Map getQuotaInfo(String id, int posterid,int barsize) {
+        HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-        map.put("quotareached",new Boolean(po.isQuotaReached()));
-        int t=po.getQuotaNumber();
-        int u=po.getQuotaUsedNumber();
-        float d=100/(float)t;
-        float b=(float)barsize/t;
-        int up=(int)(d*u);
-        int ub=(int)(b*u);
+                map.put("quotareached",new Boolean(po.isQuotaReached()));
+                int t=po.getQuotaNumber();
+                int u=po.getQuotaUsedNumber();
+                float d=100/(float)t;
+                float b=(float)barsize/t;
+                int up=(int)(d*u);
+                int ub=(int)(b*u);
 
-        // log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
+                // log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
 
-        map.put("quotausedpercentage",new Integer(up));
-        map.put("quotaunusedpercentage",new Integer(100-up));
-        map.put("quotanumber",new Integer(t));
-        map.put("quotausednumber",new Integer(u));
-        map.put("quotaunusednumber",new Integer(t-u));
-        map.put("quotausedbar",new Integer(ub));
+                map.put("quotausedpercentage",new Integer(up));
+                map.put("quotaunusedpercentage",new Integer(100-up));
+                map.put("quotanumber",new Integer(t));
+                map.put("quotausednumber",new Integer(u));
+                map.put("quotaunusednumber",new Integer(t-u));
+                map.put("quotausedbar",new Integer(ub));
 
-        if (u>ForumManager.getQuotaSoftWarning()) {
+                if (u>ForumManager.getQuotaSoftWarning()) {
                     if (u>ForumManager.getQuotaWarning()) {
                         map.put("quotawarning","red");
                     } else {
                         map.put("quotawarning","orange");
                     }
-        } else {
+                } else {
                     map.put("quotawarning","green");
-        }
+                }
             }
         }
         return map;
@@ -1127,19 +1130,19 @@ public class Controller {
      * @return (map) representing info for the given poster
      */
     public HashMap getMailboxInfo(String id, int posterid,String mailboxid) {
-    HashMap map = new HashMap();
+        HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-        if (po != null ) {
+                if (po != null ) {
                     Mailbox mb=po.getMailbox(mailboxid);
                     if (mb != null) {
                         map.put("messagecount",new Integer(mb.getMessageCount()));
                         map.put("messageunreadcount",new Integer(mb.getMessageUnreadCount()));
                         map.put("messagenewcount",new Integer(mb.getMessageNewCount()));
                     }
-        }
+                }
             }
         }
         return map;
@@ -1155,17 +1158,17 @@ public class Controller {
      * @return signal given 
      */
     public boolean signalMailboxChange(String id, int posterid,String mailboxid) {
-    HashMap map  = new HashMap();
+        HashMap map  = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-        if (po != null ) {
+                if (po != null ) {
                     Mailbox mb=po.getMailbox(mailboxid);
                     if (mb != null) {
                         mb.signalMailboxChange();
                     }
-        }
+                }
             }
         }
         return true;
@@ -1304,13 +1307,13 @@ public class Controller {
             if (f != null) {
                 Poster p = f.getPoster(account);
                 if (p == null) {
-            if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
-            if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
-            if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
+                    if (firstname.equals("") || firstname.length() < 2) return "firstnameerror";
+                    if (lastname.equals("") || lastname.length() < 1)   return "lastnameerror";
+                    if (email.equals("") || email.indexOf("@") ==-1 || email.indexOf(".") == -1) return "emailerror";
                     p = f.createPoster(account, password);
                     if (p != null) {
-                           p.setFirstName(firstname); 
-                           p.setLastName(lastname);
+                        p.setFirstName(firstname); 
+                        p.setLastName(lastname);
                         p.setEmail(email);
                         p.setGender(gender);
                         p.setLocation(location);
@@ -1326,7 +1329,7 @@ public class Controller {
             }
             return "ok";
         } else {
-            return ("passwordnotequal");
+            return "passwordnotequal";
         }
     }
 
@@ -1338,26 +1341,26 @@ public class Controller {
                 Poster p = f.getPoster(account);
                 Poster n = f.getPosterNick(nick);
                 if (p == null) {
-            // weird hack since entree demands the use of a nick
-            if (f.getLoginSystemType().equals("entree")) {
-                if (n!=null || nick.equals("")) return "nickinuse";
-            } else {
-                if (n!=null && !nick.equals("")) return "nickinuse";
-            }
-            if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
-            if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
-            if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
+                    // weird hack since entree demands the use of a nick
+                    if (f.getLoginSystemType().equals("entree")) {
+                        if (n!=null || nick.equals("")) return "nickinuse";
+                    } else {
+                        if (n!=null && !nick.equals("")) return "nickinuse";
+                    }
+                    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
+                    if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
+                    if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
                     p = f.createPoster(account, password);
                     if (p != null) {
-                           p.setFirstName(firstname); 
-                           p.setLastName(lastname);
+                        p.setFirstName(firstname); 
+                        p.setLastName(lastname);
                         p.setEmail(email);
                         p.setGender(gender);
                         p.setLocation(location);
                         p.setPassword(password);
                         p.setPostCount(0);
                         p.savePoster();
-                if (nick!=null && !nick.equals("")) setProfileValue(forumid, p.getId(),"nick",nick);
+                        if (nick!=null && !nick.equals("")) setProfileValue(forumid, p.getId(),"nick",nick);
                     } else {
                         return "createerror";
                     }
@@ -1425,8 +1428,8 @@ public class Controller {
      * @param cssclass stylesheet name for the url links
      * @return (map) representing info for the given postarea
      */
-    public HashMap getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
-    HashMap map = new HashMap();
+    public Map getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
+        Map map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -1447,6 +1450,9 @@ public class Controller {
             map.put("pagecount", new Integer(a.getPageCount(pagesize)));
             if (activeid != -1) {
                 Poster ap = f.getPoster(activeid);
+                if (ap == null) {
+                    throw new RuntimeException("No poster object found for id '" + activeid + "'");
+                }
                 ap.signalSeen();
                 if (ap != null && f.isAdministrator(ap.getNick())) {
                     map.put("isadministrator", "true");
@@ -1464,13 +1470,13 @@ public class Controller {
     }
 
 
-    public HashMap getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
-    HashMap map = new HashMap();
+    public Map getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
+        Map map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-        if (a != null) {
+            if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     map.put("threadstate", t.getState());
@@ -1549,8 +1555,8 @@ public class Controller {
      * @param cssclass  stylesheet name for the url links
      * @return (map) containing navline, lastpage, pagecount
      */
-    public HashMap getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
-    HashMap map =  new HashMap();
+    public Map getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
+        Map map =  new HashMap();
 
         if (cssclass == null) cssclass = "";
 
@@ -1560,26 +1566,26 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-            int overflowpage = f.getPostingsOverflowThreadPage();
+                    int overflowpage = f.getPostingsOverflowThreadPage();
                     map.put("navline", t.getNavigationLine(baseurl, page, pagesize,overflowpage, cssclass));
                     map.put("lastpage", "" + t.isLastPage(page, pagesize));
                     map.put("pagecount",new Integer(t.getPageCount(pagesize)));
                     Poster ap = f.getPoster(posterid);
-                       if (ap != null) {
-                ThreadObserver to = f.getThreadObserver(t.getId());
-                if (to!=null && to.wantsEmailOnChange(ap)) {
+                    if (ap != null) {
+                        ThreadObserver to = f.getThreadObserver(t.getId());
+                        if (to!=null && to.wantsEmailOnChange(ap)) {
                             map.put("emailonchange","true");  
-                } else {
+                        } else {
                             map.put("emailonchange","false");  
-                }
-                if (to!=null && to.isBookmarked(ap)) {
+                        }
+                        if (to!=null && to.isBookmarked(ap)) {
                             map.put("bookmarked","true");  
-                } else {
+                        } else {
                             map.put("bookmarked","false");  
-                }
-                       } else {
-                map.put("emailonchange","false");  
-            map.put("bookmarked","false");  
+                        }
+                    } else {
+                        map.put("emailonchange","false");  
+                        map.put("bookmarked","false");  
                     }
                 }
             }
@@ -1599,15 +1605,15 @@ public class Controller {
      * @return  Feedback regarding this post action
      */
     public HashMap postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
-    HashMap map = new HashMap();
+        HashMap map = new HashMap();
 
-        if (subject.length()>60) subject = subject.substring(0,57)+"..."; 
+        if (subject.length() > 60) subject = subject.substring(0, 57) + "..."; 
 
         Forum f = ForumManager.getForum(forumid);
-    int pos = poster.indexOf("(");
-    if (pos!=-1) {
+        int pos = poster.indexOf("(");
+        if (pos!=-1) {
             poster=poster.substring(0,pos-1);
-    }
+        }
 
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -1615,18 +1621,18 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     // nobody may post in closed thread, unless you're a moderator
-            Poster p=f.getPosterNick(poster);
+                    Poster p=f.getPosterNick(poster);
                     if ((!t.getState().equals("closed")|| !t.getState().equals("pinnedclosed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
-            if (body.equals("")) {
+                        if (body.equals("")) {
                             map.put("error", "no_body");
-            } else if (p!=null && p.checkDuplicatePost("",body)) {
+                        } else if (p!=null && p.checkDuplicatePost("",body)) {
                             map.put("error", "duplicate_post");
-            } else if (checkIllegalHtml(body)) {
+                        } else if (checkIllegalHtml(body)) {
                             map.put("error", "illegal_html");
-            } else if (p!=null && checkSpeedPosting(a,p)) {
+                        } else if (p!=null && checkSpeedPosting(a,p)) {
                             map.put("error", "speed_posting");
                             map.put("speedposttime", ""+a.getSpeedPostTime());
-            } else {
+                        } else {
                             body = a.filterContent(body);
                             subject = filterHTML(subject);
                             // temp fix for [ ] quotes.
@@ -1642,10 +1648,16 @@ public class Controller {
                                 log.info("Error while posting a reply");
                                 map.put("error", "illegal_html");
                             }
-            }
+                        }
                     }
+                } else {
+                    log.warn("No thread with id '" + postthreadid + "'");
                 }
+            } else {
+                log.warn("No post area with id '" + postareaid + "'");
             }
+        } else {
+            log.warn("No forum with id '" + forumid + "'");
         }
         return map;
     }
@@ -1660,33 +1672,33 @@ public class Controller {
      * @param body Body of the new post
      * @return  (map) containing the postthreadid of the newly created post
      */
-    public HashMap newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
+    public Map newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
 
-    HashMap map = new HashMap();
+        HashMap map = new HashMap();
 
         if (subject.length()>60) subject = subject.substring(0,57)+"...";
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-        Poster p=f.getPoster(poster);
+            Poster p=f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
-        if (subject.equals("")) {
+                if (subject.equals("")) {
                     map.put("error", "no_subject");
-        } else if (body.equals("")) {
+                } else if (body.equals("")) {
                     map.put("error", "no_body");
-        } else if (checkIllegalHtml(subject)) {
+                } else if (checkIllegalHtml(subject)) {
                     map.put("error", "illegal_html");
-        } else if (checkIllegalHtml(body)) {
+                } else if (checkIllegalHtml(body)) {
                     map.put("error", "illegal_html");
-        } else if (p!=null && p.checkDuplicatePost(subject,body)) {
+                } else if (p!=null && p.checkDuplicatePost(subject,body)) {
                     map.put("error", "duplicate_post");
-        } else if (checkMaxPostSize(subject,body)) {
+                } else if (checkMaxPostSize(subject,body)) {
                     map.put("error", "maxpostsize");
-        } else if (p!=null && checkSpeedPosting(a,p)) {
+                } else if (p!=null && checkSpeedPosting(a,p)) {
                     map.put("error", "speed_posting");
                     map.put("speedposttime", ""+a.getSpeedPostTime());
-        } else {
+                } else {
                     body = a.filterContent(body);
                     subject = filterHTML(subject);
                     int postthreadid = a.newPost(subject, p, body,mood,false);
@@ -1697,7 +1709,7 @@ public class Controller {
                         p.setLastBody(body);
                         p.setLastPostTime((int)(System.currentTimeMillis()/1000));
                     }
-        }
+                }
             }
         }
         return map;
@@ -1715,19 +1727,19 @@ public class Controller {
      */
     public HashMap newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
 
-    HashMap map =  new HashMap();
+        HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null && !f.getPoster(poster).isBlocked()) {
-        if (to.indexOf(",")==-1) {
+            if (to.indexOf(",")==-1) {
                 int privatemessageid = f.newPrivateMessage(poster, to, subject, body);
                 map.put("privatemessageid",new Integer(privatemessageid));
-        } else {
-        StringTokenizer tok=new StringTokenizer(to,",\n\r");
-        while (tok.hasMoreTokens()) {
+            } else {
+                StringTokenizer tok=new StringTokenizer(to,",\n\r");
+                while (tok.hasMoreTokens()) {
                     String pto = tok.nextToken();
                     f.newPrivateMessage(poster, pto, subject, body);
-        }
-        }
+                }
+            }
         }
         return map;
     }
@@ -1740,7 +1752,7 @@ public class Controller {
      * @param newfolder
      */
     public Node newFolder(String forumid, int activeid, String newfolder) {
-    Map map = new HashMap();
+        Map map = new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             int folderid = f.newFolder(activeid, newfolder);
@@ -1838,7 +1850,7 @@ public class Controller {
                 Poster mp = f.getPoster(moderatorid);
                 if (ap != null && f.isAdministrator(ap.getNick())) {
                     a.removeModerator(mp);
-        }
+                }
             }
         }
         return true;
@@ -1895,9 +1907,9 @@ public class Controller {
                         p.setEditTime((int) (System.currentTimeMillis() / 1000));
                         p.save();
 
-            // if its the first posting we should also change lastsubjects
-            log.info("EDITPOS="+p.getThreadPos());
-            if (p.getThreadPos()==0) {
+                        // if its the first posting we should also change lastsubjects
+                        log.info("EDITPOS="+p.getThreadPos());
+                        if (p.getThreadPos()==0) {
                             // change PostThread
                             p.getParent().setLastSubject(p.getSubject());
                             p.getParent().setSubject(p.getSubject());
@@ -1908,7 +1920,7 @@ public class Controller {
                             // change Forum
                             p.getParent().getParent().getParent().setLastSubject(p.getSubject());
                             p.getParent().getParent().getParent().save();
-            }
+                        }
                         ap.signalSeen();
                     }
                 }
@@ -1974,7 +1986,7 @@ public class Controller {
                     // am i allowed to move ?
                     Poster ap = f.getPoster(activeid);
                     if (a.isModerator(ap.getNick())) {
-            a.movePostThread(postthreadid,newpostareaid,ap);
+                        a.movePostThread(postthreadid,newpostareaid,ap);
                     } else {
                         log.info("postthread move tried but not allowed by poster");
                     }
@@ -2010,8 +2022,8 @@ public class Controller {
                         p.remove();
                         ap.signalSeen();
                     } else {
-            log.info("DELETED KILLED");
-            } 
+                        log.info("DELETED KILLED");
+                    } 
                 }
             }
         }
@@ -2087,11 +2099,11 @@ public class Controller {
      * @param description Description of the new post area
      * @return (map) containing the postareaid of the newly created postarea
      */
-    public HashMap newPostArea(String forumid, String name, String description,int activeid) {
-    HashMap map = new HashMap();
+    public Map newPostArea(String forumid, String name, String description, int activeid) {
+        Map map = new HashMap();
 
-    name = filterHTML(name);
-    description = filterHTML(description);
+        name = filterHTML(name);
+        description = filterHTML(description);
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null ) {
@@ -2104,7 +2116,7 @@ public class Controller {
                     map.put("feedback","feedback_emptyname");
                 }
             } else {
-                map.put("feedback","feedback_usernotallowed");
+                map.put("feedback", ap == null ? "User '" + activeid + "' not recognized" : "feedback_usernotallowed");
             }
         }
         return map;
@@ -2123,8 +2135,8 @@ public class Controller {
      */
     public Map newForum(String name, String language, String description, String account, String password,String nick,String email) {
         Map map = new HashMap();
-    name = filterHTML(name);
-    description = filterHTML(description);
+        name = filterHTML(name);
+        description = filterHTML(description);
         int forumid = ForumManager.newForum(name, language, description, account, password,nick,email);
         map.put("forumid",new Integer(forumid));
         return map;
@@ -2143,7 +2155,7 @@ public class Controller {
      * @return Feedback regarding the success of this action
      */
     public boolean changeForum(String forumid, String name, String language, String description,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (ap != null && f.isAdministrator(ap.getNick())) {
@@ -2160,7 +2172,7 @@ public class Controller {
 
 
     public boolean changeForumPostingsPerPage(String forumid,int activeid,int maxpostcount) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2175,7 +2187,7 @@ public class Controller {
 
 
     public boolean changeForumReplyOnEachPage(String forumid,int activeid,String value) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2194,7 +2206,7 @@ public class Controller {
 
 
     public boolean changeForumSpeedPostTime(String forumid,int activeid,int delay) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2209,7 +2221,7 @@ public class Controller {
 
 
     public int getForumSpeedPostTime(String forumid,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2221,7 +2233,7 @@ public class Controller {
 
 
     public boolean changeForumPostingsOverflowPostArea(String forumid,int activeid,int count) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2236,7 +2248,7 @@ public class Controller {
 
 
     public int getForumPostingsOverflowPostArea(String forumid,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2248,7 +2260,7 @@ public class Controller {
 
 
     public int getForumPostingsPerPage(String forumid,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2260,7 +2272,7 @@ public class Controller {
 
 
     public boolean changeForumPostingsOverflowThreadPage(String forumid,int activeid,int count) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2275,7 +2287,7 @@ public class Controller {
 
 
     public int getForumPostingsOverflowThreadPage(String forumid,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2287,7 +2299,7 @@ public class Controller {
 
 
     public boolean getForumReplyOnEachPage(String forumid,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2299,7 +2311,7 @@ public class Controller {
 
 
     public boolean addWordFilter(String forumid, String name, String value,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2314,7 +2326,7 @@ public class Controller {
 
 
     public boolean removeWordFilter(String forumid, String name,int activeid) {
-           Forum f = ForumManager.getForum(forumid);
+        Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             if (f.isAdministrator(ap.getNick())) {
@@ -2373,18 +2385,18 @@ public class Controller {
 
 
     public boolean changeForumsConfig(String loginsystemtype,String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String contactinfoenabled,String smileysenabled,String privatemessagesenabled,String postingsperpage) {
-    ForumManager.setLogoutModeType(logoutmodetype);
-    ForumManager.setLoginModeType(loginmodetype);
-    ForumManager.setLoginSystemType(loginsystemtype);
-    ForumManager.setGuestReadModeType(guestreadmodetype);
-    ForumManager.setGuestWriteModeType(guestwritemodetype);
-    ForumManager.setAvatarsUploadEnabled(avatarsuploadenabled);
-    ForumManager.setAvatarsGalleryEnabled(avatarsgalleryenabled);
-    ForumManager.setContactInfoEnabled(contactinfoenabled);
-    ForumManager.setSmileysEnabled(smileysenabled);
-    ForumManager.setPrivateMessagesEnabled(privatemessagesenabled);
-    ForumManager.setPostingsPerPage(postingsperpage);
-    ForumManager.saveConfig();
+        ForumManager.setLogoutModeType(logoutmodetype);
+        ForumManager.setLoginModeType(loginmodetype);
+        ForumManager.setLoginSystemType(loginsystemtype);
+        ForumManager.setGuestReadModeType(guestreadmodetype);
+        ForumManager.setGuestWriteModeType(guestwritemodetype);
+        ForumManager.setAvatarsUploadEnabled(avatarsuploadenabled);
+        ForumManager.setAvatarsGalleryEnabled(avatarsgalleryenabled);
+        ForumManager.setContactInfoEnabled(contactinfoenabled);
+        ForumManager.setSmileysEnabled(smileysenabled);
+        ForumManager.setPrivateMessagesEnabled(privatemessagesenabled);
+        ForumManager.setPostingsPerPage(postingsperpage);
+        ForumManager.saveConfig();
         return true;
     }
 
@@ -2402,14 +2414,14 @@ public class Controller {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Poster ap = f.getPoster(activeid);
-        if (f.isAdministrator(ap.getNick())) {
+            if (ap != null && f.isAdministrator(ap.getNick())) {
                 PostArea a = f.getPostArea(postareaid);
                 if (a != null) {
                     a.setName(name);
                     a.setDescription(description);
                     a.save();
                 }
-        }
+            }
         }
         return true;
     }
@@ -2437,7 +2449,7 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addPosterInfo(HashMap map, Poster p) {
+    private void addPosterInfo(Map map, Poster p) {
         map.put("posterid", new Integer(p.getId()));
         map.put("account", p.getAccount());
         map.put("nick", p.getNick());
@@ -2462,7 +2474,7 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addActiveInfo(HashMap map, Poster p) {
+    private void addActiveInfo(Map map, Poster p) {
         map.put("active_id", new Integer(p.getId()));
         map.put("active_account", p.getAccount());
         map.put("active_nick", p.getNick());
@@ -2487,25 +2499,25 @@ public class Controller {
             if (p!=null) {
                 p.checkRemoteHost(host);
             }
+        }
+        return true;
     }
-    return true;
-    } 
 
     /**
      * get login information for this poster
      */
-    public HashMap forumLogin(String forumid,String account,String password) {
+    public Map forumLogin(String forumid,String account,String password) {
         //log.info("going to login with account: " + account + " and password " + password);
-        HashMap map = new HashMap();
-        Forum f=ForumManager.getForum(forumid);
-        if (f!=null) {
-            Poster po=f.getPoster(account);
-            if (po!=null) {
+        Map map = new HashMap();
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Poster po = f.getPoster(account);
+            if (po != null) {
                 org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
                 String md5passwd = md5.transform(password);
                 if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) && !po.isBlocked()) {
                     map.put("state","passed");
-                    map.put("posterid",new Integer(po.getId()));
+                    map.put("posterid", new Integer(po.getId()));
                 } else {
                     map.put("state","failed");
                     if (po.isBlocked() && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
@@ -2513,8 +2525,7 @@ public class Controller {
                     } else {
                         map.put("reason","password not valid");
                     }
-
-                }    
+                }
             } else {
                 map.put("state","failed");
                 map.put("reason","account not valid");
@@ -2524,8 +2535,8 @@ public class Controller {
     }
 
 
-    public HashMap getPosterPassword(String forumid,String account) {
-        HashMap map = new HashMap();
+    public Map getPosterPassword(String forumid,String account) {
+        Map map = new HashMap();
         Forum f=ForumManager.getForum(forumid);
         if (f!=null) {
             Poster po=f.getPoster(account);
@@ -2591,7 +2602,7 @@ public class Controller {
                 if (e!=null)  {
                     while (e.hasNext()) {
                         Signature sig = (Signature) e.next();
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         map.put("id", new Integer(sig.getId()));
                         map.put("body", sig.getBody());
                         map.put("mode", sig.getMode());
@@ -2601,7 +2612,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
@@ -2618,7 +2629,7 @@ public class Controller {
                 if (e!=null)  {
                     while (e.hasNext()) {
                         RemoteHost rm = (RemoteHost) e.next();
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         map.put("id", ""+rm.getId());
                         map.put("host",rm.getHost());
                         map.put("lastupdatetime", ""+rm.getLastUpdateTime());
@@ -2628,13 +2639,13 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return list;
     }
 
 
-    public String changeSignature(String forumid,String sactiveid,int sigid,String body,String mode,String encoding) {
+    public String changeSignature(String forumid, String sactiveid, int sigid, String body, String mode, String encoding) {
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -2651,7 +2662,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -2675,14 +2686,14 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
 
 
-    public HashMap getSingleSignature(String forumid,String sactiveid) {
-        HashMap map = new HashMap();
+    public Map getSingleSignature(String forumid,String sactiveid) {
+        Map map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -2698,7 +2709,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return map;
     }
@@ -2716,7 +2727,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -2732,7 +2743,9 @@ public class Controller {
                 } else {
                     f.setBookmarkedChange(id,ap,false);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
         return false;
     }
@@ -2749,7 +2762,9 @@ public class Controller {
                 } else {
                     f.setEmailOnChange(id,ap,false);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
         return false;
     }
@@ -2758,19 +2773,19 @@ public class Controller {
         StringObject obj=new StringObject(body);
         obj.replace(">", "&gt;");
         obj.replace("<", "&lt;");
-    return obj.toString();
+        return obj.toString();
     }
 
     public List getProfileValues(String forumid, int posterid,int guipos) {
         List list = new ArrayList();
         Forum f = ForumManager.getForum(forumid);
-    if (f!=null && posterid!=-1) {
+        if (f!=null && posterid!=-1) {
             Poster po = f.getPoster(posterid);
             if (po!=null) {
                 Iterator i = f.getProfileDefs();
                 if (i!=null) {
                     while (i.hasNext()) {
-                        HashMap map = new HashMap();
+                        Map map = new HashMap();
                         ProfileEntryDef pd = (ProfileEntryDef) i.next();
                         if (pd.getGuiPos()>=guipos) {
                             map.put("name",pd.getName());
@@ -2795,15 +2810,15 @@ public class Controller {
                 }
             }
         }
-    return list;
+        return list;
     }
 
 
     public List getFilterWords(String forumid) {
         List list = new ArrayList();
         Forum f = ForumManager.getForum(forumid);
-    if (f!=null) {
-            HashMap words = f.getFilterWords();
+        if (f!=null) {
+            Map words = f.getFilterWords();
             Iterator i = words.keySet().iterator();
             while (i.hasNext()) {
                 String key =  (String)i.next();
@@ -2814,15 +2829,15 @@ public class Controller {
                 list.add(map);
             }
         }
-    return list;
+        return list;
     }
 
 
 
-    public HashMap setProfileValue(String forumid, int activeid,String name,String value) {
-    HashMap map = new HashMap();
+    public Map setProfileValue(String forumid, int activeid,String name,String value) {
+        Map map = new HashMap();
 
-    value = filterHTML(value);
+        value = filterHTML(value);
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null ) {
@@ -2830,17 +2845,17 @@ public class Controller {
             if (ap!=null) {
                 String feedback = ap.setProfileValue(name,value);
             }
-    }
-    return map;
+        }
+        return map;
     }
 
     public String getBirthDateString(String name,String value) {
-    // very ugly need to be changed
-    String day = "1";
-    String month = "1";
-    String year = "1980";
-    StringTokenizer tok=new StringTokenizer(value,"-\n\r");
-    if (tok.hasMoreTokens()) {
+        // very ugly need to be changed
+        String day = "1";
+        String month = "1";
+        String year = "1980";
+        StringTokenizer tok = new StringTokenizer(value,"-\n\r");
+        if (tok.hasMoreTokens()) {
             day = tok.nextToken();
             if (tok.hasMoreTokens()) {
                 month = tok.nextToken();
@@ -2848,35 +2863,37 @@ public class Controller {
                     year = tok.nextToken();
                 }
             }
-    }
-    String body ="<select name=\""+name+"_day\">";
-    for (int i=1;i<32;i++) {
-            if (day.equals(""+i)) {
-                body+="<option selected>"+i;
+        }
+
+        // TODO use StringBuilder.
+        String body ="<select name=\"" + name + "_day\">";
+        for (int i = 1; i < 32; i++) {
+            if (day.equals("" + i)) {
+                body += "<option selected>"+i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
-    }
-    body+="</select>";
-    body +="<select name=\""+name+"_month\">";
-    for (int i=1;i<13;i++) {
-            if (month.equals(""+i)) {
-                body+="<option selected>"+i;
+        }
+        body += "</select>";
+        body += "<select name=\"" + name + "_month\">";
+        for (int i = 1; i < 13; i++) {
+            if (month.equals("" + i)) {
+                body += "<option selected>" + i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
-    }
-    body+="</select>";
-    body+="<select name=\""+name+"_year\">";
-    for (int i=1920;i<2004;i++) {
-            if (year.equals(""+i)) {
-                body+="<option selected>"+i;
+        }
+        body += "</select>";
+        body += "<select name=\"" + name + "_year\">";
+        for (int i = 1920; i < 2004; i++) {
+            if (year.equals("" + i)) {
+                body += "<option selected>" + i;
             } else {
-                body+="<option>"+i;
+                body += "<option>" + i;
             }
-    }
-    body+="</select>";
-    return body;
+        }
+        body += "</select>";
+        return body;
     }
 
 
@@ -2885,7 +2902,7 @@ public class Controller {
         if (f != null) {
             return f.getGuiEdit(key);
         }
-    return "true";
+        return "true";
     }
 
 
