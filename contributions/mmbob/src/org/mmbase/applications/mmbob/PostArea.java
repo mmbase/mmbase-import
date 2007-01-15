@@ -29,19 +29,19 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
  */
 public class PostArea {
 
-    // logger
     static private Logger log = Logging.getLoggerInstance(PostArea.class);
 
     private int id;
     private Forum parent;
-    private Hashtable moderators = new Hashtable();
+    private Hashtable moderators = new Hashtable(); // synchronized?
     private String moderatorsline;
     private Vector postthreads = null;
-    private Hashtable namecache = new Hashtable();
+    private Hashtable nameCache = new Hashtable(); // synchronized?
     private boolean firstcachecall = true;
     private PostAreaConfig config;
     private HashMap filterwords;
@@ -172,15 +172,15 @@ public class PostArea {
 
     public int getPostThreadLoadedCount() {
         if (postthreads == null) {
-		return 0;
+            return 0;
 	} else {
-		int count = 0;
-        	Iterator i = postthreads.iterator();
-		while (i.hasNext()) {
-			PostThread pt = (PostThread)i.next();
-			if (pt.isLoaded()) count++;
-		}
-		return count;
+            int count = 0;
+            Iterator i = postthreads.iterator();
+            while (i.hasNext()) {
+                PostThread pt = (PostThread)i.next();
+                if (pt.isLoaded()) count++;
+            }
+            return count;
 	}
     }
 
@@ -257,9 +257,9 @@ public class PostArea {
      */
    public int getLastPosterNumber() {
 	if (parent.hasPoster(lastposternumber)) {
-	        return lastposternumber;
+            return lastposternumber;
 	} else {
-		return -1;
+            return -1;
 	}
    }
 
@@ -271,10 +271,10 @@ public class PostArea {
    public int getLastPostThreadNumber() {
 	if (postthreads==null) readPostThreads();
 	if (postthreads.size()>0) {
-		PostThread pt=(PostThread)postthreads.elementAt(0);
-		return pt.getId();
+            PostThread pt=(PostThread)postthreads.elementAt(0);
+            return pt.getId();
 	} else {
-		return -1;
+            return -1;
 	}
    }
 
@@ -343,7 +343,7 @@ public class PostArea {
      */
     public PostThread getPostThread(String id) {
         if (postthreads == null) readPostThreads();
-        Object o = namecache.get(id);
+        Object o = nameCache.get(id);
         if (o != null) {
             return (PostThread) o;
         }
@@ -407,19 +407,21 @@ public class PostArea {
      * get all posters that are no moderator of the postarea
      * @return non-moderators
      */
-    public Enumeration getNonModerators(String searchkey) {
+    public Enumeration getNonModerators(String searchKey) {
 	Vector result =  new Vector();
         Enumeration e = parent.getPosters();
         while (e.hasMoreElements()) {
               Poster p = (Poster) e.nextElement();
 	      if (!isModerator(p.getNick())) {
                  String nick =  p.getNick().toLowerCase();
-              	 String firstname = p.getFirstName().toLowerCase();
-                 String lastname = p.getLastName().toLowerCase();
-                 if (searchkey.equals("*") || nick.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
-			result.add(p);	
-			if (result.size()>49) {
-				return result.elements();
+              	 String firstName = p.getFirstName().toLowerCase();
+                 String lastName = p.getLastName().toLowerCase();
+                 if (searchKey == null || 
+                     "*".equals(searchKey) || nick.indexOf(searchKey) != -1 || 
+                      firstName.indexOf(searchKey)!=-1 || lastName.indexOf(searchKey)!= -1) {
+			result.add(p);
+			if (result.size() >49 ) {
+                            return result.elements();
 			}
 	         }
 	      }
@@ -516,78 +518,81 @@ public class PostArea {
      * Fills the postthreads-Vector
      */
     private void readPostThreads() {
-        postthreads = new Vector();
+        postthreads = new Vector(); // why synchronized.
 
        	long start = System.currentTimeMillis();
 	//log.info("reading threads");
-            NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
-            NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
-            Query query = ForumManager.getCloud().createQuery();
-            Step step1 = query.addStep(postareasmanager);
-            RelationStep step2 = query.addRelationStep(postthreadsmanager);
-            StepField f1 = query.addField(step1, postareasmanager.getField("number"));
-            StepField f3 = query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("number"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("subject"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("creator"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("viewcount"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("postcount"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastpostsubject"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposter"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("lastposternumber"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("lastpostnumber"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("mood"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("state"));
-            query.addField(step2.getNext(), postthreadsmanager.getField("ttype"));
+        NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
+        NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
+        Query query = ForumManager.getCloud().createQuery();
+        Step step1 = query.addStep(postareasmanager);
+        RelationStep step2 = query.addRelationStep(postthreadsmanager);
+        StepField f1 = query.addField(step1, postareasmanager.getField("number"));
+        StepField f3 = query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("number"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("subject"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("creator"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("viewcount"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("postcount"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("c_lastpostsubject"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposter"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("lastposternumber"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("lastpostnumber"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("mood"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("state"));
+        query.addField(step2.getNext(), postthreadsmanager.getField("ttype"));
 
-            query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
+        query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
-            query.setConstraint(query.createConstraint(f1, new Integer(id)));
-            NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
-	    int newcount = 0;
-	    int newthreadcount = 0;
-            while (i2.hasNext()) {
-                Node n2 = i2.nextNode();
-                PostThread postthread = new PostThread(this, n2,true);
-		newcount += postthread.getPostCount();
-		newthreadcount++;
-                if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
-                    postthreads.add(numberofpinned, postthread);
-                    numberofpinned++;
-                } else {
-                    postthreads.add(postthread);
-                }
-                namecache.put("" + n2.getIntValue("postthreads.number"), postthread);
+        query.setConstraint(query.createConstraint(f1, new Integer(id)));
+        NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
+        int newcount = 0;
+        int newthreadcount = 0;
+        while (i2.hasNext()) {
+            Node n2 = i2.nextNode();
+            PostThread postthread = new PostThread(this, n2,true);
+            newcount += postthread.getPostCount();
+            newthreadcount++;
+            if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
+                postthreads.add(numberofpinned, postthread);
+                numberofpinned++;
+            } else {
+                postthreads.add(postthread);
             }
+            nameCache.put("" + n2.getIntValue("postthreads.number"), postthread);
+        }
        	long end = System.currentTimeMillis();
 	//log.info("end reading threads time="+(end-start));
 
-         // check the count number
-         if (postcount!=newcount) {
-                log.info("resync of postareacount : "+postcount+" "+newcount);
-                postcount = newcount;
-                save();
-         }
+        // check the count number
+        if (postcount!=newcount) {
+            log.info("resync of postareacount : "+postcount+" "+newcount);
+            postcount = newcount;
+            save();
+        }
 
          // check the threadcount number
          if (postthreadcount!=newthreadcount) {
-                log.info("resync of postareathreadcount : "+postthreadcount+" "+newthreadcount);
-                postthreadcount = newthreadcount;
-                save();
+             log.info("resync of postareathreadcount : "+postthreadcount+" "+newthreadcount);
+             postthreadcount = newthreadcount;
+             save();
          }
 
 
-        // very raw way to zap the cache
-        Cache cache = RelatedNodesCache.getCache();
-        cache.clear();
-        cache = NodeCache.getCache();
-        cache.clear();
-        cache = NodeCache.getCache();
-        cache.clear();
-        cache = MultilevelCache.getCache();
-        cache.clear();
-        cache = NodeListCache.getCache();
-        cache.clear();
+         // very raw way to zap the cache
+
+         // MM: OH NO, THIS IS VERY, VERY STUPID. Remove this ASAP.
+
+         Cache cache = RelatedNodesCache.getCache();
+         cache.clear();
+         cache = NodeCache.getCache();
+         cache.clear();
+         cache = NodeCache.getCache();
+         cache.clear();
+         cache = MultilevelCache.getCache();
+         cache.clear();
+         cache = NodeListCache.getCache();
+         cache.clear();
     }
 
     /**
@@ -643,7 +648,7 @@ public class PostArea {
                 } else {
                     postthreads.add(numberofpinned, postthread);
                 }
-                namecache.put("" + ptnode.getNumber(), postthread);
+                nameCache.put("" + ptnode.getNumber(), postthread);
 
                 postthreadcount++;
                 syncNode(ForumManager.FASTSYNC);
