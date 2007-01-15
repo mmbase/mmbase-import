@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.41 2007-01-15 18:32:50 michiel Exp $:
+ * @version $Id: PostArea.java,v 1.42 2007-01-15 18:36:50 michiel Exp $:
  */
 public class PostArea {
 
@@ -868,7 +868,11 @@ public class PostArea {
                      log.error("Can't remove PostThread : " + postThread.getId());
                      return false;
                  }
-                 i.remove();// 
+                 i.remove();
+                 // This used to be:
+                 //postThreads.remove("" + postThread.getId());
+                 // but that can't be correct, no Strings in that list.
+                 // I suppose this is meant:
                  nameCache.remove("" + postThread.getId());
              }
          }
