@@ -27,9 +27,12 @@ import org.mmbase.util.logging.Logging;
  * where counting must starts, because the complete number of a chapter consists of a chain of
  * numbers (like 2.3.4.iii).
  *
+ * If the index is specified to be '-' then that means that it is explicitely empty.  That cannot be
+ * '' or otherwise unfilled, because that means 'determin automaticly' already.
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.12 2006-10-23 16:23:26 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.13 2007-01-15 12:21:11 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -83,14 +86,21 @@ public class IndexFunction extends FunctionProvider {
     }
 
     /**
-     * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
+     * Returns the 'successor' of a string. Which means that e.g. after 'zzz' follows 'aaaa'.
      */
     public static String successor(String index) {
         StringBuilder buf = new StringBuilder(index);
         boolean lowercase = true;
         for (int i = index.length() - 1 ; i >= 0; i--) {
             char c = buf.charAt(i);
-            if (c >= 'a' && c <= 'y') {
+            if (c == '-') {
+                // this special case means 'explicitely empty'.
+                log.debug("Found explicit empty");
+                if (i + 1 < index.length() && buf.charAt(i + 1) == '-') {
+                    return "--";
+                }
+                break;
+            } else if (c >= 'a' && c <= 'y') {
                 buf.setCharAt(i, (char) (c + 1));
                 return buf.toString();
             } else if (c == 'z') {
@@ -125,6 +135,8 @@ public class IndexFunction extends FunctionProvider {
      * Calculates the 'successor' of a roman number, preserving uppercase/lowercase.
      */
     protected static String romanSuccessor(String index) {
+        if (index.equals("-")) return "i";
+        if (index.equals("--")) return "--";
         boolean uppercase = index.length() > 0 && Character.isUpperCase(index.charAt(0));
         String res = RomanTransformer.decimalToRoman(RomanTransformer.romanToDecimal(index) + 1);
         return uppercase ? res.toUpperCase() : res;
@@ -140,50 +152,53 @@ public class IndexFunction extends FunctionProvider {
      * @param roman     Whether to consider roman numbers
      */
     protected static String successor(String index, String separator, String joiner, boolean roman) {
+        if ("-".equals(index)) return roman ? "i" : "1";
+        if ("--".equals(index)) return "--";
         String[] split = index.split(separator);
+        //if (split.length == 0) return roman ? "i" : "1";
+
         String postfix = split[split.length - 1];
         if (RomanTransformer.NUMERIC.matcher(postfix).matches()) {
             postfix = "" + (Integer.parseInt(postfix) + 1);
         } else {
             if (! roman || ! RomanTransformer.ROMAN.matcher(postfix).matches()) {
-                postfix = successor(postfix);
-            } else {
-                postfix = romanSuccessor(postfix);
-            }
+            postfix = successor(postfix);
+        } else {
+            postfix = romanSuccessor(postfix);
         }
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < split.length - 1; i++) {
+    }
+    StringBuilder buf = new StringBuilder();
+    for (int i = 0; i < split.length - 1; i++) {
             buf.append(split[i]);
             buf.append(joiner);
         }
         buf.append(postfix);
         return buf.toString();
     }
+    private static Parameter<Node> ROOT        = new Parameter<Node>("root", Node.class, false);
+    private static Parameter<Boolean> ROMAN    = new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE);
+    private static Parameter<String> SEPARATOR = new Parameter<String>("separator", String.class, "\\.");
+    private static Parameter<String> JOINER    = new Parameter<String>("joiner", String.class, ".");
+    private static Parameter<String> ROLE      = new Parameter<String>("role", String.class, "index");
+    private static Parameter<Node> NEWROOT     = new Parameter<Node>("newroot", Node.class, false);
 
     private static Parameter[] INDEX_ARGS = new Parameter[] {
-        Parameter.CLOUD,
-        new Parameter<Node>("root", Node.class, false),
-        new Parameter<String>("separator", String.class, "\\."),
-        new Parameter<String>("joiner", String.class, "."),
-        new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE),
-        new Parameter<String>("role", String.class, "index")
+        Parameter.CLOUD, ROOT, SEPARATOR, JOINER, ROMAN, ROLE
     };
 
     private static Parameter[] MOVE_ARGS = new Parameter[] {
-        Parameter.CLOUD,
-        new Parameter<Node>("root",    Node.class, false),
-        new Parameter<Node>("newroot", Node.class, false)
+        Parameter.CLOUD, ROOT, NEWROOT
     };
 
     /**
      * calculates a key for the cache
      */
     private static String getKey(final Node node, final Parameters parameters) {
-        Node root     = (Node)   parameters.get("root");
-        final String role   = (String) parameters.get("role");
-        final String join   = (String) parameters.get("joiner");
-        final String separator   = (String) parameters.get("separator");
-        final boolean roman   = ((Boolean) parameters.get("roman")).booleanValue();
+        Node root                = parameters.get(ROOT);
+        final String role        = parameters.get(ROLE);
+        final String join        = parameters.get(JOINER);
+        final String separator   = parameters.get(SEPARATOR);
+        final boolean roman      = parameters.get(ROMAN);
         return "" + node.getNumber() + "/" + (root == null ? "NULL" : "" + root.getNumber()) + "/" + role + "/" + join + "/" + separator  + "/" + roman;
     }
 
@@ -206,12 +221,12 @@ public class IndexFunction extends FunctionProvider {
              * complete bridge version of {@link #getFunctionValue}
              */
             public String getFunctionValue(final Node node, final Parameters parameters) {
-                Node root     = (Node)   parameters.get("root");
-                final String role   = (String) parameters.get("role");
-                final String join   = (String) parameters.get("joiner");
-                final String separator   = (String) parameters.get("separator");
+                Node root     = parameters.get(ROOT);
+                final String role   = parameters.get(ROLE);
+                final String join   = parameters.get(JOINER);
+                final String separator   = parameters.get(SEPARATOR);
                 final Pattern indexPattern = Pattern.compile("(.+)" + separator + "(.+)");
-                final boolean roman   = ((Boolean) parameters.get("roman")).booleanValue();
+                final boolean roman   = parameters.get(ROMAN);
 
                 final String key = getKey(node, parameters);
 
@@ -307,18 +322,26 @@ public class IndexFunction extends FunctionProvider {
                         }
                         doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
 
+                        boolean explicitEmpty = "-".equals(i) || "--".equals(i);
                         if (found.getNumber() == search.getNumber()) {
                             log.debug("found sibling");
                             // found!
-                            buf.append(j).append(i);
+                            if (! explicitEmpty) {
+                                buf.append(j).append(i);
+                            } else {
+                                buf.setLength(0);
+                            }
                             j = join;
                             n = found;
                             continue OUTER;
                         }
                         index = successor(i, separator, join, doRoman);
-                        log.debug("Considering next sibling, index is now " + index);
+
+                        String hapKey = getKey(found, parameters);
+                        String value = explicitEmpty ? "" :  buf.toString() + j + i;
+                        log.debug("Caching " + key + "->" + value);
                         // can as well cache this one too.
-                        indexCache.put(getKey(found, parameters), buf.toString() + j + i);
+                        indexCache.put(hapKey, value);
                     }
                     // not found
                     buf.append(j).append("???");
@@ -343,8 +366,8 @@ public class IndexFunction extends FunctionProvider {
         Node root = null;
         if (argv.length > 1) root = cloud.getNode(argv[1]);
         Parameters params = index.createParameters();
-        params.set("root", root);
-        params.set("roman", Boolean.TRUE);
+        params.set(ROOT, root);
+        params.set(ROMAN, Boolean.TRUE);
         System.out.println("" + index.getFunctionValue(node, params));
 
 
