@@ -1094,7 +1094,7 @@ public class Forum {
         while (e.hasMoreElements()) {
             PostArea postArea = (PostArea) e.nextElement();
             log.debug("try to remove postarea " + postArea.getId());
-            if (!a.remove()) {
+            if (!postArea.remove()) {
                 log.error("Can't remove Area : " + postArea.getId());
                 return false;
             }
