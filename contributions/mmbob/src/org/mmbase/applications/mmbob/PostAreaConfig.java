@@ -81,7 +81,7 @@ public class PostAreaConfig {
                 defaultpassword = password;
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -118,7 +118,7 @@ public class PostAreaConfig {
 
 
     private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname).iterator(); ns2.hasNext();) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
             Element n2 = (Element) ns2.next();
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {

@@ -157,7 +157,7 @@ public class ForumConfig {
             if (tmp!=null) navigationmethod = tmp;
             setGuiEdit("navigationmethod",getAttributeValue(reader,n,"navigation","guiedit"));
 
-            for(Iterator ns2=reader.getChildElements(n,"layout").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2 = reader.getChildElements(n , "layout"); ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
@@ -172,7 +172,7 @@ public class ForumConfig {
             }
 
 
-            for(Iterator ns2=reader.getChildElements(n,"avatars").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"avatars"); ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
                 if (avatarsList.getLength() > 0) {
@@ -190,7 +190,7 @@ public class ForumConfig {
             }
 
 
-            for(Iterator ns2=reader.getChildElements(n,"profileentry").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"profileentry");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
 
                 nm = n2.getAttributes();
@@ -272,7 +272,7 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -295,7 +295,7 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "quota").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -314,7 +314,7 @@ public class ForumConfig {
                 }
             }
 
-            for(Iterator ns2=reader.getChildElements(n,"alias").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"alias");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 nm=n2.getAttributes();
                 if (nm!=null) {
@@ -359,7 +359,7 @@ public class ForumConfig {
                     fieldaliases.add(fa);
                 }
             }
-            for(Iterator ns2=reader.getChildElements(n,"postarea").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"postarea");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 PostAreaConfig config = new PostAreaConfig(reader,n2);
                 subs.put(config.getId(),config);
@@ -452,7 +452,7 @@ public class ForumConfig {
 
 
     private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname).iterator(); ns2.hasNext();) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
             Element n2 = (Element) ns2.next();
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {

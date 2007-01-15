@@ -538,37 +538,53 @@ public class PostThread {
 
     /**
      * remove the whole PostThread
+     * 
      * @return <code>true</code> if the removal was successful
      */
     public boolean remove() {
-        if (postings == null) readPostings();
+        if (postings == null)
+            readPostings();
 
-        // need to clone the vector, because the postings change while we're removing the thread
+        // need to clone the vector, because the postings change while we're
+        // removing the thread
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
-        
 
         // remove the postings
+        //when all postings have been removed this thread will be removed as well.
+        //see childRemove();
         while (e.hasMoreElements()) {
-            Posting p = (Posting) e.nextElement();
-            if (!p.remove()) {
-                log.error("Can't remove Posting : " + p.getId());
+            Posting posting = (Posting) e.nextElement();
+            log.debug("try to remove posting: "+posting.getId());
+            if (!posting.remove()) {
+                log.error("Can't remove Posting : " + posting.getId());
                 return false;
             }
         }
 
-	try {	
-		// this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
-		// it should already been deleted by the above loop this is done in case of a 0 postings
-		if (ForumManager.getCloud().hasNode(id)) {
-        	Node node = ForumManager.getCloud().getNode(id);
-        	node.delete(true);
-        	ForumManager.nodeDeleted(node);
-		}
-	} catch(Exception e2) {
-		//e2.printStackTrace();
-		//return false;
-	}
+//        Node node = null;
+//        try {
+//            // this is broken why doesn't ForumManager.nodeDelete, delete the
+//            // node ??? Daniel.
+//            // it should already been deleted by the above loop this is done in
+//            // case of a 0 postings
+//            if (ForumManager.getCloud().hasNode(id)) {
+//                node = ForumManager.getCloud().getNode(id);
+//
+//            }
+//        } catch (Exception e2) {
+//            // e2.printStackTrace();
+//            // return false;
+//        }
+//
+//        if (node != null) {
+//            log.debug("PostThread node " + id + " exists (as it should, and will be deleted");
+//            node.delete(true);
+//            ForumManager.nodeDeleted(node);
+//        } else {
+//            log.debug("PostThread node " + id + " dous not exist!");
+//        }
+
 
         return true;
     }
@@ -598,24 +614,25 @@ public class PostThread {
      * @param p posting that has been removed
      */
     public void childRemoved(Posting p) {
-        if (postings == null) readPostings();
+        if (postings == null)
+            readPostings();
         postings.remove(p);
         postcount--;
 
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
-        if (postings.size()>0 && lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
-	    Posting op=(Posting)postings.lastElement();
-	    if (op!=null) {	
-	    	lastpostsubject  = op.getSubject();
-	    	lastposter  = op.getPoster();
-	    	lastposttime  = op.getPostTime();
-	    }
+        if (postings.size() > 0 && lastposttime == p.getPostTime() && lastposter.equals(p.getPoster())) {
+            Posting op = (Posting) postings.lastElement();
+            if (op != null) {
+                lastpostsubject = op.getSubject();
+                lastposter = op.getPoster();
+                lastposttime = op.getPostTime();
+            }
         }
 
         if (postings.size() == 0) {
             log.debug("Postthread: removing whole thread");
-	    Node node = ForumManager.getCloud().getNode(id);
+            Node node = ForumManager.getCloud().getNode(id);
             node.delete(true);
             ForumManager.nodeDeleted(node);
             parent.childRemoved(this);
@@ -682,5 +699,7 @@ public class PostThread {
 	}
 	return results;
     }
+
+    
 }
 

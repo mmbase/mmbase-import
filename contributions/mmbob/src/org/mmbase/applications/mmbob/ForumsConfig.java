@@ -122,7 +122,7 @@ public class ForumsConfig {
             Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
             avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -145,7 +145,7 @@ public class ForumsConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "quota").iterator(); ns2.hasNext();) {
+            for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -235,7 +235,7 @@ public class ForumsConfig {
                 replyoneachpage = true;
             }
 
-            for(Iterator ns2=reader.getChildElements(n,"layout").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"layout");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
@@ -248,7 +248,7 @@ public class ForumsConfig {
                     htmlHeaderPath = headerNode.getAttribute("path");
                 }
             }
-            for (Iterator ns2=reader.getChildElements(n,"filters").iterator();ns2.hasNext(); ) {
+            for (Iterator ns2=reader.getChildElements(n,"filters");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4!=null) {
@@ -277,7 +277,7 @@ public class ForumsConfig {
                     n4=n4.getNextSibling();
                 }
             }
-            for (Iterator ns2=reader.getChildElements(n,"emailtexts").iterator();ns2.hasNext(); ) {
+            for (Iterator ns2=reader.getChildElements(n,"emailtexts");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4!=null) {
@@ -295,7 +295,7 @@ public class ForumsConfig {
                     n4=n4.getNextSibling();
                 }
             }
-            for(Iterator ns2=reader.getChildElements(n,"alias").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"alias");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 nm=n2.getAttributes();
                 if (nm!=null) {
@@ -340,7 +340,7 @@ public class ForumsConfig {
                 }
             }
 
-            for(Iterator ns2=reader.getChildElements(n,"forum").iterator();ns2.hasNext(); ) {
+            for(Iterator ns2=reader.getChildElements(n,"forum");ns2.hasNext(); ) {
                 Element n2=(Element)ns2.next();
                 ForumConfig config = new ForumConfig(reader,n2);
                 subs.put(config.getId(),config);
@@ -428,7 +428,7 @@ public class ForumsConfig {
     }
 
     private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname).iterator(); ns2.hasNext();) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
             Element n2 = (Element) ns2.next();
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {
