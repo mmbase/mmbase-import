@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
->
-
-<project name="MMBob" default="dependent.jar" basedir=".">
+<project name="MMBob" default="jar" basedir=".">
   <property name="project.name"   value="mmbob" />
+  <property name="java.source.version" value="1.5" />
   <property name="project.package"   value="org/mmbase/applications/mmbob" />
   <property name="project.target.templates.dir" value="mmbob" />
   <property name="project.jars.dir" location="../.." />
   <property name="project.jars.includes" value="applications/email/build/mmbase-email.jar,contributions/thememanager/build/mmbase-thememanager.jar,contributions/multilanguagegui/build/mmbase-multilanguagegui.jar" />
-  &base;
+
+  <import file="../../applications/buildbase-include.xml" />
 
   <target name="deps">    
     <ant dir="../../applications/email" inheritAll="false" />
@@ -17,9 +15,7 @@
     <ant dir="../thememanager" inheritAll="false" />
   </target>
 
-  <target name="dependent.jar" depends="deps,jar" />
-
-  <target name="dependent.package" depends="dependent.jar,package" />
+  <target name="jar" depends="deps,buildbase.jar" />
 
 
 </project>
