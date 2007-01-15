@@ -81,7 +81,7 @@
 
    Sub wordconnection_OnClick()
       Dim dataToBePasted(11)
-      template = "<pad en naam word-sjabloon>" '<pad+naam word-sjabloon>
+      template = "F:\\Cabs\\WrdStartNM\\vnm2006a.dot" '<pad+naam word-sjabloon>
       dataToBePasted(1) =  "" '< organisatie naam boven >
       dataToBePasted(2) =  "" '< organisatie naam > 
       dataToBePasted(3) =  "" '< organisatie naam onder >
