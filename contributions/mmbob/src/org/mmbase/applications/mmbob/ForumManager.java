@@ -638,20 +638,21 @@ public class ForumManager {
 	return newbody;
    }
 
-   public static String filterContent(HashMap words,String body) {
-	body = longWordWrap(body);
-        StringObject obj=new StringObject(body);
-        if (words!=null) {
-        	Iterator i = words.keySet().iterator();
-        	while (i.hasNext()) {
-            		String key = (String)i.next();
-            		String value = (String)words.get(key);
-                	obj.replace(key, value);
-		}
-                return obj.toString();
-        } else {
-		return body;
-	}
+   public static String filterContent(Map<String, String> words, String body) {
+       body = longWordWrap(body);
+       StringObject obj = new StringObject(body);
+       if (words != null) {
+           // should iterator over _entrySet_ !
+           Iterator<String> i = words.keySet().iterator();
+           while (i.hasNext()) {
+               String key = i.next();
+               String value = words.get(key);
+               obj.replace(key, value);
+           }
+           return obj.toString();
+       } else {
+           return body;
+       }
    }
 
    public static int getSpeedPostTime() {
