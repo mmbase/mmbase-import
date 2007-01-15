@@ -83,7 +83,9 @@
         <guiname xml:lang="nl">Wachtwoord</guiname>
         <guiname xml:lang="en">Password</guiname>
       </gui>
-      <datatype base="password" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <password value="true" />
+      </datatype>
       <db>
         <type key="false" notnull="true" size="128" state="persistent">STRING</type>
       </db>
