@@ -31,6 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
+ * @version $Id: PostArea.java,v 1.41 2007-01-15 18:32:50 michiel Exp $:
  */
 public class PostArea {
 
@@ -38,13 +39,13 @@ public class PostArea {
 
     private int id;
     private final Forum parent;
-    private Hashtable moderators = new Hashtable(); // synchronized?
+    private Hashtable<String, Poster> moderators = new Hashtable<String, Poster>(); // synchronized?
     private String moderatorsline;
-    private Vector postthreads = null;
-    private final Map nameCache = new Hashtable(); // synchronized?
+    private List<PostThread> postThreads = null;
+    private final Map<String, PostThread> nameCache = new Hashtable<String, PostThread>(); // synchronized?
     private boolean firstcachecall = true;
     private PostAreaConfig config;
-    private HashMap filterwords;
+    private final Map<String, String> filterwords = null; // this (proves that this) is never used!
 
     private int viewcount;
     private int postcount;
@@ -171,13 +172,11 @@ public class PostArea {
     }
 
     public int getPostThreadLoadedCount() {
-        if (postthreads == null) {
+        if (postThreads == null) {
             return 0;
 	} else {
             int count = 0;
-            Iterator i = postthreads.iterator();
-            while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
+            for (PostThread pt : postThreads) {
                 if (pt.isLoaded()) count++;
             }
             return count;
@@ -186,13 +185,11 @@ public class PostArea {
 
 
     public int getPostingsLoadedCount() {
-        if (postthreads == null) {
+        if (postThreads == null) {
             return 0;
 	} else {
             int count = 0;
-            Iterator i = postthreads.iterator();
-            while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
+            for (PostThread pt : postThreads) {
                 if (pt.isLoaded()) count+=pt.getPostCount();
             }
             return count;
@@ -200,13 +197,11 @@ public class PostArea {
     }
 
     public int getMemorySize() {
-        if (postthreads == null) {
+        if (postThreads == null) {
             return 0;
 	} else {
             int size = 0;
-            Iterator i = postthreads.iterator();
-            while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
+            for (PostThread pt : postThreads) {
                 size += pt.getMemorySize();
             }
             return size;
@@ -268,9 +263,9 @@ public class PostArea {
      * @return last postthreadnumber
      */
     public int getLastPostThreadNumber() {
-	if (postthreads==null) readPostThreads();
-	if (postthreads.size()>0) {
-            PostThread pt=(PostThread)postthreads.elementAt(0);
+	if (postThreads == null) readPostThreads();
+	if (postThreads.size()>0) {
+            PostThread pt = postThreads.get(0);
             return pt.getId();
 	} else {
             return -1;
@@ -309,9 +304,9 @@ public class PostArea {
      * get all the postthreads in the postarea
      * @return all the postthreads
      */
-    public Enumeration getPostThreads() {
-        if (postthreads == null) readPostThreads();
-        return postthreads.elements();
+    public Enumeration<PostThread> getPostThreads() {
+        if (postThreads == null) readPostThreads();
+        return Collections.enumeration(postThreads);
     }
 
     /**
@@ -320,17 +315,17 @@ public class PostArea {
      * @param pagecount maximum number of PostThreads on the page
      * @return postthreads
      */
-    public Iterator getPostThreads(int page, int pagecount) {
-        if (postthreads == null) readPostThreads();
+    public Iterator<PostThread> getPostThreads(int page, int pagecount) {
+        if (postThreads == null) readPostThreads();
 
         // get the range we want
         int start = (page - 1) * pagecount;
         int end = page * pagecount;
         if (end > postthreadcount) {
-            end = postthreads.size();
+            end = postThreads.size();
         }
-        log.debug("START=" + start + " " + end + " " + postthreads.size());
-        List result = postthreads.subList(start, end);
+        log.debug("START=" + start + " " + end + " " + postThreads.size());
+        List<PostThread> result = postThreads.subList(start, end);
 
         return result.iterator();
     }
@@ -341,12 +336,8 @@ public class PostArea {
      * @return postthread
      */
     public PostThread getPostThread(String id) {
-        if (postthreads == null) readPostThreads();
-        Object o = nameCache.get(id);
-        if (o != null) {
-            return (PostThread) o;
-        }
-        return null;
+        if (postThreads == null) readPostThreads();
+        return  nameCache.get(id);
     }
 
     /**
@@ -517,7 +508,7 @@ public class PostArea {
      * Fills the postthreads-Vector
      */
     private void readPostThreads() {
-        postthreads = new Vector(); // why synchronized.
+        postThreads = new Vector<PostThread>(); // why synchronized.
 
        	long start = System.currentTimeMillis();
 	//log.info("reading threads");
@@ -543,7 +534,7 @@ public class PostArea {
 
         query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
-        query.setConstraint(query.createConstraint(f1, new Integer(id)));
+        query.setConstraint(query.createConstraint(f1, Integer.valueOf(id)));
         NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
         int newcount = 0;
         int newthreadcount = 0;
@@ -553,10 +544,10 @@ public class PostArea {
             newcount += postthread.getPostCount();
             newthreadcount++;
             if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
-                postthreads.add(numberofpinned, postthread);
+                postThreads.add(numberofpinned, postthread);
                 numberofpinned++;
             } else {
-                postthreads.add(postthread);
+                postThreads.add(postthread);
             }
             nameCache.put("" + n2.getIntValue("postthreads.number"), postthread);
         }
@@ -617,7 +608,7 @@ public class PostArea {
      * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be found
      */
     public int newPost(String subject, Poster poster, String body,String mood,boolean parsed) {
-        if (postthreads == null) readPostThreads();
+        if (postThreads == null) readPostThreads();
         NodeManager nm = ForumManager.getCloud().getNodeManager("postthreads");
         if (nm != null) {
             Node ptnode = nm.createNode();
@@ -643,9 +634,9 @@ public class PostArea {
                 // now add the first 'reply' (wrong name since its not a reply)
                 postthread.postReply(subject, poster, body,parsed);
                 if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
-                    postthreads.add(0, postthread);
+                    postThreads.add(0, postthread);
                 } else {
-                    postthreads.add(numberofpinned, postthread);
+                    postThreads.add(numberofpinned, postthread);
                 }
                 nameCache.put("" + ptnode.getNumber(), postthread);
 
@@ -708,11 +699,11 @@ public class PostArea {
      */
     public void resort(PostThread child) {
         // move to the top of the queue
-        if (postthreads.remove(child)) {
+        if (postThreads.remove(child)) {
             if (child.getState().equals("pinned") || child.getState().equals("pinnedclosed")) {
-                postthreads.add(0, child);
+                postThreads.add(0, child);
             } else {
-                postthreads.add(numberofpinned, child);
+                postThreads.add(numberofpinned, child);
             }
         }
     }
@@ -867,17 +858,18 @@ public class PostArea {
       */
      public boolean remove() {
          //first remove all the postTheads
-         if (postthreads == null) readPostThreads();
+         if (postThreads == null) readPostThreads();
          if (getPostThreadCount() != 0) {
-             Enumeration e = postthreads.elements();
-             while (e.hasMoreElements()) {
-                PostThread postThread = (PostThread) e.nextElement();
-                log.debug("try to remove postthread: "+postThread.getId());
-                if (!postThread.remove()) {
-                    log.error("Can't remove PostThread : " + postThread.getId());
-                    return false;
-                }
-                postthreads.remove("" + postThread.getId());
+             Iterator<PostThread> i = postThreads.iterator();
+             while (i.hasNext()) {
+                 PostThread postThread = i.next();
+                 log.debug("try to remove postthread: "+postThread.getId());
+                 if (!postThread.remove()) {
+                     log.error("Can't remove PostThread : " + postThread.getId());
+                     return false;
+                 }
+                 i.remove();// 
+                 nameCache.remove("" + postThread.getId());
              }
          }
          Node node = ForumManager.getCloud().getNode(id);
@@ -904,7 +896,7 @@ public class PostArea {
                 return false;
             } else {
                 log.info("removed PostThread : " + t);
-            	postthreads.remove(t);
+            	postThreads.remove(t);
 	    }
         }
         return true;
@@ -921,7 +913,7 @@ public class PostArea {
         //       uncomment this if you want to decrease the stats if a thread was removed
         //postthreadcount--;
 
-        postthreads.remove(t);
+        postThreads.remove(t);
         syncNode(ForumManager.FASTSYNC);
         parent.signalRemovedPost(this);
     }
@@ -933,14 +925,12 @@ public class PostArea {
 	int ptime = ForumManager.getPreloadChangedThreadsTime();
         //if (ptime!=0 && postthreads != null && firstcachecall) {
         if (ptime != 0 && firstcachecall) {
-       	    if (postthreads == null) {
+       	    if (postThreads == null) {
                 readPostThreads();
             }
             firstcachecall = false;
             int time = (int) (System.currentTimeMillis() / 1000) - ptime;
-            Enumeration e = postthreads.elements();
-            while (e.hasMoreElements()) {
-                PostThread t = (PostThread) e.nextElement();
+            for (PostThread t : postThreads) {
                 int time2 = t.getLastPostTime();
                 if (time2 == -1 || time2 > time) {
                     t.readPostings();
@@ -948,14 +938,13 @@ public class PostArea {
             }
         }
 
-        if (postthreads != null) {
+        if (postThreads != null) {
 	    int etime = ForumManager.getSwapoutUnusedThreadsTime();
 	    if (etime != 0) {
                 int time = (int) (System.currentTimeMillis() / 1000) - etime;
                 int time4 = (int) (System.currentTimeMillis() / 1000) - ptime;
-                Enumeration e = postthreads.elements();
-                while (e.hasMoreElements()) {
-                    PostThread t = (PostThread) e.nextElement();
+
+                for (PostThread t : postThreads) {
                     if (t.isLoaded()) {
                 	int time2 = t.getLastUsed();
                 	int time3 = t.getLastPostTime();
@@ -1003,7 +992,7 @@ public class PostArea {
 
     public String filterContent(String body) {
 	if (filterwords != null) {
-            return parent.filterContent(filterwords,body);
+            return parent.filterContent(filterwords, body);
 	} else {
             return parent.filterContent(body);
 	}
@@ -1014,19 +1003,17 @@ public class PostArea {
     }
 
 
-    public Vector searchPostings(String searchkey,int posterid) {
+    public Vector searchPostings(String searchkey, int posterid) {
 	Vector results = new Vector();
 	return searchPostings(results,searchkey,posterid);
     }
 
-    public Vector searchPostings(Vector results,String searchkey,int posterid) {
+    public Vector searchPostings(Vector results, String searchkey, int posterid) {
 	// check if this area is searchable for this user (is he logged in)
 	if (posterid == -1 && getGuestReadModeType().equals("closed")) return results;
-	if (postthreads != null) {
-            Enumeration e = postthreads.elements();
-            while (e.hasMoreElements()) {
-                PostThread thread = (PostThread) e.nextElement();
-                results = thread.searchPostings(results,searchkey,posterid);
+	if (postThreads != null) {
+            for (PostThread thread : postThreads) {
+                results = thread.searchPostings(results, searchkey, posterid);
             }
 	}
 	return results;
