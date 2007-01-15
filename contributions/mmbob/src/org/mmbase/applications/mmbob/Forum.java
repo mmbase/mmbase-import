@@ -1,12 +1,12 @@
 /*
 
- This software is OSI Certified Open Source Software.
- OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
- The license (Mozilla version 1.0) can be read at the MMBase site.
- See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
- */
+*/
 
 package org.mmbase.applications.mmbob;
 
@@ -33,60 +33,43 @@ import org.mmbase.util.logging.Logger;
 public class Forum {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(Forum.class);
+    static private final Logger log = Logging.getLoggerInstance(Forum.class);
 
     private String name;
-
     private String description;
-
     private String administratorsline;
-
     private int id, totalusers, totalusersnew;
-
     private Node node;
 
     private int viewcount;
-
     private int postcount;
-
     private int postthreadcount = -1;
-
     private int lastposternumber;
-
     private int lastpostnumber;
 
     private int lastposttime;
-
     private String lastposter;
-
     private String lastpostsubject;
 
     private Hashtable administrators = new Hashtable();
 
     private Hashtable postareas = new Hashtable();
-
     private HashMap filterwords;
-
     private SubArea subareas = new SubArea();
 
     private Hashtable posters = new Hashtable();
-
     private Hashtable posternames = new Hashtable();
-
-    // private Hashtable posternicknames = new Hashtable();
+    //private Hashtable posternicknames = new Hashtable();
     private Vector onlineposters = new Vector();
-
     private Vector newposters = new Vector();
-
-    private HashMap threadobservers = new HashMap();
+    private HashMap threadobservers=new HashMap();
 
     private ForumConfig config;
 
     /**
      * Constructor
-     * 
-     * @param node
-     *            forum node
+     *
+     * @param node forum node
      */
     public Forum(Node node) {
         this.node = node;
@@ -95,32 +78,28 @@ public class Forum {
         this.id = node.getNumber();
 
         this.viewcount = node.getIntValue("viewcount");
-        if (viewcount == -1)
-            viewcount = 0;
+        if (viewcount == -1) viewcount = 0;
         this.postcount = node.getIntValue("postcount");
-        if (postcount == -1)
-            postcount = 0;
+        if (postcount == -1) postcount = 0;
         this.postthreadcount = node.getIntValue("postthreadcount");
-        if (postthreadcount == -1)
-            postthreadcount = 0;
+        if (postthreadcount == -1) postthreadcount = 0;
 
         this.lastpostsubject = node.getStringValue("c_lastpostsubject");
         this.lastposter = node.getStringValue("c_lastposter");
         this.lastposttime = node.getIntValue("c_lastposttime");
-        this.lastposternumber = node.getIntValue("lastposternumber");
-        this.lastpostnumber = node.getIntValue("lastpostnumber");
+        this.lastposternumber=node.getIntValue("lastposternumber");
+        this.lastpostnumber=node.getIntValue("lastpostnumber");
 
-        // get out config node
-        config = ForumManager.getForumConfig(name);
-        ExternalProfilesManager.loadExternalHandlers(this);
+	// get out config node
+	config = ForumManager.getForumConfig(name);
+	ExternalProfilesManager.loadExternalHandlers(this);
         // read postareas
         preCachePosters();
         readSignatures();
         readProfiles();
         readRoles();
         readAreas();
-        if (getNavigationMethod().equals("tree"))
-            syncTreeAreas();
+	if (getNavigationMethod().equals("tree")) syncTreeAreas();
         readThreadObservers();
         readFieldaliases();
     }
@@ -131,9 +110,8 @@ public class Forum {
 
     /**
      * Set the MMBase objectnumber of the forum
-     * 
-     * @param id
-     *            MMase objectnumber
+     *
+     * @param id MMase objectnumber
      */
     public void setId(int id) {
         this.id = id;
@@ -141,9 +119,8 @@ public class Forum {
 
     /**
      * Set forum to node
-     * 
-     * @param node
-     *            forumnode
+     *
+     * @param node forumnode
      */
     public void setNode(Node node) {
         this.node = node;
@@ -151,7 +128,7 @@ public class Forum {
 
     /**
      * Set name of the forum
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -161,7 +138,7 @@ public class Forum {
 
     /**
      * Set the language of the forum
-     * 
+     *
      * @param language
      */
     public void setLanguage(String language) {
@@ -170,7 +147,7 @@ public class Forum {
 
     /**
      * Get the language of the forum
-     * 
+     *
      * @return the language
      */
     public String getLanguage() {
@@ -179,7 +156,7 @@ public class Forum {
 
     /**
      * Set the description of the forum
-     * 
+     *
      * @param description
      */
     public void setDescription(String description) {
@@ -189,7 +166,7 @@ public class Forum {
 
     /**
      * get the name of the forum
-     * 
+     *
      * @return name of the forum
      */
     public String getName() {
@@ -198,7 +175,7 @@ public class Forum {
 
     /**
      * get the description of the forum
-     * 
+     *
      * @return description of the forum
      */
     public String getDescription() {
@@ -207,7 +184,7 @@ public class Forum {
 
     /**
      * Get the MMBase objectnumber of the forum
-     * 
+     *
      * @return MMBase objectnumber of the forum
      */
     public int getId() {
@@ -216,7 +193,7 @@ public class Forum {
 
     /**
      * get the number of posts on the forum
-     * 
+     *
      * @return number of posts on the furum
      */
     public int getPostCount() {
@@ -225,7 +202,7 @@ public class Forum {
 
     /**
      * get the number of views on the forum
-     * 
+     *
      * @return number of views
      */
     public int getViewCount() {
@@ -234,7 +211,7 @@ public class Forum {
 
     /**
      * get the accountname / nick of the last poster on the forum
-     * 
+     *
      * @return accountname / nick of the last poster on the forum
      */
     public String getLastPoster() {
@@ -243,7 +220,7 @@ public class Forum {
 
     /**
      * get last poster on the forum
-     * 
+     *
      * @return poster id
      */
     public int getLastPosterNumber() {
@@ -252,7 +229,7 @@ public class Forum {
 
     /**
      * get the date/time (Epoch) of the last post on the forum
-     * 
+     *
      * @return date/time (Epoch) of the last post on the forum
      */
     public int getLastPostTime() {
@@ -261,7 +238,7 @@ public class Forum {
 
     /**
      * get the subject of the last post on the forum
-     * 
+     *
      * @return subject of the last post on the forum
      */
     public String getLastSubject() {
@@ -274,7 +251,7 @@ public class Forum {
 
     /**
      * "Save" the forum (add it to the syncQueue)
-     * 
+     *
      * @return <code>true</code>
      */
     public boolean save() {
@@ -284,26 +261,24 @@ public class Forum {
 
     public boolean saveConfig() {
         ForumManager.saveConfig();
-        if (getNavigationMethod().equals("tree"))
-            syncTreeAreas();
+        if (getNavigationMethod().equals("tree")) syncTreeAreas();
         return true;
     }
 
     /**
      * "Save direct" the forum
-     * 
+     *
      * @return <code>true</code>
      */
     public boolean saveDirect() {
-        node.commit();
+	node.commit();
         return true;
     }
 
     /**
      * add the forum-node to the given syncQueue
-     * 
-     * @param queue
-     *            syncQueue that must be used
+     *
+     * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
         node.setIntValue("postcount", postcount);
@@ -312,14 +287,15 @@ public class Forum {
         node.setIntValue("c_lastposttime", lastposttime);
         node.setStringValue("c_lastposter", lastposter);
         node.setStringValue("c_lastpostsubject", lastpostsubject);
-        node.setIntValue("lastposternumber", lastposternumber);
-        node.setIntValue("lastpostnumber", lastpostnumber);
+        node.setIntValue("lastposternumber",lastposternumber);
+        node.setIntValue("lastpostnumber",lastpostnumber);
         ForumManager.syncNode(node, queue);
     }
 
+
     /**
      * get the administrators of the forum
-     * 
+     *
      * @return administrators
      */
     public Enumeration getAdministrators() {
@@ -327,61 +303,59 @@ public class Forum {
     }
 
     public Enumeration getNonAdministrators(String searchkey) {
-        Vector result = new Vector();
+	Vector result =  new Vector();
         Enumeration e = getPosters();
         while (e.hasMoreElements()) {
             Poster p = (Poster) e.nextElement();
             if (!isAdministrator(p.getNick())) {
-                String account = p.getNick().toLowerCase();
+                String account =  p.getNick().toLowerCase();
                 String firstname = p.getFirstName().toLowerCase();
                 String lastname = p.getLastName().toLowerCase();
-                if (searchkey.equals("*") || account.indexOf(searchkey) != -1 || firstname.indexOf(searchkey) != -1
-                        || lastname.indexOf(searchkey) != -1) {
+                if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
                     result.add(p);
-                    if (result.size() > 49) {
+                    if (result.size()>49) {
                         return result.elements();
                     }
                 }
             }
-        }
+	}
         return result.elements();
     }
 
     /**
      * get the posters of the forum
-     * 
+     *
      * @return posters
      */
     public Enumeration getPosters() {
         return posters.elements();
     }
-    
 
-    public Vector searchPostings(String searchkey, int posterid) {
-        Vector results = new Vector();
-        Enumeration postAreaEnumerator = postareas.elements();
-        while (postAreaEnumerator.hasMoreElements()) {
-            PostArea area = (PostArea) postAreaEnumerator.nextElement();
-            results = area.searchPostings(results, searchkey, posterid);
-        }
-        return results;
+    public Vector searchPostings(String searchkey,int posterid) {
+	Vector results = new Vector();
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea area = (PostArea) e.nextElement();
+	    results = area.searchPostings(results,searchkey,posterid);
+	}
+	return results;
     }
 
     public PostThread getPostThread(String postthreadid) {
         Enumeration e = postareas.elements();
         while (e.hasMoreElements()) {
             PostArea area = (PostArea) e.nextElement();
-            PostThread pt = area.getPostThread(postthreadid);
-            if (pt != null) {
-                return pt;
-            }
-        }
-        return null;
+	    PostThread pt = area.getPostThread(postthreadid);
+	    if (pt != null) {
+		return pt;
+	    }
+	}
+	return null;
     }
 
     /**
      * get the posters that are online
-     * 
+     *
      * @return online posters
      */
     public Enumeration getPostersOnline() {
@@ -390,7 +364,7 @@ public class Forum {
 
     /**
      * determine if the given account is an administrator
-     * 
+     *
      * @param nick
      * @return <code>true</code> if the account is an administrator
      */
@@ -400,35 +374,30 @@ public class Forum {
 
     /**
      * get the online administrators (comma-seperated)
-     * 
+     *
      * @param baseurl
-     * @return comma-seperated list of administrators-accounts for this forum.
-     *         If the passed baseurl isn't empty it will make html-links for you
+     * @return comma-seperated list of administrators-accounts for this forum. If the passed baseurl isn't empty it will make html-links for you
      */
     public String getAdministratorsLine(String baseurl) {
-        if (administratorsline != null)
-            return administratorsline;
+        if (administratorsline != null) return administratorsline;
         administratorsline = "";
         Enumeration e = administrators.elements();
         while (e.hasMoreElements()) {
             Poster p = (Poster) e.nextElement();
-            if (!administratorsline.equals(""))
-                administratorsline += ",";
+            if (!administratorsline.equals("")) administratorsline += ",";
             if (baseurl.equals("")) {
                 administratorsline += p.getNick();
             } else {
-                administratorsline += "<a href=\"" + baseurl + "?forumid=" + getId() + "&posterid=" + p.getId() + "\">" + p.getNick()
-                        + "</a>";
+                administratorsline += "<a href=\"" + baseurl + "?forumid=" + getId() + "&posterid=" + p.getId() + "\">" + p.getNick() + "</a>";
             }
         }
         return administratorsline;
     }
 
     /**
-     * get a postarea of this forum by it's MMbase objectnumber
-     * 
-     * @param id
-     *            MMbase objectnumber of the postarea
+     * get a postarea of this forum  by it's MMbase objectnumber
+     *
+     * @param id MMbase objectnumber of the postarea
      */
     public PostArea getPostArea(String id) {
         Object o = postareas.get(id);
@@ -439,35 +408,32 @@ public class Forum {
     }
 
     public SubArea getSubArea(String name) {
-        if (name.equals("root")) {
+	if (name.equals("root")) {
             return subareas;
-        } else {
+	} else {
             Iterator i = subareas.getSubAreas();
             while (i.hasNext()) {
-                SubArea sa = (SubArea) i.next();
-                if (sa.getName().equals(name)) {
+                SubArea sa = (SubArea)i.next();
+		if (sa.getName().equals(name)) {
                     return sa;
-                }
-            }
-            return subareas;
-        }
+		}
+	    }
+	    return subareas;
+	}
     }
 
     /**
-     * remove a postarea of this forum by it's MMbase objectnumber
-     * 
-     * @param id
-     *            MMbase objectnumber of the postarea
-     * @return Feedback. <code>true</code> if the action was successful,
-     *         <code>false</code> if it wasn't
+     * remove a postarea of this forum  by it's MMbase objectnumber
+     *
+     * @param id MMbase objectnumber of the postarea
+     * @return Feedback. <code>true</code> if the action was successful, <code>false</code> if it wasn't
      */
     public boolean removePostArea(String id) {
         PostArea a = (PostArea) postareas.get(id);
         if (a != null) {
             if (a.remove()) {
                 postareas.remove(id);
-                if (getNavigationMethod().equals("tree"))
-                    syncTreeAreas();
+	        if (getNavigationMethod().equals("tree")) syncTreeAreas();
                 return true;
             }
         } else {
@@ -476,9 +442,10 @@ public class Forum {
         return false;
     }
 
+
     /**
      * remove a folder(mailbox) for a poster
-     * 
+     *
      * @param posterid
      * @param foldername
      * @return <code>true</code> if the action was successful
@@ -491,11 +458,11 @@ public class Forum {
         return false;
     }
 
+
     /**
      * remove a poster from the onlineposters-Vector
-     * 
-     * @param p
-     *            posternode
+     *
+     * @param p posternode
      */
     public void removeOnlinePoster(Poster p) {
         onlineposters.remove(p);
@@ -503,7 +470,7 @@ public class Forum {
 
     /**
      * get the number of postareas for this forum
-     * 
+     *
      * @return number of postareas for this forum
      */
     public int getPostAreaCount() {
@@ -512,7 +479,7 @@ public class Forum {
 
     /**
      * get all the postareas of this forum
-     * 
+     *
      * @return postareas
      */
     public Enumeration getPostAreas() {
@@ -521,9 +488,8 @@ public class Forum {
 
     /**
      * add a poster to the onlineposters-Vector
-     * 
-     * @param p
-     *            new online poster
+     *
+     * @param p new online poster
      */
     public void newPosterOnline(Poster p) {
         if (!onlineposters.contains(p)) {
@@ -533,9 +499,8 @@ public class Forum {
 
     /**
      * add a poster to the newposters-Vector
-     * 
-     * @param p
-     *            new poster
+     *
+     * @param p new poster
      */
     public void newPoster(Poster p) {
         if (!newposters.contains(p)) {
@@ -545,11 +510,9 @@ public class Forum {
 
     /**
      * create a new postarea for this forum
-     * 
-     * @param name
-     *            name of the new postarea
-     * @param description
-     *            description of the new postarea
+     *
+     * @param name        name of the new postarea
+     * @param description description of the new postarea
      * @return MMBase objectnumber for the newly created postarea
      */
     public int newPostArea(String name, String description) {
@@ -566,8 +529,7 @@ public class Forum {
                 rel.commit();
                 PostArea area = new PostArea(this, anode);
                 postareas.put("" + anode.getNumber(), area);
-                if (getNavigationMethod().equals("tree"))
-                    syncTreeAreas();
+        	if (getNavigationMethod().equals("tree")) syncTreeAreas();
                 return anode.getNumber();
             } else {
                 log.error("Forum can't load relation nodemanager forums/postareas/forarearel");
@@ -579,32 +541,33 @@ public class Forum {
     }
 
     /**
-     * Called on construction Fill the postareas-Hashtable
+     * Called on construction
+     * Fill the postareas-Hashtable
      */
     private void readAreas() {
         long start = System.currentTimeMillis();
         if (node != null) {
             NodeIterator i = node.getRelatedNodes("postareas").nodeIterator();
-            int newcount = 0;
-            int newthreadcount = 0;
+	    int newcount = 0;
+	    int newthreadcount = 0;
             while (i.hasNext()) {
                 Node node2 = i.nextNode();
                 PostArea area = new PostArea(this, node2);
-                newcount += area.getPostCount();
-                newthreadcount += area.getPostThreadCount();
+		newcount +=area.getPostCount();
+		newthreadcount +=area.getPostThreadCount();
                 postareas.put("" + node2.getNumber(), area);
             }
 
             // check the count number
-            if (postcount != newcount) {
-                log.info("resync of postforumcount : " + postcount + " " + newcount);
+            if (postcount!=newcount) {
+                log.info("resync of postforumcount : "+postcount+" "+newcount);
                 postcount = newcount;
                 save();
             }
 
             // check the threadcount number
-            if (postthreadcount != newthreadcount) {
-                log.info("resync of postforumtreadcount : " + postthreadcount + " " + newthreadcount);
+            if (postthreadcount!=newthreadcount) {
+                log.info("resync of postforumtreadcount : "+postthreadcount+" "+newthreadcount);
                 postthreadcount = newthreadcount;
                 save();
             }
@@ -617,23 +580,25 @@ public class Forum {
         Enumeration e = postareas.elements();
         while (e.hasMoreElements()) {
             PostArea a = (PostArea) e.nextElement();
-            subareas.insert(a, a.getName());
+	    subareas.insert(a,a.getName());
         }
     }
 
     /**
      * get the total number of postthreads in this forum
-     * 
+     *
      * @return number of postthreads
      */
     public int getPostThreadCount() {
-        // if (postthreadcount==-1) recalcPostThreadCount();
+        //if (postthreadcount==-1) recalcPostThreadCount();
         return postthreadcount;
     }
 
     /**
-     * Recalculates the private variabele "postcount" which contains the total
-     * number of posts in the forum <p/> *** This method is not used ***
+     * Recalculates the private variabele "postcount" which contains
+     * the total number of posts in the forum
+     * <p/>
+     * *** This method is not used ***
      */
     private void recalcPostCount() {
         int count = 0;
@@ -646,9 +611,10 @@ public class Forum {
     }
 
     /**
-     * Recalculates the private variabele "postthreadcount" which contains the
-     * total number of postthreads in the forum <p/> *** This method is not used
-     * ***
+     * Recalculates the private variabele "postthreadcount" which contains
+     * the total number of postthreads in the forum
+     * <p/>
+     * *** This method is not used ***
      */
     private void recalcPostThreadCount() {
         int count = 0;
@@ -664,44 +630,40 @@ public class Forum {
      * Well, what does this do, then?
      */
     public void leafsChanged() {
-        // recalcPostCount();
-        // recalcPostThreadCount();
+        //	recalcPostCount();
+        //	recalcPostThreadCount();
     }
 
+
     /**
-     * signal the forum that there is a new reply updates the postcount,
-     * lastposttime, lastposter, lastpostsubject of ths forum, and places it in
-     * the syncQueue
-     * 
-     * @param child
-     *            PostArea
+     * signal the forum that there is a new reply
+     * updates the postcount, lastposttime, lastposter, lastpostsubject of ths forum, and places it in the syncQueue
+     *
+     * @param child PostArea
      */
     public void signalNewReply(PostArea child) {
         postcount++;
         lastposttime = child.getLastPostTime();
         lastposter = child.getLastPoster();
         lastpostsubject = child.getLastSubject();
-        lastposternumber = child.getLastPosterNumber();
-        lastpostnumber = child.getLastPostNumber();
+        lastposternumber=child.getLastPosterNumber();
+        lastpostnumber=child.getLastPostNumber();
         syncNode(ForumManager.FASTSYNC);
     }
 
     /**
-     * signal the forum that a reply was removed updates the postcount,
-     * lastposttime, lastposter, lastpostsubject of ths forum, and places it in
-     * the syncQueue
-     * 
-     * @param child
-     *            PostArea
+     * signal the forum that a reply was removed
+     * updates the postcount, lastposttime, lastposter, lastpostsubject of ths forum, and places it in the syncQueue
+     *
+     * @param child PostArea
      */
     public void signalRemovedReply(PostArea child) {
         // todo: Make this configurable.
-        // uncomment this if you want to decrease the stats if a message was
-        // removed
-        // postcount--;
+        //       uncomment this if you want to decrease the stats if a message was removed
+        //postcount--;
 
-        if (lastposttime == child.getLastPostTime() && lastposter.equals(child.getLastPoster())) {
-            lastpostsubject = "removed";
+        if (lastposttime==child.getLastPostTime() && lastposter.equals(child.getLastPoster())) {
+            lastpostsubject="removed";
         }
 
         lastposttime = child.getLastPostTime();
@@ -711,11 +673,10 @@ public class Forum {
     }
 
     /**
-     * signal the forum that there is a new postthread updates the
-     * postthreadcount , and places it in the syncQueue
-     * 
-     * @param child
-     *            PostArea
+     * signal the forum that there is a new postthread
+     * updates the postthreadcount , and places it in the syncQueue
+     *
+     * @param child PostArea
      */
     public void signalNewPost(PostArea child) {
         postthreadcount++;
@@ -723,25 +684,22 @@ public class Forum {
     }
 
     /**
-     * signal the forum that there was a postthread removed updates the
-     * postthreadcount , and places it in the syncQueue
-     * 
-     * @param child
-     *            PostArea
+     * signal the forum that there was a postthread removed
+     * updates the postthreadcount , and places it in the syncQueue
+     *
+     * @param child PostArea
      */
     public void signalRemovedPost(PostArea child) {
         // todo: Make this configurable.
-        // uncomment this if you want to decrease the stats if a thread was
-        // removed
-        // postthreadcount--;
+        //       uncomment this if you want to decrease the stats if a thread was removed
+        //postthreadcount--;
         syncNode(ForumManager.FASTSYNC);
     }
 
     /**
      * signal the forum that there's a new view
-     * 
-     * @param child
-     *            PostArea
+     *
+     * @param child PostArea
      */
     public void signalViewsChanged(PostArea child) {
         viewcount++;
@@ -750,9 +708,8 @@ public class Forum {
 
     /**
      * get a poster of this forum by it's accountname/nick (???)
-     * 
-     * @param posterid
-     *            accountname/nick
+     *
+     * @param posterid accountname/nick
      * @return Poster <code>null</code> if the account was not found
      */
     public Poster getPoster(String posterid) {
@@ -763,25 +720,26 @@ public class Forum {
         return null;
     }
 
+
+
     public Poster getPosterNick(String nick) {
         Iterator i = posters.values().iterator();
         while (i.hasNext()) {
-            Poster p = (Poster) i.next();
+            Poster p = (Poster)i.next();
             ProfileEntry pe = p.getProfileValue("nick");
-            if (pe != null && pe.getValue().equals(nick)) {
+            if (pe!=null && pe.getValue().equals(nick)) {
                 return p;
             }
-        }
-        // not found then try normal account
-        return getPoster(nick);
+	}
+	// not found then try normal account
+	return getPoster(nick);
     }
 
     /**
      * get a poster of this forum by it's MMBase Objectnumber
-     * 
-     * @param posterid
-     *            MMBase Objectnumber of the poster
-     * @return Poster <code>null</code> if the poster was not found
+     *
+     * @param posterid MMBase Objectnumber of the poster
+     * @return Poster  <code>null</code> if the poster was not found
      */
     public Poster getPoster(int posterid) {
         Poster p = (Poster) posters.get(new Integer(posterid));
@@ -789,23 +747,27 @@ public class Forum {
             return p;
         } else {
             /*
-             * if (node!=null) { p=new Poster(node); posters.put(new
-             * Integer(posterid),p); posternames.put(p.getNick(),p); return p; }
-             */
+              if (node!=null) {
+              p=new Poster(node);
+              posters.put(new Integer(posterid),p);
+              posternames.put(p.getNick(),p);
+              return p;
+              }
+            */
         }
         return null;
     }
 
     public boolean hasPoster(int posterid) {
-        if (posters.containsKey(new Integer(posterid))) {
+	if (posters.containsKey(new Integer(posterid))) {
             return true;
-        }
-        return false;
+	}
+	return false;
     }
 
     /**
      * get the total number of posters in the forum
-     * 
+     *
      * @return number of posters in the forum
      */
     public int getPostersTotalCount() {
@@ -814,7 +776,7 @@ public class Forum {
 
     /**
      * get the number of online posters for the forum
-     * 
+     *
      * @return number of online posters
      */
     public int getPostersOnlineCount() {
@@ -823,7 +785,7 @@ public class Forum {
 
     /**
      * get the number of new posters for the forum
-     * 
+     *
      * @return number of new posters
      */
     public int getPostersNewCount() {
@@ -831,9 +793,11 @@ public class Forum {
     }
 
     /**
-     * Called on construction Fill the posters, posternames, totalusers and
-     * onlineposters etc ... <p/> this is all wrong should be replaced way to
-     * much mem to read them all.
+     * Called on construction
+     * Fill the posters, posternames, totalusers and onlineposters etc ...
+     * <p/>
+     * this is all wrong should be replaced way to much mem to read
+     * them all.
      */
     private void preCachePosters() {
         if (node != null) {
@@ -849,8 +813,7 @@ public class Forum {
             RelationStep step2 = query.addRelationStep(postersmanager);
             StepField f1 = query.addField(step1, forumsmanager.getField("number"));
             query.addField(step2.getNext(), postersmanager.getField("number"));
-            // query.addField(step2.getNext(),
-            // postersmanager.getField("state"));
+            //query.addField(step2.getNext(), postersmanager.getField("state"));
             query.addField(step2.getNext(), postersmanager.getField("account"));
             query.addField(step2.getNext(), postersmanager.getField("password"));
             query.addField(step2.getNext(), postersmanager.getField("firstname"));
@@ -868,9 +831,9 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
-                // long start = System.currentTimeMillis();
-                Poster p = new Poster(node, this, true);
-                // long end = System.currentTimeMillis();
+        	//long start = System.currentTimeMillis();
+                Poster p = new Poster(node, this,true);
+        	//long end = System.currentTimeMillis();
                 posters.put(new Integer(p.getId()), p);
                 posternames.put(p.getNick(), p);
                 totalusers++;
@@ -879,7 +842,7 @@ public class Forum {
                 }
                 if (p.getFirstLogin() == -1 || p.getFirstLogin() > newtime) {
                     newPoster(p);
-                }
+               	}
             }
         }
         // very raw way to zap the cache
@@ -894,6 +857,7 @@ public class Forum {
         cache = NodeListCache.getCache();
         cache.clear();
     }
+
 
     private void readSignatures() {
         if (node != null) {
@@ -917,17 +881,17 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
-                Poster poster = getPoster(node.getStringValue("posters.account"));
-                if (poster != null) {
-                    Signature sig = new Signature(poster, node.getIntValue("signatures.number"), node.getStringValue("signatures.body"),
-                            node.getStringValue("signatures.mode"), node.getStringValue("signatures.encoding"));
+		Poster poster = getPoster(node.getStringValue("posters.account"));
+		if (poster!=null) {
+                    Signature sig = new Signature(poster,node.getIntValue("signatures.number"),node.getStringValue("signatures.body"),node.getStringValue("signatures.mode"),node.getStringValue("signatures.encoding"));
                     poster.addSignature(sig);
-                } else {
-                    log.error("Got a signature of a missing poster !" + node.getStringValue("posters.account"));
-                }
+		} else {
+                    log.error("Got a signature of a missing poster !"+node.getStringValue("posters.account"));
+		}
             }
         }
     }
+
 
     private void readProfiles() {
         if (node != null) {
@@ -951,20 +915,19 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
-                Poster poster = getPoster(node.getStringValue("posters.account"));
-                if (poster != null) {
-                    if (poster.getProfileInfo() == null) {
-                        ProfileInfo pi = new ProfileInfo(poster, node.getIntValue("profileinfo.number"), node
-                                .getStringValue("profileinfo.xml"), node.getStringValue("profileinfo.external"), node
-                                .getIntValue("profileinfo.synced"));
-                        poster.addProfileInfo(pi);
-                    }
-                } else {
-                    log.error("Got a profileinfo of a missing poster !" + node.getStringValue("posters.account"));
-                }
+		Poster poster = getPoster(node.getStringValue("posters.account"));
+		if (poster!=null) {
+		    if (poster.getProfileInfo()==null) {
+			ProfileInfo pi = new ProfileInfo(poster,node.getIntValue("profileinfo.number"),node.getStringValue("profileinfo.xml"),node.getStringValue("profileinfo.external"),node.getIntValue("profileinfo.synced"));
+			poster.addProfileInfo(pi);
+		    }
+		} else {
+                    log.error("Got a profileinfo of a missing poster !"+node.getStringValue("posters.account"));
+		}
             }
         }
     }
+
 
     private void readThreadObservers() {
         if (node != null) {
@@ -990,25 +953,20 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
-                ThreadObserver to = new ThreadObserver(this, node.getIntValue("threadobservers.number"), node
-                        .getIntValue("postthreads.number"), node.getStringValue("threadobservers.emailonchange"), node
-                        .getStringValue("threadobservers.bookmarked"), node.getStringValue("threadobservers.ignorelist"));
-                int postthreadid = node.getIntValue("postthreads.number");
-                to.setThreadId(postthreadid);
-                threadobservers.put(new Integer(postthreadid), to);
+		ThreadObserver to = new ThreadObserver(this,node.getIntValue("threadobservers.number"),node.getIntValue("postthreads.number"),node.getStringValue("threadobservers.emailonchange"),node.getStringValue("threadobservers.bookmarked"),node.getStringValue("threadobservers.ignorelist"));
+		int postthreadid = node.getIntValue("postthreads.number");
+		to.setThreadId(postthreadid);
+		threadobservers.put(new Integer(postthreadid),to);
             }
         }
     }
 
     /**
      * create a new poster for the forum
-     * 
-     * @param account
-     *            accountname to register
-     * @param password
-     *            password to register
-     * @return newly created Poster-object <code>null</code> if creation
-     *         failed
+     *
+     * @param account  accountname to register
+     * @param password password to register
+     * @return newly created Poster-object <code>null</code> if creation failed
      */
     public Poster createPoster(String account, String password) {
         NodeManager nm = ForumManager.getCloud().getNodeManager("posters");
@@ -1021,8 +979,8 @@ public class Forum {
 
             pnode.setStringValue("password", md5passwd);
             log.debug("set password: " + password + " as md5 it looks like this: " + md5passwd);
-            pnode.setStringValue("firstname", "");
-            pnode.setStringValue("lastname", "");
+	    pnode.setStringValue("firstname","");
+	    pnode.setStringValue("lastname","");
             pnode.setIntValue("postcount", 0);
             pnode.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
             pnode.setIntValue("lastseen", ((int) (System.currentTimeMillis() / 1000)));
@@ -1034,7 +992,7 @@ public class Forum {
                 Node rel = rm.createRelation(node, pnode);
                 rel.commit();
 
-                Poster p = new Poster(pnode, this, false);
+                Poster p = new Poster(pnode, this,false);
                 posters.put(new Integer(p.getId()), p);
                 onlineposters.add(p);
                 posternames.put(p.getNick(), p);
@@ -1054,9 +1012,8 @@ public class Forum {
 
     /**
      * add administrator to forum
-     * 
-     * @param ap
-     *            Poster
+     *
+     * @param ap Poster
      * @return always <code>false</code> (ToDo ??)
      */
     public boolean addAdministrator(Poster ap) {
@@ -1073,6 +1030,7 @@ public class Forum {
         }
         return false;
     }
+
 
     public boolean removeAdministrator(Poster mp) {
         if (isAdministrator(mp.getNick())) {
@@ -1101,26 +1059,23 @@ public class Forum {
 
     /**
      * remove a poster from the forum
-     * 
-     * @param p
-     *            poster
+     *
+     * @param p poster
      */
     public void childRemoved(Poster p) {
         posters.remove(new Integer(p.getId()));
-        posternames.remove("" + p.getAccount());
-        onlineposters.remove(p);
-        newposters.remove(p);
+	posternames.remove(""+p.getAccount());
+	onlineposters.remove(p);
+	newposters.remove(p);
         syncNode(ForumManager.SLOWSYNC);
     }
 
     /**
      * remove the forum
-     * 
-     * @return <code>true</code> if it succeeds, <code>false</code> if it
-     *         doesn't
+     *
+     * @return <code>true</code> if it succeeds, <code>false</code> if it doesn't
      */
     public boolean remove() {
-        // first delete all the Posters
         Enumeration e = posters.elements();
         log.debug("posters to remove: " + posters.size());
         while (e.hasMoreElements()) {
@@ -1139,11 +1094,10 @@ public class Forum {
         while (e.hasMoreElements()) {
             PostArea postArea = (PostArea) e.nextElement();
             log.debug("try to remove postarea " + postArea.getId());
-            if (!postArea.remove()) {
+            if (!a.remove()) {
                 log.error("Can't remove Area : " + postArea.getId());
                 return false;
             }
-
             log.debug("removing postarea nr " + postArea.getId());
             postareas.remove("" + postArea.getId());
         }
@@ -1153,7 +1107,8 @@ public class Forum {
     }
 
     /**
-     * Called on construction gather the administrators
+     * Called on construction
+     * gather the administrators
      */
     private void readRoles() {
         if (node != null) {
@@ -1169,21 +1124,21 @@ public class Forum {
                 String role = rel.getStringValue("role");
                 // check limited to 12 chars to counter mmbase 12
                 // chars in role bug in some installs
-                try {
+		try {
                     if (role.substring(0, 12).equals("administrato")) {
                         Poster po = getPoster(p.getNumber());
                         administrators.put(po.getNick(), po);
                     }
-                } catch (Exception e) {
-                    log.info("Role error : " + role + " forum=" + id + " poster=" + p);
-                }
+		} catch (Exception e) {
+                    log.info("Role error : "+role+" forum="+id+" poster="+p);
+		}
             }
         }
     }
 
     /**
      * get the expiretime for the posters in seconds
-     * 
+     *
      * @return expiretime in seconds
      */
     public int getPosterExpireTime() {
@@ -1192,15 +1147,11 @@ public class Forum {
 
     /**
      * create a new private message
-     * 
-     * @param poster
-     *            accountname/nick of the sending poster
-     * @param to
-     *            accountname/nick of the recepient poster
-     * @param subject
-     *            subject of the private message
-     * @param body
-     *            body of the private message
+     *
+     * @param poster  accountname/nick of the sending poster
+     * @param to      accountname/nick of the recepient poster
+     * @param subject subject of the private message
+     * @param body    body of the private message
      * @return always -1 (ToDo ?)
      */
     public int newPrivateMessage(String poster, String to, String subject, String body) {
@@ -1229,7 +1180,7 @@ public class Forum {
                 } else {
                     log.error("Forum can't load relation nodemanager forummessagebox/forumprivatemessage/related");
                 }
-                mailbox.signalMailboxChange();
+		mailbox.signalMailboxChange();
             } else {
                 log.error("Forum can't load forumprivatemessage nodemanager");
             }
@@ -1239,11 +1190,9 @@ public class Forum {
 
     /**
      * create a new folder (messagebox) for the given poster
-     * 
-     * @param posterid
-     *            MMBase objectnumber of the poster
-     * @param newfolder
-     *            name of the new folder
+     *
+     * @param posterid  MMBase objectnumber of the poster
+     * @param newfolder name of the new folder
      * @return always -1 (ToDo?)
      */
     public int newFolder(int posterid, String newfolder) {
@@ -1286,153 +1235,162 @@ public class Forum {
 
     }
 
+
     public String getAccountCreationType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getAccountCreationType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getAccountCreationType();
     }
 
+
     public String getAccountRemovalType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getAccountRemovalType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getAccountRemovalType();
     }
 
+
     public String getLoginModeType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getLoginModeType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getLoginModeType();
     }
 
+
     public String getLoginSystemType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getLoginSystemType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getLoginSystemType();
     }
 
+
     public String getLogoutModeType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getLogoutModeType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getLogoutModeType();
     }
 
     public void setLogoutModeType(String type) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setLogoutModeType(type);
-        }
+	}
     }
 
+
     public void setLoginSystemType(String system) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setLoginSystemType(system);
-        }
+	}
     }
 
     public void addProfileDef(ProfileEntryDef cm) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.addProfileDef(cm);
-        }
+	}
     }
+
 
     public void setLoginModeType(String type) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setLoginModeType(type);
-        }
+	}
     }
 
+
     public String getGuestReadModeType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getGuestReadModeType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getGuestReadModeType();
     }
 
+
     public String getThreadStartLevel() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getThreadStartLevel();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getThreadStartLevel();
     }
 
     public void setAvatarsUploadEnabled(String mode) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setAvatarsUploadEnabled(mode);
-        }
+	}
     }
 
     public String getAlias() {
         if (config != null) {
             return config.getAlias();
-        }
-        return null;
+	}
+	return null;
     }
 
+
     public void setAlias(String alias) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setAlias(alias);
-        }
+	}
     }
 
     public void setAvatarsGalleryEnabled(String mode) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setAvatarsGalleryEnabled(mode);
-        }
+	}
     }
 
     public void setGuestReadModeType(String type) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setGuestReadModeType(type);
-        }
+	}
     }
 
     public String getGuestWriteModeType() {
-        if (config != null) {
+	if (config != null) {
             String tmp = config.getGuestWriteModeType();
             if (tmp != null) {
                 return tmp;
             }
-        }
+	}
         return ForumManager.getGuestWriteModeType();
     }
 
     public void setGuestWriteModeType(String type) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setGuestWriteModeType(type);
-        }
+	}
     }
 
     public void setNavigationMethod(String navigationmethod) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setNavigationMethod(navigationmethod);
-            if (getNavigationMethod().equals("tree"))
-                syncTreeAreas();
-        }
+            if (getNavigationMethod().equals("tree")) syncTreeAreas();
+	}
     }
 
     public String getAvatarsDisabled() {
@@ -1440,9 +1398,10 @@ public class Forum {
             log.debug("avatars are not disabled");
             return "false";
         }
-        log.debug("avatars are disabled");
+        log.debug ("avatars are disabled");
         return "true";
     }
+
 
     public String getAvatarsUploadEnabled() {
         if (config != null) {
@@ -1450,7 +1409,7 @@ public class Forum {
             if (tmp != null) {
                 log.debug("config.getAvatarsUploadEnabled() on " + getId() + ": " + tmp);
                 return tmp;
-            }
+	    }
         }
         return ForumManager.getAvatarsUploadEnabled();
     }
@@ -1459,13 +1418,14 @@ public class Forum {
         if (config != null) {
             String tmp = config.getAvatarsGalleryEnabled();
             if (tmp != null) {
-                log.debug("config.getAvatarsGalleryEnabled() on " + getId() + ": " + tmp);
+                log.debug("config.getAvatarsGalleryEnabled() on " + getId()+ ": " + tmp);
                 return tmp;
 
             }
         }
         return ForumManager.getAvatarsGalleryEnabled();
     }
+
 
     public String getHeaderPath() {
         if (config != null) {
@@ -1499,6 +1459,7 @@ public class Forum {
         return ForumManager.getFromEmailAddress();
     }
 
+
     public String getXSLTPostingsOdd() {
         if (config != null) {
             String tmp = config.getXSLTPostingsOdd();
@@ -1509,6 +1470,7 @@ public class Forum {
         return ForumManager.getXSLTPostingsOdd();
     }
 
+
     public String getNavigationMethod() {
         if (config != null) {
             String tmp = config.getNavigationMethod();
@@ -1518,6 +1480,7 @@ public class Forum {
         }
         return ForumManager.getNavigationMethod();
     }
+
 
     public String getXSLTPostingsEven() {
         if (config != null) {
@@ -1568,227 +1531,239 @@ public class Forum {
     public int getPostingsPerPage() {
         if (config != null) {
             int tmpsize = config.getPostingsPerPage();
-            if (tmpsize > -1)
-                return tmpsize;
+            if (tmpsize > -1) return tmpsize;
         }
         return ForumManager.getPostingsPerPage();
     }
 
+
     public void setPostingsPerPage(int maxcount) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setPostingsPerPage(maxcount);
         }
     }
 
+
     public void setPostingsOverflowPostArea(int maxcount) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setPostingsOverflowPostArea(maxcount);
         }
     }
 
+
     public void setPostingsOverflowThreadPage(int maxcount) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setPostingsOverflowThreadPage(maxcount);
         }
     }
 
+
     public void setReplyOnEachPage(boolean value) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setReplyOnEachPage(value);
         }
     }
 
+
     public void setSpeedPostTime(int delay) {
-        if (checkConfig()) {
+	if (checkConfig()) {
             config.setSpeedPostTime(delay);
         }
     }
 
+
+
     private boolean checkConfig() {
-        if (config == null) {
+	if (config == null) {
             config = new ForumConfig(getName());
-        }
-        return true;
+	}
+	return true;
     }
 
     public Iterator getProfileDefs() {
-        if (config != null) {
+	if (config!=null) {
             return config.getProfileDefs();
-        }
-        return null;
+	}
+	return null;
     }
 
     public ProfileEntryDef getProfileDef(String name) {
-        if (config != null) {
+	if (config!=null) {
             return config.getProfileDef(name);
-        }
-        return null;
+	}
+	return null;
     }
 
     public boolean hasNick() {
-        if (config != null) {
-            if (getProfileDef("nick") != null) {
+	if (config!=null) {
+            if (getProfileDef("nick")!=null) {
                 return true;
             }
-        }
-        return false;
+	}
+	return false;
     }
+
 
     public int getPostThreadLoadedCount() {
-        int count = 0;
-        Enumeration i = postareas.elements();
-        while (i.hasMoreElements()) {
-            PostArea pa = (PostArea) i.nextElement();
+	int count = 0;
+       	Enumeration i = postareas.elements();
+	while (i.hasMoreElements()) {
+            PostArea pa = (PostArea)i.nextElement();
             count += pa.getPostThreadLoadedCount();
-        }
-        return count;
+	}
+	return count;
     }
 
+
     public int getPostingsLoadedCount() {
-        int count = 0;
-        Enumeration i = postareas.elements();
-        while (i.hasMoreElements()) {
-            PostArea pa = (PostArea) i.nextElement();
+	int count = 0;
+       	Enumeration i = postareas.elements();
+	while (i.hasMoreElements()) {
+            PostArea pa = (PostArea)i.nextElement();
             count += pa.getPostingsLoadedCount();
-        }
-        return count;
+	}
+	return count;
     }
 
     public int getMemorySize() {
         if (postareas == null) {
             return 0;
-        } else {
+	} else {
             int size = 0;
             Enumeration i = postareas.elements();
             while (i.hasMoreElements()) {
-                PostArea pa = (PostArea) i.nextElement();
+                PostArea pa = (PostArea)i.nextElement();
                 size += pa.getMemorySize();
             }
             return size;
-        }
+	}
     }
 
     public String filterContent(String body) {
-        if (filterwords != null) {
-            return ForumManager.filterContent(filterwords, body);
+        if (filterwords!=null) {
+            return ForumManager.filterContent(filterwords,body);
         } else {
             return ForumManager.filterContent(body);
         }
     }
 
     public HashMap getFilterWords() {
-        if (filterwords != null) {
+	if (filterwords!=null) {
             return filterwords;
-        } else {
+	} else {
             return ForumManager.getFilterWords();
-        }
+	}
     }
 
-    public void addWordFilter(String name, String value) {
-        if (filterwords != null) {
-            filterwords.put(name, value);
-        } else {
-            ForumManager.addWordFilter(name, value);
-        }
+
+    public void addWordFilter(String name,String value) {
+	if (filterwords!=null) {
+            filterwords.put(name,value);
+	} else {
+            ForumManager.addWordFilter(name,value);
+	}
     }
+
 
     public void removeWordFilter(String name) {
-        if (filterwords != null) {
+	if (filterwords!=null) {
             filterwords.remove(name);
-        } else {
+	} else {
             ForumManager.removeWordFilter(name);
-        }
+	}
     }
 
+
     public String filterContent(HashMap filterwords, String body) {
-        return ForumManager.filterContent(filterwords, body);
+        return ForumManager.filterContent(filterwords,body);
     }
 
     public boolean getCloneMaster() {
-        if (config != null) {
+	if (config != null) {
             return config.getCloneMaster();
-        }
-        return false;
+	}
+	return false;
     }
 
+
     public String getGuiEdit(String key) {
-        if (config != null) {
+	if (config != null) {
             return config.getGuiEdit(key);
-        }
-        return "true";
+	}
+	return "true";
     }
 
     public int getSpeedPostTime() {
-        if (config != null) {
+	if (config != null) {
             int tmp = config.getSpeedPostTime();
             if (tmp != -1) {
                 return tmp;
             }
-        }
-        return ForumManager.getSpeedPostTime();
+	}
+	return ForumManager.getSpeedPostTime();
     }
 
     public int getPostingsOverflowPostArea() {
-        if (config != null) {
+	if (config != null) {
             int tmp = config.getPostingsOverflowPostArea();
             if (tmp != -1) {
                 return tmp;
             }
-        }
-        return ForumManager.getPostingsOverflowPostArea();
+	}
+	return ForumManager.getPostingsOverflowPostArea();
     }
 
     public int getPostingsOverflowThreadPage() {
-        if (config != null) {
+	if (config != null) {
             int tmp = config.getPostingsOverflowThreadPage();
             if (tmp != -1) {
                 return tmp;
             }
-        }
-        return ForumManager.getPostingsOverflowThreadPage();
+	}
+	return ForumManager.getPostingsOverflowThreadPage();
     }
 
     public ThreadObserver getThreadObserver(int id) {
-        Object o = threadobservers.get(new Integer(id));
-        if (o != null)
-            return (ThreadObserver) o;
-        return null;
+	Object o = threadobservers.get(new Integer(id));
+	if (o!=null) return (ThreadObserver)o;
+	return null;
     }
 
-    public boolean setEmailOnChange(int id, Poster ap, boolean state) {
-        Object o = threadobservers.get(new Integer(id));
-        if (o != null) {
-            return ((ThreadObserver) o).setEmailOnChange(ap, state);
-        } else {
+    public boolean setEmailOnChange(int id,Poster ap,boolean state) {
+	Object o = threadobservers.get(new Integer(id));
+	if (o != null) {
+            return ((ThreadObserver)o).setEmailOnChange(ap, state);
+	} else {
             ThreadObserver to = new ThreadObserver(this, -1, id, "", "", "");
-            // to.setThreadId(id);
+            //to.setThreadId(id);
             threadobservers.put(new Integer(id), to);
-            return to.setEmailOnChange(ap, state);
-        }
+            return to.setEmailOnChange(ap,state);
+	}
     }
 
-    public boolean setBookmarkedChange(int id, Poster ap, boolean state) {
-        Object o = threadobservers.get(new Integer(id));
-        if (o != null) {
-            ((ThreadObserver) o).setBookmarkedChange(ap, state);
+
+    public boolean setBookmarkedChange(int id,Poster ap,boolean state) {
+	Object o = threadobservers.get(new Integer(id));
+	if (o != null) {
+            ((ThreadObserver)o).setBookmarkedChange(ap, state);
             if (state) {
                 ap.addBookmarkedThread(id);
             } else {
                 ap.removeBookmarkedThread(id);
             }
             return true;
-        } else {
+	} else {
             ThreadObserver to = new ThreadObserver(this, -1, id, "", "", "");
-            // to.setThreadId(id);
+            //to.setThreadId(id);
             threadobservers.put(new Integer(id), to);
             if (state) {
                 ap.addBookmarkedThread(id);
             } else {
                 ap.removeBookmarkedThread(id);
             }
-            to.setBookmarkedChange(ap, state);
+            to.setBookmarkedChange(ap,state);
             return true;
-        }
+	}
     }
 
     public String getEmailtext(String role) {
@@ -1800,9 +1775,9 @@ public class Forum {
     }
 
     public boolean getReplyOnEachPage() {
-        if (config != null) {
+	if (config != null) {
             return config.getReplyOnEachPage();
-        }
+	}
         return ForumManager.getReplyOnEachPage();
     }
 
@@ -1810,14 +1785,15 @@ public class Forum {
         if (config != null) {
             Iterator i = config.getFieldaliases();
             while (i.hasNext()) {
-                FieldAlias fa = (FieldAlias) i.next();
+                FieldAlias fa = (FieldAlias)i.next();
                 fa.init(this);
             }
         }
     }
 
     public ForumConfig getConfig() {
-        return config;
+	return config;
     }
+
 
 }
