@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.64.2.1 2007-01-09 11:44:04 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.64.2.2 2007-01-15 15:13:00 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -190,7 +190,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                             throw new JspTagException("Could not find node element '" + elString + "'");
                         }
                     }
-                    if (nodeProvider.getNodeVar() != null) {
+                    if (nodeProvider != null && nodeProvider.getNodeVar() != null) {
                         if (nodeProvider.getNodeVar().getCloud().hasNodeManager(nodeProvider.getNodeVar().getNodeManager().getName())) {
                             nodeHelper.setGeneratingQuery(nodeProvider.getGeneratingQuery());
                         }
