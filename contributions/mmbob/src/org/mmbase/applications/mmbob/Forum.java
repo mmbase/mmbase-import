@@ -29,6 +29,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
+ * @version $Id: Forum.java,v 1.56 2007-01-15 18:32:50 michiel Exp $
  */
 public class Forum {
 
@@ -54,7 +55,7 @@ public class Forum {
     private Hashtable administrators = new Hashtable();
 
     private Hashtable postareas = new Hashtable();
-    private HashMap filterwords;
+    private Map<String, String> filterwords;
     private SubArea subareas = new SubArea();
 
     private Hashtable posters = new Hashtable();
@@ -1647,7 +1648,7 @@ public class Forum {
         }
     }
 
-    public HashMap getFilterWords() {
+    public Map<String, String> getFilterWords() {
 	if (filterwords!=null) {
             return filterwords;
 	} else {
@@ -1674,8 +1675,8 @@ public class Forum {
     }
 
 
-    public String filterContent(HashMap filterwords, String body) {
-        return ForumManager.filterContent(filterwords,body);
+    public String filterContent(Map<String, String> filterwords, String body) {
+        return ForumManager.filterContent(filterwords, body);
     }
 
     public boolean getCloneMaster() {
