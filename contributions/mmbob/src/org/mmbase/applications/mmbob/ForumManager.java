@@ -312,10 +312,14 @@ public class ForumManager {
      */
     public static void nodeDeleted(org.mmbase.bridge.Node node) {
         if (syncfast != null) {
+            log.debug("deleting node "+node.getNumber()+" from fast sync");
             syncfast.nodeDeleted(node);
+            log.debug("contents of que: "+syncfast.printCurrentContent());
         }
         if (syncslow != null) {
+            log.debug("deleting node "+node.getNumber()+" from slow sync");
             syncslow.nodeDeleted(node);
+            log.debug("contents of que: "+syncslow.printCurrentContent());
         }
     }
 
@@ -324,7 +328,7 @@ public class ForumManager {
      * @param id
      */
     protected static Map getNamePassword(String id) {
-	return config.getNamePassword(id);
+	return config.getNamePassword(id); 
     }
 
     public static String getDefaultPassword() {
@@ -359,7 +363,7 @@ public class ForumManager {
             DocumentReader reader = new DocumentReader(is, ForumManager.class);
             if (reader != null) {
                 // decode forums
-                for (Iterator ns = reader.getChildElements("mmbobconfig", "forums").iterator(); ns.hasNext();) {
+                for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
                     Element n = (Element) ns.next();
 		    if (n != null) {
 			config =  new ForumsConfig(reader,n);

@@ -288,7 +288,9 @@ public class Posting {
         Node tempNode;
         while (it.hasNext()) {
             tempNode = (Node)it.next();
-            tempNode.setValue(fieldname,"");
+            tempNode.setValue(fieldname, null);
+            log.debug("just set the value of field "+fieldname+" to null. but it reads: "+tempNode.getStringValue(fieldname));
+            log.debug("cloud id: "+ForumManager.getCloud().hashCode());
             tempNode.commit();
         }
     }

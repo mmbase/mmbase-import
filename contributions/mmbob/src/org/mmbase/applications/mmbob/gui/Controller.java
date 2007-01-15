@@ -2426,6 +2426,7 @@ public class Controller {
             int forumid = Integer.parseInt(sforumid);
             ForumManager.removeForum(forumid);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return true;
     }

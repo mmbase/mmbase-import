@@ -314,7 +314,7 @@ public class PostArea {
         if (postthreads == null) readPostThreads();
         return postthreads.elements();
     }
-
+    
     /**
      * get an iterator of the postthreads in the postarea
      * @param page which page in the sequence
@@ -849,24 +849,29 @@ public class PostArea {
     }
 
     /**
-     * remove the postarea
+     * remove the postarea.
+     * This method will first (try to) remove all postthreads.
      * @return  <code>true</code> if it succeeds, <code>false</code> if it doesn't
      */
     public boolean remove() {
+        //first reomve all the postTheads
         if (postthreads == null) readPostThreads();
         if (getPostThreadCount() != 0) {
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
-                PostThread t = (PostThread) e.nextElement();
-                if (!t.remove()) {
-                    log.error("Can't remove PostThread : " + t.getId());
+                PostThread postThread = (PostThread) e.nextElement();
+                log.debug("try to remove postthread: "+postThread.getId());
+                if (!postThread.remove()) {
+                    log.error("Can't remove PostThread : " + postThread.getId());
                     return false;
                 }
-                postthreads.remove("" + t.getId());
+                postthreads.remove("" + postThread.getId());
             }
         }
         Node node = ForumManager.getCloud().getNode(id);
+        log.debug("deleting PostArea with id " + node.getNumber());
         node.delete(true);
+        ForumManager.nodeDeleted(node);
         return true;
     }
 
@@ -909,39 +914,40 @@ public class PostArea {
      * called to maintain the memorycaches
      */
     public void maintainMemoryCaches() {
-	int ptime = ForumManager.getPreloadChangedThreadsTime();
-        //if (ptime!=0 && postthreads != null && firstcachecall) {
-        if (ptime!=0 && firstcachecall) {
-       	    if (postthreads == null) readPostThreads();
+        int ptime = ForumManager.getPreloadChangedThreadsTime();
+        // if (ptime!=0 && postthreads != null && firstcachecall) {
+        if (ptime != 0 && firstcachecall) {
+            if (postthreads == null)
+                readPostThreads();
             firstcachecall = false;
             int time = (int) (System.currentTimeMillis() / 1000) - ptime;
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
                 PostThread t = (PostThread) e.nextElement();
                 int time2 = t.getLastPostTime();
-                if (time2==-1 || time2 > time) {
+                if (time2 == -1 || time2 > time) {
                     t.readPostings();
                 }
             }
         }
 
         if (postthreads != null) {
-	    int etime = ForumManager.getSwapoutUnusedThreadsTime();
-	    if (etime!=0) {
-            int time = (int) (System.currentTimeMillis() / 1000) - etime;
-            int time4 = (int) (System.currentTimeMillis() / 1000) - ptime;
-            Enumeration e = postthreads.elements();
-            while (e.hasMoreElements()) {
-                PostThread t = (PostThread) e.nextElement();
-		if (t.isLoaded()) {
-                	int time2 = t.getLastUsed();
-                	int time3 = t.getLastPostTime();
-	                if (time2 < time && time4 > time3) {
-				t.swapOut();
-                	}
-		}
+            int etime = ForumManager.getSwapoutUnusedThreadsTime();
+            if (etime != 0) {
+                int time = (int) (System.currentTimeMillis() / 1000) - etime;
+                int time4 = (int) (System.currentTimeMillis() / 1000) - ptime;
+                Enumeration e = postthreads.elements();
+                while (e.hasMoreElements()) {
+                    PostThread t = (PostThread) e.nextElement();
+                    if (t.isLoaded()) {
+                        int time2 = t.getLastUsed();
+                        int time3 = t.getLastPostTime();
+                        if (time2 < time && time4 > time3) {
+                            t.swapOut();
+                        }
+                    }
+                }
             }
-	    }
         }
     }
 
