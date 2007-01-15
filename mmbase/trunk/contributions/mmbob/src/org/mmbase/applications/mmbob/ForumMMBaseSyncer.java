@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.8 2006-05-03 18:09:01 daniel Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.9 2007-01-15 17:15:35 ernst Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
@@ -49,7 +49,16 @@ public class ForumMMBaseSyncer implements Runnable {
      * The vector dirtyNodes is also referred to as "syncQueue"
      * it contains the nodes that needs to be synchronized
      */
-    private Vector dirtyNodes = new Vector();
+    private Vector dirtyNodes = new Vector(){
+        public String toString() {
+            StringBuffer out = new StringBuffer("[");
+            for (Enumeration e = elements(); e.hasMoreElements();) {
+                out.append(((Node) e.nextElement()).getNumber() + ",");
+            }
+            out.append("]");
+            return out.toString();
+        }
+    };
 
     /**
      * Contructor
@@ -124,27 +133,31 @@ public class ForumMMBaseSyncer implements Runnable {
                 while (dirtyNodes.size() > 0) {
                     Node node = (Node) dirtyNodes.elementAt(0);
                     dirtyNodes.removeElementAt(0);
-		    try {
-			NodeManager tm = node.getNodeManager();
-			if (tm!=null) {
-				String tmn = tm.getName();
-				if (tmn.equals("forums") || tmn.equals("postthreads") || tmn.equals("postareas")) {
-					// check if the node was not deleted
-					Node on = node.getNodeValue("lastpostnumber");	
-					if (on==null) node.setValue("lastpostnumber","");
-				}
-                    		node.commit();
-                    		removeFromBrothers(node);
-			}
-		    } catch(Exception e) {
-			log.error("NODE PROBLEM WITH : "+node.getNumber());
-			e.printStackTrace();
-		    }
-                    if (kicker.isInterrupted()) throw new InterruptedException();
+                    try {
+                        NodeManager tm = node.getNodeManager();
+                        if (tm != null) {
+                            String tmn = tm.getName();
+                            if (tmn.equals("forums") || tmn.equals("postthreads") || tmn.equals("postareas")) {
+                                // check if the node was not deleted
+                                Node on = node.getNodeValue("lastpostnumber");
+                                if (on == null)
+                                    node.setValue("lastpostnumber", "");
+                            }
+                            log.debug("committing node with number: "+node.getNumber());
+                            node.commit();
+                            removeFromBrothers(node);
+                        }
+                    } catch (Exception e) {
+                        log.error("NODE PROBLEM WITH : " + node.getNumber());
+                        e.printStackTrace();
+                    }
+                    if (kicker.isInterrupted())
+                        throw new InterruptedException();
                     Thread.sleep(delaytime);
                 }
                 log.debug("going to sleep");
-                if (kicker.isInterrupted()) throw new InterruptedException();
+                if (kicker.isInterrupted())
+                    throw new InterruptedException();
                 kicker.sleep(sleeptime);
             } catch (InterruptedException f2) {
                 shutdownSync();
@@ -188,7 +201,7 @@ public class ForumMMBaseSyncer implements Runnable {
                 log.debug("removing node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime);
                 ((ForumMMBaseSyncer)brothers.get(i)).nodeDeleted(node);
             } else {
-                //log.debug("won't remove node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime+" because i probably just did");
+                log.debug("won't remove node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime+" because i probably just did");
             }
         }
     }
@@ -201,9 +214,13 @@ public class ForumMMBaseSyncer implements Runnable {
     public void syncNode(Node node) {
         if (!dirtyNodes.contains(node)) {
             dirtyNodes.addElement(node);
-            //log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
+            log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
         } else {
-            //log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
+            log.info("refused node="+node.getNumber()+" already in sync queue "+sleeptime);
         }
+    }
+    
+    String printCurrentContent(){
+        return dirtyNodes.toString();
     }
 }

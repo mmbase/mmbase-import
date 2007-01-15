@@ -17,6 +17,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -514,7 +515,10 @@ public class Poster {
     }
 
     /**
-     * remove the poster
+     * remove the poster.
+     * To do this first all nodes that might have a reference to this node.
+     * (types: postareas, postthreads, forums, postings) are checked and all
+     * references to this poster are removed.
      *
      * @return <code>true</code> if this method is called
      */
@@ -529,18 +533,27 @@ public class Poster {
         parent.childRemoved(this);
         return true;
     }
+    
 
     private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
         //check if nodenumber is somewhere referenced as a foreignkey
         Node node = ForumManager.getCloud().getNode(id);
         NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
-        log.debug("found: " + nodeList);
+        log.debug("found: ("+nodeManager.getName()+") " + nodeList);
         NodeIterator it = nodeList.nodeIterator();
-        Node tempNode;
+        Node tempNode, t;
+        int lastNode;
         while (it.hasNext()) {
             tempNode = (Node)it.next();
-            tempNode.setValue(fieldname,"");
+            tempNode.setNodeValue(fieldname, null);
+            log.debug("cloud id: "+ForumManager.getCloud().hashCode());
+            log.debug("just set the value of field "+fieldname+" to null. it reads: "+tempNode.getStringValue(fieldname));
+            lastNode = tempNode.getNumber();
             tempNode.commit();
+            
+            t = ForumManager.getCloud().getNode(lastNode);
+            log.debug("** test: refetch this node and check the value"+t.toString());
+            t.commit();
         }
     }
 
