@@ -42,14 +42,19 @@
 	<mm:import externid="poster" />
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body">
-	   <mm:import id="postthreadid"><mm:field name="postthreadid"/></mm:import>
+  <mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body">
+    <mm:import id="postthreadid"><mm:field name="postthreadid"/></mm:import>
+    <mm:field name="error">
+      <mm:compare value="none" inverse="true">
+        <mm:write />
+      </mm:compare>
+    </mm:field>
 	</mm:nodefunction>
 
-        <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" max="1">
-           <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
-        </mm:list>
-        <%@ include file="addfile.jsp" %>
+  <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" max="1">
+    <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
+  </mm:list>
+  <jsp:directive.include file="addfile.jsp" />
 </mm:compare>
 
 
