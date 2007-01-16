@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.58 2007-01-16 14:49:16 michiel Exp $
+ * @version $Id: Forum.java,v 1.59 2007-01-16 16:25:48 ernst Exp $
  */
 public class Forum {
 
@@ -1051,13 +1051,14 @@ public class Forum {
     /**
      * remove a poster from the forum
      *
-     * @param p poster
+     * @param poster poster
      */
-    public void childRemoved(Poster p) {
-        posters.remove(p.getId());
-	posternames.remove("" + p.getAccount());
-	onlineposters.remove(p);
-	newposters.remove(p);
+    public void childRemoved(Poster poster) {
+        log.debug("removing poster nr " + poster.getId());
+        posters.remove(poster.getId());
+        posternames.remove("" + poster.getAccount());
+        onlineposters.remove(poster);
+        newposters.remove(poster);
         syncNode(ForumManager.SLOWSYNC);
     }
 
@@ -1077,8 +1078,7 @@ public class Forum {
                 // jikes!, what if first ones succeeded?
                 return false;
             }
-            log.debug("removing poster nr " + poster.getId());
-            i.remove();
+            //i.remove();
         }
 
         // now delete all the postArea's
