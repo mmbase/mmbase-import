@@ -29,16 +29,17 @@ import org.mmbase.storage.search.*;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
+ * @version $Id: PostAreaConfig.java,v 1.8 2007-01-16 15:58:20 michiel Exp $
  */
 public class PostAreaConfig {
-    private static Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
+    private static final Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
     private String defaultaccount, defaultpassword;
-    private String id="unkown";
+    private String id = "unkown";
     private int pos = 0;
-    private String guestreadmodetype,guestwritemodetype,threadstartlevel;
+    private String guestreadmodetype, guestwritemodetype, threadstartlevel;
 
     public PostAreaConfig(DocumentReader reader,Element n) {
-	decodeConfig(reader,n);
+	decodeConfig(reader, n);
     }
 
     public PostAreaConfig(String id) {
@@ -105,9 +106,9 @@ public class PostAreaConfig {
             }
 
 
-            guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
-            guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
-            threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
+            guestreadmodetype = getAttributeValue(reader, n, "guestreadmode", "type");
+            guestwritemodetype = getAttributeValue(reader, n,"guestwritemode", "type");
+            threadstartlevel = getAttributeValue(reader, n, "threadstart", "level");
         }
         return true;
     }
@@ -127,7 +128,7 @@ public class PostAreaConfig {
                     return n3.getNodeValue();
                 }
             }
-        }	
+        }
         return null;
     }
 
