@@ -33,12 +33,13 @@ import org.mmbase.util.FileWatcher;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
+ * @version $Id: ForumManager.java,v 1.34 2007-01-16 17:30:53 michiel Exp $
  */
 public class ForumManager {
-    private static Logger log = Logging.getLoggerInstance(ForumManager.class);
+    private static final Logger log = Logging.getLoggerInstance(ForumManager.class);
 
-    private static Hashtable forums = new Hashtable(); // ConcurrentHashMap?
-    private static Hashtable forumnamecache = new Hashtable(); // ConcurrentHashMap
+    private static Map<Integer, Forum> forums = new Hashtable<Integer, Forum>(); // ConcurrentHashMap?
+    private static Map<String, Integer> forumNameCache = new Hashtable<String, Integer>(); // ConcurrentHashMap
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
     private static ExternalProfilesManager externalprofilesmanager;
@@ -78,7 +79,7 @@ public class ForumManager {
 	if (!running) {
             readConfig();
             cloud = getCloud();
-            if (!running) {
+            if (! running) {
                 forumnodemanager = cloud.getNodeManager("forums");
                 if (forumnodemanager == null) {
                     log.error("Can't load forums nodemanager from mmbase");
@@ -90,12 +91,32 @@ public class ForumManager {
 
                 // start the mmbase syncer
                 //was 10 * 1000
-                syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
-                syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
+                DocumentReader reader = config.getReader();
+                Element element = config.getElement();
+
+                for (Iterator i = reader.getChildElements(element, "syncer"); i.hasNext(); ) {
+                    Element syncerElement = (Element) i.next
+();
+                    String type = syncerElement.getAttribute("type");
+                    if ("slow".equals(type)) {
+                        syncslow = new ForumMMBaseSyncer(Integer.parseInt(syncerElement.getAttribute("sleepTime")), 50,
+                                                         Integer.parseInt(syncerElement.getAttribute("delayTime")));
+                    } else if ("fast".equals(type)) {
+                        syncfast = new ForumMMBaseSyncer(Integer.parseInt(syncerElement.getAttribute("sleepTime")), 50,
+                                                         Integer.parseInt(syncerElement.getAttribute("delayTime")));
+                    } else {
+                        log.warn("Unknown value for type attribute " + type);
+                    }
+                }
+                if (syncfast == null) syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
+                if (syncslow == null) syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
+                log.service("Syncer for 'fast' objects: " + syncfast);
+                log.service("Syncer for 'slow' objects: " + syncslow);
+
                 swapmanager = new ForumSwapManager(1 * 60 * 1000);
                 ForumEmailSender emailsender = new ForumEmailSender();
                 running = true;
-        }
+            }
 	}
     }
 
@@ -122,8 +143,8 @@ public class ForumManager {
      *
      * @return all the forums
      */
-    public static Enumeration getForums() {
-        return forums.elements();
+    public static Enumeration<Forum> getForums() {
+        return Collections.enumeration(forums.values());
     }
 
     /**
@@ -133,37 +154,29 @@ public class ForumManager {
      * @return forum
      */
     public static Forum getForum(int id) {
-        Forum f = (Forum) forums.get(new Integer(id));
-        if (f != null) {
-            return f;
-        }
-        return null;
+        return forums.get(Integer.valueOf(id));
     }
 
 
     public static Forum getForumByAlias(String key) {
-       Enumeration e = forums.elements();
-       while (e.hasMoreElements()) {
-		Forum f = (Forum)e.nextElement();
-		if (f.getAlias()!=null && key.indexOf(f.getAlias())!=-1) {
-			return f;
-		}
-       }
+        for (Forum f : forums.values()) {
+            if (f.getAlias()!=null && key.indexOf(f.getAlias())!=-1) {
+                return f;
+            }
+        }
        return null;
     }
 
 
     public static Forum getForumCloneMaster() {
-       Enumeration e = forums.elements();
-       while (e.hasMoreElements()) {
-		Forum f = (Forum)e.nextElement();
-		if (f.getCloneMaster()) {
-			return f;
-		}
-       }
-       return null;
+        for (Forum f : forums.values()) {
+            if (f.getCloneMaster()) {
+                return f;
+            }
+        }
+        return null;
     }
-
+    
     /**
      * Remove a forum by it's MMBase node number
      *
@@ -171,10 +184,10 @@ public class ForumManager {
      * @return <code>true</code> if the remove action was successful
      */
     public static boolean removeForum(int id) {
-        Forum f = (Forum) forums.get(new Integer(id));
+        Forum f = forums.get(Integer.valueOf(id));
         f.remove();
-        forumnamecache.remove(new Integer(id));
-        forums.remove(new Integer(id));
+        forumNameCache.remove(Integer.valueOf(id));
+        forums.remove(Integer.valueOf(id));
         return true;
     }
 
@@ -189,13 +202,13 @@ public class ForumManager {
             return getForum(idi);
         } catch (Exception e) {
             // maybe its a alias ?
-            Integer nid = (Integer) forumnamecache.get(id);
+            Integer nid = forumNameCache.get(id);
             if (nid != null) {
                 return getForum(nid.intValue());
             } else {
                 org.mmbase.bridge.Node node = cloud.getNode(id);
                 if (node != null) {
-                    forumnamecache.put(id, new Integer(node.getNumber()));
+                    forumNameCache.put(id, Integer.valueOf(node.getNumber()));
                     return getForum(node.getNumber());
                 }
             }
@@ -216,7 +229,7 @@ public class ForumManager {
             Forum f = new Forum(n);
             f.setId(n.getNumber());
             f.setName(n.getStringValue("name"));
-            forums.put(new Integer(f.getId()), f);
+            forums.put(Integer.valueOf(f.getId()), f);
         }
     }
 
@@ -230,7 +243,7 @@ public class ForumManager {
      * @param password password of the creator of the new forum
      * @return The MMBase node number of the newly created forum node
      */
-    public static int newForum(String name, String language, String description, String account, String password,String nick,String email) {
+    public static int newForum(String name, String language, String description, String account, String password, String nick, String email) {
         org.mmbase.bridge.Node node = forumnodemanager.createNode();
         node.setStringValue("name", name);
         node.setStringValue("language", language);
@@ -247,7 +260,7 @@ public class ForumManager {
         f.setId(node.getNumber());
         f.setName(node.getStringValue("name"));
 
-        forums.put(new Integer(f.getId()), f);
+        forums.put(Integer.valueOf(f.getId()), f);
 
         Poster p = f.createPoster(account, password);
 
@@ -258,35 +271,35 @@ public class ForumManager {
 
 	// check if we have a clone master
 	Forum cf = getForumCloneMaster();
-	if (cf!=null) {
-		// ok we have a clone master copy the wanted settings
-		f.setPostingsPerPage(cf.getPostingsPerPage());
-		f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
-		f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
-		f.setLanguage(cf.getLanguage());
-		f.setLoginSystemType(cf.getLoginSystemType());
-		f.setLoginModeType(cf.getLoginModeType());
-		f.setLogoutModeType(cf.getLogoutModeType());
-		f.setGuestReadModeType(cf.getGuestReadModeType());
-		f.setGuestWriteModeType(cf.getGuestWriteModeType());
-		f.setNavigationMethod(cf.getNavigationMethod());
-		f.setSpeedPostTime(cf.getSpeedPostTime());
-		f.setReplyOnEachPage(cf.getReplyOnEachPage());
-		f.save(); // some basic settings, weird
-
-		// check if we need to copy ProfileDefs
-                Iterator i = cf.getProfileDefs();
-                if (i!=null) {
-                	while (i.hasNext()) {
-                           ProfileEntryDef pd = (ProfileEntryDef) i.next();
-			   f.addProfileDef(pd);
-			   if (pd.getName().equals("nick")) {
-				// kinda trick, we need a way to make forums.jsp optional for this *sigh*
-        			if (nick!=null && !nick.equals("")) p.setProfileValue("nick",nick);
-			   }
-			}
-		}
-		f.saveConfig();
+	if (cf != null) {
+            // ok we have a clone master copy the wanted settings
+            f.setPostingsPerPage(cf.getPostingsPerPage());
+            f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
+            f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
+            f.setLanguage(cf.getLanguage());
+            f.setLoginSystemType(cf.getLoginSystemType());
+            f.setLoginModeType(cf.getLoginModeType());
+            f.setLogoutModeType(cf.getLogoutModeType());
+            f.setGuestReadModeType(cf.getGuestReadModeType());
+            f.setGuestWriteModeType(cf.getGuestWriteModeType());
+            f.setNavigationMethod(cf.getNavigationMethod());
+            f.setSpeedPostTime(cf.getSpeedPostTime());
+            f.setReplyOnEachPage(cf.getReplyOnEachPage());
+            f.save(); // some basic settings, weird
+            
+            // check if we need to copy ProfileDefs
+            Iterator i = cf.getProfileDefs();
+            if (i!=null) {
+                while (i.hasNext()) {
+                    ProfileEntryDef pd = (ProfileEntryDef) i.next();
+                    f.addProfileDef(pd);
+                    if (pd.getName().equals("nick")) {
+                        // kinda trick, we need a way to make forums.jsp optional for this *sigh*
+                        if (nick!=null && !nick.equals("")) p.setProfileValue("nick",nick);
+                    }
+                }
+            }
+            f.saveConfig();
 	}
         f.addAdministrator(p);
         return node.getNumber();
@@ -312,14 +325,18 @@ public class ForumManager {
      */
      public static void nodeDeleted(org.mmbase.bridge.Node node) {
          if (syncfast != null) {
-             log.debug("deleting node "+node.getNumber()+" from fast sync");
+             log.debug("deleting node " + node.getNumber() + " from fast sync");
              syncfast.nodeDeleted(node);
-             log.debug("contents of que: "+syncfast.printCurrentContent());
+             if (log.isDebugEnabled()) {
+                 log.debug("contents of queu: " + syncfast.printCurrentContent());
+             }
          }
          if (syncslow != null) {
             log.debug("deleting node "+node.getNumber()+" from slow sync");
             syncslow.nodeDeleted(node);
-            log.debug("contents of que: "+syncslow.printCurrentContent());
+            if (log.isDebugEnabled()) {
+                 log.debug("contents of que: " + syncslow.printCurrentContent());
+            }
          }
      }
 
@@ -366,8 +383,10 @@ public class ForumManager {
             // decode forums
             for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
                 Element n = (Element) ns.next();
+                // so it seems that you can configure more than one forum, but only the last one is
+                // actually used. (@id is ignored).
                 if (n != null) {
-                    config =  new ForumsConfig(reader,n);
+                    config =  new ForumsConfig(reader, n);
                 }
             }
 	} catch (Exception e) {
@@ -393,11 +412,9 @@ public class ForumManager {
      * ToDo: Write docs!
      */
     public static void maintainMemoryCaches() {
-        Enumeration e = forums.elements();
-        while (e.hasMoreElements()) {
+        for (Forum f : forums.values()) {
             // for now all forums main nodes are loaded so
             // we just call them all for a maintain
-            Forum f = (Forum) e.nextElement();
             f.maintainMemoryCaches();
         }
     }
@@ -571,10 +588,8 @@ public class ForumManager {
 
     public int getPostThreadLoadedCount() {
         int count = 0;
-        Enumeration i = forums.elements();
-        while (i.hasMoreElements()) {
-                Forum forum = (Forum)i.nextElement();
-                count += forum.getPostThreadLoadedCount();
+        for (Forum forum : forums.values()) {
+            count += forum.getPostThreadLoadedCount();
         }
         return count;
     }
