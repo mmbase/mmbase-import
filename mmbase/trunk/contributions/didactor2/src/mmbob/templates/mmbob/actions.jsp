@@ -7,7 +7,6 @@
 <mm:import externid="forumid" />
 <mm:import externid="folderaction" />
 
-<mm:log>action ${action}</mm:log>
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
@@ -20,6 +19,8 @@
   		<mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
 	  </mm:nodefunction>
 </mm:present>
+
+<mm:log>action ${action} admin: ${adminmode}</mm:log>
 
 <mm:compare value="postreply" referid="action">
 	<mm:import externid="postareaid" />
@@ -125,7 +126,7 @@
 	<mm:import externid="name" />
 	<mm:import externid="description" />
 	<mm:import externid="postareaid" />
-	<mm:booleanfunction set="mmbob" name="changePostArea" referids="forumid,postareaid,name,description">
+	<mm:booleanfunction set="mmbob" name="changePostArea" referids="forumid,postareaid,name,description,posterid@activeid">
 	</mm:booleanfunction>
 </mm:compare>
 
