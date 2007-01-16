@@ -50,7 +50,7 @@ public class EmailBuilder extends MMObjectBuilder {
             log.debug("Trying to send mail ...");
             org.mmbase.bridge.Cloud cloud = org.mmbase.bridge.LocalContext.getCloudContext().getCloud("mmbase");
             org.mmbase.bridge.Node n;
-            if (nodeNumber > 0) {
+            if (nodeNumber > 0 && cloud.hasNode(nodeNumber)) {
                 n = cloud.getNode(nodeNumber);
             } else {
                 // mapnodes do not have relations.
