@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: PostAreaConfig.java,v 1.8 2007-01-16 15:58:20 michiel Exp $
+ * @version $Id: PostAreaConfig.java,v 1.9 2007-01-16 18:01:57 michiel Exp $
  */
 public class PostAreaConfig {
     private static final Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
@@ -82,8 +82,7 @@ public class PostAreaConfig {
                 defaultpassword = password;
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Element n2 : ForumsConfig.list(reader.getChildElements(n, "generatedata"))) {
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String role = null;
@@ -119,8 +118,7 @@ public class PostAreaConfig {
 
 
     private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
-            Element n2 = (Element) ns2.next();
+        for (Element n2 : ForumsConfig.list(reader.getChildElements(n, itemname))) {
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {
                 org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
