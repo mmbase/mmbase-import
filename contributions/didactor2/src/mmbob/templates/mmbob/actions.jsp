@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <mm:import externid="action" />
