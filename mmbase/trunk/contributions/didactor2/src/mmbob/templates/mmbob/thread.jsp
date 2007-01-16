@@ -87,15 +87,15 @@
       <tr>
          <td class="<mm:write referid="tdvar" />" align="left">
             <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
-<mm:isnotempty referid="dummyposterid">
-            <mm:list nodes="$dummyposterid" path="posters,people">
-               <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
-                           <mm:param name="contact"><mm:field name="people.number"/></mm:param>
-                        </mm:treefile>" target="_top">
-                        <b><di:person element="posters" /></b>
-               </a>
+            <mm:isnotempty referid="dummyposterid">
+              <mm:list nodes="$dummyposterid" path="posters,people" jspvar="hoi" fields="posters.number">
+                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                  <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                  </mm:treefile>" target="_top">
+                  <b><di:person element="posters" /></b>
+                </a>
             </mm:list>
-</mm:isnotempty>
+          </mm:isnotempty>
             <br />
             <di:translate key="mmbob.on" /> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
          </td>
