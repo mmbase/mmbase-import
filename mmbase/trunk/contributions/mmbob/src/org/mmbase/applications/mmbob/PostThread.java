@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.42 2007-01-15 17:43:36 michiel Exp $
+ * @version $Id: PostThread.java,v 1.43 2007-01-16 10:39:29 michiel Exp $
  */
 public class PostThread {
 
@@ -696,12 +696,12 @@ public class PostThread {
     }
 
 
-    public Vector searchPostings(String searchkey,int posterid) {
-	Vector results = new Vector();
+    public List searchPostings(String searchkey, int posterid) {
+	List results = new Vector(); // synchronized?
 	return searchPostings(results,searchkey,posterid);
     }
 
-    public Vector searchPostings(Vector results,String searchkey,int posterid) {
+    public List searchPostings(List results, String searchkey, int posterid) {
 	if (postings!=null) {
             Enumeration e = postings.elements();
             while (e.hasMoreElements()) {
