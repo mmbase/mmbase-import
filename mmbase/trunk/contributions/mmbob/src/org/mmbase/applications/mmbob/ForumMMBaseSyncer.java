@@ -29,21 +29,20 @@ import org.mmbase.util.logging.Logger;
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.10 2007-01-16 10:41:26 michiel Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.11 2007-01-16 11:12:57 michiel Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
-    // logger
-    static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
+    static private final Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
 
     // holds the fellow ForumMMBaseSyncers that are instantiated
     static ArrayList brothers = new ArrayList();
 
     // thread
     Thread kicker = null;
-    int sleeptime;
-    int delaytime;
-    int maxqueue;
+    final int sleeptime;
+    final int delaytime;
+    final int maxqueue;
 
     /**
      * The vector dirtyNodes is also referred to as "syncQueue"
@@ -116,8 +115,7 @@ public class ForumMMBaseSyncer implements Runnable {
             try {
                 doWork();
             } catch (Exception e) {
-                log.error("run(): ERROR: Exception in forummmbasesyncer thread!");
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -145,7 +143,7 @@ public class ForumMMBaseSyncer implements Runnable {
                                     node.setValue("lastpostnumber", "");
                                 }
                             }
-                            log.debug("committing node with number: "+node.getNumber());
+                            log.debug("committing node with number: " + node.getNumber());
                             node.commit();
                             removeFromBrothers(node);
                         }
