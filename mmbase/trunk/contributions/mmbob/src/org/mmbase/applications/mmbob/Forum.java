@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.59 2007-01-16 16:25:48 ernst Exp $
+ * @version $Id: Forum.java,v 1.60 2007-01-16 17:08:27 ernst Exp $
  */
 public class Forum {
 
@@ -1078,7 +1078,6 @@ public class Forum {
                 // jikes!, what if first ones succeeded?
                 return false;
             }
-            //i.remove();
         }
 
         // now delete all the postArea's
@@ -1094,6 +1093,9 @@ public class Forum {
             j.remove();
         }
 
+        //the abouve operations have most certainly put this forum's node
+        //i a sync que. Let's remove it first before we delete it.
+        ForumManager.nodeDeleted(node);
         node.delete(true);
         return true;
     }

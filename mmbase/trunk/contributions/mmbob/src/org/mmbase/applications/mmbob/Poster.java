@@ -529,6 +529,9 @@ public class Poster {
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastposternumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),"lastposternumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postings"),"posternumber");
+        
+        //make shure this node is not in a forum syncer
+        ForumManager.nodeDeleted(node);
         node.delete(true);
         parent.childRemoved(this);
         return true;
@@ -541,19 +544,16 @@ public class Poster {
         NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
         log.debug("found: ("+nodeManager.getName()+") " + nodeList);
         NodeIterator it = nodeList.nodeIterator();
-        Node tempNode, t;
-        int lastNode;
+        Node tempNode;
         while (it.hasNext()) {
             tempNode = (Node)it.next();
             tempNode.setNodeValue(fieldname, null);
             log.debug("cloud id: "+ForumManager.getCloud().hashCode());
             log.debug("just set the value of field "+fieldname+" to null. it reads: "+tempNode.getStringValue(fieldname));
-            lastNode = tempNode.getNumber();
-            tempNode.commit();
             
-            t = ForumManager.getCloud().getNode(lastNode);
-            log.debug("** test: refetch this node and check the value"+t.toString());
-            t.commit();
+//          make shure this node is not in a forum syncer
+            ForumManager.nodeDeleted(node);
+            tempNode.commit();
         }
     }
 
