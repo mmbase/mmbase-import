@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.44 2007-01-16 11:37:39 michiel Exp $:
+ * @version $Id: PostArea.java,v 1.45 2007-01-16 17:08:27 ernst Exp $:
  */
 public class PostArea {
 
@@ -882,8 +882,8 @@ public class PostArea {
          }
          Node node = ForumManager.getCloud().getNode(id);
          log.debug("deleting PostArea with id " + node.getNumber());
-         node.delete(true);
          ForumManager.nodeDeleted(node);
+         node.delete(true);
          return true;
      }
 
