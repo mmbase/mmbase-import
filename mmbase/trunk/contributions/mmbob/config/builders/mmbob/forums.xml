@@ -109,11 +109,11 @@
     </field>
 
     <field name="lastpostnumber">
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="lastposternumber">
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
