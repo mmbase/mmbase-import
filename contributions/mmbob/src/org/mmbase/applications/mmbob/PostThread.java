@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.46 2007-01-16 17:08:27 ernst Exp $
+ * @version $Id: PostThread.java,v 1.47 2007-01-16 19:08:39 michiel Exp $
  */
 public class PostThread {
 
@@ -397,13 +397,13 @@ public class PostThread {
         query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
 
         NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
-        long end=System.currentTimeMillis();
+        long end = System.currentTimeMillis();
         int newcount = 0;
         //log.info("getting list="+(end-start));
         while (i.hasNext()) {
             Node node=i.nextNode();
             //start=System.currentTimeMillis();
-            Posting posting=new Posting(node,this,true);
+            Posting posting = new Posting(node,this,true);
             newcount++;
             //end=System.currentTimeMillis();
             posting.setThreadPos(threadpos++);
@@ -412,13 +412,15 @@ public class PostThread {
         }
 
         // check the count number
-        if (postcount!=newcount) {
-            log.info("resync of posttreadcount : "+postcount+" "+newcount);
+        if (postcount != newcount) {
+            log.info("resync of posttreadcount : " + postcount + " " + newcount);
             postcount = newcount;
             save();
         }
 
         // very raw way to zap the cache
+        // but WHY?!
+        log.info("Clearing _All_ mmbase caches!!");
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
         cache = NodeCache.getCache();

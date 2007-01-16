@@ -28,8 +28,9 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.60 2007-01-16 17:08:27 ernst Exp $
+ * @version $Id: Forum.java,v 1.61 2007-01-16 19:08:39 michiel Exp $
  */
 public class Forum {
 
@@ -835,6 +836,7 @@ public class Forum {
             }
         }
         // very raw way to zap the cache
+        log.info("Clearing _All_ MMBase caches!");
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
         cache = NodeCache.getCache();
