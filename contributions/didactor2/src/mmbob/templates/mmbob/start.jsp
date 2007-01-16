@@ -37,7 +37,7 @@
         <mm:include page="path.jsp?type=index" />
         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
           <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-          <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
+          <mm:field id="adminmode" name="isadministrator" write="false" />
            <tr>
              <mm:compare referid="posterid" value="-1">
                <th width="100">
@@ -79,8 +79,9 @@
                     <br />
                     </mm:compare>
                     <mm:compare referid="image_logo" value="">
-                    <h4><di:translate key="mmbob.welcometoforum1" /> <mm:field
-                    name="active_firstname" /> <mm:field name="active_lastname" /> <%-- hh (<mm:field name="active_account" />) --%> <br /> <di:translate key="mmbob.welcometoforum2" />  <mm:field name="name" />  <di:translate key="mmbob.welcometoforum3" />.</h4><p />
+                    <h4><di:translate key="mmbob.welcometoforum1" /> 
+                    <di:hasrole role="administrator">admin</di:hasrole>
+                    <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> <%-- hh (<mm:field name="active_account" />) --%> <br /> <di:translate key="mmbob.welcometoforum2" />  <mm:field name="name" />  <di:translate key="mmbob.welcometoforum3" />.</h4><p />
 
                     </mm:compare>
                     <di:translate key="mmbob.lasttimelogin" /> : <mm:field name="active_lastseen"><mm:compare value="" inverse="true"><mm:field name="active_lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare></mm:field><br />
@@ -125,6 +126,7 @@
           <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
             <tr><td align="left"><a href="postarea.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:field name="id" />"><mm:field name="name" /></a>
             <p/>
+
             <mm:field name="description" />
             <%-- hh <p />
             Moderators : <mm:field name="moderators" />
