@@ -33,6 +33,7 @@ import javax.xml.transform.*;
 
 /**
  * @author Daniel Ockeloen
+ * @version $Id: Posting.java,v 1.27 2007-01-16 09:12:49 michiel Exp $
  */
 public class Posting {
 
@@ -40,8 +41,7 @@ public class Posting {
     /** The smilies transformer */
     private static Smilies smilies = new Smilies ();
 
-    // logger
-    static private Logger log = Logging.getLoggerInstance(Posting.class);
+    static private final Logger log = Logging.getLoggerInstance(Posting.class);
 
     private int id;
     private int createtime;
@@ -271,26 +271,31 @@ public class Posting {
     public boolean remove() {
         Node node = ForumManager.getCloud().getNode(id);
         log.debug("going to remove posting: " + node.getNumber());
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastpostnumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),  "lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastpostnumber");
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),"lastpostnumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),     "lastpostnumber");
         node.delete(true);
         parent.childRemoved(this);
         return true;
     }
 
-    private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
+    private void removeForeignKeys(NodeManager nodeManager, String fieldName) {
         //check if nodenumber is somewhere referenced as a foreignkey
         Node node = ForumManager.getCloud().getNode(id);
-        NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
-        log.debug("found: " + nodeList);
+        log.debug("Deleting  from " + nodeManager + " where " + fieldName + " = " + node.getNumber());
+        NodeList nodeList = nodeManager.getList(fieldName +"="+node.getNumber(),null,null);
+        if (log.isDebugEnabled()) {
+            log.debug("found: " + nodeList);
+        }
         NodeIterator it = nodeList.nodeIterator();
         Node tempNode;
         while (it.hasNext()) {
             tempNode = (Node)it.next();
-            tempNode.setValue(fieldname, null);
-            log.debug("just set the value of field "+fieldname+" to null. but it reads: "+tempNode.getStringValue(fieldname));
-            log.debug("cloud id: "+ForumManager.getCloud().hashCode());
+            tempNode.setValue(fieldName, null);
+            if (log.isDebugEnabled()) {
+                log.debug("just set the value of field " + fieldName + " to null. but it reads: " + tempNode.getStringValue(fieldName));
+                log.debug("cloud id: " + ForumManager.getCloud().hashCode());
+            }
             tempNode.commit();
         }
     }
