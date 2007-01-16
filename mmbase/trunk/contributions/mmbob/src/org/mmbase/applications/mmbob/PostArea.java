@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.43 2007-01-16 10:39:46 michiel Exp $:
+ * @version $Id: PostArea.java,v 1.44 2007-01-16 11:37:39 michiel Exp $:
  */
 public class PostArea {
 
@@ -264,7 +264,7 @@ public class PostArea {
      */
     public int getLastPostThreadNumber() {
 	if (postThreads == null) readPostThreads();
-	if (postThreads.size()>0) {
+	if (postThreads.size() > 0) {
             PostThread pt = postThreads.get(0);
             return pt.getId();
 	} else {
@@ -862,20 +862,22 @@ public class PostArea {
          //first remove all the postTheads
          if (postThreads == null) readPostThreads();
          if (getPostThreadCount() != 0) {
-             Iterator<PostThread> i = postThreads.iterator();
-             while (i.hasNext()) {
-                 PostThread postThread = i.next();
-                 log.debug("try to remove postthread: "+postThread.getId());
-                 if (!postThread.remove()) {
-                     log.error("Can't remove PostThread : " + postThread.getId());
-                     return false;
+             synchronized(postThreads) {
+                 Iterator<PostThread> i = postThreads.iterator();
+                 while (i.hasNext()) {
+                     PostThread postThread = i.next();
+                     log.debug("try to remove postthread: "+postThread.getId());
+                     if (!postThread.remove()) {
+                         log.error("Can't remove PostThread : " + postThread.getId());
+                         return false;
+                     }
+                     i.remove();
+                     // This used to be:
+                     //postThreads.remove("" + postThread.getId());
+                     // but that can't be correct, no Strings in that list.
+                     // I suppose this is meant:
+                     nameCache.remove("" + postThread.getId());
                  }
-                 i.remove();
-                 // This used to be:
-                 //postThreads.remove("" + postThread.getId());
-                 // but that can't be correct, no Strings in that list.
-                 // I suppose this is meant:
-                 nameCache.remove("" + postThread.getId());
              }
          }
          Node node = ForumManager.getCloud().getNode(id);
