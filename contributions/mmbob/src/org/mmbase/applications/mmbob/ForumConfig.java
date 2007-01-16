@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * configuration-handling (even if the all use mmbob.xml). I did that for the sync times alreqdy.
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: ForumConfig.java,v 1.20 2007-01-16 17:28:32 michiel Exp $
+ * @version $Id: ForumConfig.java,v 1.21 2007-01-16 17:57:03 michiel Exp $
  */
 public class ForumConfig {
     private static final Logger log = Logging.getLoggerInstance(ForumConfig.class);
@@ -174,8 +174,7 @@ public class ForumConfig {
             if (tmp!=null) navigationmethod = tmp;
             setGuiEdit("navigationmethod",getAttributeValue(reader, element, "navigation","guiedit"));
 
-            for(Iterator ns2=reader.getChildElements(element, "layout");ns2.hasNext(); ) {
-                Element n2=(Element)ns2.next();
+            for(Element n2 : ForumsConfig.list(reader.getChildElements(element, "layout"))) {
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
                     Element footerNode = (Element)layoutList.item(0);
@@ -189,8 +188,7 @@ public class ForumConfig {
             }
 
 
-            for(Iterator ns2=reader.getChildElements(element, "avatars");ns2.hasNext(); ) {
-                Element n2=(Element)ns2.next();
+            for(Element n2 : ForumsConfig.list(reader.getChildElements(element, "avatars"))) {
                 org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
                 if (avatarsList.getLength() > 0) {
                     Element uploadNode = (Element)avatarsList.item(0);
@@ -207,9 +205,7 @@ public class ForumConfig {
             }
 
 
-            for(Iterator ns2=reader.getChildElements(element, "profileentry");ns2.hasNext(); ) {
-                Element n2=(Element)ns2.next();
-                            
+            for(Element n2 : ForumsConfig.list(reader.getChildElements(element, "profileentry"))) {
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
@@ -289,8 +285,7 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(element, "generatedata"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Element n2 : ForumsConfig.list(reader.getChildElements(element, "generatedata"))) {
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String role = null;
@@ -312,8 +307,7 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(element, "quota"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Element n2 : ForumsConfig.list(reader.getChildElements(element, "quota"))) {
                 nm = n2.getAttributes();
                 if (nm != null) {
                     n3 = nm.getNamedItem("max");
@@ -331,8 +325,7 @@ public class ForumConfig {
                 }
             }
 
-            for(Iterator ns2=reader.getChildElements(element,"alias");ns2.hasNext(); ) {
-                Element n2=(Element)ns2.next();
+            for(Element n2 : ForumsConfig.list(reader.getChildElements(element,"alias"))) {
                 nm=n2.getAttributes();
                 if (nm!=null) {
                     String object=null;
@@ -376,8 +369,8 @@ public class ForumConfig {
                     fieldAliases.add(fa);
                 }
             }
-            for(Iterator ns2=reader.getChildElements(element, "postarea");ns2.hasNext(); ) {
-                Element n2 = (Element)ns2.next();
+
+            for(Element n2 : ForumsConfig.list(reader.getChildElements(element, "postarea"))) {
                 PostAreaConfig config = new PostAreaConfig(reader,n2);
                 subs.put(config.getId(), config);
             }
@@ -469,8 +462,7 @@ public class ForumConfig {
 
 
     private String getAttributeValue(DocumentReader reader, Element n, String itemname, String attribute) {
-        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
-            Element n2 = (Element) ns2.next();
+        for (Element n2 : ForumsConfig.list(reader.getChildElements(n, itemname))) {
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {
                 org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
