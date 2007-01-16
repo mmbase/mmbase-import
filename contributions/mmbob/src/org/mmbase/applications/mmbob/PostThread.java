@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.43 2007-01-16 10:39:29 michiel Exp $
+ * @version $Id: PostThread.java,v 1.44 2007-01-16 10:54:00 michiel Exp $
  */
 public class PostThread {
 
@@ -54,7 +54,9 @@ public class PostThread {
     private String lastpostsubject;
 
     private PostArea parent;
-    private Vector postings = null;
+    private Vector<Posting> postings = null; // Vector because clone is used (but that is
+                                             // questionable too)
+
     private int threadpos = 0;
     private List writers = new Vector(); // is synchronization needed?
     private PostingBody postingBody = new PostingBody();
@@ -221,7 +223,7 @@ public class PostThread {
 	lastpostsubject = subject;
     }
 
-    public Iterator getPostings(int page,int pagecount) {
+    public Iterator<Posting> getPostings(int page,int pagecount) {
 	if (postings == null) readPostings();
 
 	lastused = (int)(System.currentTimeMillis() / 1000);
@@ -252,7 +254,7 @@ public class PostThread {
     public Posting getPostingPos(int pos) {
 	if (postings==null) readPostings();
 	if (postings.size()>pos) {
-            return (Posting)postings.get(pos);
+            return postings.get(pos);
 	}
 	return null;
     }
@@ -373,7 +375,7 @@ public class PostThread {
      */
     public void readPostings() {
 	if (postings!=null) return;
-        postings=new Vector();
+        postings = new Vector<Posting>(); //synchronized? . Also: Vector is cloneable. needed somewhere.
         long start=System.currentTimeMillis();
         //NodeIterator i=node.getRelatedNodes("postings").nodeIterator();
 
@@ -537,12 +539,10 @@ public class PostThread {
     }
 
     public Posting getPosting(int postingid) {
-	if (postings==null) readPostings();
+	if (postings == null) readPostings();
 
-	Iterator e = postings.iterator();
-	while (e.hasNext()) {
-            Posting p=(Posting)e.next();
-            if(p.getId()==postingid) {
+        for (Posting p : postings) {
+            if(p.getId() == postingid) {
                 return p;
             }
 	}
@@ -557,6 +557,7 @@ public class PostThread {
         if (postings == null) readPostings();
 
         // need to clone the vector, because the postings change while we're removing the thread
+        // MM: really?
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
 
@@ -636,7 +637,7 @@ public class PostThread {
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
         if (postings.size() > 0 && lastposttime == p.getPostTime() && lastposter.equals(p.getPoster()) ) {
-	    Posting op = (Posting)postings.lastElement();
+	    Posting op = postings.lastElement();
 	    if (op != null) {
 	    	lastpostsubject  = op.getSubject();
 	    	lastposter  = op.getPoster();
@@ -696,12 +697,12 @@ public class PostThread {
     }
 
 
-    public List searchPostings(String searchkey, int posterid) {
+    public List<Posting> searchPostings(String searchkey, int posterid) {
 	List results = new Vector(); // synchronized?
 	return searchPostings(results,searchkey,posterid);
     }
 
-    public List searchPostings(List results, String searchkey, int posterid) {
+    public List<Posting> searchPostings(List results, String searchkey, int posterid) {
 	if (postings!=null) {
             Enumeration e = postings.elements();
             while (e.hasMoreElements()) {
