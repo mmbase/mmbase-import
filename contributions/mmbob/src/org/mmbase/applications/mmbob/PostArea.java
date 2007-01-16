@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.42 2007-01-15 18:36:50 michiel Exp $:
+ * @version $Id: PostArea.java,v 1.43 2007-01-16 10:39:46 michiel Exp $:
  */
 public class PostArea {
 
@@ -324,7 +324,9 @@ public class PostArea {
         if (end > postthreadcount) {
             end = postThreads.size();
         }
-        log.debug("START=" + start + " " + end + " " + postThreads.size());
+        if (log.isDebugEnabled()) {
+            log.debug("START=" + start + " " + end + " " + postThreads.size());
+        }
         List<PostThread> result = postThreads.subList(start, end);
 
         return result.iterator();
@@ -1007,12 +1009,12 @@ public class PostArea {
     }
 
 
-    public Vector searchPostings(String searchkey, int posterid) {
-	Vector results = new Vector();
+    public List searchPostings(String searchkey, int posterid) {
+	List results = new Vector(); // synchronized?
 	return searchPostings(results,searchkey,posterid);
     }
 
-    public Vector searchPostings(Vector results, String searchkey, int posterid) {
+    public List searchPostings(List results, String searchkey, int posterid) {
 	// check if this area is searchable for this user (is he logged in)
 	if (posterid == -1 && getGuestReadModeType().equals("closed")) return results;
 	if (postThreads != null) {
