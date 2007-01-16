@@ -33,7 +33,7 @@ import javax.xml.transform.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Posting.java,v 1.28 2007-01-16 17:08:27 ernst Exp $
+ * @version $Id: Posting.java,v 1.29 2007-01-16 18:53:20 michiel Exp $
  */
 public class Posting {
 
@@ -72,10 +72,10 @@ public class Posting {
         } else {
             body = "";
         }
-        c_poster = node.getStringValue(prefix+"c_poster");
-        subject = node.getStringValue(prefix+"subject");
-        createtime = node.getIntValue(prefix+"createtime");
-        edittime = node.getIntValue(prefix+"edittime");
+        c_poster = node.getStringValue(prefix + "c_poster");
+        subject = node.getStringValue(prefix + "subject");
+        createtime = node.getIntValue(prefix + "createtime");
+        edittime = node.getIntValue(prefix + "edittime");
         this.parent = parent;
     }
 
@@ -347,7 +347,7 @@ public class Posting {
         } 
 
         //String imagecontext = "/mmbase/thememanager/images";
-        if (parent.getParent().getParent().getSmileysEnabled().equals("true")) {
+        if ("true".equals(parent.getParent().getParent().getSmileysEnabled())) {
             body = smilies.transform(body, themeid, imagecontext);
         }
         return body;
