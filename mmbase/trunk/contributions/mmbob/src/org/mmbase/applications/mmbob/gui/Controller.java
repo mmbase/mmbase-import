@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.68 2007-01-16 14:47:44 michiel Exp $
+ * @version $Id: Controller.java,v 1.69 2007-01-16 14:57:06 michiel Exp $
  */
 public class Controller {
 
@@ -2442,7 +2442,11 @@ public class Controller {
                     a.setName(name);
                     a.setDescription(description);
                     a.save();
+                } else {
+                    log.warn("Cannot find post area " + postareaid);
                 }
+            } else {
+                log.warn("Cannot change postarea because " + activeid + " (" + ap + ") is no administrator");
             }
         }
         return true;
