@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.69 2007-01-16 14:57:06 michiel Exp $
+ * @version $Id: Controller.java,v 1.70 2007-01-16 19:07:36 michiel Exp $
  */
 public class Controller {
 
@@ -1682,16 +1682,19 @@ public class Controller {
      * @param body Body of the new post
      * @return  (map) containing the postthreadid of the newly created post
      */
-    public Map newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
+    public Map<String, Object> newPost(String forumid, String postareaid, String subject, String poster, String body, String mood) {
 
-        HashMap map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
 
-        if (subject.length()>60) subject = subject.substring(0,57)+"...";
+        if (subject.length() > 60) subject = subject.substring(0, 57) + "...";
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-            Poster p=f.getPoster(poster);
+            if (log.isDebugEnabled()) {
+                log.debug("Posting to " + f + " area " + a);
+            }
+            Poster p = f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
                 if (subject.equals("")) {
                     map.put("error", "no_subject");
@@ -1701,18 +1704,18 @@ public class Controller {
                     map.put("error", "illegal_html");
                 } else if (checkIllegalHtml(body)) {
                     map.put("error", "illegal_html");
-                } else if (p!=null && p.checkDuplicatePost(subject,body)) {
+                } else if (p != null && p.checkDuplicatePost(subject, body)) {
                     map.put("error", "duplicate_post");
                 } else if (checkMaxPostSize(subject,body)) {
                     map.put("error", "maxpostsize");
-                } else if (p!=null && checkSpeedPosting(a,p)) {
+                } else if (p!=null && checkSpeedPosting(a, p)) {
                     map.put("error", "speed_posting");
-                    map.put("speedposttime", ""+a.getSpeedPostTime());
+                    map.put("speedposttime", "" + a.getSpeedPostTime());
                 } else {
                     body = a.filterContent(body);
                     subject = filterHTML(subject);
                     int postthreadid = a.newPost(subject, p, body,mood,false);
-                    map.put("postthreadid", new Integer(postthreadid));
+                    map.put("postthreadid", Integer.valueOf(postthreadid));
                     map.put("error", "none");
                     if (p!=null) {
                         p.setLastSubject(subject);
@@ -1720,7 +1723,11 @@ public class Controller {
                         p.setLastPostTime((int)(System.currentTimeMillis()/1000));
                     }
                 }
+            } else {
+                log.debug("Not posting because area=" + a + " poster=" + p + " " + (p == null ? "" : ("(blocked: " + p.isBlocked() + ")")));
             }
+        } else {
+            log.debug("Coudl not find forum " + forumid);
         }
         return map;
     }
@@ -2607,9 +2614,9 @@ public class Controller {
         return false;
     }
 
-    private boolean checkSpeedPosting(PostArea a,Poster p) {
+    private boolean checkSpeedPosting(PostArea a, Poster p) {
         if (p.getLastPostTime()!=-1) {
-            if ((System.currentTimeMillis()/1000)-a.getSpeedPostTime()<p.getLastPostTime()) {
+            if ((System.currentTimeMillis()/1000) - a.getSpeedPostTime() < p.getLastPostTime()) {
                 return true;
             }
         }
