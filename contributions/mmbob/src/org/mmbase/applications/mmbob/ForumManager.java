@@ -33,7 +33,7 @@ import org.mmbase.util.FileWatcher;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: ForumManager.java,v 1.34 2007-01-16 17:30:53 michiel Exp $
+ * @version $Id: ForumManager.java,v 1.35 2007-01-16 18:01:57 michiel Exp $
  */
 public class ForumManager {
     private static final Logger log = Logging.getLoggerInstance(ForumManager.class);
@@ -94,9 +94,7 @@ public class ForumManager {
                 DocumentReader reader = config.getReader();
                 Element element = config.getElement();
 
-                for (Iterator i = reader.getChildElements(element, "syncer"); i.hasNext(); ) {
-                    Element syncerElement = (Element) i.next
-();
+                for (Element syncerElement : ForumsConfig.list(reader.getChildElements(element, "syncer"))) {
                     String type = syncerElement.getAttribute("type");
                     if ("slow".equals(type)) {
                         syncslow = new ForumMMBaseSyncer(Integer.parseInt(syncerElement.getAttribute("sleepTime")), 50,
@@ -381,8 +379,7 @@ public class ForumManager {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
             DocumentReader reader = new DocumentReader(is, ForumManager.class);
             // decode forums
-            for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
-                Element n = (Element) ns.next();
+            for (Element n : ForumsConfig.list(reader.getChildElements("mmbobconfig", "forums"))) {
                 // so it seems that you can configure more than one forum, but only the last one is
                 // actually used. (@id is ignored).
                 if (n != null) {
