@@ -27,10 +27,12 @@ import org.mmbase.util.logging.*;
  * forumManager
  * ToDo: Write docs!
  *
+ * @todo This class looks remarkably like {@link ForumConfig}. Something's odd.
  * @author Daniel Ockeloen (MMBased)
+ * @verion $Id: ForumsConfig.java,v 1.32 2007-01-16 17:28:32 michiel Exp $
  */
 public class ForumsConfig {
-    private static Logger log = Logging.getLoggerInstance(ForumsConfig.class);
+    private static final Logger log = Logging.getLoggerInstance(ForumsConfig.class);
     private final Map fieldaliases = new HashMap();
     private final Map subs = new HashMap();
     private String defaultaccount, defaultpassword;
@@ -73,13 +75,26 @@ public class ForumsConfig {
     private int quotawarning = 80;
     private boolean firstrun = true;
 
-    public ForumsConfig (DocumentReader reader,Element n) {
+    private final DocumentReader reader;
+    private final Element element;
+
+    public ForumsConfig (DocumentReader reader, Element n) {
+        element = n;
+        this.reader = reader;
         log.debug("subhasmap cleared");
 	if (firstrun) checkCloudModel();
 	firstrun = false;
-	decodeConfig(reader,n);
+	decodeConfig(reader, n);
     }
     public ForumsConfig() {
+        element = null;
+        reader = null;
+    }
+    public Element getElement() {
+        return element;
+    }
+    public DocumentReader getReader() {
+        return reader;
     }
 
     private boolean decodeConfig(DocumentReader reader,Element n) {
@@ -117,10 +132,12 @@ public class ForumsConfig {
 
             //get avatar configuration 
             Element avatarsElement = reader.getElementByPath("mmbobconfig.forums.avatars");
-            Element avatarsUploadElement = reader.getElementByPath(avatarsElement,"avatars.upload");
-            avatarsUploadEnabled = avatarsUploadElement.getAttribute("enable");
-            Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
-            avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
+            if (avatarsElement != null) {
+                Element avatarsUploadElement = reader.getElementByPath(avatarsElement, "avatars.upload");
+                avatarsUploadEnabled = avatarsUploadElement.getAttribute("enable");
+                Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
+                avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
+            }
 
             for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
                 Element n2 = (Element) ns2.next();
@@ -231,7 +248,7 @@ public class ForumsConfig {
             externalrooturl = getAttributeValue(reader,n,"urls","externalroot");
             fromEmailAddress = getAttributeValue(reader,n,"email","from");
 
-            if (getAttributeValue(reader,n,"replyoneachpage","value").equals("true")) {
+            if ("true".equals(getAttributeValue(reader,n,"replyoneachpage","value"))) {
                 replyoneachpage = true;
             }
 
@@ -329,14 +346,14 @@ public class ForumsConfig {
                         externkey=n3.getNodeValue();
                     }
                     id="default."+object+"."+field;
-                    FieldAlias fa=new FieldAlias(id);
+                    FieldAlias fa = new FieldAlias(id);
                     fa.setObject(object);
                     fa.setExtern(extern);
                     fa.setField(field);
                     fa.setExternField(externfield);
                     fa.setKey(key);
                     fa.setExternKey(externkey);
-                    fieldaliases.put(id,fa);
+                    fieldaliases.put(id, fa);
                 }
             }
 
