@@ -58,7 +58,7 @@ Contributions build file
   </target>
   
   <target name="mmbob" depends="mmbase">
-    <ant dir="mmbob"      target="dependent.package" inheritAll="false">
+    <ant dir="mmbob"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
       <property name="build.dir"        value="${build.dir}" />
       <property name="download.dir"        value="${download.dir}" />
