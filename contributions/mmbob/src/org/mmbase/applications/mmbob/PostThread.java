@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.45 2007-01-16 11:12:12 michiel Exp $
+ * @version $Id: PostThread.java,v 1.46 2007-01-16 17:08:27 ernst Exp $
  */
 public class PostThread {
 
@@ -598,8 +598,6 @@ public class PostThread {
 //            log.debug("PostThread node " + id + " dous not exist!");
 //        }
 
-
-
         return true;
     }
 
@@ -636,20 +634,20 @@ public class PostThread {
 
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
-        if (postings.size() > 0 && lastposttime == p.getPostTime() && lastposter.equals(p.getPoster()) ) {
-	    Posting op = postings.lastElement();
-	    if (op != null) {
-	    	lastpostsubject  = op.getSubject();
-	    	lastposter  = op.getPoster();
-	    	lastposttime  = op.getPostTime();
-	    }
+        if (postings.size() > 0 && lastposttime == p.getPostTime() && lastposter.equals(p.getPoster())) {
+            Posting op = postings.lastElement();
+            if (op != null) {
+                lastpostsubject = op.getSubject();
+                lastposter = op.getPoster();
+                lastposttime = op.getPostTime();
+            }
         }
 
         if (postings.size() == 0) {
             log.debug("Postthread: removing whole thread");
-	    Node node = ForumManager.getCloud().getNode(id);
-            node.delete(true);
+            Node node = ForumManager.getCloud().getNode(id);
             ForumManager.nodeDeleted(node);
+            node.delete(true);
             parent.childRemoved(this);
         } else {
             log.debug("Postthread: removing just a reply from the thread");

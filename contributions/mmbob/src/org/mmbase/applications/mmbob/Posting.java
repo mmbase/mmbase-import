@@ -33,7 +33,7 @@ import javax.xml.transform.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Posting.java,v 1.27 2007-01-16 09:12:49 michiel Exp $
+ * @version $Id: Posting.java,v 1.28 2007-01-16 17:08:27 ernst Exp $
  */
 public class Posting {
 
@@ -274,6 +274,9 @@ public class Posting {
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),  "lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),     "lastpostnumber");
+
+        //make shure this node is not in a forum syncer
+        ForumManager.nodeDeleted(node);
         node.delete(true);
         parent.childRemoved(this);
         return true;
