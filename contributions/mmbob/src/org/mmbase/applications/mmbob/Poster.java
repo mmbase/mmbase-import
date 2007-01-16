@@ -65,7 +65,7 @@ public class Poster {
      * @param node   poster Node
      * @param parent Forum that the poster belongs to
      */
-    public Poster(Node node, Forum parent,boolean prefixwanted) {
+    public Poster(Node node, Forum parent, boolean prefixwanted) {
 	String prefix="";
 	if (prefixwanted) prefix = "posters.";
 	this.quotanumber=10;
