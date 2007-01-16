@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><mm:content type="text/html">
+%><mm:content type="text/html" expires="0">
 <mm:cloud method="delegate">
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="thememanager/loadvars.jsp" %>
@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
     <title><di:translate key="mmbob.mmbaseforums" /></title>
   </head>
-  <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
+  <mm:import externid="forumid">unknown</mm:import>
   <mm:compare referid="forumid" value="unknown">
     <table align="center" cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%">
       <tr><th><di:translate key="mmbob.systemerror" /></th></tr>
@@ -136,7 +136,7 @@
                 <td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <di:translate key="mmbob.visitorsonline1" /> <mm:field name="lastposter" /><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field></td>
             </tr>
           </mm:nodelistfunction>
-</table>
+        </table>
   <mm:compare referid="adminmode" value="true">
     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
     <tr><th align="lef"><di:translate key="mmbob.adminfunctions" /></th></tr>
