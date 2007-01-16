@@ -589,8 +589,7 @@ public class Poster {
      * @return <code>true</code> if this method is called
      */
     public boolean isBlocked() {
-       if (this.state == STATE_DISABLED) return true;
-       return false;
+        return this.state == STATE_DISABLED;
     }
 
 
