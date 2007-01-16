@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.65 2007-01-15 17:37:00 michiel Exp $
+ * @version $Id: Controller.java,v 1.66 2007-01-16 09:25:14 michiel Exp $
  */
 public class Controller {
 
@@ -865,7 +865,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
 
         return map;
@@ -893,7 +893,7 @@ public class Controller {
                 return f.getHeaderPath();
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -912,7 +912,7 @@ public class Controller {
                 return f.getFooterPath();
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -931,7 +931,7 @@ public class Controller {
                 return f.getFromEmailAddress();
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -986,7 +986,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return map;
     }
@@ -1016,7 +1016,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
 
         return map;
@@ -1066,7 +1066,7 @@ public class Controller {
                         int tmpi = Integer.parseInt(posterid);
                         po = f.getPoster(tmpi);
                     } catch(Exception e) {
-                        log.error(e);
+                        log.error(e.getMessage(), e);
                     }
                 }
                 addPosterInfo(map, po);
@@ -2612,7 +2612,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return list;
     }
@@ -2639,7 +2639,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return list;
     }
@@ -2662,7 +2662,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -2686,7 +2686,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -2709,7 +2709,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return map;
     }
@@ -2727,7 +2727,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return "";
     }
@@ -2744,7 +2744,7 @@ public class Controller {
                     f.setBookmarkedChange(id,ap,false);
                 }
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
             }
         }
         return false;
@@ -2763,7 +2763,7 @@ public class Controller {
                     f.setEmailOnChange(id,ap,false);
                 }
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
             }
         }
         return false;
