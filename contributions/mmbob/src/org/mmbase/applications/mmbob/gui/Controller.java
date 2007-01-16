@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.67 2007-01-16 10:55:00 michiel Exp $
+ * @version $Id: Controller.java,v 1.68 2007-01-16 14:47:44 michiel Exp $
  */
 public class Controller {
 
@@ -1833,11 +1833,21 @@ public class Controller {
             if (f != null) {
                 Poster ap = f.getPoster(activeid);
                 Poster mp = f.getPoster(moderatorid);
-                if (ap != null && f.isAdministrator(ap.getNick())) {
-                    f.addAdministrator(mp);
+                if (mp != null) {
+                    if (ap != null && f.isAdministrator(ap.getNick())) {
+                        log.service("Added administrator " + moderatorid + " to forum " + f);
+                        f.addAdministrator(mp);
+                    } else {
+                        log.warn("Cannot make " + sadministratorid + " administrator by " + activeid + " because she is no adminstrator herself: " + ap);
+                    }
+                } else {
+                    log.warn("Could not find poster with id " + moderatorid);
                 }
+            } else {
+                log.warn("No forum with id " + forumid + " found");
             }
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return true;
     }
@@ -2143,12 +2153,14 @@ public class Controller {
      * @param password default/first admin password name for this new forum
      * @return (map) containing the forumid of the newly created forum
      */
-    public Map newForum(String name, String language, String description, String account, String password,String nick,String email) {
-        Map map = new HashMap();
+    public Map<String, Object> newForum(String name, String language, String description, String account, String password,String nick,String email) {
+        Map<String, Object> map = new HashMap();
         name = filterHTML(name);
         description = filterHTML(description);
-        int forumid = ForumManager.newForum(name, language, description, account, password,nick,email);
-        map.put("forumid",new Integer(forumid));
+        int forumid = ForumManager.newForum(name, language, description, account, password, nick, email);
+        map.put("forumid", Integer.valueOf(forumid));
+        Forum forum = ForumManager.getForum(forumid);
+        map.put("adminid", Integer.valueOf(forum.getAdministrators().nextElement().getId()));
         return map;
     }
 
