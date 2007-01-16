@@ -26,24 +26,26 @@ import org.mmbase.util.logging.Logger;
 /**
  * The syncer for Nodes used in MMBob. There can be different types of syncing mechanisms:
  * slow for things like statistics and fast for really important things like postings, userinfo, etc
+ *
+ * This object is responsible for calling {@link Node#commit}, of the MMBase nodes involved in
+ * MMBob. It does that only to spare the MMBase database. It maintains a queue of 'dirty nodes', and
+ * sometimes calls commit on one and cleans it up.
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.12 2007-01-16 11:27:08 michiel Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.13 2007-01-16 17:29:13 michiel Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
-    static private final Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
+    private static final Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
 
     // holds the fellow ForumMMBaseSyncers that are instantiated
-    // MM: I think the term is 'siblings' ?
-    static ArrayList brothers = new ArrayList();
+    private static final List<ForumMMBaseSyncer> siblings = new ArrayList<ForumMMBaseSyncer>();
 
     // thread
     Thread kicker = null;
-    final int sleeptime;
-    final int delaytime;
-    final int maxqueue;
+    final int sleepTime; // ms
+    final int delayTime; // ms
 
     /**
      * The vector dirtyNodes is also referred to as "syncQueue"
@@ -64,15 +66,14 @@ public class ForumMMBaseSyncer implements Runnable {
     /**
      * Contructor
      *
-     * @param sleeptime  time to sleep
-     * @param maxqueue   maximum number of nodes in the syncQueue (not implemented?)
-     * @param startdelay delay (not implemented?)
+     * @param sleepTime  time to sleep
+     * @param maxQueue   maximum number of nodes in the syncQueue (not implemented)
+     * @param startDelay delay (not implemented?)
      */
-    public ForumMMBaseSyncer(int sleeptime, int maxqueue, int startdelay) {
-        this.sleeptime = sleeptime;
-        this.maxqueue = maxqueue;
-        this.delaytime = startdelay;
-
+    public ForumMMBaseSyncer(int sleepTime, int maxQueue, int startDelay) {
+        this.sleepTime = sleepTime;
+        //this.maxqueue = maxqueue;
+        this.delayTime = startDelay;
         init();
     }
 
@@ -82,9 +83,9 @@ public class ForumMMBaseSyncer implements Runnable {
     public void init() {
         ForumMMBaseSyncerShutdown shutdownsyncer = new ForumMMBaseSyncerShutdown(this);
         Runtime.getRuntime().addShutdownHook(shutdownsyncer);
-        log.debug("init syncer" + sleeptime);
-        // add this syncer to the band of brothers
-        brothers.add(this);
+        log.debug("init syncer" + sleepTime);
+        // add this syncer to the band of siblings
+        siblings.add(this);
         this.start();
     }
 
@@ -141,12 +142,12 @@ public class ForumMMBaseSyncer implements Runnable {
                                 // check if the node was not deleted
                                 Node on = node.getNodeValue("lastpostnumber");
                                 if (on == null) {
-                                    node.setValue("lastpostnumber", "");
+                                    node.setValue("lastpostnumber", null);
                                 }
                             }
                             log.debug("committing node with number: " + node.getNumber());
                             node.commit();
-                            removeFromBrothers(node);
+                            removeFromSiblings(node);
                         }
                     } catch (Exception e) {
                         log.error("NODE PROBLEM WITH : " + node.getNumber() + " " + e.getMessage(), e);
@@ -154,13 +155,13 @@ public class ForumMMBaseSyncer implements Runnable {
                     if (kicker.isInterrupted()) {
                         throw new InterruptedException();
                     }
-                    Thread.sleep(delaytime);
+                    Thread.sleep(delayTime); // this causes that mmbob can handle only 1 node per delaytime.
                 }
                 log.trace("going to sleep");
                 if (kicker.isInterrupted()) {
                     throw new InterruptedException();
                 }
-                kicker.sleep(sleeptime);
+                kicker.sleep(sleepTime);
             } catch (InterruptedException f2) {
                 shutdownSync();
             }
@@ -174,9 +175,9 @@ public class ForumMMBaseSyncer implements Runnable {
             while (dirtyNodes.size() > 0) {
                 Node node = (Node) dirtyNodes.elementAt(0);
                 dirtyNodes.removeElementAt(0);
-                log.debug("removing node " + node.getNumber() +" from sync queue "+sleeptime);
+                log.debug("removing node " + node.getNumber() + " from sync queue " + sleepTime);
                 node.commit();
-                removeFromBrothers(node);
+                removeFromSiblings(node);
             } 
         } catch (Exception ex) {
             log.fatal("something went wrong while shutting down Syncer " + ex.getMessage());
@@ -197,16 +198,16 @@ public class ForumMMBaseSyncer implements Runnable {
      * Remove the given node also from the brother syncers
      * @param node
      */
-    private void removeFromBrothers(Node node) {
-        for (int i = 0; i<brothers.size();i++) {
-            if (((ForumMMBaseSyncer)brothers.get(i)) != this) {
+    private void removeFromSiblings(Node node) {
+        for (ForumMMBaseSyncer sibling : siblings) {
+            if (sibling != this) {
                 if (log.isDebugEnabled()) {
-                    log.debug("removing node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime);
+                    log.debug("removing node " + node.getNumber() + " from sync queue "+ sibling);
                 }
-                ((ForumMMBaseSyncer)brothers.get(i)).nodeDeleted(node);
+                sibling.nodeDeleted(node);
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("won't remove node " + node.getNumber() +" from sync queue " + ((ForumMMBaseSyncer)brothers.get(i)).sleeptime + " because i probably just did");
+                    log.debug("won't remove node " + node.getNumber() +" from sync queue " + sibling + " because i probably just did");
                 }
             }
         }
@@ -220,16 +221,20 @@ public class ForumMMBaseSyncer implements Runnable {
     public void syncNode(Node node) {
         if (!dirtyNodes.contains(node)) {
             dirtyNodes.addElement(node);
-            log.debug("added node=" + node.getNumber() + " to sync queue " + sleeptime);
+            log.debug("added node=" + node.getNumber() + " to sync queue " + this);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("refused node=" + node.getNumber() + " already in sync queue " + sleeptime);
+                log.debug("refused node=" + node.getNumber() + " already in sync queue " + this);
                 log.trace("sync queue " + dirtyNodes);
             }
         }
     }
-    
-    String printCurrentContent(){
+
+    String printCurrentContent() {
         return dirtyNodes.toString();
     }
+    public String toString() {
+        return "SYNCER[delay=" + delayTime + " ms, sleep=" + sleepTime + " ms]";
+    }
+
 }
