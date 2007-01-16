@@ -18,7 +18,6 @@ import org.mmbase.datatypes.DataTypes;
 import org.mmbase.framework.Framework;
 import org.mmbase.framework.BasicFramework;
 import org.mmbase.module.ProcessorModule;
-import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.corebuilders.*;
@@ -47,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.215 2006-12-15 16:52:02 michiel Exp $
+ * @version $Id: MMBase.java,v 1.216 2007-01-16 16:05:20 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
