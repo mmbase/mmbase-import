@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.57 2007-01-16 10:42:41 michiel Exp $
+ * @version $Id: Forum.java,v 1.58 2007-01-16 14:49:16 michiel Exp $
  */
 public class Forum {
 
@@ -51,7 +51,7 @@ public class Forum {
     private String lastposter;
     private String lastpostsubject;
 
-    private Hashtable administrators = new Hashtable();
+    private Map<String, Poster> administrators = new Hashtable(); // synchronized?
 
     private Map<String, PostArea> postareas = new Hashtable<String, PostArea>(); // synchronized?
     private Map<String, String> filterwords;
@@ -298,8 +298,8 @@ public class Forum {
      *
      * @return administrators
      */
-    public Enumeration getAdministrators() {
-        return administrators.elements();
+    public Enumeration<Poster> getAdministrators() {
+        return Collections.enumeration(administrators.values());
     }
 
     public Enumeration getNonAdministrators(String searchkey) {
@@ -377,9 +377,7 @@ public class Forum {
     public String getAdministratorsLine(String baseurl) {
         if (administratorsline != null) return administratorsline;
         administratorsline = "";
-        Enumeration e = administrators.elements();
-        while (e.hasMoreElements()) {
-            Poster p = (Poster) e.nextElement();
+        for (Poster p : administrators.values()) {
             if (!administratorsline.equals("")) administratorsline += ",";
             if (baseurl.equals("")) {
                 administratorsline += p.getNick();
@@ -731,14 +729,20 @@ public class Forum {
         if (p != null) {
             return p;
         } else {
-            /*
-              if (node!=null) {
-              p=new Poster(node);
-              posters.put(new Integer(posterid),p);
-              posternames.put(p.getNick(),p);
-              return p;
-              }
-            */
+            // MM: I'm not entirely sure that it is acceptable that any poster node can be poster of
+            // any forum.
+            // But something like this is needed in Didactor.
+            if (node != null && node.getCloud().hasNode(posterid)) {
+                Node posterNode = node.getCloud().getNode(posterid);
+                if (posterNode.getNodeManager().getName().equals("posters")) {
+                    p = new Poster(posterNode, this, false);
+                    posters.put(Integer.valueOf(posterid), p);
+                    posternames.put(p.getNick(), p);
+                    return p;
+                } else {
+                    log.warn("Node " + posterNode + " is not a node of type 'posters' (but a " + posterNode.getNodeManager().getName());
+                }
+            }
         }
         return null;
     }
