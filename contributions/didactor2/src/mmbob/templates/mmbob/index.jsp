@@ -22,9 +22,11 @@
       <di:hasrole role="teacher">
         <mm:remove referid="posterid"/>
         <mm:remove referid="lang"/>
-        <mm:listnodes type="posters" constraints="account='admin'" max="1">
-          <mm:import id="adminposter" reset="true"><mm:field name="number"/></mm:import>
-        </mm:listnodes>
+        <mm:node number="${user}">
+          <mm:relatednodes type="posters" constraints="account='admin'" max="1">
+            <mm:import id="adminposter" reset="true"><mm:field name="number"/></mm:import>
+          </mm:relatednodes>
+        </mm:node>
 
         <jsp:directive.include file="getposterid.jsp" />
         <mm:import id="dummy" reset="true"><mm:write referid="posterid"/></mm:import>
