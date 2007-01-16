@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.66 2007-01-16 09:25:14 michiel Exp $
+ * @version $Id: Controller.java,v 1.67 2007-01-16 10:55:00 michiel Exp $
  */
 public class Controller {
 
@@ -95,10 +95,12 @@ public class Controller {
 
                     if (activeid != -1) {
                         Poster ap = f.getPoster(activeid);
-                        ap.signalSeen();
-                        addActiveInfo(map, ap);
+                        if (ap != null) {
+                            ap.signalSeen();
+                            addActiveInfo(map, ap);
+                        }
                         if (ap != null && f.isAdministrator(ap.getNick())) {
-                            map.put("isadministrator", "true");
+                            map.put("isadministrator", "true"); // why not using Boolean.TRUE or so?
                         } else {
                             map.put("isadministrator", "false");
                         }
@@ -106,7 +108,7 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return list;
     }
@@ -420,7 +422,7 @@ public class Controller {
                         map.put("id",new Integer(p.getId()));
                         map.put("threadpos",new Integer(p.getThreadPos()));
                         // very weird way need to figure this out
-                        if (p.getThreadPos()%2==0) {
+                        if (p.getThreadPos() % 2 == 0) {
                             map.put("tdvar", "threadpagelisteven");
                         } else {
                             map.put("tdvar", "threadpagelistodd");
@@ -428,10 +430,12 @@ public class Controller {
                         // should be moved out of the loop
                         if (activeid != -1) {
                             Poster ap = f.getPoster(activeid);
-                            ap.signalSeen();
-                            ap.seenThread(t);
-                            addActiveInfo(map, ap);
-                            if (po != null && po.getNick().equals(ap.getNick())) {
+                            if (ap != null) {
+                                ap.signalSeen();
+                                ap.seenThread(t);
+                                addActiveInfo(map, ap);
+                            }
+                            if (ap != null && po != null && po.getNick().equals(ap.getNick())) {
                                 map.put("isowner", "true");
                             } else {
                                 map.put("isowner", "false");
@@ -715,25 +719,26 @@ public class Controller {
             int startpos = page*pagesize;
             int i = 1;
             int j = 1;
-            Enumeration e = null;
+            List<Posting> l = null;
             if (!searchareaid.equals("-1")) {
                 if (!searchpostthreadid.equals("-1")) {
                     PostArea a = f.getPostArea(searchareaid);
-                    if (a!=null) {
+                    if (a != null) {
                         PostThread t = a.getPostThread(searchpostthreadid);
-                        e = t.searchPostings(searchkey,posterid).elements();
+                        l = t.searchPostings(searchkey,posterid);
                     }
                 } else {
                     PostArea a = f.getPostArea(searchareaid);
-                    if (a!=null) e = a.searchPostings(searchkey,posterid).elements();
+                    if (a!=null) l = a.searchPostings(searchkey,posterid);
                 }
             } else {
-                e = f.searchPostings(searchkey,posterid).elements();
+                l = f.searchPostings(searchkey,posterid);
             }
-            if (e!=null) {
-                while (e.hasMoreElements() && j<25) {
-                    Posting p = (Posting) e.nextElement();
-                    HashMap map =  new HashMap();
+            if (l != null) {
+                Iterator<Posting> iterator = l.iterator();
+                while (iterator.hasNext() && j<25) {
+                    Posting p = iterator.next();
+                    Map map =  new HashMap();
                     map.put("postingid", new Integer(p.getId()));
                     PostThread pt = p.getParent();
                     PostArea pa = pt.getParent();
@@ -855,8 +860,10 @@ public class Controller {
                 map.put("hasnick", new Boolean(f.hasNick()));
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
-                    ap.signalSeen();
-                    addActiveInfo(map, ap);
+                    if (ap != null) {
+                        ap.signalSeen();
+                        addActiveInfo(map, ap);
+                    }
                     if (ap != null && f.isAdministrator(ap.getNick())) {
                         map.put("isadministrator", "true");
                     } else {
@@ -1435,11 +1442,11 @@ public class Controller {
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
             map.put("name", a.getName());
-            map.put("postthreadcount", new Integer(a.getPostThreadCount()));
-            map.put("postcount", new Integer(a.getPostCount()));
-            map.put("viewcount", new Integer(a.getViewCount()));
+            map.put("postthreadcount", Integer.valueOf(a.getPostThreadCount()));
+            map.put("postcount", Integer.valueOf(a.getPostCount()));
+            map.put("viewcount", Integer.valueOf(a.getViewCount()));
             map.put("lastposter", a.getLastPoster());
-            map.put("lastposttime", new Integer(a.getLastPostTime()));
+            map.put("lastposttime", Integer.valueOf(a.getLastPostTime()));
             map.put("lastsubject", a.getLastSubject());
             map.put("guestreadmodetype", a.getGuestReadModeType());
             map.put("guestwritemodetype", a.getGuestWriteModeType());
@@ -1447,13 +1454,16 @@ public class Controller {
             map.put("privatemessagesenabled", f.getPrivateMessagesEnabled());
             map.put("smileysenabled", f.getSmileysEnabled());
             map.put("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
-            map.put("pagecount", new Integer(a.getPageCount(pagesize)));
+            map.put("pagecount", Integer.valueOf(a.getPageCount(pagesize)));
             if (activeid != -1) {
                 Poster ap = f.getPoster(activeid);
-                if (ap == null) {
-                    throw new RuntimeException("No poster object found for id '" + activeid + "'");
+                if (ap != null) {
+                    ap.signalSeen();
+                } else {
+                    log.warn("No poster object found for id '" + activeid + "'");
+                    //throw new RuntimeException("No poster object found for id '" + activeid + "'");
                 }
-                ap.signalSeen();
+
                 if (ap != null && f.isAdministrator(ap.getNick())) {
                     map.put("isadministrator", "true");
                 } else {
