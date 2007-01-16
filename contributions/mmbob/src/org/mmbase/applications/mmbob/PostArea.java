@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.45 2007-01-16 17:08:27 ernst Exp $:
+ * @version $Id: PostArea.java,v 1.46 2007-01-16 19:07:11 michiel Exp $:
  */
 public class PostArea {
 
@@ -369,6 +369,9 @@ public class PostArea {
         if (c < 1) c = 1;
         int n = page + 1;
         if (n > pagecount) n = pagecount;
+
+        // @todo Use StringBuilder. Use XHTML.
+
         String result = "<a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + c + "\"" + cssclass + ">&lt</a>";
 	int i = 1;
         for (i = 1; i <= pagecount; i++) {
@@ -574,7 +577,7 @@ public class PostArea {
         // very raw way to zap the cache
 
         // MM: OH NO, THIS IS VERY, VERY STUPID. Remove this ASAP.
-
+        log.info("Clearing _All_ MMBase caches!");
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
         cache = NodeCache.getCache();
@@ -699,7 +702,8 @@ public class PostArea {
      * re-add the given PostThread to the postthreads-Vector
      * @param child postthread
      */
-    public void resort(PostThread child) {
+    protected void resort(PostThread child) {
+        log.debug("Readding " + child);
         // move to the top of the queue
         if (postThreads.remove(child)) {
             if (child.getState().equals("pinned") || child.getState().equals("pinnedclosed")) {
@@ -862,28 +866,29 @@ public class PostArea {
          //first remove all the postTheads
          if (postThreads == null) readPostThreads();
          if (getPostThreadCount() != 0) {
-             synchronized(postThreads) {
-                 Iterator<PostThread> i = postThreads.iterator();
-                 while (i.hasNext()) {
-                     PostThread postThread = i.next();
-                     log.debug("try to remove postthread: "+postThread.getId());
-                     if (!postThread.remove()) {
-                         log.error("Can't remove PostThread : " + postThread.getId());
-                         return false;
-                     }
-                     i.remove();
-                     // This used to be:
-                     //postThreads.remove("" + postThread.getId());
-                     // but that can't be correct, no Strings in that list.
-                     // I suppose this is meant:
-                     nameCache.remove("" + postThread.getId());
+             Iterator<PostThread> i = postThreads.iterator();
+             while (i.hasNext()) {
+                 PostThread postThread = i.next();
+                 log.debug("try to remove postthread: "+postThread.getId());
+                 if (!postThread.remove()) {
+                     log.error("Can't remove PostThread : " + postThread.getId());
+                     return false;
                  }
+                 //i.remove(); // This causes ConcurrentModificationException, which I don't quite understand.
+                 // This used to be:
+                 //postThreads.remove("" + postThread.getId());
+                 // but that can't be correct, no Strings in that list.
+                 // I suppose this is meant:
+                 nameCache.remove("" + postThread.getId());
              }
          }
          Node node = ForumManager.getCloud().getNode(id);
          log.debug("deleting PostArea with id " + node.getNumber());
          ForumManager.nodeDeleted(node);
          node.delete(true);
+         if (log.isDebugEnabled()) {
+             log.debug("postThreads " + postThreads);
+         }
          return true;
      }
 
