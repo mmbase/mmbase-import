@@ -34,6 +34,10 @@
         <level class="&mmlevel;" value="@log.level@" />
     </logger>
 
+    <logger name="org.mmbase.security.implementation.cloud.Verify" >
+       <level class="&mmlevel;" value="error" />
+    </logger>   
+
     <logger name="org.mmbase.util.XMLErrorHandler" >
        <level class="&mmlevel;" value="@log.level@" />
     </logger>
@@ -44,10 +48,6 @@
 
     <logger name="STDERR">
        <level class="&mmlevel;" value="@log.level@" />   
-    </logger>
-
-    <logger name="security.implementation.cloud.Verify" >
-       <level class="&mmlevel;" value="error" />
     </logger>
 
     <logger name="org.mmbase.PAGE.LOGTAG" >
