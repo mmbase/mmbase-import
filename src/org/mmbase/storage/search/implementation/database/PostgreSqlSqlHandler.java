@@ -13,6 +13,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.TypeRel;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
@@ -36,7 +37,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.28 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.29 2007-01-17 20:14:08 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -261,14 +262,31 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 // no role specified, check if more than one role on sub tables are possible...
                 int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
-                int directionality = rs.getDirectionality();
+                int searchDir = rs.getDirectionality();
                 RelDef reldef = mmbase.getRelDef();
+
+                // TODO it is not necessary to determin the full table, because the only used
+                // informations are:
+                // 1. whether it has 1 entry.
+                // 2. if it has, which it is.
+                //
+                // TODO Seems to be a bit of code-duplication from TypeRel#optimizeRelationStep,
+                // perhaps an extra helper method must be created in TypeRel.
+
                 Set<String> tables = new HashSet<String>();
-                Iterator allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder, 0, directionality).iterator();
-                while(allowed.hasNext()) {
-                    MMObjectNode typeRel = (MMObjectNode) allowed.next();
-                    int rnumber = typeRel.getIntValue("rnumber");
-                    tables.add(reldef.getBuilder(rnumber).getTableName());
+                TypeRel typeRel = mmbase.getTypeRel();
+                for (Integer rnumber : reldef.getRoles()) {
+                    log.debug(" considering role " + rnumber + "(" + reldef.getNode(rnumber).getStringValue("sname"));
+                    boolean sourceToDestination =
+                        searchDir != RelationStep.DIRECTIONS_SOURCE
+                        && typeRel.contains(sourceBuilder, destinationBuilder, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+                    boolean destinationToSource =
+                        searchDir != RelationStep.DIRECTIONS_DESTINATION
+                        && typeRel.contains(destinationBuilder, sourceBuilder, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+
+                    if (sourceToDestination || destinationToSource) {
+                        tables.add(reldef.getBuilder(rnumber).getTableName());
+                    }
                 }
                 if (tables.size() == 1) {
                     if (log.isDebugEnabled()) {
@@ -284,6 +302,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                     if (log.isDebugEnabled()) {
                         log.debug("Not adding ONLY to table name because role of " + step + " is null, and the following tables are possible " + tables);
                     }
+                    // falling back to super.
                 }
             }
         }
