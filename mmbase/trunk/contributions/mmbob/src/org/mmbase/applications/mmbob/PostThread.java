@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.47 2007-01-16 19:08:39 michiel Exp $
+ * @version $Id: PostThread.java,v 1.48 2007-01-17 10:42:02 ernst Exp $
  */
 public class PostThread {
 
@@ -560,6 +560,8 @@ public class PostThread {
 
         // need to clone the vector, because the postings change while we're removing the thread
         // MM: really?
+        // EB: as in Form.remove(): there all posters are iterated over and removed through childRemove()
+        // so a concurrentHashMap could be used here as well.
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
 
