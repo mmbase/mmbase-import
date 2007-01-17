@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.25 2006-09-07 13:03:41 michiel Exp $
+ * @version $Id: Authorization.java,v 1.26 2007-01-17 20:30:12 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
@@ -233,8 +233,8 @@ public abstract class Authorization extends Configurable {
      */
 
     public static class QueryCheck {
-        Constraint constraint;
-        boolean    check;
+        final Constraint constraint;
+        final boolean    check;
         public QueryCheck(boolean ch, Constraint co) {
             check = ch; constraint = co;
         }
