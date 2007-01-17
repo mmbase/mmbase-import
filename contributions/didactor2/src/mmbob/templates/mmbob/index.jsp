@@ -22,7 +22,7 @@
       <di:hasrole role="teacher">
         <mm:remove referid="posterid"/>
         <mm:remove referid="lang"/>
-        <mm:node number="${user}">
+        <mm:node number="${forumid}">
           <mm:relatednodes type="posters" constraints="account='admin'" max="1">
             <mm:import id="adminposter" reset="true"><mm:field name="number"/></mm:import>
           </mm:relatednodes>
