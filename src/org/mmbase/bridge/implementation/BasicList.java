@@ -18,24 +18,24 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.22 2006-11-11 20:16:26 michiel Exp $
+ * @version $Id: BasicList.java,v 1.23 2007-01-17 15:04:07 michiel Exp $
  */
 public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
-    private Map properties = new HashMap();
+    private Map<Object, Object> properties = new HashMap<Object, Object>();
 
     // during inititializion of the list, you sometimes want to switch off
     // also when everything is certainly converted
     boolean autoConvert = true;
 
     BasicList() {
-         super();
+        super();
     }
 
     protected BasicList(Collection c) {
-         super(c);
+        super(c);
     }
 
     public Object getProperty(Object key) {
@@ -99,7 +99,7 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
     public void add(int index, E o) {
         autoConvert = true;
-        super.add(index,validate(o));
+        super.add(index, validate(o));
     }
 
     public boolean add(E o) {
@@ -124,6 +124,7 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         if (autoConvert) convertAll();
         return super.toArray();
     }
+
 
     protected class BasicIterator implements ListIterator<E> {
         protected ListIterator<E> iterator;
