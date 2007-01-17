@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.9 2006-09-13 09:44:20 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.10 2007-01-17 23:58:24 michiel Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -67,17 +67,24 @@ public class QueryReader {
         if (hasAttribute(fieldElement,"name")) {
             FieldDefinition fieldDefinition = configurer.getFieldDefinition();
             fieldDefinition.fieldName = fieldElement.getAttribute("name");
-            try {
-                fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
-            } catch (IllegalArgumentException iae) {
-                // the field did not exist in the database.
-                // this is possible if the field is, for instance, a bytefield that is stored on disc.
-                fieldDefinition.stepField = null;
+
+            String opt = fieldElement.getAttribute("optional");
+
+            if (opt.equals("")) {
+                try {
+                    fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
+                } catch (IllegalArgumentException iae) {
+                    // the field did not exist in the database.
+                    // this is possible if the field is, for instance, a bytefield that is stored on disc.
+                    fieldDefinition.stepField = null;
+                }
+            } else {
+                fieldDefinition.optional = java.util.regex.Pattern.compile(opt);
             }
             // custom configuration of field
             fieldDefinition.configure(fieldElement);
             queryDefinition.fields.add(fieldDefinition);
-            if (queryDefinition.isMultiLevel) {
+            if (queryDefinition.isMultiLevel && fieldDefinition.optional == null) {
                 // have to add field for multilevel queries
                 queryDefinition.query.addField(fieldDefinition.fieldName);
             }
@@ -402,7 +409,7 @@ public class QueryReader {
             queryDefinition.isMultiLevel = !path.equals(element);
 
             if (element != null) {
-                queryDefinition.elementManager = cloud.getNodeManager(element);
+                queryDefinition.elementManager = cloud.getNodeManager(Queries.removeDigits(element));
             }
             if (queryDefinition.isMultiLevel) {
                 queryDefinition.query = cloud.createQuery();

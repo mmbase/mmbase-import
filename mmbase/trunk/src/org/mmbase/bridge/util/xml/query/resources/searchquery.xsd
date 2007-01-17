@@ -52,6 +52,7 @@
 
     <xsd:complexType name="Field">
       <xsd:attribute name="name" type="xsd:token" use="required"/>
+      <xsd:attribute name="optional" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="Limiter">
