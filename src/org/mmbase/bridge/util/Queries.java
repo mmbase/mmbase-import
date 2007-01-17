@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.79 2006-11-23 15:00:51 michiel Exp $
+ * @version $Id: Queries.java,v 1.80 2007-01-17 23:58:24 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -701,7 +701,7 @@ abstract public class Queries {
      * @param complete string with leading digits
      * @return string with digits removed
      */
-    protected static String removeDigits(String complete) {
+    public static String removeDigits(String complete) {
         int end = complete.length() - 1;
         while (Character.isDigit(complete.charAt(end))) {
             --end;
@@ -717,7 +717,7 @@ abstract public class Queries {
      * @param searchDirs add steps with these relation directions
      * @return The new steps.
      */
-    public static List addPath(Query query, String path, String searchDirs) {
+    public static List<Step> addPath(Query query, String path, String searchDirs) {
         if (path == null || path.equals("")) {
             return query.getSteps().subList(0, 0);
         }
@@ -725,7 +725,7 @@ abstract public class Queries {
             searchDirs = "";
         }
 
-        List list = query.getSteps();
+        List<Step> list = query.getSteps();
         int initialSize = list.size();
 
         StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
@@ -793,15 +793,13 @@ abstract public class Queries {
      * @param fields a comma separated string of fields
      * @return The new stepfields
      */
-    public static List addFields(Query query, String fields) {
-        List result = new ArrayList();
+    public static List<StepField> addFields(Query query, String fields) {
+        List<StepField> result = new ArrayList<StepField>();
         if (fields == null || fields.equals("")) {
             return result;
         }
-        List list = StringSplitter.split(fields);
-        Iterator i = list.iterator();
-        while (i.hasNext()) {
-            String fieldName = (String)i.next();
+
+        for (String fieldName : StringSplitter.split(fields)) {
             result.add(query.addField(fieldName));
         }
         return result;
