@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.35 2006-12-09 12:57:36 johannes Exp $
+ * @version $Id: Authentication.java,v 1.36 2007-01-17 19:58:15 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -39,7 +39,7 @@ public abstract class Authentication extends Configurable implements Authenticat
             PARAMETER_LOGOUT.getLocalizedDescription().setBundle(STRINGS);
             PARAMETER_AUTHENTICATE.getLocalizedDescription().setBundle(STRINGS);
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -48,14 +48,19 @@ public abstract class Authentication extends Configurable implements Authenticat
      *  This method will verify the login, and give a UserContext back if the login procedure was successful.
      *	@param application A String that further specifies the login method (one implementation could handle more then one methods)
      *                     A typical value might be 'username/password'.
+     *                     Possible values are returned by {@link #getTypes}.
+     *                     This is also called 'authentication', or '(authentication) type' in
+     *                     several contextes.
      *
      *	@param loginInfo   A Map containing the credentials or other objects which might be used to obtain them (e.g. request/response objects).
      *                     It might also be 'null', in which case your implementation normally should return the 'anonymous' user (or null, if
-     *                     no such user can be defined).
+     *                     no such user can be defined). This Map can (or must) be supplied by
+     *                     {@link #createParameters} (using the setter-methods and the {@link
+     *                     Parameters#toMap} method of the resulting Parameters object).
      *
      *	@param parameters  A list of optional parameters, may also (and will often) be null.
      *
-     *	@return <code>null</code if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
+     *	@return <code>null</code> if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
      *	@exception SecurityException When something strang happened
      */
@@ -68,15 +73,19 @@ public abstract class Authentication extends Configurable implements Authenticat
     public Node getNode(UserContext userContext) throws SecurityException {
         throw new UnsupportedOperationException("This security implementation does not support mapping from Security usercontexts to MMBase nodes");
     }
-
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.9
+     */
     public String getUserBuilder() {
-        throw new UnsupportedOperationException("This security implementation does not support mapping from Security usercontext to MMBase nodes");
+        throw new UnsupportedOperationException("This security implementation has no builder associated with UserContexts");
     }
 
     /**
+     * {@inheritDoc}
      * @since MMBase-1.8
      */
-    public int getMethod(String m) {
+    public final int getMethod(String m) {
         if (m == null || m.equals("")) {
             return METHOD_UNSET;
         }
@@ -143,6 +152,10 @@ public abstract class Authentication extends Configurable implements Authenticat
     protected static final Parameter[] PARAMETERS_ANONYMOUS     = new Parameter[] { PARAMETER_LOGOUT, PARAMETER_AUTHENTICATE};
     protected static final Parameter[] PARAMETERS_NAME_PASSWORD = new Parameter[] { PARAMETER_USERNAME, PARAMETER_PASSWORD, new Parameter.Wrapper(PARAMETERS_USERS) };
 
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.8
+     */
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
@@ -159,9 +172,12 @@ public abstract class Authentication extends Configurable implements Authenticat
     long key = System.currentTimeMillis();
 
     /**
-     * Some unique key associated with this security configuration. It can be explicitely set with
-     * the 'key' entry in security.xml. It falls back to the current time in millis at the time of
-     * initialization of authentication.
+     *<p> Some unique key associated with this security configuration. It can be explicitely set with
+     * the 'key' entry in security.xml. It falls back to the current time in milliseconds at the time of
+     * initialization of authentication.</p>
+     *
+     * <p>The advantage of explicitely configuring it, is that serialized user-contextes remain valid
+     * after a restart of MMBase, and users need not to log in again then.</p>
      *
      * @since MMBase-1.8
      */
