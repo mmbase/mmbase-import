@@ -13,6 +13,7 @@ package org.mmbase.applications.mmbob;
 import java.lang.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 
 import org.mmbase.util.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.62 2007-01-17 09:45:54 ernst Exp $
+ * @version $Id: Forum.java,v 1.63 2007-01-17 10:39:41 ernst Exp $
  */
 public class Forum {
 
@@ -58,7 +59,7 @@ public class Forum {
     private Map<String, String> filterwords;
     private SubArea subareas = new SubArea();
 
-    private Map<Integer, Poster> posters = new Hashtable<Integer, Poster>();
+    private Map<Integer, Poster> posters = new ConcurrentHashMap<Integer, Poster>();
     private Map<String, Poster> posternames = new Hashtable<String, Poster>(); // synchronized?
     // private Hashtable posternicknames = new Hashtable();
     private Vector onlineposters = new Vector();
