@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.99 2006-12-18 19:01:22 michiel Exp $
+ * @version $Id: Casting.java,v 1.100 2007-01-17 14:43:40 michiel Exp $
  */
 
 import java.util.*;
@@ -933,7 +933,7 @@ public class Casting {
             DOCUMENTBUILDER = dfactory.newDocumentBuilder();
             DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
         } catch (ParserConfigurationException pce) {
-            log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));
+            log.error("[sax parser]: " + pce.toString(), pce);
         }
     }
     /**
