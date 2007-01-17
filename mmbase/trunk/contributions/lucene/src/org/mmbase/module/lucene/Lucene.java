@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.81 2006-11-14 14:41:30 michiel Exp $
+ * @version $Id: Lucene.java,v 1.82 2007-01-17 21:59:43 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -281,7 +281,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * This function returns Set with the names of all configured indexes (ordered alphabeticly)
      */
-    protected Function<Set<String>> listFunction = new AbstractFunction("list") {
+    protected Function<Set<String>> listFunction = new AbstractFunction<Set<String>>("list") {
             public Set<String> getFunctionValue(Parameters arguments) {
                 return new TreeSet<String>(indexerMap.keySet());
             }
@@ -714,6 +714,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
                 disableIndexes.addAll(StringSplitter.split(root.getAttribute("disableIndexes")));
+
+                NodeList extractorElements = root.getElementsByTagName("extractor");
+                for (int i = 0; i < extractorElements.getLength(); i++) {
+                    Element extractorElement = (Element) extractorElements.item(i);
+                    String className = extractorElement.getAttribute("class");
+                    factory.addExtractor(className);
+                }
+
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
                     Element indexElement = (Element) indexElements.item(i);
@@ -1078,7 +1086,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
             };
 
-        synchronized void fullIndex() {
+        void fullIndex() {
             if (status != BUSY_FULL_INDEX) {
                 assign(ALL_FULL_INDEX);
                 log.service("Scheduled full index");
@@ -1087,7 +1095,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 log.service("Cannot schedule full index because it is busy with " + getAssignment());
             }
         }
-        synchronized void fullIndex(final String index) {
+        void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
                 if (! assigned(ALL_FULL_INDEX)) {
                     // only schedule a full index if no complete full index ne is currently busy or scheduled already.
@@ -1100,7 +1108,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                     log.error("No such index '" + index + "'");
                                 } else {
                                     indexer.fullIndex();
-                                    }
+                                }
                             }
                             public String idString() {
                                 return index;
@@ -1114,7 +1122,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         };
                     assign(a);
                     log.service("Scheduled full index for '" + index + "'");
-                    } else {
+                } else {
                     log.service("Scheduled full index for '" + index + "' because full index on every index is scheduled already");
                 }
             } else {
@@ -1128,8 +1136,42 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * Main for testing
      */
     public static void main(String[] args) {
-        String configFile = args[0];
-        
+        final BlockingQueue<String> q = new LinkedBlockingQueue<String>();
+        ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    for (int i = 0; i < 1000000; i++) {
+                        q.offer("" + i);
+                        Thread.yield();
+                    }
+                    q.offer("z");
+                }
+            });
+        ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    while(true) {
+                        try {
+                            String t = q.take();
+                            if ("z".equals(t)) return;
+                        } catch (InterruptedException ie) { System.err.println("interrupted take"); return ; };
+                    }
+                }
+            });
+        ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    while(true) {
+                        String[] t = q.toArray(new String[] {});
+                        System.out.print("." + q.contains("123"));
+                        Thread.yield();
+                    }
+                }
+            });
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            System.err.println("interrupted sleep");
+            return;
+        }
+
     }
 
 
