@@ -115,7 +115,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    <% if(hsetCategories.size()==0) {
       %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
    } else { 
-      %> De volgene zoekresultaten zijn gevonden in de categorieën<% 
+      %> De volgende zoekresultaten zijn gevonden in de categorieën<% 
    }
       boolean bFirst = true;
       for (Iterator it = hsetCategories.iterator(); it.hasNext();)
