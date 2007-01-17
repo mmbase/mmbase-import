@@ -386,6 +386,10 @@ public class SubscribeAction extends Action {
       return new String [] { phoneNumbers, emailAddresses };
    }
 
+   public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type) {
+      return getMessage(thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl, type, ""); 
+   }
+   
    public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type, String confirmText) {
 
       boolean isGroupExcursion = Evenement.isGroupExcursion(thisParent);
@@ -838,7 +842,7 @@ public class SubscribeAction extends Action {
                      thisParticipant = subscribeForm.createParticipant(cloud,action,thisEvent,thisSubscription,"-1",subscribeForm.getParticipantsPerCat(0));
                }
 
-               String confirmUrl = NatMMConfig.liveUrl[0] + "/events.jsp";
+               String confirmUrl = NatMMConfig.liveUrl[0] + "natmm/events.jsp";
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                
