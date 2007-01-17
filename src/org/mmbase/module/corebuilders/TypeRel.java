@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.74 2006-10-27 08:04:31 nklasens Exp $
+ * @version $Id: TypeRel.java,v 1.75 2007-01-17 19:00:28 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -264,12 +264,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @param node The node to retrieve the allowed relations of.
      * @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
-    public Enumeration getAllowedRelations(MMObjectNode node) {
+    public Enumeration<MMObjectNode> getAllowedRelations(MMObjectNode node) {
         return getAllowedRelations(node.getBuilder().getNumber());
     }
 
-    public Enumeration getAllowedRelations(int otype) {
-        Set res = getAllowedRelations(otype, 0, 0, RelationStep.DIRECTIONS_BOTH);
+    public Enumeration<MMObjectNode> getAllowedRelations(int otype) {
+        Set<MMObjectNode> res = getAllowedRelations(otype, 0, 0, RelationStep.DIRECTIONS_BOTH);
         return Collections.enumeration(res);
     }
 
@@ -280,7 +280,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @param node2 The second objectnode
      * @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
-    public Enumeration getAllowedRelations(MMObjectNode node1, MMObjectNode node2) {
+    public Enumeration<MMObjectNode> getAllowedRelations(MMObjectNode node1, MMObjectNode node2) {
         return getAllowedRelations(node1.getOType(), node2.getOType());
     }
 
@@ -289,8 +289,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * source and destination.
      *
      */
-    public Enumeration getAllowedRelations(int builder1, int builder2) {
-        Set res = getAllowedRelations(builder1, builder2, 0, RelationStep.DIRECTIONS_BOTH);
+    public Enumeration<MMObjectNode> getAllowedRelations(int builder1, int builder2) {
+        Set<MMObjectNode> res = getAllowedRelations(builder1, builder2, 0, RelationStep.DIRECTIONS_BOTH);
         return Collections.enumeration(res);
     }
 
@@ -300,7 +300,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    public Set getAllowedRelations(int builder1, int builder2, int role) {
+    public Set<MMObjectNode> getAllowedRelations(int builder1, int builder2, int role) {
         return getAllowedRelations(builder1, builder2, role, RelationStep.DIRECTIONS_BOTH);
     }
 
@@ -310,8 +310,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    public Set getAllowedRelations(int builder1, int builder2, int role, int directionality) {
-        Set res = new HashSet();
+    public Set<MMObjectNode> getAllowedRelations(int builder1, int builder2, int role, int directionality) {
+        Set<MMObjectNode> res = new HashSet<MMObjectNode>();
         if (directionality != RelationStep.DIRECTIONS_SOURCE) {
             res.addAll(typeRelNodes.getBySourceDestinationRole(builder1, builder2, role));
         }
@@ -748,15 +748,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    protected class InverseTypeRelSet extends TreeSet {
+    protected class InverseTypeRelSet extends TreeSet<MMObjectNode> {
 
         protected InverseTypeRelSet() {
-            super(new Comparator() {
+            super(new Comparator<MMObjectNode>() {
                 // sorted by destination, source, role
-                public int compare(Object o1, Object o2) {
-                    MMObjectNode n1 = (MMObjectNode) o1;
-                    MMObjectNode n2 = (MMObjectNode) o2;
-
+                public int compare(MMObjectNode n1, MMObjectNode n2) {
                     int i1 = n1.getIntValue("dnumber");
                     int i2 = n2.getIntValue("dnumber");
                     if (i1 != i2) return i1 - i2;
@@ -774,7 +771,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
 
         // make sure only MMObjectNode's are added
-        public boolean add(Object object) {
+        public boolean add(MMObjectNode object) {
             return super.add(object);
         }
 
