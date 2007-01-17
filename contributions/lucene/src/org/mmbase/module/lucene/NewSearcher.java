@@ -12,9 +12,10 @@ package org.mmbase.module.lucene;
 import org.mmbase.core.event.*;
 
 /**
- * All the code necessary to propagate events with the meaning 'the lucene index has changes, you must refresh your searchers'.
+ * All the code necessary to propagate events with the meaning 'the lucene index has changed, you must refresh your searchers'.
  * @since  MMBase-1.9
  * @author Michiel Meeuwissen
+ * @version $Id: NewSearcher.java,v 1.3 2007-01-17 22:00:14 michiel Exp $
  */
 
 public class NewSearcher {
