@@ -101,6 +101,9 @@
     <field name="language">
       <!-- how is a language formatted ? -->
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
     </field>
 
     <field name="state">
