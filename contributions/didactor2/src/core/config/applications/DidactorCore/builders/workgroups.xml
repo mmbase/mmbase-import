@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="workgroups" maintainer="didactor.nl" version="4" extends="object">
-  <status>active</status>
-  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="workgroups" maintainer="didactor.nl" version="4" extends="object">
+
+  <class>nl.didactor.builders.DidactorBuilder</class>
   <searchage>31</searchage>
 
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Werkgroup</singular>
-    <singular xml:lang="en">Workgroup</singular>
-    <!-- multiple per language as defined by ISO 639 -->
+    <singular xml:lang="en">Work group</singular>
     <plural xml:lang="nl">Werkgroepen</plural>
-    <plural xml:lang="en">Workgroups</plural>
+    <plural xml:lang="en">Work groups</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="nl">Een werkgroep is een subset van een klas, met 1 docent en meerdere studenten.</description>
     <description xml:lang="en">A workgroup is a subset of a class, with 1 teacher and several students.</description>
   </descriptions>
@@ -25,69 +26,43 @@
   </properties>
 
   <fieldlist>
-    <!-- POS 3 : <field> 'name'  -->
-    <field>
+    <field name="name">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Naam van de werkgroep</description>
         <description xml:lang="en">Name of the workgroup</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
-      <!-- editor related  -->
       <editor>
         <positions>
-          <!-- position in the input area of the editor -->
-          <input>1</input>
-          <!-- position in list area of the editor -->
           <list>1</list>
-          <!-- position in search area of the editor -->
-          <search>1</search>
         </positions>
       </editor>
-      <!-- database related  -->
+      <datatype base="line"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      </datatype>
       <db>
-        <!-- name of the field in the database -->
-        <name>name</name>
-        <!-- MMBase datatype and demands on it -->
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="proteced">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Beschermde werkgroep</description>
         <description xml:lang="en">Protected workgroup</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Beschermd</guiname>
         <guiname xml:lang="en">Protected</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
       <editor>
         <positions>
-          <!-- position in the input area of the editor -->
-          <input>1</input>
-          <!-- position in list area of the editor -->
-          <list>1</list>
-          <!-- position in search area of the editor -->
-          <search>1</search>
+          <list>2</list>
         </positions>
       </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>protected</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true" key="false">INTEGER</type>
-      </db>
+      <!-- boolean? -->
+      <datatype base="integer"  xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
  
   </fieldlist>
