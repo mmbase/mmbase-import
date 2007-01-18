@@ -47,7 +47,7 @@
       </db>
     </field>
 
-    <field name="proteced">
+    <field name="protected">
       <descriptions>
         <description xml:lang="nl">Beschermde werkgroep</description>
         <description xml:lang="en">Protected workgroup</description>
