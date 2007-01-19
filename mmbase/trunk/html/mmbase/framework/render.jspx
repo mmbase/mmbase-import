@@ -4,6 +4,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content type="text/html">
   <mm:import externid="component" required="true" />
   <mm:import externid="block"     required="true" />
   <head>
@@ -13,4 +14,5 @@
   <body>
     <mm:component name="${component}" block="${block}" render="body" />
   </body>
+  </mm:content>
 </html>
