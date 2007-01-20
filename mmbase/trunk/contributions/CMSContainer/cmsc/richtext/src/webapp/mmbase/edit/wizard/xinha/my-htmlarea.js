@@ -65,7 +65,7 @@ createDefaultConfig = function() {
                 "Normal": "p"
    });
   
-  xinha_config.pageStyle="body, td {font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;color: #000000;font-size: 70%;}";
+  xinha_config.pageStyle="body, td {font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;color: #0000;font-size: 90%;}";
   xinha_config.pageStyle+="p {font-size: 100%;}";
   xinha_config.pageStyle+="h1 {font-weight: bold;font-size: 100%;}";
   xinha_config.pageStyle+="h2 {font-weight: bold;	color:#2222CC; font-size: 100%;	}";
