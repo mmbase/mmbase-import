@@ -24,7 +24,6 @@ import com.finalist.cmsc.module.luceusmodule.LuceusModule;
  * Base Luceusmodule tag
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
  */
 public class LuceusmoduleTag extends SimpleTagSupport {
 	private static Log log = LogFactory.getLog(LuceusmoduleTag.class);
