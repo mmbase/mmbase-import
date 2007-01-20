@@ -156,8 +156,12 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>width</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>	
 	</tag>
-
 	<tag>
 		<description>This tag creates a list of related content elements.</description>
 		<name>linkedcontent</name>
