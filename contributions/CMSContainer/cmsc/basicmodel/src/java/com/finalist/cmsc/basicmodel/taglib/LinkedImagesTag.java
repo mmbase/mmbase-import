@@ -54,6 +54,9 @@ public class LinkedImagesTag  extends NodeReferrerTag {
     /** Holds value of property vspace. */
     private Attribute vspace = Attribute.NULL;
 
+    /** Holds value of property width. */
+    private Attribute width = Attribute.NULL;
+    
     public void setPosition(String position) throws JspTagException {
         this.position = getAttribute(position);
     }
@@ -79,9 +82,13 @@ public class LinkedImagesTag  extends NodeReferrerTag {
     }
     
     public void setVspace(String vspace) throws JspTagException {
-        this.vspace = getAttribute(vspace);
-    }
-    
+       this.vspace = getAttribute(vspace);
+   }
+   
+    public void setWidth(String width) throws JspTagException {
+       this.width = getAttribute(width);
+   }
+   
     /**
      * This tag returns links to content.
      *
@@ -133,10 +140,19 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                     String legendType = imagerel.getStringValue("legend");
                     boolean popup = imagerel.getBooleanValue("popup");
 
+                    if(this.width != Attribute.NULL) {
+                       int maxWidth = this.width.getInt(this, 0);
+                       if(maxWidth > width) {
+                          height = height*maxWidth/width;
+                          width = maxWidth;
+                       }
+                    }
+                    
                     ImageTag imgTag = new ImageTag();
                     imgTag.setPageContext(pageContext);
                     // Issue NIJ-149: legendType was not set
                     imgTag.setLegendtype(legendType);
+                    
                     
                     imgTag.setExternalAttributes(getOtherAttributes());
                     String templateStr = imgTag.getTemplate(image, null, width, height, crop);
