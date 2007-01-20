@@ -64,9 +64,9 @@ ${indent} $transform.documentationHelper.getXML($transform.getJavaDoc($item))
    -->
    <searchage>70</searchage>
    <names>
-      <singular xml:lang="nl">$class.name</singular>
+      <singular xml:lang="nl">#if($att.prompt)$att.prompt#else$class.name#end</singular>
       <singular xml:lang="en">$class.name</singular>
-      <plural xml:lang="nl">${class.name}</plural>
+      <plural xml:lang="nl">#if($att.prompt)$att.prompt#else${class.name}#end</plural>
       <plural xml:lang="en">${class.name}</plural>
    </names>
    <descriptions>
