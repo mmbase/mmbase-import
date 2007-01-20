@@ -34,4 +34,6 @@ public abstract class SearchService  extends Service{
     public abstract Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager);
 
     public abstract Set<Node> findDetailContentElementsForPage(Node page);
+    
+    public abstract String getPortletWindow(int pageId, String elementNumber);
 }

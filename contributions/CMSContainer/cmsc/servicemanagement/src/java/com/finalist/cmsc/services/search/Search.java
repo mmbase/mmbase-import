@@ -85,6 +85,13 @@ public class Search {
           return false;
       }
       return cService.hasContentPages(content);
-       
+    }
+    
+    public static String getPortletWindow(int pageId, String elementNumber) {
+        if (cService == null) {
+            log.info("SearchService not started");
+            return null;
+        }
+        return cService.getPortletWindow(pageId, elementNumber);
     }
 }
