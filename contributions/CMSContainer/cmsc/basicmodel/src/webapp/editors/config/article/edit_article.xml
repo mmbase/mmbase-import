@@ -22,6 +22,6 @@
 	</field>
 	<list include="config/article/search_article_posrel_article.xml" />
 	<list include="config/attachments/search_article_posrel_attachments.xml" />
-	<list include="config/images/search_article_imagerel_images.xml" />
+	<list include="config/images/search_contentelement_imagerel_images.xml" />
 	<list include="config/urls/search_article_posrel_urls.xml" />
 </form-schema>
