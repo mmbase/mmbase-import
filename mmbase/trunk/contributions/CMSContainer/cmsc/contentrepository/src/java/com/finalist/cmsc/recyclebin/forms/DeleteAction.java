@@ -13,6 +13,8 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
@@ -20,26 +22,33 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.cmsc.services.workflow.Workflow;
-import com.finalist.cmsc.services.publish.Publish;
 
 
 public class DeleteAction extends MMBaseFormlessAction {
 
+   private static Log log = LogFactory.getLog(DeleteAction.class);
+   
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 
         String action = getParameter(request, "action");
         
         if ("deleteall".equals(action)) {
+           Node objectNode = null;
             Node trash = RepositoryUtil.getTrashNode(cloud);
             NodeList garbage = RepositoryUtil.getLinkedElements(trash);
             for (Iterator iter = garbage.iterator(); iter.hasNext();) {
-                Node objectNode = (Node) iter.next();
-                if (Workflow.hasWorkflow(objectNode)) {
-                   // at this time complete is the same as remove
-                   Workflow.complete(objectNode);
-                }
-               objectNode.delete(true);
+               try {
+                   objectNode = (Node) iter.next();
+                   if (Workflow.hasWorkflow(objectNode)) {
+                      // at this time complete is the same as remove
+                      Workflow.complete(objectNode);
+                   }
+                  objectNode.delete(true);
+               }
+               catch(Exception e) {
+                  log.warn("Unable to remove from trash "+((objectNode == null)?null:objectNode.getNumber()));
+               }
             }
         }
         else {
