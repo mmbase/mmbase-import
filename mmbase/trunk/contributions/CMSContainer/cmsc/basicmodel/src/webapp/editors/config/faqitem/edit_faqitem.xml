@@ -18,6 +18,6 @@
 	</field>
 	<list include="config/attachments/search_faqitem_posrel_attachments.xml" />
 	<list include="config/faqcategory/search_faqitem_related_faqcategory.xml" />
-	<list include="config/images/search_faqitem_imagerel_images.xml" />
+	<list include="config/images/search_contentelement_imagerel_images.xml" />
 	<list include="config/urls/search_faqitem_posrel_urls.xml" />
 </form-schema>
