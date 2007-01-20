@@ -16,6 +16,9 @@
 			<property name="index-images">false</property>
 			<property name="index-urls">false</property>
 		 -->
+		<!-- exclude types from index
+			<property name="exclude-types">link</property>
+		-->
 
 		<!-- index secondary content as metadata for primary content (articles/faq's etc)
 			<property name="secondary-with-primary">false</property>
