@@ -24,7 +24,6 @@ import com.finalist.cmsc.module.luceusmodule.LuceusModule;
  * Tag to return the Luceus server URL from the Luceusmodule
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
  */
 public class ServerUrlTag extends LuceusmoduleTag {
 	private static Log log = LogFactory.getLog(ServerUrlTag.class);
