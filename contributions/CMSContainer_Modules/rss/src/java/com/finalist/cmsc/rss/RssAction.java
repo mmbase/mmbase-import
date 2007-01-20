@@ -87,7 +87,7 @@ public class RssAction extends MMBaseAction {
             useLifecycle = false;
         }
         
-        NodeQuery query = RepositoryUtil.createLinkedContentQuery(parentChannel, contentTypesList, ContentElementUtil.PUBLISHDATE_FIELD, "up", useLifecycle, null, 0, maxNumber, -1, -1, -1);
+        NodeQuery query = RepositoryUtil.createLinkedContentQuery(parentChannel, contentTypesList, ContentElementUtil.PUBLISHDATE_FIELD, "down", useLifecycle, null, 0, maxNumber, -1, -1, -1);
         NodeManager nodeManager = query.getNodeManager();
 
         addPublicationDateConstraint(nodeManager, query);
