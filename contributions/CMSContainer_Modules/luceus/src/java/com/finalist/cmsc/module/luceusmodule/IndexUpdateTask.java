@@ -36,7 +36,6 @@ import com.luceus.core.om.EnvelopeFieldFactory;
  * Task that handles queued updates
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
  */
 public class IndexUpdateTask implements Runnable {
 	private static Log log = LogFactory.getLog(IndexUpdateTask.class);
@@ -269,10 +268,16 @@ public class IndexUpdateTask implements Runnable {
 	}
 
 	private void commit(Envelope doc, Node pageNode, Node contentElement) {
-		log.debug(id + " Commit page: " + pageNode.getNumber() + " contentelement: " + contentElement.getNumber());
 
 		NodeManager nm = contentElement.getNodeManager();
 		String nmName = nm.getName();
+        if (module.excludeType(nmName)) {
+            return;
+        }
+        else {
+            log.debug(id + " Commit page: " + pageNode.getNumber() + " contentelement: " + contentElement.getNumber());
+        }
+        
 		doc.setType(nmName);
 
 		LuceusUtil.nodeFields(contentElement, doc, null);
@@ -336,8 +341,9 @@ public class IndexUpdateTask implements Runnable {
 	}
 
 	private void commit(Envelope doc, Node secondaryContent) {
-		if (module.isDoSecondaryAsPrimary()) {
-			if (secondaryContent != null) {
+        if (secondaryContent != null) {
+            if (module.isDoSecondaryAsPrimary() 
+                    && !module.excludeType(secondaryContent.getNodeManager().getName())) {
 				String scId = secondaryContent.getStringValue(ContentElementUtil.NUMBER_FIELD);
 
 				if (secondaryCache != null) {

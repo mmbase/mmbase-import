@@ -10,7 +10,7 @@
 package com.finalist.cmsc.module.luceusmodule;
 
 import java.io.IOException;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +34,6 @@ import com.finalist.cmsc.repository.ContentElementUtil;
 /**
  * @author Freek Punt
  * @author Wouter Heijke
- * @version $Revision $
  */
 public class LuceusModule extends Module {
 	private static Log log = LogFactory.getLog(LuceusModule.class);
@@ -66,6 +65,8 @@ public class LuceusModule extends Module {
 	private int updateInterval = 120;
 
 	private int updateQueueSize = 100;
+    
+    private List<String> excludeTypes = new ArrayList<String>();
 
 	public void init() {
 		loadInitParameters("com/luceus");
@@ -175,6 +176,15 @@ public class LuceusModule extends Module {
 				doListeners = true;
 			}
 		}
+        
+        String userExcludeTypes = getInitParameter("exclude-types");
+        if (userExcludeTypes != null) {
+            StringTokenizer tokenizer = new StringTokenizer(userExcludeTypes, ", \t\n\r\f");
+            while (tokenizer.hasMoreTokens()) {
+                String type = tokenizer.nextToken();
+                excludeTypes.add(type);
+            }
+        }
 
 		in = new LinkedBlockingQueue<QueuedUpdate>(updateQueueSize);
 
@@ -241,11 +251,11 @@ public class LuceusModule extends Module {
 
 	// aka fullindex
 	public void createContentIndex(Node node) {
-		addToQueue(new QueuedUpdate(QueuedUpdate.METHOD_CREATE_CONTENT_INDEX, node.getNumber()));
+        addToQueue(new QueuedUpdate(QueuedUpdate.METHOD_CREATE_CONTENT_INDEX, node.getNumber()));
 	}
 
 	public void updateContentIndex(Node node) {
-		updateContentIndex(node.getNumber());
+        updateContentIndex(node.getNumber());
 	}
 
 	public void updateContentIndex(int nodeNumber) {
@@ -267,6 +277,10 @@ public class LuceusModule extends Module {
 	protected Cloud getAnonymousCloud() {
 		return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
 	}
+    
+    public boolean excludeType(String name) {
+        return excludeTypes.contains(name);
+    }
 
 	private class FullIndexTimerTask extends TimerTask {
 
@@ -292,13 +306,11 @@ public class LuceusModule extends Module {
 			HugeNodeListIterator iterator = new HugeNodeListIterator(q);
 			while (iterator.hasNext()) {
 				Node currentNode = iterator.nextNode();
-				// log.debug("node:'" + currentNode.getNumber() + "'");
 				if (erase) {
 					createContentIndex(currentNode);
 				} else {
 					updateContentIndex(currentNode);
 				}
-				currentNode = null;
 			}
 
 			log.info("===>fullIndex done<==");
