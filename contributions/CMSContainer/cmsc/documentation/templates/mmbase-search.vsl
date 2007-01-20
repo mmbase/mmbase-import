@@ -20,7 +20,8 @@
    #set($isposrel = "true")
 #end
 <list role="$type" destination="${builder}" minoccurs="${cardinalityLower}" maxoccurs=#if($cardinalityUpper == "-1")"*"#else"${cardinalityUpper}"#end #if($isposrel == "true")orderby="field[@name='pos']" ordertype="number"#end>
-   <title>${label}#if($required) (*)#end</title>
+     <title xml:lang="en">${label}#if($required) (*)#end</title>
+	 <title xml:lang="nl">${label}#if($required) (*)#end</title>
    <item>
 #foreach($field in $searchfields)
 #if( (${builder} == "images") && (${field.fieldname} == "handle") )
@@ -28,7 +29,9 @@
 #else
 #set ( $optionlist = $field.optionlist )
 #if ($optionlist != "")
-      <field name="$field.fieldname" ftype="enum">#if( $field.prompt != "" )<prompt> $field.prompt </prompt> #end
+      <field name="$field.fieldname" ftype="enum">
+         <prompt xml:lang="en">$field.fieldname </prompt>
+         #if($field.prompt)<prompt xml:lang="nl">$field.prompt</prompt>#end
             <optionlist select ="$optionlist"/>
       </field>
 #else
@@ -37,30 +40,27 @@
 #if( (${builder} == "images") && (${field.fieldname} == "handle") )
       <field ftype="image" name="$field.fieldname" />
 #else
-      <field ftype="data" name="$field.fieldname"
-#end      
+      <field ftype="data" name="$field.fieldname" #end      
 #else
       <field name="$field.fieldname"
 ## All logic to solve visibility, ftype and so on is located in mmbase-wizard-search.vsl
-#if( $field.fieldtype != "" )                ftype="${field.fieldtype}"
-#end
-#if( $field.reqired != "" )                dtrequired="true"
-#end
-#if( $field.minsize != "" )                dtminlength="$field.minsize"
-#end
-#if( $field.maxsize != "" )                dtmaxlength="$field.maxsize"
-#end
-#end
-      >
-         <prompt> $field.prompt </prompt>
-      </field>
+#if( $field.fieldtype != "" )                ftype="${field.fieldtype}"#end
+#if( $field.reqired != "" )                dtrequired="true"#end
+#if( $field.minsize != "" )                dtminlength="$field.minsize"#end
+#if( $field.maxsize != "" )                dtmaxlength="$field.maxsize"#end#end>
+         <prompt xml:lang="en">$field.fieldname </prompt>
+         #if($field.prompt)<prompt xml:lang="nl">$field.prompt</prompt>
+      #end
+</field>
 #end
 #end
 #end
 #foreach($field in $relationfields)
 #set ( $optionlist = $field.optionlist )
 #if ($optionlist != "")
-   	<field fdatapath="field[@name=&apos;${field.fieldname}&apos;]" ftype="enum">#if( $field.prompt != "" )<prompt> $field.prompt </prompt> #end
+   	<field fdatapath="field[@name=&apos;${field.fieldname}&apos;]" ftype="enum">
+         <prompt xml:lang="en">$field.fieldname </prompt>
+         #if($field.prompt)<prompt xml:lang="nl">$field.prompt</prompt>#end
       	<optionlist select ="$optionlist"/>
       </field>
 #else
@@ -69,23 +69,28 @@
 #if( $field.reqired != "" )             dtrequired="true" #end
 #if( $field.minsize != "" )             dtminlength="$field.minsize" #end
 #if( $field.maxsize != "" )             dtmaxlength="$field.maxsize" #end >
-      <prompt> $field.prompt </prompt> </field>
+         <prompt xml:lang="en">$field.fieldname </prompt>
+         #if($field.prompt)<prompt xml:lang="nl">$field.prompt</prompt>#end
+      </field>
 #end
 #end
       <field ftype="startwizard" wizardname="config/${builder}/${builder}" inline="true"/>
    </item>
 #set ($attributeCount=0)
    <command name="search" nodepath="${builder}" age="-1" fields="#foreach($field in $searchfields)#if($attributeCount != 0),#else #set($attributeCount=$attributeCount+1)#end${field.fieldname}#end">
-      <prompt>Zoek ${builder}</prompt>
+      <prompt xml:lang="en">Search ${builder}</prompt>
+      <prompt xml:lang="nl">Zoek ${builder}</prompt>
 #foreach($field in $searchfields)
       <search-filter>
-         <name> ${field.prompt} bevat</name>
+         <name xml:lang="en">$field.fieldname contains</name>
+         #if($field.prompt)<name xml:lang="nl">$field.prompt bevat</name>#end
          <search-fields>[${field.fieldname}]</search-fields>
       </search-filter>
 #end
    </command>
    <command name="startwizard" inline="true" wizardname="config/${builder}/${builder}" objectnumber="new">
-       <prompt>Nieuw</prompt>
+      <prompt xml:lang="en">New</prompt>
+      <prompt xml:lang="nl">Nieuw</prompt>
    </command>
 
    <action type="create">
