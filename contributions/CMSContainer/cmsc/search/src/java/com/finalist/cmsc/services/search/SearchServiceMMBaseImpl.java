@@ -47,8 +47,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 pageQueryNode = pages.getNode(0);
             }
             else {
-                for (Iterator iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = (Node) iter.next();
+                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+                    Node pageNode = iter.next();
                     String key = pageNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
                     if ("contentelement".equals(key)) {
                         pageQueryNode = pageNode;
@@ -63,8 +63,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
             else {
                 // The homepage (Site object) has a lower preference than a page deeper in the tree 
                 List<Node> pageNodes = new ArrayList<Node>();
-                for (Iterator iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = (Node) iter.next();
+                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+                    Node pageNode = iter.next();
                     Page page = SiteManagement.getPage(pageNode.getIntValue(PagesUtil.PAGE + ".number"));
                     if (page != null && !(page instanceof Site)) {
                         pageNodes.add(pageNode);
@@ -91,8 +91,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
         
         NodeList pages = findPagesForContent(content, null);
         List<PageInfo> infos = new ArrayList<PageInfo>();
-        for (Iterator iter = pages.iterator(); iter.hasNext();) {
-            Node pageNode = (Node) iter.next();
+        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+            Node pageNode = iter.next();
             PageInfo pageInfo = getPageInfo(pageNode, true);
             if (pageInfo != null && !infos.contains(pageInfo)) {
                 infos.add(pageInfo);
@@ -125,8 +125,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
         NodeList pages = findPagesForContent(content, channel);
         
         List<PageInfo> infos = new ArrayList<PageInfo>();
-        for (Iterator iter = pages.iterator(); iter.hasNext();) {
-            Node pageNode = (Node) iter.next();
+        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+            Node pageNode = iter.next();
             PageInfo pageInfo = getPageInfo(pageNode, false);
             if (pageInfo != null) {
                 infos.add(pageInfo);
@@ -192,8 +192,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 channels.remove(content);
             }
             NodeList collectionchannels = new GenericNodeList();
-            for (Iterator iter = channels.iterator(); iter.hasNext();) {
-                Node contentchannel = (Node) iter.next();
+            for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+                Node contentchannel = iter.next();
                 NodeList cc = RepositoryUtil.getCollectionChannels(contentchannel);
                 if (!cc.isEmpty()) {
                     collectionchannels.addAll(cc);
@@ -292,22 +292,42 @@ public class SearchServiceMMBaseImpl extends SearchService {
         Set<Node> result = new HashSet<Node>();
 
         NodeList celist = contentElement.getRelatedNodes(nodeManager, "posrel", "DESTINATION");
-        Iterator attachmentsIter = celist.iterator();
+        Iterator<Node> attachmentsIter = celist.iterator();
         while (attachmentsIter.hasNext()) {
-            Node attachmentNode = (Node) attachmentsIter.next();
+            Node attachmentNode = attachmentsIter.next();
             log.debug("linked content (" + nodeManager + ") '" + attachmentNode.getNumber() + "'");
             result.add(attachmentNode);
         }
 
         NodeList ce2list = contentElement.getRelatedNodes(nodeManager, "inlinerel", "DESTINATION");
-        Iterator attachmentsIter2 = ce2list.iterator();
+        Iterator<Node> attachmentsIter2 = ce2list.iterator();
         while (attachmentsIter2.hasNext()) {
-            Node attachmentNode2 = (Node) attachmentsIter2.next();
+            Node attachmentNode2 = attachmentsIter2.next();
             log.debug("linked inline content (" + nodeManager + ") '" + attachmentNode2.getNumber() + "'");
             result.add(attachmentNode2);
         }
 
         return result;
-
     }
+    
+    public String getPortletWindow(int pageId, String elementNumber) {
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        Node node = cloud.getNode(elementNumber);
+        if (ContentElementUtil.isContentElement(node)) {
+            NodeList pages = findPagesForContent(node, null);
+            if (!pages.isEmpty()) {
+                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+                    Node pageNode = iter.next();
+                    int pageNumber = pageNode.getIntValue(PagesUtil.PAGE + ".number");
+                    
+                    if (pageId == pageNumber) {
+                        return pageNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 }
