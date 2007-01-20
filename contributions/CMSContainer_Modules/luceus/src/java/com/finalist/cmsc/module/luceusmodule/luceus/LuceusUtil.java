@@ -25,7 +25,6 @@ import com.luceus.core.om.EnvelopeFieldFactory;
  * Utilities to make life with Luceus/CMSC easier
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
  */
 public class LuceusUtil {
 	private static Log log = LogFactory.getLog(LuceusUtil.class);
