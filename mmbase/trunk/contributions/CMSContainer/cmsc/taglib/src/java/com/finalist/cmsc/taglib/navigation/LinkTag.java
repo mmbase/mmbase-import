@@ -12,7 +12,7 @@ package com.finalist.cmsc.taglib.navigation;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -21,16 +21,10 @@ import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.repository.ContentElementUtil;
-import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
@@ -55,16 +49,16 @@ public class LinkTag extends SimpleTagSupport {
 	/**
 	 * Params added by nested param tag
 	 */
-	private HashMap params = new HashMap();
+	private Map params = new HashMap();
 
-	private Page channel;
+	private Page page;
 
 	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-		if (channel != null) {
-			String link = SiteManagement.getPath(channel, !ServerUtil.useServerName());
+		if (page != null) {
+			String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
          
 			if (link != null) {
 				// handle body, call any nested tags
@@ -76,12 +70,13 @@ public class LinkTag extends SimpleTagSupport {
 
                 String host = null;
                 if(ServerUtil.useServerName()) {
-                   host = SiteManagement.getSite(channel);
+                   host = SiteManagement.getSite(page);
                 }
                 PortalURL u = new PortalURL(host, request, link);
                 
                 if (element != null) {
-                    String portletWindowName = getPortletWindow(channel, element);
+                    int pageId = page.getId();
+                    String portletWindowName = Search.getPortletWindow(pageId, element);
                     if (portletWindowName != null) {
                         u.setRenderParameter(portletWindowName, "elementId", new String[] { element } );
                     }
@@ -113,44 +108,6 @@ public class LinkTag extends SimpleTagSupport {
 		}
 	}
 
-	private String getPortletWindow(Page pageObject, String elementNumber) {
-        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-        Node node = cloud.getNode(elementNumber);
-        if (ContentElementUtil.isContentElement(node)) {
-            NodeList channels = RepositoryUtil.getContentChannels(node);
-            channels.add(node);
-            
-            NodeManager parameterManager = cloud.getNodeManager(PortletUtil.NODEPARAMETER);
-            NodeManager portletManager = cloud.getNodeManager(PortletUtil.PORTLET);
-            NodeManager pageManager = cloud.getNodeManager(PagesUtil.PAGE);
-
-            Query query = cloud.createQuery();
-            Step parameterStep = query.addStep(parameterManager);
-            RelationStep step2 = query.addRelationStep(portletManager, PortletUtil.PARAMETERREL, "SOURCE");
-            RelationStep step4 = query.addRelationStep(pageManager, PortletUtil.PORTLETREL, "SOURCE");
-            Step pageStep = step4.getNext();
-
-            query.addField(parameterStep, parameterManager.getField(PortletUtil.KEY_FIELD));
-            query.addField(parameterStep, parameterManager.getField(PortletUtil.VALUE_FIELD));
-            query.addField(step4, cloud.getRelationManager(PortletUtil.PORTLETREL).getField(PortletUtil.LAYOUTID_FIELD));
-            query.addField(pageStep, pageManager.getField("number"));
-            
-            SearchUtil.addNodesConstraints(query, parameterManager.getField(PortletUtil.VALUE_FIELD), channels);
-            NodeList pages = cloud.getList(query);
-            if (!pages.isEmpty()) {
-                for (Iterator iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = (Node) iter.next();
-                    int pageNumber = pageNode.getIntValue(PagesUtil.PAGE + ".number");
-                    if (pageObject.getId() == pageNumber) {
-                        return pageNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
 	 * Set destination to navigate to.
 	 * 
@@ -181,7 +138,7 @@ public class LinkTag extends SimpleTagSupport {
 	 * @param n the node
 	 */
 	private void setDestPage(Page n) {
-        channel = n;
+        page = n;
 	}
 
 	/**
@@ -190,7 +147,7 @@ public class LinkTag extends SimpleTagSupport {
 	 * @param n the node number
 	 */
 	private void setDestInteger(Integer n) {
-		channel = SiteManagement.getPage(n.intValue());
+		page = SiteManagement.getPage(n.intValue());
 	}
 
 	/**
@@ -201,9 +158,9 @@ public class LinkTag extends SimpleTagSupport {
 	 */
 	private void setDestString(String s) {
 		if (StringUtils.isNumeric(s)) {
-			channel = SiteManagement.getPage(Integer.parseInt(s));
+			page = SiteManagement.getPage(Integer.parseInt(s));
 		} else {
-			channel = SiteManagement.getPageFromPath(s);
+			page = SiteManagement.getPageFromPath(s);
 		}
 	}
 
