@@ -9,7 +9,6 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.1 2007-01-08 19:16:17 nklasens Exp $
      * @author   Freek Punt
      */
 
