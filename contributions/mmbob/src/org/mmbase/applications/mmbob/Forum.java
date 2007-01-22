@@ -1072,14 +1072,15 @@ public class Forum {
 
         e = postareas.elements();
         while (e.hasMoreElements()) {
-            PostArea a = (PostArea) e.nextElement();
-            if (!a.remove()) {
-                log.error("Can't remove Area : " + a.getId());
+            PostArea postArea = (PostArea) e.nextElement();
+            if (!postArea.remove()) {
+                log.error("Can't remove Area : " + postArea.getId());
                 return false;
             }
-            postareas.remove("" + a.getId());
+            postareas.remove("" + postArea.getId());
         }
-
+        // make shure the node is no longer in any sync ques
+        ForumManager.nodeDeleted(node);
         node.delete(true);
         return true;
     }

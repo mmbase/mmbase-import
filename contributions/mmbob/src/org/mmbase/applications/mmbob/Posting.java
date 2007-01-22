@@ -268,6 +268,10 @@ public class Posting {
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"), "lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"), "lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"), "lastpostnumber");
+
+        // make shure the node is no longer in any sync ques
+        ForumManager.nodeDeleted(node);
+
         node.delete(true);
         parent.childRemoved(this);
         return true;
@@ -283,6 +287,19 @@ public class Posting {
         while (it.hasNext()) {
             tempNode = (Node) it.next();
             tempNode.setValue(fieldname, "");
+
+            // TODO: fix me..
+            // this node could be in the sync que already, and if it is, it could be the
+            // same instance or not. If it is the same, I don't think it is a problem. We
+            // just commit it now, and remove it from the que.
+            // if it is a different instance, and we leave it in the que, values
+            // we set here, will be overridden. On the other hand, if we remove it from
+            // the que, the changes that landed it in the que in the first place will be
+            // lost.
+            // So, we just remove it from the que, risking lusing an update cycle for this
+            // node.
+
+            ForumManager.nodeDeleted(tempNode);
             tempNode.commit();
         }
     }
