@@ -21,3 +21,8 @@ fixed bugs:
 	mmbase jira: MMBOB-4
 	kennisnet manitis:0011432
 	'Removing posting dous not always work'
+
+3)
+	mmbase jira: MMBOB-5
+	kennisnet manitis:0010303
+	'Forum dousn't jump to the next page after posting'
