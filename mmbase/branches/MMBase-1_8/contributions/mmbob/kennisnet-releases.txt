@@ -2,9 +2,22 @@ This document will track the bugs that were fixed for kennisnet and what
 releases are created. Currently development is done in the 1.8 branche.
 I will create a set of kennisnet tags to idenitfy different releases.
 
+the details for the bugs can be found in mmbase jira.
+
 tags:
 -----------------------
 
 kennisnet-0
 This is the startpoint. From here i start fixing bugs.
 
+fixed bugs:
+
+1) 
+	mmbase jira: MMBOB-1
+	kennisnet manitis:0011352
+	'Forum is hard to remove'
+	
+2)
+	mmbase jira: MMBOB-4
+	kennisnet manitis:0011432
+	'Removing posting dous not always work'
