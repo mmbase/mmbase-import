@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.40.2.6 2007-01-22 09:30:40 ernst Exp $
+ * @version $Id: PostThread.java,v 1.40.2.7 2007-01-22 10:10:18 ernst Exp $
  */
 public class PostThread {
 
@@ -550,7 +550,9 @@ public class PostThread {
      * @return <code>true</code> if the removal was successful
      */
     public boolean remove() {
-        if (postings == null) readPostings();
+        if (postings == null) {
+            readPostings();
+        }
 
         // need to clone the vector, because the postings change while we're removing the thread
         Vector v = (Vector) postings.clone();
@@ -559,24 +561,25 @@ public class PostThread {
         // remove the postings
         while (e.hasMoreElements()) {
             Posting p = (Posting) e.nextElement();
+            // this should never happen!
             if (!p.remove()) {
                 log.error("Can't remove Posting : " + p.getId());
                 return false;
             }
         }
 
-        try {
-            // this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
-            // it should already been deleted by the above loop this is done in case of a 0 postings
-            if (ForumManager.getCloud().hasNode(id)) {
-                Node node = ForumManager.getCloud().getNode(id);
-                node.delete(true);
-                ForumManager.nodeDeleted(node);
-            }
-        } catch (Exception e2) {
-            // e2.printStackTrace();
-            // return false;
-        }
+        // try {
+        // // this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
+        // // it should already been deleted by the above loop this is done in case of a 0 postings
+        // if (ForumManager.getCloud().hasNode(id)) {
+        // Node node = ForumManager.getCloud().getNode(id);
+        // node.delete(true);
+        // ForumManager.nodeDeleted(node);
+        // }
+        // } catch (Exception e2) {
+        // // e2.printStackTrace();
+        // // return false;
+        // }
 
         return true;
     }
@@ -605,7 +608,9 @@ public class PostThread {
      * @param p posting that has been removed
      */
     public void childRemoved(Posting p) {
-        if (postings == null) readPostings();
+        if (postings == null) {
+            readPostings();
+        }
         postings.remove(p);
         postcount--;
 

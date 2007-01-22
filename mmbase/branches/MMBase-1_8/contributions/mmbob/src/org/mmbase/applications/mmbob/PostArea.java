@@ -868,6 +868,10 @@ public class PostArea {
             }
         }
         Node node = ForumManager.getCloud().getNode(id);
+
+        // make shure the node is no longer in any sync ques
+        ForumManager.nodeDeleted(node);
+
         node.delete(true);
         return true;
     }
