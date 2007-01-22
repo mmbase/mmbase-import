@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="posters" maintainer="mmbase.org" version="0" extends="object">
+    name="posters" maintainer="mmbase.org" version="1" extends="object">
 
   <names>
     <singular xml:lang="en">Poster</singular>
@@ -19,7 +19,8 @@
     <field name="firstname">
       <gui>
         <guiname xml:lang="nl">Voornaam</guiname>
-        <guiname xml:lang="en">First Name</guiname>
+        <guiname xml:lang="en">FirstName</guiname>
+        <guiname xml:lang="fr">firstname</guiname>
       </gui>
       <editor>
         <positions>
@@ -35,8 +36,8 @@
     <field name="lastname">
       <gui>
         <guiname xml:lang="nl">Achternaam</guiname>
-        <guiname xml:lang="en">Last Name</guiname>
-        <guiname xml:lang="fr">Nom De Famille</guiname>
+        <guiname xml:lang="en">LastName</guiname>
+        <guiname xml:lang="fr">nomDeFamille</guiname>
       </gui>
       <editor>
         <positions>
@@ -72,6 +73,11 @@
         <guiname xml:lang="en">Account</guiname>
         <guiname xml:lang="fr">Compte</guiname>
       </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type key="false" notnull="true" size="128" state="persistent">STRING</type>
@@ -103,32 +109,50 @@
     </field>
 
     <field name="postcount">
+      <gui>
+        <guiname xml:lang="en">postcount</guiname>
+      </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="level">
-      <descriptions>
-        <!-- What is a level? Why not add a description? -->
-      </descriptions>
+      <gui>
+        <guiname xml:lang="en">level</guiname>
+      </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type key="false" notnull="false" size="64" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="gender"> 
+    <field name="gender">
+      <gui>
+        <guiname xml:lang="en">gender</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>12</input>
+          <list>-1</list>
+          <search>12</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <!-- sounds like an enumeration? -->
       <db>
         <type key="false" notnull="false" size="10" state="persistent">STRING</type>
       </db>
     </field>
 
     <field name="birthdate">
-      <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <gui>
+        <guiname xml:lang="en">birthdate</guiname>
+      </gui>
+      <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="location">
+      <gui>
+        <guiname xml:lang="en">location</guiname>
+      </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type key="false" notnull="false" size="128" state="persistent">STRING</type>
@@ -136,15 +160,23 @@
     </field>
 
     <field name="firstlogin">
+      <gui>
+        <guiname xml:lang="en">firstlogin</guiname>
+      </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="lastseen">
+      <gui>
+        <guiname xml:lang="en">lastseen</guiname>
+      </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="language">
-      <!-- in what format? -->
+      <gui>
+        <guiname xml:lang="en">language</guiname>
+      </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type key="false" notnull="false" size="64" state="persistent">STRING</type>
@@ -152,11 +184,16 @@
     </field>
 
     <field name="state">
+      <gui>
+        <guiname xml:lang="en">state</guiname>
+      </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <!-- probably an enumeration ? -->
     </field>
 
     <field name="registrationdate">
+      <gui>
+        <guiname xml:lang="en">date of registration</guiname>
+      </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 

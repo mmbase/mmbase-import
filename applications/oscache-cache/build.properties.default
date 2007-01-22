@@ -1,4 +1,0 @@
-oscache.loc=http://www.mmbase.org/download/jars/oscache-2.3.2.jar
-oscache.file=oscache-2.3.2.jar
-oscache.dest=${download.dir}/${oscache.file}
-oscache.jar=${oscache.dest}

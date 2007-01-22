@@ -1,9 +1,0 @@
-
-# ----- javamail ----
-javamail.version=javamail-1.4
-javamail.fileversion=javamail-1_4
-javamail.file=${javamail.fileversion}.zip
-javamail.dest=${download.dir}/${javamail.file}
-javamail.loc=${mmbase.loc}/javamail/${javamail.file}
-javamail.dir=${expand.dir}/${javamail.version}
-javamail.jar=${javamail.dir}/${javamail.version}/mail.jar

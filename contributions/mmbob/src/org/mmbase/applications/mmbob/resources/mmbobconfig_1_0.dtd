@@ -4,7 +4,7 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,syncer*,forum*)>
+<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
@@ -142,9 +142,3 @@
 <!ATTLIST profileentry externalname CDATA #IMPLIED>
 <!ATTLIST profileentry type CDATA #IMPLIED>
 <!ATTLIST profileentry size CDATA #IMPLIED>
-
-<!ELEMENT syncer EMPTY>
-<!ATTLIST syncer type (slow|fast) #REQUIRED>
-<!ATTLIST syncer delayTime CDATA #REQUIRED>
-<!ATTLIST syncer sleepTime CDATA #REQUIRED>
-

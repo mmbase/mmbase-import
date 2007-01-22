@@ -1,19 +1,18 @@
 /*
 
-  This software is OSI Certified Open Source Software.
-  OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-  The license (Mozilla version 1.0) can be read at the MMBase site.
-  See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
 import java.lang.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 
 import org.mmbase.util.*;
@@ -29,12 +28,11 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.63 2007-01-17 10:39:41 ernst Exp $
  */
 public class Forum {
 
+    // logger
     static private final Logger log = Logging.getLoggerInstance(Forum.class);
 
     private String name;
@@ -53,14 +51,14 @@ public class Forum {
     private String lastposter;
     private String lastpostsubject;
 
-    private Map<String, Poster> administrators = new Hashtable(); // synchronized?
+    private Hashtable administrators = new Hashtable();
 
-    private Map<String, PostArea> postareas = new Hashtable<String, PostArea>(); // synchronized?
-    private Map<String, String> filterwords;
+    private Hashtable postareas = new Hashtable();
+    private HashMap filterwords;
     private SubArea subareas = new SubArea();
 
-    private Map<Integer, Poster> posters = new ConcurrentHashMap<Integer, Poster>();
-    private Map<String, Poster> posternames = new Hashtable<String, Poster>(); // synchronized?
+    private Hashtable posters = new Hashtable();
+    private Hashtable posternames = new Hashtable();
     // private Hashtable posternicknames = new Hashtable();
     private Vector onlineposters = new Vector();
     private Vector newposters = new Vector();
@@ -80,14 +78,11 @@ public class Forum {
         this.id = node.getNumber();
 
         this.viewcount = node.getIntValue("viewcount");
-        if (viewcount == -1)
-            viewcount = 0;
+        if (viewcount == -1) viewcount = 0;
         this.postcount = node.getIntValue("postcount");
-        if (postcount == -1)
-            postcount = 0;
+        if (postcount == -1) postcount = 0;
         this.postthreadcount = node.getIntValue("postthreadcount");
-        if (postthreadcount == -1)
-            postthreadcount = 0;
+        if (postthreadcount == -1) postthreadcount = 0;
 
         this.lastpostsubject = node.getStringValue("c_lastpostsubject");
         this.lastposter = node.getStringValue("c_lastposter");
@@ -104,8 +99,7 @@ public class Forum {
         readProfiles();
         readRoles();
         readAreas();
-        if (getNavigationMethod().equals("tree"))
-            syncTreeAreas();
+        if (getNavigationMethod().equals("tree")) syncTreeAreas();
         readThreadObservers();
         readFieldaliases();
     }
@@ -267,8 +261,7 @@ public class Forum {
 
     public boolean saveConfig() {
         ForumManager.saveConfig();
-        if (getNavigationMethod().equals("tree"))
-            syncTreeAreas();
+        if (getNavigationMethod().equals("tree")) syncTreeAreas();
         return true;
     }
 
@@ -304,8 +297,8 @@ public class Forum {
      * 
      * @return administrators
      */
-    public Enumeration<Poster> getAdministrators() {
-        return Collections.enumeration(administrators.values());
+    public Enumeration getAdministrators() {
+        return administrators.elements();
     }
 
     public Enumeration getNonAdministrators(String searchkey) {
@@ -335,19 +328,23 @@ public class Forum {
      * @return posters
      */
     public Enumeration getPosters() {
-        return Collections.enumeration(posters.values());
+        return posters.elements();
     }
 
-    public List searchPostings(String searchkey, int posterid) {
-        List results = new Vector(); // synchronized?
-        for (PostArea area : postareas.values()) {
+    public Vector searchPostings(String searchkey, int posterid) {
+        Vector results = new Vector();
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea area = (PostArea) e.nextElement();
             results = area.searchPostings(results, searchkey, posterid);
         }
         return results;
     }
 
     public PostThread getPostThread(String postthreadid) {
-        for (PostArea area : postareas.values()) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea area = (PostArea) e.nextElement();
             PostThread pt = area.getPostThread(postthreadid);
             if (pt != null) {
                 return pt;
@@ -383,12 +380,12 @@ public class Forum {
      *         make html-links for you
      */
     public String getAdministratorsLine(String baseurl) {
-        if (administratorsline != null)
-            return administratorsline;
+        if (administratorsline != null) return administratorsline;
         administratorsline = "";
-        for (Poster p : administrators.values()) {
-            if (!administratorsline.equals(""))
-                administratorsline += ",";
+        Enumeration e = administrators.elements();
+        while (e.hasMoreElements()) {
+            Poster p = (Poster) e.nextElement();
+            if (!administratorsline.equals("")) administratorsline += ",";
             if (baseurl.equals("")) {
                 administratorsline += p.getNick();
             } else {
@@ -434,12 +431,11 @@ public class Forum {
      * @return Feedback. <code>true</code> if the action was successful, <code>false</code> if it wasn't
      */
     public boolean removePostArea(String id) {
-        PostArea a = postareas.get(id);
+        PostArea a = (PostArea) postareas.get(id);
         if (a != null) {
             if (a.remove()) {
                 postareas.remove(id);
-                if (getNavigationMethod().equals("tree"))
-                    syncTreeAreas();
+                if (getNavigationMethod().equals("tree")) syncTreeAreas();
                 return true;
             }
         } else {
@@ -484,11 +480,10 @@ public class Forum {
     /**
      * get all the postareas of this forum
      * 
-     * @todo This is unordered.
      * @return postareas
      */
-    public Enumeration<PostArea> getPostAreas() {
-        return Collections.enumeration(postareas.values());
+    public Enumeration getPostAreas() {
+        return postareas.elements();
     }
 
     /**
@@ -534,8 +529,7 @@ public class Forum {
                 rel.commit();
                 PostArea area = new PostArea(this, anode);
                 postareas.put("" + anode.getNumber(), area);
-                if (getNavigationMethod().equals("tree"))
-                    syncTreeAreas();
+                if (getNavigationMethod().equals("tree")) syncTreeAreas();
                 return anode.getNumber();
             } else {
                 log.error("Forum can't load relation nodemanager forums/postareas/forarearel");
@@ -582,7 +576,9 @@ public class Forum {
 
     public void syncTreeAreas() {
         subareas = new SubArea();
-        for (PostArea a : postareas.values()) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea a = (PostArea) e.nextElement();
             subareas.insert(a, a.getName());
         }
     }
@@ -603,7 +599,9 @@ public class Forum {
      */
     private void recalcPostCount() {
         int count = 0;
-        for (PostArea a : postareas.values()) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea a = (PostArea) e.nextElement();
             count += a.getPostCount();
         }
         postcount = count;
@@ -615,7 +613,9 @@ public class Forum {
      */
     private void recalcPostThreadCount() {
         int count = 0;
-        for (PostArea a : postareas.values()) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea a = (PostArea) e.nextElement();
             count += a.getPostThreadCount();
         }
         postthreadcount = count;
@@ -705,11 +705,17 @@ public class Forum {
      * @return Poster <code>null</code> if the account was not found
      */
     public Poster getPoster(String posterid) {
-        return posternames.get(posterid);
+        Poster p = (Poster) posternames.get(posterid);
+        if (p != null) {
+            return p;
+        }
+        return null;
     }
 
     public Poster getPosterNick(String nick) {
-        for (Poster p : posters.values()) {
+        Iterator i = posters.values().iterator();
+        while (i.hasNext()) {
+            Poster p = (Poster) i.next();
             ProfileEntry pe = p.getProfileValue("nick");
             if (pe != null && pe.getValue().equals(nick)) {
                 return p;
@@ -726,30 +732,20 @@ public class Forum {
      * @return Poster <code>null</code> if the poster was not found
      */
     public Poster getPoster(int posterid) {
-        Poster p = posters.get(Integer.valueOf(posterid));
+        Poster p = (Poster) posters.get(new Integer(posterid));
         if (p != null) {
             return p;
         } else {
-            // MM: I'm not entirely sure that it is acceptable that any poster node can be poster of
-            // any forum.
-            // But something like this is needed in Didactor.
-            if (node != null && node.getCloud().hasNode(posterid)) {
-                Node posterNode = node.getCloud().getNode(posterid);
-                if (posterNode.getNodeManager().getName().equals("posters")) {
-                    p = new Poster(posterNode, this, false);
-                    posters.put(Integer.valueOf(posterid), p);
-                    posternames.put(p.getNick(), p);
-                    return p;
-                } else {
-                    log.warn("Node " + posterNode + " is not a node of type 'posters' (but a " + posterNode.getNodeManager().getName());
-                }
-            }
+            /*
+             * if (node!=null) { p=new Poster(node); posters.put(new Integer(posterid),p);
+             * posternames.put(p.getNick(),p); return p; }
+             */
         }
         return null;
     }
 
     public boolean hasPoster(int posterid) {
-        if (posters.containsKey(Integer.valueOf(posterid))) {
+        if (posters.containsKey(new Integer(posterid))) {
             return true;
         }
         return false;
@@ -813,7 +809,7 @@ public class Forum {
             query.addField(step2.getNext(), postersmanager.getField("firstlogin"));
             query.addField(step2.getNext(), postersmanager.getField("lastseen"));
 
-            query.setConstraint(query.createConstraint(f1, Integer.valueOf(node.getNumber())));
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
 
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
@@ -821,7 +817,7 @@ public class Forum {
                 // long start = System.currentTimeMillis();
                 Poster p = new Poster(node, this, true);
                 // long end = System.currentTimeMillis();
-                posters.put(Integer.valueOf(p.getId()), p);
+                posters.put(new Integer(p.getId()), p);
                 posternames.put(p.getNick(), p);
                 totalusers++;
                 if (p.getLastSeen() > onlinetime) {
@@ -832,9 +828,7 @@ public class Forum {
                 }
             }
         }
-
         // very raw way to zap the cache
-        log.info("Clearing _All_ MMBase caches!");
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
         cache = NodeCache.getCache();
@@ -864,7 +858,7 @@ public class Forum {
             query.addField(step3.getNext(), signaturesmanager.getField("mode"));
             query.addField(step3.getNext(), signaturesmanager.getField("encoding"));
 
-            query.setConstraint(query.createConstraint(f1, Integer.valueOf(node.getNumber())));
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
 
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
@@ -898,7 +892,7 @@ public class Forum {
             query.addField(step3.getNext(), profilesmanager.getField("external"));
             query.addField(step3.getNext(), profilesmanager.getField("synced"));
 
-            query.setConstraint(query.createConstraint(f1, Integer.valueOf(node.getNumber())));
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
 
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
@@ -937,7 +931,7 @@ public class Forum {
             query.addField(step4.getNext(), threadobserversmanager.getField("bookmarked"));
             query.addField(step4.getNext(), threadobserversmanager.getField("ignorelist"));
 
-            query.setConstraint(query.createConstraint(f1, node.getNumber()));
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
 
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
@@ -947,7 +941,7 @@ public class Forum {
                         .getStringValue("threadobservers.bookmarked"), node.getStringValue("threadobservers.ignorelist"));
                 int postthreadid = node.getIntValue("postthreads.number");
                 to.setThreadId(postthreadid);
-                threadobservers.put(postthreadid, to);
+                threadobservers.put(new Integer(postthreadid), to);
             }
         }
     }
@@ -962,7 +956,6 @@ public class Forum {
     public Poster createPoster(String account, String password) {
         NodeManager nm = ForumManager.getCloud().getNodeManager("posters");
         if (nm != null) {
-            log.debug("Creating poster");
             Node pnode = nm.createNode();
             pnode.setStringValue("account", account);
 
@@ -977,7 +970,7 @@ public class Forum {
             pnode.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
             pnode.setIntValue("lastseen", ((int) (System.currentTimeMillis() / 1000)));
             pnode.commit();
-            log.service("Created poster object " + pnode + " now relating it to " + node);
+
             RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "posters", "forposrel");
             if (rm != null) {
 
@@ -985,13 +978,12 @@ public class Forum {
                 rel.commit();
 
                 Poster p = new Poster(pnode, this, false);
-                posters.put(p.getId(), p);
+                posters.put(new Integer(p.getId()), p);
                 onlineposters.add(p);
                 posternames.put(p.getNick(), p);
 
                 totalusers++;
                 totalusersnew++;
-                log.info("Created new poster " + p);
                 return p;
             } else {
                 log.error("Forum can't load relation nodemanager forums/posters/forposrel");
@@ -1005,7 +997,7 @@ public class Forum {
 
     /**
      * add administrator to forum
-     *
+     * 
      * @param ap Poster
      * @return always <code>false</code> (ToDo ??)
      */
@@ -1023,7 +1015,6 @@ public class Forum {
         }
         return false;
     }
-
 
     public boolean removeAdministrator(Poster mp) {
         if (isAdministrator(mp.getNick())) {
@@ -1051,53 +1042,44 @@ public class Forum {
     }
 
     /**
-     * remove a poster from the forum
-     *
-     * @param poster poster
+     * remove a poster from the posters
+     * 
+     * @param p poster
      */
-    public void childRemoved(Poster poster) {
-        log.debug("removing poster nr " + poster.getId());
-        posters.remove(poster.getId());
-        posternames.remove("" + poster.getAccount());
-        onlineposters.remove(poster);
-        newposters.remove(poster);
+    public void childRemoved(Poster p) {
+        posters.remove(new Integer(p.getId()));
+        posternames.remove("" + p.getAccount());
+        onlineposters.remove(p);
+        newposters.remove(p);
         syncNode(ForumManager.SLOWSYNC);
     }
 
     /**
      * remove the forum
-     *
+     * 
      * @return <code>true</code> if it succeeds, <code>false</code> if it doesn't
      */
     public boolean remove() {
-        log.debug("posters to remove: " + posters.size());
-        Iterator<Poster> i = posters.values().iterator();
-        while (i.hasNext()) {
-            Poster poster = i.next();
-            log.debug("try to remove poster :" + poster.getId());
-            if (!poster.remove()) {
-                log.error("Can't remove Poster : " + poster.getId());
-                // jikes!, what if first ones succeeded?
+        Enumeration e = posters.elements();
+        while (e.hasMoreElements()) {
+            Poster p = (Poster) e.nextElement();
+            if (!p.remove()) {
+                log.error("Can't remove Poster : " + p.getId());
                 return false;
             }
+            posters.remove(new Integer(p.getId()));
         }
 
-        // now delete all the postArea's
-        Iterator<PostArea> j = postareas.values().iterator();
-        while (j.hasNext()) {
-            PostArea postArea = j.next();
-            log.debug("try to remove postarea " + postArea.getId());
-            if (!postArea.remove()) {
-                log.error("Can't remove Area : " + postArea.getId());
+        e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea a = (PostArea) e.nextElement();
+            if (!a.remove()) {
+                log.error("Can't remove Area : " + a.getId());
                 return false;
             }
-            log.debug("removing postarea nr " + postArea.getId());
-            j.remove();
+            postareas.remove("" + a.getId());
         }
 
-        //the abouve operations have most certainly put this forum's node
-        //i a sync que. Let's remove it first before we delete it.
-        ForumManager.nodeDeleted(node);
         node.delete(true);
         return true;
     }
@@ -1133,20 +1115,20 @@ public class Forum {
 
     /**
      * get the expiretime for the posters in seconds
-     *
+     * 
      * @return expiretime in seconds
      */
     public int getPosterExpireTime() {
-        return 5 * 60;
+        return (5 * 60);
     }
 
     /**
      * create a new private message
-     *
-     * @param poster  accountname/nick of the sending poster
-     * @param to      accountname/nick of the recepient poster
+     * 
+     * @param poster accountname/nick of the sending poster
+     * @param to accountname/nick of the recepient poster
      * @param subject subject of the private message
-     * @param body    body of the private message
+     * @param body body of the private message
      * @return always -1 (ToDo ?)
      */
     public int newPrivateMessage(String poster, String to, String subject, String body) {
@@ -1175,7 +1157,7 @@ public class Forum {
                 } else {
                     log.error("Forum can't load relation nodemanager forummessagebox/forumprivatemessage/related");
                 }
-		mailbox.signalMailboxChange();
+                mailbox.signalMailboxChange();
             } else {
                 log.error("Forum can't load forumprivatemessage nodemanager");
             }
@@ -1185,8 +1167,8 @@ public class Forum {
 
     /**
      * create a new folder (messagebox) for the given poster
-     *
-     * @param posterid  MMBase objectnumber of the poster
+     * 
+     * @param posterid MMBase objectnumber of the poster
      * @param newfolder name of the new folder
      * @return always -1 (ToDo?)
      */
@@ -1205,9 +1187,11 @@ public class Forum {
      * called to maintain the memorycaches
      */
     public void maintainMemoryCaches() {
-        for (PostArea a : postareas.values()) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
             // for now all postareas nodes are loaded so
             // we just call them all for a maintain
+            PostArea a = (PostArea) e.nextElement();
             a.maintainMemoryCaches();
         }
     }
@@ -1227,7 +1211,6 @@ public class Forum {
         }
 
     }
-
 
     public String getAccountCreationType() {
         if (config != null) {
@@ -1373,8 +1356,7 @@ public class Forum {
     public void setNavigationMethod(String navigationmethod) {
         if (checkConfig()) {
             config.setNavigationMethod(navigationmethod);
-            if (getNavigationMethod().equals("tree"))
-                syncTreeAreas();
+            if (getNavigationMethod().equals("tree")) syncTreeAreas();
         }
     }
 
@@ -1511,8 +1493,7 @@ public class Forum {
     public int getPostingsPerPage() {
         if (config != null) {
             int tmpsize = config.getPostingsPerPage();
-            if (tmpsize > -1)
-                return tmpsize;
+            if (tmpsize > -1) return tmpsize;
         }
         return ForumManager.getPostingsPerPage();
     }
@@ -1579,7 +1560,9 @@ public class Forum {
 
     public int getPostThreadLoadedCount() {
         int count = 0;
-        for (PostArea pa : postareas.values()) {
+        Enumeration i = postareas.elements();
+        while (i.hasMoreElements()) {
+            PostArea pa = (PostArea) i.nextElement();
             count += pa.getPostThreadLoadedCount();
         }
         return count;
@@ -1587,7 +1570,9 @@ public class Forum {
 
     public int getPostingsLoadedCount() {
         int count = 0;
-        for (PostArea pa : postareas.values()) {
+        Enumeration i = postareas.elements();
+        while (i.hasMoreElements()) {
+            PostArea pa = (PostArea) i.nextElement();
             count += pa.getPostingsLoadedCount();
         }
         return count;
@@ -1598,7 +1583,9 @@ public class Forum {
             return 0;
         } else {
             int size = 0;
-            for (PostArea pa : postareas.values()) {
+            Enumeration i = postareas.elements();
+            while (i.hasMoreElements()) {
+                PostArea pa = (PostArea) i.nextElement();
                 size += pa.getMemorySize();
             }
             return size;
@@ -1613,7 +1600,7 @@ public class Forum {
         }
     }
 
-    public Map<String, String> getFilterWords() {
+    public HashMap getFilterWords() {
         if (filterwords != null) {
             return filterwords;
         } else {
@@ -1637,7 +1624,7 @@ public class Forum {
         }
     }
 
-    public String filterContent(Map<String, String> filterwords, String body) {
+    public String filterContent(HashMap filterwords, String body) {
         return ForumManager.filterContent(filterwords, body);
     }
 
@@ -1687,25 +1674,24 @@ public class Forum {
 
     public ThreadObserver getThreadObserver(int id) {
         Object o = threadobservers.get(new Integer(id));
-        if (o != null)
-            return (ThreadObserver) o;
+        if (o != null) return (ThreadObserver) o;
         return null;
     }
 
     public boolean setEmailOnChange(int id, Poster ap, boolean state) {
-        Object o = threadobservers.get(Integer.valueOf(id));
+        Object o = threadobservers.get(new Integer(id));
         if (o != null) {
             return ((ThreadObserver) o).setEmailOnChange(ap, state);
         } else {
             ThreadObserver to = new ThreadObserver(this, -1, id, "", "", "");
             // to.setThreadId(id);
-            threadobservers.put(Integer.valueOf(id), to);
+            threadobservers.put(new Integer(id), to);
             return to.setEmailOnChange(ap, state);
         }
     }
 
     public boolean setBookmarkedChange(int id, Poster ap, boolean state) {
-        Object o = threadobservers.get(Integer.valueOf(id));
+        Object o = threadobservers.get(new Integer(id));
         if (o != null) {
             ((ThreadObserver) o).setBookmarkedChange(ap, state);
             if (state) {
@@ -1756,6 +1742,5 @@ public class Forum {
     public ForumConfig getConfig() {
         return config;
     }
-
 
 }
