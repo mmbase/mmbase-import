@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * The syncer for Nodes used in MMBob. There can be different types of syncing mechanisms:
- * slow for things like statistics and fast for really important things like postings, userinfo, etc
+ * The syncer for Nodes used in MMBob. There can be different types of syncing mechanisms: slow for things like
+ * statistics and fast for really important things like postings, userinfo, etc
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.8 2006-05-03 18:09:01 daniel Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.8.2.1 2007-01-22 09:30:40 ernst Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
@@ -46,16 +46,15 @@ public class ForumMMBaseSyncer implements Runnable {
     int maxqueue;
 
     /**
-     * The vector dirtyNodes is also referred to as "syncQueue"
-     * it contains the nodes that needs to be synchronized
+     * The vector dirtyNodes is also referred to as "syncQueue" it contains the nodes that needs to be synchronized
      */
     private Vector dirtyNodes = new Vector();
 
     /**
      * Contructor
-     *
-     * @param sleeptime  time to sleep
-     * @param maxqueue   maximum number of nodes in the syncQueue (not implemented?)
+     * 
+     * @param sleeptime time to sleep
+     * @param maxqueue maximum number of nodes in the syncQueue (not implemented?)
      * @param startdelay delay (not implemented?)
      */
     public ForumMMBaseSyncer(int sleeptime, int maxqueue, int startdelay) {
@@ -91,12 +90,11 @@ public class ForumMMBaseSyncer implements Runnable {
 
     /**
      * Stops the main Thread.
-     **/
-    //public void stop() {
-        /* Stop thread */
-    //  kicker = null;
-    //}
-
+     */
+    // public void stop() {
+    /* Stop thread */
+    // kicker = null;
+    // }
     /**
      * Main loop, exception protected
      */
@@ -113,8 +111,7 @@ public class ForumMMBaseSyncer implements Runnable {
     }
 
     /**
-     * Main work loop
-     * Commit the nodes in the syncQueue to the database
+     * Main work loop Commit the nodes in the syncQueue to the database
      */
     public void doWork() {
         kicker.setPriority(Thread.MIN_PRIORITY + 1);
@@ -124,22 +121,22 @@ public class ForumMMBaseSyncer implements Runnable {
                 while (dirtyNodes.size() > 0) {
                     Node node = (Node) dirtyNodes.elementAt(0);
                     dirtyNodes.removeElementAt(0);
-		    try {
-			NodeManager tm = node.getNodeManager();
-			if (tm!=null) {
-				String tmn = tm.getName();
-				if (tmn.equals("forums") || tmn.equals("postthreads") || tmn.equals("postareas")) {
-					// check if the node was not deleted
-					Node on = node.getNodeValue("lastpostnumber");	
-					if (on==null) node.setValue("lastpostnumber","");
-				}
-                    		node.commit();
-                    		removeFromBrothers(node);
-			}
-		    } catch(Exception e) {
-			log.error("NODE PROBLEM WITH : "+node.getNumber());
-			e.printStackTrace();
-		    }
+                    try {
+                        NodeManager tm = node.getNodeManager();
+                        if (tm != null) {
+                            String tmn = tm.getName();
+                            if (tmn.equals("forums") || tmn.equals("postthreads") || tmn.equals("postareas")) {
+                                // check if the node was not deleted
+                                Node on = node.getNodeValue("lastpostnumber");
+                                if (on == null) node.setValue("lastpostnumber", "");
+                            }
+                            node.commit();
+                            removeFromBrothers(node);
+                        }
+                    } catch (Exception e) {
+                        log.error("NODE PROBLEM WITH : " + node.getNumber());
+                        e.printStackTrace();
+                    }
                     if (kicker.isInterrupted()) throw new InterruptedException();
                     Thread.sleep(delaytime);
                 }
@@ -153,25 +150,24 @@ public class ForumMMBaseSyncer implements Runnable {
     }
 
     public void shutdownSync() {
-                //let's try to commit the nodes before exit
-                log.service("Shut down ForumSyncer, trying to commit changes");
-                try {
-                    while (dirtyNodes.size() > 0) {
-                        Node node = (Node) dirtyNodes.elementAt(0);
-                        dirtyNodes.removeElementAt(0);
-                        log.debug("removing node " + node.getNumber() +" from sync queue "+sleeptime);
-                        node.commit();
-                        removeFromBrothers(node);
-                    } 
-                } catch (Exception ex) {
-                    log.fatal("something went wrong while shutting down Syncer");
-                }
+        // let's try to commit the nodes before exit
+        log.service("Shut down ForumSyncer, trying to commit changes");
+        try {
+            while (dirtyNodes.size() > 0) {
+                Node node = (Node) dirtyNodes.elementAt(0);
+                dirtyNodes.removeElementAt(0);
+                log.debug("removing node " + node.getNumber() + " from sync queue " + sleeptime);
+                node.commit();
+                removeFromBrothers(node);
+            }
+        } catch (Exception ex) {
+            log.fatal("something went wrong while shutting down Syncer");
+        }
     }
-
 
     /**
      * remove the given node from the syncQueue
-     *
+     * 
      * @param node node that has to be removed from the syncQueue
      */
     public void nodeDeleted(Node node) {
@@ -183,27 +179,28 @@ public class ForumMMBaseSyncer implements Runnable {
      * @param node
      */
     private void removeFromBrothers(Node node) {
-        for (int i = 0; i<brothers.size();i++) {
-            if (((ForumMMBaseSyncer)brothers.get(i)) != this) {
-                log.debug("removing node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime);
-                ((ForumMMBaseSyncer)brothers.get(i)).nodeDeleted(node);
+        for (int i = 0; i < brothers.size(); i++) {
+            if (((ForumMMBaseSyncer) brothers.get(i)) != this) {
+                log.debug("removing node " + node.getNumber() + " from sync queue " + ((ForumMMBaseSyncer) brothers.get(i)).sleeptime);
+                ((ForumMMBaseSyncer) brothers.get(i)).nodeDeleted(node);
             } else {
-                //log.debug("won't remove node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime+" because i probably just did");
+                // log.debug("won't remove node " + node.getNumber() +" from sync queue
+                // "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime+" because i probably just did");
             }
         }
     }
 
     /**
      * add the given node to the syncQueue, to be synchronized at synchronization-time
-     *
+     * 
      * @param node the node that must added to the syncQueue
      */
     public void syncNode(Node node) {
         if (!dirtyNodes.contains(node)) {
             dirtyNodes.addElement(node);
-            //log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
+            // log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
         } else {
-            //log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
+            // log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
         }
     }
 }

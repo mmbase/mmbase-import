@@ -1,0 +1,10 @@
+This document will track the bugs that were fixed for kennisnet and what 
+releases are created. Currently development is done in the 1.8 branche.
+I will create a set of kennisnet tags to idenitfy different releases.
+
+tags:
+-----------------------
+
+kennisnet-0
+This is the startpoint. From here i start fixing bugs.
+
