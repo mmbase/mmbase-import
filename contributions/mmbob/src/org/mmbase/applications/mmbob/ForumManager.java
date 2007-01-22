@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
  */
 
@@ -27,11 +27,9 @@ import org.mmbase.storage.search.*;
 
 import org.mmbase.util.FileWatcher;
 
-
 /**
- * forumManager
- * ToDo: Write docs!
- *
+ * forumManager ToDo: Write docs!
+ * 
  * @author Daniel Ockeloen (MMBased)
  */
 public class ForumManager {
@@ -39,7 +37,7 @@ public class ForumManager {
 
     private static Hashtable forums = new Hashtable(); // ConcurrentHashMap?
     private static Hashtable forumnamecache = new Hashtable(); // ConcurrentHashMap
-    private static ForumMMBaseSyncer syncfast,syncslow;
+    private static ForumMMBaseSyncer syncfast, syncslow;
     private static ForumSwapManager swapmanager;
     private static ExternalProfilesManager externalprofilesmanager;
     private static ForumEmailSender emailsender;
@@ -59,8 +57,7 @@ public class ForumManager {
     public static final String PUBLIC_ID_MMBOBCONFIG_1_0 = "-//MMBase//DTD mmbob config 1.0//EN";
 
     /**
-     * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * Register the Public Ids for DTDs used by DatabaseReader This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MMBOBCONFIG_1_0, DTD_MMBOBCONFIG_1_0, ForumManager.class);
@@ -72,10 +69,10 @@ public class ForumManager {
     private static Cloud cloud;
 
     /**
-     *  Initialization
+     * Initialization
      */
     public static synchronized void init() {
-	if (!running) {
+        if (!running) {
             readConfig();
             cloud = getCloud();
             if (!running) {
@@ -84,24 +81,24 @@ public class ForumManager {
                     log.error("Can't load forums nodemanager from mmbase");
                 }
 
-                externalprofilesmanager =  new ExternalProfilesManager(1 * 60 * 1000);
+                externalprofilesmanager = new ExternalProfilesManager(1 * 60 * 1000);
 
                 readForums();
 
                 // start the mmbase syncer
-                //was 10 * 1000
+                // was 10 * 1000
                 syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
                 syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
                 swapmanager = new ForumSwapManager(1 * 60 * 1000);
                 ForumEmailSender emailsender = new ForumEmailSender();
                 running = true;
+            }
         }
-	}
     }
 
     /**
      * Determine if the forumManager passed it's initilization
-     *
+     * 
      * @return <code>true</code> if the forumManager passed it's initilization, <code>false</code> if it isn't
      */
     public static boolean isRunning() {
@@ -110,7 +107,7 @@ public class ForumManager {
 
     /**
      * Get the number of forums in the cloud
-     *
+     * 
      * @return number of forums
      */
     public static int getForumsCount() {
@@ -119,7 +116,7 @@ public class ForumManager {
 
     /**
      * Get an enumeration of all the forums in the cloud
-     *
+     * 
      * @return all the forums
      */
     public static Enumeration getForums() {
@@ -128,7 +125,7 @@ public class ForumManager {
 
     /**
      * Get a forum by it's MMBase node number
-     *
+     * 
      * @param id MMBase node number of the forum
      * @return forum
      */
@@ -140,33 +137,31 @@ public class ForumManager {
         return null;
     }
 
-
     public static Forum getForumByAlias(String key) {
-       Enumeration e = forums.elements();
-       while (e.hasMoreElements()) {
-		Forum f = (Forum)e.nextElement();
-		if (f.getAlias()!=null && key.indexOf(f.getAlias())!=-1) {
-			return f;
-		}
-       }
-       return null;
+        Enumeration e = forums.elements();
+        while (e.hasMoreElements()) {
+            Forum f = (Forum) e.nextElement();
+            if (f.getAlias() != null && key.indexOf(f.getAlias()) != -1) {
+                return f;
+            }
+        }
+        return null;
     }
 
-
     public static Forum getForumCloneMaster() {
-       Enumeration e = forums.elements();
-       while (e.hasMoreElements()) {
-		Forum f = (Forum)e.nextElement();
-		if (f.getCloneMaster()) {
-			return f;
-		}
-       }
-       return null;
+        Enumeration e = forums.elements();
+        while (e.hasMoreElements()) {
+            Forum f = (Forum) e.nextElement();
+            if (f.getCloneMaster()) {
+                return f;
+            }
+        }
+        return null;
     }
 
     /**
      * Remove a forum by it's MMBase node number
-     *
+     * 
      * @param id MMBase node number of the forum
      * @return <code>true</code> if the remove action was successful
      */
@@ -180,8 +175,8 @@ public class ForumManager {
 
     /**
      * Get a forum by it's MMBase node number
-     *
-     * @param id  MMBase node number of the forum
+     * 
+     * @param id MMBase node number of the forum
      */
     public static Forum getForum(String id) {
         try {
@@ -204,8 +199,7 @@ public class ForumManager {
     }
 
     /**
-     * Called on init.
-     * Fill the forums hastable with all forums that are found in the cloud.
+     * Called on init. Fill the forums hastable with all forums that are found in the cloud.
      */
     private static void readForums() {
         NodeQuery query = forumnodemanager.createQuery();
@@ -222,7 +216,7 @@ public class ForumManager {
 
     /**
      * Create a new forum
-     *
+     * 
      * @param name Name of the new forum
      * @param language Language of the new forum
      * @param description Description of the new forum
@@ -230,7 +224,7 @@ public class ForumManager {
      * @param password password of the creator of the new forum
      * @return The MMBase node number of the newly created forum node
      */
-    public static int newForum(String name, String language, String description, String account, String password,String nick,String email) {
+    public static int newForum(String name, String language, String description, String account, String password, String nick, String email) {
         org.mmbase.bridge.Node node = forumnodemanager.createNode();
         node.setStringValue("name", name);
         node.setStringValue("language", language);
@@ -251,43 +245,41 @@ public class ForumManager {
 
         Poster p = f.createPoster(account, password);
 
-	p.setEmail(email);
-	p.savePoster();
+        p.setEmail(email);
+        p.savePoster();
 
+        // check if we have a clone master
+        Forum cf = getForumCloneMaster();
+        if (cf != null) {
+            // ok we have a clone master copy the wanted settings
+            f.setPostingsPerPage(cf.getPostingsPerPage());
+            f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
+            f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
+            f.setLanguage(cf.getLanguage());
+            f.setLoginSystemType(cf.getLoginSystemType());
+            f.setLoginModeType(cf.getLoginModeType());
+            f.setLogoutModeType(cf.getLogoutModeType());
+            f.setGuestReadModeType(cf.getGuestReadModeType());
+            f.setGuestWriteModeType(cf.getGuestWriteModeType());
+            f.setNavigationMethod(cf.getNavigationMethod());
+            f.setSpeedPostTime(cf.getSpeedPostTime());
+            f.setReplyOnEachPage(cf.getReplyOnEachPage());
+            f.save(); // some basic settings, weird
 
-
-	// check if we have a clone master
-	Forum cf = getForumCloneMaster();
-	if (cf!=null) {
-		// ok we have a clone master copy the wanted settings
-		f.setPostingsPerPage(cf.getPostingsPerPage());
-		f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
-		f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
-		f.setLanguage(cf.getLanguage());
-		f.setLoginSystemType(cf.getLoginSystemType());
-		f.setLoginModeType(cf.getLoginModeType());
-		f.setLogoutModeType(cf.getLogoutModeType());
-		f.setGuestReadModeType(cf.getGuestReadModeType());
-		f.setGuestWriteModeType(cf.getGuestWriteModeType());
-		f.setNavigationMethod(cf.getNavigationMethod());
-		f.setSpeedPostTime(cf.getSpeedPostTime());
-		f.setReplyOnEachPage(cf.getReplyOnEachPage());
-		f.save(); // some basic settings, weird
-
-		// check if we need to copy ProfileDefs
-                Iterator i = cf.getProfileDefs();
-                if (i!=null) {
-                	while (i.hasNext()) {
-                           ProfileEntryDef pd = (ProfileEntryDef) i.next();
-			   f.addProfileDef(pd);
-			   if (pd.getName().equals("nick")) {
-				// kinda trick, we need a way to make forums.jsp optional for this *sigh*
-        			if (nick!=null && !nick.equals("")) p.setProfileValue("nick",nick);
-			   }
-			}
-		}
-		f.saveConfig();
-	}
+            // check if we need to copy ProfileDefs
+            Iterator i = cf.getProfileDefs();
+            if (i != null) {
+                while (i.hasNext()) {
+                    ProfileEntryDef pd = (ProfileEntryDef) i.next();
+                    f.addProfileDef(pd);
+                    if (pd.getName().equals("nick")) {
+                        // kinda trick, we need a way to make forums.jsp optional for this *sigh*
+                        if (nick != null && !nick.equals("")) p.setProfileValue("nick", nick);
+                    }
+                }
+            }
+            f.saveConfig();
+        }
         f.addAdministrator(p);
         return node.getNumber();
     }
@@ -306,8 +298,7 @@ public class ForumManager {
     }
 
     /**
-     * Remove the given deleted node from the sync queues
-     * ToDo: very ugly need to be beter
+     * Remove the given deleted node from the sync queues ToDo: very ugly need to be beter
      * @param node
      */
     public static void nodeDeleted(org.mmbase.bridge.Node node) {
@@ -324,19 +315,19 @@ public class ForumManager {
      * @param id
      */
     protected static Map getNamePassword(String id) {
-	return config.getNamePassword(id);
+        return config.getNamePassword(id);
     }
 
     public static String getDefaultPassword() {
-	return config.getDefaultPassword();
+        return config.getDefaultPassword();
     }
 
     public static String getDefaultAccount() {
-	return config.getDefaultAccount();
+        return config.getDefaultAccount();
     }
 
     public static String getLanguage() {
-	return "en";
+        return "en";
     }
 
     /**
@@ -347,40 +338,36 @@ public class ForumManager {
         return cloud;
     }
 
-
     /**
-     * ToDo: Write docs!
-     * Called on init.
-     * reads configfile
+     * ToDo: Write docs! Called on init. reads configfile
      */
     public static void readConfig() {
-	try {
+        try {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
             DocumentReader reader = new DocumentReader(is, ForumManager.class);
             // decode forums
             for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
                 Element n = (Element) ns.next();
                 if (n != null) {
-                    config =  new ForumsConfig(reader,n);
+                    config = new ForumsConfig(reader, n);
                 }
             }
-	} catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
-	}
+        }
         if (config == null) {
             log.error("No correct mmbob.xml configuration found");
             config = new ForumsConfig();
         }
     }
 
-
     public static void saveConfig() {
-	log.info("SAVE CONFIG !");
- 	if (config != null) {
+        log.info("SAVE CONFIG !");
+        if (config != null) {
             config.save();
-	} else {
+        } else {
             log.info("missing config file, can't save");
-	}
+        }
     }
 
     /**
@@ -396,91 +383,89 @@ public class ForumManager {
         }
     }
 
-   public static void setQuotaMax(String maxs) {
-	config.setQuotaMax(maxs);
-   }
+    public static void setQuotaMax(String maxs) {
+        config.setQuotaMax(maxs);
+    }
 
+    public static void setQuotaMax(int max) {
+        config.setQuotaMax(max);
+    }
 
-   public static void setQuotaMax(int max) {
-	config.setQuotaMax(max);
-   }
+    public static void setQuotaSoftWarning(String sws) {
+        config.setQuotaSoftWarning(sws);
+    }
 
-   public static void setQuotaSoftWarning(String sws) {
-	config.setQuotaSoftWarning(sws);
-   }
+    public static void setQuotaWarning(String ws) {
+        config.setQuotaWarning(ws);
+    }
 
+    public static int getQuotaMax() {
+        return config.getQuotaMax();
+    }
 
-   public static void setQuotaWarning(String ws) {
-	config.setQuotaWarning(ws);
-   }
+    public static int getQuotaSoftWarning() {
+        return config.getQuotaSoftWarning();
+    }
 
-   public static int getQuotaMax() {
-	return config.getQuotaMax();
-   }
+    public static int getQuotaWarning() {
+        return config.getQuotaWarning();
+    }
 
-   public static int getQuotaSoftWarning() {
-	return config.getQuotaSoftWarning();
-   }
+    public static ForumConfig getForumConfig(String name) {
+        return config.getForumConfig(name);
+    }
 
-   public static int getQuotaWarning() {
-	return config.getQuotaWarning();
-   }
+    public static String getAccountCreationType() {
+        return config.getAccountCreationType();
+    }
 
-   public static ForumConfig getForumConfig(String name) {
-	return config.getForumConfig(name);
-   }
+    public static String getAccountRemovalType() {
+        return config.getAccountRemovalType();
+    }
 
-   public static String getAccountCreationType() {
-       return config.getAccountCreationType();
-   }
+    public static String getLoginModeType() {
+        return config.getLoginModeType();
+    }
 
-   public static String getAccountRemovalType() {
-       return config.getAccountRemovalType();
-   }
+    public static String getLoginSystemType() {
+        return config.getLoginSystemType();
+    }
 
-   public static String getLoginModeType() {
-       return config.getLoginModeType();
-   }
+    public static void setLoginModeType(String mode) {
+        config.setLoginModeType(mode);
+    }
 
-   public static String getLoginSystemType() {
-       return config.getLoginSystemType();
-   }
+    public static void setLoginSystemType(String system) {
+        config.setLoginSystemType(system);
+    }
 
-   public static void setLoginModeType(String mode) {
-       config.setLoginModeType(mode);
-   }
+    public static String getLogoutModeType() {
+        return config.getLogoutModeType();
+    }
 
-   public static void setLoginSystemType(String system) {
-       config.setLoginSystemType(system);
-   }
+    public static void setLogoutModeType(String mode) {
+        config.setLogoutModeType(mode);
+    }
 
-   public static String getLogoutModeType() {
-       return config.getLogoutModeType();
-   }
+    public static String getGuestReadModeType() {
+        return config.getGuestReadModeType();
+    }
 
-   public static void setLogoutModeType(String mode) {
-       config.setLogoutModeType(mode);
-   }
+    public static String getThreadStartLevel() {
+        return config.getThreadStartLevel();
+    }
 
-   public static String getGuestReadModeType() {
-       return config.getGuestReadModeType();
-   }
+    public static void setGuestReadModeType(String mode) {
+        config.setGuestReadModeType(mode);
+    }
 
-   public static String getThreadStartLevel() {
-       return config.getThreadStartLevel();
-   }
+    public static String getGuestWriteModeType() {
+        return config.getGuestWriteModeType();
+    }
 
-   public static void setGuestReadModeType(String mode) {
-       config.setGuestReadModeType(mode);
-   }
-
-   public static String getGuestWriteModeType() {
-       return config.getGuestWriteModeType();
-   }
-
-   public static void setGuestWriteModeType(String mode) {
-       config.setGuestWriteModeType(mode);
-   }
+    public static void setGuestWriteModeType(String mode) {
+        config.setGuestWriteModeType(mode);
+    }
 
     public static int getPreloadChangedThreadsTime() {
         return config.getPreloadChangedThreadsTime();
@@ -494,7 +479,6 @@ public class ForumManager {
         return config.getXSLTPostingsOdd();
     }
 
-
     public static String getXSLTPostingsEven() {
         return config.getXSLTPostingsEven();
     }
@@ -503,33 +487,33 @@ public class ForumManager {
         return config.getAvatarsUploadEnabled();
     }
 
-   public static void setAvatarsUploadEnabled(String mode) {
-       config.setAvatarsUploadEnabled(mode);
-   }
+    public static void setAvatarsUploadEnabled(String mode) {
+        config.setAvatarsUploadEnabled(mode);
+    }
 
     public static String getAvatarsGalleryEnabled() {
         return config.getAvatarsGalleryEnabled();
     }
 
-   public static void setAvatarsGalleryEnabled(String mode) {
-       config.setAvatarsGalleryEnabled(mode);
-   }
+    public static void setAvatarsGalleryEnabled(String mode) {
+        config.setAvatarsGalleryEnabled(mode);
+    }
 
-   public static void setContactInfoEnabled(String mode) {
-       config.setContactInfoEnabled(mode);
-   }
+    public static void setContactInfoEnabled(String mode) {
+        config.setContactInfoEnabled(mode);
+    }
 
-   public static void setSmileysEnabled(String mode) {
-       config.setSmileysEnabled(mode);
-   }
+    public static void setSmileysEnabled(String mode) {
+        config.setSmileysEnabled(mode);
+    }
 
-   public static void setPrivateMessagesEnabled(String mode) {
-       config.setPrivateMessagesEnabled(mode);
-   }
+    public static void setPrivateMessagesEnabled(String mode) {
+        config.setPrivateMessagesEnabled(mode);
+    }
 
-   public static void setPostingsPerPage(String number) {
-       config.setPostingsPerPage(number);
-   }
+    public static void setPostingsPerPage(String number) {
+        config.setPostingsPerPage(number);
+    }
 
     public static String getContactInfoEnabled() {
         return config.getContactInfoEnabled();
@@ -567,109 +551,106 @@ public class ForumManager {
         int count = 0;
         Enumeration i = forums.elements();
         while (i.hasMoreElements()) {
-                Forum forum = (Forum)i.nextElement();
-                count += forum.getPostThreadLoadedCount();
+            Forum forum = (Forum) i.nextElement();
+            count += forum.getPostThreadLoadedCount();
         }
         return count;
     }
 
-   public static String filterContent(String body) {
-        if (config.getFilterWords()!=null) {
-		return filterContent(config.getFilterWords(),body);
+    public static String filterContent(String body) {
+        if (config.getFilterWords() != null) {
+            return filterContent(config.getFilterWords(), body);
         } else {
-		return body;
-	}
-   }
+            return body;
+        }
+    }
 
-   public static HashMap getFilterWords() {
-        if (config.getFilterWords()!=null) {
-		return config.getFilterWords();
-	} else {
-		return null;
-	}
-   }
-
-
-   public static void addWordFilter(String name,String value) {
-        if (config.getFilterWords()!=null) {
-		config.addWordFilter(name,value);
-	}
-   }
-
-
-   public static void removeWordFilter(String name) {
-        if (config.getFilterWords()!=null) {
-		config.removeWordFilter(name);
-	}
-   }
-
-
-   public static String longWordWrap(String body) {
-	StringTokenizer tok = new StringTokenizer(body," \n\r\t",true);
-	String newbody = "";
-	while (tok.hasMoreTokens()) {
-		String tmp = tok.nextToken();
-		int len = tmp.length();
-		boolean first = true;
-		if (len>45) {
-			while (len>45) {
-				if (first) {
-					newbody = newbody + tmp.substring(0,44);
-					first = false;
-				} else {
-					newbody = newbody + "- "+tmp.substring(0,44);
-				}
-				log.info("newbody="+newbody);
-				tmp = tmp.substring(45);
-				log.info("tmp="+tmp);
-				len=tmp.length();
-			}
-			newbody = newbody + "- "+tmp;
-		} else {
-			newbody = newbody+tmp;
-		}
-	}
-	return newbody;
-   }
-
-   public static String filterContent(HashMap words,String body) {
-	body = longWordWrap(body);
-        StringObject obj=new StringObject(body);
-        if (words!=null) {
-        	Iterator i = words.keySet().iterator();
-        	while (i.hasNext()) {
-            		String key = (String)i.next();
-            		String value = (String)words.get(key);
-                	obj.replace(key, value);
-		}
-                return obj.toString();
+    public static HashMap getFilterWords() {
+        if (config.getFilterWords() != null) {
+            return config.getFilterWords();
         } else {
-		return body;
-	}
-   }
+            return null;
+        }
+    }
 
-   public static int getSpeedPostTime() {
-	return config.getSpeedPostTime();
-   }
+    public static void addWordFilter(String name, String value) {
+        if (config.getFilterWords() != null) {
+            config.addWordFilter(name, value);
+        }
+    }
 
-   public static int getPostingsOverflowPostArea() {
-	return config.getPostingsOverflowPostArea();
-   }
+    public static void removeWordFilter(String name) {
+        if (config.getFilterWords() != null) {
+            config.removeWordFilter(name);
+        }
+    }
 
-   public static int getPostingsOverflowThreadPage() {
-	return config.getPostingsOverflowThreadPage();
-   }
+    public static String longWordWrap(String body) {
+        StringTokenizer tok = new StringTokenizer(body, " \n\r\t", true);
+        String newbody = "";
+        while (tok.hasMoreTokens()) {
+            String tmp = tok.nextToken();
+            int len = tmp.length();
+            boolean first = true;
+            if (len > 45) {
+                while (len > 45) {
+                    if (first) {
+                        newbody = newbody + tmp.substring(0, 44);
+                        first = false;
+                    } else {
+                        newbody = newbody + "- " + tmp.substring(0, 44);
+                    }
+                    log.info("newbody=" + newbody);
+                    tmp = tmp.substring(45);
+                    log.info("tmp=" + tmp);
+                    len = tmp.length();
+                }
+                newbody = newbody + "- " + tmp;
+            } else {
+                newbody = newbody + tmp;
+            }
+        }
+        return newbody;
+    }
 
-   public static String getEmailtext(String role) {
-	return config.getEmailtext(role);
-   }
+    public static String filterContent(HashMap words, String body) {
+        body = longWordWrap(body);
+        StringObject obj = new StringObject(body);
+        if (words != null) {
+            Iterator i = words.keySet().iterator();
+            while (i.hasNext()) {
+                String key = (String) i.next();
+                String value = (String) words.get(key);
+                obj.replace(key, value);
+            }
+            return obj.toString();
+        } else {
+            return body;
+        }
+    }
 
-   public static String getExternalRootUrl() {
-	return config.getExternalRootUrl();
-   }
+    public static int getSpeedPostTime() {
+        return config.getSpeedPostTime();
+    }
 
-   public static boolean getReplyOnEachPage() {
-	return config.getReplyOnEachPage();
-   }
+    public static int getPostingsOverflowPostArea() {
+        return config.getPostingsOverflowPostArea();
+    }
+
+    public static int getPostingsOverflowThreadPage() {
+        return config.getPostingsOverflowThreadPage();
+    }
+
+    public static String getEmailtext(String role) {
+        return config.getEmailtext(role);
+    }
+
+    public static String getExternalRootUrl() {
+        return config.getExternalRootUrl();
+    }
+
+    public static boolean getReplyOnEachPage() {
+        return config.getReplyOnEachPage();
+    }
 
 }

@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -65,11 +65,11 @@ public class PostArea {
      */
     public PostArea(Forum parent, Node node) {
         this.parent = parent;
-	this.id = node.getNumber();
+        this.id = node.getNumber();
         name = node.getStringValue("name");
         description = node.getStringValue("description");
 
-	config  = parent.getPostAreaConfig(getName());
+        config = parent.getPostAreaConfig(getName());
 
         this.viewcount = node.getIntValue("viewcount");
         if (viewcount == -1) viewcount = 0;
@@ -81,8 +81,8 @@ public class PostArea {
         this.lastpostsubject = node.getStringValue("c_lastpostsubject");
         this.lastposter = node.getStringValue("c_lastposter");
         this.lastposttime = node.getIntValue("c_lastposttime");
-        this.lastpostnumber=node.getIntValue("lastpostnumber");
-        this.lastposternumber=node.getIntValue("lastposternumber");
+        this.lastpostnumber = node.getIntValue("lastpostnumber");
+        this.lastposternumber = node.getIntValue("lastposternumber");
 
         readRoles();
     }
@@ -100,10 +100,8 @@ public class PostArea {
      * @param node postarea
      */
     /*
-      public void setNode(Node node) {
-      this.node = node;
-      }
-    */
+     * public void setNode(Node node) { this.node = node; }
+     */
 
     /**
      * set the name for the postarea
@@ -132,8 +130,8 @@ public class PostArea {
     }
 
     public String getShortName() {
-	int pos = name.lastIndexOf('/');
-	if (pos!=-1) return name.substring(pos+1);
+        int pos = name.lastIndexOf('/');
+        if (pos != -1) return name.substring(pos + 1);
         return name;
     }
 
@@ -173,47 +171,44 @@ public class PostArea {
     public int getPostThreadLoadedCount() {
         if (postthreads == null) {
             return 0;
-	} else {
+        } else {
             int count = 0;
             Iterator i = postthreads.iterator();
             while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
+                PostThread pt = (PostThread) i.next();
                 if (pt.isLoaded()) count++;
             }
             return count;
-	}
+        }
     }
-
 
     public int getPostingsLoadedCount() {
         if (postthreads == null) {
             return 0;
-	} else {
+        } else {
             int count = 0;
             Iterator i = postthreads.iterator();
             while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
-                if (pt.isLoaded()) count+=pt.getPostCount();
+                PostThread pt = (PostThread) i.next();
+                if (pt.isLoaded()) count += pt.getPostCount();
             }
             return count;
-	}
+        }
     }
 
     public int getMemorySize() {
         if (postthreads == null) {
             return 0;
-	} else {
+        } else {
             int size = 0;
             Iterator i = postthreads.iterator();
             while (i.hasNext()) {
-                PostThread pt = (PostThread)i.next();
+                PostThread pt = (PostThread) i.next();
                 size += pt.getMemorySize();
             }
             return size;
-	}
+        }
     }
-
-
 
     /**
      * get the number of pages for this postarea
@@ -255,26 +250,25 @@ public class PostArea {
      * @return last poster
      */
     public int getLastPosterNumber() {
-	if (parent.hasPoster(lastposternumber)) {
+        if (parent.hasPoster(lastposternumber)) {
             return lastposternumber;
-	} else {
+        } else {
             return -1;
-	}
+        }
     }
-
 
     /**
      * get the last postthread in the postarea
      * @return last postthreadnumber
      */
     public int getLastPostThreadNumber() {
-	if (postthreads==null) readPostThreads();
-	if (postthreads.size()>0) {
-            PostThread pt=(PostThread)postthreads.elementAt(0);
+        if (postthreads == null) readPostThreads();
+        if (postthreads.size() > 0) {
+            PostThread pt = (PostThread) postthreads.elementAt(0);
             return pt.getId();
-	} else {
+        } else {
             return -1;
-	}
+        }
     }
 
     /**
@@ -360,7 +354,7 @@ public class PostArea {
     public String getNavigationLine(String baseurl, int page, int pagesize, String cssclass) {
         int f = parent.getId();
         int a = getId();
-        if (cssclass!=null && !cssclass.equals("")) {
+        if (cssclass != null && !cssclass.equals("")) {
             cssclass = " class=\"" + cssclass + "\"";
         }
 
@@ -371,13 +365,12 @@ public class PostArea {
         // if only one page no nav line is needed
         if (pagecount == 1) return "";
 
-
         int c = page - 1;
         if (c < 1) c = 1;
         int n = page + 1;
         if (n > pagecount) n = pagecount;
         String result = "<a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + c + "\"" + cssclass + ">&lt</a>";
-	int i = 1;
+        int i = 1;
         for (i = 1; i <= pagecount; i++) {
             result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + i + "\"" + cssclass + ">";
             if (i == page) {
@@ -387,9 +380,10 @@ public class PostArea {
             }
             result += "</a>";
         }
-	String lastword = "last";
-	if (parent.getLanguage().equals("nl")) lastword="laatste";
-        result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + (i-1) + "\"" + cssclass + "> "+lastword+"</a>";
+        String lastword = "last";
+        if (parent.getLanguage().equals("nl")) lastword = "laatste";
+        result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + (i - 1) + "\"" + cssclass + "> " + lastword
+                + "</a>";
         result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + n + "\"" + cssclass + ">&gt</a>";
         return result;
     }
@@ -407,31 +401,31 @@ public class PostArea {
      * @return non-moderators
      */
     public Enumeration getNonModerators(String searchKey) {
-	Vector result =  new Vector();
+        Vector result = new Vector();
         Enumeration e = parent.getPosters();
         while (e.hasMoreElements()) {
             Poster p = (Poster) e.nextElement();
             if (!isModerator(p.getNick())) {
-                String nick =  p.getNick().toLowerCase();
+                String nick = p.getNick().toLowerCase();
                 String firstName = p.getFirstName().toLowerCase();
                 String lastName = p.getLastName().toLowerCase();
-                if (searchKey == null ||
-                    "*".equals(searchKey) || nick.indexOf(searchKey) != -1 ||
-                    firstName.indexOf(searchKey)!=-1 || lastName.indexOf(searchKey)!= -1) {
+                if (searchKey == null || "*".equals(searchKey) || nick.indexOf(searchKey) != -1 || firstName.indexOf(searchKey) != -1
+                        || lastName.indexOf(searchKey) != -1) {
                     result.add(p);
-                    if (result.size() >49 ) {
+                    if (result.size() > 49) {
                         return result.elements();
                     }
                 }
             }
-	}
+        }
         return result.elements();
     }
 
     /**
      * determine if the given accountname/nick is a moderator of this postarea
      * @param nick accountname/nick to be evaluated
-     * @return <code>true</code> if the account is moderator. Also <code>true</code> if the account is administrator of the parent forum.
+     * @return <code>true</code> if the account is moderator. Also <code>true</code> if the account is administrator
+     *         of the parent forum.
      */
     public boolean isModerator(String nick) {
         // check if he a admin then asign him
@@ -507,7 +501,8 @@ public class PostArea {
             if (baseurl.equals("")) {
                 moderatorsline += p.getNick();
             } else {
-                moderatorsline += "<a href=\"" + baseurl + "?forumid=" + parent.getId() + "&postareaid=" + getId() + "&posterid=" + p.getId() + "\">" + p.getNick() + "</a>";
+                moderatorsline += "<a href=\"" + baseurl + "?forumid=" + parent.getId() + "&postareaid=" + getId() + "&posterid="
+                        + p.getId() + "\">" + p.getNick() + "</a>";
             }
         }
         return moderatorsline;
@@ -519,8 +514,8 @@ public class PostArea {
     private void readPostThreads() {
         postthreads = new Vector(); // why synchronized.
 
-       	long start = System.currentTimeMillis();
-	//log.info("reading threads");
+        long start = System.currentTimeMillis();
+        // log.info("reading threads");
         NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
         NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
         Query query = ForumManager.getCloud().createQuery();
@@ -549,7 +544,7 @@ public class PostArea {
         int newthreadcount = 0;
         while (i2.hasNext()) {
             Node n2 = i2.nextNode();
-            PostThread postthread = new PostThread(this, n2,true);
+            PostThread postthread = new PostThread(this, n2, true);
             newcount += postthread.getPostCount();
             newthreadcount++;
             if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
@@ -560,23 +555,22 @@ public class PostArea {
             }
             nameCache.put("" + n2.getIntValue("postthreads.number"), postthread);
         }
-       	long end = System.currentTimeMillis();
-	//log.info("end reading threads time="+(end-start));
+        long end = System.currentTimeMillis();
+        // log.info("end reading threads time="+(end-start));
 
         // check the count number
-        if (postcount!=newcount) {
-            log.info("resync of postareacount : "+postcount+" "+newcount);
+        if (postcount != newcount) {
+            log.info("resync of postareacount : " + postcount + " " + newcount);
             postcount = newcount;
             save();
         }
 
         // check the threadcount number
-        if (postthreadcount!=newthreadcount) {
-            log.info("resync of postareathreadcount : "+postthreadcount+" "+newthreadcount);
+        if (postthreadcount != newthreadcount) {
+            log.info("resync of postareathreadcount : " + postthreadcount + " " + newthreadcount);
             postthreadcount = newthreadcount;
             save();
         }
-
 
         // very raw way to zap the cache
 
@@ -608,25 +602,25 @@ public class PostArea {
         numberofpinned--;
     }
 
-
     /**
      * create a new postthread in the postarea
      * @param subject subject of the new postthread
      * @param poster accountname/nick of the poster that posts the new postthread
      * @param body body of the new postthread
-     * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be found
+     * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be
+     *         found
      */
-    public int newPost(String subject, Poster poster, String body,String mood,boolean parsed) {
+    public int newPost(String subject, Poster poster, String body, String mood, boolean parsed) {
         if (postthreads == null) readPostThreads();
         NodeManager nm = ForumManager.getCloud().getNodeManager("postthreads");
         if (nm != null) {
             Node ptnode = nm.createNode();
             ptnode.setStringValue("subject", subject);
-	    if (poster!=null) {
-            	ptnode.setStringValue("creator", poster.getNick());
-	    } else {
-            	ptnode.setStringValue("creator", "gast");
-	    }
+            if (poster != null) {
+                ptnode.setStringValue("creator", poster.getNick());
+            } else {
+                ptnode.setStringValue("creator", "gast");
+            }
             ptnode.setStringValue("state", "normal");
             ptnode.setStringValue("mood", mood);
             ptnode.setStringValue("ttype", "post");
@@ -634,14 +628,14 @@ public class PostArea {
             ptnode.commit();
             RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "postthreads", "areathreadrel");
             if (rm != null) {
-	        Node node = ForumManager.getCloud().getNode(id);
+                Node node = ForumManager.getCloud().getNode(id);
                 Node rel = rm.createRelation(node, ptnode);
                 rel.commit();
-                PostThread postthread = new PostThread(this, ptnode,false);
-		postthread.setLoaded(true);
+                PostThread postthread = new PostThread(this, ptnode, false);
+                postthread.setLoaded(true);
 
                 // now add the first 'reply' (wrong name since its not a reply)
-                postthread.postReply(subject, poster, body,parsed);
+                postthread.postReply(subject, poster, body, parsed);
                 if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
                     postthreads.add(0, postthread);
                 } else {
@@ -671,8 +665,8 @@ public class PostArea {
         lastposttime = child.getLastPostTime();
         lastposter = child.getLastPoster();
         lastpostsubject = child.getLastSubject();
-        lastpostnumber=child.getLastPostNumber();
-        lastposternumber=child.getLastPosterNumber();
+        lastpostnumber = child.getLastPostNumber();
+        lastposternumber = child.getLastPosterNumber();
         syncNode(ForumManager.FASTSYNC);
 
         resort(child);
@@ -686,8 +680,8 @@ public class PostArea {
      */
     public void signalRemovedReply(PostThread child) {
         // todo: Make this configurable.
-        //       uncomment this if you want to decrease the stats if a thread was removed
-        //postcount--;
+        // uncomment this if you want to decrease the stats if a thread was removed
+        // postcount--;
 
         if (lastposttime == child.getLastPostTime() && lastposter.equals(child.getLastPoster())) {
             lastpostsubject = "removed";
@@ -717,43 +711,41 @@ public class PostArea {
         }
     }
 
-    public boolean movePostThread(String postthreadid,String newpostareaid,Poster poster) {
-	// get the target area
-	PostArea ta = parent.getPostArea(newpostareaid);
-	if (ta!=null) {
+    public boolean movePostThread(String postthreadid, String newpostareaid, Poster poster) {
+        // get the target area
+        PostArea ta = parent.getPostArea(newpostareaid);
+        if (ta != null) {
             PostThread t = getPostThread(postthreadid);
             if (t != null) {
-                int pos=0;
+                int pos = 0;
                 PostThread npt = null;
                 Posting p = t.getPostingPos(0);
                 while (p != null) {
                     if (pos == 0) {
                         String body = p.getDirectBody(); // stringbuilder?
                         if (body.indexOf("<posting>") == 0) {
-                            body = "<posting> " + MultiLanguageGui.getConversion("mmbob.movedfrom", parent.getLanguage()) +
-                                " : " + getName() + " " + MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage())+
-                                " " + poster.getNick() + "<br />----<br /><br />" + body.substring(9);
+                            body = "<posting> " + MultiLanguageGui.getConversion("mmbob.movedfrom", parent.getLanguage()) + " : "
+                                    + getName() + " " + MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage()) + " "
+                                    + poster.getNick() + "<br />----<br /><br />" + body.substring(9);
                         }
                         log.info("P1=" + p.getPoster()); // debug?
                         log.info("P2=" + parent.getPosterNick(p.getPoster()));
                         Poster nposter = parent.getPosterNick(p.getPoster());
-                        int np = ta.newPost(p.getSubject(),nposter,body,p.getParent().getMood(),true);
+                        int np = ta.newPost(p.getSubject(), nposter, body, p.getParent().getMood(), true);
                         log.info("NPOSRER=" + nposter);
                         nposter.decPostCount(); // compensate counter
                         npt = ta.getPostThread("" + np);
                         if (npt != null) {
-                            int nr=npt.getLastPostNumber();
-                            if (nr!=-1) {
-                                Posting npr=npt.getPosting(nr);
+                            int nr = npt.getLastPostNumber();
+                            if (nr != -1) {
+                                Posting npr = npt.getPosting(nr);
                                 npr.setPostTime(p.getPostTime());
                                 npr.save();
-                                body = 
-                                    MultiLanguageGui.getConversion("mmbob.movedto", parent.getLanguage()) + 
-                                    " : " + ta.getName() + " " + 
-                                    MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage()) + 
-                                    " " + poster.getNick() + "\n\r\n\r";
-                                body += "[url]/mmbob/thread.jsp?forumid=" + parent.getId() + "&postareaid=" + ta.getId() +
-                                    "&postthreadid=" + npt.getId() + "[/url]";
+                                body = MultiLanguageGui.getConversion("mmbob.movedto", parent.getLanguage()) + " : " + ta.getName() + " "
+                                        + MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage()) + " " + poster.getNick()
+                                        + "\n\r\n\r";
+                                body += "[url]/mmbob/thread.jsp?forumid=" + parent.getId() + "&postareaid=" + ta.getId() + "&postthreadid="
+                                        + npt.getId() + "[/url]";
                                 p.setBody(body, "", false);
                                 p.save();
                                 t.setState("closed");
@@ -778,8 +770,8 @@ public class PostArea {
                     p = t.getPostingPos(1);
                 }
             }
-	}
-	return true;
+        }
+        return true;
     }
 
     /**
@@ -804,21 +796,21 @@ public class PostArea {
      * save the postarea (add it to the SyncQueue)
      */
     public boolean save() {
-	// this can still give a problem since its not direct !
-	// so forced direct
+        // this can still give a problem since its not direct !
+        // so forced direct
         Node node = ForumManager.getCloud().getNode(id);
         node.setStringValue("name", name);
         node.setStringValue("description", description);
-	node.commit();
+        node.commit();
 
-	// need to work in this, daniel
+        // need to work in this, daniel
         syncNode(ForumManager.FASTSYNC);
         return true;
     }
 
     /**
      * add the postarea-node to the given syncQueue
-     *
+     * 
      * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
@@ -831,14 +823,13 @@ public class PostArea {
         node.setIntValue("c_lastposttime", lastposttime);
         node.setStringValue("c_lastposter", lastposter);
         node.setStringValue("c_lastpostsubject", lastpostsubject);
-        node.setIntValue("lastposternumber",lastposternumber);
-        node.setIntValue("lastpostnumber",lastpostnumber);
+        node.setIntValue("lastposternumber", lastposternumber);
+        node.setIntValue("lastpostnumber", lastpostnumber);
         ForumManager.syncNode(node, queue);
     }
 
     /**
-     * Called by constructor
-     * fills the HashTable "moderators" with all known moderators for this postarea
+     * Called by constructor fills the HashTable "moderators" with all known moderators for this postarea
      */
     private void readRoles() {
         Node node = ForumManager.getCloud().getNode(id);
@@ -861,7 +852,7 @@ public class PostArea {
 
     /**
      * remove the postarea
-     * @return  <code>true</code> if it succeeds, <code>false</code> if it doesn't
+     * @return <code>true</code> if it succeeds, <code>false</code> if it doesn't
      */
     public boolean remove() {
         if (postthreads == null) readPostThreads();
@@ -894,22 +885,21 @@ public class PostArea {
                 return false;
             } else {
                 log.info("removed PostThread : " + t);
-            	postthreads.remove(t);
-	    }
+                postthreads.remove(t);
+            }
         }
         return true;
     }
 
     /**
-     * remove a postthread from the postthreads and signal the
-     * parent forum that Thread was removed
-     *
+     * remove a postthread from the postthreads and signal the parent forum that Thread was removed
+     * 
      * @param t postthread
      */
     public void childRemoved(PostThread t) {
         // todo: Make this configurable.
-        //       uncomment this if you want to decrease the stats if a thread was removed
-        //postthreadcount--;
+        // uncomment this if you want to decrease the stats if a thread was removed
+        // postthreadcount--;
 
         postthreads.remove(t);
         syncNode(ForumManager.FASTSYNC);
@@ -920,136 +910,130 @@ public class PostArea {
      * called to maintain the memorycaches
      */
     public void maintainMemoryCaches() {
-	int ptime = ForumManager.getPreloadChangedThreadsTime();
-        //if (ptime!=0 && postthreads != null && firstcachecall) {
-        if (ptime!=0 && firstcachecall) {
-       	    if (postthreads == null) readPostThreads();
+        int ptime = ForumManager.getPreloadChangedThreadsTime();
+        // if (ptime!=0 && postthreads != null && firstcachecall) {
+        if (ptime != 0 && firstcachecall) {
+            if (postthreads == null) readPostThreads();
             firstcachecall = false;
             int time = (int) (System.currentTimeMillis() / 1000) - ptime;
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
                 PostThread t = (PostThread) e.nextElement();
                 int time2 = t.getLastPostTime();
-                if (time2==-1 || time2 > time) {
+                if (time2 == -1 || time2 > time) {
                     t.readPostings();
                 }
             }
         }
 
         if (postthreads != null) {
-	    int etime = ForumManager.getSwapoutUnusedThreadsTime();
-	    if (etime!=0) {
+            int etime = ForumManager.getSwapoutUnusedThreadsTime();
+            if (etime != 0) {
                 int time = (int) (System.currentTimeMillis() / 1000) - etime;
                 int time4 = (int) (System.currentTimeMillis() / 1000) - ptime;
                 Enumeration e = postthreads.elements();
                 while (e.hasMoreElements()) {
                     PostThread t = (PostThread) e.nextElement();
                     if (t.isLoaded()) {
-                	int time2 = t.getLastUsed();
-                	int time3 = t.getLastPostTime();
-	                if (time2 < time && time4 > time3) {
+                        int time2 = t.getLastUsed();
+                        int time3 = t.getLastPostTime();
+                        if (time2 < time && time4 > time3) {
                             t.swapOut();
-                	}
+                        }
                     }
                 }
-	    }
+            }
         }
     }
 
-
     public String getGuestReadModeType() {
-	if (config != null) {
+        if (config != null) {
             String tmp = config.getGuestReadModeType();
             if (tmp != null) {
                 return tmp;
             }
-	}
+        }
         return parent.getGuestReadModeType();
     }
 
-
     public String getGuestWriteModeType() {
-	if (config != null) {
+        if (config != null) {
             String tmp = config.getGuestWriteModeType();
             if (tmp != null) {
                 return tmp;
             }
-	}
+        }
         return parent.getGuestWriteModeType();
     }
 
-
     public String getThreadStartLevel() {
-	if (config != null) {
+        if (config != null) {
             String tmp = config.getThreadStartLevel();
             if (tmp != null) {
                 return tmp;
             }
-	}
+        }
         return parent.getThreadStartLevel();
     }
 
     public String filterContent(String body) {
-	if (filterwords != null) {
-            return parent.filterContent(filterwords,body);
-	} else {
+        if (filterwords != null) {
+            return parent.filterContent(filterwords, body);
+        } else {
             return parent.filterContent(body);
-	}
+        }
     }
 
     public int getSpeedPostTime() {
-	return parent.getSpeedPostTime();
+        return parent.getSpeedPostTime();
     }
 
-
-    public Vector searchPostings(String searchkey,int posterid) {
-	Vector results = new Vector();
-	return searchPostings(results,searchkey,posterid);
+    public Vector searchPostings(String searchkey, int posterid) {
+        Vector results = new Vector();
+        return searchPostings(results, searchkey, posterid);
     }
 
-    public Vector searchPostings(Vector results,String searchkey,int posterid) {
-	// check if this area is searchable for this user (is he logged in)
-	if (posterid == -1 && getGuestReadModeType().equals("closed")) return results;
-	if (postthreads != null) {
+    public Vector searchPostings(Vector results, String searchkey, int posterid) {
+        // check if this area is searchable for this user (is he logged in)
+        if (posterid == -1 && getGuestReadModeType().equals("closed")) return results;
+        if (postthreads != null) {
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
                 PostThread thread = (PostThread) e.nextElement();
-                results = thread.searchPostings(results,searchkey,posterid);
+                results = thread.searchPostings(results, searchkey, posterid);
             }
-	}
-	return results;
+        }
+        return results;
     }
 
-
     public void setGuestReadModeType(String guestreadmodetype) {
-	checkConfig();
-	config.setGuestReadModeType(guestreadmodetype);
+        checkConfig();
+        config.setGuestReadModeType(guestreadmodetype);
     }
 
     public void setGuestWriteModeType(String guestwritemodetype) {
-	checkConfig();
-	config.setGuestWriteModeType(guestwritemodetype);
+        checkConfig();
+        config.setGuestWriteModeType(guestwritemodetype);
     }
 
     public void setThreadStartLevel(String threadstartlevel) {
-	checkConfig();
-	config.setThreadStartLevel(threadstartlevel);
+        checkConfig();
+        config.setThreadStartLevel(threadstartlevel);
     }
 
     public void setPos(int pos) {
-	checkConfig();
-	config.setPos(pos);
+        checkConfig();
+        config.setPos(pos);
     }
 
     public int getPos() {
-	if (config == null) return 0;
-	return config.getPos();
+        if (config == null) return 0;
+        return config.getPos();
     }
-
 
     private boolean checkConfig() {
         if (config == null) {
-            log.info("BLA="+getName()+" "+parent.getConfig());
+            log.info("BLA=" + getName() + " " + parent.getConfig());
             config = parent.getConfig().addPostAreaConfig(getName());
         }
         return true;
