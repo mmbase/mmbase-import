@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
+>
+
+<project name="MMBob" default="dependent.jar" basedir=".">
+	<property name="project.name" value="mmbob" />
+	<property name="project.package" value="org/mmbase/applications/mmbob" />
+	<property name="project.target.templates.dir" value="mmbob" />
+	<property name="project.jars.dir" location="../.." />
+	<property name="project.jars.includes" value="applications/email/build/mmbase-email.jar,contributions/thememanager/build/mmbase-thememanager.jar,contributions/multilanguagegui/build/mmbase-multilanguagegui.jar" />
+
+	<!--
+		below properties is a fix to make shure the templates are put in the
+		right place. I have to set a bunch op properties from buildbase.
+		this is not nice, but i don't know how else to do it.
+	-->
+	<property name="source.dir" location="../.." />
+	<property name="build.dir" value="${source.dir}/build" />
+	<property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp" />
+	<property name="templates.dir" value="${webapp.dir}" />
+	<property name="project.templates.dir" value="templates/jsp/mmbob" />
+  &base;
+
+  <target name="deps">
+		<ant dir="../../applications/email" inheritAll="false" />
+		<ant dir="../multilanguagegui" inheritAll="false" />
+		<ant dir="../thememanager" inheritAll="false" />
+	</target>
+
+	<target name="dependent.jar" depends="deps,jar" />
+
+	<target name="dependent.package" depends="dependent.jar,package" />
+
+
+</project>
