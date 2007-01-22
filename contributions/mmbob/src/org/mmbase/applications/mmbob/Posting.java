@@ -286,7 +286,7 @@ public class Posting {
         Node tempNode;
         while (it.hasNext()) {
             tempNode = (Node) it.next();
-            tempNode.setValue(fieldname, "");
+            tempNode.setValue(fieldname, null);
 
             // TODO: fix me..
             // this node could be in the sync que already, and if it is, it could be the
