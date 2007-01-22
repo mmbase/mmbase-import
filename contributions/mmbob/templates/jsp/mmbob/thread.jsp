@@ -37,7 +37,7 @@
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
- <mm:include page="actions.jsp" />
+    <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
 
@@ -75,25 +75,26 @@
 </div>
                                                                                                               
 <div class="bodypart">
-<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
-<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
-<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-<mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
-<mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
-<mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
+    <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+    <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+    <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+    <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+    <mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
+    <mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+    <mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
 </mm:nodefunction>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-                        <tr><th colspan="2" align="left">
-                                        <mm:compare referid="image_logo" value="" inverse="true">
-                                        <center><img src="<mm:write referid="image_logo" />" width="60%" ></center>
-                                        </mm:compare>
-			</th>
-			</tr>
+    <tr>
+        <th colspan="2" align="left">
+            <mm:compare referid="image_logo" value="" inverse="true">
+                <center><img src="<mm:write referid="image_logo" />" width="60%" ></center>
+            </mm:compare>
+        </th>
+    </tr>
 </table>
 
-
+<%--  quick pick of forum area--%>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
 	<tr>
 	<form action="<mm:url page="postarea.jsp" referids="forumid" />" method="post">
@@ -110,26 +111,29 @@
 	</form>
 	</tr>
 </table>
-<table cellpadding="0" cellspacing="0" style="margin-top : 4px;" width="95%">
-	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
-   	 <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
-			(<mm:field name="pagecount" id="pagecount" />) 
-			<mm:field name="navline" />
-			<mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
-	  </b>
-	</td>
-	<td align="right">
-	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
-	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
-	</td></tr>
-        </mm:nodefunction>
-</table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
-  		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
-		  <mm:first>
-			<tr align="left"><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
-		  </mm:first>
+
+<mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
+    <mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
+    <table cellpadding="0" cellspacing="0" style="margin-top : 4px;" width="95%">
+        <tr>
+            <td align="left">
+                <b> <mm:write referid="mlg.Pages"/> (<mm:field name="pagecount" id="pagecount" />) <mm:field name="navline" /> </b>
+            </td>
+            <td align="right">
+                <a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
+                <a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+            </td>
+        </tr>
+    </table>
+</mm:nodefunction>
+
+<%-- show the postings--%>
+<table cellpadding="" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
+    <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
+        <mm:first>
+            <tr align="left"><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
+        </mm:first>
 			<tr align="left">
 			<td class="<mm:field name="tdvar" />" align="left">
 			<a name="p<mm:field name="id" />">&nbsp;</a>
@@ -248,76 +252,78 @@
 			</tr>
 		  </mm:nodelistfunction>
 </table>
+<%--end of postings--%>
 
-
+<%--  page navigation--%>
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%">
-	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
+	<tr><td align="left">
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
-			<mm:field name="navline" />
+			<b> <mm:write referid="mlg.Pages"/> (<mm:field name="pagecount" />) <mm:field name="navline" /> </b>
 		  </mm:nodefunction>
 	  </b>
 	</td></tr>
 </table>
 
+
+<%--  figure out if the reply box must be shown, and if so, show it.--%>
 <mm:import id="showreply">true</mm:import>
 <mm:compare referid="replyoneachpage" value="false">
-	<mm:compare referid="lastpage" value="false">
+    <mm:compare referid="lastpage" value="false">
 		<mm:import id="showreply" reset="true">false</mm:import>
 	</mm:compare>
 </mm:compare>
 
 <mm:compare referid="showreply" value="true">
-<mm:compare referid="threadstate" value="closed" inverse="true">
-<mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
-
-<mm:compare referid="guestwritemodetype" value="open">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
-  <tr><th colspan="3"><mm:write referid="mlg.Reply"/></th></tr>
-	<mm:import externid="error" from="session">none</mm:import>
-	<mm:compare referid="error" value="none" inverse="true">
-	<tr><th colspan="3">
-	<mm:compare referid="error" value="no_subject">
-	<font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
-	</mm:compare>
-	<mm:compare referid="error" value="no_body">
-	<font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
-	</mm:compare>
-	<mm:compare referid="error" value="duplicate_post">
-	<font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
-	</mm:compare>
-	<mm:compare referid="error" value="illegal_html">
-	<font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
-	</mm:compare>
-	<mm:compare referid="error" value="speed_posting">
-	<mm:import externid="speedposttime" from="session">60</mm:import>
-	<font color="red"><mm:write referid="mlg.problem_speedposting" /><mm:write referid="speedposttime" /> sec ***</font>
-	</mm:compare>
-	</th></tr>
-	</mm:compare>
-  <mm:import id="page" reset="true">-1</mm:import>
-  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
-	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
-
-		<mm:compare referid="posterid" value="-1" inverse="true">
-		<mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
-		<input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
-		</mm:compare>
-		<mm:compare referid="posterid" value="-1">
-		<input name="poster" type="hidden" style="width: 99%" value="<mm:write referid="mlg.guest"/>" >
-		<mm:write referid="mlg.guest"/>
-		</mm:compare>
-
-		</td></tr>
-	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 99%"><mm:compare referid="error" value="none" inverse="true"><mm:import externid="body" from="session"></mm:import><mm:write referid="body" /><mm:import id="error" reset="true">none</mm:import><mm:write referid="error" session="error" /></mm:compare></textarea></td></tr>
-	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
-	<center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
-	</td></tr>
-  </form>
-  <a name="reply">&nbsp;</a>
-</table>
-</mm:compare>
-</mm:compare>
-</mm:compare>
+    <mm:compare referid="threadstate" value="closed" inverse="true">
+        <mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
+            <mm:compare referid="guestwritemodetype" value="open">
+                <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
+                  <tr><th colspan="3"><mm:write referid="mlg.Reply"/></th></tr>
+                    <mm:import externid="error" from="session">none</mm:import>
+                    <mm:compare referid="error" value="none" inverse="true">
+                    <tr><th colspan="3">
+                    <mm:compare referid="error" value="no_subject">
+                    <font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
+                    </mm:compare>
+                    <mm:compare referid="error" value="no_body">
+                    <font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
+                    </mm:compare>
+                    <mm:compare referid="error" value="duplicate_post">
+                    <font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
+                    </mm:compare>
+                    <mm:compare referid="error" value="illegal_html">
+                    <font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
+                    </mm:compare>
+                    <mm:compare referid="error" value="speed_posting">
+                    <mm:import externid="speedposttime" from="session">60</mm:import>
+                    <font color="red"><mm:write referid="mlg.problem_speedposting" /><mm:write referid="speedposttime" /> sec ***</font>
+                    </mm:compare>
+                    </th></tr>
+                    </mm:compare>
+                  <mm:import id="page" reset="true">-1</mm:import>
+                  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
+                    <tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
+                
+                        <mm:compare referid="posterid" value="-1" inverse="true">
+                        <mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
+                        <input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
+                        </mm:compare>
+                        <mm:compare referid="posterid" value="-1">
+                        <input name="poster" type="hidden" style="width: 99%" value="<mm:write referid="mlg.guest"/>" >
+                        <mm:write referid="mlg.guest"/>
+                        </mm:compare>
+                
+                        </td></tr>
+                    <tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 99%"><mm:compare referid="error" value="none" inverse="true"><mm:import externid="body" from="session"></mm:import><mm:write referid="body" /><mm:import id="error" reset="true">none</mm:import><mm:write referid="error" session="error" /></mm:compare></textarea></td></tr>
+                    <tr><td colspan="3"><input type="hidden" name="action" value="postreply">
+                    <center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
+                    </td></tr>
+                  </form>
+                  <a name="reply">&nbsp;</a>
+                </table>
+            </mm:compare>
+        </mm:compare>
+    </mm:compare>
 </mm:compare>
 <br />
 <br />
