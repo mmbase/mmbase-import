@@ -22,6 +22,7 @@ import org.mmbase.module.lucene.extraction.*;
 
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.xml.query.*;
 
 import org.mmbase.util.logging.*;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.14 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.15 2007-01-23 21:34:07 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -44,6 +45,7 @@ public class MMBaseEntry implements IndexEntry {
     private final Node node;
     private final boolean multiLevel; // it this not the same as node instanceof VirtualNode?
     private final NodeManager elementManager;
+    private final Step elementStep;
 
     private final Collection<IndexDefinition> subQueries;
 
@@ -53,17 +55,22 @@ public class MMBaseEntry implements IndexEntry {
 
     private final float boost = 1.0f;
 
-    MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel, NodeManager elementManager, Collection<IndexDefinition> subQueries) {
+    MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel,
+                NodeManager elementManager, Step elementStep,
+                Collection<IndexDefinition> subQueries) {
         this.fields = fields;
         this.multiLevel = multiLevel;
         this.elementManager = elementManager;
+        this.elementStep = elementStep;
         this.subQueries = subQueries;
         this.node = node;
     }
 
     public String getIdentifier() {
         if (multiLevel) {
-            return "" + node.getIntValue(elementManager.getName());
+            String alias = elementStep.getAlias();
+            if (alias == null) alias = elementStep.getTableName();
+            return "" + node.getIntValue(alias);
         } else {
             return "" + node.getNumber();
         }
@@ -138,17 +145,42 @@ public class MMBaseEntry implements IndexEntry {
         return subQueries != null ? subQueries : Collections.EMPTY_LIST;
     }
 
-    protected boolean shouldIndex(String fieldName, String alias) {
+    protected Node getNode(IndexFieldDefinition fd) {
+        String fieldName = fd.fieldName;
         // determine number
         Node n = node;
         int pos = fieldName.indexOf(".");
         if (pos != -1) {
-            n = node.getNodeValue(fieldName.substring(0,pos));
+            n = node.getNodeValue(fieldName.substring(0, pos));
         }
+        return n;
+    }
+    
+    protected String getRealField(IndexFieldDefinition fd) {
+        String fieldName = fd.fieldName;
+        String realFieldName = fieldName;
+        int pos = fieldName.indexOf(".");
+        if (pos != -1) {
+            realFieldName = fieldName.substring(pos + 1);
+        }
+        return realFieldName;
+    }
+
+    protected boolean shouldIndex(IndexFieldDefinition fd) {
+        String fieldName = fd.fieldName;
+        String alias     = fd.alias;
+        String realFieldName = getRealField(fd);
+        Node   n = getNode(fd);
+
         int number = (n == null) ? -1 : n.getNumber();
         if (! isIndexed(number, fieldName, alias)) {
-            addToIndexed(number, fieldName, alias);
-            return true;
+            if (fd.optional != null && (! fd.optional.matcher(n.getNodeManager().getName()).matches() || ! n.getNodeManager().hasField(realFieldName))) {
+                log.debug("Skipped optional field " + fieldName + " because node " + n.getNumber() + " does not have it");
+                return false;
+            } else {
+                addToIndexed(number, fieldName, alias);
+                return true;
+            }
         } else {
             return false;
         }
@@ -165,21 +197,27 @@ public class MMBaseEntry implements IndexEntry {
             String alias = fieldDefinition.alias;
             if (alias == null)  alias = fieldDefinition.fieldName;
             String decryptionPassword = fieldDefinition.decryptionPassword;
-            if (shouldIndex(fieldName, alias)) {
+            if (shouldIndex(fieldDefinition)) {
                 // some hackery
                 int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
+                Node n = node;
                 if (fieldDefinition.stepField != null) {
                     org.mmbase.storage.search.StepField sf = fieldDefinition.stepField;
                     org.mmbase.bridge.Field field = cloud.getNodeManager(sf.getStep().getTableName()).getField(sf.getFieldName());
                     type = field.getDataType().getBaseType();
                     // stepField.getType will not do, because this is the actual database type (when multilevel)
                     // changed especially because of datetimes...
+                } else if (fieldDefinition.optional != null) {
+                    log.debug("found optional field " + fieldName + " in node " + n.getNumber());
+                    n = getNode(fieldDefinition);
+                    fieldName = getRealField(fieldDefinition);
+                    type = n.getNodeManager().getField(fieldName).getDataType().getBaseType();
                 }
                 String documentText = null;
                 switch (type) {
                     case org.mmbase.bridge.Field.TYPE_DATETIME : {
                         try {
-                            documentText = DATE_FORMAT.format(node.getDateValue(fieldName));
+                            documentText = DATE_FORMAT.format(n.getDateValue(fieldName));
                         } catch (Exception e) {
                             // can't index dates prior to 1970, pretty dumb if you ask me
                         }
@@ -187,9 +225,9 @@ public class MMBaseEntry implements IndexEntry {
                     }
                     case org.mmbase.bridge.Field.TYPE_BOOLEAN : {
                         if (log.isDebugEnabled()) {
-                            log.trace("add " + alias + " keyword:" + node.getIntValue(fieldName));
+                            log.trace("add " + alias + " keyword:" + n.getIntValue(fieldName));
                         }
-                        documentText = "" + node.getIntValue(fieldName);
+                        documentText = "" + n.getIntValue(fieldName);
                         break;
                     }
                     case org.mmbase.bridge.Field.TYPE_NODE :
@@ -203,29 +241,25 @@ public class MMBaseEntry implements IndexEntry {
                     case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
                     case org.mmbase.bridge.Field.TYPE_BINARY : {
                         String mimeType = "unknown";
-                        if (multiLevel) {
-                            int pos = fieldName.indexOf(".");
-                            Node subNode = node.getNodeValue(fieldName.substring(0,pos));
-                            mimeType = "" + subNode.getFunctionValue("mimetype", null);
-                        } else {
-                            mimeType = "" + node.getFunctionValue("mimetype", null);
-                        }
+                        mimeType = "" + n.getFunctionValue("mimetype", null);
                         Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
                         if (extractor != null) {
-                            log.debug("Analyzing document of " + node.getNumber() + " with " + extractor);
-                            InputStream input = node.getInputStreamValue(fieldName);
+                            byte[] help = n.getByteValue(fieldName);
+                            log.service("Analyzing document of " + n.getNumber() + " with " + extractor + " " + n.getByteValue(fieldName).length);
+
+                            InputStream input = new ByteArrayInputStream(help);
                             try {
                                 documentText = extractor.extract(input);
                             } catch (Exception e) {
                                 if (log.isDebugEnabled()) {
                                     log.error(e.getMessage(), e);
                                 } else {
-                                    log.error(e.getMessage());
+                                    log.error(e.getMessage(), e);
                                 }
                             }
                         } else  {
-                            log.warn("Cannot read document: unknown mimetype, trying stringvalue");
-                            documentText = node.getStringValue(fieldName);
+                            log.warn("Cannot read document: unknown mimetype of node " + n.getNumber() + ", trying stringvalue");
+                            documentText = n.getStringValue(fieldName);
                         }
                         break;
                     }
@@ -233,8 +267,11 @@ public class MMBaseEntry implements IndexEntry {
                         if (log.isDebugEnabled()) {
                             log.trace("index " + alias + " as text");
                         }
-                        documentText = node.getStringValue(fieldName);
+                        documentText = n.getStringValue(fieldName);
                     }
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Storing  " + documentText);
                 }
                 if (documentText != null) {
                     if (fieldDefinition.keyWord) {

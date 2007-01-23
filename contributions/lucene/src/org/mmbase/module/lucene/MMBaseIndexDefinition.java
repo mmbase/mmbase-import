@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.15 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.16 2007-01-23 21:34:07 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -51,7 +51,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     // not configurable for these kind of indices.
     protected final List<String> identifierFields = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("number")));
 
-    private final Map<String, Float> boosts = new HashMap();
+    private final Map<String, Float> boosts = new HashMap<String, Float>();
 
 
     MMBaseIndexDefinition() {
@@ -95,7 +95,8 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
      */
-    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator, final Collection<? extends FieldDefinition> f) {
+    protected CloseableIterator<MMBaseEntry> getCursor(final NodeIterator nodeIterator,
+                                                       final Collection<? extends FieldDefinition> f) {
         return new CloseableIterator<MMBaseEntry>() {
             int i = 0;
             public boolean hasNext() {
@@ -106,7 +107,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             }
             public MMBaseEntry next() {
                 Node node = nodeIterator.nextNode();
-                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, subQueries);
+                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, elementStep, subQueries);
                 i++;
                 if (log.isServiceEnabled()) {
                     if (i % 100 == 0) {
