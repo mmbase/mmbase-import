@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.16 2006-12-12 20:54:24 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.17 2007-01-23 16:20:51 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -205,11 +205,14 @@ public class MmxfSetString implements  Processor {
             if (name.equals("#text")) {
                 if (node.getNodeValue() != null) {
                     if (state.mode == MODE_SECTION) {
-                        Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
-                        log.debug("Appending to " + destination.getNodeName());
-                        destination.appendChild(imp);
-                        Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
-                        imp.appendChild(text);
+                        String string = normalizeWhiteSpace(node.getNodeValue()).trim();
+                        if (! "".equals(string)) {
+                            Text text = destination.getOwnerDocument().createTextNode(string);
+                            Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
+                            log.debug("Appending to " + destination.getNodeName());
+                            destination.appendChild(imp);
+                            imp.appendChild(text);
+                        }
                     } else {
                         Text text = destination.getOwnerDocument().createTextNode(normalizeWhiteSpace(node.getNodeValue()));
                         destination.appendChild(text);
