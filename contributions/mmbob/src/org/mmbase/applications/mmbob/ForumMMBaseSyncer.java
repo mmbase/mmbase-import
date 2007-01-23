@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.8.2.1 2007-01-22 09:30:40 ernst Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.8.2.2 2007-01-23 09:55:36 ernst Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
@@ -122,14 +122,23 @@ public class ForumMMBaseSyncer implements Runnable {
                     Node node = (Node) dirtyNodes.elementAt(0);
                     dirtyNodes.removeElementAt(0);
                     try {
-                        NodeManager tm = node.getNodeManager();
-                        if (tm != null) {
-                            String tmn = tm.getName();
-                            if (tmn.equals("forums") || tmn.equals("postthreads") || tmn.equals("postareas")) {
-                                // check if the node was not deleted
-                                Node on = node.getNodeValue("lastpostnumber");
-                                if (on == null) node.setValue("lastpostnumber", "");
+                        NodeManager nodeManager = node.getNodeManager();
+                        if (nodeManager != null) {
+                            String nodeManagerName = nodeManager.getName();
+                            if (nodeManagerName.equals("forums") || nodeManagerName.equals("postthreads") || nodeManagerName.equals("postareas")) {
+                              
+                                //make shure the node fields do not have a invalid value
+                                if(node.getNodeValue("lastpostnumber") == null){
+                                    log.debug(nodeManagerName + " " + node.getNumber()+": set lastpostnumber to null");
+                                    node.setValue("lastpostnumber", null);
+                                }
+                                
+                                if(node.getNodeValue("lastposternumber") == null){
+                                    log.debug(nodeManagerName + " " + node.getNumber()+": set lastposternumber to null");
+                                    node.setValue("lastposternumber", null);
+                                }
                             }
+                            
                             node.commit();
                             removeFromBrothers(node);
                         }
@@ -198,9 +207,9 @@ public class ForumMMBaseSyncer implements Runnable {
     public void syncNode(Node node) {
         if (!dirtyNodes.contains(node)) {
             dirtyNodes.addElement(node);
-            // log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
+             log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
         } else {
-            // log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
+             log.info("refused node="+node.getNumber()+" already in sync queue "+sleeptime);
         }
     }
 }
