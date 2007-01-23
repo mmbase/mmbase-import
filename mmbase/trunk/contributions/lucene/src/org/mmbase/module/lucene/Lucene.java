@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.82 2007-01-17 21:59:43 michiel Exp $
+ * @version $Id: Lucene.java,v 1.83 2007-01-23 21:31:34 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -347,6 +347,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
                 */
                 Cloud cloud         = arguments.get(Parameter.CLOUD);
+                cloud.setProperty(Cloud.PROP_XMLMODE, "flat"); //
                 try {
                     return getSearcher(index).search(cloud, value, 
                                                      Searcher.createFilter(filter),
