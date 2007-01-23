@@ -91,8 +91,8 @@
                     <mm:compare referid="posterid" value="-1" inverse="true">
                         <mm:write referid="active_nick" /> 
                             <mm:import id="fullname"><mm:write referid="active_firstname" /> <mm:write referid="active_lastname" /></mm:import>
-                            <mm:write referid="fullname" escape="trimmer">
-                                <mm:compare value="">(<mm:write/>)</mm:compare>
+                            <mm:write referid="fullname">
+                                <mm:compare value=" " inverse="true">(<mm:write/>)</mm:compare>
                             </mm:write>
                         <input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
                     </mm:compare>

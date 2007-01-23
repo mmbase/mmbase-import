@@ -212,16 +212,32 @@
                         </mm:compare>
 
 			<mm:compare value="true" inverse="true">
-			
-                            <b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-                            <mm:field name="avatar">
-                              <mm:compare value="-1" inverse="true">
-                                <mm:node number="$_">
-                                  <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                                </mm:node>
-                              </mm:compare>
-                            </mm:field>
-                        </a>
+			                <mm:link page="profile.jsp">
+                                <mm:param name="forumid" referid="forumid"/>
+                                <mm:param name="postareaid" referid="postareaid" />
+                                <mm:param name="type" value="poster_thread" />
+                                <mm:param name="posterid" ><mm:field name="posterid" /></mm:param>
+                                <mm:param name="postthreadid" referid="postthreadid" />
+                                <%--
+                                <b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+                                --%>
+                                <b> <a href="${_}"><mm:field name="poster" /></b> 
+                                
+                                <%--don't show the full name when it is empty--%>
+                                <mm:import id="fullname" reset="true"><mm:field name="firstname" /> <mm:field name="lastname" /></mm:import>
+                                <mm:write referid="fullname" >
+                                    <mm:compare value=" " inverse="true"> (<mm:write referid="fullname"/>)</mm:compare>
+                                </mm:write>
+                                <br />
+                                <mm:field name="avatar">
+                                  <mm:compare value="-1" inverse="true">
+                                    <mm:node number="$_">
+                                      <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                                    </mm:node>
+                                  </mm:compare>
+                                </mm:field>
+                            </a>
+                        </mm:link>
                         <p />
 
 			<mm:write referid="mlg.Level"/> : <mm:field name="levelgui" /><br /> <img src="<mm:field name="levelimage" />" /><br />
@@ -305,7 +321,14 @@
                     <tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
                 
                         <mm:compare referid="posterid" value="-1" inverse="true">
-                        <mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
+                        <mm:write referid="active_nick" />
+                        
+                        <%--don't show the full name when it is empty--%>
+                        <mm:import id="fullname" reset="true"><mm:write referid="active_firstname" /> <mm:write referid="active_lastname" /></mm:import>
+                        <mm:write referid="fullname" >
+                            <mm:compare value=" " inverse="true"> (<mm:write referid="fullname"/>)</mm:compare>
+                        </mm:write>
+                        
                         <input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
                         </mm:compare>
                         <mm:compare referid="posterid" value="-1">
