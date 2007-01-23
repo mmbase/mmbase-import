@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.2 2006-03-13 09:33:54 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.3 2007-01-23 16:21:39 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
@@ -12,7 +12,7 @@
   <xsl:output method = "text" />
   
   <xsl:template match = "mmxf:mmxf" >
-    <xsl:apply-templates select="mmxf:p|mmxf:table" />
+    <xsl:apply-templates select="mmxf:p|mmxf:table|mmxf:ol|mmxf:ul" />
     <xsl:apply-templates select="mmxf:section">
       <xsl:with-param name="depth">$</xsl:with-param>
     </xsl:apply-templates>   
@@ -21,7 +21,7 @@
   <xsl:template match = "mmxf:p|mmxf:ul|mmxf:ol|mmxf:table" >
     <xsl:apply-templates select="." mode="rels" />
     <xsl:apply-templates select="mmxf:a|mmxf:em|text()|mmxf:ul|mmxf:ol" />
-      <xsl:text>&#xA;&#xA;</xsl:text>
+    <xsl:text>&#xA;&#xA;</xsl:text>
   </xsl:template>
   
   <xsl:template match = "mmxf:section" >
