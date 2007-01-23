@@ -389,10 +389,13 @@ public class Controller {
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
             if (a != null) {
-                PostThread t = a.getPostThread(postthreadid);
-                if (t != null) {
-                    if (page == -1) page = t.getPageCount(pagesize);
-                    Iterator e = t.getPostings(page, pagesize);
+                PostThread thread = a.getPostThread(postthreadid);
+                if (thread != null) {
+                    int pageCount = thread.getPageCount(pagesize);
+                    if (page == -1 || page > pageCount) {
+                        page = pageCount;
+                    }
+                    Iterator e = thread.getPostings(page, pagesize);
                     int pos = ((page - 1) * pagesize) + 1;
 
                     while (e.hasNext()) {
@@ -426,7 +429,7 @@ public class Controller {
                         if (activeid != -1) {
                             Poster ap = f.getPoster(activeid);
                             ap.signalSeen();
-                            ap.seenThread(t);
+                            ap.seenThread(thread);
                             addActiveInfo(map, ap);
                             if (po != null && po.getNick().equals(ap.getNick())) {
                                 map.put("isowner", "true");
