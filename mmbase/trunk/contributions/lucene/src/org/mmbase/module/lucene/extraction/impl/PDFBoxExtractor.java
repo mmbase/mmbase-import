@@ -30,7 +30,7 @@ import org.pdfbox.util.PDFTextStripper;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PDFBoxExtractor implements Extractor {
 
@@ -147,6 +147,12 @@ public class PDFBoxExtractor implements Extractor {
         }
 
         return result;
+    }
+
+    public static void main(String [] args) throws Exception {
+        Extractor e = new PDFBoxExtractor();
+        java.io.FileInputStream file = new java.io.FileInputStream(args[0]);
+        System.out.println(e.extract(file));
     }
 
 }
