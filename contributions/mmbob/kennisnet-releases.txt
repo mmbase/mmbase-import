@@ -26,3 +26,8 @@ fixed bugs:
 	mmbase jira: MMBOB-5
 	kennisnet manitis:0010303
 	'Forum dousn't jump to the next page after posting'
+	
+4)
+	mmbase-jira: MMBOB-6
+	not in kennisnet mantis
+	'Some forum objects have fields of type node. when there is no valid value for them they should be null, but mmbob sets these fields to value -1, which is illegal'
