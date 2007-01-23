@@ -307,7 +307,7 @@ public class Posting {
     /**
      * save the node to the cloud
      * 
-     * @return allways <code>true</code>
+     * @return always <code>true</code>
      */
     public boolean save() {
         Node node = ForumManager.getCloud().getNode(id);
