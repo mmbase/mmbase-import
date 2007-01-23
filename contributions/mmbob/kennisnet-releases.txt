@@ -31,3 +31,8 @@ fixed bugs:
 	mmbase-jira: MMBOB-6
 	not in kennisnet mantis
 	'Some forum objects have fields of type node. when there is no valid value for them they should be null, but mmbob sets these fields to value -1, which is illegal'
+	
+5)
+	mmbase-jira: MMBOB-7
+	kennisnet namtis:0011329 (well, not exactly..)
+	'when navigating to a non existing page of postings in a thread, all postings in the thread are shown.'
