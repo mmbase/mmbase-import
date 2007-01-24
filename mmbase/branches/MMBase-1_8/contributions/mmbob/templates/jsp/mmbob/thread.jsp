@@ -3,6 +3,25 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:import externid="forumid" />
+<mm:import externid="postareaid" />
+<mm:import externid="postthreadid" />
+
+<%--check if post thread exists, if not, go back to postarea overview--%>
+<mm:node notfound="skipbody" number="${postthreadid}">
+    <mm:nodeinfo type="type">
+        <mm:compare value="postthreads">
+            <mm:import id="test">true</mm:import>
+        </mm:compare>
+    </mm:nodeinfo>
+</mm:node>
+
+<mm:notpresent referid="test">
+    <jsp:forward page="postarea.jsp">
+        <jsp:param name="forumid" value="${forumid}"/>
+        <jsp:param name="postareaid" value="${postareaid}"/>
+    </jsp:forward>
+</mm:notpresent>
+
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -11,8 +30,6 @@
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 </head>
 <body>
-<mm:import externid="postareaid" />
-<mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
 <mm:import externid="postingid" />
 
@@ -112,7 +129,7 @@
 	</tr>
 </table>
 
-
+<%--  paging navigation--%>
 <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
     <mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
     <table cellpadding="0" cellspacing="0" style="margin-top : 4px;" width="95%">

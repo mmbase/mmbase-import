@@ -4,6 +4,25 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
+<mm:import externid="postareaid" />
+
+<%--check if post area exists, if not, go back to forum overview--%>
+<mm:node notfound="skipbody" number="${postareaid}">
+    <mm:nodeinfo type="type">
+        <mm:compare value="postareas">
+            <mm:import id="test">true</mm:import>
+        </mm:compare>
+    </mm:nodeinfo>
+</mm:node>
+
+<mm:notpresent referid="test">
+    <jsp:forward page="index.jsp">
+        <jsp:param name="forumid" value="${forumid}"/>
+    </jsp:forward>
+</mm:notpresent>
+
+
+
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -13,7 +32,8 @@
 <body>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="postareaid" />
+
+
 <mm:import externid="page">1</mm:import>
 
 <!-- login part -->
@@ -25,7 +45,7 @@
 </mm:nodefunction>
 
 <mm:notpresent referid="pagesize">
-<mm:import id="pagesize">20</mm:import>
+    <mm:import id="pagesize">10</mm:import>
 </mm:notpresent>
 
 
@@ -46,10 +66,10 @@
                                                                                                               
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
-<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
-<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-<mm:include page="path.jsp?type=postarea" referids="logoutmodetype,forumid,posterid,active_nick" />
+    <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+    <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+    <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+    <mm:include page="path.jsp?type=postarea" referids="logoutmodetype,forumid,posterid,active_nick" />
 </mm:nodefunction>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
@@ -98,6 +118,8 @@
 	<a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
 </table>
+
+<%--  the table with all the post areas--%>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
   <tr>
     <th width="15" class="state">&nbsp;</th>
@@ -141,6 +163,7 @@
   </tr>
   </mm:nodelistfunction>
 </table>
+
 
 <mm:compare referid="pagecount" value="1" inverse="true">
 <mm:compare referid="pagecount" value="0" inverse="true">
