@@ -9,6 +9,8 @@
 %><mm:content postprocessor="reducespace">
 <mm:cloud method="delegate">
   <mm:import externid="mailbox">-1</mm:import>
+  <mm:import externid="sf" />
+  <mm:import externid="so" />
   <mm:import externid="email">-1</mm:import>
   <jsp:directive.include file="/shared/setImports.jsp" />
   
@@ -47,18 +49,18 @@
         &nbsp;
       </div>
       <div class="contentSubHeader">
-        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,so?,sf?">
           <mm:param name="reply"><mm:write referid="email"/></mm:param>
           </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_mail.gif" objectlist="$includePath" referids="$referids"/>"  title="<di:translate key="email.reply"/>" alt="<di:translate key="email.reply" />" border="0" />
         </a>
         &nbsp; &nbsp;&nbsp;<!-- well, why use CSS if it can be done like this -->
           
-        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,so?,sf?">
           <mm:param name="replyAll"><mm:write referid="email"/></mm:param>
           </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_all_mail.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="email.replyall"/>" alt="<di:translate key="email.replyall" />" border="0" />
         </a>
         &nbsp; &nbsp;&nbsp;                
-        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+        <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,so?,sf?">
           <mm:param name="forward"><mm:write referid="email"/></mm:param>
           </mm:treefile>"><img src="<mm:treefile page="/email/gfx/forward_mail.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="email.forward"/>" alt="<di:translate key="email.forward" />" border="0" />
         </a>

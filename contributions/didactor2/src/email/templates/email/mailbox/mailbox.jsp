@@ -14,6 +14,8 @@
 <mm:cloud method="delegate">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <mm:import externid="mailbox">-1</mm:import>
+<mm:import externid="sf" />
+<mm:import externid="so" />
 
 <mm:compare referid="mailbox" value="-1">
   <mm:node number="$user">
@@ -54,8 +56,7 @@
         </mm:field>
           
         <mm:import id="link">
-          <a href="<mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids">
-                     <mm:param name="mailbox"><mm:write referid="mailbox" /></mm:param>
+          <a href="<mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?">
                      <mm:param name="email"><mm:field name="number" /></mm:param>
                    </mm:treefile>">
         </mm:import>
