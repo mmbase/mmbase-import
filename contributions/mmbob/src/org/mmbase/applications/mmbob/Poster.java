@@ -520,17 +520,25 @@ public class Poster {
      * (types: postareas, postthreads, forums, postings) are checked and all
      * references to this poster are removed.
      *
+     * TODO MM: 
+     *      In didactor it was the case the poster object were reused between fora.
+     *      This seems not a very odd decision.
+     *      But don't delete a forum now.
+     *      Anyway, wouldn't it be more logical to remove a poster iff it is not any more related to
+     *      _any_ fora (or postings)  or so.
+     *
+     *
      * @return <code>true</code> if this method is called
      */
     public boolean remove() {
         Node node = ForumManager.getCloud().getNode(id);
         log.debug("going to remove poster: " + node.getNumber());
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastposternumber");
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastposternumber");
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),"lastposternumber");
-        removeForeignKeys(ForumManager.getCloud().getNodeManager("postings"),"posternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"), "lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"), "lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"), "lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postings"), "posternumber");
         
-        //make shure this node is not in a forum syncer
+        //make sure this node is not in a forum syncer
         ForumManager.nodeDeleted(node);
         node.delete(true);
         parent.childRemoved(this);
@@ -612,7 +620,7 @@ public class Poster {
      * @return <code>true</code> if the remove action was successfull, <code>false</code> if it wasn't.
      */
     public boolean removeMailbox(String name) {
-	log.info("remove mailbox : "+name);
+	log.service("remove mailbox : "+name);
         Mailbox m = getMailbox(name);
         if (!m.remove()) return false;
         mailboxes.remove(name);
@@ -937,7 +945,7 @@ public class Poster {
        	 	headers.put("CC","");
         	headers.put("BCC","");
         	headers.put("Subject", subject);
-		log.info("sendmail reply code : "+sendmail.sendMail(from, to, body, headers));
+		log.service("sendmail reply code : " + sendmail.sendMail(from, to, body, headers));
 	}
 	}
     }
