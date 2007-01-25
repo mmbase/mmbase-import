@@ -315,15 +315,30 @@ public class PostArea {
      * @return postthreads
      */
     public Iterator getPostThreads(int page, int pagecount) {
+        log.debug("posts per page: "+pagecount);
         if (postthreads == null) readPostThreads();
-
+        if(page < 1){
+            page = 1;
+        }
         // get the range we want
-        int start = (page - 1) * pagecount;
         int end = page * pagecount;
+        page --;
+        int start = page * pagecount;
+        
+        //make shure we have a valid page
+        while(start > postthreadcount){
+            page --;
+            start = page * pagecount;
+        }
+        if(start < 1){
+            start = 1;
+        }
+        
         if (end > postthreadcount) {
             end = postthreads.size();
         }
-        log.debug("START=" + start + " " + end + " " + postthreads.size());
+        
+        log.debug("start:" + start + ", end:" + end + ", number of theads: " + postthreads.size());
         List result = postthreads.subList(start, end);
 
         return result.iterator();
