@@ -1,7 +1,7 @@
 This is a forum system somewhat like phpbb but based on mmbase, it can be integrated with a mmbase site. You can create a new forum with subareas by a click of a button. So it allows you to run one mmbob system for multiple sites or one for a whole site. Each forum can have its own settings and look and can for the large part(s) be set using a gui interface.
 
 - You need a servlet 2.4 application server like Tomcat 5. 
-- You need MMBase 1.8
+- You need MMBase 1.8.1
 - You need contribution multilanguagegui
 - You need contribution thememanager
 
