@@ -39,3 +39,8 @@ fixed bugs:
 6) 
 	mmbase-jira: MMBOB-9
 	when naviating to an non existing postarea or postthread, you get an exception
+	
+7) 
+	mmbase-jira MMBOB-8
+	kennisnet namtis: 0011329
+	when navigating to a non existing page of post threads in a post area Exceptions are your reward.
