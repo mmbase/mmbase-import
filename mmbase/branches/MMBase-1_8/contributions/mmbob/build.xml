@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
+<!DOCTYPE project
  [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
 >
 
@@ -8,6 +8,7 @@
 	<property name="project.package" value="org/mmbase/applications/mmbob" />
 	<property name="project.target.templates.dir" value="mmbob" />
 	<property name="project.jars.dir" location="../.." />
+	<property name="distro.version" value="0.9"/>
 	<property name="project.jars.includes" value="applications/email/build/mmbase-email.jar,contributions/thememanager/build/mmbase-thememanager.jar,contributions/multilanguagegui/build/mmbase-multilanguagegui.jar" />
 
 	<!--
