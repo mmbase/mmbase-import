@@ -283,7 +283,7 @@
                     <a href="${_}"><mm:write referid="mlg.All_members" /></a> |
                 </mm:link>
                 <mm:link page="bookmarked.jsp" referids="forumid" >
-                    <a href="">Bookmarked</a> |
+                    <a href="${_}">Bookmarked</a> |
                 </mm:link>
                 <mm:link page="search.jsp" referids="forumid" >
                     <a href="${_}"><mm:write referid="mlg.Search" /></a>
