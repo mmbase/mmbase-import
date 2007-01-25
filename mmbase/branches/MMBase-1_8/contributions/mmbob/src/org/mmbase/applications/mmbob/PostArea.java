@@ -330,8 +330,8 @@ public class PostArea {
             page --;
             start = page * pagecount;
         }
-        if(start < 1){
-            start = 1;
+        if(start < 0){
+            start = 0;
         }
         
         if (end > postthreadcount) {
