@@ -47,9 +47,9 @@
 	<mm:import externid="body" />
 	<mm:nodefunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
 	<mm:write referid="body" session="body" />
-		
+
 	<mm:import id="error"><mm:field name="error" /></mm:import>
-	<mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>	
+	<mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>
 	<mm:write referid="speedposttime" session="speedposttime" />
 	<mm:write referid="error" session="error" />
 	</mm:nodefunction>
@@ -191,7 +191,7 @@
         </mm:compare>
 
 	 <mm:import id="guipos" reset="true">0</mm:import>
-         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos"> 
+         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
 		<mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
 		<mm:field name="type">
 		<mm:compare value="string">
@@ -236,7 +236,7 @@
 </mm:compare>
 
 <mm:compare value="true" referid="moderatormode">
-                                                                                
+
 <mm:compare value="removepostthread" referid="action">
         <mm:import externid="postareaid" />
         <mm:import externid="postthreadid" />
