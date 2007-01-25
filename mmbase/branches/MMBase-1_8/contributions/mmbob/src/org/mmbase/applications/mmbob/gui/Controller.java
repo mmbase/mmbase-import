@@ -1414,21 +1414,21 @@ public class Controller {
 
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
-            PostArea a = forum.getPostArea(postareaid);
-            map.put("name", a.getName());
-            map.put("postthreadcount", new Integer(a.getPostThreadCount()));
-            map.put("postcount", new Integer(a.getPostCount()));
-            map.put("viewcount", new Integer(a.getViewCount()));
-            map.put("lastposter", a.getLastPoster());
-            map.put("lastposttime", new Integer(a.getLastPostTime()));
-            map.put("lastsubject", a.getLastSubject());
-            map.put("guestreadmodetype", a.getGuestReadModeType());
-            map.put("guestwritemodetype", a.getGuestWriteModeType());
-            map.put("threadstartlevel", a.getThreadStartLevel());
+            PostArea postArea = forum.getPostArea(postareaid);
+            map.put("name", postArea.getName());
+            map.put("postthreadcount", new Integer(postArea.getPostThreadCount()));
+            map.put("postcount", new Integer(postArea.getPostCount()));
+            map.put("viewcount", new Integer(postArea.getViewCount()));
+            map.put("lastposter", postArea.getLastPoster());
+            map.put("lastposttime", new Integer(postArea.getLastPostTime()));
+            map.put("lastsubject", postArea.getLastSubject());
+            map.put("guestreadmodetype", postArea.getGuestReadModeType());
+            map.put("guestwritemodetype", postArea.getGuestWriteModeType());
+            map.put("threadstartlevel", postArea.getThreadStartLevel());
             map.put("privatemessagesenabled", forum.getPrivateMessagesEnabled());
             map.put("smileysenabled", forum.getSmileysEnabled());
-            map.put("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
-            map.put("pagecount", new Integer(a.getPageCount(pagesize)));
+            map.put("navline", postArea.getNavigationLine(baseurl, page, pagesize, cssclass));
+            map.put("pagecount", new Integer(postArea.getPageCount(pagesize)));
             if (activeid != -1) {
                 Poster activePoster = forum.getPoster(activeid);
                 if (activePoster == null) {
@@ -1440,7 +1440,7 @@ public class Controller {
                 } else {
                     map.put("isadministrator", "false");
                 }
-                if (activePoster != null && a.isModerator(activePoster.getNick())) {
+                if (activePoster != null && postArea.isModerator(activePoster.getNick())) {
                     map.put("ismoderator", "true");
                 } else {
                     map.put("ismoderator", "false");
