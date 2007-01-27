@@ -22,14 +22,14 @@ function postIt() {
 			<option selected>Natuurherstelproject...
 			<mm:related path="parent,rubriek"
 				orderby="rubriek.naam" directions="UP" searchdir="destination"
-				constraints="rubriek.url=='1'"
+				constraints="rubriek.isvisible=='1'"
 					><option value="<mm:field name="rubriek.number" />"><mm:field name="rubriek.naam" /></mm:related
 			></select>
 		</form>
 	</div>
 	<mm:related path="parent,rubriek"
 		orderby="rubriek.naam" directions="UP" searchdir="destination"
-		constraints="rubriek.url=='1'"
+		constraints="rubriek.isvisible=='1'"
 		><mm:node element="rubriek" jspvar="rubriek"
 			><mm:first><table width="100%" border="0" cellpadding="0" cellspacing="0" class="body"></mm:first>
       <mm:related path="posrel,pagina" orderby="posrel.pos" directions="UP" max="1">
