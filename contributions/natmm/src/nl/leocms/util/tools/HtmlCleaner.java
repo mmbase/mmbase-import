@@ -545,8 +545,10 @@ public class HtmlCleaner {
        text = cleanText(text,"<TBODY",">"); text = cleanText(text,"</TBODY",">");
        text = cleanText(text,"<STRIKE",">"); text = cleanText(text,"</STRIKE",">");
        text = cleanText(text,"<o:p",">"); text = cleanText(text,"</o:p",">");
-       text = cleanText(text,"<?",">"); 
-         
+       text = cleanText(text,"<?",">");
+       text = cleanText(text,"<small",">"); text = cleanText(text,"</small",">");
+       text = cleanText(text,"<Blockquote",">"); text = cleanText(text,"</Blockquote",">");
+
        text = cleanParam(text,"class=");
        text = cleanParam(text,"style=");
        text = cleanParam(text,"vAlign=");
