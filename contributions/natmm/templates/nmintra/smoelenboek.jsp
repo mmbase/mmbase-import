@@ -61,7 +61,9 @@ if(!thisPrograms.equals("")) {
   thisPrograms = thisPrograms.substring(1);
 }
 boolean showProgramSelect = onlyProgramSelect || !"".equals(thisPrograms);
-
+if(showProgramSelect) { 
+  %><mm:import id="showprogramselect" /><% 
+}
 %><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "Zoek een collega"; 
