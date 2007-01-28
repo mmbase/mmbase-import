@@ -4,7 +4,8 @@
 <% PaginaHelper ph = new PaginaHelper(cloud); %>
 <mm:list nodes="<%= paginaID %>" path="pagina,rolerel,teaser" constraints="rolerel.rol='2'"	orderby="rolerel.pos" directions="UP"
 	><mm:node element="teaser"
-	><mm:field name="titel_eng" jspvar="type" vartype="String" write="false"><%
+	><mm:field name="titel_zichtbaar" write="false" jspvar="teaser_tz" vartype="String"
+   ><mm:field name="titel_eng" jspvar="type" vartype="String" write="false"><%
   
   if(!type.equals("link_set")) { 
 	
@@ -32,8 +33,8 @@
 		
 			%><table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
-					<td style="padding:4px;padding-bottom:2px;padding-top:7px;"class="colortitle">
-					<mm:field name="titel" />
+					<td style="padding:4px;padding-bottom:2px;padding-top:7px;" class="colortitle">
+               <% if(!teaser_tz.equals("0")){ %><mm:field name="titel" /><% } %>
 					<table width="100%" cellspacing="0" cellpadding="0">
 						<tr>
 							<td><mm:field name="omschrijving"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field></td>
@@ -65,9 +66,11 @@
 				<img src="media/trans.gif" width="1" height="15" border="0" alt=""><br>
 				<% if(!type.equals("border")) { %><img style="float:right;margin-top:-11px;" src="media/shop/<%= type %>.gif"><% }
 				if(!shop_itemHref.equals("")) {
-					%><a href="<mm:url page="<%= shop_itemHref %>" />" class="maincolor_link_shorty"><mm:field name="titel" /></a><%
+					%><a href="<mm:url page="<%= shop_itemHref %>" />" class="maincolor_link_shorty">
+                  <% if(!teaser_tz.equals("0")){ %><mm:field name="titel" /><% } %>
+                </a><%
 				} else {
-					%><span class="colortitle"><mm:field name="titel" /></span><% } 
+					%><span class="colortitle"><% if(!teaser_tz.equals("0")){ %><mm:field name="titel" /><% } %></span><% } 
 				%><table width="100%" cellspacing="0" cellpadding="0">
 					<tr>
 						<td><mm:field name="omschrijving"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field></td>
@@ -96,6 +99,7 @@
 		}
 	}
 %></mm:field
+></mm:field
 ></mm:node
 ></mm:list>
 </mm:cloud>

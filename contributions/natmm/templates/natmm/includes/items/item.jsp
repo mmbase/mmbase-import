@@ -7,7 +7,7 @@
 <%
 String styleSheet = request.getParameter("rs");
 PaginaHelper ph = new PaginaHelper(cloud);
-shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemID;
+shop_itemHref = "shoppingcart.jsp?p=bestel&u=" + shop_itemID;
 %>
 <mm:node number="<%= shop_itemID %>">
 	<table width="100%" cellspacing="0" cellpadding="0">
@@ -172,7 +172,7 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    	int totalNumberOfThumbs = 0;
    	boolean thisIsNotFirst = false;
    	%><mm:list nodes="<%= shop_itemID %>" path="items,posrel,images"
-   		orderby="posrel.pos" directions="UP" constraints="posrel.pos > 1"
+   		orderby="posrel.pos" directions="UP"
    		><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"><% 
    			if(thisIsNotFirst) { 
    				imageId += ","; 
@@ -199,13 +199,14 @@ shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + 
    	></mm:list><%
    	
    	String slideshowUrl = "includes/shop/slideshow.jsp?p=" + paginaID + "&u=" +  shop_itemID + "&offset=" +  offsetID;
-   
+      shop_itemHref = ph.createPaginaUrl(paginaID,request.getContextPath()) + "?u=" + shop_itemID;
+      
    	String previousImage = "-1";
    	String nextImage = "-1";
    	String thisImage = "";
    	String otherImages = "";
    	int totalNumberOfImages = 1;
-    int thisImageNumber = 1;
+      int thisImageNumber = 1;
    	
    	int thisThumbNailNumber = 0;
    	int numberInRow = 5;

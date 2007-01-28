@@ -17,16 +17,16 @@ Discounts are given in two includes:
 ><mm:field name="discountrel.enddate" jspvar="enddate" vartype="Long" write="false"><%
 	if(startdate.longValue()<=nowSec && nowSec<=enddate.longValue()) { 
 		%><mm:node element="pools"
-		><mm:related path="posrel,products"
-			><mm:field name="products.number" jspvar="combiproduct" vartype="String" write="false"><% 
-        if(products.get(combiproduct)!=null&&!combiproduct.equals(thisproduct)) { 
-					%><mm:remove referid="combiproduct"
-					/><mm:import id= "combiproduct" /><%
+		><mm:related path="posrel,items"
+			><mm:field name="items.number" jspvar="combi_item" vartype="String" write="false"><% 
+        if(products.get(combi_item)!=null&&!combi_item.equals(thisproduct)) { 
+					%><mm:remove referid="combi_item"
+					/><mm:import id= "combi_item" /><%
 				} 
 		%></mm:field
 		></mm:related
 		></mm:node
-		><mm:present referid="combiproduct"
+		><mm:present referid="combi_item"
 			><mm:field name="discountrel.type" jspvar="type" vartype="String" write="false"
 			><mm:field name="discountrel.amount" jspvar="discounts_amount" vartype="String" write="false"><%
 			int amount = Integer.parseInt(discounts_amount); 
@@ -35,7 +35,7 @@ Discounts are given in two includes:
 			%></mm:field
 			></mm:field
 		></mm:present
-		><mm:remove referid="combiproduct" /><%
+		><mm:remove referid="combi_item" /><%
 	} 
 %></mm:field
 ></mm:field
