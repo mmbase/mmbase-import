@@ -131,11 +131,19 @@ String pageUrl = "slideshow.jsp?w=" + subsiteID + "&p=" + paginaID + "&u=" + sho
 	<td class="maincolor" style="padding:1px;padding-left:25px;">
 	<%
   if(!shop_itemID.equals("-1")) { 
-		%><mm:node number="<%= shop_itemID %>">
-			<table cellspacing="0" cellpadding="0">
+		%><mm:node number="<%= shop_itemID %>" jspvar="thisArticle">
+         <%
+         String summary = thisArticle.getStringValue("intro"); 
+         summary = HtmlCleaner.cleanText(summary,"<",">");
+         int spacePos = summary.indexOf(" ",80); 
+         if(spacePos>-1) { 
+            summary =summary.substring(0,spacePos) + " &hellip;";
+         } 
+         %>
+			<table cellspacing="0" cellpadding="0" style="width:100%;">
 				<tr>
-					<td class="maincolor"><mm:field name="intro" /></td>
-					<td><span class="maincolor">|</span>&nbsp;&nbsp;<strong><mm:field name="titel" /></strong></td>
+					<td class="maincolor"><%= summary %></td>
+					<td style="text-align:right"><span class="maincolor">|</span>&nbsp;&nbsp;<strong><mm:field name="titel" /></strong></td>
 				</tr>
 			</table>
 		</mm:node><% 

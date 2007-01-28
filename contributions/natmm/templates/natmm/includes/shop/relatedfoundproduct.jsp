@@ -27,7 +27,7 @@
 		</td></tr>
 	<tr><td style="width:35%;padding-left:3px;padding-right:3px;padding-top:2px;"><%@include file="relatedprice.jsp" %></td>
 		<td style="width:5%;"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td>
-		<% shop_itemHref = ph.createPaginaUrl("bestel",request.getContextPath()) + "?u=" + shop_itemID;  %>
+		<% shop_itemHref = "shoppingcart.jsp?p=bestel&u=" + shop_itemID;  %>
 		<%@include file="../items/shoppingcart.jsp"%></tr>
 	<tr><td colspan="3"><img src="media/trans.gif" border="0" alt="" width="1" height="6"></td></tr>
 	<tr><td class="maincolor" colspan="4"><img src="media/trans.gif" border="0" alt="" width="1" height="1"></td></tr>
