@@ -41,17 +41,17 @@ if(shop_itemID.equals("-1")) {
   <% 
 } else {
   boolean hasExtraInfo = false;
-  %><mm:list nodes="<%= shop_itemID %>" path="products,posrel,images" 
+  %><mm:list nodes="<%= shop_itemID %>" path="items,posrel,images" 
       constraints="posrel.pos > 1" max="1"><%
       hasExtraInfo = true;
   %></mm:list><%
   if(!hasExtraInfo) { 
-    %><mm:list nodes="<%= shop_itemID %>"	path="products,posrel,attachments" max="1"><%
+    %><mm:list nodes="<%= shop_itemID %>"	path="items,posrel,attachments" max="1"><%
       hasExtraInfo = true; 
     %></mm:list><% 
   } 
   if(!hasExtraInfo) { 
-    %><mm:list nodes="<%= shop_itemID %>" path="products,posrel,artikel" max="1"><%
+    %><mm:list nodes="<%= shop_itemID %>" path="items,posrel,artikel" max="1"><%
       hasExtraInfo = true; 
     %></mm:list><%
   }

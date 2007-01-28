@@ -5,7 +5,7 @@
 <% 
 PaginaHelper ph = new PaginaHelper(cloud);
 %>
-<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="contentrel.pos = '2'"
+<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos"
    ><mm:node element="artikel"
 	><table width="100%" cellspacing="0" cellpadding="0" background="media/shop/discountborder.gif" style="background-repeat:repeat-x;">
 	<tr>
@@ -26,10 +26,8 @@ PaginaHelper ph = new PaginaHelper(cloud);
 		/><table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 				<td width="60%">
-				<mm:field name="intro" jspvar="text" vartype="String" write="false">
-				   <%= (text!=null ? HtmlCleaner.cleanText(text,"<",">","") : "") %>
-				</mm:field>
-				<br/>
+				<mm:field name="intro"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+				<mm:field name="tekst"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
         <%
         // this can show multiple items, the price of the last item is shown
         %>
@@ -46,7 +44,8 @@ PaginaHelper ph = new PaginaHelper(cloud);
 							/><%@include file="relatedprice.jsp" 
 							%><mm:remove referid="smallprice" 
 						/></mm:node
-					></mm:last>
+					   ><mm:field name="readmore.readmore" id="readmore" write="false"
+               /></mm:last>
 				</mm:related> 
 				</td>
 				<td style="width:40%;text-align:right;vertical-align:bottom;""><a style="display:block;width:auto;height:70;" href="<mm:url page="<%= shop_itemHref %>" 
@@ -60,7 +59,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
 		<td class="maincolor"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
 		<td class="footer" width="100%">
 		<table cellspacing="0" cellpadding="0" align="right"><tr>
-			<td class="nav"><a href="<mm:url page="<%= shop_itemHref %>" />" class="nav"><mm:field name="titel_fra" /></a></td>
+			<td class="nav"><a href="<mm:url page="<%= shop_itemHref %>" />" class="nav"><mm:write referid="readmore" /></a></td>
 			<td style="padding:2px;padding-left:5px;"><a href="<mm:url page="<%= shop_itemHref %>" />"><img src="media/shop/pijl_oranje_op_lichtoranje.gif" border="0" alt=""></a></td>
 		</tr></table>
 		</td>

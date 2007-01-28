@@ -135,9 +135,12 @@ String [] migrateToTeaser = {
   "Welkom wandel en fietskaarten",
   "Meer lezen?",
   "RPI Family Cards",
+  "Scholen, bedrijven en kerstkaarten",
+  "Bedrijven",
+  "Meer boeken",
 };
-String [] teaserRole =   {"0","2","2","2","2","0","0","0","0","0","0","0","0","0","2","2",};
-String [] titleVisible = {"0","1","1","1","1","0","0","0","0","0","0","0","0","0","1","1",};
+String [] teaserRole =   {"0","2","2","2","2","0","0","0","0","0","0","0","0","0","2","2","2","2","2",};
+String [] titleVisible = {"0","1","1","1","1","0","0","0","0","0","0","0","0","0","1","1","1","1","1",};
 
 for(int i=0;i<migrateToTeaser.length;i++) {
   sConstraints = "artikel.titel = '" + migrateToTeaser[i] + "'"; 
@@ -355,11 +358,12 @@ for(int i=0;i<pagesToDelete.length;i++) {
   <mm:setfield name="directions">UP</mm:setfield>
   <mm:setfield name="search">yes</mm:setfield>
 </mm:createnode>
-<% log.info("editwizards to the shopitems template"); %>
+<% log.info("relate editwizards to the shopitems template"); %>
 <mm:list path="paginatemplate" constraints="paginatemplate.url='shopitems.jsp'">
   <mm:node element="paginatemplate" id="template"/>
   <mm:createrelation role="related" source="template" destination="productpage_ew"/>	
 </mm:list>
+<% log.info("for items move omschrijving to body and metatags to id"); %>
 <mm:listnodes type="items">
   <mm:remove referid="omschrijving" />
   <mm:field name="omschrijving" id="omschrijving" write="false">
@@ -376,6 +380,22 @@ for(int i=0;i<pagesToDelete.length;i++) {
     </mm:isnotempty>
   </mm:field>
 </mm:listnodes>
+<% log.info("Create shophome page ew. and relate it to template shophome"); %>
+<mm:createnode type="editwizards" id="shophome_ew">
+  <mm:setfield name="name">webwinkel homepage</mm:setfield>
+  <mm:setfield name="description">Bewerk deze webwinkel homepage</mm:setfield>
+  <mm:setfield name="type">wizard</mm:setfield>
+  <mm:setfield name="wizard">config/pagina/pagina_shophome</mm:setfield>
+  <mm:setfield name="nodepath">paginatemplate,pagina</mm:setfield>
+  <mm:setfield name="fields">pagina.titel,pagina.titel_fra</mm:setfield>
+  <mm:setfield name="orderby">pagina.titel</mm:setfield>
+  <mm:setfield name="directions">UP</mm:setfield>
+  <mm:setfield name="search">yes</mm:setfield>
+</mm:createnode>
+<mm:list path="paginatemplate" constraints="paginatemplate.url='shophome.jsp'">
+  <mm:node element="paginatemplate" id="shophome_template"/>
+  <mm:createrelation role="related" source="shophome_template" destination="shophome_ew"/>	
+</mm:list>
 </body>
 </html>
 </mm:log>
