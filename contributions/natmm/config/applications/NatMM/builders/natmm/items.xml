@@ -14,8 +14,11 @@
         <description xml:lang="nl">Items</description>
         <description xml:lang="en">Pieces</description>
     </descriptions>
-    <properties/>
-    <fieldlist>
+    <properties>
+      <property name="max-nodes-from-query">250</property>
+      <property name="htmlFields">intro body</property>
+   </properties>
+   <fieldlist>
       <field>
          <descriptions>
              <description xml:lang="nl">Ondertitel</description>
