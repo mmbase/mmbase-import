@@ -22,7 +22,6 @@ public class SimpleStats
 			MMBaseContext mc = new MMBaseContext();
 			ServletContext application = mc.getServletContext();
 			saveLast(application);
-			resetVariables(application);
 		}
       log.info("done");
    }
@@ -51,6 +50,7 @@ public class SimpleStats
          }
          transaction.commit();
       }
+  	   resetVariables(application);
    }
 
    public void pageCounter(Cloud cloud, ServletContext application,
