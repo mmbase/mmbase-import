@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%-- this is a @ include file--%>
 <mm:import id="entree" reset="true"><%= request.getHeader("aad_nummer") %></mm:import>
 <mm:import id="entree" reset="true">null</mm:import>
 
@@ -16,13 +16,13 @@
 			  <mm:compare value="failed">
 				<mm:import id="loginfailed">true</mm:import>
                			<mm:import id="posterid">-1</mm:import>
-				<mm:write referid="posterid" session="pid$forumid" /> 
+				<mm:write referid="posterid" session="pid$forumid" />
                                 <mm:import id="loginfailedreason"><mm:field name="reason"/></mm:import>
 			  </mm:compare>
 			  <mm:compare value="passed">
 				<mm:import id="loginfailed">false</mm:import>
                			<mm:import id="posterid"><mm:field name="posterid"/></mm:import>
-				<mm:write referid="posterid" session="pid$forumid" /> 
+				<mm:write referid="posterid" session="pid$forumid" />
 				<mm:booleanfunction set="mmbob" name="setRemoteAddress" referids="forumid,posterid,host" />
 			  </mm:compare>
                          </mm:field>
@@ -41,7 +41,7 @@
 			  <mm:compare value="failed">
 				<mm:import id="loginfailed">true</mm:import>
                			<mm:import id="posterid">-1</mm:import>
-				<mm:write referid="posterid" session="pid$forumid" /> 
+				<mm:write referid="posterid" session="pid$forumid" />
                                 <mm:import id="loginfailedreason"><mm:field name="reason"/></mm:import>
 			  </mm:compare>
 			  <mm:compare value="passed">
