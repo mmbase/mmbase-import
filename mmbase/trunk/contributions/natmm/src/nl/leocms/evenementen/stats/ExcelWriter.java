@@ -23,8 +23,6 @@ import nl.leocms.applications.NatMMConfig;
 public class ExcelWriter {
    private static final Logger log = Logging.getLoggerInstance(ExcelWriter.class);
    
-   private ArrayList eventFlyerList = new ArrayList();
-
    public String createEventSubscribeAttachment(Cloud cloud, String sEvenementNumber) throws IOException, WriteException {
       // writes all the subscriptions for this date (used in subscribe.jsp)
 
@@ -58,7 +56,7 @@ public class ExcelWriter {
          sSheetTitle = sSheetTitle.substring(0,30);
       }
 
-      createEventDatesSheet(cloud,hc,nParentNode,workbook,0,sSheetTitle);
+      createEventDatesSheet(cloud,hc,nParentNode,workbook,0,sSheetTitle, null);
 
       workbook.write();
       workbook.close();
@@ -88,7 +86,7 @@ public class ExcelWriter {
          if (sSheetTitle.length()>28) {
             sSheetTitle = sSheetTitle.substring(0,28);
          }
-         createEventDatesSheet(cloud,hc,nParentNode,workbook,j,sSheetTitle);
+         createEventDatesSheet(cloud,hc,nParentNode,workbook,j,sSheetTitle, null);
          j++;
       }
       for (int i = 0; i < nl.size(); i++){
@@ -145,11 +143,13 @@ public class ExcelWriter {
       WritableSheet sheetFlyer = workbook.createSheet("flyer", 9999);
       sheetFlyer.setColumnView(0,40);
       sheetFlyer.setColumnView(1,40);
-      sheetFlyer.setColumnView(2,40);
+      sheetFlyer.setColumnView(2,20);
       sheetFlyer.setColumnView(3,20);
+      sheetFlyer.setColumnView(4,20);
       
       ArrayList alXlsListTitles = new ArrayList();
       
+      ArrayList eventFlyerList = new ArrayList();
       int i = 0;
       Iterator it = ll.iterator();
       while (it.hasNext()){
@@ -168,7 +168,7 @@ public class ExcelWriter {
             j++;
          }
          alXlsListTitles.add(sSheetRealTitle);
-         createEventDatesSheet(cloud, hc, nParentNode, workbook, i, sSheetRealTitle);         
+         createEventDatesSheet(cloud, hc, nParentNode, workbook, i, sSheetRealTitle, eventFlyerList);         
          i++;
       }
  
@@ -187,9 +187,17 @@ public class ExcelWriter {
             sheetFlyer.addCell(new Label(0, j, nl1.getNode(k).getStringValue("natuurgebieden.naam")));
          }         
          
-         sheetFlyer.addCell(new Label(1, j, event.getEventName()));
-         sheetFlyer.addCell(new Label(2, j, event.getEventDate().getReadableDate(" ", true)));
-         sheetFlyer.addCell(new Label(3, j, event.getEventDate().getReadableTime()));
+         // retrieve event details
+         String eventName = event.getEventName();
+         String eventDate = event.getEventDate().getReadableDate(" ", true);
+         String eventYear = event.getEventDate().getReadableYear();
+         String eventTime = event.getEventDate().getReadableTime(false);
+         
+         // add details to flyer sheer
+         sheetFlyer.addCell(new Label(1, j, eventName));
+         sheetFlyer.addCell(new Label(2, j, eventDate));
+         sheetFlyer.addCell(new Label(3, j, eventYear));
+         sheetFlyer.addCell(new Label(4, j, eventTime));
          j++;
       }
       
@@ -391,7 +399,7 @@ public class ExcelWriter {
 
    }
 
-   public int writeDataEventDates(Cloud cloud, LinkedList llXlsData, int counter, Node nParentNode){
+   public int writeDataEventDates(Cloud cloud, LinkedList llXlsData, int counter, Node nParentNode, ArrayList eventFlyerList){
 
       String sParentNumber = nParentNode.getStringValue("number");
       Evenement ev = new Evenement();
@@ -403,7 +411,9 @@ public class ExcelWriter {
          llXlsData.add(new Label(2,counter,ddn.getReadableTime()));
          
          // add data tot eventFlyerList
-         eventFlyerList.add(new EventData(sParentNumber, nParentNode.getStringValue("titel"), ddn));
+         if(eventFlyerList != null) {
+            eventFlyerList.add(new EventData(sParentNumber, nParentNode.getStringValue("titel"), ddn));
+         }
          
          if (nParentNode.getRelatedNodes("inschrijvingen").size()==0){
             llXlsData.add(new Label(3,counter,"geen aanmeldingen"));
@@ -413,7 +423,7 @@ public class ExcelWriter {
       return counter;
    }
 
-   public void createEventDatesSheet(Cloud cloud,  HtmlCleaner hc, Node nParentNode, WritableWorkbook workbook, int sheetNumber, String sSheetTitle) throws WriteException{
+   public void createEventDatesSheet(Cloud cloud,  HtmlCleaner hc, Node nParentNode, WritableWorkbook workbook, int sheetNumber, String sSheetTitle, ArrayList eventFlyerList) throws WriteException{
 
       log.debug("createEventDatesSheet for parent event " + nParentNode.getStringValue("number"));
       WritableSheet sheet = workbook.createSheet(sSheetTitle, sheetNumber);
@@ -429,7 +439,7 @@ public class ExcelWriter {
       counter = writeStrings1(cloud,hc, llXlsData,counter,nParentNode);
       counter = writeKosten(cloud,llXlsData,counter,nParentNode);
       counter = writeVertrekpuntString(cloud,hc,llXlsData,counter,nParentNode);
-      counter = writeDataEventDates(cloud,llXlsData,counter,nParentNode);
+      counter = writeDataEventDates(cloud,llXlsData,counter,nParentNode,eventFlyerList);
       counter = writeStrings2(cloud,hc,llXlsData,counter,nParentNode);
       counter = writeDownloadDate(llXlsData,counter);
 
