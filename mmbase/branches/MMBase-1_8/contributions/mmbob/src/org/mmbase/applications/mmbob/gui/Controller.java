@@ -1905,7 +1905,7 @@ public class Controller {
     }
 
     /**
-     * update a allready existing postthread
+     * update a already existing postthread
      * 
      * @param forumid MMBase node number of the forum
      * @param postareaid MMBase node number of the postarea
