@@ -28,7 +28,7 @@ import org.mmbase.bridge.Node;
  * DoubleDateNode
  * 
  * @author Henk Hangyi
- * @version $Revision: 1.5 $, $Date: 2006-12-18 13:56:45 $
+ * @version $Revision: 1.6 $, $Date: 2007-01-29 16:47:37 $
  * 
  */
 
@@ -197,6 +197,11 @@ public class DoubleDateNode implements Comparable {
          readableValue.append(days_lcase[beginDayOfWeek]);
          readableValue.append(' ');
       }
+      
+      if (beginDayOfMonth < 10) {
+         readableValue.append('0');
+      }      
+      
       readableValue.append(beginDayOfMonth);
       if (beginYear == endYear) { // *** same year ***
          if (beginMonth == endMonth) { // *** same month ***
@@ -204,7 +209,12 @@ public class DoubleDateNode implements Comparable {
                readableValue.append(FROM_UNTILL);
                readableValue.append(days_lcase[endDayOfWeek]);
                readableValue.append(' ');
-               readableValue.append(endDayOfMonth);
+               
+               if (endDayOfMonth < 10) {
+                  readableValue.append('0');
+               }
+
+               readableValue.append(endDayOfMonth);                             
             } else {
                singleDay = true;
             }
@@ -216,29 +226,75 @@ public class DoubleDateNode implements Comparable {
             readableValue.append(FROM_UNTILL);
             readableValue.append(days_lcase[endDayOfWeek]);
             readableValue.append(' ');
-            readableValue.append(endDayOfMonth);
+            
+            if (endDayOfMonth < 10) {
+               readableValue.append('0');
+            }
+            
+            readableValue.append(endDayOfMonth);        
             readableValue.append(' ');
             readableValue.append(months_lcase[endMonth]);
          }
-         readableValue.append(' ');
-         readableValue.append(beginYear);
+         
+         if (!flyerMode) {
+            readableValue.append(' ');
+            readableValue.append(beginYear);
+         }
+         
       } else { // *** different year ***
          readableValue.append(' ');
          readableValue.append(months_lcase[beginMonth]);
-         readableValue.append(' ');
-         readableValue.append(beginYear);
+         
+         if (!flyerMode) {
+            readableValue.append(' ');
+            readableValue.append(beginYear);
+         }
+
          readableValue.append(FROM_UNTILL);
          readableValue.append(days_lcase[endDayOfWeek]);
          readableValue.append(' ');
-         readableValue.append(endDayOfMonth);
+         
+         if (endDayOfMonth < 10) {
+            readableValue.append('0');
+         }         
+         
+         readableValue.append(endDayOfMonth);         
          readableValue.append(' ');
          readableValue.append(months_lcase[endMonth]);
-         readableValue.append(endYear);
+         
+         if (!flyerMode) {
+            readableValue.append(' ');
+            readableValue.append(endYear);
+         }
       }
       return readableValue.toString();
    }
 
-   public String getReadableTime() {
+   public String getReadableYear() {
+
+      Calendar cal = Calendar.getInstance();
+      
+      // get begin year
+      cal.setTime(beginDate);
+      int beginYear = cal.get(Calendar.YEAR);
+      
+      //get end year
+      cal.setTime(endDate);
+      int endYear = cal.get(Calendar.YEAR);
+
+      StringBuffer readableValue = new StringBuffer();
+      
+      if (beginYear == endYear) { // *** same year ***
+         readableValue.append(beginYear);
+         
+      } else { // *** different year ***
+         readableValue.append(beginYear + " - " + endYear);
+      }
+      return readableValue.toString();
+   }   
+   
+   public String getReadableTime(boolean showHourIndicator) {
+      
       Calendar cal = Calendar.getInstance();
       cal.setTime(beginDate);
       int beginHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -264,8 +320,17 @@ public class DoubleDateNode implements Comparable {
          }
          readableValue.append(endMinute);
       }
-      readableValue.append(HOUR_INDICATOR);
+      
+      if (showHourIndicator) {
+         readableValue.append(HOUR_INDICATOR);
+      }
+      
       return readableValue.toString();
+   }
+   
+   public String getReadableTime() {    
+      // return default with hour indicator      
+      return getReadableTime(true);
    }
 
    public String getReadableStartTime() {
