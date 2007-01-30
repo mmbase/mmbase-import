@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.2 2007-01-30 18:16:30 michiel Exp $
  */
 public class JAIImageConverter extends AbstractImageConverter implements ImageConverter {
 
@@ -147,12 +147,16 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
                         boolean aspectRatio = true;
                         boolean area        = false;
                         boolean percentage  = false;
+                        boolean onlyWhenOneBigger    = false;
+                        boolean onlyWhenBothSmaller   = false;
 
                         for (int j = 0 ; j < options.length(); j++) {
                             char o = options.charAt(j);
                             if (o == '%') percentage = true;
                             if (o == '@') area = true;
                             if (o == '!') aspectRatio = false;
+                            if (o == '>') onlyWhenOneBigger = true;
+                            if (o == '<') onlyWhenBothSmaller = true;
                         }
 
                         int x = "".equals(xString) ? 0 : Integer.parseInt(xString);
@@ -182,7 +186,12 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
                             y = img.getHeight() * y / 100;
                             aspectRatio = false;
                         }
-                        img = size(img, x, y, aspectRatio);
+
+                        boolean skipScale =
+                            (onlyWhenOneBigger &&  img.getWidth() < x &&  img.getHeight() < y) ||
+                            (onlyWhenBothSmaller && (img.getWidth() > x || img.getHeight() > y));
+
+                        img = skipScale ? img : size(img, x, y, aspectRatio);
                     } else if (type.equals("border")) {
                         int x = Integer.parseInt(tokens[0]);
                         int y = tokens.length > 1 ? Integer.parseInt(tokens[1]) : x;
@@ -222,7 +231,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
-    protected static PlanarImage crop(PlanarImage inImg,int x1,int y1, int x2,int y2) {
+    protected static PlanarImage crop(PlanarImage inImg, int x1, int y1, int x2,int y2) {
         Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
@@ -244,7 +253,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
      * @param maintainAspectRation if true, width and height are maximums: aspect ratio is maintained
      * @return the transformed image
      */
-    protected static PlanarImage size(PlanarImage inImg,int width,int height, boolean maintainAspectRation) {
+    protected static PlanarImage size(PlanarImage inImg, int width, int height, boolean maintainAspectRation) {
         Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         int curwidth=inImg.getWidth();
         int curheight=inImg.getHeight();
