@@ -17,7 +17,7 @@
         <%@ include file="loadtranslations.jsp" %>
 
         <!-- action check -->
-        <c:if test="${param.action}"><mm:include page="actions.jsp" /></c:if>
+        <c:if test="${not empty param.action}"><mm:include page="actions.jsp" /></c:if>
 
         <mm:node referid="postthreadid">
           <mm:field name="state">
