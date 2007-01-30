@@ -49,9 +49,8 @@
             <mm:import id="page" reset="true"><mm:function set="mmbob" name="getPostingPageNumber" referids="forumid,postareaid,postthreadid,postingid,pagesize" /></mm:import>
         </mm:present>
 
-
         <!-- action check -->
-        <c:if test="${param.action}"><mm:include page="actions.jsp" /></c:if>
+        <c:if test="${not empty param.action}"><mm:include page="actions.jsp" /></c:if>
 
         <mm:nodefunction set="mmbob" name="getPostThreadInfo" referids="forumid,postareaid,postthreadid,pagesize">
             <mm:compare referid="page" value="-1">
@@ -375,14 +374,12 @@
                                                 </th>
 
                                                 <td>
-                                                    <textarea name="body" rows="5" style="width: 99%">
-                                                        <mm:compare referid="error" value="none" inverse="true">
-                                                            <mm:import externid="body" from="session"/>
-                                                            <mm:write referid="body" />
-                                                            <mm:import id="error" reset="true">none</mm:import>
-                                                            <mm:write referid="error" session="error" />
-                                                        </mm:compare>
-                                                    </textarea>
+                                                    <mm:compare referid="error" value="none" inverse="true">
+                                                        <mm:import externid="body" from="session"/>
+                                                        <mm:import id="error" reset="true">none</mm:import>
+                                                        <mm:write referid="error" session="error" />
+                                                    </mm:compare>
+                                                        <textarea name="body" rows="5" style="width: 99%">${body}</textarea>
                                                 </td>
                                             </tr>
 
