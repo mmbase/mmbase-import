@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.86 2006-11-24 14:17:06 pierre Exp $
+ * @version $Id: Module.java,v 1.87 2007-01-30 19:57:17 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -130,7 +130,7 @@ public abstract class Module extends DescribedFunctionProvider {
             if (is == null) return null;
             return new ModuleReader(is);
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             return null;
         }
     }
@@ -548,11 +548,11 @@ public abstract class Module extends DescribedFunctionProvider {
                         mod = (Module) newClass.newInstance();
                     } else {
                         Class newClass = Class.forName(className);
-                        mod = (Module) newClass.newInstance();
+                        mod =  (Module) newClass.newInstance();
                     }
                     // set the module name property, and the default context
                     mod.setName(moduleName);
-                    mod.configurationPath = file;
+                    mod.configurationPath = ResourceLoader.getName(file);
 
                     results.put(moduleName, mod);
 
