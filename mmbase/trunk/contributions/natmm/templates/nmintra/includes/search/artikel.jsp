@@ -2,7 +2,7 @@
 String [] articlePathToPage = { "contentrel,artikel", "readmore,artikel", "posrel,images,pos4rel,artikel" };
 for(int i = 0; i<3; i++) {
     %>
-    <mm:related path="<%= articlePathToPage[i] %>" fields="artikel.number">
+    <mm:related path="<%= articlePathToPage[i] %>" fields="artikel.number" orderby="artikel.begindatum" directions="DOWN">
       <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false">
         <%
         if(hsetArticlesNodes.contains(sID)){
