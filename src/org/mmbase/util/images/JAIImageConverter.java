@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.4 2006-08-23 15:18:56 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.4.2.1 2007-01-30 18:41:20 michiel Exp $
  */
 public class JAIImageConverter implements ImageConverter {
 
@@ -148,12 +148,17 @@ public class JAIImageConverter implements ImageConverter {
                         boolean aspectRatio = true;
                         boolean area        = false;
                         boolean percentage  = false;
+                        boolean onlyWhenOneBigger    = false;
+                        boolean onlyWhenBothSmaller   = false;
+
                         
                         for (int j = 0 ; j < options.length(); j++) {
                             char o = options.charAt(j);
                             if (o == '%') percentage = true;
                             if (o == '@') area = true;
                             if (o == '!') aspectRatio = false;
+                            if (o == '>') onlyWhenOneBigger = true;
+                            if (o == '<') onlyWhenBothSmaller = true;
                         }
                         
                         int x = "".equals(xString) ? 0 : Integer.parseInt(xString);
@@ -183,7 +188,11 @@ public class JAIImageConverter implements ImageConverter {
                             y = img.getHeight() * y / 100;
                             aspectRatio = false;
                         }
-                        img = size(img, x, y, aspectRatio);
+                        boolean skipScale =
+                            (onlyWhenOneBigger &&  img.getWidth() < x &&  img.getHeight() < y) ||
+                            (onlyWhenBothSmaller && (img.getWidth() > x || img.getHeight() > y));
+
+                        img = skipScale ? img : size(img, x, y, aspectRatio);
                     } else if (type.equals("border")) {
                         int x = Integer.parseInt(tokens[0]);
                         int y = tokens.length > 1 ? Integer.parseInt(tokens[1]) : x;
