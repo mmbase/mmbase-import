@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * if not exception, the value is valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InternetAddressDataType.java,v 1.4 2007-01-30 20:25:55 michiel Exp $
+ * @version $Id: InternetAddressDataType.java,v 1.5 2007-01-30 20:28:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class InternetAddressDataType extends StringDataType {
@@ -114,7 +114,7 @@ public class InternetAddressDataType extends StringDataType {
                 if (! local) {
                     for (InternetAddress a : ia) {
                         if (a.getAddress().indexOf("@") == -1) { // not entirely sure that this is absolutely correct
-                            log.debug("Non-local addresses not allowed");
+                            log.debug("Local addresses not allowed");
                             return false;
                         }
                     }
