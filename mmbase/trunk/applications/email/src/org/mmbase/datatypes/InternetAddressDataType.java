@@ -20,13 +20,15 @@ import org.mmbase.util.logging.*;
  * if not exception, the value is valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InternetAddressDataType.java,v 1.3 2007-01-08 14:00:25 michiel Exp $
+ * @version $Id: InternetAddressDataType.java,v 1.4 2007-01-30 20:25:55 michiel Exp $
  * @since MMBase-1.9
  */
 public class InternetAddressDataType extends StringDataType {
     private static final Logger log = Logging.getLoggerInstance(InternetAddressDataType.class);
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
+    static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.emaildatatypes";
 
     protected InternetAddressRestriction restriction = new InternetAddressRestriction(Integer.MAX_VALUE);
 
@@ -79,6 +81,20 @@ public class InternetAddressDataType extends StringDataType {
         InternetAddressRestriction(int max) {
             super("internetaddress", Integer.valueOf(max));
         }
+
+
+        // just overrided to get the correct bundle for the datatype.
+        // todo, this sucks.
+        public LocalizedString getErrorDescription() {
+            if (errorDescription == null) {
+                // this is postponsed to first use, because otherwise 'getBaseTypeIdentifier' give correct value only after constructor of parent.
+                String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
+                errorDescription = new LocalizedString(key);
+                errorDescription.setBundle(DATATYPE_BUNDLE);
+            }
+            return errorDescription;
+        }
+
         public void setLocal(boolean l) {
             local = l;
         }
@@ -97,7 +113,7 @@ public class InternetAddressDataType extends StringDataType {
                 }
                 if (! local) {
                     for (InternetAddress a : ia) {
-                        if (a.getAddress().indexOf("@") == -1) {
+                        if (a.getAddress().indexOf("@") == -1) { // not entirely sure that this is absolutely correct
                             log.debug("Non-local addresses not allowed");
                             return false;
                         }
