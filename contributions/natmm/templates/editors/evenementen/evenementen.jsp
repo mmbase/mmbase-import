@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@page import="nl.leocms.util.DoubleDateNode,nl.leocms.evenementen.Evenement,java.util.*" %>
+<%@page import="nl.leocms.util.DoubleDateNode,nl.leocms.evenementen.Evenement,java.util.*,nl.leocms.util.tools.HtmlCleaner" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <!-- ******************************* IMPORT PARAMETERS ******************************** -->
