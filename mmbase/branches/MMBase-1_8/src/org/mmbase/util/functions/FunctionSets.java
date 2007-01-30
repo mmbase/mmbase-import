@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22.2.2 2006-10-26 11:41:56 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.22.2.3 2007-01-30 18:08:00 ernst Exp $
  */
 public class FunctionSets {
 
@@ -227,17 +227,19 @@ public class FunctionSets {
                     Class parameterClass = getClassFromName(parameterType);
                     parameter = new Parameter(parameterName, parameterClass);
                     parameter.dataType.setRequired("true".equals(required));
+                    
+//                  check for a default value
+                    org.w3c.dom.Node n3 = parameterElement.getFirstChild();
+                    if (n3 != null) {
+                        parameter.setDefaultValue(parameter.autoCast(n3.getNodeValue()));
+                    }
 
                     if (parameterClass.isPrimitive() && parameter.getDefaultValue() == null && ! parameter.isRequired()) {
                         // that would give enigmatic IllegalArgumentExceptions, so fix that.
                         parameter.setDefaultValue(Casting.toType(parameterClass, new Integer(-1)));
                         log.info("Primitive parameter '" + parameterName + "' had default value null, which is impossible for primitive types. Setting to " + parameter.getDefaultValue());
                     }
-                    // check for a default value
-                    org.w3c.dom.Node n3 = parameterElement.getFirstChild();
-                    if (n3 != null) {
-                        parameter.setDefaultValue(parameter.autoCast(n3.getNodeValue()));
-                    }
+                    
                     parameterList.add(parameter);
 
                 }
