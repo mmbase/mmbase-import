@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.66 2007-01-06 15:08:45 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.67 2007-01-30 19:50:04 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -471,7 +471,7 @@ s     */
 
         errors = requiredRestriction.validate(errors, value, node, field);
 
-        if (value == null) {
+        if (castValue == null) {
             return errors; // null is valid, unless required.
         }
         if (testEnum) {
@@ -496,7 +496,7 @@ s     */
             }
         }
         if (setProcessors != null) {
-            for (int i =0; i < 13; i++) {
+            for (int i = 0; i < 13; i++) {
                 buf.append(setProcessors[i] == null ? "" : ("; set [" + Fields.typeToClass(i) + "]:" + setProcessors[i] + " "));
             }
         }
@@ -854,7 +854,7 @@ s     */
 
         public LocalizedString getErrorDescription() {
             if (errorDescription == null) {
-                // this is postponsed to first use, because otherwis 'getBaesTypeIdentifier' give correct value only after constructor of parent.
+                // this is postponsed to first use, because otherwise 'getBaseTypeIdentifier' give correct value only after constructor of parent.
                 String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
                 errorDescription = new LocalizedString(key);
                 errorDescription.setBundle(DATATYPE_BUNDLE);
