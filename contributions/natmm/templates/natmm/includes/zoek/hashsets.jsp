@@ -30,6 +30,9 @@ if(debug) { %><br/>natuurgebiedenNatuurgebiedenHits:<br/><%= hsetNatuurgebiedenN
 hsetArticlesNodes = su.addPages(cloud,cf,qStr,0,"artikel,contentrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
+hsetItemsNodes = su.addPages(cloud,cf,qStr,8,"items,posrel,pagina",subsiteID,nowSec,hsetPagesNodes);
+if(debug) { %><br/>itemHits:<br/><%= hsetItemsNodes %><br/><%= hsetPagesNodes %><% } 
+
 hsetArtDossierNodes = su.addPages(cloud,cf,qStr,0,"artikel,posrel,dossier,posrel,pagina",subsiteID,nowSec,hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
