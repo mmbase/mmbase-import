@@ -41,13 +41,6 @@ log.info("Adding style to 'shop' node. Setting level field of 'shop' node to 2."
     <mm:setfield name="verwijderbaar">1</mm:setfield>
   </mm:node>	
 </mm:list>
-<% log.info("Deleting old shop rubriek and the related page"); %>
-<mm:node number="winkel_rubriek" notfound="skipbody">
-  <mm:relatednodes type="pagina">
-    <mm:deletenode />
-  </mm:relatednodes>
-  <mm:deletenode />
-</mm:node>
 <% log.info("Adding relations between 'shop' node and vereniging Naturmonumenten rubriek"); %>
 <% sConstraints="rubriek.naam='Vereniging Natuurmonumenten'"; %>
 <mm:list path="rubriek" constraints="<%= sConstraints %>">	
@@ -59,13 +52,13 @@ log.info("Adding style to 'shop' node. Setting level field of 'shop' node to 2."
 </mm:list>	
 <% log.info("Renaming pagina 'Zoekresultaten' to 'Zoeken in de webwinkel'"); %>
 <% sConstraints="pagina.titel='Zoekresultaten'"; %>
-<mm:listnodes type="pagina" constraints="<%= sConstraints %>">
+<mm:listnodes type="pagina" constraints="<%= sConstraints %>" orderby="number" directions="down" max="1">
   <mm:setfield name="titel">Zoeken in de webwinkel</mm:setfield>
 </mm:listnodes>
 <% log.info("For paginatemplates migrated from WebShop rename url field"); %>
 <%
 String [] templateToRename = {
-	"templates/homepage.jsp",
+  "templates/homepage.jsp",
   "templates/products.jsp",
   "templates/shoppingcart.jsp",
   "templates/search.jsp",
@@ -85,7 +78,7 @@ String [] templateName = {
 for(int i=0;i<templateToRename.length;i++) {
   sConstraints = "paginatemplate.url = '" + templateToRename[i] + "'"; 
   %>
-  <mm:listnodes type="paginatemplate" constraints="<%= sConstraints %>">
+  <mm:listnodes type="paginatemplate" constraints="<%= sConstraints %>"  orderby="number" directions="down" max="1">
       <mm:setfield name="url"><%= templateNewUrl[i] %></mm:setfield>
       <mm:setfield name="naam"><%= templateName[i] %></mm:setfield>
       <mm:setfield name="systemtemplate">0</mm:setfield>   
@@ -106,16 +99,26 @@ log.info("replace shop artikel template by default one"); %>
     <mm:deletenode deleterelations="true" />
   </mm:listnodes>
 </mm:listnodes>
-<% log.info("Add the editors/discounts.jsp as a wizard to the shopping cart."); %>
-<mm:createnode type="editwizards" id="new_ed">
-  <mm:setfield name="name">Aanbiedingen</mm:setfield>
-  <mm:setfield name="type">jsp</mm:setfield>
-  <mm:setfield name="wizard">/editors/discounts.jsp</mm:setfield>
-</mm:createnode>
-<mm:list path="paginatemplate" constraints="paginatemplate.url='shoppingcart.jsp'">
-  <mm:node element="paginatemplate" id="paginatemplate"/>
-  <mm:createrelation role="related" source="paginatemplate" destination="new_ed"/>
-</mm:list>
+<% log.info("Migrate intro and tekst field of artikel"); %>
+<mm:listnodes type="artikel" orderby="number" directions="down" max="43">
+  <mm:remove referid="intro" />
+  <mm:field name="intro" id="intro" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="tekst"><mm:write referid="intro" /></mm:setfield>
+      <mm:setfield name="intro"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+</mm:listnodes>
+<% log.info("Migrate tekst and omschrijving field of paragraaf"); %>
+<mm:listnodes type="paragraaf" orderby="number" directions="down" max="27">
+  <mm:remove referid="omschrijving" />
+  <mm:field name="omschrijving" id="omschrijving" write="false">
+    <mm:isnotempty>
+      <mm:setfield name="tekst"><mm:write referid="omschrijving" /></mm:setfield>
+      <mm:setfield name="omschrijving"><% %></mm:setfield>
+    </mm:isnotempty>
+  </mm:field>
+</mm:listnodes>
 <% 
 log.info("Migrate some articles to teasers"); 
 String [] migrateToTeaser = {
@@ -145,10 +148,10 @@ String [] titleVisible = {"0","1","1","1","1","0","0","0","0","0","0","0","0","0
 for(int i=0;i<migrateToTeaser.length;i++) {
   sConstraints = "artikel.titel = '" + migrateToTeaser[i] + "'"; 
   %>
-  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>"  orderby="number" directions="down" max="1">
     <mm:field name="titel" jspvar="titel" vartype="String" write="false">
     <mm:field name="titel_eng" jspvar="titel_eng" vartype="String" write="false">
-    <mm:field name="intro" jspvar="omschrijving" vartype="String" write="false">
+    <mm:field name="tekst" jspvar="omschrijving" vartype="String" write="false">
       <mm:remove referid="thisteaser" />
       <mm:createnode type="teaser" id="thisteaser">
         <mm:setfield name="size"><%= titleVisible[i] %></mm:setfield>
@@ -203,7 +206,7 @@ String [] articlesToDelete = {
 for(int i=0;i<articlesToDelete.length;i++) {
   sConstraints = "artikel.titel = '" +articlesToDelete[i] + "'"; 
   %>
-  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>" orderby="number" directions="down" max="1">
     <mm:relatednodes type="paragraaf">
        <mm:deletenode deleterelations="true" />
     </mm:relatednodes>
@@ -230,7 +233,7 @@ String [] articlePosition = {
 for(int i=0;i<articlesToMove.length;i++) {
   sConstraints = "artikel.titel = '" +articlesToMove[i] + "'"; 
   %>
-  <mm:listnodes type="artikel" constraints="<%= sConstraints %>">
+  <mm:listnodes type="artikel" constraints="<%= sConstraints %>" orderby="number" directions="down" max="1">
     <mm:relatednodes type="paragraaf">
       <mm:deletenode deleterelations="true" />
     </mm:relatednodes>
@@ -271,7 +274,7 @@ String [] pagesVisible  = {"1","1","1","1","1","1","1","1","1", "1", "1", "1", "
 for(int i=0;i<pages.length;i++) {
   sConstraints = "pagina.titel = '" +pages[i] + "'"; 
   %>
-  <mm:listnodes type="pagina" constraints="<%= sConstraints %>">
+  <mm:listnodes type="pagina" constraints="<%= sConstraints %>" orderby="number" directions="down" max="1">
     <% if(i==9) { %>
       <mm:remove referid="thispage" />
       <mm:node id="thispage" />
@@ -298,7 +301,7 @@ String [] pagesToDelete = {
 for(int i=0;i<pagesToDelete.length;i++) {
   sConstraints = "pagina.titel = '" +pagesToDelete[i] + "'"; 
   %>
-  <mm:listnodes type="pagina" constraints="<%= sConstraints %>">
+  <mm:listnodes type="pagina" constraints="<%= sConstraints %>" orderby="number" directions="down" max="1">
     <mm:relatednodes type="artikel">
       <mm:relatednodes type="paragraaf">
         <mm:deletenode deleterelations="true" />
@@ -310,24 +313,6 @@ for(int i=0;i<pagesToDelete.length;i++) {
   <%
 }
 %>
-<mm:listnodes type="artikel">
-  <mm:remove referid="intro" />
-  <mm:field name="intro" id="intro" write="false">
-    <mm:isnotempty>
-      <mm:setfield name="tekst"><mm:write referid="intro" /></mm:setfield>
-      <mm:setfield name="intro"><% %></mm:setfield>
-    </mm:isnotempty>
-  </mm:field>
-</mm:listnodes>
-<mm:listnodes type="paragraaf">
-  <mm:remove referid="omschrijving" />
-  <mm:field name="omschrijving" id="omschrijving" write="false">
-    <mm:isnotempty>
-      <mm:setfield name="tekst"><mm:write referid="omschrijving" /></mm:setfield>
-      <mm:setfield name="omschrijving"><% %></mm:setfield>
-    </mm:isnotempty>
-  </mm:field>
-</mm:listnodes>
 <mm:createnode type="menu" id="ww_menu">
   <mm:setfield name="naam">Webwinkel</mm:setfield>
 </mm:createnode>
@@ -338,13 +323,14 @@ for(int i=0;i<pagesToDelete.length;i++) {
   <mm:setfield name="type">list</mm:setfield>
   <mm:setfield name="wizard">config/items/items_shop_natmm</mm:setfield>
   <mm:setfield name="nodepath">items</mm:setfield>
-  <mm:setfield name="fields">titel,id,type,price1,owner,quotetitle</mm:setfield>
+  <mm:setfield name="fields">titel,id,type,price1,owner,subtitle</mm:setfield>
   <mm:setfield name="orderby">titel</mm:setfield>
   <mm:setfield name="directions">UP</mm:setfield>
   <mm:setfield name="search">yes</mm:setfield>
+  <mm:setfield name="searchfields">titel,id,type,price1,owner,subtitle</mm:setfield>
 </mm:createnode>
 <mm:createrelation role="posrel" source="ww_menu" destination="product_ew">
-  <mm:setfield name="pos">1</mm:setfield>
+  <mm:setfield name="pos">10</mm:setfield>
 </mm:createrelation>
 <% log.info("Create productoverview page ew."); %>
 <mm:createnode type="editwizards" id="productpage_ew">
@@ -379,8 +365,16 @@ for(int i=0;i<pagesToDelete.length;i++) {
       <mm:setfield name="metatags"><% %></mm:setfield>
     </mm:isnotempty>
   </mm:field>
+  <mm:remove referid="item" />
+  <mm:node id="item" />
+  <mm:related path="posrel,keywords">
+      <mm:remove referid="keyword" />
+      <mm:node element="keywords" id="keyword" />
+      <mm:createrelation source="item" destination="keyword" role="related" />
+      <mm:deletenode element="posrel" />
+   </mm:related>
 </mm:listnodes>
-<% log.info("Create shophome page ew. and relate it to template shophome"); %>
+<% log.info("Create editwizards for shophome page and relate it to template shophome"); %>
 <mm:createnode type="editwizards" id="shophome_ew">
   <mm:setfield name="name">webwinkel homepage</mm:setfield>
   <mm:setfield name="description">Bewerk deze webwinkel homepage</mm:setfield>
@@ -392,10 +386,43 @@ for(int i=0;i<pagesToDelete.length;i++) {
   <mm:setfield name="directions">UP</mm:setfield>
   <mm:setfield name="search">yes</mm:setfield>
 </mm:createnode>
+<mm:createnode type="editwizards" id="shophome_ew">
+  <mm:setfield name="name">webwinkel homepage</mm:setfield>
+  <mm:setfield name="description">Bewerk deze webwinkel homepage</mm:setfield>
+  <mm:setfield name="type">wizard</mm:setfield>
+  <mm:setfield name="wizard">config/pagina/pagina_shophome</mm:setfield>
+  <mm:setfield name="nodepath">paginatemplate,pagina</mm:setfield>
+  <mm:setfield name="fields">pagina.titel,pagina.titel_fra</mm:setfield>
+  <mm:setfield name="orderby">pagina.titel</mm:setfield>
+  <mm:setfield name="directions">UP</mm:setfield>
+  <mm:setfield name="search">yes</mm:setfield>
+  <mm:setfield name="searchfields">pagina.titel</mm:setfield>
+</mm:createnode>
+<mm:createnode type="editwizards" id="keywords_ew">
+  <mm:setfield name="name">trefwoorden</mm:setfield>
+  <mm:setfield name="description">Bewerk de trefwoorden</mm:setfield>
+  <mm:setfield name="type">list</mm:setfield>
+  <mm:setfield name="wizard">config/keywords/wizard_natmm</mm:setfield>
+  <mm:setfield name="nodepath">keywords</mm:setfield>
+  <mm:setfield name="fields">word</mm:setfield>
+  <mm:setfield name="orderby">word</mm:setfield>
+  <mm:setfield name="directions">UP</mm:setfield>
+  <mm:setfield name="search">yes</mm:setfield>
+  <mm:setfield name="searchfields">word</mm:setfield>
+</mm:createnode>
+<mm:createrelation role="posrel" source="ww_menu" destination="keywords_ew">
+  <mm:setfield name="pos">20</mm:setfield>
+</mm:createrelation>
+<mm:listnodes type="editwizards" constraints="wizard = 'config/items/items_shop_natmm'">
+	<mm:node id="shopitem_ew" />
+</mm:listnodes>
 <mm:list path="paginatemplate" constraints="paginatemplate.url='shophome.jsp'">
   <mm:node element="paginatemplate" id="shophome_template"/>
   <mm:createrelation role="related" source="shophome_template" destination="shophome_ew"/>	
+  <mm:createrelation role="related" source="shophome_template" destination="shopitem_ew"/>	
+  <mm:createrelation role="related" source="shophome_template" destination="keywords_ew"/>	
 </mm:list>
+
 </body>
 </html>
 </mm:log>
