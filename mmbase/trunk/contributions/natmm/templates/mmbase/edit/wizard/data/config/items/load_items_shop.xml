@@ -48,6 +48,7 @@
 	<relation destination="link" role="posrel" />
 	<relation destination="formulier" role="posrel" />
 	<relation destination="persoon" role="posrel" />
+   <relation destination="keywords" role="related"/>
 </action>
 
 
