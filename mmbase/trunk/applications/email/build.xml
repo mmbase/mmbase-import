@@ -11,13 +11,11 @@
   <property file="build.properties.default" />
 
   
-  <target name="jar" description="Create mmbase-email.jar" depends="mail.jar,buildbase.jar">
-  </target>
+  <target name="jar" description="Create mmbase-email.jar" depends="mail.jar,buildbase.jar" />
 
-  <target name="mail.jar" description="Get JGroups jar">
+  <target name="mail.jar" description="Get Mail jar">
     
     <echo message="mail" />
-
 
     <antcall target="downloadzip">
       <param name="sourcefile" value="${javamail.loc}"/>
@@ -28,6 +26,10 @@
 
     <copy file="${javamail.jar}" todir="${project.jar.dir}" preservelastmodified="true"  />
 
+  </target>
+
+  <target name="install" depends="buildbase.install,mail.jar">
+    <copy todir="${release.lib.dir}" file="${javamail.jar}" preservelastmodified="true" />
   </target>
 
 
