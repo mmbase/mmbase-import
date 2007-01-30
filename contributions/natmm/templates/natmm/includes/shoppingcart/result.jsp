@@ -1,7 +1,14 @@
 <%
-String toEmail = "hangyi@xs4all.nl";
-String fromEmail = "shop@natuurmonumenten.nl";
-
+String fromEmail = NatMMConfig.fromEmailAddress;
+String toEmail = NatMMConfig.toEmailAddress;
+%>
+<mm:node number="<%= paginaID %>" jspvar="thisPage">
+   <%
+   fromEmail = thisPage.getStringValue("titel_fra");
+   toEmail = thisPage.getStringValue("titel_de");
+   %>
+</mm:node>
+<%
 String responseText = "De volgende bestelling is afkomstig van de Natuurmonumenten webwinkel.";
 String warningText = "<ul>";
 boolean isValidAnswer = true;

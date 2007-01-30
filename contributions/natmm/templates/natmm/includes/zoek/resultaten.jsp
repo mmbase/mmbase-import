@@ -37,9 +37,10 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    HashSet hsetCategories = new HashSet();
 
    HashSet hsetArticlesNodes = new HashSet();
+   HashSet hsetItemsNodes = new HashSet();
    HashSet hsetArtDossierNodes = new HashSet();
    HashSet hsetNatuurgebiedenRouteNodes = new HashSet();
-	 HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
+	HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
    HashSet hsetFormulierNodes = new HashSet();
    HashSet hsetEvenementNodes = new HashSet();
 
@@ -181,6 +182,13 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                      <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetArticlesNodes.contains(sID)){
                         %><li><a href="<%= templateUrl %>id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+                  <mm:related path="posrel,items" fields="items.number">
+                     <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetItemsNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>u=<mm:field name="items.number"/>"><mm:field name="items.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
