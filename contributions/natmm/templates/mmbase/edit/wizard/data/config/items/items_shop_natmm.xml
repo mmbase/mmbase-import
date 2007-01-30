@@ -23,9 +23,10 @@
     <field name="price2"><prompt>leden prijs (in centen, zonder punt of komma)</prompt></field>
     <field name="price3"><prompt>oude prijs (in centen, zonder punt of komma)</prompt></field>
     <field name="price4"><prompt>oude ledenprijs (in centen, zonder punt of komma)</prompt></field>
+    <list include="config/keywords/add_related.xml" />
     <field name="intro" ftype="html" rows="16" ><prompt>introductie</prompt></field>
     <field name="body" ftype="html" rows="24" ><prompt>tekst</prompt></field>
-  	<field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
+  	 <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
     <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging ______________________________</prompt></field>
     <!-- <field name="embargo"><prompt>verschijnings datum (producten zijn pas zichtbaar op de verschijningsdatum!)</prompt></field> -->
     <!-- <field name="verloopdatum"><prompt>verwijder datum</prompt></field> -->
