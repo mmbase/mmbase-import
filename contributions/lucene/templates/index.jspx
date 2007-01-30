@@ -136,6 +136,7 @@
             <td>
               <mm:listfunction module="lucene" name="queue" jspvar="assignment" 
                                vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
+                <mm:first><mm:import id="notempty" /></mm:first>
                 <mm:link>
                   <mm:param name="delete" value="${assignment.id}" />
                   <a onclick="return confirm('Do you want to unschedule ${assignment}?');" href="${_}">
@@ -144,6 +145,9 @@
                 </mm:link>
                 <mm:last inverse="true">, </mm:last>
               </mm:listfunction>
+              <mm:notpresent referid="notempty">
+                <jsp:text>Queue is empty</jsp:text>
+              </mm:notpresent>
             </td>
           </tr>
           <tr>
