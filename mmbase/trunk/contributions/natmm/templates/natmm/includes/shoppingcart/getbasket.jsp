@@ -11,10 +11,10 @@ while(products.size()>0) {
 	int price = 0;
 	%><mm:node number="<%= thisProduct %>" notfound="skipbody"
 	><%@include file="getprice.jsp"
-	%><mm:field name="title" jspvar="title" vartype="String" write="false"
+	%><mm:field name="titel" jspvar="titel" vartype="String" write="false"
 	><mm:field name="id" jspvar="id" vartype="String" write="false"><%
 		productsStr += "<td  align=\"center\" valign=\"top\">" + id
-					+ "</td><td align=\"left\" valign=\"top\">" + title
+					+ "</td><td align=\"left\" valign=\"top\">" + titel
 					+ "</td><td align=\"right\" valign=\"top\">";
 		if(price==-1) { 
 		  		productsStr += "nog onbekend";
