@@ -92,7 +92,7 @@
       dataToBePasted(8) =  "<%= thisParticipant.getStringValue("postcode") %>" '<postcode >
       dataToBePasted(9) =  "<%= thisParticipant.getStringValue("plaatsnaam") %>" '< plaats >
       dataToBePasted(10) = "<%= thisParticipant.getStringValue("land") %>" '< land >
-      dataToBePasted(11) = "<%= SubscribeAction.getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,"", "html") %>"  '< aanhef >
+      dataToBePasted(11) = "<%= SubscribeAction.getMessage(thisEvent,thisParent,thisSubscription,thisParticipant,"", "html").replace('\n',' ').replace('"','\'') %>"  '< aanhef >
       Call DoWord(template,dataToBePasted)
     End Sub
 
