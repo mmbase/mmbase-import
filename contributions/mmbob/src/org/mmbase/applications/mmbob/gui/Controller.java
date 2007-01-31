@@ -261,7 +261,7 @@ public class Controller {
      * @param activeid active posterid
      * @param pagesize Number of pages per thread
      * @param page Page number of the threads we want
-     * @param overviewpagesize The number of threads per page
+     * @param overviewpagesize ?
      * @param baseurl Base url for links in the navigation html
      * @param cssclass Stylesheet name for the url links
      * @return List of (map) representing the postthreads within the postarea
@@ -276,6 +276,7 @@ public class Controller {
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
             PostArea postArea = forum.getPostArea(postareaid);
+            //TODO: here overviewpagesize is taken from params, but below it is taken from forum.getPostingsOverflowPostArea(). what da...
             Iterator e = postArea.getPostThreads(page, overviewpagesize);
             while (e.hasNext()) {
                 PostThread thread = (PostThread) e.next();
@@ -319,10 +320,12 @@ public class Controller {
 
                 // temp until sure if we also want to be able to set this from html
                 int overflowpage = forum.getPostingsOverflowPostArea();
+                String navLine = thread.getNavigationLine(baseurl, pagesize, overflowpage, cssclass);
                 map.put("navline", thread.getNavigationLine(baseurl, pagesize, overflowpage, cssclass));
                 map.put("lastposternumber", new Integer(thread.getLastPosterNumber()));
                 map.put("lastpostnumber", new Integer(thread.getLastPostNumber()));
                 list.add(map);
+                log.info("hallo daar");
             }
         }
 
@@ -933,7 +936,7 @@ public class Controller {
      * @return (map) representing the configuration of the given forum
      * 
      */
-    public HashMap getForumConfig(String id, String sactiveid) {
+    public Map getForumConfig(String id, String sactiveid) {
         HashMap map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
@@ -1009,7 +1012,7 @@ public class Controller {
         return map;
     }
 
-    public HashMap getForumsConfig() {
+    public Map getForumsConfig() {
         HashMap map = new HashMap();
         map.put("language", ForumManager.getLanguage());
         map.put("accountcreationtype", ForumManager.getAccountCreationType());
@@ -1110,7 +1113,7 @@ public class Controller {
      * @param mailboxid Id for mailbox we want
      * @return (map) representing info for the given poster
      */
-    public HashMap getMailboxInfo(String id, int posterid, String mailboxid) {
+    public Map getMailboxInfo(String id, int posterid, String mailboxid) {
         HashMap map = new HashMap();
         Forum forum = ForumManager.getForum(id);
         if (forum != null) {
@@ -1585,7 +1588,9 @@ public class Controller {
      * @param body Body of the reply
      * @return Feedback regarding this post action
      */
-    public HashMap postReply(String forumid, String postareaid, String postthreadid, String subject, String posterId, String body) {
+    public Map postReply(String forumid, String postareaid, String postthreadid, String subject, String posterId, String body) {
+        
+        log.debug("*** post reply");
         HashMap map = new HashMap();
 
         if (subject.length() > 60) subject = subject.substring(0, 57) + "...";
@@ -1707,7 +1712,7 @@ public class Controller {
      * @param body Body of the new post
      * @return (map) containing privatemessageid of the newly created private message
      */
-    public HashMap newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
+    public Map newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
 
         HashMap map = new HashMap();
         Forum forum = ForumManager.getForum(forumid);
