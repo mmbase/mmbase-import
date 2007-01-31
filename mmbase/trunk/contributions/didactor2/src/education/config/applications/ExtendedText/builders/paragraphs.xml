@@ -118,7 +118,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>body</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
       </db>
     </field>
   </fieldlist>
