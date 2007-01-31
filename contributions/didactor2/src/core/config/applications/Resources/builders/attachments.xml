@@ -153,7 +153,16 @@
           <list>9</list>
         </positions>
       </editor>
-      <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <!-- cannot use 'created', because it is read-only -->
+        <getprocessor type="*">
+          <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+        </getprocessor>
+        <getprocessor type="string">
+          <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+          <class name="org.mmbase.datatypes.processors.FormatDateTime" />
+        </getprocessor>
+      </datatype>
     </field>
 
     <field name="showtitle">
