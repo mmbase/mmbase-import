@@ -99,7 +99,7 @@
              <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
                <mm:param name="contact"><mm:field name="people.number"/></mm:param>
                </mm:treefile>" target="_top">
-               <b><mm:index /> <mm:field name="people.number" />: <di:person element="posters" /></b>
+               <b><di:person element="posters" /></b>
              </a>
            </mm:list>
          </mm:isnotempty>
