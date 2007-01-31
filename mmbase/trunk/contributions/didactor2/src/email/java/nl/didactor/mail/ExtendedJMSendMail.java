@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.17 2007-01-11 17:21:36 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.18 2007-01-31 10:25:26 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -228,14 +228,20 @@ public class ExtendedJMSendMail extends SendMail {
 
             // If this person has mail forwarding enabled, we have to forward it to his local email address
             if (person.getBooleanValue("email-mayforward")) {
-                String mailadres = person.getStringValue("email");
-                if (log.isDebugEnabled()) {
-                    log.debug("This user has email forwarding enabled .. forwarding email to [" + mailadres + "]");
-                }
-                try {
-                    sendRemoteMail(InternetAddress.parse(mailadres), n);
-                } catch (Exception e) {
-                    log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
+                String mailadres = person.getStringValue("email").trim();
+                if (! "".equals(mailadres)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("This user has email forwarding enabled. forwarding email to [" + mailadres + "]");
+                    }
+                    try {
+                        sendRemoteMail(InternetAddress.parse(mailadres), n);
+                    } catch (Exception e) {
+                        // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
+                        // doubt it'll ever come here.
+                        log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
+                    }
+                } else {
+                    log.debug("This user has email-forwaring enabled, but did not set an external email-adress");
                 }
             }
         }
