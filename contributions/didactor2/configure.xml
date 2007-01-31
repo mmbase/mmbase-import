@@ -24,6 +24,7 @@
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
   <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
   <property name="build.wizards.dir" value="${build.webapp.dir}/editwizards" />
+  <property name="caches" value="" />
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
     <tstamp>
@@ -106,6 +107,38 @@
     <replace file="${build.webapp.dir}/WEB-INF/classes/cloudprovider.properties"
              token="$${cloudprovider.adminpassword}"
              value="${cloudprovider.adminpassword}"/>
+
+    <for list="${caches}" 
+         param="param">
+      <sequential>
+        <propertyregex 
+            override="yes"
+            property="par.name"
+            input="@{param}"
+            regexp="(.*?)=(.*?)"
+            select="\1"
+            casesensitive="false" />
+        <propertyregex 
+            override="yes"
+            global="true"
+            property="par.value"
+            input="@{param}"
+            regexp="(.*)=(.*)"
+            select="\2"
+            casesensitive="false" />
+        <!--
+        <echo message="@{param} ${par.name} == ${par.value}" />
+        -->
+        <xslt style="setcachesize.xslt"
+              in="${build.webapp.dir}/WEB-INF/config/caches.xml"
+              out="${build.webapp.dir}/WEB-INF/config/caches.help.xml">
+          <param name="cache" expression="${par.name}" />
+          <param name="size"  expression="${par.value}" />
+        </xslt>
+        <move file="${build.webapp.dir}/WEB-INF/config/caches.help.xml"
+              tofile="${build.webapp.dir}/WEB-INF/config/caches.xml" />
+      </sequential>
+    </for>
 
     <if>
       <available file="${build.config.dir}/modules/sendmail.xml" />
