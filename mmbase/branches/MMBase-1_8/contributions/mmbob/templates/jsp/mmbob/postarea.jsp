@@ -188,7 +188,7 @@
                     </tr>
                 </mm:nodelistfunction>
             </table>
-                <%--  end the table with all the post areas--%>
+            <%--  end the table with all the post areas--%>
 
             <%--  page navigation--%>
             <mm:compare referid="pagecount" value="1" inverse="true">
