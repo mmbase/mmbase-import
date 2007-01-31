@@ -101,7 +101,14 @@
               <di:translate key="email.attachments" />:
             </mm:first>
             <br />
-            <img src="<mm:write referid="gfx_attachment"/>"/> <a href="<mm:attachment/>"><mm:field name="title"/></a>
+            <a href="<mm:attachment/>">
+            <img src="<mm:write referid="gfx_attachment"/>"/> 
+              <mm:field name="title" write="true">
+                <mm:isempty>
+                  <mm:field name="filename" write="true" />
+                </mm:isempty>
+              </mm:field>
+          </a>
           </mm:relatednodes>
         </mm:node>
       </div>
