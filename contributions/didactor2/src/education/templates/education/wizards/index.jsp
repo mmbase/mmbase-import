@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <mm:content postprocessor="reducespace">
-<mm:cloud rank="basic user">
+<mm:cloud rank="basic user" method="sessiondelegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
