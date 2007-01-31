@@ -18,6 +18,9 @@
       <mm:import jspvar="langLocale"><mm:write referid="language" /></mm:import>
       <div id='content_metadata_0' style='display: none'>
          <%
+         // sigh, how is this good? 
+         // does this java -code contribute anything to make it beter understandable?
+         // why not using a anonymous new array, inb stead of a zillion statements.
             String[][] arrstrContentMetadataConfig = new String[5][4];
             java.util.Locale loc = new java.util.Locale(langLocale);
             int singular = NodeManager.GUI_SINGULAR;
@@ -57,7 +60,7 @@
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                      <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <mm:import id="template" reset="true"><mm:write referid="listjsp"/>&wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
+                     <mm:import id="template" reset="true"><mm:write referid="listjsp"/>&wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2]%>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
                      <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />&path=' title='<di:translate key="education.edit" /> <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
                   </tr>
                </table>
