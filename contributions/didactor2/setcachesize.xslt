@@ -16,12 +16,11 @@
 
   <xsl:template match="caches">
     <caches>
-      <xsl:apply-templates select="releaseStrategies" />
-      <xsl:apply-templates select="cache" />
+      <xsl:apply-templates select="*|comment()" />
     </caches>
   </xsl:template>
 
-  <xsl:template match="*">
+  <xsl:template match="*|comment()">
     <xsl:copy-of select="." />
   </xsl:template>
 
@@ -29,6 +28,7 @@
     <xsl:choose>
       <xsl:when test="@name = $cache">
         <cache name="{@name}">
+          <xsl:comment>Size set by script</xsl:comment>
           <xsl:apply-templates select="status" />
           <size><xsl:value-of select="$size" /></size>
           <xsl:apply-templates select="maxEntrySize" />
