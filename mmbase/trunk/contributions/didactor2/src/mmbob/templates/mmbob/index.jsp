@@ -1,8 +1,9 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="java.util.HashMap"%>
+<%@ page contentType="text/html; charset=utf-8" language="java"
+ %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
     <jsp:directive.include file="/shared/setImports.jsp" />
