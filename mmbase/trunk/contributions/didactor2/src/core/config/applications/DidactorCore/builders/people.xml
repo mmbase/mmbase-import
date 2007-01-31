@@ -330,9 +330,9 @@
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
       </gui>
-      <!-- shoudl be enableddisabled -->
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="1" />
+      <datatype base="enableddisabled" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="true" />
+        <required value="false" />
       </datatype>
     </field>
 
@@ -341,9 +341,8 @@
         <guiname xml:lang="nl">isLogged</guiname>
         <guiname xml:lang="en">isLogged</guiname>
       </gui>
-      <!-- should be boolean -->
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="1" />
+      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="false" />
       </datatype>
     </field>
 
