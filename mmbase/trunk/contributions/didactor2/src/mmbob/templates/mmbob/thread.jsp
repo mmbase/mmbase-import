@@ -50,12 +50,12 @@
 <center>
 <mm:include page="path.jsp?type=postthread" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-                        <tr><th colspan="2" align="left">
-                                        <mm:compare referid="image_logo" value="" inverse="true">
-                                        <center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
-                                        </mm:compare>
-            </th>
-            </tr>
+  <tr><th colspan="2" align="left">
+    <mm:compare referid="image_logo" value="" inverse="true">
+      <center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
+    </mm:compare>
+  </th>
+</tr>
 </table>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
     <tr><td align="left"><b><di:translate key="mmbob.pages" />
@@ -76,7 +76,13 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
    <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page">
       <mm:first>
-         <tr><th width="25%" align="left"><di:translate key="mmbob.poster" /></th><th align="left"><di:translate key="mmbob.topic" /> : <mm:field name="subject" /></th></tr>
+         <tr><th width="25%" align="left">
+           <di:translate key="mmbob.poster" />
+         </th>
+         <th align="left">
+           <di:translate key="mmbob.topic" /> : <mm:field name="subject" />
+         </th>
+         </tr>
       </mm:first>
 
       <mm:remove referid="tdvar" />
@@ -86,19 +92,20 @@
 
       <tr>
          <td class="<mm:write referid="tdvar" />" align="left">
-            <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
-            <mm:isnotempty referid="dummyposterid">
-              <mm:list nodes="$dummyposterid" path="posters,people" jspvar="hoi" fields="posters.number">
-                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
-                  <mm:param name="contact"><mm:field name="people.number"/></mm:param>
-                  </mm:treefile>" target="_top">
-                  <b><di:person element="posters" /></b>
-                </a>
-            </mm:list>
-          </mm:isnotempty>
-            <br />
-            <di:translate key="mmbob.on" /> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
-         </td>
+         <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
+         //${dummyposterid}//
+         <mm:isnotempty referid="dummyposterid">
+           <mm:list nodes="$dummyposterid" path="posters,people" fields="posters.number">
+             <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+               <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+               </mm:treefile>" target="_top">
+               <b>AAAAA <di:person element="posters" /></b>
+             </a>
+           </mm:list>
+         </mm:isnotempty>
+         <br />
+         <di:translate key="mmbob.on" /> <mm:field name="posttime"><mm:time format="${timeFormat}" /></mm:field>
+       </td>
          <td class="<mm:write referid="tdvar" />" align="right">
             <mm:remove referid="postingid" />
             <mm:remove referid="toid" />
@@ -176,8 +183,8 @@
             <di:translate key="mmbob.numberofposts" /> : <mm:field name="accountpostcount" /><br />
 <%-- hh            Geslacht : <mm:field name="gender" /><br />
       Lokatie : <mm:field name="location" /><br /> --%>
-      <di:translate key="mmbob.membersince" /> : <mm:field name="firstlogin"><mm:time format="<%= timeFormat %>" /></mm:field><br />
-      <di:translate key="mmbob.lastvisit" /> : <mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /> </mm:field><br />
+      <di:translate key="mmbob.membersince" /> : <mm:field name="firstlogin"><mm:time format="${timeFormat}" /></mm:field><br />
+      <di:translate key="mmbob.lastvisit" /> : <mm:field name="lastseen"><mm:time format="${timeFormat}" /> </mm:field><br />
       </mm:compare>
       <mm:compare value="true">
       </mm:compare>
@@ -187,7 +194,7 @@
 
 
       <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-      <mm:field name="edittime"><mm:compare value="-1" inverse="true"><di:translate key="mmbob.lasttimemodify" /> : <mm:field name="edittime"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare><p /></mm:field>
+      <mm:field name="edittime"><mm:compare value="-1" inverse="true"><di:translate key="mmbob.lasttimemodify" /> : <mm:field name="edittime"><mm:time format="${timeFormat}" /></mm:field></mm:compare><p /></mm:field>
       <mm:node referid="postingid">
         <mm:formatter xslt="xslt/posting2xhtml.xslt" escape="paramsmilies">
           <mm:param name="wrote">Wrote:</mm:param>

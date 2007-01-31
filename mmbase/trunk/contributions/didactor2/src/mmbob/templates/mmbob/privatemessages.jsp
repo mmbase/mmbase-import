@@ -84,7 +84,7 @@
     <mm:first>
         <mm:import id="messagesfound">true</mm:import>
     </mm:first>
-    <tr><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="<%= timeFormat %>" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
+    <tr><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="${timeFormat}" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
     </mm:relatednodes>
     </mm:node>
     <tr>

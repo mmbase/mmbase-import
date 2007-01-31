@@ -51,7 +51,7 @@
       <di:ifsetting component="mmbob" setting="showlocation">
         <td><mm:field name="posters.location" /></td>
       </di:ifsetting>
-      <td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td>
+      <td><mm:field name="posters.lastseen"><mm:time format="${timeFormat}" /></mm:field></td>
     </tr>
   </mm:related>
 </mm:node>
