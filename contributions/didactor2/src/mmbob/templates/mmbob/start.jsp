@@ -24,6 +24,7 @@
   <mm:compare referid="forumid" value="unknown" inverse="true">
     <jsp:directive.include file="getposterid.jsp" />
 
+    <mm:log> FORUM ID ${forumid} </mm:log>
     <mm:locale language="$lang"> 
 
       <!-- action check -->
@@ -37,6 +38,8 @@
         <mm:include page="path.jsp?type=index" />
         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
           <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+
+          <mm:log> forum info ${_node.name} </mm:log>
           <mm:field id="adminmode" name="isadministrator" write="false" />
            <tr>
              <mm:compare referid="posterid" value="-1">
@@ -84,8 +87,8 @@
                     <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> <%-- hh (<mm:field name="active_account" />) --%> <br /> <di:translate key="mmbob.welcometoforum2" />  <mm:field name="name" />  <di:translate key="mmbob.welcometoforum3" />.</h4><p />
 
                     </mm:compare>
-                    <di:translate key="mmbob.lasttimelogin" /> : <mm:field name="active_lastseen"><mm:compare value="" inverse="true"><mm:field name="active_lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare></mm:field><br />
-                    <di:translate key="mmbob.membersince" /> : <mm:field name="active_firstlogin"><mm:compare value="" inverse="true"><mm:field name="active_firstlogin"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare></mm:field><br />
+                    <di:translate key="mmbob.lasttimelogin" /> : <mm:field name="active_lastseen"><mm:compare value="" inverse="true"><mm:field name="active_lastseen"><mm:time format="${timeFormat}" /></mm:field></mm:compare></mm:field><br />
+                    <di:translate key="mmbob.membersince" /> : <mm:field name="active_firstlogin"><mm:compare value="" inverse="true"><mm:field name="active_firstlogin"><mm:time format="${timeFormat}" /></mm:field></mm:compare></mm:field><br />
                     <%-- hh <di:translate key="mmbob.numberofmessages" />: <mm:field name="active_postcount" />
                     Level : <mm:field name="active_level" /> 
                     <b>Je hebt 0 nieuwe en 0 ongelezen <a href="<mm:url page="privatemessages.jsp" referids="forumid" />">prive berichten</a></b>
@@ -101,7 +104,7 @@
                 <b><di:translate key="mmbob.numberofmembers" /></b> : <mm:field name="posterstotal" /><br />
                 <b><di:translate key="mmbob.numberofnew" /></b> : <mm:field name="postersnew" /><br />
                 <b><di:translate key="mmbob.numberonline" /></b> : <mm:field name="postersonline" /><p /><br />
-                <b><di:translate key="mmbob.lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <di:translate key="mmbob.visitorsonline1" /> <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field>
+                <b><di:translate key="mmbob.lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="${timeFormat}" /></mm:field> <di:translate key="mmbob.visitorsonline1" /> <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field>
                 </th>
             </tr> 
           </mm:nodefunction>
@@ -135,7 +138,7 @@
                 <td><mm:field name="postthreadcount" /></td>
                 <td><mm:field name="postcount" /></td>
                 <td><mm:field name="viewcount" /></td>
-                <td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <di:translate key="mmbob.visitorsonline1" /> <mm:field name="lastposter" /><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field></td>
+                <td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="${timeFormat}" /></mm:field> <di:translate key="mmbob.visitorsonline1" /> <mm:field name="lastposter" /><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field></td>
             </tr>
           </mm:nodelistfunction>
         </table>

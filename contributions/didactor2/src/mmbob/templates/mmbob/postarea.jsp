@@ -46,7 +46,7 @@
             <b><di:translate key="mmbob.numberoftopics" /></b> : <mm:field name="postthreadcount" /><br />
             <b><di:translate key="mmbob.numberofmessages" /></b> : <mm:field name="postcount" /><br />
             <b><di:translate key="mmbob.numberofviews" /></b> : <mm:field name="viewcount" /><br />
-            <b><di:translate key="mmbob.lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <b><di:translate key="mmbob.visitorsonline1" /></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field><br />
+            <b><di:translate key="mmbob.lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="${timeFormat}" /></mm:field> <b><di:translate key="mmbob.visitorsonline1" /></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field><br />
             <mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
           </mm:nodefunction>
     <br />
@@ -64,7 +64,7 @@
       <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
             <tr>
             <%-- hh <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td> --%>
-            <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> door <mm:field name="lastposter" /></td><mm:compare referid="isadministrator" value="true">
+            <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="${timeFormat}" /></mm:field> door <mm:field name="lastposter" /></td><mm:compare referid="isadministrator" value="true">
             <td><a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>"><img src="<mm:write referid="image_mdelete" />"  border="0" /></a>
             <%-- hh / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a> --%>
             </td></mm:compare>
