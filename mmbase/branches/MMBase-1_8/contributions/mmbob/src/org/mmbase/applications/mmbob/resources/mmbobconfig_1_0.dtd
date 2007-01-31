@@ -4,23 +4,24 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
+<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (alias*,generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstartmode*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,navigation,postarea*)>
+<!ELEMENT forum (alias*,generatedata*,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstart*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
 <!ATTLIST forum language CDATA #IMPLIED>
 <!ATTLIST forum alias CDATA #IMPLIED>
 
-<!ELEMENT postarea (generatedata*,guestreadmode*,guestwritemode*,threadstartmode*)>
+<!ELEMENT postarea (generatedata*,guestreadmode*,guestwritemode*,threadstart*)>
 <!ATTLIST postarea id CDATA #IMPLIED>
 <!ATTLIST postarea account CDATA #IMPLIED>
 <!ATTLIST postarea password CDATA #IMPLIED>
 <!ATTLIST postarea language CDATA #IMPLIED>
+<!ATTLIST postarea pos CDATA #IMPLIED>
 
 
 <!ELEMENT generatedata (#PCDATA)>
@@ -48,6 +49,9 @@
 <!ELEMENT accountremoval (#PCDATA)>
 <!ATTLIST accountremoval type CDATA #IMPLIED>
 
+<!ELEMENT loginsystem (#PCDATA)>
+<!ATTLIST loginsystem type CDATA #IMPLIED>
+
 <!ELEMENT loginmode (#PCDATA)>
 <!ATTLIST loginmode type CDATA #IMPLIED>
 
@@ -57,8 +61,8 @@
 <!ELEMENT guestreadmode (#PCDATA)>
 <!ATTLIST guestreadmode type CDATA #IMPLIED>
 
-<!ELEMENT threadstartmode (#PCDATA)>
-<!ATTLIST threadstartmode level CDATA #IMPLIED>
+<!ELEMENT threadstart (#PCDATA)>
+<!ATTLIST threadstart level CDATA #IMPLIED>
 
 <!ELEMENT avatars (upload*,gallery*)>
 <!ELEMENT upload EMPTY>
@@ -104,7 +108,10 @@
 <!ATTLIST speedposttime value CDATA #IMPLIED>
 
 <!ELEMENT replyoneachpage EMPTY>
-<!ATTLIST replyoneachpage value CDATA #IMPLIED>
+<!ATTLIST replyoneachpage value (true|false) #IMPLIED>
+
+<!ELEMENT navigation EMPTY>
+<!ATTLIST navigation method (list|tree) #IMPLIED>
 
 <!ELEMENT postingsoverflowpostarea EMPTY>
 <!ATTLIST postingsoverflowpostarea value CDATA #IMPLIED>
