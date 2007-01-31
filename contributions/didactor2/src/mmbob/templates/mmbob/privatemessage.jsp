@@ -86,7 +86,7 @@
     <td width="50%">
         <br />
         <di:translate key="mmbob.subject" /> : <mm:field name="subject" /><br />
-        <di:translate key="mmbob.date" /> : <mm:field name="createtime"><mm:time format="<%= timeFormat %>" /></mm:field><br />
+        <di:translate key="mmbob.date" /> : <mm:field name="createtime"><mm:time format="${timeFormat}" /></mm:field><br />
         <di:translate key="mmbob.from" /> : <mm:field name="poster" /> (<mm:field name="fullname" />)<br />
         <di:translate key="mmbob.mailbox" /> : <mm:node referid="mailboxid"><mm:field name="name" /></mm:node><br />
         <br />
