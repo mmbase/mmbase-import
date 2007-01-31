@@ -24,7 +24,7 @@
     <mkdir dir="${build.dir}/webapp/WEB-INF/lib" />
   </target>
 
-  <target name="build">
+  <target name="build" >
     <echo message="Building components: ${components}" />
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
     <delete file="${build.dir}/webapp/WEB-INF/web.xml" />
@@ -562,6 +562,7 @@ Good luck,
       <includesfile name="sourcedistfiles.properties" />
       <include name="lib/**"/>
       <include name="*.xml" />
+      <include name="*.xslt" />
       <include name="README.txt" />
       <zipfileset dir="." includes="configure.properties.srcdist" fullpath="configure.properties" />
       <zipfileset dir="." includes="build.properties.srcdist" fullpath="build.properties" />
