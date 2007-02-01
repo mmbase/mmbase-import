@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.18 2007-01-31 10:25:26 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.19 2007-02-01 15:40:27 mmeeuwissen Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -38,6 +38,22 @@ public class ExtendedJMSendMail extends SendMail {
     }
 
 
+    protected Set getDomains() {
+        Set domains = new HashSet();
+        SMTPModule smtpModule = (SMTPModule)Module.getModule("smtpmodule");
+        if (smtpModule != null) {
+            String sdomains = smtpModule.getLocalEmailDomains();
+            StringTokenizer st = new StringTokenizer(sdomains, ",");
+            while (st.hasMoreTokens()) {
+                domains.add(st.nextToken().toLowerCase());
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Have domains: " + domains);
+        }
+        return domains;
+    }
+
     /**
      * Send mail with headers AND attachments to the emailaddresses
      * specified in the 'to' and 'cc' fields. If these are null,
@@ -48,20 +64,7 @@ public class ExtendedJMSendMail extends SendMail {
         if (log.isDebugEnabled()) {
             log.debug("Start sendmail: " + onlyto + ", " + n);
         }
-
-        SMTPModule smtpModule = (SMTPModule)Module.getModule("smtpmodule");
-        Map domains = new HashMap();
-
-        if (smtpModule != null) {
-            String sdomains = smtpModule.getLocalEmailDomains();
-            StringTokenizer st = new StringTokenizer(sdomains, ",");
-            while (st.hasMoreTokens()) {
-                domains.put(st.nextToken().toLowerCase(), "1");
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Have domains: " + domains);
-        }
+        Set domains = getDomains();
 
         List remoteRecipients = new ArrayList();
         List localRecipients = new ArrayList();
@@ -71,7 +74,7 @@ public class ExtendedJMSendMail extends SendMail {
                 for (int i = 0; i < recipients.length; i++) {
                     String domain = recipients[i].getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.containsKey(domain.toLowerCase())) {
+                    if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
                         localRecipients.add(recipients[i]);
                     } else {
@@ -89,7 +92,7 @@ public class ExtendedJMSendMail extends SendMail {
                 for (int i=0; i<recipients.length; i++) {
                     String domain = recipients[i].getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.containsKey(domain.toLowerCase())) {
+                    if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
                         localRecipients.add(recipients[i]);
                     } else {
@@ -99,6 +102,7 @@ public class ExtendedJMSendMail extends SendMail {
                 }
             } catch (Exception e) {
                 log.error(e);
+                // whould we not send some notification about this?
             }
 
             String cc = n.getStringValue("cc");
@@ -107,7 +111,7 @@ public class ExtendedJMSendMail extends SendMail {
                 for (int i = 0; i < recipients.length; i++) {
                     String domain = recipients[i].getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.containsKey(domain.toLowerCase())) {
+                    if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
                         localRecipients.add(recipients[i]);
                     } else {
@@ -125,7 +129,7 @@ public class ExtendedJMSendMail extends SendMail {
                     for (int i = 0; i < recipients.length; i++) {
                         String domain = recipients[i].getAddress();
                         domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                        if (domains.containsKey(domain.toLowerCase())) {
+                        if (domains.contains(domain.toLowerCase())) {
                             log.debug("Known domain [" + domain + "], processing internally");
                             localRecipients.add(recipients[i]);
                         } else {
@@ -163,15 +167,16 @@ public class ExtendedJMSendMail extends SendMail {
 
     public void sendLocalMail(InternetAddress[] to, Node n) {
         if (log.isDebugEnabled()) {
-            log.debug("sendLocalMail: Sending node {" + n + "} to addresses {" + to + "}");
+            log.debug("sendLocalMail: Sending node {" + n + "} to addresses {" + Arrays.asList(to) + "}");
         }
         Cloud cloud = n.getCloud();
         NodeManager peopleManager = cloud.getNodeManager("people");
         NodeManager emailManager = cloud.getNodeManager("emails");
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         RelationManager relatedManager = cloud.getRelationManager("related");
-
+        Set failedUsers = new HashSet();
         for (int i = 0; i < to.length; i++) {
+            log.debug("address " + to[i]);
             String domain = to[i].getAddress();
             String username = domain.substring(0, domain.indexOf("@"));
             domain = domain.substring(domain.indexOf("@") + 1, domain.length());
@@ -180,13 +185,15 @@ public class ExtendedJMSendMail extends SendMail {
             nq.setConstraint(nq.createConstraint(nq.createStepField("username"), username));
             NodeList people = peopleManager.getList(nq);
             if (people.size() != 1) {
-                log.error("There are " + people.size() + " users with username '" + username + "', aborting for this user!");
+                log.warn("There are " + people.size() + " users with username '" + username + "', aborting for this user!");
+                // should send a bounce.
+                failedUsers.add(username);
                 continue;
             }
 
             Node person = people.getNode(0);
             NodeList mailboxes = person.getRelatedNodes("mailboxes");
-            for (int j=0; j<mailboxes.size(); j++) {
+            for (int j=0; j < mailboxes.size(); j++) {
                 Node mailbox = mailboxes.getNode(j);
                 if (mailbox.getIntValue("type") == 0) {
                     log.debug("Found mailbox, adding mail now");
@@ -205,7 +212,9 @@ public class ExtendedJMSendMail extends SendMail {
                     }
                     emailNode.setIntValue("type", 2);
                     emailNode.commit();
+                    log.debug("Appending " + emailNode + " to " + mailbox.getNumber());
                     mailbox.createRelation(emailNode, relatedManager).commit();
+
 
                     NodeList attachments = n.getRelatedNodes("attachments");
                     for (int k = 0; k < attachments.size(); k++) {
@@ -234,7 +243,20 @@ public class ExtendedJMSendMail extends SendMail {
                         log.debug("This user has email forwarding enabled. forwarding email to [" + mailadres + "]");
                     }
                     try {
-                        sendRemoteMail(InternetAddress.parse(mailadres), n);
+                        /// should use Sender header here (in case of boucnes).
+                        // and perhaps als Resent-From header.
+                        Address localAddress = null;
+                        Set domains = getDomains();
+                        if (domains.size() > 0) {
+                            try {
+                                String local = person.getStringValue("username") + "@" + domains.iterator().next();
+                                localAddress = new InternetAddress(local);
+                                log.debug("Sender " + localAddress);
+                            } catch (Exception f) {
+                                log.error(f);
+                            }
+                        }
+                        sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
                     } catch (Exception e) {
                         // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
                         // doubt it'll ever come here.
@@ -245,10 +267,44 @@ public class ExtendedJMSendMail extends SendMail {
                 }
             }
         }
+        if (failedUsers.size() > 0) {
+            String subject = n.getStringValue("subject");
+            if (! subject.startsWith("Failed:")) { // should not happen, but _if_ if happens, it
+                                                   // would otherwise become horribly recursive.
+                log.debug("Unknown local users, send a notification about that back");
+                try {
+                    // sending information to sender
+                    Node error = emailManager.createNode();
+                    error.setValue("to", n.getValue("from"));
+                    error.setValue("from", n.getValue("from"));
+                    error.setValue("subject", "Failed: '" + subject + "'");
+                    error.setValue("body", "Could not send mail to " + failedUsers + " (no such users)");
+                    if (emailManager.hasField("mimetype")) {
+                        error.setValue("mimetype", "text/plain");
+                    }
+                    error.setIntValue("type", 1);
+                    error.commit();
+                    log.debug("Ready sending error mail about " + failedUsers);
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            }
+        }
         log.debug("Finished processing local mails");
     }
 
+    /**
+     * @scope protected (not used elsewhere, not in interface)
+     */
     public void sendRemoteMail(InternetAddress[] onlyto, Node n) {
+        sendRemoteMail(onlyto, null, n);
+    }
+
+    /**
+     * @param sender If this is a forward, then you'd want to set the sender to the local address
+     * (see rfc 822 4.4.4
+     */
+    protected void sendRemoteMail(InternetAddress[] onlyto, Address sender,  Node n) {
         if (log.isDebugEnabled()) {
             log.debug("Sending node {" + n + "} to addresses {" + Arrays.asList(onlyto) + "}");
             log.trace("Because ", new Exception());
@@ -266,13 +322,16 @@ public class ExtendedJMSendMail extends SendMail {
         try {
 
             if (log.isServiceEnabled()) {
-                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ")");
+                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ") using " + session);
             }
             // construct a message
             MimeMessage msg = new MimeMessage(session);
             // msg = super.constructMessage()....
             if (from != null && ! from.equals("")) {
                 msg.setFrom(new InternetAddress(from));
+            }
+            if (sender != null) {
+                msg.setSender(sender);
             }
             msg.setHeader("X-mmbase-node", n.getNodeManager().getName() + "/" + n.getNumber());
             try {
