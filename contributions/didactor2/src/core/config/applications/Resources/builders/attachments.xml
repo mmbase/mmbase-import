@@ -97,6 +97,11 @@
         <guiname xml:lang="nl">Bestandsnaam</guiname>
         <guiname xml:lang="eo">Dosiernomo</guiname>
       </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
