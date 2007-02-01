@@ -218,10 +218,10 @@
    }
 
 %>
+<mm:present referid="madetest">
+  <mm:isnotempty referid="madetest">
   <mm:listcontainer nodes="$learnobject" path="tests,questions,givenanswers,madetests" >
-    <mm:isnotempty referid="madetest">
-      <mm:constraint field="madetests.number" value="${madetest}" />
-    </mm:isnotempty>
+    <mm:constraint field="madetests.number" value="${madetest}" />
     <mm:size>
       <mm:compare referid2="questionamount">
         <mm:remove referid="testdone"/>
@@ -229,6 +229,8 @@
       </mm:compare>
     </mm:size>
   </mm:listcontainer>
+  </mm:isnotempty>
+</mm:present>
    <br/>
    <br/>
 
