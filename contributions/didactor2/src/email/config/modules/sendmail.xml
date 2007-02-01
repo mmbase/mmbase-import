@@ -6,7 +6,6 @@
   <properties>
     <!-- for SendMail: -->
     <property name="mailhost">${sendmail.smarthost}</property>
-    <property name="mailhost">${sendmail.smarthost}</property>
     <!-- for JMSendMail (j2ee way). Can also use mailhost, then
          comment the following two away. And tolerate some warnings in
          the log :-) It's nicer to comment the 'mailhost' property away
