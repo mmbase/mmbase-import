@@ -18,6 +18,7 @@
 <mm:import externid="postareaid" />
 <mm:import externid="postingid" />
 <mm:import externid="postthreadid" />
+<mm:import externid="page" />
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -38,12 +39,8 @@
      <mm:import id="subject"><mm:field name="subject" /></mm:import>
   </mm:node>
   <tr><th colspan="3"><di:translate key="mmbob.editmessage" /></th></tr>
-  <form action="<mm:url page="thread.jsp">
-    <mm:param name="forumid" value="$forumid" />
-    <mm:param name="postareaid" value="$postareaid" />
-    <mm:param name="postthreadid" value="$postthreadid" />
-    <mm:param name="postingid" value="$postingid" />
-    </mm:url>" method="post" enctype="multipart/form-data" name="posting">
+  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid,page?"
+                        />" method="post" enctype="multipart/form-data" name="posting">
     <tr><th><di:translate key="mmbob.name" /></th><td colspan="2">
         <mm:compare referid="posterid" value="-1" inverse="true">
         <mm:node number="$posterid">
