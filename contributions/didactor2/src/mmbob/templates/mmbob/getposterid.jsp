@@ -41,7 +41,9 @@
       </mm:relatednodescontainer>
     </mm:node>
 
+    <%--
     <mm:log>found poster: ${haveposter.number} mmbob thinks: ${mmbobposter.number}</mm:log>
+    --%>
     <!-- create reletion with user node if not yet existed -->
     <c:if test="${empty haveposter || haveposter.number ne mmbobposter.number}">
       <mm:createrelation role="related" source="user" destination="mmbobposter" />
