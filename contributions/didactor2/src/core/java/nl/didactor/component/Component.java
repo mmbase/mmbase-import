@@ -26,18 +26,18 @@ import java.util.*;
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
  
-    private static Hashtable components = new Hashtable(); // why is this synchronized
+    private static Map components = new Hashtable(); // why is this synchronized
 
-    private Vector interestedComponents = new Vector();    // why is this synchronized
+    private List interestedComponents = new Vector();    // why is this synchronized
     private MMObjectNode node;
 
     /** Save the settings for this component */
-    private HashMap settings = new HashMap();              // why is this synchronized
+    private Map settings = new HashMap();
 
     /** A list of all possible setting scopes */
-    private Vector scopes = new Vector();                  // why is this synchronized
+    private List scopes = new Vector();                  // why is this synchronized
 
-    private HashMap scopesReferid = new HashMap();        
+    private Map scopesReferid = new HashMap();
 
     /** The string indicating the path for templates of this component */
     private String templatepath = null;
@@ -65,11 +65,11 @@ public abstract class Component {
     public static Component[] getComponents() {
         Component[] comps = new Component[components.size()];
         int cnt = 0;
-        for (Enumeration e = components.elements(); e.hasMoreElements(); ) {
-            comps[cnt] = (Component)e.nextElement();
+        for (Iterator e = components.values().iterator(); e.hasNext(); ) {
+            comps[cnt] = (Component)e.next();
             cnt++;
         }
-        log.info("Returning " + comps.length + " components");
+        log.debug("Returning " + comps.length + " components");
         return comps;
     }
 
@@ -280,22 +280,22 @@ public abstract class Component {
      */
     public Object getSetting(String settingName, Cloud cloud, Map context) {
         log.debug("Retrieving value for setting '" + settingName + "', with in context: " + context.keySet());
-        Setting setting = (Setting)settings.get(settingName);
+        Setting setting = (Setting) settings.get(settingName);
         if (setting == null) {
             throw new RuntimeException("Setting '" + settingName + "' is not defined for component '" + getName() + "'");
         }
         List scope = setting.getScope();
         Object retval = null;
 
-        for (int i=0; i<scope.size(); i++) { // 
-            String scopeName = (String)scope.get(i);
+        for (int i = 0; i < scope.size(); i++) { // 
+            String scopeName    = (String)scope.get(i);
             String scopeReferId = (String)scopesReferid.get(scopeName);
             log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
             int objectid = -1;
             if ("component".equals(scopeName)) {
                 objectid =  node.getNumber();
-            } else if (getMapValue(context, scopeReferId) != null) {
-                objectid = Integer.parseInt(getMapValue(context, scopeReferId).toString());
+            } else if (context.get(scopeReferId) != null) {
+                objectid = Integer.parseInt(org.mmbase.util.Casting.toString(context.get(scopeReferId)));
                 log.debug("" + scopeReferId + " = " + objectid);
             }
 
@@ -494,24 +494,8 @@ public abstract class Component {
         return n.getAttributes().getNamedItem(attr).getNodeValue();
     }
 
-    /**
-     * Workaround for bug in MMBase 1.7, this can be removed
-     * as soon as MMBase 1.8 is released.
-     */
-    private static Object getMapValue(Map v, String key) {
-        if (v instanceof ContextContainer) {
-            ContextContainer cv = (ContextContainer)v;
-            try {
-                return cv.get(key, true);
-            } catch (Exception e) {
-                return null;
-            }
-        } else {
-            return v.get(key);
-        }
-    }
 
-    public HashMap getSettings() {
+    public Map getSettings() {
         return settings;
     }
 
@@ -519,8 +503,8 @@ public abstract class Component {
      * Return a list of settings that are settable on a given scope
      * @todo should return List
      */
-    public Vector getSettings(String scope) {
-        Vector result = new Vector();
+    public List getSettings(String scope) {
+        List result = new Vector();
         Iterator i = settings.values().iterator();
         while (i.hasNext()) {
             Setting s = (Setting)i.next();
@@ -534,7 +518,7 @@ public abstract class Component {
     /**
      * @todo should return List
      */
-    public Vector getScopes() {
+    public List getScopes() {
         return scopes;
     }
 
@@ -548,7 +532,7 @@ public abstract class Component {
         private int type;
         private String[] domain;
         private Object defaultvalue;
-        private Vector scope;
+        private List scope;
         private String prompt;
 
         public Setting(String name, String type, String prompt) {
@@ -599,7 +583,7 @@ public abstract class Component {
             scope.add(scopeName);
         }
 
-        public Vector getScope() {
+        public List getScope() {
             return scope;
         }
 
