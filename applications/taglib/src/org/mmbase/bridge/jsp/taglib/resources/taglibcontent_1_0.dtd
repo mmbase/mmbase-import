@@ -1,5 +1,5 @@
 <!ELEMENT taglibcontent (content*, escaper*, parameterizedescaper*, postprocessor*) >
-<!ATTLIST taglibcontent  defaulttype   CDATA  #REQUIRED > 
+<!ATTLIST taglibcontent  defaulttype   CDATA  #IMPLIED > 
 
 <!ELEMENT content  EMPTY >
 <!ATTLIST content id     CDATA  #IMPLIED > <!-- id equals type if not speficied -->
