@@ -28,8 +28,13 @@
 	<mm:import externid="poster" />
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:booleanfunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
-	</mm:booleanfunction>
+	<mm:nodefunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
+    <mm:field name="error">
+      <mm:compare value="none" inverse="true">
+        <mm:write />
+      </mm:compare>
+    </mm:field>
+	</mm:nodefunction>
 
   <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" directions="DOWN" max="1">
     <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
