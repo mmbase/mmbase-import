@@ -124,20 +124,12 @@
             </mm:list>
             <mm:field name="ismoderator">
                <mm:compare value="true">
-                  <a href="<mm:url page="editpost.jsp">
-                              <mm:param name="forumid" value="$forumid" />
-                              <mm:param name="postareaid" value="$postareaid" />
-                              <mm:param name="postthreadid" value="$postthreadid" />
-                              <mm:param name="postingid" value="$postingid" />
-                           </mm:url>"><img src="<mm:write referid="image_medit" />"  border="0" />
+                 <a href="<mm:url page="editpost.jsp"
+                                   referids="forumid,postareaid,postthreadid,postingid,page?" />"><img src="<mm:write referid="image_medit" />"  border="0" />
                   </a>
 
-                  <a href="<mm:url page="removepost.jsp">
-                              <mm:param name="forumid" value="$forumid" />
-                              <mm:param name="postareaid" value="$postareaid" />
-                              <mm:param name="postthreadid" value="$postthreadid" />
-                              <mm:param name="postingid" value="$postingid" />
-                              </mm:url>"><img src="<mm:write referid="image_mdelete" />"  border="0" />
+                  <a href="<mm:url page="removepost.jsp"
+                                   referids="forumid,postareaid,postthreadid,postingid,page?" />"><img src="<mm:write referid="image_mdelete" />"  border="0" />
                   </a>
 
                </mm:compare>
@@ -147,12 +139,8 @@
                <mm:compare value="true">
                   <mm:remove referid="postingid" />
                   <mm:import id="postingid"><mm:field name="id" /></mm:import>
-                  <a href="<mm:url page="editpost.jsp">
-                              <mm:param name="forumid" value="$forumid" />
-                              <mm:param name="postareaid" value="$postareaid" />
-                              <mm:param name="postthreadid" value="$postthreadid" />
-                              <mm:param name="postingid" value="$postingid" />
-                              </mm:url>"><img src="<mm:write referid="image_editmsg" />"  border="0" />
+                  <a href="<mm:url page="editpost.jsp"
+                                   referids="forumid,postareaid,postthreadid,postingid,page?" />"><img src="<mm:write referid="image_editmsg" />"  border="0" />
                   </a>
                </mm:compare>
             </mm:field>
