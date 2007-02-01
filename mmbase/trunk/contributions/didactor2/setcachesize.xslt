@@ -5,7 +5,6 @@
   <xsl:output method="xml"
               version="1.0"
               encoding="utf-8"
-              standalone="yes"
               indent="yes"
               doctype-public="-//MMBase//DTD cache config 1.0//EN" 
               doctype-system="http://www.mmbase.org/dtd/caches_1_0.dtd"
