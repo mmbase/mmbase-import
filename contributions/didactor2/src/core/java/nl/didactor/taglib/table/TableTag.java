@@ -34,8 +34,8 @@ public class TableTag extends CloudReferrerTag {
     private Attribute maxitems = Attribute.NULL;
     private Attribute name = Attribute.NULL;
 
-    String sortfield;
-    String sortorder;
+    private String sortField;
+    private String sortOrder;
     int size;
     int offset;
     private Hashtable htmlLabels;
@@ -62,7 +62,7 @@ public class TableTag extends CloudReferrerTag {
      * default field specified. Return "" otherwise.
      */
     public String getActiveSortfield() {
-        return sortfield;
+        return sortField;
     }
 
     /**
@@ -86,8 +86,8 @@ public class TableTag extends CloudReferrerTag {
      * 'default' parameter set.
      */
     public void setSort(String sortfield, String sortorder) throws JspTagException {
-        this.sortfield = sortfield;
-        QueryContainer ct = (QueryContainer)findParentTag(QueryContainer.class, null, true);
+        this.sortField = sortfield;
+        QueryContainer ct = (QueryContainer) findParentTag(QueryContainer.class, null, true);
         Query nq = ct.getQuery();
         Queries.addSortOrders(nq, sortfield, sortorder);
     }
@@ -102,7 +102,7 @@ public class TableTag extends CloudReferrerTag {
      * the org.mmbase.storage.search.SortOrder interface.
      */
     public int getSortOrder() {
-        if ("down".equals(sortorder))
+        if ("down".equals(sortOrder))
             return 2; //org.mmbase.storage.search.SortOrder.DESCENDING;
         else
             return 1;// org.mmbase.storage.search.SortOrder.ASCENDING;
@@ -114,7 +114,7 @@ public class TableTag extends CloudReferrerTag {
      * It sends the 'maxitems' and 'offset' values to the parent query object.
      */
     public int doStartTag() throws JspTagException {
-        PARAM_PAGE = "of"; 
+        PARAM_PAGE  = "of";  // constants  not?
         PARAM_FIELD = "sf";
         PARAM_ORDER = "so";
         if (!name.equals(Attribute.NULL)) {
@@ -122,8 +122,8 @@ public class TableTag extends CloudReferrerTag {
             PARAM_FIELD += "_" + name.getString(this);
             PARAM_ORDER += "_" + name.getString(this);
         }
-        sortfield = "";
-        sortorder = "";
+        sortField = "";
+        sortOrder = "";
         size = 0;
         offset = 0;
 
@@ -150,13 +150,13 @@ public class TableTag extends CloudReferrerTag {
             }
         }
 
-        String sortorder = pageContext.getRequest().getParameter(PARAM_ORDER);
-        if (sortorder != null)
-            this.sortorder = sortorder;
+        String so = pageContext.getRequest().getParameter(PARAM_ORDER);
+        if (so != null)
+            this.sortOrder = so;
 
-        String sortfield = pageContext.getRequest().getParameter(PARAM_FIELD);
-        if (sortfield != null && !"".equals(sortfield)) {
-            setSort(sortfield, sortorder);
+        String sf = pageContext.getRequest().getParameter(PARAM_FIELD);
+        if (sf != null && !"".equals(sf)) {
+            setSort(sf, so);
         }
 
         // We need to capture the data so we can add our <table> tag
