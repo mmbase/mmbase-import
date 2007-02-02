@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.48 2006-04-27 17:35:59 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.49 2007-02-02 20:36:08 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -140,6 +140,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
+            log.debug("using enum handler");
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
@@ -153,14 +154,22 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         show.append("\" />");
         return show.toString();
     }
+    /**
+     */
+    
+    //public String htmlInputId(Node node, Field field) throws JspTagException {
+    //return prefix(field.getName());
+    //}
 
     /**
      * Returns the field value as specified by the client's post.
+     * @param node This parameter could be used if the client does not fully specify the field's value (possible e.g. with Date fields). The existing specification could be used then.
      */
-    protected Object getFieldValue(Field field) throws JspTagException {
+    protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
         return found;
     }
+
     protected boolean interpretEmptyAsNull(Field field) {
         return true;
     }
@@ -173,11 +182,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * Returns the field value to be used in the page.
      */
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
-        Object value = getFieldValue(field);
+        Object value = getFieldValue(node, field);
         if (value == null) {
             String fieldName = field.getName();
             if (node != null) {
-                value = node.isNull(fieldName) ? null : node.getValue(fieldName);
+                value = node.isNull(fieldName) ? null : node.getStringValue(fieldName);
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue();
             }
@@ -190,7 +199,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (eh != null) {
             return eh.checkHtmlInput(node, field, errors);
         }
-        Object fieldValue = getFieldValue(field);
+        Object fieldValue = getFieldValue(node, field);
         DataType dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
@@ -202,7 +211,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("Value for field " + field + ": " + fieldValue);
         }
-        Collection col = dt.validate(fieldValue, node, field);
+        Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
@@ -243,9 +252,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 show.append(prefixError(field.getName()));
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
-                Iterator i = col.iterator();
-                while (i.hasNext()) {
-                    LocalizedString error = (LocalizedString) i.next();
+                for (LocalizedString error : col) {
                     show.append("<span>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
@@ -289,22 +296,36 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         }
         String string = findString(field);
         if (string == null) return null;
-        return "( [" + field.getName() + "] =" + getSearchValue(string) + ")";
+        return "( [" + field.getName() + "] =" + getSearchValue(string, field, getOperator(field)) + ")";
     }
+
+
+
+    // unused, only finalized to enforce using {@link #getOperator(Field)}
+    protected final void getOperator() {
+    }
+
 
     /**
      * The operator to be used by whereHtmlInput(field, query)
      * @since MMBase-1.7
      */
-    protected int getOperator() {
+    protected int getOperator(Field field) {
         return FieldCompareConstraint.EQUAL;
+    }
+
+    protected final void getSearchValue(String string) {
     }
     /**
      * Converts the value to the actual value to be searched. (mainly targeted at StringHandler).
      * @since MMBase-1.7
      */
-    protected String getSearchValue(String string) {
-        return string;
+    protected String getSearchValue(String string, Field field, int operator) {
+        if (operator == FieldCompareConstraint.LIKE) {
+            return "%" + string.toUpperCase() + "%";
+        } else {
+            return string;
+        }
     }
 
     /**
@@ -338,15 +359,22 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         eh = getEnumHandler(null, field);
         if (eh != null) {
+            log.debug("Using enum");
             return eh.whereHtmlInput(field, query);
         }
         String value = findString(field);
         if (value != null) {
+
             String fieldName = field.getName();
             if (query.getSteps().size() > 1) {
                 fieldName = field.getNodeManager().getName()+"."+fieldName;
             }
-            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), getSearchValue(value));
+            int operator = getOperator(field);
+            String searchValue = getSearchValue(value, field, operator);
+            if (log.isDebugEnabled()) {
+                log.debug("Found value " + value + " -> " + searchValue + " for field " + fieldName);
+            }
+            Constraint con = Queries.createConstraint(query, fieldName, operator, searchValue);
             Queries.addConstraint(query, con);
             return con;
         } else {
