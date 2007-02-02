@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.4 2006-11-28 13:48:45 johannes Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.5 2007-02-02 19:10:47 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -870,6 +870,16 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         return result;
     }
+    /**
+     * Throws exception if node alias already exists
+     * @since MMBase-1.8.4
+     */
+    protected void checkAlias(String aliasName) {
+        Node otherNode = cloud.hasNode(aliasName) ? cloud.getNode(aliasName) : null;
+        if (otherNode != null) {
+            throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
+        }
+    }
 
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
@@ -877,16 +887,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext); // sigh
         } else if (isNew()) {
-            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
+            checkAlias(aliasName);
+            getNode().setAlias(aliasName);
         } else {
             String owner = cloud.getUser().getOwnerField();
             if (!getNode().getBuilder().createAlias(getNumber(), aliasName, owner)) {
-                Node otherNode = cloud.getNode(aliasName);
-                if (otherNode != null) {
-                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
-                } else {
-                    throw new BridgeException("Alias " + aliasName + " could not be created.");
-                }
+                checkAlias(aliasName);
+                throw new BridgeException("Alias " + aliasName + " could not be created.");
             }
         }
     }
