@@ -107,6 +107,9 @@
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
+        <xsl:if test="not(bodycontent) and not(body-content)">
+          <body-content>JSP</body-content>
+        </xsl:if>
         <xsl:apply-templates select="attribute"/> 
         <xsl:apply-templates select="extends" />
       </tag>
