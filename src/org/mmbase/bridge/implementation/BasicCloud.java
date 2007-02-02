@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.169 2007-01-02 23:10:50 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.170 2007-02-02 19:25:20 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -1035,7 +1035,21 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     int  add(BasicNode node) {
         return node.getNumber();
     }
+
+
+    /**
+     * Throws exception if node alias already exists
+     * @since MMBase-1.8.4
+     */
+    protected void checkAlias(String aliasName) {
+        Node otherNode = hasNode(aliasName) ? getNode(aliasName) : null;
+        if (otherNode != null) {
+            throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
+        }
+    }
+
     void createAlias(BasicNode node, String aliasName) {
+        checkAlias(aliasName);
         String owner = getUser().getOwnerField();
         if (! node.getNode().getBuilder().createAlias(node.getNumber(), aliasName, owner)) {
             Node otherNode = getNode(aliasName);
