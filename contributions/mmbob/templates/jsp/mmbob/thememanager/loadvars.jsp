@@ -68,134 +68,108 @@
 
     <%--state icons--%>
     <mm:import id="imageid" reset="true">state_normal</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_normal"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_normal"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_closed</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_closed"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_closed"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_pinned</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_pinned"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid"/></c:set>
+    <mm:import id="image_state_pinned"><img align="absmiddle" src="${t}"></mm:import>
+
 
     <mm:import id="imageid" reset="true">state_hot</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_hot"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_hot"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_normalnew</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_normalnew"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_new"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_normalnew"><img align="absmiddle" src="${t}"></mm:import>
+    <mm:import id="image_state_new"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_hotnew</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_hotnew"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_hotnew"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_closed</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_closedme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_closedme"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_pinned</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_pinnedme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_pinnedme"><img align="absmiddle" src="${t}"></mm:import>
 
 
     <mm:import id="imageid" reset="true">state_normalme</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_normalme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_normalme"><img align="absmiddle" src="${t}"></mm:import>
 
 
     <mm:import id="imageid" reset="true">state_normalnewme</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_normalnewme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
-
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_newme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_normalnewme"><img align="absmiddle" src="${t}"></mm:import>
+    <mm:import id="image_state_newme"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_hotme</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_hotme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_hotme"><img align="absmiddle" src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">state_hotnewme</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_state_hotnewme"><img align="absmiddle" src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_hotnewme"><img align="absmiddle" src="${t}"></mm:import>
 
 
 
     <%--  mood icons--%>
     <mm:import id="imageid" reset="true">mood_normal</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_normal"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_normal"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_mad</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_mad"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_mad"><img src="${t}"></mm:import>
 
 
     <mm:import id="imageid" reset="true">mood_happy</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_happy"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_happy"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_question</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_question"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_question"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_warning</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_warning"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_warning"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_joke</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_joke"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_joke"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_sad</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_sad"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_sad"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_idea</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_idea"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_idea"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">mood_suprised</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_mood_suprised"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_mood_suprised"><img src="${t}"></mm:import>
 
     <mm:import id="imageid" reset="true">guest</mm:import>
-    <mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" >
-        <mm:import id="image_guest"><img src="${_}"></mm:import>
-    </mm:function>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_guest"><img src="${t}"></mm:import>
 
 
 </mm:present>
 
 <mm:present referid="thememanager" inverse="true">
-<mm:import id="style_default"><link rel="stylesheet" type="text/css" href="css/mmbase-dev.css" /></mm:import>
-<mm:import id="image_arrowright">images/arrow-right.gif</mm:import>
-<mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
-<mm:import id="image_logo"></mm:import>
+    <mm:import id="style_default"><link rel="stylesheet" type="text/css" href="css/mmbase-dev.css" /></mm:import>
+    <mm:import id="image_arrowright">images/arrow-right.gif</mm:import>
+    <mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
+    <mm:import id="image_logo"></mm:import>
 </mm:present>
