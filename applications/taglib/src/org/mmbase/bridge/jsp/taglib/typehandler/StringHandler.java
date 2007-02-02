@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.58 2006-07-09 13:48:06 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.58.2.1 2007-02-02 20:39:53 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -180,12 +180,14 @@ public class StringHandler extends AbstractTypeHandler {
         // cannot call getSearvhValue, because sql excaping is done twice then :-(
     }
 
-    protected int getOperator() {
-        return FieldCompareConstraint.LIKE;
+    protected int getOperator(Field field) {
+        if (field.getType() == Field.TYPE_STRING) {
+            return FieldCompareConstraint.LIKE;
+        } else {
+            return FieldCompareConstraint.EQUAL;
+        }
     }
-    protected String getSearchValue(String string) {
-        return "%" + string.toUpperCase() + "%";
-    }
+
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {

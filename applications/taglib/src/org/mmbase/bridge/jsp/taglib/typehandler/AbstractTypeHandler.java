@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.48 2006-04-27 17:35:59 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48.2.1 2007-02-02 20:39:53 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -289,23 +289,35 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         }
         String string = findString(field);
         if (string == null) return null;
-        return "( [" + field.getName() + "] =" + getSearchValue(string) + ")";
+        return "( [" + field.getName() + "] =" + getSearchValue(string, field, getOperator(field)) + ")";
+    }
+
+    // unused, only finalized to enforce using {@link #getOperator(Field)}
+    protected final void getOperator() {
     }
 
     /**
      * The operator to be used by whereHtmlInput(field, query)
      * @since MMBase-1.7
      */
-    protected int getOperator() {
+    protected int getOperator(Field field) {
         return FieldCompareConstraint.EQUAL;
+    }
+
+    protected final void getSearchValue(String string) {
     }
     /**
      * Converts the value to the actual value to be searched. (mainly targeted at StringHandler).
      * @since MMBase-1.7
      */
-    protected String getSearchValue(String string) {
-        return string;
+    protected String getSearchValue(String string, Field field, int operator) {
+        if (operator == FieldCompareConstraint.LIKE) {
+            return "%" + string.toUpperCase() + "%";
+        } else {
+            return string;
+        }
     }
+
 
     /**
      * @since MMBase-1.7
@@ -346,7 +358,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if (query.getSteps().size() > 1) {
                 fieldName = field.getNodeManager().getName()+"."+fieldName;
             }
-            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), getSearchValue(value));
+            int operator = getOperator(field);
+            Constraint con = Queries.createConstraint(query, fieldName, operator, getSearchValue(value, field, operator));
             Queries.addConstraint(query, con);
             return con;
         } else {
