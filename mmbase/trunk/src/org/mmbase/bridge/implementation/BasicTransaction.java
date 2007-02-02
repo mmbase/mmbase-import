@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.29 2007-01-03 00:49:48 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.30 2007-02-02 19:25:20 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -184,6 +184,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
     void createAlias(BasicNode node, String aliasName) {
+        checkAlias(aliasName);
         try {
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + node.temporaryNodeId, "" + node.temporaryNodeId);
             BasicCloudContext.transactionManager.addNode(transactionContext, account, aliasContext);
