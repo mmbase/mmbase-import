@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.215 2006-12-18 19:14:21 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.216 2007-02-02 19:25:20 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -844,9 +844,15 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result;
     }
 
+
     public void createAlias(String aliasName) {
         checkWrite();
-        cloud.createAlias(this, aliasName);
+        if (isNew()) {
+            cloud.checkAlias(aliasName);
+            getNode().setAlias(aliasName);
+        } else {
+            cloud.createAlias(this, aliasName);
+        }
     }
 
     /**
