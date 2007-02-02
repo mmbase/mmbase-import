@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.7 2006-09-05 16:24:06 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.1 2004-10-05 11:32:15 michiel Exp $
  */
 
 public class CronEntry {
@@ -54,24 +54,24 @@ public class CronEntry {
 
     public static final String DEFAULT_JOB_TYPE_STRING = MUSTBEONE_JOB_TYPE_STRING;
 
-    private CronJob cronJob;
+    private Runnable cronJob;
 
-    private List<Interruptable> threads = Collections.synchronizedList(new ArrayList());
+    private Thread thread;
 
-    private final String id;
-    private final String name;
-    private final String className;
-    private final String cronTime;
+    private String id;
+    private String name;
+    private String className;
+    private String cronTime;
     private String configuration = null;
 
     private int count = 0;
 
-    private final CronEntryField second      = new CronEntryField(); // 0-59
-    private final CronEntryField minute      = new CronEntryField(); // 0-59
-    private final CronEntryField hour        = new CronEntryField(); // 0-23
-    private final CronEntryField dayOfMonth  = new CronEntryField(); // 1-31
-    private final CronEntryField month       = new CronEntryField(); // 1-12
-    private final CronEntryField dayOfWeek   = new CronEntryField(); // 0-7 (0 or 7 is sunday)
+    private CronEntryField second; // 0-59
+    private CronEntryField minute; // 0-59
+    private CronEntryField hour; // 0-23
+    private CronEntryField dayOfMonth; // 1-31
+    private CronEntryField month; // 1-12
+    private CronEntryField dayOfWeek; // 0-7 (0 or 7 is sunday)
 
     private int type = DEFAULT_JOB_TYPE;
 
@@ -95,60 +95,41 @@ public class CronEntry {
         this.configuration = configuration;
         this.type = type;
 
-        Runnable runnable = (Runnable) Class.forName(className).newInstance();
-        if (! (runnable instanceof CronJob)) {
-            cronJob = new RunnableCronJob(runnable);
-        } else {
-            cronJob = (CronJob) runnable;
-        }
+        cronJob = (Runnable)Class.forName(className).newInstance();
+
+        second = new CronEntryField();
+        minute = new CronEntryField();
+        hour = new CronEntryField();
+        dayOfMonth = new CronEntryField();
+        month = new CronEntryField();
+        dayOfWeek = new CronEntryField();
 
         setCronTime(cronTime);
     }
 
     public void init() {
-        cronJob.init(this);
+        if (cronJob instanceof CronJob) {
+            ((CronJob)cronJob).init(this);
+        }
     }
 
     public void stop() {
-        synchronized(threads) {
-            for(Interruptable thread : threads) {
-                thread.interrupt();
-            }
-        }
-        cronJob.stop();
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public Interruptable getThread(int i) {
-        synchronized(threads) {
-            if (threads.size() <= i) return null;
-            return threads.get(i);
+        if (cronJob instanceof CronJob) {
+            ((CronJob)cronJob).stop();
         }
     }
-    public List<Interruptable> getThreads() {
-        return new ArrayList<Interruptable>(threads);
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public boolean isAlive(int i) {
-        Interruptable t = getThread(i);
-        return t != null && t.isAlive();
 
-    }
-    public boolean isAlive() {
-        return isAlive(0);
+    protected boolean isAlive() {
+        return thread != null && thread.isAlive();
     }
 
-    public boolean kick() {
+    protected boolean kick() {
         switch (type) {
             case SHORT_JOB_TYPE :
                 {
                     count++;
                     try {
-                        Interruptable thread = new Interruptable(cronJob, threads);
-                        thread.run();
+                        cronJob.run();
                     } catch (Throwable t) {
                         log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
                     }
@@ -161,9 +142,9 @@ public class CronEntry {
                 // fall through
             case CANBEMORE_JOB_TYPE :
             default :
-                count++;
-                Interruptable thread = new Interruptable(cronJob, threads);
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(thread);
+                thread = new ExceptionLoggingThread(cronJob, "CronJob " + toString());
+                thread.setDaemon(true);
+                thread.start();
                 return true;
         }
 
@@ -179,11 +160,8 @@ public class CronEntry {
         hour.setTimeVal(st.nextToken());
         dayOfMonth.setTimeVal(st.nextToken());
         month.setTimeVal(st.nextToken());
-        String dow = st.nextToken();
-
-        dayOfWeek.setTimeVal(dow);
+        dayOfWeek.setTimeVal(st.nextToken());
     }
-
 
     public String getCronTime() {
         return cronTime;
@@ -201,12 +179,6 @@ public class CronEntry {
     }
     public String getConfiguration() {
         return configuration;
-    }
-    public String getType() {
-        return jobTypeToString(type);
-    }
-    public String getClassName() {
-        return className;
     }
 
     boolean mustRun(Date date) {
@@ -258,20 +230,36 @@ public class CronEntry {
         return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
     }
 
+    private class ExceptionLoggingThread extends Thread {
+        ExceptionLoggingThread(Runnable run, String name) {
+            super(run, name);
+        }
+
+        /**
+         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+         */
+        public void run() {
+            try {
+                super.run();
+            } catch (Throwable t) {
+                log.error("Error during cron-job " + CronEntry.this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
+            }
+        }
+    }
 
     /**
      * Convert a jobType int to a jobType String. invalid types are accepted and return DEFAULT_JOB_TYPE_STRING
-     * @param type the job type
-     * @return The string representation of the job type
+     * @param type the job type 
+     * @return The string representation of the job type 
      */
     public static String jobTypeToString(int type) {
         switch (type) {
-        case SHORT_JOB_TYPE :
-            return SHORT_JOB_TYPE_STRING;
-        case MUSTBEONE_JOB_TYPE :
-            return MUSTBEONE_JOB_TYPE_STRING;
-        case CANBEMORE_JOB_TYPE :
-            return CANBEMORE_JOB_TYPE_STRING;
+            case SHORT_JOB_TYPE :
+                return SHORT_JOB_TYPE_STRING;
+            case MUSTBEONE_JOB_TYPE :
+                return MUSTBEONE_JOB_TYPE_STRING;
+            case CANBEMORE_JOB_TYPE :
+                return CANBEMORE_JOB_TYPE_STRING;
         }
         return DEFAULT_JOB_TYPE_STRING;
     }
@@ -280,7 +268,7 @@ public class CronEntry {
      * Convert a jobType String to a jobType int. first the string is lowered cased and trimed.
      * null values and invalid values are accepted and return the DEFAULT_JOB_TYPE
      * @param type the string representation of the job type
-     * @return the int representation of the jobType
+     * @return the int representation of the jobType 
      */
     public static int stringToJobType(String type) {
 
@@ -291,6 +279,7 @@ public class CronEntry {
 
         if (type.equals(SHORT_JOB_TYPE_STRING)) {
             return SHORT_JOB_TYPE;
+
         } else if (type.equals(MUSTBEONE_JOB_TYPE_STRING)) {
             return MUSTBEONE_JOB_TYPE;
         } else if (type.equals(CANBEMORE_JOB_TYPE_STRING)) {

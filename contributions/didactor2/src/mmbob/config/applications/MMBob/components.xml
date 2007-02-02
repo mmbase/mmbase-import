@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="200509026170724">
-    <node number="18000" owner="system" alias="component.mmbob">
-        <name>mmbob</name>
-        <classname></classname>
-        <mayrelateclasses>1</mayrelateclasses>
-    </node>
-</components>

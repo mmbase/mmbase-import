@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://www.mmbase.org/mmbase/attachments/24842/MySites.1.3.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>

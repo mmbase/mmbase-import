@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_deelnemers_categorie">
-   <field name="name" ftype="line"><prompt>categorie</prompt></field>
-   <field name="description" ftype="html" rows="16"><prompt>omschrijving</prompt></field>
-</form-schema>

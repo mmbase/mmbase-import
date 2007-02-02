@@ -7,12 +7,11 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab;
 
-import org.mmbase.util.ThreadPools;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
 /**
- * An example cron-job.
+ * An example cron-job. 
  *
  * A Job to log MMBase statistics to a logger. (By means of logj4 you can configure the time stamp and logfile location).
  * The configuration string is one of the following
@@ -24,7 +23,7 @@ In log4j.xml you may add something like this:
 <pre>
   &lt;appender name="stats" class="org.apache.log4j.FileAppender" &gt;
     &lt;param name="File" value="/tmp/mmbase.stats" /&gt;
-    &lt;param name="Encoding"   value="UTF-8" /&gt;
+    &lt;param name="Encoding"   value="UTF-8" /&gt;    
     &lt;layout class="org.apache.log4j.PatternLayout"&gt;
       &lt;param name="ConversionPattern" value="%d{YYYY-MM-dd HH:mm:ss} %c{1} %m%n" /&gt;
     &lt;/layout&gt;
@@ -36,79 +35,63 @@ and:
     &lt;level class="&mmlevel;" value ="service" /&gt;
     &lt;appender-ref ref="stats" /&gt;
   &lt;/logger&gt;
-</pre>
+</pre> 
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.5 2006-08-31 08:23:29 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.1 2004-10-05 11:32:18 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseStatsJob.class);
+    private static final int MEMORY = 1;
+    private static final int CACHE  = 2;
 
-    private Runnable job;
+    private int type;
+    private Cache cache = null; // used if type == CACHE
 
     private Logger statsLogger;
-
+    
     protected void init() {
-        // determin what needs to be done in run().
+        // determin what needs to be done in run().       
         String what = cronEntry.getConfiguration();
         statsLogger = Logging.getLoggerInstance("org.mmbase.STATS." + what);
         String w = what.toUpperCase();
         if (w.equals("MEMORY")) {
-            job = new Runnable() {
-                    public void run() {
-                        Runtime runtime = Runtime.getRuntime();
-                        statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
-                    }
-                };
-        } else if (w.equals("QUERIES")) {
-            job = new Runnable() {
-                    public void run() {
-                        statsLogger.service("" + org.mmbase.module.database.MultiConnection.queries);
-                    }
-                };
-        } else if (w.equals("JOBSPOOL")) {
-            job = new Runnable() {
-                    public void run() {
-                        java.util.concurrent.ThreadPoolExecutor j = 
-                            (java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
-                        statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' + 
-                                            j.getPoolSize() + '\t' + j.getLargestPoolSize() + '\t' + j.getCorePoolSize() + '\t' + j.getMaximumPoolSize());
-                    }
-                };
+            type = MEMORY;
         } else if (w.startsWith("CACHE.")) {
-            job = new Runnable() {
-                    private Cache cache = getCache();
-                    {
-                        if (cache == null) {
-                            log.info("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found (yet).");
-                        }
-                    }
-                    public void run() {
-                        if (cache == null) cache = getCache();
-                        if (cache != null) {
-                            int h = cache.getHits();
-                            statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
-                        }
-                    }
-                };
-        } else {
-            job = new Runnable() {
-                    public void run() {
-                    }
-                };
+            type = CACHE;
+            if (! getCache()) {
+                log.warn("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found.");
+            }
+
         }
 
     }
     /**
-     * Fills the 'cache' member.
+     * Fills the 'cache' member. 
      * @return Whether successful.
      */
-    private Cache getCache() {
+    private boolean getCache() {
         String cacheName = cronEntry.getConfiguration().substring(6);
-        return Cache.getCache(cacheName);
+        cache     = Cache.getCache(cacheName);
+        return cache != null;
+
     }
 
     public final void run() {
-        job.run();
+        switch(type) {
+        case CACHE: {
+            if (cache == null) getCache();
+            if (cache != null) {
+                int h = cache.getHits();
+                statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
+            }
+            break;
+        }
+        case MEMORY: {
+            Runtime runtime = Runtime.getRuntime();
+            statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
+            break;
+        }            
+        } 
     }
 }

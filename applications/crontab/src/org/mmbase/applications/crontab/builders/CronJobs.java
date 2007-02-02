@@ -50,29 +50,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
             CronEntry entry = null;
             try {
                 entry = createCronEntry(node);
-                NodeList servers = node.getRelatedNodes("mmservers");
-                if (servers.size() > 0) {
-                    String machineName = MMBase.getMMBase().getMachineName();
-                    boolean found = false;
-                    for (int i=0; i<servers.size(); i++) {
-                        Node server = servers.getNode(i);
-                        String name = server.getStringValue("name");
-                        if (name != null && name.equalsIgnoreCase(machineName)) {
-                            log.service("Adding cron entry [" + entry + "] for server [" + name + "]");
-                            cronDaemon.add(entry);
-                            found = true;
-                            break;
-                        } else {
-                            log.service("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
-                        }
-                    }
-                    if (!found) {
-                        log.service("NOT Adding cron entry [" + entry + "], not related to server [" + machineName + "]");
-                    }
-                } else {
-                    log.service("Adding cron entry [" + entry + "]");
-                    cronDaemon.add(entry);
-                }
+                cronDaemon.add(entry);
             } catch (Exception e) {
                 log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
             }
@@ -84,13 +62,11 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
      */
     public int insert(String owner, MMObjectNode objectNodenode) {
         int number = super.insert(owner, objectNodenode);
+        Node node = getCloud().getNode(number);
         try {
-            if (cronDaemon != null) {
-		        Node node = getCloud().getNode(number);
             cronDaemon.add(createCronEntry(node));
-            }
         } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + number + " error " + e.getMessage(), e);
+            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage());
         }
         return number;
     }

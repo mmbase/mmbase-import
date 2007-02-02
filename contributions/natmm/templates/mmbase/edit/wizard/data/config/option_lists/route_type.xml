@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="route_type">
-   <option id="Fietsroute">Fietsroute</option>
-   <option id="Kanoroute">Kanoroute</option>
-   <option id="Wandelroute">Wandelroute</option>
-</optionlist>
- 

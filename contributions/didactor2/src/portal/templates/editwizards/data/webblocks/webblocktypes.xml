@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="webblocktypes">
-  <option id="1">1. Navigatie</option>
-  <option id="6">6. Nieuws</option>
-  <option id="7">7. MiniNieuws</option>
-  <option id="99">99. Rich</option>
-  <option id="100">100. MMBase component</option>
-</optionlist>

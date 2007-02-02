@@ -1,3 +1,0 @@
-Type : MPL<br />
-Name : mozzila public license<br />
-Version : 1.0<br />

@@ -17,6 +17,7 @@ package org.mmbase.applications.crontab;
 public abstract class AbstractCronJob implements CronJob {
 
     protected CronEntry cronEntry;
+
     /**
      * {@inheritDoc}
      *
@@ -38,7 +39,6 @@ public abstract class AbstractCronJob implements CronJob {
      * Empty implementation (probably that's what you want)
      */
     public void stop() {}
-
 
     /**
      * Implement this.
