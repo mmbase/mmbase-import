@@ -75,6 +75,10 @@
       </xsl:if>
       <xsl:apply-templates select="tag" mode="base" />    
       <xsl:if test="$version = '2.0'">
+        <!--
+            See MMB-1348
+            It seems that the present tag-file entries cause the problem.
+        -->
         <xsl:apply-templates select="tag-file" />
         <xsl:apply-templates select="function" mode="base" />
       </xsl:if>
@@ -103,6 +107,9 @@
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
+        <xsl:if test="not(bodycontent) and not(body-content)">
+          <body-content>JSP</body-content>
+        </xsl:if>
         <xsl:apply-templates select="attribute"/> 
         <xsl:apply-templates select="extends" />
       </tag>
@@ -178,14 +185,21 @@
   <xsl:template match="bodycontent|body-content">
     <xsl:choose>
       <xsl:when test="$version &gt;= 2.0">
-        <body-content xmlns="http://java.sun.com/xml/ns/j2ee"><xsl:value-of select="." /></body-content>
+        <body-content xmlns="http://java.sun.com/xml/ns/j2ee">
+        <xsl:value-of select="." />
+        </body-content>
       </xsl:when>
       <xsl:otherwise>
         <bodycontent><xsl:value-of select="." /></bodycontent>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|example|function-class|function-signature|tag-file">
+  <xsl:template match="tag-file">
+    <tag-file xmlns="http://java.sun.com/xml/ns/j2ee">
+      <xsl:apply-templates select="name|path" />
+    </tag-file>
+  </xsl:template>
+  <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|example|function-class|function-signature|path">
     <xsl:copy-of select="." />
   </xsl:template>
   
