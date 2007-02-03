@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.38 2006-12-11 20:21:22 nklasens Exp $
+ * @version  $Id: validator.js,v 1.39 2007-02-03 13:09:27 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -63,6 +63,9 @@ Validator.prototype.attach = function (element) {
             addEvent(element, "change", function(ev) { self.validateEvent(ev) });
             addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
     }
+    // Fix for memory leak in IE and possible FF. The page garbage collector has issues with
+    // circular reference detection and old objects.
+    element = null;
 }
 
 addEvent = function(el, evname, func) {
