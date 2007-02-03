@@ -12,6 +12,7 @@ package org.mmbase.module.tools;
 import java.util.*;
 
 import org.mmbase.bridge.Field;
+import org.mmbase.cache.NodeCache;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
@@ -30,7 +31,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.8.2.1 2006-12-05 21:07:35 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.2 2007-02-03 12:59:17 nklasens Exp $
  */
 public class ApplicationInstaller {
 
@@ -218,11 +219,14 @@ public class ApplicationInstaller {
         String exportsource = nodeReader.getExportSource();
         int timestamp = nodeReader.getTimeStamp();
 
+        nodeReader.setLoadBinaries(false);
+
         // loop all nodes , and add to syncnodes.
         for (Iterator n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
             try {
                 MMObjectNode newNode = (MMObjectNode)n.next();
-
+                nodeReader.loadBinairyFields(newNode);
+                
                 int exportnumber = newNode.getIntValue("number");
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
                     // XXX To do : we may want to load the node and check/change the fields
@@ -236,7 +240,9 @@ public class ApplicationInstaller {
                             findFieldsOfTypeNode(nodeFieldNodes, exportsource, newNode);
                         }
                     }
+                    NodeCache.getCache().remove(new Integer(localnumber));
                 }
+                n.remove();
             }
             catch (SearchQueryException sqe) {
                 log.error(sqe);
