@@ -11,7 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 import java.util.Vector;
 
 import org.mmbase.bridge.Field;
@@ -28,12 +30,14 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.42 2006-09-08 18:40:51 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.43 2007-02-03 13:08:21 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
 
     private ResourceLoader path;
+
+    public boolean loadBinaries = true;
 
     /**
      * @since MMBase-1.8
@@ -202,7 +206,12 @@ public class XMLNodeReader extends DocumentReader {
                 NamedNodeMap nm2 = n5.getAttributes();
                 Node n7 = nm2.getNamedItem("file");
                 try {
-                    newNode.setValue(key, readBytesStream(n7.getNodeValue()));
+                    if(loadBinaries){
+                    	newNode.setValue(key, readBytesStream(n7.getNodeValue()));
+                    }
+                    else{
+                        newNode.setValue(key, n7.getNodeValue());
+                    }
                 } catch (IOException ioe) {
                     log.warn("Could not set field " + key + " " + ioe);
                 }
@@ -222,5 +231,27 @@ public class XMLNodeReader extends DocumentReader {
             c = stream.read();
         }
         return buffer.toByteArray();
+    }
+
+    public void loadBinairyFields(MMObjectNode newNode) {
+        Set fieldNames = newNode.getBuilder().getFieldNames();
+        if(fieldNames!=null && fieldNames.size()>0){
+            for(Iterator f = fieldNames.iterator(); f.hasNext();){
+                String fieldName = (String) f.next();
+                int fieldDBType = newNode.getBuilder().getDBType(fieldName);
+                if(fieldDBType == Field.TYPE_BINARY){
+                    try{
+                        String resource = newNode.getStringValue(fieldName);
+                        newNode.setValue(fieldName, readBytesStream(resource));
+                    }catch(Exception setValueEx){
+                        log.error(setValueEx);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setLoadBinaries(boolean loadBinaries) {
+        this.loadBinaries = loadBinaries;
     }
 }
