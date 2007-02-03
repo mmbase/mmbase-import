@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.388 2007-02-02 18:23:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.389 2007-02-03 13:25:33 nklasens Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2236,6 +2236,7 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       A tag to make a node available. Normally it will enclose some field tags, but it is also
       possible to only write to the context, or to a JSP variable.
@@ -2311,6 +2312,7 @@ access the value of title:
   <tag>
     <name>edit</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.editor.EditTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <since>MMBase-1.8</since>
       <p>
@@ -2341,6 +2343,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Gets the field `name' from node `node' (can also be list providing nodes).
     </info>
@@ -2434,6 +2437,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.FunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
   Gets the function value of function `name'.  The function value
@@ -2477,6 +2481,7 @@ access the value of title:
     <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.HasFunctionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks only whether certain function is available. To make it possible to make more generic code.
@@ -2494,6 +2499,7 @@ access the value of title:
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasNodeManagerTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks only whether certain nodemanager is available. To make it possible to make more generic code.
@@ -2522,6 +2528,7 @@ access the value of title:
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasRelationManagerTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks only whether certain relation manager is available. To make it possible to make more generic code.
@@ -2562,6 +2569,7 @@ access the value of title:
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasNodeTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks only whether certain node is available. To make it possible to make more generic code. It has the same working as &lt;mm:node number="abc" notfound="skipbody" /&gt;
@@ -2589,6 +2597,7 @@ access the value of title:
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasFieldTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks only whether certain field is available. To make it possible to make more generic code.
@@ -2606,6 +2615,7 @@ access the value of title:
       <name>nodetype</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <since>MMBase-1.8.4</since>
     </attribute>
     <since>MMBase-1.8</since>
@@ -2622,6 +2632,7 @@ access the value of title:
     <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.VoidFunctionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       If you want to use a function with `void' result (or want to ignore the result), then you can
       use this tag for the function.
@@ -2643,6 +2654,7 @@ access the value of title:
     <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.BooleanFunctionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
   Gets the function value of function `name'.  The function value
@@ -2673,6 +2685,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.ListFunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
   Gets the function value for function `name'.  The function value is supposed to be
@@ -2726,6 +2739,7 @@ access the value of title:
     <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeListFunctionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Gets the function value of function `name'.  The function value
@@ -2767,6 +2781,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeFunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value
       is supposed to be a Node.
@@ -2783,6 +2798,7 @@ access the value of title:
     <name>createalias</name>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateAliasTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Lives in a NodeProvider. Creates the body content as an alias for the node.
     </info>
@@ -2804,6 +2820,7 @@ access the value of title:
     <name>deletealias</name>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteAliasTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Lives in a NodeProvider. Deletes the body content as an alias for the node.
@@ -2833,6 +2850,7 @@ access the value of title:
     <extends>condition</extends>
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Must be used in the body of a list tag. And the body of itself will only be evaluated if some
       condition is true.
@@ -3016,6 +3034,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Creates a relation between two nodes.
     </info>
@@ -3065,6 +3084,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Creates a new node.
     </info>
@@ -3096,6 +3116,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Changes the field `name' from node `node' (can also be list).
     </info>
@@ -3261,6 +3282,7 @@ transaction was commited, following should result anything:
     <extends>node</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>empty</bodycontent>
     <info>
       This tag extends the `node' tag, and is precisely the same. The
       only difference is that after the body the node will be removed.
@@ -3420,6 +3442,7 @@ transaction was commited, following should result anything:
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <see tag="field" />
     <see tag="fieldlist" />
     <see tag="nodeinfo" />
@@ -3620,6 +3643,7 @@ transaction was commited, following should result anything:
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The nodeinfo tag can be used inside a NodeProvider tag, to get certain information about the
       node.
@@ -3686,6 +3710,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <extends>condition</extends>
     <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Checks if a certain variable is present in the parent Context tag.
     </info>
@@ -3715,6 +3740,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <type>util.context</type>
     <extends>present</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Checks if a certain variable is missing in the parent Context tag.
     </info>
@@ -3729,6 +3755,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         The write tag can be used to `export' context variables to something
@@ -3838,6 +3865,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <!-- import does not extend writer because we don't want the `writer' attribute of it functional -->
     <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.ImportTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     To put objects in the context. That is, import a variable from an
     external source (a parent context, parameters, a form
@@ -4061,6 +4089,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>remove</name>
     <type>util.context</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       Removes an object from the context. Often it is nicer to use
       `anonymous' contexts to avoid naming conflicts.
@@ -4107,6 +4136,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Returns an URL with parameters from the context. Parameters can
@@ -4266,6 +4296,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlWriterTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Like mm:url, but this is a true writer. Which means that it does not write if it has a body. The idea is to use this in conjunction with EL of JSP2.
     </info>
@@ -4286,6 +4317,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextreferrer</extends>
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.RedirectTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         As mm:url but redirects to the generated URL.
@@ -4322,6 +4354,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Returns an URL to the image servlet. This is a NodeReferrer
@@ -4540,6 +4573,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <attribute>
       <name>element</name>
       <required>false</required>
@@ -4569,6 +4603,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Does an include. This tag is rather similar to mm:url, but in
@@ -4748,6 +4783,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>haspage</name>
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.HasPageTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Checks for the availability of a certain JSP on this server.
@@ -4775,6 +4811,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Compares the value of a context variable to a String value. Only if
       they are equal the body is evaluated.
@@ -4858,6 +4895,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Checks if parent writer, or context-var, is not empty.
     </info>
@@ -4885,6 +4923,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Checks if parent writer is empty.
     </info>
@@ -4921,6 +4960,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>util</type>
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The body evaluated if the compared value is greater. Works for
       numbers, but also for strings. If you want to evaluate `is
@@ -4945,6 +4985,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>util</type>
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsLessThanTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The body evaluated if the compared value is smaller. This is more
       or less the inverse of isgreaterhan, of course, but not precisely.
@@ -4961,6 +5002,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This is a list which can only live under a NodeProvider, to iterate through all aliases of the
       Node. In the body you can use the `writer' functionality to actually write out current alias.
@@ -4981,6 +5023,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayWriteTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     Check if node may be changed.
     </info>
@@ -5005,6 +5048,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayReadTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Check if a node may be read
     </info>
@@ -5030,6 +5074,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayDeleteTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     Check if node may be deleted.
     </info>
@@ -5043,6 +5088,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     Check if node may be created.
     </info>
@@ -5065,6 +5111,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     Check if a relation may be created.
     </info>
@@ -5111,6 +5158,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>condition</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
     Check if the context of a node may be changed.
     </info>
@@ -5120,6 +5168,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>nodereferrer</extends>
     <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Change the context of a node. This has nothing to do with the
@@ -5150,6 +5199,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Can be used inside a node tag to show the number of relations the node
       has. The same effect can be reached by a relatednodescontainer tag with a `size' tag in it.
@@ -5193,6 +5243,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasRelationsTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <see tag="size" />
     <see tag="countrelations" />
     <info>
@@ -5282,6 +5333,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>querycontainer</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The query container for the listrelations tag.
     </info>
@@ -5314,6 +5366,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       For use under listrelations tag. With this you can easily find
       the other node (it uses the `snumber' and `dnumber' fields for you.
@@ -5340,6 +5393,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
+    <bodycontent>empty</bodycontent>
     <info>
       The size of the current list. It can also act as a `querycontainerreferrer' in which case
       the query of it is used to perform a database count.
@@ -5371,6 +5425,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.IndexTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
+    <bodycontent>empty</bodycontent>
     <info>
       The index of the current item of the current list. It can also act as a
       `querycontainerreferrer' in which case the `offset' and `maxnumber' properties of the query
@@ -5400,6 +5455,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>timer</name>
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.debug.TimerTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Debug tag for measuring performance. It measures the duration of
@@ -5439,6 +5495,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This tag does the same as TreeIncludeTag, but instead of including the
       page that was found, it returns the URL for that page.
@@ -5483,6 +5540,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This tag does the same as LeafIncludeTag, but instead of including the
       page that was found, it returns the URL for that page. This URL can be
@@ -5527,6 +5585,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>include</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeIncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         This tag is an implementation of the `TREEPART' scan command.
@@ -5614,6 +5673,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>include</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafIncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This tag does almost exactly the same as TreeInclude.
       The only difference is when Treeinclude cannot find a file to include. In that case,
@@ -5671,6 +5731,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <name>param</name>
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ParamTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Adds a parameter to the parent parameterprovider Tag. Param-tags can be nested; like that it
       is possible to create map-like parameter values.
@@ -5726,6 +5787,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <extends>contextwriter</extends>
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This tag performs XSL and other transformations.
     </info>
@@ -5890,6 +5952,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <name>xslt</name>
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         This tag must live as a sub-tag of Formatter. You can add `in line' XSL with this.
@@ -6167,6 +6230,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.debug.LogTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.debug.LogTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Logs the body or creates a Logger variable in it.  You can log
       to the MMBase log with this.  It logs its body on `service'
@@ -6198,6 +6262,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="content" />
     <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Sets a locale. Tags living in its body can request the Locale
@@ -6303,6 +6368,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="locale" />
     <tagclass>org.mmbase.bridge.jsp.taglib.ContentTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
        The content tag is meant to put around your whole page, and set general properties, like
@@ -6444,6 +6510,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>escaper</name>
     <see tag="content" />
     <tagclass>org.mmbase.bridge.jsp.taglib.EscaperTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       You can defined 'parameterized' escapers by this.
     </info>
@@ -6498,6 +6565,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>functiontag</extends>
     <extends>container</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.FunctionContainerTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Surrounds a function tag, provides a container for parameters and function results.
     </info>
@@ -6549,6 +6617,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Surrounds a listnodes tag and provides a query object.
     </info>
@@ -6616,6 +6685,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
        Surrounds a relatednodes tag and provides a query object. Alternatively, it can also surround
        a listnodes tag (because a relatenodescontainer is a specialized version of a
@@ -6678,6 +6748,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Surrounds a list tag and  provides a query object.
     </info>
@@ -6733,6 +6804,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Surrounds a list tag and  provides a query object.
     </info>
@@ -6778,6 +6850,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryConstraintTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Applies a constraint to the query of the surrounding nodelist container.
     </info>
@@ -6969,6 +7042,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="querycontainer" />
     <see tag="ageconstraint" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryCompositeConstraintTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Combines constraints with a conditional operator.
     </info>
@@ -7008,6 +7082,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAgeConstraintTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       <p>
         In MMBase, objects on default do not have a `creation time' field. But the `number' field can
@@ -7090,6 +7165,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAliasConstraintTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       Pinpoints one of the elements to an alias.
     </info>
@@ -7134,6 +7210,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryTypeConstraintTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       Pinpoints one of the elements to a certain type, which can be useful in some cases.
     </info>
@@ -7185,6 +7262,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryMaxNumberTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       Limits the node list number of iterations, by applying a `limit' to the surrounding query.
     </info>
@@ -7214,6 +7292,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryOffsetTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
       Offset the list by applying an `offset' to the surrounding query.
     </info>
@@ -7243,6 +7322,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryDistinctTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
        Makes the surrounding query `distinct'.
     </info>
@@ -7281,6 +7361,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QuerySortOrderTag</tagclass>
+    <bodycontent>empty</bodycontent>
     <info>
 
     </info>
@@ -7336,6 +7417,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>listnodes</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.UnRelatedNodesTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The same as `listnodes' only the results of a `relatednodes' (without attributes) are subtracted.
     </info>
@@ -7375,6 +7457,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         A simple list iterating some list, coming from the `context. So the `referid' is required
@@ -7422,6 +7505,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryNextBatchesTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         This `listprovider' tag provides a way to implement `paging' or `batching' for large search
@@ -7508,6 +7592,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryPreviousBatchesTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       This is the counterpart of the next-batches tag, which can e.g. be used to implement a
       `previous page' button.
@@ -7547,6 +7632,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>listreferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveItemTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Remove the current item from the surrounding list. Of course this has only effect when the list is `reused' (with referid).
     </info>
@@ -7577,6 +7663,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         The Tree Tag makes it possible to show a piece of the MMBase cloud generically. This tag never
@@ -7677,6 +7764,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.tree.TreeTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         The treecontainer tag is a the `container' tag for the tree-tag. It searches on the same way
@@ -7776,6 +7864,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>treereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.LeafConstraintsTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       <p>
         Lives in a tree-container tag. Constraints inside this tag are not defined as normal tree
@@ -7822,6 +7911,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>treereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.GrowTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Iterates from previous depth to (not inclusive) current depth. On the first iteration of mm:tree this will iterate one time.
       Currently there are not upside down trees implemented, which means that this tag now always iterates one or zero times.
@@ -7837,6 +7927,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>treereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.OnShrinkTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The body of the tag is remembered for use by the shrink tag, used when shrinking to current depth. See depth-tag
       for what `current depth' means.
@@ -7855,6 +7946,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.ShrinkTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Iterates from previous depth to (inclusive) current depth. For each depth it provides (as a writer) what was defined with `onshrink'.
     </info>
@@ -7874,6 +7966,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.DepthTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Provides the current depth of the tree. The current depth is defined by the surrounding `grow'
       or `shrink' tag (if present) or the `tree' tag itself otherwise.
@@ -7889,6 +7982,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The nodeinfo tag can be used inside a CloudProvider tag, to get certain information about the
       cloud.
@@ -7936,6 +8030,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>condition</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.HasRankTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       Checks for a certain rank. You can use this to hide certain parts of your page if the rank of
       the user is too low or too high.
@@ -7968,6 +8063,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>form</name>
     <extends>transaction</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.FormTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       A form tag collects validation from mm:fieldinto type="check" and mm:fieldinfo
       type="errors". The mm:valid can be used to report the cumulative error state.
@@ -8014,6 +8110,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreferrer</extends>
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.ValidTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <info>
       The body evaluates if the current validation status of a surround form tag is valid.
     </info>
@@ -8032,6 +8129,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>component</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ComponentTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <attribute>
       <name>name</name>
       <required>true</required>
@@ -8058,6 +8156,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>test</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.TestTag</tagclass>
+    <bodycontent>JSP</bodycontent>
     <attribute>
       <name>evalbody</name>
       <required>false</required>
