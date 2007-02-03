@@ -25,7 +25,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.4 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.5 2007-02-03 13:08:21 nklasens Exp $
  */
 public class FullBackupDataWriter {
 
@@ -87,7 +87,7 @@ public class FullBackupDataWriter {
             query.setConstraint(constraint);
 
             // Add this builder's nodes to set (by nodenumber).
-            List nodes = builder.getNodes(query);
+            List nodes = builder.getStorageConnector().getNodes(query, false);
             writeNodes(subTargetPath, mmbase, logger, builder, nodes, isRelation);
         }
     }
