@@ -1,5 +1,6 @@
 <%
 PaginaHelper ph = new PaginaHelper(cloud);
+RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 String path = ph.getTemplate(request);
 
 HashMap ids = new HashMap();
