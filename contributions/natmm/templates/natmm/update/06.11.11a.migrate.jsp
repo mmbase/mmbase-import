@@ -386,18 +386,6 @@ for(int i=0;i<pagesToDelete.length;i++) {
   <mm:setfield name="directions">UP</mm:setfield>
   <mm:setfield name="search">yes</mm:setfield>
 </mm:createnode>
-<mm:createnode type="editwizards" id="shophome_ew">
-  <mm:setfield name="name">webwinkel homepage</mm:setfield>
-  <mm:setfield name="description">Bewerk deze webwinkel homepage</mm:setfield>
-  <mm:setfield name="type">wizard</mm:setfield>
-  <mm:setfield name="wizard">config/pagina/pagina_shophome</mm:setfield>
-  <mm:setfield name="nodepath">paginatemplate,pagina</mm:setfield>
-  <mm:setfield name="fields">pagina.titel,pagina.titel_fra</mm:setfield>
-  <mm:setfield name="orderby">pagina.titel</mm:setfield>
-  <mm:setfield name="directions">UP</mm:setfield>
-  <mm:setfield name="search">yes</mm:setfield>
-  <mm:setfield name="searchfields">pagina.titel</mm:setfield>
-</mm:createnode>
 <mm:createnode type="editwizards" id="keywords_ew">
   <mm:setfield name="name">trefwoorden</mm:setfield>
   <mm:setfield name="description">Bewerk de trefwoorden</mm:setfield>
