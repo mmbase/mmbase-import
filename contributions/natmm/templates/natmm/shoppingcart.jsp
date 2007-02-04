@@ -1,14 +1,15 @@
 <%@page import="nl.leocms.evenementen.forms.SubscribeForm" %>
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud"  pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon">
+<mm:locale language="nl">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/shoppingcart/update.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<mm:locale language="nl">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+</cache:cache>
 <%@include file="includes/shop/header.jsp" %>
 <td colspan="5" style="text-align:right;vertical-align:top;">
 	  <%	
@@ -57,5 +58,4 @@
 <%@include file="includes/shop/footer.jsp" %>
 <%@include file="includes/footer.jsp" %>
 </mm:locale>
-</cache:cache>
 </mm:cloud>
