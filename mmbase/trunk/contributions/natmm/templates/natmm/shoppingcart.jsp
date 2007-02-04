@@ -1,6 +1,6 @@
 <%@page import="nl.leocms.evenementen.forms.SubscribeForm" %>
 <%@include file="includes/top0.jsp" %>
-<mm:cloud jspvar="cloud"  pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon">
+<mm:cloud jspvar="cloud" logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon">
 <mm:locale language="nl">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/shoppingcart/update.jsp" %>
