@@ -1,13 +1,14 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
+<mm:locale language="nl">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/shoppingcart/update.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<mm:locale language="nl">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+</cache:cache>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/shop/header.jsp" %>
 <td colspan="3" width="70%" style="vertical-align:top;">
@@ -73,5 +74,4 @@ if(shop_itemID.equals("-1")) {
 <%@include file="includes/shop/footer.jsp" %>
 <%@include file="includes/footer.jsp" %>
 </mm:locale>
-</cache:cache>
 </mm:cloud>

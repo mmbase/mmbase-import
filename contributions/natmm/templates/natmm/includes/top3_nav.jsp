@@ -55,7 +55,6 @@ with(style2=new mm_style()){
 }
 <% 
 
-RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 
 TreeMap [] nodesAtLevel = new TreeMap[10];
 nodesAtLevel[0] = new TreeMap();
