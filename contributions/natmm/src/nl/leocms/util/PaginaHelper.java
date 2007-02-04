@@ -391,7 +391,7 @@ public class PaginaHelper {
                String ewType = editwizardNode.getStringValue("type");
                if(ewType.equals("list")) {
                   boolean showEw = true;
-                  if(ap.isInstalled("NatMM")) {   // ** check whether the path is used at least once
+                  if(ewNodePath.indexOf("pagina")>-1 && ap.isInstalled("NatMM")) {   // ** check whether the path is used at least once
                     showEw = false;
                     NodeList nl = null;
                     try {
