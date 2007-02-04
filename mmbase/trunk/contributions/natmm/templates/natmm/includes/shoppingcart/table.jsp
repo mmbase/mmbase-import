@@ -19,6 +19,7 @@ int totalSum = 0;
 TreeMap products = (TreeMap) session.getAttribute("products"); 
 String formScript = "function changeIt(url) {"
       + "\nvar href = \"&pst=\";"
+      + "\nif(url.indexOf(\"?\")==-1) { href = \"?pst=\"; }"
       + "\nvar valM = document.shoppingcart.elements[\"memberid\"].value;"
       + "\nhref += \"|valM=\" + escape(valM);";
 				
@@ -87,13 +88,19 @@ formScript += "\nvar valD = document.shoppingcart.elements[\"donation\"].value;"
 		
 		formScript += "\nvar val" + thisProduct + " = document.shoppingcart.elements[\"numberof" + thisProduct + "\"].value;\n"
 				+ "if(val" + thisProduct + "!='') { href += \"|valP" + thisProduct + "=\" + escape(val" + thisProduct + "); } \n"; 
-		
+        
+    String productUrl = "";
 		%><mm:node number="<%= thisProduct %>" notfound="skipbody"
-		><%@include file="getprice.jsp"
+		><mm:related path="posrel,pagina"
+      ><mm:field name="pagina.number" jspvar="thisPage" vartype="String" write="false"><%
+        productUrl = ph.createPaginaUrl(thisPage, request.getContextPath()) + "?u=" + thisProduct;
+      %></mm:field
+    ></mm:related
+    ><%@include file="getprice.jsp"
 		%><%@include file="getdiscount.jsp" 
 		%><tr>
 			<td class="cart<%= rowParity %>" style="text-align:left;padding-right:0px;">
-				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "?u=" + thisProduct %>" 
+				<a href="javascript:changeIt('<mm:url page="<%= productUrl %>" 
 					/>');"><mm:field name="titel" /></a><br/>
 			</td>
 			<td class="cart<%= rowParity %>" style="padding-right:0px;">
