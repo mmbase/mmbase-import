@@ -84,7 +84,6 @@ public class NatMMConfig {
    public static String cssPath = "hoofdsite/themas/";
 
    // Natuurmonumenten
-   /*
    public static boolean urlConversion = true;
    public static boolean checkEmailByMailHost = false; // checking email by host can gives unacceptable long delays in booking on events 
    public static boolean hasClosedUserGroup = false;
@@ -104,7 +103,6 @@ public class NatMMConfig {
    public static String rootDir = "@natmmconf.rootDir@";
    public static String tempDir = "@natmmconf.tempDir@";
    public static String incomingDir = "@natmmconf.incomingDir@";
-   */
    
    // Life Line demo site
    /*
@@ -130,6 +128,7 @@ public class NatMMConfig {
    */
 
    // Development
+   /*
    public static boolean urlConversion = true;
    public static boolean checkEmailByMailHost = false;
    public static boolean hasClosedUserGroup = false;
@@ -149,7 +148,7 @@ public class NatMMConfig {
    public static String rootDir = "c:/data/natmm/webapps/ROOT";
    public static String tempDir = "C:/temp/";
    public static String incomingDir = "C:/data/natmm/incoming/";
-
+   */
 
    public NatMMConfig() {
    }
