@@ -1,4 +1,0 @@
-<tr>
-	<th>Website</th>
-	<td><a href="http://www.mmatch.nl/packages"><img src="images/arrow-right.gif"></a></td>
-</tr>

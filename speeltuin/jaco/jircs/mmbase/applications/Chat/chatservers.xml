@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<chatservers exportsource="mmbase://127.0.0.1/clouds/install" timestamp="20020925183417">
-	<node number="90" owner="admin" alias="ChatExampleServerNode">
-		<name>Chat Example Server</name>
-		<blackwordlist>blackwordlisttest</blackwordlist>
-		<workinghours></workinghours>
-	</node>
-
-</chatservers>
