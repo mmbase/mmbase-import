@@ -33,11 +33,7 @@
     <%@ include file="loadtranslations.jsp" %>
 
     <!-- action check -->
-    <mm:import externid="action" />
-    <mm:present referid="action">
-      <mm:include page="actions.jsp" />
-    </mm:present>
-    <!-- end action check -->
+    <c:if test="${not empty param.action}"><mm:include page="actions.jsp" /></c:if>
 
     <div class="header">
         <mm:function set="mmbob" name="getForumHeaderPath" referids="forumid">
