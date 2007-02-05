@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab.modules;
 
 import java.util.*;
+import java.util.regex.*;
 import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.functions.*;
 import org.mmbase.applications.crontab.*;
@@ -18,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.9 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: CrontabModule.java,v 1.10 2007-02-05 14:39:10 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -77,6 +78,8 @@ public class CrontabModule extends WatchedReloadableModule {
         String description = null;
         String configString = null;
         String type = null;
+        Pattern servers = CronEntry.ALL;
+
         if (tokens.length > 2) {
             description = tokens[2].trim();
         }
@@ -91,8 +94,12 @@ public class CrontabModule extends WatchedReloadableModule {
             type = tokens[4].trim();
         }
 
+        if (tokens.length > 5) {
+            servers = Pattern.compile(tokens[5].trim());
+        }
+
         try {
-            CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
+            CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type, servers);
             log.debug("Found job: " + job);
             myEntries.add(job);
             cronDaemon.add(job);
