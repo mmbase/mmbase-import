@@ -4,9 +4,10 @@
 >
 
 <project name="MultiLanguageGui" default="jar" basedir=".">
-  <property name="project.name"   value="multilanguagegui" />
-  <property name="project.package"   value="org/mmbase/applications" />
-  <property name="project.target.templates.dir" value="multilanguagegui" />
+	<property name="distro.version" value="1.0" />
+	<property name="project.name" value="multilanguagegui" />
+	<property name="project.package" value="org/mmbase/applications" />
+	<property name="project.target.templates.dir" value="multilanguagegui" />
 
   &base;
 
