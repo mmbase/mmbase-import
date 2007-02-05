@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab.modules;
 
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
@@ -67,6 +68,8 @@ public class CrontabModule extends WatchedReloadableModule {
             String description = null;
             String configString = null;
             String type = null;
+            Pattern  servers = CronEntry.ALL;
+
             if (tokens.length > 2) {
                 description = tokens[2].trim();
             }
@@ -80,9 +83,12 @@ public class CrontabModule extends WatchedReloadableModule {
             if (tokens.length > 4) {
                 type = tokens[4].trim();
             }
+            if (tokens.length > 5) {
+                servers = Pattern.compile(tokens[5].trim());
+            }
 
             try {
-                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
+                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type, servers);
                 myEntries.add(job);
                 cronDaemon.add(job);
             } catch (Exception e) {
