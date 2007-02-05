@@ -1,4 +1,2 @@
 Compiles against 1.7 after:
- cvs up -D 2005/05/01
-
-and after reading src/org/mmbase/module
+ cvs up -r MMBase-1_7_Crontab
