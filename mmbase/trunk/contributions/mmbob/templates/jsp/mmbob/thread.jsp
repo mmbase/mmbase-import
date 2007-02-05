@@ -375,11 +375,11 @@
 
                                                 <td>
                                                     <mm:compare referid="error" value="none" inverse="true">
-                                                        <mm:import externid="body" from="session"/>
+                                                        <mm:import id="localbody" externid="body" from="session"/><%--  it needs a new id, becouse ${body} will find the field in the session too--%>
                                                         <mm:import id="error" reset="true">none</mm:import>
                                                         <mm:write referid="error" session="error" />
                                                     </mm:compare>
-                                                        <textarea name="body" rows="5" style="width: 99%">${body}</textarea>
+                                                        <textarea name="body" rows="5" style="width: 99%">${localbody}</textarea>
                                                 </td>
                                             </tr>
 
