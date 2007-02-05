@@ -8,6 +8,8 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab;
 
 import java.util.*;
+import java.util.regex.*;
+import org.mmbase.module.core.MMBase;
 
 import org.mmbase.util.logging.*;
 
@@ -16,12 +18,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.7 2006-09-05 16:24:06 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.8 2007-02-05 14:39:10 michiel Exp $
  */
 
 public class CronEntry {
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
+
+    public static final Pattern ALL = Pattern.compile(".*");
 
     /**
      * A CronEntry of this type will run without the overhead of an extra thread. This does mean
@@ -56,7 +60,7 @@ public class CronEntry {
 
     private CronJob cronJob;
 
-    private List<Interruptable> threads = Collections.synchronizedList(new ArrayList());
+    private List<Interruptable> threads = Collections.synchronizedList(new ArrayList<Interruptable>());
 
     private final String id;
     private final String name;
@@ -75,6 +79,8 @@ public class CronEntry {
 
     private int type = DEFAULT_JOB_TYPE;
 
+    private final Pattern servers;
+
     public CronEntry(String id, String cronTime, String name, String className, String configuration) throws Exception {
         this(id, cronTime, name, className, configuration, DEFAULT_JOB_TYPE);
     }
@@ -82,12 +88,24 @@ public class CronEntry {
     public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString) throws Exception {
         this(id, cronTime, name, className, configuration, stringToJobType(typeString));
     }
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString, Pattern servers) throws Exception {
+        this(id, cronTime, name, className, configuration, stringToJobType(typeString), servers);
+    }
 
     /**
      * @throws ClassCastException if className does not refer to a Runnable.
      * @throws RuntimeException if the cronTime format isn't correct
      */
     public CronEntry(String id, String cronTime, String name, String className, String configuration, int type) throws Exception {
+        this(id, cronTime, name, className, configuration, type, ALL);
+    }
+
+
+    /**
+     * @throws ClassCastException if className does not refer to a Runnable.
+     * @throws RuntimeException if the cronTime format isn't correct
+     */
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, int type, Pattern servers) throws Exception {
         this.id = id;
         this.name = name == null ? "" : name;
         this.className = className;
@@ -103,6 +121,8 @@ public class CronEntry {
         }
 
         setCronTime(cronTime);
+
+        this.servers = servers;
     }
 
     public void init() {
@@ -210,6 +230,14 @@ public class CronEntry {
     }
 
     boolean mustRun(Date date) {
+        String machineName = MMBase.getMMBase().getMachineName();
+
+        if (! servers.matcher(machineName).matches()) {
+            log.service("This cron entry " + this + " must not run because this machine " + machineName + " does not match " + servers);
+            return false;
+        } else {
+            log.service(" " + machineName + " matched " + servers + " so must run");
+        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         if (minute.valid(cal.get(Calendar.MINUTE))
@@ -243,7 +271,7 @@ public class CronEntry {
     }
 
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + jobTypeToString(type);
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + jobTypeToString(type) + " on servers " + servers;
     }
 
     public int hashCode() {
@@ -255,7 +283,7 @@ public class CronEntry {
             return false;
         }
         CronEntry other = (CronEntry)o;
-        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
+        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers);
     }
 
 

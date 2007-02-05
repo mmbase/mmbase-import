@@ -17,6 +17,7 @@ import org.mmbase.util.logging.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b> 
  * @author Kees Jongenburger
+ * @version $Id: CronJobs.java,v 1.5 2007-02-05 14:39:10 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder implements Runnable {
 
@@ -129,7 +130,13 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
     }
 
     private CronEntry createCronEntry(Node node) throws Exception {
-        return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"),node.getIntValue("type"));
+        // should consider getRelatedNodes("mmservers") for the last argument of CronEntry        
+        return new CronEntry("" + node.getNumber(),
+                             node.getStringValue("crontime"), 
+                             node.getStringValue("name"), 
+                             node.getStringValue("classfile"), 
+                             node.getStringValue("config"),
+                             node.getIntValue("type"));
     }
 
     private Cloud getCloud() {
