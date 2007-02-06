@@ -7,6 +7,11 @@
 .mmxf img.image-right { 
   float: right !important;
 }
+.mmxf img.image-center {  
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 
 .mmxf div.float { 
   display: block !important;
@@ -63,6 +68,9 @@
   border: none;
   background-color: black;
   color: white;
+}
+.mmxf div.caption a { 
+  color: #bbf;
 }
 .mmxf table { 
   width: auto;
