@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:import id="forumid" externid="forumid" jspvar="forumid" />
 <mm:import externid="account" from="parameters" />
 <mm:import externid="password" from="parameters" />
