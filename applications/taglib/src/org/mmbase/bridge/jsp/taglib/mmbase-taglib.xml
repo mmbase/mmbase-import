@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.389 2007-02-03 13:25:33 nklasens Exp $
+version: $Id: mmbase-taglib.xml,v 1.390 2007-02-07 20:32:12 nklasens Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5393,7 +5393,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
-    <bodycontent>empty</bodycontent>
+    <bodycontent>JSP</bodycontent>
     <info>
       The size of the current list. It can also act as a `querycontainerreferrer' in which case
       the query of it is used to perform a database count.
@@ -5425,7 +5425,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.IndexTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
-    <bodycontent>empty</bodycontent>
+    <bodycontent>JSP</bodycontent>
     <info>
       The index of the current item of the current list. It can also act as a
       `querycontainerreferrer' in which case the `offset' and `maxnumber' properties of the query
