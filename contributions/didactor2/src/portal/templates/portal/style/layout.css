@@ -2,6 +2,13 @@ html, body {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
+.article { 
+  /*
+     IE6 Peek-a-boo bug:
+     http://www.dracos.co.uk/code/ie6-css-bug/
+\*/
+  line-height: 1.1;
+}
 div.column {
   vertical-align: top;
   margin-top: 0ex;
@@ -46,14 +53,14 @@ div.column div h1 {
 
 .article img { 
   float: right;
-  margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
+
 .article hr { 
-  margin: 0 0 0 0;
   padding: 0 0 0 0;
+  margin: 0 0 0 0;
   margin-top: 1ex;
-  height: 0px;
-  clear: right;
   visibility: hidden;
+  clear: both;
 }
+
