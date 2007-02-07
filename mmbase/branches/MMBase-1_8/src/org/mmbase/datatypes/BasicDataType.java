@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61 2006-07-18 12:58:40 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.1 2007-02-07 09:50:58 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -470,7 +470,7 @@ s     */
 
         errors = requiredRestriction.validate(errors, value, node, field);
 
-        if (value == null) {
+        if (castValue == null) {
             return errors; // null is valid, unless required.
         }
         if (testEnum) {
