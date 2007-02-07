@@ -13,7 +13,7 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.10 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: BooleanDataType.java,v 1.10.2.1 2007-02-07 09:50:58 michiel Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
@@ -29,6 +29,19 @@ public class BooleanDataType extends BasicDataType {
     public BooleanDataType(String name, boolean primitive) {
         super(name, primitive ? Boolean.TYPE : Boolean.class);
     }
+    
+    protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
+        if (value == null) return null;
+        if (value instanceof String) {
+            if ("".equals(value)) return null;
+            if ("-1".equals(value)) return null;
+        } else if (value instanceof Number) {
+            double d = ((Number) value).doubleValue();
+            if (d == -1.0) return null;
+        }
+        return super.preCast(value, cloud, node, field);
+    }
+     
 
     /**
      * Cast a bit more conservatively, because Casting aggressively casts everything to boolean,
