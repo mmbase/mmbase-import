@@ -4,6 +4,7 @@ html, body.portal {
   background-image: url("bg_body.gif");
   background-color: #679bff;
   background-repeat: repeat-x; 
+  font-family:Verdana,Tahoma,sans-serif;
 }
 
 .date { 
@@ -22,6 +23,7 @@ div.x1 {
 div.column div.menu *, div.column div.menu {
   background-color: #e2641b;
   color: black;
+  font-family: Arial Black, Arial, Verdana,sans-serif;  
 }
 div.column div.menu ul { 
   padding-top: 2ex;
