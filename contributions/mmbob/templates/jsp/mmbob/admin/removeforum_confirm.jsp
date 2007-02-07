@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="../jspbase.jsp" %>
 <mm:cloud name="mmbase" method="http" rank="administrator">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
@@ -15,44 +13,44 @@
 
 <mm:import externid="action" />
 <mm:compare value="removeforum" referid="action">
-	<mm:import id="feedback"><mm:booleanfunction set="mmbob" name="removeForum" referids="remforum" /></mm:import>
+    <mm:import id="feedback"><mm:booleanfunction set="mmbob" name="removeForum" referids="remforum" /></mm:import>
 </mm:compare>
 
 <div class="header">
 </div>
-                                                                                              
+
 <div class="bodypart">
 
 <mm:present referid="feedback">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
-	<tr><th>Forum deleted</th></tr>
-	</tr><td align="center"><form action="<mm:url page="../forums.jsp" />" method="post"><input type="submit" value="OK" /></form></td></tr>
+    <tr><th>Forum deleted</th></tr>
+    </tr><td align="center"><form action="<mm:url page="../forums.jsp" />" method="post"><input type="submit" value="OK" /></form></td></tr>
 </table>
 </mm:present>
 
 <mm:notpresent referid="feedback">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
   <tr><th colspan="3" align="left">Echt forum <mm:node number="$remforum"><mm:field name="name" /></mm:node> verwijderen ?
-	<p />
-	Dit houd in dat alle gebieden, onderwerpen, reacties en posters worden weg gegooit !!!
+    <p />
+    Dit houd in dat alle gebieden, onderwerpen, reacties en posters worden weg gegooit !!!
   </th></tr>
   </td></tr>
   <tr><td>
   <form action="<mm:url page="removeforum_confirm.jsp" />" method="post">
-	<p />
-	<center>
-	<input type="hidden" name="remforum" value="<mm:write referid="remforum" />" /> <input type="hidden" name="action" value="removeforum" />
-	<input type="submit" value="Ja, Echt Verwijderen">
-  	</form>
-	</td>
-	<td>
-  	<form action="<mm:url page="../forums.jsp" />" method="post">
-	<p />
-	<center>
-	<input type="submit" value="Oops, Nee toch niet">
-  	</form>
-	</td>
-	</tr>
+    <p />
+    <center>
+    <input type="hidden" name="remforum" value="<mm:write referid="remforum" />" /> <input type="hidden" name="action" value="removeforum" />
+    <input type="submit" value="Ja, Echt Verwijderen">
+    </form>
+    </td>
+    <td>
+    <form action="<mm:url page="../forums.jsp" />" method="post">
+    <p />
+    <center>
+    <input type="submit" value="Oops, Nee toch niet">
+    </form>
+    </td>
+    </tr>
 
 </table>
 </mm:notpresent>
@@ -60,7 +58,7 @@
 
 <div class="footer">
 </div>
-                                                                                              
+
 </body>
 </html>
 </mm:content>

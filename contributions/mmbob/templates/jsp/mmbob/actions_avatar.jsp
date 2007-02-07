@@ -1,6 +1,4 @@
-<?xml version="1.0"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud method="delegate" authenticate="class">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="selectedavatar"/>
@@ -10,7 +8,7 @@
 <%-- imports when request is multipart post --%>
 <mm:notpresent referid="selectedavatar">
   <mm:import externid="_handle_size" from="multipart"/>
-  <mm:compare referid="_handle_size" value="0" inverse="true"> 
+  <mm:compare referid="_handle_size" value="0" inverse="true">
     <mm:import externid="addavatar" from="multipart"/>
     <mm:import externid="selectavatar" from="multipart"/>
     <mm:import externid="otheravatarset" from="multipart"/>
@@ -53,7 +51,7 @@
                   constraints="rolerel.role='avatar'">
         <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
       </mm:related>
-      
+
       </mm:node>
       <mm:createnode id="avatarnode" type="images">
         <mm:setfield name="title">Uploaded avatar (<mm:write referid="_handle_name"/>)</mm:setfield>
@@ -66,19 +64,19 @@
         <mm:node referid="presentavatar">
           <mm:deletenode/>
         </mm:node>
-      </mm:present>  
+      </mm:present>
 
       <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
         <mm:setfield name="role">avatar</mm:setfield>
       </mm:createrelation>
-      
+
       <mm:notpresent referid="userset">
         <mm:createnode id="userset" type="avatarsets">
           <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
         </mm:createnode>
         <mm:createrelation source="posternode" destination="userset" role="related" />
-      </mm:notpresent>     
- 
+      </mm:notpresent>
+
       <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
 
     </mm:transaction>
@@ -95,7 +93,7 @@
                   constraints="rolerel.role='avatar'">
         <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
       </mm:related>
-      
+
       </mm:node>
       <mm:present referid="presentavatar">
         <mm:node referid="presentavatar">
@@ -118,9 +116,9 @@
           <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
         </mm:createnode>
         <mm:createrelation source="posternode" destination="userset" role="related" />
-      </mm:notpresent>  
-   
-      <mm:notpresent referid="avatarExists">    
+      </mm:notpresent>
+
+      <mm:notpresent referid="avatarExists">
         <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
       </mm:notpresent>
 
@@ -136,7 +134,7 @@
           <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
         </mm:relatednodes>
       </mm:node>
-                                                                                                                          
+
       <mm:node id="avatarnode" referid="deleteavatarnumber"/>
       <mm:present referid="userset">
         <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import>
@@ -144,7 +142,7 @@
           <mm:related path="posrel,images" fields="images.number" constraints="$constraint" >
             <mm:node element="posrel">
               <mm:deletenode/>
-            </mm:node> 
+            </mm:node>
           </mm:related>
         </mm:node>
       </mm:present>
@@ -171,16 +169,16 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                                                    
+
 <div class="bodypart">
 
     <mm:include page="path.jsp?type=$pathtype" />
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                         <tr><th colspan="2" align="left">
-                                        
-			</th>
-			</tr>
+
+            </th>
+            </tr>
 
 </table>
 
@@ -192,7 +190,7 @@
       <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
       <mm:param name="profile" value="$profile" />
       <mm:param name="referrer" value="profile.jsp" />
-      </mm:url>" method="post"> 
+      </mm:url>" method="post">
 
     <div id="profileb">
       <div id="tabs">
@@ -237,7 +235,7 @@
       <div class="row">
         <mm:node referid="forumid">
           <mm:relatednodescontainer type="avatarsets">
-            
+
             <mm:relatednodes>
               <mm:first>
                 <mm:notpresent referid="avatarsets">
@@ -259,7 +257,7 @@
           <mm:compare referid="postareaid" value="" inverse="true">
             <mm:node referid="postareaid">
               <mm:relatednodescontainer type="avatarsets">
-                
+
                 <mm:relatednodes>
                   <mm:first>
                     <mm:notpresent referid="avatarsets">
@@ -285,15 +283,15 @@
           <input type="submit" name="otheravatarset" value="OK" />
         </span>
         </mm:present>
-      
+
 
      <mm:notpresent referid="headdisplayed">
        <span class="label"><mm:write referid="mlg.No_avatars_installed"/></span>
-       
+
      </mm:notpresent>
 
 </div>
-     
+
       <div class="row">
       <mm:notpresent referid="avatarsets">
         <%--<mm:listnodes type="avatarsets" max="1">
@@ -312,7 +310,7 @@
         <mm:param name="avatarsets" value="$avatarsets" />
         <mm:field id="avatarnumber" name="number"/>
         <mm:param name="selectedavatarnumber" value="$avatarnumber" />
-       
+
         <mm:param name="selectedavatar" value="true" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="$profile" />
@@ -325,17 +323,17 @@
 
       </div>
       </mm:compare>
-      
+
     <mm:compare value="ownset" referid="avatarset">
     <div id="profile">
-     
+
       <div class="row">
 
       <mm:node number="$profileid">
         <mm:related path="avatarsets,images" fields="images.number">
         <mm:field id="avatarnumber" name="images.number" write="false"/>
- 
-        <div class="avatarimage"> 
+
+        <div class="avatarimage">
           <div class="deleteavatar">
             <a href="<mm:url page="actions_avatar.jsp">
             <mm:param name="forumid" value="$forumid" />
@@ -363,7 +361,7 @@
             <img src="<mm:image template="s(80x80)" />" width="80" border="0">
 </mm:node>
 </a>
-          </div> 
+          </div>
           </mm:related>
         </mm:node>
 
@@ -372,19 +370,19 @@
 
     <div class="spacer">&nbsp;</div>
 
-    </div> 
+    </div>
     </div>
   </form>
 
-</div>                                                                                                                     
+</div>
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                                                    
+
 </body>
 </html>
-                                                                                                                    
+
 </mm:notpresent></mm:notpresent>
 
 </mm:locale>

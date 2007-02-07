@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -35,7 +33,7 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                                       
+
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
 <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
@@ -46,46 +44,46 @@
 
 <mm:node referid="forumid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-	<tr><th><mm:write referid="mlg.Administrators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
-	<mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
-	<mm:node element="posters">
+    <tr><th><mm:write referid="mlg.Administrators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
+    <mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
+    <mm:node element="posters">
 
-	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
-	</mm:node>
-	</mm:related>
+    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
+    </mm:node>
+    </mm:related>
 </table>
 
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-	<tr><th><mm:write referid="mlg.Moderators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
-	<mm:related path="postareas">
-	<mm:node element="postareas">
-		<tr><th><mm:field name="name" /></th><th></th><th></th></tr>
-		<mm:related path="rolerel,posters" constraints="rolerel.role like '%moderator%'">
-		<mm:first><mm:import id="foundresult" /></mm:first>
-		<mm:node element="posters">
+    <tr><th><mm:write referid="mlg.Moderators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
+    <mm:related path="postareas">
+    <mm:node element="postareas">
+        <tr><th><mm:field name="name" /></th><th></th><th></th></tr>
+        <mm:related path="rolerel,posters" constraints="rolerel.role like '%moderator%'">
+        <mm:first><mm:import id="foundresult" /></mm:first>
+        <mm:node element="posters">
 
-	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
-		</mm:node>
-	        </mm:related>
-		<mm:notpresent referid="foundresult">
-		<tr><td colspan="3">Geen <mm:write referid="mlg.Moderators" /></tr></td>
-		</mm:notpresent>	
-		<mm:remove referid="foundresult" />
-	</mm:node>
-	</mm:related>
+    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
+        </mm:node>
+            </mm:related>
+        <mm:notpresent referid="foundresult">
+        <tr><td colspan="3">Geen <mm:write referid="mlg.Moderators" /></tr></td>
+        </mm:notpresent>
+        <mm:remove referid="foundresult" />
+    </mm:node>
+    </mm:related>
 </table>
 
 </mm:node>
-                                                                                                       
-</div>                                                                                                        
+
+</div>
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                                       
+
 </body>
-</html>                                                                                                        
+</html>
 
 </mm:locale>
 </mm:content>
