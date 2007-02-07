@@ -10,7 +10,7 @@
       <description xml:lang="en">Title of the newsitem</description>
     </field>
     <field fdatapath="field[@name='pos']"  ftype="line" />
-    <field wizardname="config/news/news" ftype="startwizard" />
+    <field wizardname="config/news/news" ftype="startwizard" inline="true"/>
   </item>
   
   <action type="create">
