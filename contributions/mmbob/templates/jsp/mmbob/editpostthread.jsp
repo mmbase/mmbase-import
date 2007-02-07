@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -41,7 +39,7 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                              
+
 <div class="bodypart">
 
 <mm:compare referid="ismoderator" value="false">
@@ -57,58 +55,58 @@
     <mm:node referid="postthreadid">
     <tr><th colspan="3"><mm:write referid="mlg.Edit_postthread" /></th></tr>
     <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
-	<tr><th width="200"><mm:write referid="mlg.Status" /></th><td colspan="2" align="middle">
-		<select name="state">
-		<mm:field name="state">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
-		<option value="closed" <mm:compare value="closed">selected</mm:compare>><mm:write referid="mlg.closed" />
-		<option value="pinned" <mm:compare value="pinned">selected</mm:compare>><mm:write referid="mlg.pinned" />
-		<option value="pinnedclosed" <mm:compare value="pinnedclosed">selected</mm:compare>><mm:write referid="mlg.pinned" /><mm:write referid="mlg.closed" />
-		</mm:field>
-		</select>
-	</td></th>
-	<tr><th><mm:write referid="mlg.Mood"/></th><td align="middle" colspan="2">
-		<select name="mood">
-		<mm:field name="mood">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
-		<option value="mad" <mm:compare value="mad">selected</mm:compare>><mm:write referid="mlg.mad"/>
-		<option value="happy" <mm:compare value="happy">selected</mm:compare>><mm:write referid="mlg.happy"/>
-		<option value="sad" <mm:compare value="sad">selected</mm:compare>><mm:write referid="mlg.sad"/>
-		<option value="question" <mm:compare value="question">selected</mm:compare>><mm:write referid="mlg.question"/>
-		<option value="warning" <mm:compare value="warning">selected</mm:compare>><mm:write referid="mlg.warning"/>
-		<option value="joke" <mm:compare value="joke">selected</mm:compare>><mm:write referid="mlg.joke"/>
-		<option value="idea" <mm:compare value="idea">selected</mm:compare>><mm:write referid="mlg.idea"/>
-		<option value="suprised" <mm:compare value="suprised">selected</mm:compare>><mm:write referid="mlg.surprised"/>
-		</mm:field>
-		</select>
-	<tr><th>Type</th><td align="middle" colspan="2">
-		<select name="ttype">
-		<mm:field name="ttype">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal"/>
-		<option value="note" <mm:compare value="note">selected</mm:compare>><mm:write referid="mlg.note"/>
-		<option value="faq" <mm:compare value="faq">selected</mm:compare>><mm:write referid="mlg.faq"/>
-		<option value="announcement" <mm:compare value="announcement">selected</mm:compare>><mm:write referid="mlg.announcement"/>
-		</select>
-		</mm:field>
-		</td></th>
+    <tr><th width="200"><mm:write referid="mlg.Status" /></th><td colspan="2" align="middle">
+        <select name="state">
+        <mm:field name="state">
+        <option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
+        <option value="closed" <mm:compare value="closed">selected</mm:compare>><mm:write referid="mlg.closed" />
+        <option value="pinned" <mm:compare value="pinned">selected</mm:compare>><mm:write referid="mlg.pinned" />
+        <option value="pinnedclosed" <mm:compare value="pinnedclosed">selected</mm:compare>><mm:write referid="mlg.pinned" /><mm:write referid="mlg.closed" />
+        </mm:field>
+        </select>
+    </td></th>
+    <tr><th><mm:write referid="mlg.Mood"/></th><td align="middle" colspan="2">
+        <select name="mood">
+        <mm:field name="mood">
+        <option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
+        <option value="mad" <mm:compare value="mad">selected</mm:compare>><mm:write referid="mlg.mad"/>
+        <option value="happy" <mm:compare value="happy">selected</mm:compare>><mm:write referid="mlg.happy"/>
+        <option value="sad" <mm:compare value="sad">selected</mm:compare>><mm:write referid="mlg.sad"/>
+        <option value="question" <mm:compare value="question">selected</mm:compare>><mm:write referid="mlg.question"/>
+        <option value="warning" <mm:compare value="warning">selected</mm:compare>><mm:write referid="mlg.warning"/>
+        <option value="joke" <mm:compare value="joke">selected</mm:compare>><mm:write referid="mlg.joke"/>
+        <option value="idea" <mm:compare value="idea">selected</mm:compare>><mm:write referid="mlg.idea"/>
+        <option value="suprised" <mm:compare value="suprised">selected</mm:compare>><mm:write referid="mlg.surprised"/>
+        </mm:field>
+        </select>
+    <tr><th>Type</th><td align="middle" colspan="2">
+        <select name="ttype">
+        <mm:field name="ttype">
+        <option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal"/>
+        <option value="note" <mm:compare value="note">selected</mm:compare>><mm:write referid="mlg.note"/>
+        <option value="faq" <mm:compare value="faq">selected</mm:compare>><mm:write referid="mlg.faq"/>
+        <option value="announcement" <mm:compare value="announcement">selected</mm:compare>><mm:write referid="mlg.announcement"/>
+        </select>
+        </mm:field>
+        </td></th>
 
-	<tr><th>&nbsp;</th><td align="center">
-	<input type="hidden" name="action" value="editpostthread">
-	<input type="submit" value="<mm:write referid="mlg.Save"/>">
-	</td>
-	<td align="center">
-	</mm:node>
+    <tr><th>&nbsp;</th><td align="center">
+    <input type="hidden" name="action" value="editpostthread">
+    <input type="submit" value="<mm:write referid="mlg.Save"/>">
+    </td>
+    <td align="center">
+    </mm:node>
         </form>
-  	<form action="<mm:url page="postarea.jsp">
-	<mm:param name="forumid" value="$forumid" />
-	<mm:param name="postareaid" value="$postareaid" />
-	</mm:url>"
- 	method="post">
-	<p />
-	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-  	</form>
-	</td>
-	</tr>
+    <form action="<mm:url page="postarea.jsp">
+    <mm:param name="forumid" value="$forumid" />
+    <mm:param name="postareaid" value="$postareaid" />
+    </mm:url>"
+    method="post">
+    <p />
+    <input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+    </form>
+    </td>
+    </tr>
   </table>
 </mm:compare>
 
@@ -118,7 +116,7 @@
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                              
+
 </body>
 </html>
 </mm:locale>

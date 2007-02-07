@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="../jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -20,7 +18,7 @@
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
   <mm:remove referid="adminmode" />
   <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
-</mm:nodefunction> 
+</mm:nodefunction>
 
 <html>
 <head>
@@ -33,7 +31,7 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                              
+
 <div class="bodypart">
   <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
   <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
@@ -52,56 +50,56 @@
 
 <mm:present referid="feedback">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
-	<tr><th>moderator added</th></tr>
-	</tr><td align="center"><form action="<mm:url page="../postarea.jsp" referids="forumid,postareaid" />" method="post"><input type="submit" value="OK" /></form></td></tr>
+    <tr><th>moderator added</th></tr>
+    </tr><td align="center"><form action="<mm:url page="../postarea.jsp" referids="forumid,postareaid" />" method="post"><input type="submit" value="OK" /></form></td></tr>
 </table>
 </mm:present>
 <mm:notpresent referid="feedback">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3" align="left" ><mm:write referid="mlg.Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
-  
+
   </th></tr>
 
-	<tr><th align="left" width="25%"><mm:write referid="mlg.Current_moderators" /></th><td colspan="2" align="left">
-  		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-			<mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-		  </mm:nodelistfunction>
-	<p />
-	</td></tr>
-	<tr><th align="left"><mm:write referid="mlg.Possible_moderators" /></th><td colspan="2" align="left">
-		  <mm:import externid="searchkey">*</mm:import>
+    <tr><th align="left" width="25%"><mm:write referid="mlg.Current_moderators" /></th><td colspan="2" align="left">
+          <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
+            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+          </mm:nodelistfunction>
+    <p />
+    </td></tr>
+    <tr><th align="left"><mm:write referid="mlg.Possible_moderators" /></th><td colspan="2" align="left">
+          <mm:import externid="searchkey">*</mm:import>
                   <form action="<mm:url page="newmoderator.jsp" referids="forumid,postareaid" />" method="post">
                         search <input name="searchkey" size="20" value="<mm:write referid="searchkey" />" />
                   </form>
-  		  <form action="<mm:url page="newmoderator.jsp" referids="forumid,postareaid" />" method="post">
-		  <select name="newmoderator">
-  		  <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid,searchkey">
-				<option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-		  </mm:nodelistfunction>
-		</select>
-	</td></tr>
-	<input type="hidden" name="admincheck" value="true">
-	<input type="hidden" name="action" value="newmoderator">
-	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg.Add" />">
-  	</form>
-	</td>
-	<td align="center">
-  	<form action="<mm:url page="../postarea.jsp" referids="forumid,postareaid" />" method="post">
-	<p />
-	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
-  	</form>
-	</td>
-	</tr>
+          <form action="<mm:url page="newmoderator.jsp" referids="forumid,postareaid" />" method="post">
+          <select name="newmoderator">
+          <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid,searchkey">
+                <option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+          </mm:nodelistfunction>
+        </select>
+    </td></tr>
+    <input type="hidden" name="admincheck" value="true">
+    <input type="hidden" name="action" value="newmoderator">
+    <tr><th>&nbsp;</th><td align="middle" >
+    <input type="submit" value="<mm:write referid="mlg.Add" />">
+    </form>
+    </td>
+    <td align="center">
+    <form action="<mm:url page="../postarea.jsp" referids="forumid,postareaid" />" method="post">
+    <p />
+    <input type="submit" value="<mm:write referid="mlg.Cancel" />">
+    </form>
+    </td>
+    </tr>
 
 </table>
 </mm:notpresent>
 </mm:compare>
 <mm:compare referid="adminmode" value="false">
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
-		<tr><th>MMBob system error</th></tr>
-		<tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
-	</table>
+    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
+        <tr><th>MMBob system error</th></tr>
+        <tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
+    </table>
 </mm:compare>
 </div>
 
@@ -109,7 +107,7 @@
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                              
+
 </body>
 </html>
 
