@@ -7,69 +7,16 @@
   >
   <!--
     searchlist.xls
-    @version $Id: searchlist.xsl,v 1.7 2006-11-27 12:26:04 mmeeuwissen Exp $
+    @version $Id: searchlist.xsl,v 1.8 2007-02-07 15:37:23 mmeeuwissen Exp $
   -->
+
+  <xsl:import href="ew:xsl/searchlist.xsl" />
 
 
   <!--
-      TODO: Explore what the actual differences are with ew:xsl/searchlist and override only _those_ templates.
+      TODO: these overridden template are much much too complex.
+      I cannot see what actually is didactor specific.
   -->
-  <xsl:import href="ew:xsl/searchlist.xsl" />
-
-  <xsl:variable name="listimagesize">+s(100x60)</xsl:variable>
-
-  <xsl:variable name="BodyOnLoad">window.focus(); preselect(selected); doOnloadSearch(); resizeSelectTable();</xsl:variable>
-
-  <xsl:template name="javascript">
-    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
-      <xsl:comment>help IE</xsl:comment>
-    </script>
-    <script type="text/javascript" src="{$javascriptdir}tools.js">
-      <xsl:comment>help IE</xsl:comment>
-    </script>
-    <script type="text/javascript">
-      window.status = "<xsl:value-of select="tooltip_select_search" />";
-      var listpage = "<xsl:value-of disable-output-escaping="yes" select="$listpage" />";
-      var searchtype = getParameter_general("type", "objects");
-      var searchterm = getParameter_general("searchterm", "nothing");
-      var cmd = getParameter_general("cmd", "");
-      var selected = getParameter_general("selected", "");
-    </script>
-
-    <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
-    <xsl:choose>
-      <xsl:when test="$SEARCH_LIST_TYPE=&apos;IFRAME&apos;">
-        <script type="text/javascript" src="{$javascriptdir}searchiframe.js">
-          <xsl:comment>help IE</xsl:comment>
-        </script>
-      </xsl:when>
-      <xsl:otherwise>
-        <script type="text/javascript" src="{$javascriptdir}searchwindow.js">
-          <xsl:comment>help IE</xsl:comment>
-        </script>
-      </xsl:otherwise>	
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template name="htmltitle"><xsl:value-of select="$searchpage_title" /></xsl:template>
-
-  <xsl:template name="style">
-    <link rel="stylesheet" type="text/css" href="{$cssdir}layout/searchlist.css" />
-  </xsl:template>
-
-  <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$cssdir}color/searchlist.css" />
-  </xsl:template>
-
-  <xsl:template name="headcontent" />
-
-  <xsl:template name="body">
-    <tr>
-  	  <td>
-    <xsl:apply-templates select="list" />
-      </td>
-    </tr>
-  </xsl:template>
 
   <xsl:template match="list">
     <form>
@@ -292,47 +239,5 @@
     </div>
   </xsl:template>
 
-  <xsl:template match="field">
-    <td>
-			<xsl:call-template name="writeCurrentField" />
-    </td>
-  </xsl:template>
-
-  <xsl:template match="pages">
-    <xsl:if test="page[@previous=&apos;true&apos;]">
-      <a class="pagenav"
-        title="{$tooltip_previous}{@currentpage-1}"
-        href="javascript:browseTo({page[@previous=&apos;true&apos;]/@start});">
-        <xsl:call-template name="prompt_previous" />
-      </a>
-      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-    </xsl:if>
-
-    <xsl:apply-templates select="page" />
-
-    <xsl:if test="page[@next=&apos;true&apos;]">
-      <a class="pagenav"
-        title="{$tooltip_next}{@currentpage+1}"
-        href="javascript:browseTo({page[@next=&apos;true&apos;]/@start});">
-        <xsl:call-template name="prompt_next" />
-      </a>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template match="page">
-   <a class="pagenav" title="{$tooltip_goto}{position()}" href="javascript:browseTo({@start});">
-      <xsl:value-of select="position()" />
-    </a>
-    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="page[@current=&apos;true&apos;]">
-    <span class="pagenav-current">
-      <xsl:value-of select="position()" />
-      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text> 
-      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>   
-    </span>
-  </xsl:template>
 
 </xsl:stylesheet>
