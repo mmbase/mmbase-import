@@ -15,7 +15,9 @@
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/> 
 
   <mm:content type="text/html" postprocessor="none" expires="0">
+
     <jsp:directive.include file="/shared/findProvider.jspx" />
+
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title><di:translate key="education.learnenvironmenttitle" /></title>
