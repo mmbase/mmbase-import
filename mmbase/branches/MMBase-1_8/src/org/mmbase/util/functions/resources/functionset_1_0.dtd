@@ -20,6 +20,7 @@
 <!ATTLIST param name CDATA #IMPLIED>
 <!ATTLIST param type CDATA #IMPLIED>
 <!ATTLIST param description CDATA #IMPLIED>
+<!ATTLIST param required CDATA #IMPLIED>
 
 <!ELEMENT return (field*)>
 <!ATTLIST return type CDATA #IMPLIED>
