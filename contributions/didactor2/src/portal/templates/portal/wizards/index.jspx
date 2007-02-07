@@ -6,7 +6,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
   <mm:import id="education" externid="educationid" required="true" />
-  <mm:content type="text/html" expires="0">
+  <mm:import externid="language">en</mm:import>
+  <mm:content type="text/html" expires="0" language="${language}">
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title><di:translate key="portal.portal" /></title>
