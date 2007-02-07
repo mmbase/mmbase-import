@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -41,7 +39,7 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                              
+
 <div class="bodypart">
 
 <mm:compare referid="ismoderator" value="false">
@@ -57,34 +55,34 @@
     <mm:node referid="postthreadid">
     <tr><th colspan="3"><mm:write referid="mlg.Move_postthread" /></th></tr>
     <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
-	<tr><th width="200"><mm:write referid="mlg.Areas" /></th><td colspan="2" align="middle">
-		<select name="newpostareaid">
- 		<mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
-		<mm:field name="id">
-		<mm:compare referid2="postareaid" inverse="true">
-		<option value="<mm:field name="id" />"><mm:field name="name" />
-		</mm:compare>
-		</mm:field>
-		</mm:nodelistfunction>
-		</select>
-	</td></th>
-	<tr><th>&nbsp;</th><td align="center">
-	<input type="hidden" name="action" value="movepostthread">
-	<input type="submit" value="<mm:write referid="mlg.Move"/>">
-	</td>
-	<td align="center">
-	</mm:node>
+    <tr><th width="200"><mm:write referid="mlg.Areas" /></th><td colspan="2" align="middle">
+        <select name="newpostareaid">
+        <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+        <mm:field name="id">
+        <mm:compare referid2="postareaid" inverse="true">
+        <option value="<mm:field name="id" />"><mm:field name="name" />
+        </mm:compare>
+        </mm:field>
+        </mm:nodelistfunction>
+        </select>
+    </td></th>
+    <tr><th>&nbsp;</th><td align="center">
+    <input type="hidden" name="action" value="movepostthread">
+    <input type="submit" value="<mm:write referid="mlg.Move"/>">
+    </td>
+    <td align="center">
+    </mm:node>
         </form>
-  	<form action="<mm:url page="postarea.jsp">
-	<mm:param name="forumid" value="$forumid" />
-	<mm:param name="postareaid" value="$postareaid" />
-	</mm:url>"
- 	method="post">
-	<p />
-	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-  	</form>
-	</td>
-	</tr>
+    <form action="<mm:url page="postarea.jsp">
+    <mm:param name="forumid" value="$forumid" />
+    <mm:param name="postareaid" value="$postareaid" />
+    </mm:url>"
+    method="post">
+    <p />
+    <input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+    </form>
+    </td>
+    </tr>
   </table>
 </mm:compare>
 
@@ -94,7 +92,7 @@
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                              
+
 </body>
 </html>
 </mm:locale>
