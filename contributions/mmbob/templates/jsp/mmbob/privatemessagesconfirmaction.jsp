@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
@@ -18,7 +16,7 @@
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
-                                                                                                                    
+
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
@@ -45,36 +43,36 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 20px;" width="95%">
  <tr>
    <td width="160" valign="top">
-	<table cellpadding="0" width="150">
-	<tr><td>
-	<table cellpadding="0" class="list" cellspacing="0" width="150">
-	<tr><th><mm:write referid="mlg.Folder" /></th></tr>
-	<mm:node referid="posterid">
-	<mm:related path="posrel,forummessagebox">
-		<mm:node element="forummessagebox">
-			<mm:field name="name">
-			<mm:notpresent referid="mailboxid">
-			<mm:compare referid2="boxname">
-				<mm:remove referid="mailboxid" />
-				<mm:import id="mailboxid"><mm:field name="number" /></mm:import>
-			</mm:compare> 
-			</mm:notpresent> 
-			</mm:field>
-			<tr><td><a href="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid" />"><mm:field name="name" /></a> (<mm:relatednodes type="forumprivatemessage"><mm:last><mm:size /></mm:last></mm:relatednodes>)</td></tr>
-		</mm:node>
-	</mm:related>
-	</mm:node>
-	</table>
-	</td></tr>
-	<tr><td>
-	<form action="" METHOD="POST">
-	<table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
-	<tr><th><mm:write referid="mlg.Add_folder" /></th></tr>
-	<tr><td><input name="newfolder" style="width: 98%" /></td></tr>
-	</table>
-	</form>
-	</td></tr>
-	<tr><td>
+    <table cellpadding="0" width="150">
+    <tr><td>
+    <table cellpadding="0" class="list" cellspacing="0" width="150">
+    <tr><th><mm:write referid="mlg.Folder" /></th></tr>
+    <mm:node referid="posterid">
+    <mm:related path="posrel,forummessagebox">
+        <mm:node element="forummessagebox">
+            <mm:field name="name">
+            <mm:notpresent referid="mailboxid">
+            <mm:compare referid2="boxname">
+                <mm:remove referid="mailboxid" />
+                <mm:import id="mailboxid"><mm:field name="number" /></mm:import>
+            </mm:compare>
+            </mm:notpresent>
+            </mm:field>
+            <tr><td><a href="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid" />"><mm:field name="name" /></a> (<mm:relatednodes type="forumprivatemessage"><mm:last><mm:size /></mm:last></mm:relatednodes>)</td></tr>
+        </mm:node>
+    </mm:related>
+    </mm:node>
+    </table>
+    </td></tr>
+    <tr><td>
+    <form action="" METHOD="POST">
+    <table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
+    <tr><th><mm:write referid="mlg.Add_folder" /></th></tr>
+    <tr><td><input name="newfolder" style="width: 98%" /></td></tr>
+    </table>
+    </form>
+    </td></tr>
+    <tr><td>
         <table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
         <mm:import id="barsize">150</mm:import>
         <mm:nodefunction set="mmbob" name="getQuotaInfo" referids="forumid,posterid,barsize">
@@ -84,68 +82,68 @@
         <tr><td align="left" width="33%">0%</td><td align="middle" width="34%">50%</td><td align="right" width="33%">100%</td></tr>
         </mm:nodefunction>
         </table>
-	</td></tr>
-	</table>
+    </td></tr>
+    </table>
    </td>
    <td valign="top" align="center">
-	<table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="70%" border="1">
-	<tr><th colspan="2">
-	<mm:write referid="folderaction">
+    <table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="70%" border="1">
+    <tr><th colspan="2">
+    <mm:write referid="folderaction">
                 <mm:compare referid2="mlg.new">**<mm:write referid="mlg.Not_implemented"/>** I guess this should create a new message ;-) ?</mm:compare>
-		<mm:compare referid2="mlg.delete"><mm:write referid="mlg.Delete_message_from" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
-		<mm:compare referid2="mlg.email"><mm:write referid="mlg.Email_message_to" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
-		<mm:compare referid2="mlg.move"><mm:write referid="mlg.Move_message_to_different_folder" /></mm:compare>
-		<mm:compare referid2="mlg.delete_mailbox"><mm:write referid="mlg.Delete_message_from"/> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder"/></mm:compare>
-		<mm:compare referid2="mlg.forward"><mm:write referid="mlg.Forward_message_to_other_member"/></mm:compare>
-	</mm:write>
-	</th></tr>
-	<mm:present referid="mailboxid">
-	<tr>
-	<td width="50%" align="center" colspan="2">
-		<mm:write referid="folderaction">
-		<mm:compare referid2="mlg.delete_mailbox">
-    		  <br />
-		  <mm:node referid="mailboxid">
-		    <mm:write referid="mlg.Delete"/> <mm:write referid="mlg.Mailbox"/> '<b><mm:field name="name" /></b>' ?
-		    <br /><br />
-		  </mm:node>
-		</mm:compare>
+        <mm:compare referid2="mlg.delete"><mm:write referid="mlg.Delete_message_from" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
+        <mm:compare referid2="mlg.email"><mm:write referid="mlg.Email_message_to" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
+        <mm:compare referid2="mlg.move"><mm:write referid="mlg.Move_message_to_different_folder" /></mm:compare>
+        <mm:compare referid2="mlg.delete_mailbox"><mm:write referid="mlg.Delete_message_from"/> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder"/></mm:compare>
+        <mm:compare referid2="mlg.forward"><mm:write referid="mlg.Forward_message_to_other_member"/></mm:compare>
+    </mm:write>
+    </th></tr>
+    <mm:present referid="mailboxid">
+    <tr>
+    <td width="50%" align="center" colspan="2">
+        <mm:write referid="folderaction">
+        <mm:compare referid2="mlg.delete_mailbox">
+              <br />
+          <mm:node referid="mailboxid">
+            <mm:write referid="mlg.Delete"/> <mm:write referid="mlg.Mailbox"/> '<b><mm:field name="name" /></b>' ?
+            <br /><br />
+          </mm:node>
+        </mm:compare>
                 <mm:compare referid2="mlg.new">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
                 <mm:compare referid2="mlg.delete">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
                 <mm:compare referid2="mlg.email">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
                 <mm:compare referid2="mlg.move">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
                 <mm:compare referid2="mlg.forward">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
 
-		</mm:write>
-	</td>
-	</tr>
+        </mm:write>
+    </td>
+    </tr>
   <tr><td align="center">
-  	<form action="<mm:url page="privatemessages.jsp" referids="forumid"></mm:url>" method="post">
-	<p />
-	<mm:write referid="folderaction">
-	<input type="hidden" name="action" value="removefolder">
-	<input type="hidden" name="foldername" value="<mm:node referid="mailboxid"><mm:field name="name" /></mm:node>">
-	<mm:compare referid2="mlg.delete_mailbox"><input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.delete"/>"> </mm:compare>
+    <form action="<mm:url page="privatemessages.jsp" referids="forumid"></mm:url>" method="post">
+    <p />
+    <mm:write referid="folderaction">
+    <input type="hidden" name="action" value="removefolder">
+    <input type="hidden" name="foldername" value="<mm:node referid="mailboxid"><mm:field name="name" /></mm:node>">
+    <mm:compare referid2="mlg.delete_mailbox"><input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.delete"/>"> </mm:compare>
         <mm:compare referid2="mlg.new">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
         <mm:compare referid2="mlg.delete">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
         <mm:compare referid2="mlg.email">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
         <mm:compare referid2="mlg.move">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
         <mm:compare referid2="mlg.forward">**<mm:write referid="mlg.Not_implemented"/>**</mm:compare>
 
-	</mm:write>
-  	</form>
-	</td>
-	<td align="center">
-  	<form action="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid"></mm:url>" method="post">
-	<p />
-	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-  	</form>
-	</td>
-	</tr>
+    </mm:write>
+    </form>
+    </td>
+    <td align="center">
+    <form action="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid"></mm:url>" method="post">
+    <p />
+    <input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+    </form>
+    </td>
+    </tr>
 
-	</mm:present>
-	</table>
-	</form>
+    </mm:present>
+    </table>
+    </form>
    </td>
  </tr>
 </table>

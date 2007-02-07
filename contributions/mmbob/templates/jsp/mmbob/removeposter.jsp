@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -11,7 +9,7 @@
 <!-- login part -->
   <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
-                                                                                                                    
+
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
@@ -33,21 +31,21 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-                                                                                              
+
 <div class="bodypart">
 <mm:import externid="removeposterid"/>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr>
     <th colspan="3" align="center" >
-      <mm:write referid="mlg.Delete" /> <mm:write referid="mlg.member"/> 
+      <mm:write referid="mlg.Delete" /> <mm:write referid="mlg.member"/>
     </th>
   </tr>
 
   <form action="<mm:url page="index.jsp">
-					<mm:param name="forumid" value="$forumid" />
+                    <mm:param name="forumid" value="$forumid" />
                                         <mm:param name="removeposterid" value="$removeposterid"/>
-					<mm:param name="admincheck" value="true" />
-				</mm:url>" method="post">
+                    <mm:param name="admincheck" value="true" />
+                </mm:url>" method="post">
   <tr>
     <td colspan="2" align="center">
       <mm:write referid="mlg.Delete" /> <mm:write referid="mlg.member"/> : <mm:node number="$removeposterid"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)</mm:node>
@@ -60,16 +58,16 @@
 
   <input type="hidden" name="admincheck" value="true">
   <input type="hidden" name="action" value="removeposter">
-  
-  
+
+
   <tr>
     <td align="center" ><input type="submit" value="<mm:write referid="mlg.Delete" />"> </td>
     <td>
-      </form> 
+      </form>
       <form action="<mm:url page="index.jsp">
-	<mm:param name="forumid" value="$forumid" />
-	</mm:url>"
- 	method="post">
+    <mm:param name="forumid" value="$forumid" />
+    </mm:url>"
+    method="post">
       <p />
       <center>
       <input type="submit" value="<mm:write referid="mlg.Cancel" />">
@@ -84,7 +82,7 @@
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div>
-                                                                                              
+
 </body>
 </html>
 

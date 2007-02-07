@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ include file="jspbase.jsp" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 
@@ -11,7 +9,7 @@
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
-                                                                                                                    
+
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
@@ -19,16 +17,16 @@
 <mm:import externid="action" />
 <mm:present referid="action">
 <mm:compare value="remail" referid="action">
-	<mm:import externid="wantedaccount" />
-	<mm:node referid="forumid">
-		<mm:import id="wforum"><mm:field name="name" /></mm:import>
-       		<mm:relatednodes type="posters" constraints="(account='$wantedaccount')" max="1">
-		<mm:import id="wemail"><mm:field name="email" /></mm:import>
-		<mm:import id="posterid" reset="true"><mm:field name="number" /></mm:import>
-		<mm:import id="email"><mm:field name="email" /></mm:import>
+    <mm:import externid="wantedaccount" />
+    <mm:node referid="forumid">
+        <mm:import id="wforum"><mm:field name="name" /></mm:import>
+            <mm:relatednodes type="posters" constraints="(account='$wantedaccount')" max="1">
+        <mm:import id="wemail"><mm:field name="email" /></mm:import>
+        <mm:import id="posterid" reset="true"><mm:field name="number" /></mm:import>
+        <mm:import id="email"><mm:field name="email" /></mm:import>
 
-		<mm:import id="waccount"><mm:field name="account" /></mm:import>
-                
+        <mm:import id="waccount"><mm:field name="account" /></mm:import>
+
                 <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
                 <mm:import id="lastname"><mm:field name="lastname" /></mm:import>
                 <mm:import id="gender"><mm:field name="gender" /></mm:import>
@@ -36,7 +34,7 @@
                 <% String newPassword =
                 Integer.toHexString(
                     (int)(Math.random() * 0xfffffff)); %>
-		<mm:import id="wpassword"><%=newPassword %></mm:import>
+        <mm:import id="wpassword"><%=newPassword %></mm:import>
                 <mm:import id="newpassword"><mm:write referid="wpassword"/></mm:import>
                <mm:import id="newconfirmpassword"><mm:write referid="wpassword"/></mm:import>
                 <!--  create the email node -->
@@ -47,21 +45,21 @@
                         <mm:setfield name="body"> <mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
 
 
-			<mm:write referid="mlg.login_name" />=<mm:write referid="waccount" />
-			<mm:write referid="mlg.password" />=<mm:write referid="wpassword" />
-			</mm:setfield>
+            <mm:write referid="mlg.login_name" />=<mm:write referid="waccount" />
+            <mm:write referid="mlg.password" />=<mm:write referid="wpassword" />
+            </mm:setfield>
                 </mm:createnode>
 
 
                 <!-- send the email node -->                    <mm:node referid="mail1">
                         <mm:field name="mail(oneshot)" />
                 </mm:node>
-		<mm:import id="mailed">true</mm:import>
+        <mm:import id="mailed">true</mm:import>
                 </mm:relatednodes>
-	</mm:node>
- 
+    </mm:node>
+
         <%-- setting new password into poster --%>
-	<mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
+    <mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
 
 
 
@@ -82,7 +80,7 @@
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
 </div>
-										      
+
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
@@ -131,7 +129,7 @@
     <jsp:include page="<%=footerpath%>"/>
 
 </div>
-                                                                                              
+
 </body>
 </html>
 
