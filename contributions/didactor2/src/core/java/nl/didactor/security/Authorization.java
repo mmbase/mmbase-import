@@ -7,14 +7,14 @@ import org.mmbase.security.SecurityException;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
+
 
 /**
  * This class is based on the NoAuthorization class from MMBase.
  *
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.1 2005-12-02 10:21:39 jverelst Exp $
+ * @version $Id: Authorization.java,v 1.2 2007-02-07 15:22:10 mmeeuwissen Exp $
  */
 public class Authorization extends org.mmbase.security.Authorization {
 
@@ -54,7 +54,7 @@ public class Authorization extends org.mmbase.security.Authorization {
      */
     public void verify(org.mmbase.security.UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (operation.equals(Operation.DELETE)) {
-            MMObjectBuilder objectBuilder = org.mmbase.module.core.MMBase.getMMBase().getBuilder("object");
+            MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
             MMObjectNode node = objectBuilder.getNode(nodeid);
             MMObjectBuilder builder = node.getBuilder();
             if (builder instanceof DidactorBuilder) {
@@ -92,15 +92,19 @@ public class Authorization extends org.mmbase.security.Authorization {
     /**
      * This method does nothing, except from giving a specified string back
      */
-    public String getContext(org.mmbase.security.UserContext user, int nodeid) throws SecurityException {
-        return EVERYBODY;
+    public String getContext(org.mmbase.security.UserContext user, int nodeNumber) throws SecurityException {
+        MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
+        MMObjectNode node = objectBuilder.getNode(nodeNumber);
+        return org.mmbase.util.Casting.toString(node.getValues().get("owner"));
     }
 
     /**
      * Since this is not authorization, we simply allow every change of context.
      */
-    public void setContext(org.mmbase.security.UserContext user, int nodeid, String context) throws SecurityException {        
-        //if(!EVERYBODY.equals(context)) throw new SecurityException("unknown context");
+    public void setContext(org.mmbase.security.UserContext user, int nodeNumber, String context) throws SecurityException {        
+        MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
+        MMObjectNode node = objectBuilder.getNode(nodeNumber);
+        node.setValue("owner", context);
     }
 
     /**
