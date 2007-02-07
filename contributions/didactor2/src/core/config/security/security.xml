@@ -3,6 +3,6 @@
 <security active="true">
   <key>1234</key>
   <authentication class="nl.didactor.security.Authentication" />
-  <!-- the following one provides no node-authorization at all -->
-  <authorization  class="org.mmbase.security.NoAuthorization" url="../accounts.properties" />
+  <!-- the following one provides hardly any node-authorization, it is mainly to be able to add preDelete.-->
+  <authorization  class="nl.didactor.security.Authorization" />
 </security>
