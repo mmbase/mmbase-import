@@ -1,5 +1,5 @@
 <%@ include file="../jspbase.jsp" %>
-<mm:cloud>
+<mm:cloud method="delegate" authenticate="class">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="action" />
 <mm:import externid="forumid" />
