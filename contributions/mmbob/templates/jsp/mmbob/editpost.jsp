@@ -9,19 +9,14 @@
 <mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
 
-<!-- login part -->
+<%-- login part --%>
 <%@ include file="getposterid.jsp" %>
-<!-- end login part -->
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
-<!-- action check -->
-<mm:import externid="action" />
-<mm:present referid="action">
- <mm:include page="actions.jsp" />
-</mm:present>
-<!-- end action check -->
+<%-- action check --%>
+ <c:if test="${not empty param.action}"><mm:include page="actions.jsp" /></c:if>
 
 <html>
 <head>
