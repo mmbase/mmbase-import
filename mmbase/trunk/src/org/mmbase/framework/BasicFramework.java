@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.25 2007-02-09 16:21:01 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.26 2007-02-09 17:12:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -54,7 +54,7 @@ public class BasicFramework implements Framework {
     public static StringBuilder getUrl(String page, Map<String, ? extends Object> params, HttpServletRequest req, boolean writeamp) {
         StringBuilder show = new StringBuilder();
         if (writeamp) {
-            //            page = page.replaceAll("&", "&amp;");
+            page = page.replaceAll("&", "&amp;");
         }
         if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
