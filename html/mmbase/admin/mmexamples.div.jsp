@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase" method="asis">
 <div
-  class="component ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
   <mm:haspage page="/mmexamples/index.jsp">
     <%@ include file="/mmexamples/index.jsp" %>

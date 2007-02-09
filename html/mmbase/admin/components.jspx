@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <div
-    class="component mm_c_core mm_c_b_components ${requestScope.className}"
+    class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
@@ -20,7 +20,7 @@
             <li>
               <mm:link>
                 <mm:param name="component">${comp.name}</mm:param>
-                <a href="${_}">${comp.name}</a>
+                <a href="${_}" class="navigate">${comp.name}</a>
               </mm:link>
             </li>
           </mm:listfunction>

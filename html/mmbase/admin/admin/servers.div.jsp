@@ -3,7 +3,7 @@
 <mm:cloud name="mmbase">
 <mm:import externid="server" />
 <div
-  class="component mm_c_core mm_c_b_servers ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 <h3>Server Overview</h3>
 <mm:notpresent referid="server">
