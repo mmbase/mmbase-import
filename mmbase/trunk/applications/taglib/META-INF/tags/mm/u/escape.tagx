@@ -1,0 +1,11 @@
+<jsp:root 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <jsp:directive.tag body-content="empty" />
+  <jsp:directive.attribute name="escape" type="java.lang.String"  />
+  <jsp:directive.attribute name="value"  fragment="true" />
+  <mm:import id="toescape"><jsp:invoke fragment="value" /></mm:import>
+  <mm:write referid="toescape" escape="${escape}" />
+</jsp:root>
