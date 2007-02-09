@@ -63,6 +63,8 @@ img { border: 0; }
 
 #head p { margin: 0 0 0 1em; }
 
+#head a:link, #head a:visited { color: #fff; }
+
 #wrap
 {
     max-width: 1200px;
@@ -79,18 +81,18 @@ img { border: 0; }
 
 #footer
 {
-    clear: both;
-    padding: 0;
-    margin: 0;
-    border-top: 1px solid #E6E9DD;
-    list-style: none;
-    font-size: 0.9em;
+	clear: both;
+	padding: 0;
+	margin: 0;
+	border-top: 1px solid #E6E9DD;
+	list-style: none;
+	font-size: 0.9em;
 }
 
 #footer ul
 {
-    padding: 0 0 0 1em;
-    margin-left: 20%;
+	padding: 0 0 2em 1em;
+	margin-left: 20%;
 }
 #footer a:link, #footer a:visited { text-decoration: none; }
 #footer a:hover, #footer a:active { text-decoration: underline; }
@@ -176,9 +178,10 @@ h2.top
 
 table
 {
-    border-color: #CCC #CCC transparent #CCC;
-    border-width: 1px 1px 0 1px;
-    border-style: solid solid none solid;
+	border-color: #CCC #CCC transparent #CCC;
+	border-width: 1px 1px 0 1px;
+	border-style: solid solid none solid;
+	margin-bottom: 1em;
 }
 caption
 {
@@ -204,3 +207,4 @@ th, td
 }
 
 td.view { text-align: right; }
+td.center { text-align: center; }
