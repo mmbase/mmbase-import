@@ -28,7 +28,6 @@
 </mm:compare>
 <fieldset>
 <input type="hidden" name="command" value="login" />
-<input type="hidden" name="cloud" value="mmbase" /><%-- also default --%>
 <input type="hidden" name="authenticate" value="name/password" />
   <div class="row">
 	<label><img src="<mm:url page="/mmbase/style/logo.png" />" alt="MMBase logo" width="40" height="50" /></label>

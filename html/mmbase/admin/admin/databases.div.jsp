@@ -1,10 +1,10 @@
 <%@ page import="org.mmbase.module.core.MMBase" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase">
+<mm:cloud rank="administrator" loginpage="login.jsp">
 <div
   class="mm_c mm_c_core mm_c_b_databases ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
-<h3>Database Overview</h3>
+<h3>Database overview</h3>
 <table summary="databases" border="0" cellspacing="0" cellpadding="3">
   <caption>
     This overview lists all database systems supported by this system, as well as
