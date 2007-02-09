@@ -250,7 +250,7 @@
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + saveDevide(strategy.getTotalEvaluationTimeMillis(), strategy.getTotalEvaluated())%></div>
                      </div>
                      <div class="row">
-                        <div class="label" style="<mm:write referid="textStyle"/>">percentatge performance:</div>
+                        <div class="label" style="<mm:write referid="textStyle"/>">relative performance:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + savePercentage(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%> %</div>
                      </div>
                </td>
