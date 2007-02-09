@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.19 2006-12-09 12:57:08 johannes Exp $
+ * @version $Id: Framework.java,v 1.20 2007-02-09 13:32:47 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -66,6 +66,7 @@ public interface Framework {
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;). 
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is 
      *                   for some reason called directly. 
+     * @return An URL relative to the root of this web application (i.e. withouth a context path)
      */
     public StringBuilder getUrl(String path, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps);
 
