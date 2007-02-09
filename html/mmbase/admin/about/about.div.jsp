@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase" method="asis">
 <div
-  class="component mm_c_core mm_c_b_welcome ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_welcome ${requestScope.className}"
   id="${requestScope.componentId}">
   <h2>Welcome to MMBase Content management system.</h2>
   <h3>You are running version: <mm:cloudinfo type="mmbaseversion" /></h3>

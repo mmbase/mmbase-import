@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase">
 <div
-  class="component mm_c_core mm_c_b_databases ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_databases ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 <h3>Database Overview</h3>
 <table summary="databases" border="0" cellspacing="0" cellpadding="3">
