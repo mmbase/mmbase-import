@@ -24,8 +24,7 @@
       <td>
         <mm:field name="name">
           <mm:compare value="<%= MMBase.getMMBase().getMachineName() %>">
-            <mm:link referids="_@server">
-              <mm:param name="component">core</mm:param>
+            <mm:link page="servers" referids="_@server">
               <a href="${_}"><mm:field name="name" /></a>
             </mm:link>
           </mm:compare>
@@ -41,8 +40,7 @@
       <td class="view">
         <mm:field name="name">
           <mm:compare value="<%= MMBase.getMMBase().getMachineName() %>">
-            <mm:link referids="_@server">
-              <mm:param name="component">core</mm:param>
+            <mm:link page="servers" referids="_@server">
               <a href="${_}"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" /></a>
             </mm:link>
           </mm:compare>
