@@ -19,10 +19,13 @@
 
       <author>
         <firstname>Henk Hangyi</firstname>
+
         <surname>Hangyi</surname>
       </author>
+
       <author>
-        <firstname>Andr&eacute;</firstname>
+        <firstname>André</firstname>
+
         <surname>van Toly</surname>
       </author>
     </authorgroup>
@@ -72,18 +75,11 @@
     <para>The component framework adds component based developing to MMBase.
     Components can be accessed from jsp-pages directly or be used in a portlet
     engine / portal service. For use in jsp-pages MMBase offers tags in the
-<<<<<<< components.xml
     MMBase taglibrary which put the components into action and render their
-=======
-    MMBase taglib which put the components into action and render their
->>>>>>> 1.7
     content into your page. When using a portlet engine and portal service,
-    like the CMSContainer, this engine takes care of analyzing the client
+    like the CMS Container, this engine takes care of analyzing the client
     request, make the selected portlets execute, render their content and
     return the resulting page to the client.</para>
-
-    <para>The MMBase Component Frameworks adds a new directory to MMBase's
-    configuration, tipically located at: '/WEB-INF/config/components'.</para>
   </section>
 
   <section id="hello_world">
@@ -94,15 +90,9 @@
     renderer that can be used in the html &lt;body&gt; tag.</para>
 
     <note>
-<<<<<<< components.xml
-      <para>The configuration files for the MMBase core are stored in the
-      /mmbase/config/ directory. This file can therefore be found in
-      /mmbase/config/components/core.xml. TODO: the files for the MMBase core
-      should be moved to /mmbase/core/</para>
-=======
-      <para>This file can be found in /config/components/core.xml. TODO [?]:
-      the files for the MMBase core should be moved to /mmbase/core/</para>
->>>>>>> 1.7
+      <para>This file can be found in /config/components/core.xml. (see
+      MMB-1391, the files for the MMBase core should be moved to /mmbase/core/
+      )</para>
     </note>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -140,6 +130,12 @@
 
   <section id="configuration">
     <title>Configuration of a component</title>
+
+    <para>The MMBase Component Frameworks adds a new directory to MMBase's
+    configuration. This directory is specified in the mmbaseroot.xml and by
+    default is: '/WEB-INF/config/components'. Note however that after
+    installing MMBase you will not find any files here, because the default
+    config files are stored inside the mmbase.jar.</para>
 
     <para>The core of a component is the component.xml. It specifies the
     blocks in the component and the renderes within each block. The following
@@ -206,13 +202,8 @@
 
       <programlisting>&lt;mm:component name="core" /&gt;</programlisting>
 
-<<<<<<< components.xml
-      <para>When no renderer is specified for a block, rendering the block
-      will return nothing.</para>
-=======
       <para>When the renderer for a block is not specified, the default block
       of a component will be returned.</para>
->>>>>>> 1.7
     </section>
 
     <section>
@@ -221,7 +212,6 @@
       <para>The renderes that are supported in the present implementation are:
       head, body, and process.</para>
 
-<<<<<<< components.xml
       <para>The process renderer of block is called implicitly, if the head or
       the body of that block is called. The process renderer of block will
       only be executed once per calling page. To give an example: if your page
@@ -229,26 +219,16 @@
       carried out after voting. (Which seems to be a defendable assumption in
       this epoch of single-moused computers) The process render does not
       produce any output.</para>
-=======
-      <para>The process renderer of block is called implicitly, if the head or
-      the body of that block is called. The process renderer of block will (1)
-      only be executed once per calling page and (2) only be executed after
-      the first changes to this block. The process render does not produce any
-      output.</para>
->>>>>>> 1.7
 
       <para>The renderer for body with mimetype="text/html" should render a
-<<<<<<< components.xml
-      div with class="TODO look at portlet css specification". (see MMB-1388)
-      </para>
-=======
-      div with class="TODO look at portlet css specification".</para>
+      div with class="TODO look at portlet css specification". (see
+      MMB-1388)</para>
 
-      <para>Normally when no renderer is specified the render 'body' will be
-      returned. This could however depend upon the component, there maybe
-      components thinkalble for example that only need to be rendered in the
-      head of a page.</para>
->>>>>>> 1.7
+      <para>On default when no renderer is specified the render 'body' will be
+      returned. If there is no body renderer defined in the component the
+      first renderer specified in the component will be used as the default
+      renderer. This could for instance be handy when you implement a
+      component that only need to be rendered in the head of a page.</para>
     </section>
 
     <section>
@@ -261,7 +241,6 @@
       of the page, the present versions of Internet Explorer will prompt the
       user to download this page. Because of this IE bug it is better to use
       "text/html".</para>
-<<<<<<< components.xml
 
       <para>Of course the mime-type of a _component_ does not matter for the
       browser. Because you will hardly never send the block unwrapped to a
@@ -271,46 +250,22 @@
       a page which is application/xhtml+xml itself. Probably the XML can be
       used just as well in a text/html rendering page. (see also
       MMB-1389)</para>
-=======
-
-      <para>TODO: of course the mime-type of a _component_ does not matter for
-      the browser. Because you will hardly have send the block unwrapped to a
-      client. So, the mimetype of block only servers as an indication of the
-      type of content it produces. application/xhtml+xml could indicate that
-      besides HTML it is also valid _XML_, and is therefore fit to be used in
-      a page wich is application/xhtml+xml itself (but probably can be used
-      just as well in a text/html rendering page).</para>
->>>>>>> 1.7
     </section>
 
     <section>
-<<<<<<< components.xml
-      <title>absolutive and relative position of jsp-includes</title>
+      <title>Absolutive and relative position of jsp-includes</title>
 
       <para>In the Hello World example at the beginning of this chapter the
       jsp include "/mmbase/admin/components.jspx" is positioned absolute to
       the root of the webapplication. By setting the request parameter
       doMakeRelative to true, the jsp include can be positioned relative to
       the jsp page that contains the &lt;mm:component /&gt; tag. TODO is this
-      functionality necessary for the component framework, see also MMB-1390.
-      </para>
-=======
-      <title>Position of includes</title>
-
-      <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
-      absolute to the root of the webapplication. By setting the request
-      parameter doMakeRelative to true, the jsp include can be positioned
-      relative to the jsp page that contains the &lt;mm:component /&gt;
-      tag.</para>
->>>>>>> 1.7
+      functionality necessary for the component framework, see also
+      MMB-1390.</para>
     </section>
 
     <section>
-<<<<<<< components.xml
-      <title>implicit and explicit parameters &lt;mm:param /&gt;</title>
-=======
-      <title>Parameters</title>
->>>>>>> 1.7
+      <title>Implicit and explicit parameters &lt;mm:param /&gt;</title>
 
       <para>When the &lt;mm:component /&gt; tag is contained in another tag
       all the information from the containing tag is available to the
@@ -324,20 +279,9 @@
 
       <para>Some examples:</para>
 
-<<<<<<< components.xml
-=======
-      <programlisting>&lt;mm:component name="my_game"&gt;
-  &lt;mm:param name="level" value="novice" /&gt;
-&lt;/mm:component&gt;</programlisting>
-
->>>>>>> 1.7
       <programlisting>&lt;!-- this piece uses the poll component to show two polls --&gt;
 &lt;mm:node number="first_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;
 &lt;mm:node number="second_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;</programlisting>
-<<<<<<< components.xml
-
-      <programlisting>&lt;mm:component name="my_game"&gt;&lt;mm:param name="level" value="novice" /&gt;&lt;/mm:component&gt;</programlisting>
-=======
 
       <para>Parameters need to be specified in configuration. The 'my_game'
       example should be configured in a block that could look like
@@ -350,7 +294,6 @@
   &lt;/body&gt;
 &lt;/block&gt;
 </programlisting>
->>>>>>> 1.7
     </section>
   </section>
 
