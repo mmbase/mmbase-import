@@ -47,6 +47,7 @@ createDefaultConfig = function() {
      'my-validatesave'
     ]
   ];
+  xinha_config.width = ['98%'];
   
   return xinha_config;
 }
