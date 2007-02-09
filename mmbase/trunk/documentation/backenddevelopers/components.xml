@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Component Framework</title>
 
-    <date>2007-02-09</date>
+    <date>2006-10-13</date>
 
     <edition>$Id: components.xml,v 1.0 2006/10/03 08:17:09 henk Exp
     $</edition>
@@ -19,11 +19,6 @@
 
       <author>
         <firstname>Henk Hangyi</firstname>
-        <surname>Hangyi</surname>
-      </author>
-      <author>
-        <firstname>Andr&eacute;</firstname>
-        <surname>van Toly</surname>
       </author>
     </authorgroup>
 
@@ -31,7 +26,7 @@
       <revision>
         <revnumber>[0.1]</revnumber>
 
-        <date>[2007-02-09]</date>
+        <date>[2006-10-13 ]</date>
 
         <authorinitials>[HH]</authorinitials>
 
@@ -61,14 +56,11 @@
     <para>The component framework adds component based developing to MMBase.
     Components can be accessed from jsp-pages directly or be used in a portlet
     engine / portal service. For use in jsp-pages MMBase offers tags in the
-    MMBase taglib which put the components into action and render their
+    MMBase taglig which put the components into action and render their
     content into your page. When using a portlet engine and portal service,
     like the CMSContainer, this engine takes care of analyzing the client
     request, make the selected portlets execute and render their content and
     return the resulting page to the client.</para>
-
-    <para>The MMBase Component Frameworks adds a new directory to MMBase's
-    configuration, tipically located at: '/WEB-INF/config/components'.</para>
   </section>
 
   <section id="hello_world">
@@ -79,8 +71,10 @@
     renderer that can be used in the html &lt;body&gt; tag.</para>
 
     <note>
-      <para>This file can be found in /config/components/core.xml. TODO [?]:
-      the files for the MMBase core should be moved to /mmbase/core/</para>
+      <para>The configuration files for the mmbase core are stored in the
+      /mmbase/config/ directory. This file can therefore be found in
+      /mmbase/config/components/core.xml. TODO: the files for the MMBase core
+      should be moved to /mmbase/core/</para>
     </note>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -113,7 +107,8 @@
 
     <para>To render this, a jsp-page has to contain the following tag:</para>
 
-    <programlisting>&lt;mm:component name="core" block="components" render="body" /&gt;</programlisting>
+    <para>&lt;mm:component name="core" block="components" render="body"
+    /&gt;</para>
   </section>
 
   <section id="configuration">
@@ -164,11 +159,12 @@
     functionality of the &lt;mm:content /&gt; tag.</para>
 
     <section>
-      <title>Defaults</title>
+      <title>defaults</title>
 
       <para>In the "Hello World" example the following tag was used:</para>
 
-      <programlisting>&lt;mm:component name="core" block="components" render="body" /&gt;</programlisting>
+      <para>&lt;mm:component name="core" block="components" render="body"
+      /&gt;</para>
 
       <para>The default block can be specified by using the defaultblock
       attribute of the &lt;component /&gt; tag. In the "Hello World" example
@@ -176,35 +172,29 @@
       first block is considered to be the default block. The default renderer
       is body. By using the defaults the tag could be rewritten to:</para>
 
-      <programlisting>&lt;mm:component name="core" /&gt;</programlisting>
+      <para>&lt;mm:component name="core" /&gt;</para>
 
-      <para>When the renderer for a block is not specified, the default block
-      of a component will be returned.</para>
+      <para>When renderer for a block is not specified, rendering the block
+      will return nothing.</para>
     </section>
 
     <section>
-      <title>Render</title>
+      <title>render</title>
 
       <para>The renderes that are supported in the present implementation are:
       head, body, and process.</para>
 
-      <para>The process renderer of block is called implicitly, if the head or
-      the body of that block is called. The process renderer of block will (1)
-      only be executed once per calling page and (2) only be executed after
-      the first changes to this block. The process render does not produce any
-      output.</para>
+      <para>The process renderer of block is called implicitly, if the head or the body of that
+      block is called. The process renderer of block will (1) only be executed once per calling page
+      and (2) only be executed after the first changes to this block. The process render does not
+      produce any output.</para>
 
       <para>The renderer for body with mimetype="text/html" should render a
       div with class="TODO look at portlet css specification".</para>
-
-      <para>Normally when no renderer is specified the render 'body' will be
-      returned. This could however depend upon the component, there maybe
-      components thinkalble for example that only need to be rendered in the
-      head of a page.</para>
     </section>
 
     <section>
-      <title>Mimetype</title>
+      <title>mimetype</title>
 
       <para>The mimetype can be used to indicate that the component is
       rendering special file types like images, attachments, etc. In the
@@ -213,18 +203,18 @@
       of the page, the present versions of Internet Explorer will prompt the
       user to download this page. Because of this IE bug it is better to use
       "text/html".</para>
-
-      <para>TODO: of course the mime-type of a _component_ does not matter for
-      the browser. Because you will hardly have send the block unwrapped to a
-      client. So, the mimetype of block only servers as an indication of the
-      type of content it produces. application/xhtml+xml could indicate that
-      besides HTML it is also valid _XML_, and is therefore fit to be used in
-      a page wich is application/xhtml+xml itself (but probably can be used
-      just as well in a text/html rendering page).</para>
+      <para>
+        TODO: of course the mime-type of a _component_ does not matter for the browser. Because you
+        will hardly have send the block unwrapped to a client.
+        So, the mimetype of block only servers as an indication of the type of content it produces.
+        application/xhtml+xml could indicate that besides HTML it is also valid _XML_, and is
+        therefore fit to be used in a page wich is application/xhtml+xml itself (but probably can be
+        used just as well in a text/html rendering page).
+      </para>
     </section>
 
     <section>
-      <title>Position of includes</title>
+      <title>position of includes</title>
 
       <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
       absolute to the root of the webapplication. By setting the request
@@ -234,7 +224,7 @@
     </section>
 
     <section>
-      <title>Parameters</title>
+      <title>parameters</title>
 
       <para>When the &lt;mm:component /&gt; tag is contained in another tag
       all the information from the containing tag is accessable to the
@@ -248,25 +238,11 @@
 
       <para>Some examples:</para>
 
-      <programlisting>&lt;mm:component name="my_game"&gt;
-  &lt;mm:param name="level" value="novice" /&gt;
-&lt;/mm:component&gt;</programlisting>
+      <programlisting>&lt;mm:component name="my_game"&gt;&lt;mm:param name="level" value="novice" /&gt;&lt;/mm:component&gt;</programlisting>
 
       <programlisting>&lt;!-- this piece uses the poll component to show two polls --&gt;
 &lt;mm:node number="first_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;
 &lt;mm:node number="second_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;</programlisting>
-
-      <para>Parameters need to be specified in configuration. The 'my_game'
-      example should be configured in a block that could look like
-      this:</para>
-
-      <programlisting>&lt;block name="default" mimetype="text/html"&gt;
-  &lt;description xml:lang="en"&gt;The first block of this game.&lt;/description&gt;
-  &lt;body jsp="/mygame/first.jsp"&gt;
-    &lt;param name="level" type="string" /&gt;
-  &lt;/body&gt;
-&lt;/block&gt;
-</programlisting>
     </section>
   </section>
 
@@ -432,9 +408,7 @@ if (finalpage != null) {
 
           <listitem>
             <para>action parameters from query string</para>
-
-            <para>Action parameters correspond to our "processor" of a
-            block</para>
+            <para>Action parameters correspond to our "processor" of a block</para>
           </listitem>
         </itemizedlist>
       </listitem>
