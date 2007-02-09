@@ -206,8 +206,8 @@ function wizardClean(value) {
   value = value.replace(/<([\/]?)STRONG>/gi, "<$1b>");
   value = value.replace(/<([\/]?)strong>/gi, "<$1b>");
   //replace <BR> by <BR/>
-  value = value.replace(/<BR>/gi, "<br/>");
-  value = value.replace(/<br>/gi, "<br/>");
+  value = value.replace(/<BR>/gi, "<br />");
+  value = value.replace(/<br>/gi, "<br />");
 
   return value;
 }
