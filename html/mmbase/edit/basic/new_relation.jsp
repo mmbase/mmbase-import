@@ -14,8 +14,9 @@
    <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
-<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
-   <mm:import externid="to_page"><mm:url referids="role_name,node_type,node,direction">
+     <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
+     <!-- TODO escapeamps=false was not needed in 1.8 -->
+   <mm:import externid="to_page"><mm:url escapeamps="false" referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>
                                  </mm:url></mm:import>
    <mm:import id="maylink">yes</mm:import>
@@ -33,7 +34,7 @@
     </mm:compare>
 
      <tr><td>
-     <mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
+       <mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
      </td></tr>
      </table>
 
@@ -115,7 +116,7 @@
           <mm:fieldinfo type="useinput" />
        </mm:context></mm:fieldlist>
     </mm:node>
-    <META HTTP-EQUIV="refresh" content="0; url=<mm:url page="$redirectTo" />">
+    <meta http-equiv="refresh" content="0; url=<mm:url page="$redirectTo" />">
     <mm:write referid="style" escape="none" />
     </head>
     <body>
