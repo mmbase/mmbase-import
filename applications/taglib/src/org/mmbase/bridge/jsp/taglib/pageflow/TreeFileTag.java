@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.22 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: TreeFileTag.java,v 1.23 2007-02-09 15:57:55 johannes Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -53,6 +55,12 @@ public class TreeFileTag extends UrlTag {
         return treePage;
     }
 
+    public int doStartTag() throws JspTagException {
+        extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        helper.useEscaper(false);
+        return EVAL_BODY_BUFFERED;
+    }
+    
     public int doEndTag() throws JspTagException {
         th.setCloud(getCloudVar());
         // Let UrlTag do the rest
