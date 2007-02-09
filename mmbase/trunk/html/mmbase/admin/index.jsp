@@ -27,7 +27,10 @@
 	<div id="logo"><a href="."><img src="../style/logo.png" alt="MMBase" width="40" height="50" /></a></div>
 	<div id="head">
 	  <h1>MMBase Administration</h1>
-	  <p>You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />)</p>
+	  <p>
+		You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
+		<a href="logout.jsp">logout</a>
+	  </p>
 	</div>
   </div>
 </div>
