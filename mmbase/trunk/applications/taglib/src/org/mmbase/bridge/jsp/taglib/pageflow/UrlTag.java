@@ -32,22 +32,23 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.101 2007-02-09 15:57:55 johannes Exp $
+ * @version $Id: UrlTag.java,v 1.102 2007-02-09 16:56:41 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
-    private static final Logger log                   = Logging.getLoggerInstance(UrlTag.class);
+    private static final Logger log           = Logging.getLoggerInstance(UrlTag.class);
 
-    private static Boolean makeRelative      = null;
+    private static Boolean makeRelative       = null;
     private   Attribute  referids             = Attribute.NULL;
     protected List<Map.Entry<String, Object>> extraParameters  = null;
     protected UrlParameters parameters;
     protected Attribute  page                 = Attribute.NULL;
+    protected Attribute  block                = Attribute.NULL;
     protected Attribute  component            = Attribute.NULL;
-    protected Attribute  escapeAmps           = Attribute.NULL;
-    protected Attribute  absolute             = Attribute.NULL;
-    protected Attribute  encode               = Attribute.NULL;
+    private   Attribute  escapeAmps           = Attribute.NULL;
+    private   Attribute  absolute             = Attribute.NULL;
+    private   Attribute  encode               = Attribute.NULL;
     protected Url        url;
 
     public void setReferids(String r) throws JspTagException {
@@ -56,6 +57,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public void setPage(String p) throws JspTagException {
         page = getAttribute(p);
+    }
+
+    public void setBlock(String b) throws JspTagException {
+        block = getAttribute(b);
     }
 
     /**
@@ -77,6 +82,27 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      */
     public void setAbsolute(String a) throws JspTagException {
         absolute = getAttribute(a);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected String getAbsolute() throws JspTagException {
+        return absolute.getString(this);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected boolean encode() throws JspTagException {
+        return encode.getBoolean(this, true);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+
+    protected boolean escapeAmps() throws JspTagException {
+        return escapeAmps.getBoolean(this, true);
     }
 
 
@@ -120,7 +146,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     /**
      * Return the page. This is delegated to the underlying framework if it is available. 
-     * Otherwise, if the component is set, the return value is 'component/page'.
+     * Otherwise, if the component is set, the returned value is 'component/page'.
      */
     protected String getPage() throws JspTagException {
         return page.getString(this);
