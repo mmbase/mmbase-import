@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Component Framework</title>
 
-    <date>2006-10-13</date>
+    <date>2007-02-09</date>
 
     <edition>$Id: components.xml,v 1.0 2006/10/03 08:17:09 henk Exp
     $</edition>
@@ -19,14 +19,30 @@
 
       <author>
         <firstname>Henk Hangyi</firstname>
+        <surname>Hangyi</surname>
+      </author>
+      <author>
+        <firstname>Andr&eacute;</firstname>
+        <surname>van Toly</surname>
       </author>
     </authorgroup>
 
     <revhistory>
       <revision>
+        <revnumber>[0.2]</revnumber>
+
+        <date>[2007-02-09 ]</date>
+
+        <authorinitials>[HH]</authorinitials>
+
+        <revremark>[Updated the document and moved the TODOs to Jira
+        issues]</revremark>
+      </revision>
+
+      <revision>
         <revnumber>[0.1]</revnumber>
 
-        <date>[2006-10-13 ]</date>
+        <date>[2007-02-09]</date>
 
         <authorinitials>[HH]</authorinitials>
 
@@ -56,11 +72,18 @@
     <para>The component framework adds component based developing to MMBase.
     Components can be accessed from jsp-pages directly or be used in a portlet
     engine / portal service. For use in jsp-pages MMBase offers tags in the
-    MMBase taglig which put the components into action and render their
+<<<<<<< components.xml
+    MMBase taglibrary which put the components into action and render their
+=======
+    MMBase taglib which put the components into action and render their
+>>>>>>> 1.7
     content into your page. When using a portlet engine and portal service,
     like the CMSContainer, this engine takes care of analyzing the client
-    request, make the selected portlets execute and render their content and
+    request, make the selected portlets execute, render their content and
     return the resulting page to the client.</para>
+
+    <para>The MMBase Component Frameworks adds a new directory to MMBase's
+    configuration, tipically located at: '/WEB-INF/config/components'.</para>
   </section>
 
   <section id="hello_world">
@@ -71,10 +94,15 @@
     renderer that can be used in the html &lt;body&gt; tag.</para>
 
     <note>
-      <para>The configuration files for the mmbase core are stored in the
+<<<<<<< components.xml
+      <para>The configuration files for the MMBase core are stored in the
       /mmbase/config/ directory. This file can therefore be found in
       /mmbase/config/components/core.xml. TODO: the files for the MMBase core
       should be moved to /mmbase/core/</para>
+=======
+      <para>This file can be found in /config/components/core.xml. TODO [?]:
+      the files for the MMBase core should be moved to /mmbase/core/</para>
+>>>>>>> 1.7
     </note>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -107,8 +135,7 @@
 
     <para>To render this, a jsp-page has to contain the following tag:</para>
 
-    <para>&lt;mm:component name="core" block="components" render="body"
-    /&gt;</para>
+    <programlisting>&lt;mm:component name="core" block="components" render="body" /&gt;</programlisting>
   </section>
 
   <section id="configuration">
@@ -143,13 +170,17 @@
   &lt;/block&gt;
 &lt;/component&gt;</programlisting>
 
-    <para>In the above example some renderes are jsp-includes, other are java
-    classes. The information available to the jsp files are the request
-    parameters, session attributes and the tags in which the &lt;mm:content
-    /&gt; tag is contained. For the java classes the information is available
-    from HttpServletRequest request and HttpServletResponse response. Btw. by
-    using request.getSession() the session in which the block is rendered can
-    be accessed.</para>
+    <para>In the above example most renderes are jsp-includes. It is also
+    possible to use java classes as renderer, for example &lt;process
+    class="org.mmbase.ecards.Send" /&gt;.</para>
+
+    <para>The information available to the jsp files are the request
+    parameters, session attributes and the ids and jspvars put into the scope
+    by tags in which the &lt;mm:content /&gt; tag is contained (see also
+    section 4.5 on parameters). For the java classes the information is
+    available from HttpServletRequest request and HttpServletResponse
+    response. Btw. by using request.getSession() the session in which the
+    block is rendered can be accessed.</para>
   </section>
 
   <section>
@@ -159,42 +190,69 @@
     functionality of the &lt;mm:content /&gt; tag.</para>
 
     <section>
-      <title>defaults</title>
+      <title>Defaults</title>
 
       <para>In the "Hello World" example the following tag was used:</para>
 
-      <para>&lt;mm:component name="core" block="components" render="body"
-      /&gt;</para>
+      <programlisting>&lt;mm:component name="core" block="components" render="body" /&gt;</programlisting>
 
-      <para>The default block can be specified by using the defaultblock
-      attribute of the &lt;component /&gt; tag. In the "Hello World" example
-      it is defaultblock="components". If no defaultblock is specified the
-      first block is considered to be the default block. The default renderer
-      is body. By using the defaults the tag could be rewritten to:</para>
+      <para>The default block to be used by &lt;mm:component /&gt; when the
+      block attribute is omitted, can be specified by using the defaultblock
+      attribute of the &lt;component /&gt; tag at the beginning of the
+      component's configuration file. In the "Hello World" example it is
+      defaultblock="components". If no defaultblock is specified the first
+      block is considered to be the default block. The default renderer is
+      body. By using the defaults the tag could be rewritten to:</para>
 
-      <para>&lt;mm:component name="core" /&gt;</para>
+      <programlisting>&lt;mm:component name="core" /&gt;</programlisting>
 
-      <para>When renderer for a block is not specified, rendering the block
+<<<<<<< components.xml
+      <para>When no renderer is specified for a block, rendering the block
       will return nothing.</para>
+=======
+      <para>When the renderer for a block is not specified, the default block
+      of a component will be returned.</para>
+>>>>>>> 1.7
     </section>
 
     <section>
-      <title>render</title>
+      <title>Render</title>
 
       <para>The renderes that are supported in the present implementation are:
       head, body, and process.</para>
 
-      <para>The process renderer of block is called implicitly, if the head or the body of that
-      block is called. The process renderer of block will (1) only be executed once per calling page
-      and (2) only be executed after the first changes to this block. The process render does not
+<<<<<<< components.xml
+      <para>The process renderer of block is called implicitly, if the head or
+      the body of that block is called. The process renderer of block will
+      only be executed once per calling page. To give an example: if your page
+      contains two polls, the processor of only one of these polls will be
+      carried out after voting. (Which seems to be a defendable assumption in
+      this epoch of single-moused computers) The process render does not
       produce any output.</para>
+=======
+      <para>The process renderer of block is called implicitly, if the head or
+      the body of that block is called. The process renderer of block will (1)
+      only be executed once per calling page and (2) only be executed after
+      the first changes to this block. The process render does not produce any
+      output.</para>
+>>>>>>> 1.7
 
       <para>The renderer for body with mimetype="text/html" should render a
+<<<<<<< components.xml
+      div with class="TODO look at portlet css specification". (see MMB-1388)
+      </para>
+=======
       div with class="TODO look at portlet css specification".</para>
+
+      <para>Normally when no renderer is specified the render 'body' will be
+      returned. This could however depend upon the component, there maybe
+      components thinkalble for example that only need to be rendered in the
+      head of a page.</para>
+>>>>>>> 1.7
     </section>
 
     <section>
-      <title>mimetype</title>
+      <title>Mimetype</title>
 
       <para>The mimetype can be used to indicate that the component is
       rendering special file types like images, attachments, etc. In the
@@ -203,31 +261,59 @@
       of the page, the present versions of Internet Explorer will prompt the
       user to download this page. Because of this IE bug it is better to use
       "text/html".</para>
-      <para>
-        TODO: of course the mime-type of a _component_ does not matter for the browser. Because you
-        will hardly have send the block unwrapped to a client.
-        So, the mimetype of block only servers as an indication of the type of content it produces.
-        application/xhtml+xml could indicate that besides HTML it is also valid _XML_, and is
-        therefore fit to be used in a page wich is application/xhtml+xml itself (but probably can be
-        used just as well in a text/html rendering page).
-      </para>
+<<<<<<< components.xml
+
+      <para>Of course the mime-type of a _component_ does not matter for the
+      browser. Because you will hardly never send the block unwrapped to a
+      client. So, the mimetype of a block only serves as an indication of the
+      type of content it produces. application/xhtml+xml could indicate that
+      besides HTML it is also valid _XML_, and is therefore fit to be used in
+      a page which is application/xhtml+xml itself. Probably the XML can be
+      used just as well in a text/html rendering page. (see also
+      MMB-1389)</para>
+=======
+
+      <para>TODO: of course the mime-type of a _component_ does not matter for
+      the browser. Because you will hardly have send the block unwrapped to a
+      client. So, the mimetype of block only servers as an indication of the
+      type of content it produces. application/xhtml+xml could indicate that
+      besides HTML it is also valid _XML_, and is therefore fit to be used in
+      a page wich is application/xhtml+xml itself (but probably can be used
+      just as well in a text/html rendering page).</para>
+>>>>>>> 1.7
     </section>
 
     <section>
-      <title>position of includes</title>
+<<<<<<< components.xml
+      <title>absolutive and relative position of jsp-includes</title>
+
+      <para>In the Hello World example at the beginning of this chapter the
+      jsp include "/mmbase/admin/components.jspx" is positioned absolute to
+      the root of the webapplication. By setting the request parameter
+      doMakeRelative to true, the jsp include can be positioned relative to
+      the jsp page that contains the &lt;mm:component /&gt; tag. TODO is this
+      functionality necessary for the component framework, see also MMB-1390.
+      </para>
+=======
+      <title>Position of includes</title>
 
       <para>Here the jsp include "/mmbase/admin/components.jspx" is positioned
       absolute to the root of the webapplication. By setting the request
       parameter doMakeRelative to true, the jsp include can be positioned
       relative to the jsp page that contains the &lt;mm:component /&gt;
       tag.</para>
+>>>>>>> 1.7
     </section>
 
     <section>
-      <title>parameters</title>
+<<<<<<< components.xml
+      <title>implicit and explicit parameters &lt;mm:param /&gt;</title>
+=======
+      <title>Parameters</title>
+>>>>>>> 1.7
 
       <para>When the &lt;mm:component /&gt; tag is contained in another tag
-      all the information from the containing tag is accessable to the
+      all the information from the containing tag is available to the
       &lt;mm:component /&gt; tag. For instance in the situation &lt;mm:cloud
       jspvar="cloud"&gt;&lt;mm:component name="core" /&gt;&lt;/mm:cloud&gt;
       the components.jspx could contain &lt;%= cloud.getUser().getIdentifier()
@@ -238,23 +324,47 @@
 
       <para>Some examples:</para>
 
-      <programlisting>&lt;mm:component name="my_game"&gt;&lt;mm:param name="level" value="novice" /&gt;&lt;/mm:component&gt;</programlisting>
+<<<<<<< components.xml
+=======
+      <programlisting>&lt;mm:component name="my_game"&gt;
+  &lt;mm:param name="level" value="novice" /&gt;
+&lt;/mm:component&gt;</programlisting>
 
+>>>>>>> 1.7
       <programlisting>&lt;!-- this piece uses the poll component to show two polls --&gt;
 &lt;mm:node number="first_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;
 &lt;mm:node number="second_poll"&gt;&lt;mm:component name="poll"&gt;&lt;mm:node&gt;</programlisting>
+<<<<<<< components.xml
+
+      <programlisting>&lt;mm:component name="my_game"&gt;&lt;mm:param name="level" value="novice" /&gt;&lt;/mm:component&gt;</programlisting>
+=======
+
+      <para>Parameters need to be specified in configuration. The 'my_game'
+      example should be configured in a block that could look like
+      this:</para>
+
+      <programlisting>&lt;block name="default" mimetype="text/html"&gt;
+  &lt;description xml:lang="en"&gt;The first block of this game.&lt;/description&gt;
+  &lt;body jsp="/mygame/first.jsp"&gt;
+    &lt;param name="level" type="string" /&gt;
+  &lt;/body&gt;
+&lt;/block&gt;
+</programlisting>
+>>>>>>> 1.7
     </section>
   </section>
 
   <section>
-    <title>Framework and changing the behavior of the &lt;mm:url /&gt; and
+    <title>Frameworks and changing the behavior of the &lt;mm:url /&gt; and
     &lt;mm:include /&gt; tags</title>
 
-    <para>An MMBase framework provides the context in which components are
-    rendered. The present functionality of the framework is that it changes
-    the behavior of the &lt;mm:url /&gt; and the &lt;mm:include /&gt; tag. The
-    next section shows how frameworks are implemented. The "Hello Again!"
-    example gives an example of using a framework.</para>
+    <para>Next to basic reference implementation of the component framework
+    included in the MMBase core other frameworks exist, for instance the CMS
+    Container and Patmos. Each framework is providing the context in which
+    components are rendered. This is done by changing the behavior of the
+    &lt;mm:url /&gt; and the &lt;mm:include /&gt; tag. The next section shows
+    how frameworks are implemented. The "Hello Again!" example gives an
+    example of using a framework.</para>
 
     <section>
       <title>Framework</title>
@@ -266,7 +376,7 @@
       includes used in the page, based on the parameters passed to that
       page.</para>
 
-      <para>The framework that will be used for rendering the components an
+      <para>The framework that will be used for rendering the components in an
       MMBase instance is specified in mmbaseroot.xml, by using the
       parameter</para>
 
@@ -317,7 +427,8 @@
 &lt;mm:cloud&gt;
 &lt;mm:import externid="component" /&gt;
 &lt;head&gt;
-   &lt;mm:component name="hello" block="home" render="head" /&gt; ? parameters are case-insensitive ?
+   &lt;!-- parameters are case sensitive -&gt;
+   &lt;mm:component name="hello" block="home" render="head" /&gt;
 &lt;/head&gt;
 &lt;body&gt;
    &lt;h1&gt;Hello again!&lt;/h1&gt;
@@ -408,7 +519,9 @@ if (finalpage != null) {
 
           <listitem>
             <para>action parameters from query string</para>
-            <para>Action parameters correspond to our "processor" of a block</para>
+
+            <para>Action parameters correspond to our "processor" of a
+            block</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -519,39 +632,40 @@ if (finalpage != null) {
     </orderedlist>
 
     <para>In the above flow no separation is made between portal service and
-    the portlet engine (eg pluto). The portlet engine provides the runtime
-    environment for the portlet instances. The portal service does all page
-    related stuff.</para>
+    the portlet engine (for instance pluto). The portlet engine provides the
+    runtime environment for the portlet instances. The portal service does all
+    page related stuff.</para>
   </section>
 
   <section id="cmsc">
-    <title>The CMSContainer: portlets and components</title>
+    <title>The CMS Container: portlets and components</title>
 
-    <para>The CMSContainer is one of the MMBase contributions. For
-    documentation of the CMSContainer see the reference list at the end of
+    <para>The CMS Container is one of the MMBase contributions. For
+    documentation of the CMS Container see the reference list at the end of
     this document. This section addresses the relation between portlets and
     components.</para>
 
     <section>
       <title>Using components as portlets</title>
 
-      <para>A wrapper class will be developed in the CMSContainer, which makes
-      it possible to use any MMBase component in the CMSContainer. This means
-      that for the components the CMSContainer will use the components.xml
-      from the component instead of the project.xml that is used for the
-      portlets in the CMSContainer.</para>
+      <para>A wrapper class is developed in the CMS Container, which makes it
+      possible to use any MMBase component in the CMS Container (done by the
+      classes MMComponentPortlet and MMBaseFramework) This means that for the
+      components the CMS Container will use the components.xml from the
+      component instead of the project.xml that is used for the portlets in
+      the CMS Container.</para>
     </section>
 
     <section>
       <title>Using portlets as components</title>
 
       <para>The other way around the situation is more difficult. When a
-      portlet depends on the objectmodel of the CMSContainer it is not
+      portlet depends on the objectmodel of the CMS Container it is not
       possible to rewrite it to an MMBase component, that can be reused
-      outside the CMSContainer. Only portlets that do not depend explicitly on
-      the objectmodel of the CMSContainer can be rewriten into components. The
-      present version of the CMSContainer in the MMBase CVS does not contain
-      examples of such portlets. But don't get worried: portlets like
+      outside the CMS Container. Only portlets that do not depend explicitly
+      on the objectmodel of the CMS Container can be rewriten into components.
+      The present version of the CMS Container in the MMBase CVS does not
+      contain examples of such portlets. But don't get worried: portlets like
       calender, playlist, etc. which are now being developed will be added as
       components later.</para>
     </section>
@@ -665,13 +779,13 @@ if (finalpage != null) {
     </section>
 
     <section>
-      <title>The CMSContainer</title>
+      <title>The CMS Container</title>
 
-      <para>The CMSContainer contains several portlets, which all can be
+      <para>The CMS Container contains several portlets, which all can be
       viewed as seperate applications. These portlets can be found in
-      /contributions/CMSContainer/cmsc. For the CMSC the Maven preferred way
-      of storing files is used. The files of these portlets are stored in the
-      following directories:</para>
+      /contributions/CMSContainer/cmsc. For the CMS Container the Maven
+      preferred way of storing files is used. The files of these portlets are
+      stored in the following directories:</para>
 
       <itemizedlist>
         <listitem>
@@ -709,7 +823,8 @@ if (finalpage != null) {
     <section>
       <title>Didactor</title>
 
-      <para>In Didactor the components are structured as follows</para>
+      <para>In Didactor, the e-learning platform that is based on MMBase, the
+      components are structured as follows:</para>
 
       <itemizedlist>
         <listitem>
