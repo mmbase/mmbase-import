@@ -207,7 +207,7 @@
     </section>
 
     <section>
-      <title>Render</title>
+      <title>Render and default css classes</title>
 
       <para>The renderes that are supported in the present implementation are:
       head, body, and process.</para>
@@ -220,9 +220,29 @@
       this epoch of single-moused computers) The process render does not
       produce any output.</para>
 
-      <para>The renderer for body with mimetype="text/html" should render a
-      div with class="TODO look at portlet css specification". (see
-      MMB-1388)</para>
+      <para>The renderer for body with mimetype="text/html" by convention
+      should render a &lt;div /&gt; with class="mm_c mm_c_&lt;component
+      name&gt; mm_c_b_&lt;block name&gt; ${requestScope.className}". The
+      framework will assign a value to request attribute
+      ${requestScope.componentClassName} . For example a framework could
+      render the poll component within the div &lt;class="mm_c mm_c_ecard
+      mm_c_b_home left"&gt;. The basic implementation of the MMBase framework
+      does not implement ${requestScope.className}, leaving the last part of
+      the class definition empty.</para>
+
+      <para>The framework also renders an unique id for the &lt;div /&gt;
+      containing a component. To summarize each renderer should
+      contain:</para>
+
+      <programlisting>&lt;div
+    class="mm_c mm_c_ecard mm_c_b_home ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+&gt;</programlisting>
+
+      <para> In future the class specification should be extended with classes
+      for icons and content images, which would give graphical designers also
+      global control over what happens with icons and content images in a page
+      (see </para>
 
       <para>On default when no renderer is specified the render 'body' will be
       returned. If there is no body renderer defined in the component the
