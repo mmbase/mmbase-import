@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.24 2006-12-15 14:44:38 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.25 2007-02-09 16:21:01 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -54,7 +54,7 @@ public class BasicFramework implements Framework {
     public static StringBuilder getUrl(String page, Map<String, ? extends Object> params, HttpServletRequest req, boolean writeamp) {
         StringBuilder show = new StringBuilder();
         if (writeamp) {
-            page = page.replaceAll("&", "&amp;");
+            //            page = page.replaceAll("&", "&amp;");
         }
         if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
@@ -104,6 +104,9 @@ public class BasicFramework implements Framework {
         return getInternalUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
     }
 
+    /**
+     * 
+     */
     protected StringBuilder getInternalUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {       // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
@@ -180,7 +183,7 @@ public class BasicFramework implements Framework {
         State state = getState(request);
         request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
         state.render(renderer);
-        request.setAttribute(COMPONENT_ID_KEY, state.getPrefix());
+        request.setAttribute(COMPONENT_ID_KEY, "mm" + state.getPrefix());
         setBlockParameters(state, blockParameters);
         request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", 
                              new LocalizationContext(renderer.getBlock().getComponent().getBundle(), Locale.getDefault())); 
