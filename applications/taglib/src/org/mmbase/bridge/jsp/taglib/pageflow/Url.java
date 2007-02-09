@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.14 2006-12-14 11:36:39 michiel Exp $;
+ * @version $Id: Url.java,v 1.15 2007-02-09 23:07:44 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -52,22 +52,26 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     public Url(UrlTag t, String p, Component comp, List<Map.Entry<String, Object>> pars) throws JspTagException {
         tag = t;
-        abs = tag.absolute.getString(tag);
-        encodeUrl = tag.encode.getBoolean(tag, true);
-        escapeAmps = tag.escapeAmps.getBoolean(tag, true);
+        abs = tag.getAbsolute();
+        encodeUrl = tag.encode();
+        escapeAmps = tag.escapeAmps();
         page = p;
         params = pars;
         component = comp;
     }
     public Url(UrlTag t, Url u, List<Map.Entry<String, Object>> pars) throws JspTagException {
         tag = t;
-        abs = tag.absolute.getString(tag);
-        encodeUrl = tag.encode.getBoolean(tag, true);
-        escapeAmps = tag.escapeAmps.getBoolean(tag, true);
+        abs = tag.getAbsolute();
+        encodeUrl = tag.encode();
+        escapeAmps = tag.escapeAmps();
         page = u.page;
         component = u.component;
         params = pars;
     }
+
+    /**
+     * Returns the URL as a String, always without the application context.
+     */
 
     public String get(boolean writeamp) throws JspTagException {
 
@@ -98,7 +102,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             block = null;
         }
         if (block != null) {
-            blockParams = block.createParameters(); 
+            blockParams = block.createParameters();
             tag.fillStandardParameters(blockParams);
             blockParams.setAutoCasting(true);
             for (Map.Entry<String, ?> entry : params) {
