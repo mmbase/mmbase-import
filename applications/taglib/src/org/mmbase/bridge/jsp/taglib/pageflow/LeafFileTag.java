@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.19 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.20 2007-02-09 15:57:55 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -39,6 +41,13 @@ public class LeafFileTag extends UrlTag {
 
     public void setNotfound(String n) throws JspTagException {
         notFound = getAttribute(n);
+    }
+    
+
+    public int doStartTag() throws JspTagException {
+        extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        helper.useEscaper(false);
+        return EVAL_BODY_BUFFERED;
     }
 
     protected String getPage() throws JspTagException {

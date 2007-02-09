@@ -10,11 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.framework.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
@@ -35,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.100 2006-12-09 10:29:36 johannes Exp $
+ * @version $Id: UrlTag.java,v 1.101 2007-02-09 15:57:55 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -85,7 +82,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public void addParameter(String key, Object value) throws JspTagException {
         extraParameters.add(new Entry<String, Object>(key, value));
-        url.invalidate();
+        if (url != null) {
+            url.invalidate();
+        }
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value + "--> "  + parameters);
         }
@@ -211,7 +210,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
-        helper.setValue(url.toString());
+        if (url != null) {
+            helper.setValue(url.toString());
+        }
     }
 
     public int doAfterBody() throws JspException {
