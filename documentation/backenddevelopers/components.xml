@@ -239,10 +239,10 @@
     id="${requestScope.componentId}"
 &gt;</programlisting>
 
-      <para> In future the class specification should be extended with classes
+      <para>In future the class specification should be extended with classes
       for icons and content images, which would give graphical designers also
       global control over what happens with icons and content images in a page
-      (see </para>
+      (see</para>
 
       <para>On default when no renderer is specified the render 'body' will be
       returned. If there is no body renderer defined in the component the
@@ -430,6 +430,23 @@ if (finalpage != null) {
         &lt;mm:treefile /&gt; you will probably already have recognized that
         this framework replaces the functionality of both these tags.</para>
       </note>
+    </section>
+
+    <section>
+      <title>Linking within components</title>
+
+      <para>In the above examples we saw the use of &lt;mm:url /&gt; to
+      include a stylesheet. The tags &lt;mm:url /&gt; and &lt;mm:link /&gt;
+      can also be used to link blocks with each other or to specify links
+      within a block.</para>
+
+      <programlisting>&lt;mm:link page="servers" referids="_@server"&gt;
+  &lt;a href="${_}"&gt;&lt;mm:field name="name" /&gt;&lt;/a&gt;
+&lt;/mm:link&gt;
+</programlisting>
+
+      <para>The 'page' attribute is used to specify the block to link
+      to..</para>
     </section>
   </section>
 
