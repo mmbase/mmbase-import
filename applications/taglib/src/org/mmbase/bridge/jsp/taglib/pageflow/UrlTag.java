@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.102 2007-02-09 16:56:41 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.103 2007-02-09 19:35:40 andre Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -46,9 +46,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected Attribute  page                 = Attribute.NULL;
     protected Attribute  block                = Attribute.NULL;
     protected Attribute  component            = Attribute.NULL;
-    private   Attribute  escapeAmps           = Attribute.NULL;
-    private   Attribute  absolute             = Attribute.NULL;
-    private   Attribute  encode               = Attribute.NULL;
+    protected Attribute  escapeAmps           = Attribute.NULL;
+    protected Attribute  absolute             = Attribute.NULL;
+    protected Attribute  encode               = Attribute.NULL;
     protected Url        url;
 
     public void setReferids(String r) throws JspTagException {
