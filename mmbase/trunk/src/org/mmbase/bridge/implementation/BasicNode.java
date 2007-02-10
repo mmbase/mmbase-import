@@ -14,8 +14,7 @@ import java.util.*;
 
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.BridgeCollections;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
@@ -32,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.216 2007-02-02 19:25:20 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.217 2007-02-10 15:47:42 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -193,6 +192,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return nodeManager;
     }
 
+    @Override
     public int getNumber() {
         int i = getNode().getNumber();
         // new node, thus return temp id.
@@ -207,17 +207,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * Returns whether this is a new (not yet committed) node.
      * @return is a new node
      */
+    @Override
     public boolean isNew() {
         return getNode().isNew();
     }
 
+    @Override
     public boolean isChanged(String fieldName) {
         return getNode().getChanged().contains(fieldName);
     }
 
+    @Override
     public boolean isChanged() {
         return getNode().isChanged();
     }
+    @Override
     public Set<String> getChanged() {
         return Collections.unmodifiableSet(getNode().getChanged());
     }
@@ -245,6 +249,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     /**
      * @inheritDoc
      */
+    @Override
     protected void checkWrite() {
         checkAccount();
         int realNumber = getNode().getNumber();
@@ -270,6 +275,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @param value new value of field
      * @since MMBase-1.7
      */
+    @Override
     protected void setValueWithoutChecks(String fieldName, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
         if (TemporaryNodeManager.UNKNOWN == result) {
@@ -278,6 +284,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             noderef.storeValue(fieldName, value); // commit() will throw that invalid.
         }
     }
+    @Override
     protected Integer toNodeNumber(Object v) {
         if (v == null) {
             return null;
@@ -291,10 +298,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
+    @Override
     protected void setSize(String fieldName, long size) {
         getNode().setSize(fieldName, size);
     }
 
+    @Override
     public boolean isNull(String fieldName) {
         return noderef.isNull(fieldName);
     }
@@ -325,6 +334,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     //TODO, silly get-methods could be removed (because in AbstractNode), (calling
     //getValueWithoutProcess) but they depend on noderef now, so I don't dare to do that right ahead.
 
+    @Override
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -334,6 +344,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result.booleanValue();
     }
 
+    @Override
     public Date getDateValue(String fieldName) {
         Date result =  noderef.getDateValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -343,6 +354,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result;
     }
 
+    @Override
     public List getListValue(String fieldName) {
         List result =  noderef.getListValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -354,6 +366,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
+    @Override
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
             return this;
@@ -380,6 +393,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result;
     }
 
+    @Override
     public int getIntValue(String fieldName) {
         Integer result = Integer.valueOf(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -390,6 +404,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     }
 
+    @Override
     public float getFloatValue(String fieldName) {
         Float result = new Float(getNode().getFloatValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -399,6 +414,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result.floatValue();
     }
 
+    @Override
     public long getLongValue(String fieldName) {
         Long result = new Long(getNode().getLongValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -408,6 +424,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result.longValue();
     }
 
+    @Override
     public double getDoubleValue(String fieldName) {
         Double result = new Double(getNode().getDoubleValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -417,6 +434,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result.doubleValue();
     }
 
+    @Override
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -425,6 +443,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         return result;
     }
+    @Override
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -434,6 +453,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result;
     }
 
+    @Override
     public String getStringValue(String fieldName) {
         if ("owner".equals(fieldName)) {
             return getContext();
@@ -446,6 +466,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return result;
     }
 
+    @Override
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
@@ -457,6 +478,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
 
+    @Override
     public void commit() {
         if (isNew()) {
             cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
@@ -489,6 +511,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
+    @Override
     public void cancel() {
         checkCommit();
         // when in a transaction, let the transaction cancel
@@ -507,6 +530,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
+    @Override
     public void delete(boolean deleteRelations) {
         checkDelete();
         if (isNew()) {
@@ -554,6 +578,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         invalidateNode();
     }
 
+    @Override
     public String toString() {
         //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
         return getNode().toString();
@@ -592,6 +617,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     }
 
+    @Override
     public void deleteRelations(String type) throws NotFoundException {
         if ("object".equals(type)) {
             deleteRelations(-1);
@@ -608,6 +634,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
+    @Override
     public RelationList getRelations(String role, String otherNodeManager) throws NotFoundException {
         if (isNew()) {
             // new nodes have no relations
@@ -662,6 +689,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      *
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
+    @Override
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
         if (isNew()) {
             // new nodes have no relations
@@ -673,14 +701,16 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         NodeManager nm = query.getNodeManager();
         assert query.getNodeStep() instanceof RelationStep;
         // assert nm instanceof RelationManager; cannot assert his, because if the role is null, no relation manager can be created (the nodemanager will be insrel).
-        return (RelationList) nm.getList(query);
+        return new CollectionRelationList(nm.getList(query), cloud);
     }
 
+    @Override
     public boolean hasRelations() {
         return getNode().hasRelations();
     }
 
 
+    @Override
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         if (isNew()) return 0;
         if (otherNodeManager == null || otherNodeManager.getName().equals("object")) {
@@ -738,7 +768,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Step step = count.addRelationStep(otherNodeManager, role, direction, false).getPrevious();
             count.addNode(step, this);
             count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-            Node result = (Node) cloud.getList(count).get(0);
+            Node result = cloud.getList(count).get(0);
             return result.getIntValue("number");
         }
     }
@@ -789,6 +819,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
+    @Override
     public NodeList getRelatedNodes(NodeManager otherManager, String role, String searchDir) {
         if (log.isDebugEnabled()) {
             log.debug("type(" + otherManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
@@ -805,11 +836,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return query.getNodeManager().getList(query);
     }
 
+    @Override
     public int countRelatedNodes(String type) {
         if (isNew()) return 0;
         return getNode().getRelationCount(type);
     }
 
+    @Override
     public StringList getAliases() {
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
@@ -845,6 +878,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
+    @Override
     public void createAlias(String aliasName) {
         checkWrite();
         if (isNew()) {
@@ -883,6 +917,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
+    @Override
     public void deleteAlias(String aliasName) {
         checkWrite();
         deleteAliases(aliasName);
@@ -890,30 +925,36 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     // javadoc inherited (from Node)
+    @Override
     public void setContext(String context) {
         // set the context on the node (run after insert).
         getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
     }
 
     // javadoc inherited (from Node)
+    @Override
     public String getContext() {
         return getNode().getContext(cloud.getUser());
     }
 
 
     // javadoc inherited (from Node)
+    @Override
     public StringList getPossibleContexts() {
         return new BasicStringList(getNode().getPossibleContexts(cloud.getUser()));
     }
 
+    @Override
     public boolean mayWrite() {
         return isNew() || cloud.check(Operation.WRITE, getNode().getNumber());
     }
 
+    @Override
     public boolean mayDelete() {
         return isNew() || cloud.check(Operation.DELETE, getNode().getNumber());
     }
 
+    @Override
     public boolean mayChangeContext() {
         return isNew() || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
     }
@@ -921,6 +962,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     /**
      * Reverse the buffers, when changed and not stored...
      */
+    @Override
     protected void finalize() {
         // When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
         // when not done it results in node-lists with changes which are not performed on the database...
@@ -939,14 +981,17 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return  getNode().getFunctions();
     }
 
+    @Override
     protected Function getNodeFunction(String functionName) {
         return getNode().getFunction(functionName);
     }
 
 
+    @Override
     public Parameters createParameters(String functionName) {
         return getNode().getFunction(functionName).createParameters();
     }
+    @Override
     protected FieldValue createFunctionValue(Object result) {
         return new BasicFunctionValue(getCloud(), result);
     }

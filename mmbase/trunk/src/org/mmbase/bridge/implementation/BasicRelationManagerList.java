@@ -10,17 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.util.*;
+import java.util.Collection;
+
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
 
 /**
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.15 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.16 2007-02-10 15:47:42 nklasens Exp $
  */
-public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
+public class BasicRelationManagerList extends AbstractNodeList<RelationManager> implements RelationManagerList {
 
     BasicRelationManagerList() {
         super();
@@ -30,48 +30,25 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         super(c, cloud);
     }
 
-    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
-        if (o instanceof MMObjectNode) {
-            MMObjectBuilder bul=((MMObjectNode) o).getBuilder();
-            if ((bul instanceof org.mmbase.module.corebuilders.TypeRel) ||
-                (bul instanceof org.mmbase.module.corebuilders.RelDef)) {
-                return o;
-            } else {
-                throw new IllegalArgumentException("requires a relationmanager (typerel or reldef) node");
-            }
-        } else {
-            return (RelationManager)o;
-        }
-    }
-
-    /**
-    *
-    */
     public RelationManager getRelationManager(int index) {
-        return (RelationManager) get(index);
+        return get(index);
     }
 
-    /**
-    *
-    */
     public RelationManagerIterator relationManagerIterator() {
         return new BasicRelationManagerIterator();
-    };
+    }
 
-    /**
-     *
-     */
     public RelationManagerList subRelationManagerList(int fromIndex, int toIndex) {
         return new BasicRelationManagerList(subList(fromIndex, toIndex), cloud);
     }
 
-    protected class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
+    protected class BasicRelationManagerIterator extends BasicIterator implements RelationManagerIterator {
 
         public RelationManager nextRelationManager() {
-            return (RelationManager)next();
+            return next();
         }
         public RelationManager previousRelationManager() {
-            return (RelationManager)previous();
+            return previous();
         }
     }
 

@@ -22,7 +22,7 @@ import org.mmbase.bridge.*;
  * This happens lazily.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNodeManager.java,v 1.2 2006-09-13 17:47:49 michiel Exp $
+ * @version $Id: MapNodeManager.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.9
  */
 
@@ -56,15 +56,18 @@ public class MapNodeManager extends AbstractNodeManager  {
         }
         return field;
     }
+    @Override
     protected Map<String, Field> getFieldTypes() {
         check();
         return fieldTypes;
     }
     // override for performance
+    @Override
     public boolean hasField(String fieldName) {
         return map.containsKey(fieldName);
     }
     // override for performance
+    @Override
     public Field getField(String fieldName) throws NotFoundException {
         Field f = fieldTypes.get(fieldName);
         if (f == null) {

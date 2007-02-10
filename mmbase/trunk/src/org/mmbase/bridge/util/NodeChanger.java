@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * Wraps another Node, and adds 'isChangedByThis'.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeChanger.java,v 1.2 2006-10-24 10:55:08 michiel Exp $
+ * @version $Id: NodeChanger.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -35,19 +35,33 @@ public class NodeChanger extends NodeWrapper {
         }
     }
 
+    @Override
     public void setValue(String fieldName, Object value) { change(fieldName); super.setValue(fieldName, value); }
+    @Override
     public void setValueWithoutProcess(String fieldName, Object value) { change(fieldName); super.setValueWithoutProcess(fieldName, value); }
+    @Override
     public void setObjectValue(String fieldName, Object value) { change(fieldName); super.setObjectValue(fieldName, value); }
+    @Override
     public void setBooleanValue(String fieldName, boolean value) { change(fieldName); super.setBooleanValue(fieldName, value); }
+    @Override
     public void setNodeValue(String fieldName, Node value) { change(fieldName); super.setNodeValue(fieldName, value); }
+    @Override
     public void setIntValue(String fieldName, int value) { change(fieldName); super.setIntValue(fieldName, value); }
+    @Override
     public void setFloatValue(String fieldName, float value) { change(fieldName); super.setFloatValue(fieldName, value); }
+    @Override
     public void setDoubleValue(String fieldName, double value) { change(fieldName); super.setDoubleValue(fieldName, value); }
+    @Override
     public void setByteValue(String fieldName, byte[] value) { change(fieldName); super.setByteValue(fieldName, value); }
+    @Override
     public void setInputStreamValue(String fieldName, java.io.InputStream value, long size) { change(fieldName); super.setInputStreamValue(fieldName, value, size); }
+    @Override
     public void setLongValue(String fieldName, long value) { change(fieldName); super.setLongValue(fieldName, value); }
+    @Override
     public void setStringValue(String fieldName, String value) { change(fieldName); super.setStringValue(fieldName, value); }
+    @Override
     public void setDateValue(String fieldName, Date value) { change(fieldName); super.setDateValue(fieldName, value); }
+    @Override
     public void setListValue(String fieldName, List value) { change(fieldName); super.setListValue(fieldName, value); }
     /**
      * The isChanged method reflects the isChanged status of the underlying core node.isChanged. Before

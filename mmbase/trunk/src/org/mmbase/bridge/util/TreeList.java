@@ -23,11 +23,11 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.21 2006-06-23 15:21:51 michiel Exp $
+ * @version $Id: TreeList.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.7
  */
 
-public class TreeList extends AbstractSequentialBridgeList implements NodeList {
+public class TreeList extends AbstractSequentialBridgeList<Node> implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(TreeList.class);
 
     public static final String REAL_NODES = "realnodes";
@@ -104,6 +104,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     }
 
     // javadoc inherited
+    @Override
     public int size() {
         sizeCheck();
         return max != SearchQuery.DEFAULT_MAX_NUMBER ? (max < size ? max : size) : size;
@@ -250,6 +251,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     }
 
     // javadoc inherited
+    @Override
     public ListIterator listIterator(int ind) {
         return treeIterator(ind);
     }
@@ -268,7 +270,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     // javadoc inherited
     public Node getNode(int i) {
-        return (Node)get(i);
+        return get(i);
     }
 
     /**
@@ -290,6 +292,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         throw new UnsupportedOperationException("SubNodeLists not implemented for TreeList");
     }
 
+    @Override
     public String toString() {
         int size = size();
         return "size: " + size + " " + branches.toString();
@@ -344,6 +347,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         }
 
 
+        @Override
         public String toString() {
             return query.toString()  + (leafConstraint != null ? "[" + leafConstraint + "]" : "");
         }
@@ -387,7 +391,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
                 int i = 0;
                 while (prepare(i)) {
                     NodeIterator iterator = (NodeIterator)nodeIterators.get(i);
-                    Node nextNode = (Node) nextNodes.get(i);
+                    Node nextNode = nextNodes.get(i);
                     if (nextNode != null) {
                         return true;
                     } else {
@@ -472,7 +476,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             }
         }
 
-        public Object next() {
+        public Node next() {
             return nextNode();
         }
 
@@ -601,7 +605,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             nextIndex--;
             throw new UnsupportedOperationException("unfinished");
         }
-        public Object previous() {
+        public Node previous() {
             return previousNode();
         }
         public int nextIndex() {
@@ -616,11 +620,11 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }
 
-        public void set(Object o) {
+        public void set(Node o) {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }
 
-        public void add(Object o) {
+        public void add(Node o) {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }
 
@@ -695,7 +699,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             writer.write("size: " + tree.size() + "\n");
             writer.flush();
             while (i.hasNext()) {
-                Node n = (Node)i.next();
+                Node n = i.next();
                 try {
                     writer.write(n.getFunctionValue("index", null).toString() + "\t");
                 } catch(Exception e) {

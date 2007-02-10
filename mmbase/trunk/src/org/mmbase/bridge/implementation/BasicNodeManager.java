@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.127 2006-12-28 09:22:45 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.128 2007-02-10 15:47:42 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -119,6 +119,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
+    @Override
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
         if (nodeNumber >= 0 && nodeNumber == node.getBuilder().getNumber()) { // this is the typedef itself
@@ -129,10 +130,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
+    @Override
     public final boolean isNodeManager() {
         return true;
     }
 
+    @Override
     public final NodeManager toNodeManager() {
         return this;
     }
@@ -366,15 +369,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             boolean checked = cloud.setSecurityConstraint(query);
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
-            List resultList = builder.getStorageConnector().getNodes(query, useCache);
+            List<MMObjectNode> resultList = builder.getStorageConnector().getNodes(query, useCache);
             
             BasicNodeList resultNodeList;
             NodeManager nm = query.getNodeManager();
-            if (nm instanceof RelationManager || (nm == this && builder instanceof InsRel)) {
-                resultNodeList = new BasicRelationList(resultList, cloud);
-            } else {
-                resultNodeList = new BasicNodeList(resultList, cloud);
-            }
+            resultNodeList = new BasicNodeList(resultList, cloud);
 
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
 
@@ -548,21 +547,25 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     // overriding behavior of BasicNode
 
+    @Override
     public void commit() {
         super.commit();  // commit the node - the builder should now be loaded by TypeDef
         // rebuild builder reference and fieldlist.
         initManager();
     }
 
+    @Override
     public void delete(boolean deleteRelations) {
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
     }
 
+    @Override
     public Collection getFunctions() {
         return  builder.getFunctions();
     }
 
+    @Override
     protected Function getNodeFunction(String functionName) {
         if (log.isDebugEnabled()) {
             log.debug("Getting function '" + functionName + "' for " + this);

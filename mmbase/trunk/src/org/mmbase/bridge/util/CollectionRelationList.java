@@ -18,10 +18,10 @@ import org.mmbase.util.logging.*;
  * A list of nodes, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.2 2006-09-25 15:00:56 michiel Exp $
+ * @version $Id: CollectionRelationList.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
  * @since MMBase-1.8
  */
-public class CollectionRelationList<E extends Relation>  extends CollectionNodeList<E> implements RelationList<E> {
+public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
 
     private static final Logger log = Logging.getLoggerInstance(CollectionRelationList.class);
 
@@ -35,19 +35,10 @@ public class CollectionRelationList<E extends Relation>  extends CollectionNodeL
         super(c, cloud);
     }
 
-    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
-        return (Relation)o;
-    }
-    /**
-     *
-     */
     public Relation getRelation(int index) {
-        return (Relation)get(index);
+        return get(index);
     }
 
-    /**
-     *
-     */
     public RelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new CollectionRelationList(subList(fromIndex, toIndex), nodeManager);
@@ -56,21 +47,18 @@ public class CollectionRelationList<E extends Relation>  extends CollectionNodeL
         }
     }
 
-    /**
-     *
-     */
     public RelationIterator relationIterator() {
         return new BasicRelationIterator();
     }
 
-    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator<E> {
+    protected class BasicRelationIterator extends BasicIterator implements RelationIterator {
 
         public Relation nextRelation() {
-            return (Relation)next();
+            return next();
         }
 
         public Relation previousRelation() {
-            return (Relation)previous();
+            return previous();
         }
     }
 }

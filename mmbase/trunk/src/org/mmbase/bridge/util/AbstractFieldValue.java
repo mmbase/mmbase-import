@@ -20,7 +20,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is an unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractFieldValue.java,v 1.2 2006-02-10 18:00:47 michiel Exp $
+ * @version $Id: AbstractFieldValue.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8
  */
 public abstract class AbstractFieldValue implements FieldValue {
@@ -85,6 +85,7 @@ public abstract class AbstractFieldValue implements FieldValue {
         return Casting.toNode(get(), cloud);
     }
 
+    @Override
     public String toString() {
         return Casting.toString(get());
     }
