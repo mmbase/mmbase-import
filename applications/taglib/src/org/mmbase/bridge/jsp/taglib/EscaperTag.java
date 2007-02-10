@@ -10,18 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.transformers.*;
 import javax.servlet.jsp.*;
-import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.10 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.11 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 

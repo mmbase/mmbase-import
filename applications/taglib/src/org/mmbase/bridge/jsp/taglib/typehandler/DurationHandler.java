@@ -28,13 +28,11 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.6 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DurationHandler.class);
-
-    private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
 
     /**
      * @param tag

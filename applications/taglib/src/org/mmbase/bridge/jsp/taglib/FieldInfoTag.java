@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.98 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: FieldInfoTag.java,v 1.99 2007-02-10 16:49:27 nklasens Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -257,7 +257,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
              * EXPERIMENTAL
              */
             CloudTag ct = null;
-            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            ct = findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
@@ -357,7 +357,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, true);
             break;
         case TYPE_USESEARCHINPUT: {
-            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this), false);
+            QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this), false);
             if (c == null) { // produce a String to use in a constraint attribute of a list (legacy)
                 log.debug("creating string constraint");
                 show = whereHtmlInput(field);
@@ -373,7 +373,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         }
         case TYPE_REUSESEARCHINPUT: {
-            paramHtmlInput((ParamHandler) findParentTag(ParamHandler.class, null), field);
+            paramHtmlInput(findParentTag(ParamHandler.class, null), field);
             show = "";
             break;
         }
@@ -483,7 +483,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @since MMBase-1.8
      */
     public String getPrefix() throws JspTagException {
-        FormTag ft = (FormTag) findParentTag(FormTag.class, null, false);
+        FormTag ft = findParentTag(FormTag.class, null, false);
         String id = (ft != null ? ft.getId() : null);
         if (id == null) {
             id = findFieldProvider().getId();

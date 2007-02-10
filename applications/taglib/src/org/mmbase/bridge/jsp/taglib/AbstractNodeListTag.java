@@ -11,8 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 
 
 import java.util.*;
-import org.mmbase.util.Casting;
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.jstl.core.*;
@@ -31,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.77 2007-02-10 15:23:13 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.78 2007-02-10 16:49:27 nklasens Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {

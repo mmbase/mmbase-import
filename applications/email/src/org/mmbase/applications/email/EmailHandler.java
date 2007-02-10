@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.19 2007-01-08 12:01:59 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.20 2007-02-10 16:52:47 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -241,42 +241,6 @@ public class EmailHandler {
         return result.toString();
     }
 
-
-    /**
-    * convert 'html' to 'plain' text
-    * this removes the br and p tags and converts them
-    * to returns and dubble returns for email use.
-    */
-    private static String html2plain(String input) {
-        // define the result string
-        StringBuffer result = new StringBuffer();
-
-        // setup a tokenizer on all returns and linefeeds so
-        // we can remove them
-        StringTokenizer tok = new StringTokenizer(input,"\n\r");
-        while (tok.hasMoreTokens()) {
-            // add the content part stripped of its return/linefeed
-            result.append(tok.nextToken());
-        }
-
-        // now use the html br and p tags to insert
-        // the wanted returns
-        StringObject obj = new StringObject(result.toString());
-        obj.replace("<br/>","\n");
-        obj.replace("<br />","\n");
-        obj.replace("<BR/>","\n");
-        obj.replace("<BR />","\n");
-        obj.replace("<br>","\n");
-        obj.replace("<BR>","\n");
-        obj.replace("<p>","\n\n");
-        obj.replace("<p/>","\n\n");
-        obj.replace("<p />","\n\n");
-        obj.replace("<P>","\n\n");
-
-
-        // return the coverted body
-        return obj.toString();
-    }
 
     /**
      * Sends one email. The body is a bit parsed. It can be an URL, in which case the result will be

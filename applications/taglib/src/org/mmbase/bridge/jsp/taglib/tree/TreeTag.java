@@ -11,8 +11,6 @@ package org.mmbase.bridge.jsp.taglib.tree;
 
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.*;
-
 import java.io.IOException;
 import java.util.Stack;
 
@@ -47,7 +45,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.20 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.21 2007-02-10 16:49:27 nklasens Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -183,7 +181,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         collector = new ContextCollector(getContextProvider());
 
         // serve parent timer tag:
-        TimerTag t = (TimerTag) findParentTag(TimerTag.class, null, false);
+        TimerTag t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
             timerHandle = t.startTimer(getId(), getClass().getName());
         }

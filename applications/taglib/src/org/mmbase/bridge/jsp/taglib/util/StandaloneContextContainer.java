@@ -10,13 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.PageContext;
-import java.util.Map;
 
 /**
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.13 2006-11-22 14:47:38 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.14 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  **/
 

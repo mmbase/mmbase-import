@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.51 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: Contexts.java,v 1.52 2007-02-10 16:52:47 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -202,7 +202,7 @@ public class Contexts extends MMObjectBuilder {
                     baf.setAlias("count");
 
                     AggregatedResultCache cache = AggregatedResultCache.getCache();
-                    List resultList = (List) cache.get(query);
+                    List resultList = cache.get(query);
                     if (resultList == null) {
                         ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
                         resultList = mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
@@ -507,7 +507,7 @@ public class Contexts extends MMObjectBuilder {
                         }
                     } else {
                         // may read nothing, simply making the query result nothing: number = -1
-                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
+                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), new Integer(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
                 }
@@ -990,7 +990,7 @@ public class Contexts extends MMObjectBuilder {
             }
         } else if (function.equals("may")) {
             Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode((UserContext) a.get(Parameter.USER));
+            MMObjectNode checkingUser = getUserNode(a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }

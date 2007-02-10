@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.14 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.15 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -157,7 +157,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
     public boolean containsKey(Object key) {
         if (key instanceof String) {
-            return pageContext.findAttribute((String) key) != null ||  nulls.contains((String) key);
+            return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
         } else {
             return false;
         }

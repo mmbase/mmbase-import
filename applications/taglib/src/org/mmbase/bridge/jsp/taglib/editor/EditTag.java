@@ -11,9 +11,6 @@ package org.mmbase.bridge.jsp.taglib.editor;
 
 import javax.servlet.jsp.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -47,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.19 2006-12-05 21:58:55 michiel Exp $
+ * @version $Id: EditTag.java,v 1.20 2007-02-10 16:49:27 nklasens Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -132,11 +129,6 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
     }
 
     private Attribute type = Attribute.NULL;
-
-    private Query query;
-    private int nodenr;
-    private String fieldName;
-
 
     private Editor editor = null;     // should do all the work
 

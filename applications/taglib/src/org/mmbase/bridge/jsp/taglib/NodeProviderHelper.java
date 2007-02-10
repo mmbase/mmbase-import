@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.23 2006-07-25 14:37:48 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.24 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -142,9 +142,6 @@ public class NodeProviderHelper implements NodeProvider {
         pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
     }
 
-    private String getSimpleReturnValueName(String fieldName){
-        return getSimpleReturnValueName(jspvar, fieldName);
-    }
     /**
      * Generates the variable-name for a field.
      *

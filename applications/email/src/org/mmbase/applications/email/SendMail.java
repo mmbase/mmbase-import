@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.24 2007-01-08 14:00:25 michiel Exp $
+ * @version $Id: SendMail.java,v 1.25 2007-02-10 16:52:47 nklasens Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -178,7 +178,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         if (replyTo != null) {
             msg.setReplyTo(InternetAddress.parse(replyTo));
         }
-        String sub = (String)headers.get("Subject");
+        String sub = headers.get("Subject");
         if (sub == null || "".equals(sub)) sub = "<no subject>";
         msg.setSubject(headers.get("Subject"));
 

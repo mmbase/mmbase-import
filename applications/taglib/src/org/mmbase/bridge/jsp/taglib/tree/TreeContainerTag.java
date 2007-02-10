@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.9 2006-07-25 19:56:23 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -69,20 +69,20 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, null, false);
+            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
             if (c != null) {
                 query = c.getNodeQuery();
             }
         } else if (! "".equals(container)) {
             log.debug("container attribute, trying container");
-            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, container, true);
+            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, container, true);
             if (c != null) {
                 query = c.getNodeQuery();
             }
         }
         if (query == null) { // try to work as node-referrer
             log.debug("working as node-referrer");
-            NodeProvider np =  (NodeProvider) thisTag.findParentTag(NodeProvider.class, "".equals(node) ? null : node, ! "".equals(node));
+            NodeProvider np =  thisTag.findParentTag(NodeProvider.class, "".equals(node) ? null : node, ! "".equals(node));
             if (np == null) {
                 throw new TaglibException("No NodeQueryContainer nor a NodeProvider found in tree-tag");
             } else {
@@ -118,7 +118,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 // I'm not entirely sure why the following is necessary at all:
-                Step step = (Step) tree.getTemplate().getSteps().get(2);
+                Step step = tree.getTemplate().getSteps().get(2);
                 if (query.getSteps().contains(step)) {
                     query.setNodeStep(step);
                 }

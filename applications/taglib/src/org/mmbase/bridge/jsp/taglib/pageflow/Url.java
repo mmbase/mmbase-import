@@ -15,7 +15,6 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.core.MMBase; // TODO
-import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.15 2007-02-09 23:07:44 michiel Exp $;
+ * @version $Id: Url.java,v 1.16 2007-02-10 16:49:27 nklasens Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {

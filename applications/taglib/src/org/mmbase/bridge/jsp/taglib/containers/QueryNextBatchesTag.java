@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.7 2006-04-11 22:58:36 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -57,7 +57,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
 
     protected List getList() throws JspTagException {
-        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();

@@ -14,7 +14,6 @@ import java.net.*;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mmbase.applications.email.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.1 2007-01-08 12:02:38 michiel Exp $
+ * @version $Id: LinkChecker.java,v 1.2 2007-02-10 16:52:47 nklasens Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {

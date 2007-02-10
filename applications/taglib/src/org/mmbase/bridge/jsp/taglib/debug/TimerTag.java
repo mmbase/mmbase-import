@@ -34,7 +34,7 @@ class LongContainer {
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.8 2004-06-30 17:51:55 michiel Exp $ 
+ * @version $Id: TimerTag.java,v 1.9 2007-02-10 16:49:27 nklasens Exp $ 
  */
 
 public class TimerTag extends ContextReferrerTag {
@@ -45,7 +45,6 @@ public class TimerTag extends ContextReferrerTag {
     private List timerIds;
     private Map totalTimes;
 
-    private int lastTimer;
     private Attribute name = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
@@ -107,7 +106,6 @@ public class TimerTag extends ContextReferrerTag {
         timers     = new ArrayList(1);
         timerIds   = new ArrayList(1);
         totalTimes = new HashMap();
-        lastTimer = 0;
         startTimer(getId(), getClass().getName());
         return EVAL_BODY_BUFFERED;
     }

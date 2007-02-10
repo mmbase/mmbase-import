@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.39 2006-07-08 12:51:56 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.40 2007-02-10 16:49:27 nklasens Exp $
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 
@@ -91,7 +91,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
+        RelatedNodesContainerTag c = findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
         if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
@@ -150,7 +150,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to third step (first step is the related node, second is the relation)
-                    query.setNodeStep((Step) query.getSteps().get(2));
+                    query.setNodeStep(query.getSteps().get(2));
                 }
             }
 

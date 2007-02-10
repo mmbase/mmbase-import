@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.14 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.15 2007-02-10 16:49:27 nklasens Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -97,7 +97,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to third step (first two are the node and the relation)
-                    query.setNodeStep((Step) query.getSteps().get(2));
+                    query.setNodeStep(query.getSteps().get(2));
                 }
             }
         }

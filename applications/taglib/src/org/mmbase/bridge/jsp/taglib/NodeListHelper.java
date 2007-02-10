@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.33 2007-02-10 16:42:26 nklasens Exp $
+ * @version $Id: NodeListHelper.java,v 1.34 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.7
  */
 

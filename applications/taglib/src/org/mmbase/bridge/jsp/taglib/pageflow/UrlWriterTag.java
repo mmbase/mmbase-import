@@ -12,10 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-
 import org.mmbase.bridge.jsp.taglib.Writer;
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 
@@ -24,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.12 2006-10-31 20:10:27 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.13 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 

@@ -12,10 +12,6 @@ package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.PageContext;
 import java.util.*;
-import org.mmbase.util.Casting;
-import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
-import org.mmbase.bridge.jsp.taglib.ContentTag;
 
 
 /**
@@ -23,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.7 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: Backing.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public interface Backing extends Map<String, Object> {
