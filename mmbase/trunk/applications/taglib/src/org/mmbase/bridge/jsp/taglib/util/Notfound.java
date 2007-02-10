@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.*;
-
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A helper class to implement notfound attribute
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notfound.java,v 1.2 2006-03-28 20:31:12 michiel Exp $
+ * @version $Id: Notfound.java,v 1.3 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 public abstract class  Notfound  {

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.70 2006-11-11 21:55:56 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.71 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -196,17 +196,6 @@ public class IncludeTag extends UrlTag {
             throw new TaglibException (e.getMessage(), e);
         }
     }
-
-    /**
-     * Include a local file by doing a new HTTP request
-     * Do not use this method, but use the 'internal()' method instead
-     */
-    private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
-        external(bodyContent,
-                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl,
-                 request, response);
-    }
-
 
     /**
      * @since MMBase-1.8

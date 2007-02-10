@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.util.*;
-
 import org.mmbase.module.*;
 import org.mmbase.util.*;
 

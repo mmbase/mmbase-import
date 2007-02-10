@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * Shows the valid state of an mm:form
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValidTag.java,v 1.1 2005-12-20 23:00:47 michiel Exp $
+ * @version $Id: ValidTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -42,7 +42,7 @@ public class ValidTag extends ContextReferrerTag implements Condition {
 
 
     public int doStartTag() throws JspTagException {
-        FormTag formTag =  (FormTag) findParentTag(FormTag.class, (String) form.getValue(this), true);
+        FormTag formTag =  findParentTag(FormTag.class, (String) form.getValue(this), true);
         if (formTag.isValid() != getInverse()) {
             return EVAL_BODY;
         } else {

@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.4 2005-05-02 11:54:31 michiel Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.5 2007-02-10 16:49:27 nklasens Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -80,7 +80,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
 
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         String elementString = element.getString(this);
         Step step;
@@ -108,7 +108,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {

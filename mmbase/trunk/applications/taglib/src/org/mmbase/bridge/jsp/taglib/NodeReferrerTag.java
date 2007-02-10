@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.27 2006-11-12 12:52:56 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.28 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -62,7 +61,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider() throws JspTagException {
-        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
+        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -70,7 +69,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {
-        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
+        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
     }
 
     /**
@@ -108,7 +107,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     }
 
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {

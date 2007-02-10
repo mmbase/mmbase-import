@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.30 2006-10-17 12:08:54 michiel Exp $
+ * @version $Id: Attribute.java,v 1.31 2007-02-10 16:49:27 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -106,7 +106,7 @@ public class Attribute {
         if (! containsVars) return attribute;
 
         if (attributeParts.size() == 1) { // avoid construction of StringBuilder for this simple case
-            Part ap = (Part) attributeParts.get(0);
+            Part ap = attributeParts.get(0);
             return ap.getValue(tag);
         }
         StringBuilder result = new StringBuilder();

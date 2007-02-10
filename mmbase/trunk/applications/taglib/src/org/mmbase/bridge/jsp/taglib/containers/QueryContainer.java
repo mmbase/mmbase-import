@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.*;
-
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
 
@@ -20,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.CloudProvider;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.8 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: QueryContainer.java,v 1.9 2007-02-10 16:49:27 nklasens Exp $
  */
 public interface QueryContainer extends  CloudProvider {
 

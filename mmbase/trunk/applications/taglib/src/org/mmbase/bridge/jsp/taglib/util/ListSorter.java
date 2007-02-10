@@ -21,7 +21,7 @@ import java.text.Collator;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.9 2006-09-27 20:43:11 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
@@ -46,9 +46,9 @@ public class  ListSorter  {
                     boolean pageClass = false;
                     if (comparator.indexOf(".") == -1) {
                         Class[] classes = pageContext.getPage().getClass().getDeclaredClasses();
-                        for (int i = 0; i < classes.length; i++) {
-                            if (classes[i].toString().endsWith(comparator)) {
-                                claz = classes[i];
+                        for (Class element : classes) {
+                            if (element.toString().endsWith(comparator)) {
+                                claz = element;
                                 pageClass = true;
                                 break;
                             }

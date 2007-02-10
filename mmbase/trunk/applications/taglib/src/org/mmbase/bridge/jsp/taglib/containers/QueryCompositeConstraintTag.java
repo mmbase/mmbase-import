@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.6 2005-12-21 11:39:25 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -74,7 +74,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
@@ -90,7 +90,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
     }
 
     public int doAfterBody() throws JspTagException {
-        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
         addConstraint(query, getOperator(), constraints);

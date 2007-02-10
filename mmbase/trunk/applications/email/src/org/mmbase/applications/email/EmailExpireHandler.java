@@ -15,7 +15,6 @@ import java.util.Iterator;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**

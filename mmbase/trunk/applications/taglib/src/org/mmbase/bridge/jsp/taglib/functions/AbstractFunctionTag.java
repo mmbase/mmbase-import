@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.28 2007-02-10 15:21:51 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.29 2007-02-10 16:49:27 nklasens Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -161,7 +161,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 log.debug("explicitely specified node");
                 functionOrNode = findNodeProvider();
             } else {
-                functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
+                functionOrNode = findParentTag(FunctionContainerOrNodeProvider.class, null, false);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Found functionOrNode " + functionOrNode);

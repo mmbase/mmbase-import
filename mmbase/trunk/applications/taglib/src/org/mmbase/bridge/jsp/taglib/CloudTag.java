@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.147 2006-11-07 22:44:32 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.148 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -272,9 +272,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             log.debug("Searching cookie " + cookie);
         }
         if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals(cookie) && (!"".equals(cookies[i].getValue()))) {
-                    return cookies[i];
+            for (Cookie element : cookies) {
+                if (element.getName().equals(cookie) && (!"".equals(element.getValue()))) {
+                    return element;
                 }
             }
         }
@@ -343,17 +343,17 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             String cookie = REALM + getSessionName();
             log.debug("removing cookie");
             if (cookies != null) {
-                for (int i = 0; i < cookies.length; i++) {
+                for (Cookie element : cookies) {
                     String path = request.getContextPath();
                     if (path.equals("")) path = "/";
-                    if (cookies[i].getName().equals(cookie)) {
+                    if (element.getName().equals(cookie)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("removing cookie with value " + cookies[i]);
+                            log.debug("removing cookie with value " + element);
                         }
-                        cookies[i].setValue("");
-                        cookies[i].setMaxAge(0); // remove
-                        cookies[i].setPath(path);
-                        response.addCookie(cookies[i]);
+                        element.setValue("");
+                        element.setMaxAge(0); // remove
+                        element.setPath(path);
+                        response.addCookie(element);
                     }
                 }
             }
@@ -1021,9 +1021,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 String existingQuery = toFile.substring(existingQueryPosition + 1);
                 log.debug("Found existing query " + existingQuery);
                 String[] parameters = existingQuery.split("&");
-                for (int i = 0; i < parameters.length; i++) {
-                    if (parameters[i].startsWith("referrer=")) {
-                        referrer = org.mmbase.util.Encode.decode("escape_url", parameters[i].substring(9));
+                for (String element : parameters) {
+                    if (element.startsWith("referrer=")) {
+                        referrer = org.mmbase.util.Encode.decode("escape_url", element.substring(9));
                         if (referrer.startsWith("?")) referrer = "." + referrer; // tomcat 5, referrerPage can be "", which is inconvenient, because using it as action for login.jsp whill be empty string, will post to login.jsp again
                         log.debug("Found existing referrer " + referrer);
                         break;

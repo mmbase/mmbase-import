@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.48 2006-11-08 16:34:26 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.49 2007-02-10 16:49:27 nklasens Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -50,25 +50,6 @@ public class DateHandler extends AbstractTypeHandler {
     private Calendar getInstance() throws JspTagException {
         return Calendar.getInstance(tag.getTimeZone());
     }
-
-    private void yearFieldValue(Calendar cal, StringBuffer buffer) {
-        if (EXIST_YEAR_0) {
-            // the year '0' does not really exist in gregorian, So 4 BC == -3, 1 BC == 0
-            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
-                buffer.append("-");
-                buffer.append(cal.get(Calendar.YEAR) - 1);
-            } else {
-                buffer.append(cal.get(Calendar.YEAR));
-            }
-        } else {
-            // perhaps this is simpler..
-            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
-                buffer.append("-");
-            }
-            buffer.append(cal.get(Calendar.YEAR));
-        }
-    }
-
 
     protected DateTimePattern getPattern(DataType dt) throws JspTagException {
         DateTimePattern dateTimePattern;
@@ -324,7 +305,6 @@ public class DateHandler extends AbstractTypeHandler {
         Locale locale = tag.getLocale();
         List parsed = dateTimePattern.getList(locale);
         Iterator parsedPattern = parsed.iterator();
-        boolean first = true;
         while(parsedPattern.hasNext()) {
             String pattern = (String) parsedPattern.next();
             if (pattern.length() < 1) continue;

@@ -13,8 +13,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-import org.mmbase.util.Casting;
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -33,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.49 2005-05-13 09:47:12 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.50 2007-02-10 16:49:27 nklasens Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -172,8 +170,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             int cookiecount = 0;
             Cookie[] cookies = request.getCookies();
             if (cookies != null) { 
-                for (int i = 0; i< cookies.length; i++) {
-                    Cookie c = cookies[i];
+                for (Cookie c : cookies) {
                     if (c.getName().equals(cookie.toString())) {
                         cookiecount++;
                     }

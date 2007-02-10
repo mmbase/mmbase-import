@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.17 2006-02-20 18:34:16 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.18 2007-02-10 16:52:47 nklasens Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -144,8 +144,8 @@ public class Authenticate extends Authentication {
             if (li == null) {
                 throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }
-            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
-            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
+            String userName = li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
                 User user = new LocalAdmin(userName, s);

@@ -12,7 +12,6 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 
-import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.58 2005-05-18 08:04:16 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.59 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {

@@ -16,7 +16,6 @@ import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
-import org.mmbase.module.builders.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
@@ -54,7 +53,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.81 2006-11-24 09:33:14 pierre Exp $
+ * @version $Id: Dove.java,v 1.82 2007-02-10 16:52:47 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -69,8 +68,6 @@ public class Dove extends AbstractDove {
     private static final String PROP_CHANGES = "changes";
     private static final String CHANGES_IGNORE = "ignore";
     private static final String CHANGES_WARN   = "warn";
-    private static final String CHANGES_EXCEPTION   = "exception";
-
     /**
      * Constructor
      * @param doc the Document that is constructed. This should only be used to

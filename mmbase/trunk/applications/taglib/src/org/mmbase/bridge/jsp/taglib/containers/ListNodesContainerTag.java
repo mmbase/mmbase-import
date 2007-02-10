@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.21 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.22 2007-02-10 16:49:27 nklasens Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -115,7 +115,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.setNodeStep((Step) query.getSteps().get(0));
+                    query.setNodeStep(query.getSteps().get(0));
                 }
             }
         }
