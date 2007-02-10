@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.47 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.48 2007-02-10 17:44:03 nklasens Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -36,7 +36,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
     private static final boolean allowNonQueriedFields = true; // not yet configurable
 
     // field types
-    final protected Map fieldTypes = new HashMap();
+    final protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
 
     final MMObjectBuilder builder;
     private SearchQuery query;
@@ -95,7 +95,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
      * @since MMBase-1.8
      */
     @Override
-    protected Map getFieldTypes() {
+    protected Map<String, Field> getFieldTypes() {
         if (builder != null) {
             return fieldTypes;
         } else {

@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.62 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.63 2007-02-10 17:44:03 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -66,7 +66,7 @@ public class BasicQuery implements Query  {
     protected Constraint insecureConstraint = null;
 
 
-    private   HashMap  aliasSequences = new HashMap(); // must be HashMap because cloneable
+    private   HashMap<String, Integer>  aliasSequences = new HashMap<String, Integer>(); // must be HashMap because cloneable
     // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
 
 
@@ -85,12 +85,12 @@ public class BasicQuery implements Query  {
      * The implicitely added 'extra' fields. These are removed if the query becomes 'distinct'. So,
      * you can e.g. not do element= on a distinct query result.
      */
-    protected List implicitFields = new ArrayList();
+    protected List<StepField> implicitFields = new ArrayList<StepField>();
 
     /**
      * The explicitely added 'extra' fields. Because you explicitely added those, they will not be removed if the query becomes 'distinct'.
      */
-    protected List explicitFields = new ArrayList();
+    protected List<StepField> explicitFields = new ArrayList<StepField>();
 
     BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
@@ -203,7 +203,7 @@ public class BasicQuery implements Query  {
         try {
             BasicQuery clone = (BasicQuery) super.clone();
             clone.query = (BasicSearchQuery) query.clone();
-            clone.aliasSequences = (HashMap) aliasSequences.clone();
+            clone.aliasSequences = (HashMap<String, Integer>) aliasSequences.clone();
             removeSecurityConstraintFromClone(clone.query);
             clone.insecureConstraint = null;
             clone.queryCheck = null;
@@ -237,7 +237,7 @@ public class BasicQuery implements Query  {
      */
     protected String createAlias(String  name) {
         if (used) throw new BridgeException("Query was used already");
-        Integer seq = (Integer) aliasSequences.get(name);
+        Integer seq = aliasSequences.get(name);
         if (seq == null) {
             seq = new Integer(0);
         } else {
@@ -283,7 +283,7 @@ public class BasicQuery implements Query  {
         // check if it was the lastely 'automaticly' create alias, in which case we free the sequence number again
         // (also to fix #6547)
 
-        Integer currentSeq  = (Integer) aliasSequences.get(aliasBase);
+        Integer currentSeq  = aliasSequences.get(aliasBase);
         if (currentSeq != null && glueAlias(aliasBase, currentSeq).equals(currentAlias)) {
             if (currentSeq.intValue() == 0) {
                 aliasSequences.put(aliasBase, null);
@@ -374,7 +374,7 @@ public class BasicQuery implements Query  {
     public void removeFields() {
         query.removeFields();
         explicitFields.clear();
-        Iterator i = implicitFields.iterator();
+        Iterator<StepField> i = implicitFields.iterator();
         while (i.hasNext()) {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
@@ -475,7 +475,7 @@ public class BasicQuery implements Query  {
         if (distinct) { // in that case, make sure only the 'explicitely' added fields remain.
             query.removeFields();
             implicitFields.clear();
-            Iterator i = explicitFields.iterator();
+            Iterator<StepField> i = explicitFields.iterator();
             while (i.hasNext()) {
                 BasicStepField sf = (BasicStepField) i.next();
                 query.addField(sf.getStep(), sf.getField());
@@ -540,7 +540,7 @@ public class BasicQuery implements Query  {
             return c;
         } else {
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(f);
-            Iterator i = v.iterator();
+            Iterator<Object> i = v.iterator();
             while (i.hasNext()) {
                 c.addValue(i.next());
             }

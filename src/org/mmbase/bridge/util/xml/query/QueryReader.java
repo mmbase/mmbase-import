@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.10 2007-01-17 23:58:24 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.11 2007-02-10 17:44:03 nklasens Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -222,7 +222,7 @@ public class QueryReader {
     }
 
     protected static SortedSet<Integer> getAliases(Cloud cloud, List<String> names) {
-        SortedSet<Integer> set = new TreeSet();
+        SortedSet<Integer> set = new TreeSet<Integer>();
         for (String name : names) {
             set.add(getAlias(cloud, name));
         }
@@ -244,15 +244,15 @@ public class QueryReader {
         StepField stepField = queryDefinition.query.createStepField(step, "number");
 
         String name = getAttribute(constraintElement,"name");
-        List names =  Casting.toList(name);
+        List<String> names =  Casting.toList(name);
         return queryDefinition.query.createConstraint(stepField, getAliases(queryDefinition.query.getCloud(),names));
     }
 
-    protected static SortedSet getOTypes(Cloud cloud, List names, boolean descendants) {
+    protected static SortedSet getOTypes(Cloud cloud, List<String> names, boolean descendants) {
         SortedSet set = new TreeSet();
-        Iterator i = names.iterator();
+        Iterator<String> i = names.iterator();
         while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager((String) i.next());
+            NodeManager nm = cloud.getNodeManager(i.next());
             set.add(new Integer(nm.getNumber()));
             if (descendants) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
@@ -278,7 +278,7 @@ public class QueryReader {
         }
         StepField stepField = queryDefinition.query.createStepField(step, "otype");
         String name = getAttribute(constraintElement,"name");
-        List names =  Casting.toList(name);
+        List<String> names =  Casting.toList(name);
         boolean descendants = true;
         if (hasAttribute(constraintElement,"descendants")) {
             descendants = "true".equals(getAttribute(constraintElement,"descendants"));
@@ -396,7 +396,7 @@ public class QueryReader {
                 if (hasAttribute(queryElement,"element")) {
                   element = getAttribute(queryElement,"element");
                 } else {
-                    List builders  = StringSplitter.split(path);
+                    List<?> builders  = StringSplitter.split(path);
                     element = (String)builders.get(builders.size()-1);
                 }
             }
@@ -420,7 +420,7 @@ public class QueryReader {
             if (element != null) {
                 queryDefinition.elementStep = queryDefinition.query.getStep(element);
             }
-            if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList();
+            if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList<FieldDefinition>();
 
             if (hasAttribute(queryElement, "startnodes")) {
                 String startNodes = getAttribute(queryElement, "startnodes");
