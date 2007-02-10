@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.16 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.17 2007-02-10 16:22:37 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache<Object, Templates> {
@@ -163,7 +163,7 @@ public class TemplateCache extends Cache<Object, Templates> {
     public Templates getTemplates(Source src, URIResolver uri) {
         Key key = new Key(src, uri);
         if (log.isDebugEnabled()) log.debug("Getting from cache " + key);
-        return (Templates) get(key);
+        return get(key);
     }
 
     /**

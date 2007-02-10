@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.26 2006-09-11 10:53:27 pierre Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.27 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -698,7 +698,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     // Loop through the fields until we find a match
                     boolean found = false;
                     for (int i = 0; i < query.getFields().size(); i++) {
-                        StepField sf = (StepField) query.getFields().get(i);
+                        StepField sf = query.getFields().get(i);
                         String field = sf.getStep().getAlias() + "." + sf.getFieldName();
 
                         // search for the matching field to obtain the number of the field

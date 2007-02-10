@@ -18,19 +18,16 @@ import org.mmbase.util.xml.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
-import java.util.*;
 import java.io.*;
 
 public class CloudModelBuilder {
 
     private static Logger log = Logging.getLoggerInstance(CloudModelBuilder.class);
-    private String name;
     private String path;
     private Document document;
     private BuilderReader reader;
 
     public CloudModelBuilder(String name) {
-        this.name =  name;
     }
 
     public void setPath(String path) {

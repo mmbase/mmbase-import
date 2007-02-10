@@ -86,7 +86,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens (Finalist IT Group)
  *
  * @since  MMBase-1.6
- * @version $Id: CharacterEncodingFilter.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id: CharacterEncodingFilter.java,v 1.4 2007-02-10 16:22:37 nklasens Exp $
  */
 public class CharacterEncodingFilter implements Filter {
 
@@ -95,14 +95,11 @@ public class CharacterEncodingFilter implements Filter {
         Logging.getLoggerInstance(CharacterEncodingFilter.class.getName());
 
     private String encoding = null;
-    private FilterConfig filterConfig = null;
-
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig config) throws ServletException {
         log.info("CharacterEncodingFilter init");
-        filterConfig = config;
         encoding = config.getInitParameter("encoding");
         if (encoding == null) {
            MMBase mmbase = (MMBase) Module.getModule("MMBASEROOT");
@@ -118,7 +115,6 @@ public class CharacterEncodingFilter implements Filter {
      */
     public void destroy() {
         log.info("CharacterEncodingFilter destroy");
-        filterConfig = null;
     }
 
     /**

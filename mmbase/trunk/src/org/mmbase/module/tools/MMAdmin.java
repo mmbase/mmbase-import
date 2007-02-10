@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.150 2006-12-05 21:14:24 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.151 2007-02-10 16:22:37 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -321,7 +321,7 @@ public class MMAdmin extends ProcessorModule {
                 } else {
                     String modulename = (String)cmds.get(cmdline);
                     String savepath = (String)vars.get("PATH");
-                    Module mod = (Module)getModule(modulename);
+                    Module mod = getModule(modulename);
                     if (mod != null) {
                         try {
                             boolean includeComments = false;
@@ -350,7 +350,6 @@ public class MMAdmin extends ProcessorModule {
                     String savepath = (String)vars.get("path");
                     MMObjectBuilder bul = getBuilder(buildername);
                     if (bul != null) {
-                        boolean result = false;
                         try {
                             boolean includeComments = false;
                             if (tok.hasMoreTokens()) {
@@ -552,7 +551,7 @@ public class MMAdmin extends ProcessorModule {
         String modname = (String)vars.get("MODULE");
         String key = (String)vars.get("PROPERTYNAME");
         String value = (String)vars.get("VALUE");
-        Module mod = (Module)getModule(modname);
+        Module mod = getModule(modname);
         log.debug("MOD=" + mod);
         if (mod != null) {
             mod.setInitParameter(key, value);
@@ -566,7 +565,7 @@ public class MMAdmin extends ProcessorModule {
      * @todo should obtain data from the configuration file
      */
     String getModuleProperty(String modname, String key) {
-        Module mod = (Module)getModule(modname);
+        Module mod = getModule(modname);
         if (mod != null) {
             String value = mod.getInitParameter(key);
             if (value != null) {
@@ -609,7 +608,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     String getModuleDescription(String modulename) {
-        Module mod = (Module)getModule(modulename);
+        Module mod = getModule(modulename);
         if (mod != null) {
             String value = mod.getModuleInfo();
             if (value != null)
@@ -854,8 +853,7 @@ public class MMAdmin extends ProcessorModule {
             String files[] = bdir.list();
             if (files == null)
                 return results;
-            for (int i = 0; i < files.length; i++) {
-                String aname = files[i];
+            for (String aname : files) {
                 if (aname.endsWith(".xml")) {
                     String name = aname;
                     String sname = name.substring(0, name.length() - ".xml".length());

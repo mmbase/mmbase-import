@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * It also does a very basic test to measure how fast the JVM is.
  *
  * @author  vpro
- * @version $Id: Performance.java,v 1.1 2006-09-11 11:17:53 pierre Exp $
+ * @version $Id: Performance.java,v 1.2 2007-02-10 16:22:37 nklasens Exp $
  */
 public class Performance extends BridgeServlet {
 
@@ -89,18 +89,6 @@ public class Performance extends BridgeServlet {
         String test = TEST_STRING;
         for (int i = 0; i < 2500000; i++) {
             test.equals(TEST_STRING);
-        }
-        long end = new Date().getTime();
-        return end - begin;
-    }
-
-    /**
-     * @javadoc
-     */
-    private long method() {
-        long begin = new Date().getTime();
-        for (int i = 0; i < METHOD_LOOP; i++) {
-            stub();
         }
         long end = new Date().getTime();
         return end - begin;

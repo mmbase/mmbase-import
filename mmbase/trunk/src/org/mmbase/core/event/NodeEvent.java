@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.29 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: NodeEvent.java,v 1.30 2007-02-10 16:22:37 nklasens Exp $
  */
 public class NodeEvent extends Event {
 
@@ -109,8 +109,8 @@ public class NodeEvent extends Event {
 
     public String toString() {
         String changedFields = "";
-        for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
-            changedFields = changedFields + (String) i.next() + ",";
+        for (Object element : getChangedFields()) {
+            changedFields = changedFields + (String) element + ",";
         }
         return "Node event: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
     }

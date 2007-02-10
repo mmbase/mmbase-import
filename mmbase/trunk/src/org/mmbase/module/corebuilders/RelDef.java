@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.41 2007-01-17 20:12:52 michiel Exp $
+ * @version $Id: RelDef.java,v 1.42 2007-02-10 16:22:37 nklasens Exp $
  */
 public class RelDef extends MMObjectBuilder {
 
@@ -212,7 +212,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return (String) rnumberCache.get(Integer.valueOf(node.getNumber()));
+        return rnumberCache.get(Integer.valueOf(node.getNumber()));
     }
 
 

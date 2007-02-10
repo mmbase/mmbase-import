@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.8 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.9 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {

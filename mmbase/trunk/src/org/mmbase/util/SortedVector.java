@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Todo: Remove duplicate code for the binary search
  * @deprecated You can use java.util.SortedSet (implementations of that), or Collections.sort(), if duplicate entries are essential (but how should they be sorted then?)
  * @author Rico Jansen
- * @version $Id: SortedVector.java,v 1.10 2004-09-30 16:08:39 pierre Exp $
+ * @version $Id: SortedVector.java,v 1.11 2007-02-10 16:22:36 nklasens Exp $
  */
 public class SortedVector extends java.util.Vector {
 
@@ -302,16 +302,15 @@ public class SortedVector extends java.util.Vector {
 
         /* Binary insert test */
         v=new SortedVector(strc);
-        for (int i=0;i<args.length;i++) {
-            v.addBinSorted(args[i]);
+        for (String element : args) {
+            v.addBinSorted(element);
             log.info("V "+v);
         }
         /* See if find works */
         log.info("Element "+args[0]+" at "+v.find(args[0])+" : "+v.has(args[0]));
 
-        /* Normal String Qsort test */
-        for (int i=0;i<args.length;i++) {
-            vec.addElement(args[i]);
+        for (String element : args) {
+            vec.addElement(element);
         }
         log.info("V1 "+vec);
         log.info("V2 "+SortVector(vec));
@@ -319,8 +318,8 @@ public class SortedVector extends java.util.Vector {
 
         /* Qsort test through compare function */
         v=new SortedVector(strc);
-        for (int i=0;i<args.length;i++) {
-            v.addElement(args[i]);
+        for (String element : args) {
+            v.addElement(element);
         }
         log.info("V1 "+vec);
         log.info("V2 "+SortVector(vec));

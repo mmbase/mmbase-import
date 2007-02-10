@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.65 2006-12-20 16:20:54 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.66 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -709,7 +709,6 @@ public class BasicSqlHandler implements SqlHandler {
 
         boolean multipleSteps = query.getSteps().size() > 1;
 
-        boolean toLowerCase = false;
         if (constraint instanceof FieldConstraint) {
 
             // Field constraint

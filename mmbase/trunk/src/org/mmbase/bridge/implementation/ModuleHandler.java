@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.33 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: ModuleHandler.java,v 1.34 2007-02-10 16:22:37 nklasens Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -51,9 +51,9 @@ public class ModuleHandler implements Module, InvocationHandler {
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
         Class otherintf = null;
-        for (int i=0; i<objClasses.length; i++) {
-            if (objClasses[i].getName().startsWith("org.mmbase.bridge")) {
-                otherintf=objClasses[i];
+        for (Class element : objClasses) {
+            if (element.getName().startsWith("org.mmbase.bridge")) {
+                otherintf=element;
             }
         }
         Class[] useintf;

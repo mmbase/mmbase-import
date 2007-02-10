@@ -21,8 +21,8 @@ public class StacktraceLoggingPatternLayout extends PatternLayout {
         Exception e = new Exception();
         StackTraceElement[] ste = e.getStackTrace();
         StringBuffer trace = new StringBuffer();
-        for (int i=0; i<ste.length; i++) {
-          res += "\tat " + ste[i].toString() + "\n";
+        for (StackTraceElement element : ste) {
+          res += "\tat " + element.toString() + "\n";
         }
         return res;
     }

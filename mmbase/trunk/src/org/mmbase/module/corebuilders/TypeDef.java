@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.69 2006-12-05 21:04:13 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.70 2007-02-10 16:22:37 nklasens Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -269,7 +269,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return the object type as an int, -1 if not defined.
      */
     public int getIntValue(String builderName) {
-        Integer result = (Integer) getNameToNumberCache().get(builderName);
+        Integer result = getNameToNumberCache().get(builderName);
         if (result != null) {
             return result.intValue();
         } else {
@@ -283,7 +283,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return the name of the builder as a string, null if not found
      */
     public String getValue(int type) {
-        String result = (String) getNumberToNameCache().get(new Integer(type));
+        String result = getNumberToNameCache().get(new Integer(type));
         if (result == null) {
             log.warn("Could not find builder name for typedef number " + type);
         }
@@ -298,7 +298,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getValue(String type) {
         try {
-            return (String) getNumberToNameCache().get(new Integer(Integer.parseInt(type)));
+            return getNumberToNameCache().get(new Integer(Integer.parseInt(type)));
         } catch(Exception e) {
             return "unknown";
         }

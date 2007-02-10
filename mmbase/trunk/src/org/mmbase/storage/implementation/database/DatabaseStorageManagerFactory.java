@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.43 2006-12-15 16:01:20 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.44 2007-02-10 16:22:37 nklasens Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -265,10 +265,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
-        // create a default disallowedfields list:
-        // get the standard sql keywords
-        for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
-            disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
+        for (String element : STANDARD_SQL_KEYWORDS) {
+            disallowedFields.put(element, null); // during super.load, the null values will be replaced by actual replace-values.
         }
 
         // get the extra reserved sql keywords (according to the JDBC driver)

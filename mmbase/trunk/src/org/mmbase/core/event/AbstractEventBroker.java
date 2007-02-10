@@ -6,7 +6,6 @@
  */
 package org.mmbase.core.event;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -98,8 +97,8 @@ public abstract class AbstractEventBroker {
 
     public void notifyForEvent(Event event) {
         if(log.isDebugEnabled())log.debug("will notify " + listeners.size() + " listeners");
-        for (Iterator i = listeners.iterator(); i.hasNext();) {
-            EventListener listener = (EventListener) i.next();
+        for (Object element : listeners) {
+            EventListener listener = (EventListener) element;
             try {
                 notifyEventListener(event, listener);
             } catch (ClassCastException e) {

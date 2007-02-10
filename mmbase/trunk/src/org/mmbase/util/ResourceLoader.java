@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.43 2006-11-28 19:39:44 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.44 2007-02-10 16:22:36 nklasens Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -373,8 +373,8 @@ public class ResourceLoader extends ClassLoader {
             systemRoot = new ResourceLoader();
             systemRoot.roots.add(systemRoot.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
             File[] roots = File.listRoots();
-            for (int i = 0; i <roots.length; i++) {
-                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(roots[i], true));
+            for (File element : roots) {
+                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(element, true));
             }
 
         }
@@ -601,8 +601,8 @@ public class ResourceLoader extends ClassLoader {
         }
         String [] dirs = context.split("/");
         ResourceLoader rl = this;
-        for (int i = 0; i < dirs.length; i++) {
-            rl =  new ResourceLoader(rl, dirs[i]);
+        for (String element : dirs) {
+            rl =  new ResourceLoader(rl, element);
         }
         return rl;
 
@@ -1109,13 +1109,13 @@ public class ResourceLoader extends ClassLoader {
             if (f.isDirectory()) { // should always be true
                 File [] files = f.listFiles(filter);
                 if (files == null) return results;
-                for (int j = 0; j < files.length; j++) {
-                    if (files[j].getName().equals("")) continue;
-                    if (recursive != null && files[j].isDirectory()) {
-                        getPaths(results, pattern, recursive + files[j].getName() + "/", directories);
+                for (File element : files) {
+                    if (element.getName().equals("")) continue;
+                    if (recursive != null && element.isDirectory()) {
+                        getPaths(results, pattern, recursive + element.getName() + "/", directories);
                     }
-                    if (files[j].canRead() && (directories == files[j].isDirectory())) {
-                        results.add((recursive == null ? "" : recursive) + files[j].getName());
+                    if (element.canRead() && (directories == element.isDirectory())) {
+                        results.add((recursive == null ? "" : recursive) + element.getName());
                     }
 
                 }
