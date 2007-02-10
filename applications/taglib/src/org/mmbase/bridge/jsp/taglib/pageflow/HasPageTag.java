@@ -14,12 +14,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import java.net.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.http.*;
-import javax.servlet.*;
-
-import java.util.*;
-
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasPageTag.java,v 1.1 2005-10-18 16:42:34 michiel Exp $
+ * @version $Id: HasPageTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 

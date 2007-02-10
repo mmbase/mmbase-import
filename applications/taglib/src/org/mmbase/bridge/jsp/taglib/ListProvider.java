@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.*;
 import org.mmbase.util.logging.*;
 
@@ -17,7 +16,7 @@ import org.mmbase.util.logging.*;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.14 2006-09-05 11:55:01 michiel Exp $
+ * @version $Id: ListProvider.java,v 1.15 2007-02-10 16:49:27 nklasens Exp $
  */
 public interface ListProvider extends ContextProvider, LoopTag {
     /**

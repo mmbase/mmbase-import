@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeReferrerTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
+ * @version $Id: TreeReferrerTag.java,v 1.3 2007-02-10 16:49:27 nklasens Exp $
  */
 abstract public class TreeReferrerTag extends NodeReferrerTag {
 
@@ -39,7 +39,7 @@ abstract public class TreeReferrerTag extends NodeReferrerTag {
      *
      */	
     public TreeProvider findTreeProvider() throws JspTagException {        
-        return (TreeProvider) findParentTag(TreeProvider.class, (String) parentTreeId.getValue(this));
+        return findParentTag(TreeProvider.class, (String) parentTreeId.getValue(this));
     }
 
 

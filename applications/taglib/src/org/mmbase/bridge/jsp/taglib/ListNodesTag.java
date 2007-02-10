@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.29 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.30 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -112,7 +112,7 @@ public class ListNodesTag extends AbstractNodeListTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.setNodeStep((Step) query.getSteps().get(0));
+                    query.setNodeStep(query.getSteps().get(0));
                 }
             }
         } else {            

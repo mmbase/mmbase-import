@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.88 2006-11-21 13:54:56 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.89 2007-02-10 16:49:27 nklasens Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -56,8 +56,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public static final String DEFAULTENCODING_KEY   = "org.mmbase.taglib.defaultencoding";
     public static final String ISELIGNORED_PARAM     = "mmbase.taglib.isELIgnored";
 
-    private ContextProvider  parent = null;
-    private boolean    searchedParent = false;
     private static int  latestNumber = 0;
 
     private int number;
@@ -137,9 +135,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
-        parent = null;
-        searchedParent = false;
-
         ContextContainer container;
         int s = getScope();
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
@@ -278,13 +273,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return getContextContainer().isRegistered(key);
     }
     /**
-     * @deprecated Use getContextProvider().getContextContainer().isRegisteredSomewhere
-     */
-    private boolean isRegisteredSomewhere(String key) throws JspTagException {
-        return getContextContainer().containsKey(key, true); // do check parent.
-    }
-
-    /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     public Object findAndRegister(String id) throws JspTagException {
@@ -339,13 +327,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
-        parent = null;
         cloudContext = null;
         return super.doEndTag();
     }
 
     public void doFinally() {
-        parent = null;
         cloudContext = null;
         super.doFinally();
     }

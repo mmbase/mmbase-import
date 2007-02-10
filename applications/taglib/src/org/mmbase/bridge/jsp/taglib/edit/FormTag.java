@@ -11,8 +11,6 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.*;
-
 import javax.servlet.jsp.JspTagException;
 
 
@@ -23,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.7 2006-12-21 20:30:27 andre Exp $
+ * @version $Id: FormTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.8
  */
 

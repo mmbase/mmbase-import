@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.49 2007-02-02 20:36:08 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.50 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -243,7 +243,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 return "";
             }
         } else {
-            FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
+            FormTag form =  tag.findParentTag(FormTag.class, null, false);
             if (form != null) {
                 form.setValid(false);
             }

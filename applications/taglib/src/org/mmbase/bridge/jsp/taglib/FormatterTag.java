@@ -15,8 +15,6 @@ import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
 
-import javax.servlet.jsp.tagext.Tag;
-
 import org.w3c.dom.Document;
 
 import javax.xml.transform.Source;
@@ -44,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.71 2006-10-24 12:15:51 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.72 2007-02-10 16:49:27 nklasens Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -96,8 +94,6 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     // These formats take the body as a string. So the body doesn't need to be valid XML.
     private static final int FORMAT_ESCAPEXML       = 1001;
     private static final int FORMAT_DATE            = 1002;
-    private static final int FORMAT_LOWERCASE       = 1003;
-    private static final int FORMAT_UPPERCASE       = 1004;
     private static final int FORMAT_NONE            = 2000; // can be useful for only the escape= functionality.
 
 

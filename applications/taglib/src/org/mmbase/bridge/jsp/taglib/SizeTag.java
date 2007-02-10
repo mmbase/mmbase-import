@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.26 2006-06-22 19:00:29 johannes Exp $ 
+ * @version $Id: SizeTag.java,v 1.27 2007-02-10 16:49:27 nklasens Exp $ 
  */
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
@@ -62,7 +62,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
             if (parentListId != Attribute.NULL) {
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
-            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+            QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
             if (c instanceof TreeContainerTag) {
                 helper.setValue(new Integer(((TreeContainerTag)c).getTree().size()));
             } else {

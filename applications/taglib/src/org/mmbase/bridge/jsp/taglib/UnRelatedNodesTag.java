@@ -11,8 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.NodeWrapper;
-
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +18,7 @@ import org.mmbase.util.logging.*;
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.9 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: UnRelatedNodesTag.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
  * @since MMBase-1.7
  */
 

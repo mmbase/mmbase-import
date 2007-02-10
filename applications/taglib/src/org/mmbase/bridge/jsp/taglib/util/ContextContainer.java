@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.57 2006-11-21 20:32:40 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.58 2007-02-10 16:49:27 nklasens Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -292,7 +292,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
     public Object get(String key) {
         try {
-            return get((String)key, true);
+            return get(key, true);
         } catch (JspTagException e) {
             log.warn("Exception when trying to get value '" + key + "': " + e);
         }
@@ -537,15 +537,15 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 log.debug("Cannot use cookies");
             } else {
                 log.debug("Found cookies");
-                for (int i=0; i< cookies.length; i++) {
+                for (Cookie element : cookies) {
                     if (log.isDebugEnabled()) {
-                        log.debug(cookies[i].getName() + "/" + cookies[i].getValue());
+                        log.debug(element.getName() + "/" + element.getValue());
                     }
-                    if (cookies[i].getName().equals(referId)) {
+                    if (element.getName().equals(referId)) {
                         // simply return the first value found.
                         // this is probably a little to simple...
                         // since a cookie can e.g. also have another path.
-                        result = cookies[i].getValue();
+                        result = element.getValue();
                         break;
                     }
                 }
@@ -586,7 +586,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
+                    result = fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
                 }

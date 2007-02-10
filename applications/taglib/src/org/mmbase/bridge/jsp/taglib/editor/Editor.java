@@ -14,8 +14,6 @@ import java.util.*;
 
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.12 2006-07-06 11:36:12 michiel Exp $
+ * @version $Id: Editor.java,v 1.13 2007-02-10 16:49:27 nklasens Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8

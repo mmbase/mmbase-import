@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.50 2006-10-13 15:56:24 nklasens Exp $
+ * @version $Id: Users.java,v 1.51 2007-02-10 16:52:47 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -482,9 +482,9 @@ public class Users extends MMObjectBuilder {
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
                     Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
-                    Locale locale = (Locale) pars.get(Parameter.LOCALE);
+                    Locale locale = pars.get(Parameter.LOCALE);
                     if (locale == null) {
-                        String lang = (String) pars.get(Parameter.LANGUAGE);
+                        String lang = pars.get(Parameter.LANGUAGE);
                         if (lang != null){
                             locale = new Locale(lang, "");
                         }

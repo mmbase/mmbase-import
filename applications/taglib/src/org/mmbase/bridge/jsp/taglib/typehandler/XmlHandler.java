@@ -13,13 +13,6 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.util.StringBufferWriter;
-import org.mmbase.util.logging.Logging;
-import java.io.*;
-import javax.xml.transform.*;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.mmbase.util.transformers.*;
 
 /**
@@ -28,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.16 2006-04-27 17:37:25 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.17 2007-02-10 16:49:27 nklasens Exp $
  */
 
 public class XmlHandler extends StringHandler {
