@@ -4,7 +4,7 @@
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <mm:content expires="0" postprocessor="none">
-<mm:cloud rank="administrator">
+<mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="category">about</mm:import>
 <mm:import externid="subcategory"></mm:import>
 <mm:import externid="component">core</mm:import>
