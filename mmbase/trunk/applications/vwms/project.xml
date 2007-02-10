@@ -9,5 +9,16 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../app-base/project.xml</extend>
     <artifactId>mmbase-vwms</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-email</artifactId>
+            <version>${mmbase.version}</version>
+            <url>http://www.mmbase.org/</url>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+    </dependencies>
 </project>
 
