@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.32 2006-11-02 19:21:31 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.33 2007-02-10 16:42:26 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -91,8 +91,8 @@ public class NodeListHelper implements ListProvider {
      * should be called from {@link AbstractNodeListTag#doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
-    protected NodeIterator nodeIterator;
-    protected NodeList     returnList;
+    protected ListIterator<Node> nodeIterator;
+    protected BridgeList<Node>     returnList;
 
     /**
      * The current item
@@ -178,7 +178,7 @@ public class NodeListHelper implements ListProvider {
         return comparator.getString(thisTag);
     }
 
-    public NodeList getReturnList() {
+    public BridgeList<Node> getReturnList() {
         return returnList;
     }
 
@@ -193,14 +193,14 @@ public class NodeListHelper implements ListProvider {
     /**
      * @since MMBase-1.9
      */
-    protected Cloud getCloud(NodeList nodes, Cloud cloud) throws JspTagException {
+    protected Cloud getCloud(BridgeList<Node> nodes, Cloud cloud) throws JspTagException {
         if (cloud != null) return cloud;
         if (cloud == null) {
             Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            Node n = nodes.getNode(0); 
+            Node n = nodes.get(0); 
             if (n != null) {
                 cloud = n.getCloud();
             } else {
@@ -213,7 +213,7 @@ public class NodeListHelper implements ListProvider {
         }
         return cloud;
     }
-    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+    public int setReturnValues(BridgeList<Node> nodes, boolean trim) throws JspTagException {
         Cloud cloud = null;
 
         if (add != Attribute.NULL) {
@@ -269,7 +269,7 @@ public class NodeListHelper implements ListProvider {
             if (offseti < 0) {
                 offseti = 0;
             }
-            nodes = nodes.subNodeList(offseti, to);
+            nodes = nodes.subBridgeList(offseti, to);
 
         }
         returnList   = nodes;
@@ -282,7 +282,7 @@ public class NodeListHelper implements ListProvider {
             f.setCloud(cloud);
         }
 
-        nodeIterator = returnList.nodeIterator();
+        nodeIterator = returnList.listIterator();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
@@ -367,7 +367,7 @@ public class NodeListHelper implements ListProvider {
      * The first ordered field is used to determin the 'changed' status of a Node in a NodeList.
      * @since MMBase-1.8
      */
-    protected String getFirstOrderedField(NodeList returnList, NodeManager nextNodeManager) {
+    protected String getFirstOrderedField(BridgeList<Node> returnList, NodeManager nextNodeManager) {
         // the orderby attribute is arranged in AbstractNodeListTag#setReturnValues
         // Perhaps its code could more logically be present here.
         /*
@@ -412,12 +412,12 @@ public class NodeListHelper implements ListProvider {
     public void setNext() throws JspTagException {
         try {
             currentItemIndex ++;
-            Node next = nodeIterator.nextNode();
+            Node next = nodeIterator.next();
             while (next == null) {
                 log.warn("Found null in node list " + returnList + " skipping");
                 currentItemIndex ++;
                 if (nodeIterator.hasNext()) {
-                    next = nodeIterator.nextNode();
+                    next = nodeIterator.next();
                 } else {
                     return;
                 }
