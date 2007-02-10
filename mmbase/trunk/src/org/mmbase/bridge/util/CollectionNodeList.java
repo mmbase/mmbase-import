@@ -10,9 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
+import java.util.Collection;
+
 import org.mmbase.bridge.*;
-import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A (fixed-size) list of nodes, based on a Collection of Nodes. If the collection is a List it
@@ -20,12 +20,10 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.9 2007-02-10 16:22:38 nklasens Exp $
+ * @version $Id: CollectionNodeList.java,v 1.10 2007-02-10 16:48:54 nklasens Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractCollectionNodeList<Node> implements NodeList {
-
-    private static final Logger log = Logging.getLoggerInstance(CollectionNodeList.class);
 
     public CollectionNodeList(Collection c, NodeManager nodeManager) {
         super(c, nodeManager);
@@ -45,6 +43,10 @@ public class CollectionNodeList extends AbstractCollectionNodeList<Node> impleme
 
     public NodeList subNodeList(int fromIndex, int toIndex) {
         return new CollectionNodeList(subList(fromIndex, toIndex), cloud);
+    }
+
+    public BridgeList<Node> subBridgeList(int fromIndex, int toIndex)  {
+        return new CollectionNodeList(super.subList(fromIndex, toIndex));
     }
 
     public NodeIterator nodeIterator() {
