@@ -18,7 +18,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.2 2006-09-13 09:46:00 michiel Exp $
+ * @version $Id: AbstractBridgeList.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -42,7 +42,7 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
     }
 
     // javadoc inherited
-    public void sort(Comparator comparator) {
+    public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
 

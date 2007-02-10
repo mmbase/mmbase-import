@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.18 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: GrowingTreeList.java,v 1.19 2007-02-10 17:44:03 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -195,7 +195,7 @@ public  class GrowingTreeList extends TreeList {
                     break;
                 }
                 // Step doesn't have a .getQuery() method, so we'll have to fall back to this:
-                Branch branch = (Branch) branches.get(branches.size() - 1);
+                Branch branch = branches.get(branches.size() - 1);
                 Query newQuery = branch.getQuery();
 
                 // add sortorder to the query

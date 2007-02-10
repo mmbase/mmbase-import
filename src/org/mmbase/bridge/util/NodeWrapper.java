@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.18 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: NodeWrapper.java,v 1.19 2007-02-10 17:44:03 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -75,13 +75,13 @@ public abstract class NodeWrapper implements Node {
         return node.getFieldValue(fieldName);
     }
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
-    public Collection validate() { return node.validate(); }
+    public Collection<String> validate() { return node.validate(); }
     public void commit() { node.commit(); }
     public void cancel() { node.cancel(); }
     public boolean isNew() {  return node.isNew(); }
     public boolean isChanged(String fieldName) {  return node.isChanged(fieldName); }
     public boolean isChanged() {  return node.isChanged(); }
-    public Set getChanged() {  return node.getChanged(); }
+    public Set<String> getChanged() {  return node.getChanged(); }
     public void delete() { node.delete(); }
     public void delete(boolean deleteRelations) { node.delete(deleteRelations); }
     @Override

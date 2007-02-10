@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.23 2007-02-10 16:48:54 nklasens Exp $
+ * @version $Id: TreeList.java,v 1.24 2007-02-10 17:44:03 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -33,7 +33,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
     public static final String REAL_NODES = "realnodes";
 
     protected Cloud cloud;
-    protected final List /*<Branch>*/ branches        = new ArrayList();
+    protected final List<Branch> branches        = new ArrayList<Branch>();
 
     protected int topQuery = 0;
     protected int numberOfSteps;
@@ -69,9 +69,9 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
      */
     public TreeList(TreeList tl) {
         cloud = tl.cloud;
-        Iterator i = tl.branches.iterator();
+        Iterator<Branch> i = tl.branches.iterator();
         while(i.hasNext()) {
-            Branch b = (Branch) i.next();
+            Branch b = i.next();
             branches.add(new Branch(b));
         }
         topQuery = tl.topQuery;
@@ -119,7 +119,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
     protected void sizeCheck() {
         if (needsSizeCheck) {
             int count;
-            Branch branch = (Branch) branches.get(topQuery);
+            Branch branch = branches.get(topQuery);
             if (branch.leafResult != null) {  // not quite sure that this can hapen
                 count = branch.leafResult.size();
             } else {
@@ -152,7 +152,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         }
         needsSizeCheck = true;
 
-        NodeQuery lastQuery = ((Branch)branches.get(topQuery)).getQuery();
+        NodeQuery lastQuery = branches.get(topQuery).getQuery();
         NodeQuery newQuery  = (NodeQuery)lastQuery.cloneWithoutFields();
 
         // add relations step
@@ -180,7 +180,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
      * @since MMBase-1.8
      */
     public NodeQuery getLeafQuery() {
-        return ((Branch) branches.get(topQuery)).getQuery();
+        return branches.get(topQuery).getQuery();
     }
 
     /**
@@ -190,7 +190,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
      */
     public void setLeafConstraint(Constraint constraint) {
 
-        Branch branch = (Branch) branches.get(topQuery);
+        Branch branch = branches.get(topQuery);
         if (branch.result != null) {
             throw new IllegalStateException("The query for branch " + topQuery + " was already executed");
         }
@@ -216,7 +216,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             return null;
         }
 
-        Branch branch = (Branch) branches.get(queryNumber);
+        Branch branch = branches.get(queryNumber);
         if (branch.result == null) {
             NodeQuery query = branch.getQuery();
             branch.result =  cloud.getList(query);
@@ -239,7 +239,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             return null;
         }
 
-        Branch branch = (Branch) branches.get(queryNumber);
+        Branch branch = branches.get(queryNumber);
         if (branch.leafResult == null) {
             NodeQuery query = branch.getLeafQuery();
             branch.leafResult =  cloud.getList(query);
@@ -280,7 +280,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         NodeList nodeList  = getLeafList(queryIndex);
         NodeList realNodes = (NodeList)nodeList.getProperty(REAL_NODES);
         if (realNodes == null) {
-            Branch branch = (Branch) branches.get(queryIndex);
+            Branch branch = branches.get(queryIndex);
             NodeQuery nq = branch.getLeafQuery();
             realNodes = nq.getNodeManager().getList(nq); // We trust the query cache! (the query is performed already, but on Cloud)
             nodeList.setProperty(REAL_NODES, realNodes);
@@ -362,7 +362,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
      */
     protected class TreeItr implements TreeIterator {
 
-        private List nodeIterators = new ArrayList(); // an iterator for each query result
+        private List<NodeIterator> nodeIterators = new ArrayList<NodeIterator>(); // an iterator for each query result
         private NodeList nextNodes = TreeList.this.cloud.createNodeList();
         // contains 'next' nodes for each query result (needed for 'next()')
 
@@ -393,7 +393,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             } else {
                 int i = 0;
                 while (prepare(i)) {
-                    NodeIterator iterator = (NodeIterator)nodeIterators.get(i);
+                    NodeIterator iterator = nodeIterators.get(i);
                     Node nextNode = nextNodes.get(i);
                     if (nextNode != null) {
                         return true;
@@ -444,7 +444,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             Node node = nextNodes.getNode(index);
             if (node == null) throw new NoSuchElementException("No such element " + index + " in " + nextNodes);
             previousNodes.set(index, node);
-            NodeIterator iterator = (NodeIterator)nodeIterators.get(index);
+            NodeIterator iterator = nodeIterators.get(index);
             if (iterator.hasNext()) {
                 Node nextNode = iterator.nextNode();
                 nextNodes.set(index, nextNode);
@@ -470,7 +470,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
          * Depth of the last node fetched with next() or nextNode()
          */
         public int currentDepth() {
-            Branch branch = (Branch) TreeList.this.branches.get(currentIterator);
+            Branch branch = TreeList.this.branches.get(currentIterator);
             int depth = (branch.query.getSteps().size() + 1) / 2;
             if (nextIndex == 0) {
                 return depth - 1;
@@ -514,7 +514,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                 return getNextLeafNode();
             }
 
-            final Branch currentBranch = (Branch) TreeList.this.branches.get(currentIterator);
+            final Branch currentBranch = TreeList.this.branches.get(currentIterator);
 
             Node previousNode = previousNodes.getNode(currentIterator);
             if (previousNode == null) {  // first of iterator
@@ -536,7 +536,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                 }
             }
 
-            List sortOrders = currentBranch.getQuery().getSortOrders();
+            List<?> sortOrders = currentBranch.getQuery().getSortOrders();
             final boolean contains = Queries.compare(previousNode, nextListNextNode, sortOrders) >= 0;
 
             if (log.isDebugEnabled()) {
@@ -576,7 +576,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                 if (candidate == null) {
                     continue;
                 }
-                Branch branch = (Branch) TreeList.this.branches.get(i);
+                Branch branch = TreeList.this.branches.get(i);
                 List sortOrders = branch.getLeafQuery().getSortOrders();
                 if (smallestAvailableNode == null) {
                     smallestAvailableNode = candidate;
