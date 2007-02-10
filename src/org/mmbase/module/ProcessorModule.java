@@ -80,7 +80,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             super(name, params, ReturnType.NODELIST);
         }
         public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-            return new CollectionNodeList<Node>(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
+            return new CollectionNodeList(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
         }
     }
 

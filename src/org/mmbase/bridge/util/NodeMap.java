@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.1 2005-12-27 21:50:50 michiel Exp $
+ * @version $Id: NodeMap.java,v 1.2 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -75,6 +75,7 @@ public class NodeMap extends NodeWrapper implements Map {
     public Set entrySet() {
         return new AbstractSet() {
                 FieldList fields = getNodeManager().getFields();
+                @Override
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
@@ -100,6 +101,7 @@ public class NodeMap extends NodeWrapper implements Map {
                             }
                         };
                 }
+                @Override
                 public int size() {
                     return fields.size();
                 }
@@ -111,6 +113,7 @@ public class NodeMap extends NodeWrapper implements Map {
     public Collection values() {
         return new AbstractCollection() {
                 FieldList fields = getNodeManager().getFields();
+                @Override
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
@@ -124,6 +127,7 @@ public class NodeMap extends NodeWrapper implements Map {
                             }
                         };
                 }
+                @Override
                 public int size() {
                     return fields.size();
                 }
@@ -134,6 +138,7 @@ public class NodeMap extends NodeWrapper implements Map {
     public Set keySet() {
         return new AbstractSet() {
                 FieldList fields = getNodeManager().getFields();
+                @Override
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
@@ -147,6 +152,7 @@ public class NodeMap extends NodeWrapper implements Map {
                             }
                         };
                 }
+                @Override
                 public int size() {
                     return fields.size();
                 }

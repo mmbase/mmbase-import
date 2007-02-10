@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.42 2007-01-17 15:05:08 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.43 2007-02-10 15:47:42 nklasens Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -57,9 +57,11 @@ public class BasicRelation extends BasicNode implements Relation {
         super(node, cloud, id);
     }
 
+    @Override
     public final boolean isRelation() {
         return true;
     }
+    @Override
     public Relation toRelation() {
         return this;
     }
@@ -69,6 +71,7 @@ public class BasicRelation extends BasicNode implements Relation {
      * Determines nodemanager and cloud (depending on information available),
      * Sets references to MMBase modules and initializes state in case of a transaction.
      */
+    @Override
     protected void init() {
         super.init();
         if (nodeManager instanceof RelationManager) {
@@ -179,6 +182,7 @@ public class BasicRelation extends BasicNode implements Relation {
 
     }
 
+    @Override
     public void setValueWithoutProcess(String fieldName, Object value) {
         checkWrite();
         if ("rnumber".equals(fieldName)) {
@@ -189,6 +193,7 @@ public class BasicRelation extends BasicNode implements Relation {
         super.setValueWithoutProcess(fieldName, value);
     }
 
+    @Override
     public void commit() {
         // Check types of source and destination
         // Normally, this check would be run in the core.

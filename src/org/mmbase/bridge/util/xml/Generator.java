@@ -24,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.46 2006-11-29 08:07:20 michiel Exp $
+ * @version $Id: Generator.java,v 1.47 2007-02-10 15:47:42 nklasens Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -283,7 +283,7 @@ public class Generator {
      * Adds a whole MMBase bridge NodeList to the DOM Document.
      * @param nodes An MMBase bridge NodeList.
      */
-    public void add(List<org.mmbase.bridge.Node> nodes) {
+    public void add(List<? extends org.mmbase.bridge.Node> nodes) {
         for (org.mmbase.bridge.Node n : nodes) {
             if (n instanceof Relation) {
                 add((Relation) n);

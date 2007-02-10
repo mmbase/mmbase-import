@@ -23,7 +23,7 @@ import org.mmbase.bridge.implementation.BasicFieldList;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.5 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -35,6 +35,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         cloud = c;
     }
 
+    @Override
     protected void setValueWithoutChecks(String fieldName, Object value) {
         values.put(fieldName, value);
     }
@@ -45,6 +46,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         // go ahead
     }
 
+    @Override
     protected void setSize(String fieldName, long size) {
         // never mind
     }

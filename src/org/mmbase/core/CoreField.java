@@ -281,7 +281,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      * @return -1,1, or 0 according to wether this object is smaller, greater, or equal
      *         to the supplied one.
      */
-    public int compareTo(Object o) {
+    public int compareTo(Field o) {
         int pos1 = getStoragePosition();
         int pos2 = ((CoreField)o).getStoragePosition();
         if (pos1 < pos2) {

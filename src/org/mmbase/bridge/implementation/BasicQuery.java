@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.61 2006-07-27 13:12:40 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.62 2007-02-10 15:47:42 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -189,7 +189,7 @@ public class BasicQuery implements Query  {
                         clone.setConstraint(null);
                     }
                     if (compConstraint.getChilds().size() == 1) { // no need to let it composite then
-                        Constraint newConstraint = (Constraint) compConstraint.getChilds().get(0);
+                        Constraint newConstraint = compConstraint.getChilds().get(0);
                         clone.setConstraint(newConstraint);
                     }
                 }
@@ -198,6 +198,7 @@ public class BasicQuery implements Query  {
 
     }
 
+    @Override
     public Object clone() { // also works for descendants (NodeQuery)
         try {
             BasicQuery clone = (BasicQuery) super.clone();
@@ -679,16 +680,19 @@ public class BasicQuery implements Query  {
         return cloud.getList(this);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return query.equals(obj);
     }
 
     // javadoc is inherited
+    @Override
     public int hashCode() {
         return query.hashCode();
     }
 
 
+    @Override
     public String toString() {
         return query.toString() + (used ? "(used)" : "") + "INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 

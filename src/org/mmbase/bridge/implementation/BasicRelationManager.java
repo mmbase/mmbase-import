@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.36 2006-11-11 18:51:43 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.37 2007-02-10 15:47:42 nklasens Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -56,9 +56,11 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         super(node, cloud);
     }
 
+    @Override
     public final boolean isRelationManager() {
         return true;
     }
+    @Override
     public final  RelationManager toRelationManager() {
         return this;
     }
@@ -67,6 +69,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * Initializes the NodeManager: determines the MMObjectBuilder from the
      * passed node (reldef or typerel), and fills temporary variables to maintain status.
      */
+    @Override
     protected void initManager() {
         MMObjectBuilder bul = noderef.getBuilder();
         if (bul instanceof RelDef) {
@@ -91,6 +94,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
 
+    @Override
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
         if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
@@ -141,6 +145,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
 
+    @Override
     protected final BasicNode createBasicNode() {
         return createBasicRelation();
     }

@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.16 2006-12-18 19:14:21 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.17 2007-02-10 15:47:42 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -546,7 +546,7 @@ public abstract class AbstractNode implements Node {
      * and +1 if the object passed is a NodeManager and smaller than this manager.
      */
     public final int compareTo(Node o) {
-        Node n = (Node)o;
+        Node n = o;
         String s1 = "";
         if (this instanceof NodeManager) {
             s1 = ((NodeManager)this).getGUIName();
@@ -682,9 +682,11 @@ public abstract class AbstractNode implements Node {
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public final boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && getCloud().equals(((Node)o).getCloud());
     }
+    @Override
     public final int hashCode() {
         return 127 * getNumber();
     }
@@ -696,6 +698,7 @@ public abstract class AbstractNode implements Node {
 
     protected FieldValue createFunctionValue(final Object result) {
         return new AbstractFieldValue(this, getCloud()) {
+            @Override
             public Object get() {
                 return result;
             }
@@ -719,6 +722,7 @@ public abstract class AbstractNode implements Node {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctions() + ")");
         }
         return new WrappedFunction(function) {
+                @Override
                 public final Object getFunctionValue(Parameters params) {
                     params.setIfDefined(Parameter.NODE, AbstractNode.this);
                     params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());

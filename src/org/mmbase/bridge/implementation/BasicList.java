@@ -18,10 +18,13 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.23 2007-01-17 15:04:07 michiel Exp $
+ * @version $Id: BasicList.java,v 1.24 2007-02-10 15:47:42 nklasens Exp $
  */
+// FIX sort extends Comparable<E>
 public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
 
+    
+    
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
     private Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -46,37 +49,35 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         properties.put(key,value);
     }
 
-    /*
+    /**
      * converts the object in the list to the excpected format
      */
+    @SuppressWarnings("unchecked")
     protected E convert(Object o, int index) {
         return (E) o;
     }
 
+    @Override
     public boolean contains(Object o ) {
         // make sure every element is of the right type, ArrayList implementation does _not_ call get.
         convertAll();
         return super.contains(o);
     }
 
+    @Override
     public boolean remove(Object o) {
         // make sure every element is of the right type, otherwise 'equals' is very odd..
         convertAll();
         return super.remove(o);
     }
-    public boolean removeAll(Collection c) {
+    @Override
+    public boolean removeAll(Collection<?> c) {
         // make sure every element is of the right type, otherwise 'equals' is very odd..
         convertAll();
         return super.removeAll(c);
     }
 
-    /*
-     * validates that an object can be converted to the excpected format
-     */
-    protected E validate(Object o) throws ClassCastException {
-        return (E) o;
-    }
-
+    @Override
     public E get(int index) {
         if (autoConvert) {
             return convert(super.get(index), index);
@@ -93,18 +94,21 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         Collections.sort(this, comparator);
     }
 
+    @Override
     public E set(int index, E o) {
-        return super.set(index,validate(o));
+        return super.set(index,o);
     }
 
+    @Override
     public void add(int index, E o) {
         autoConvert = true;
-        super.add(index, validate(o));
+        super.add(index, o);
     }
 
+    @Override
     public boolean add(E o) {
         autoConvert = true;
-        return super.add(validate(o));
+        return super.add(o);
     }
 
     /**
@@ -119,6 +123,7 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
     }
 
 
+    @Override
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
         if (autoConvert) convertAll();

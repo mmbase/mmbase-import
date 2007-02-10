@@ -17,9 +17,9 @@ import org.mmbase.bridge.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: BasicFieldList.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
  */
-public class BasicFieldList extends BasicList<Field> implements FieldList<Field> {
+public class BasicFieldList extends BasicList<Field> implements FieldList {
 
     NodeManager nodemanager = null;
 
@@ -32,6 +32,7 @@ public class BasicFieldList extends BasicList<Field> implements FieldList<Field>
         this.nodemanager = nodemanager;
     }
 
+    @Override
     public Field convert(Object o, int index) {
         if (o instanceof BasicField) {
             return (Field) o;
@@ -48,10 +49,6 @@ public class BasicFieldList extends BasicList<Field> implements FieldList<Field>
         }
     }
 
-    protected Field validate(Object o) throws ClassCastException {
-        return (Field)o;
-    }
-
     public Field getField(int index) {
         return get(index);
     }
@@ -60,7 +57,7 @@ public class BasicFieldList extends BasicList<Field> implements FieldList<Field>
         return new BasicFieldIterator();
     }
 
-    protected class BasicFieldIterator extends BasicIterator implements FieldIterator<Field> {
+    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
 
         public Field nextField() {
             return next();

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.46 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.47 2007-02-10 15:47:42 nklasens Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -94,6 +94,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
      */
+    @Override
     protected Map getFieldTypes() {
         if (builder != null) {
             return fieldTypes;
@@ -147,6 +148,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
 
 
+    @Override
     public String getGUIName(int plurality, Locale locale) {
         if (locale == null) locale = cloud.getLocale();
         if (builder != null) {
@@ -160,13 +162,16 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         }
     }
 
+    @Override
     public String getName() {
         return builder == null ? getStringValue("name") : builder.getTableName();
     }
+    @Override
     public String getDescription() {
         return getDescription(null);
     }
 
+    @Override
     public String getDescription(Locale locale) {
         if (builder == null) return getStringValue("description");
         if (locale == null) locale = cloud.getLocale();
@@ -182,11 +187,16 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             super(field);
             this.name = name;
         }
+        @Override
         public NodeManager getNodeManager() {
             return VirtualNodeManager.this;
         }
+        @Override
         public String getName() {
             return name;
+        }
+        public int compareTo(Field o) {
+            return name.compareTo(o.getName());
         }
     }
 

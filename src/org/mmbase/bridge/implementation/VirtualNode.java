@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -67,6 +67,7 @@ public class VirtualNode extends AbstractNode implements Node {
         this(getVirtualNode(values), cloud);
     }
 
+    @Override
     public String toString() {
         return "BridgeVirtualNode " + noderef;
     }
@@ -92,26 +93,32 @@ public class VirtualNode extends AbstractNode implements Node {
     }
 
 
+    @Override
     public boolean isRelation() {
         return false;
     }
 
+    @Override
     public Relation toRelation() {
         return (Relation)this;
     }
 
+    @Override
     public boolean isNodeManager() {
         return false;
     }
 
+    @Override
     public NodeManager toNodeManager() {
         return (NodeManager)this;
     }
 
+    @Override
     public boolean isRelationManager() {
         return false;
     }
 
+    @Override
     public RelationManager toRelationManager() {
         return (RelationManager)this;
     }
@@ -136,6 +143,7 @@ public class VirtualNode extends AbstractNode implements Node {
         return nodeManager;
     }
 
+    @Override
     public int getNumber() {
         return noderef.getNumber();
     }
@@ -145,10 +153,12 @@ public class VirtualNode extends AbstractNode implements Node {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
 
+    @Override
     public boolean isNull(String fieldName) {
         return noderef.isNull(fieldName);
     }
 
+    @Override
     public void setSize(String fieldName, long size) {
         noderef.setSize(fieldName, size);
     }
@@ -156,6 +166,7 @@ public class VirtualNode extends AbstractNode implements Node {
         return noderef.getSize(fieldName);
     }
 
+    @Override
     protected  void setValueWithoutChecks(String fieldName, Object value) {
         // cannot edit virtual node.
         // should not come here..
@@ -167,16 +178,19 @@ public class VirtualNode extends AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         return result.booleanValue();
     }
 
+    @Override
     public Date getDateValue(String fieldName) {
         Date result =  noderef.getDateValue(fieldName);
         return result;
     }
 
+    @Override
     public List getListValue(String fieldName) {
         List result =  noderef.getListValue(fieldName);
         return result;
@@ -187,6 +201,7 @@ public class VirtualNode extends AbstractNode implements Node {
      * Returns the Node value of a certain field, but in the case of a VirtualNode this can also occasionally be <code>null</code>
      * because the node can have been deleted.
      */
+    @Override
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
             return this;
@@ -205,41 +220,49 @@ public class VirtualNode extends AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public int getIntValue(String fieldName) {
         Integer result = new Integer(getNode().getIntValue(fieldName));
         return result.intValue();
 
     }
 
+    @Override
     public float getFloatValue(String fieldName) {
         Float result = new Float(getNode().getFloatValue(fieldName));
         return result.floatValue();
     }
 
+    @Override
     public long getLongValue(String fieldName) {
         Long result = new Long(getNode().getLongValue(fieldName));
         return result.longValue();
     }
 
+    @Override
     public double getDoubleValue(String fieldName) {
         Double result = new Double(getNode().getDoubleValue(fieldName));
         return result.doubleValue();
     }
 
+    @Override
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
         return result;
     }
+    @Override
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         return result;
     }
 
+    @Override
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
         return result;
     }
 
+    @Override
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
         return result;
@@ -250,14 +273,17 @@ public class VirtualNode extends AbstractNode implements Node {
         return  getNode().getFunctions();
     }
 
+    @Override
     protected Function getNodeFunction(String functionName) {
         return getNode().getFunction(functionName);
     }
 
+    @Override
     public Parameters createParameters(String functionName) {
         return getNode().getFunction(functionName).createParameters();
     }
 
+    @Override
     protected FieldValue createFunctionValue(Object result) {
         return new BasicFunctionValue(getCloud(), result);
     }

@@ -14,9 +14,9 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.12 2006-09-25 10:17:36 pierre Exp $
+ * @version $Id: NodeList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
  */
-public interface NodeList<E extends Node> extends BridgeList<E> {
+public interface NodeList extends BridgeList<Node> {
 
     /**
      * In the propery of the list with this name you find back the original Query object

@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.17 2006-10-03 12:32:34 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.18 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -84,6 +84,7 @@ public abstract class NodeWrapper implements Node {
     public Set getChanged() {  return node.getChanged(); }
     public void delete() { node.delete(); }
     public void delete(boolean deleteRelations) { node.delete(deleteRelations); }
+    @Override
     public String toString() { return node.toString(); }
     public Document getXMLValue(String fieldName) throws IllegalArgumentException {
         return node.getXMLValue(fieldName);
@@ -125,7 +126,9 @@ public abstract class NodeWrapper implements Node {
     public FieldValue getFunctionValue(String functionName, List parameters) { return node.getFunctionValue(functionName, parameters);}
 
 
+    @Override
     public int hashCode() { return node.hashCode(); }
+    @Override
     public boolean equals(Object o) { return node.equals(o); }
     public int compareTo(Node o) { return node.compareTo(o); }
 
