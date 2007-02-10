@@ -21,7 +21,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.1 2006-07-18 15:17:00 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.2 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8.2
  */
 
@@ -34,35 +34,43 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
                 {
                     fieldTypes.put(dataType.getName(), DataTypeField.this);
                 }
+                @Override
                 protected Map getFieldTypes() {
                     return Collections.unmodifiableMap(fieldTypes);
                 }
             };
     }
+    @Override
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
+    @Override
     public int getSearchPosition() {
         return -1; // irrelevant, you cannot search
     }
 
+    @Override
     public int getListPosition() {
         return -1; // irrelevant, you cannot do listings
     }
 
+    @Override
     public int getEditPosition() {
         return 1;
     }
 
+    @Override
     public int getStoragePosition() {
         return -1; // irrelevant, not stored
     }
 
+    @Override
     public int getMaxLength() {
         return Integer.MAX_VALUE; // not stored, so no such restriction
     }
 
+    @Override
     public String getGUIType() {
         return dataType.getName();
     }

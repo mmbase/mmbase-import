@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.30 2007-02-02 19:25:20 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.31 2007-02-10 15:47:42 nklasens Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -74,7 +74,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    public NodeList<Node> getNodes() {
+    public NodeList getNodes() {
         return new BasicNodeList(coreNodes, this);
     }
 
@@ -163,6 +163,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      * Transaction-notification: add a new temporary node to a transaction.
      * @param currentObjectContext the context of the object to add
      */
+    @Override
     void add(String currentObjectContext) {
         try {
             BasicCloudContext.transactionManager.addNode(transactionContext, account, currentObjectContext);
@@ -173,6 +174,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     /*
      */
+    @Override
     int add(BasicNode node) {
         int id = node.getNumber();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
@@ -183,6 +185,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         return  id;
     }
 
+    @Override
     void createAlias(BasicNode node, String aliasName) {
         checkAlias(aliasName);
         try {
@@ -196,6 +199,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
      * @param currentObjectContext the context of the object to remove
      */
+    @Override
     void remove(String currentObjectContext) {
         try {
             BasicCloudContext.transactionManager.removeNode(transactionContext, account, currentObjectContext);
@@ -203,6 +207,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             throw new BridgeException(e.getMessage(), e);
         }
     }
+    @Override
     void remove(MMObjectNode node) {
         String oMmbaseId = "" + node.getValue("number");
         String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
@@ -225,6 +230,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
+    @Override
     boolean contains(MMObjectNode node) {
         // additional check, so transaction can still get nodes after it has committed.
         if (transactionContext == null) {
@@ -246,6 +252,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      * This means that a transaction is always cleared - if it 'times out', or is not properly removed, it will
      * eventually be removed from the MMBase cache.
      */
+    @Override
     protected void finalize() {
         if ((transactionContext != null) && !(parentCloud instanceof Transaction)) {
             cancel();

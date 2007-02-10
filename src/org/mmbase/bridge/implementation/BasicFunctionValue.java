@@ -20,7 +20,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.20 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.21 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
@@ -80,6 +80,7 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
         return o;
     }
 
+    @Override
     public Object get() {
         return value;
     }

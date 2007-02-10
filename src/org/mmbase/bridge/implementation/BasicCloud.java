@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.170 2007-02-02 19:25:20 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.171 2007-02-10 15:47:42 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -539,7 +539,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     public Transaction getTransaction(String name) {
-        Transaction tran = (Transaction)transactions.get(name);
+        Transaction tran = transactions.get(name);
         if (tran == null) {
             tran = createTransaction(name, false);
         } else {
@@ -956,6 +956,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @param o the object to compare it with
      * @return is equal
      */
+    @Override
     public boolean equals(Object o) {
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
         // are treated as the 'same' cloud. This may change in future implementations
@@ -1115,6 +1116,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
     }
 
+    @Override
     public String toString() {
         String n = getClass().getName();
         int dot = n.lastIndexOf(".");

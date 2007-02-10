@@ -17,9 +17,9 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.36 2006-04-18 13:13:12 michiel Exp $
+ * @version $Id: Field.java,v 1.37 2007-02-10 15:47:42 nklasens Exp $
  */
-public interface Field extends Descriptor {
+public interface Field extends Descriptor, Comparable<Field> {
 
     /** MMBase base type identifier for the String data type */
     public final static int TYPE_STRING  = 1;
@@ -31,6 +31,7 @@ public interface Field extends Descriptor {
      * MMBase base type identifier for the binary (byte[]) data type
      * @deprecated use {@link #TYPE_BINARY}
      */
+    @Deprecated
     public final static int TYPE_BYTE    = TYPE_BINARY;
     /** MMBase base type identifier for the Float data type */
     public final static int TYPE_FLOAT   = 5;
@@ -173,6 +174,7 @@ public interface Field extends Descriptor {
      * @deprecated use {@link #getDataType } and {@link DataType#getName}
      * @see #getDataType
      */
+    @Deprecated
     public String getGUIType();
 
     /**

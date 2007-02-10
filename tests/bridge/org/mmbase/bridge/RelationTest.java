@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.7 2006-07-20 17:22:36 michiel Exp $
+ * @version $Id: RelationTest.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
  */
 public class RelationTest extends BridgeTest {
 
@@ -112,7 +112,7 @@ public class RelationTest extends BridgeTest {
             //try to get both the aa node from bb using "null"
             NodeList bbRelatedListNull = bbNode.getRelatedNodes("aa", "related", null);
             assertTrue("relation count should be 2 but is " + bbRelatedListNull.size() + " mmbase relatednodes() does not work", bbRelatedListNull.size() == 2);
-            NodeList bbRelationListNull = bbNode.getRelations("related", cloud.getNodeManager("aa"),  null);
+            RelationList bbRelationListNull = bbNode.getRelations("related", cloud.getNodeManager("aa"),  null);
             assertTrue("relation count should be 2 but is " + bbRelationListNull.size() + " mmbase relatednodes() does not work", bbRelationListNull.size() == 2);
 
         }

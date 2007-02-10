@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.29 2006-07-25 20:05:46 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.30 2007-02-10 15:47:42 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -102,6 +102,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     // overridden from BasicQuery (a node query does not have '.' in its field names)
+    @Override
     public StepField createStepField(String fieldName) {
         if (fieldName.indexOf('.') == -1) {
             BasicStepField stepField = (BasicStepField) getStepField(getNodeManager().getField(fieldName));
@@ -135,6 +136,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
 
+    @Override
     public void removeFields() {
         explicitFields.clear();
         setNodeStep(step);
@@ -160,6 +162,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     // overrides setDistinct of super, because it should consider 'step' Fields.
+    @Override
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
         query.setDistinct(distinct);
@@ -189,6 +192,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return prevStep;
     }
 
+    @Override
     public Query cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         if (queryCheck != null) {
@@ -200,6 +204,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return clone;
     }
 
+    @Override
     public NodeList getList() {
         return getNodeManager().getList(this);
     }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.80 2007-01-17 23:58:24 michiel Exp $
+ * @version $Id: Queries.java,v 1.81 2007-02-10 15:47:42 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -866,7 +866,7 @@ abstract public class Queries {
                     // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
                     // specified a node which is not of the type of one of the steps.
                     // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
-                    firstStep = (Step) query.getSteps().get(0);
+                    firstStep = query.getSteps().get(0);
                 }
                 if (step == null) {
                     step = firstStep;

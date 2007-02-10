@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.17 2006-07-25 18:56:24 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.18 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -126,6 +126,7 @@ public  class GrowingTreeList extends TreeList {
     }
 
 
+    @Override
     public int size() {
         while (! foundEnd) {
             addPathElement();
@@ -133,12 +134,14 @@ public  class GrowingTreeList extends TreeList {
         return super.size();
     }
 
+    @Override
     protected NodeList getList(int queryNumber) {
         while (queryNumber >= branches.size() && (!foundEnd)) {
             addPathElement();
         }
         return super.getList(queryNumber);
     }
+    @Override
     protected NodeList getLeafList(int queryNumber) {
         while (queryNumber >= branches.size() && (!foundEnd)) {
             addPathElement();
@@ -164,7 +167,7 @@ public  class GrowingTreeList extends TreeList {
                 cleanLeafConstraint = leafElementTemplate.getCleanConstraint();
             }
 
-            Iterator steps = pathElementTemplate.getSteps().iterator();;
+            Iterator<Step> steps = pathElementTemplate.getSteps().iterator();;
             steps.next(); // ignore first step
             if (! steps.hasNext()) {
                 foundEnd = true;
@@ -172,7 +175,7 @@ public  class GrowingTreeList extends TreeList {
             }
             while (steps.hasNext()) {
                 RelationStep relationStepTemplate = (RelationStep) steps.next();
-                Step         stepTemplate         = (Step)         steps.next();
+                Step stepTemplate = steps.next();
                 String role;
                 {   // it's a pity but role cannot be requested directly from RelationStep
                     // some hackery

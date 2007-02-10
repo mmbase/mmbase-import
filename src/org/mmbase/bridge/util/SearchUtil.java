@@ -206,9 +206,10 @@ public class SearchUtil {
         }
 
         NodeManager nm = query.getNodeManager();
-        return (RelationList) nm.getList(query);
+        return new CollectionRelationList(nm.getList(query), parent.getCloud());
     }
 
+   
     public static void addFeatures(NodeQuery query, Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
         addFeatures(query, parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
     }

@@ -30,9 +30,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.32 2006-11-24 14:24:28 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.33 2007-02-10 15:47:42 nklasens Exp $
  */
-public class ModuleHandler implements Module, Comparable, InvocationHandler {
+public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
 
     // link to cloud context
@@ -232,13 +232,12 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
      *
      * @param o the object to compare it with
      */
-    public int compareTo(Object o) {
-        Module m= (Module)o;
+    public int compareTo(Module m) {
         int res=getName().compareTo(m.getName());
         if (res!=0) {
             return res;
         } else {
-            int h1=((Cloud)o).getCloudContext().hashCode();
+            int h1 = m.getCloudContext().hashCode();
             int h2=cloudContext.hashCode();
             if (h1>h2) {
                 return -1;
@@ -254,6 +253,7 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
      * Compares two modules, and returns true if they are equal.
      * @param o the object to compare it with
      */
+    @Override
     public boolean equals(Object o) {
         return (o instanceof Module) &&
                getName().equals(((Module)o).getName()) &&

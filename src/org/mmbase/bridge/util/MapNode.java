@@ -20,7 +20,7 @@ import org.mmbase.util.functions.*;
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.9 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: MapNode.java,v 1.10 2007-02-10 15:47:42 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -73,17 +73,21 @@ public class MapNode extends AbstractNode implements Node {
         return nodeManager;
     }
 
+    @Override
     public int getNumber() {
         return Casting.toInt(values.get("number"));
     }
 
+    @Override
     public boolean isNew() {
         return false;
     }
 
+    @Override
     public boolean isChanged(String fieldName) {
         return originals.containsKey(fieldName);
     }
+    @Override
     public boolean isChanged() {
         return ! originals.isEmpty();
     }
@@ -95,16 +99,20 @@ public class MapNode extends AbstractNode implements Node {
     public Object getValueWithoutProcess(String fieldName) {
         return values.get(fieldName);
     }
+    @Override
     public void setValueWithoutProcess(String fieldName, Object value) {
         wrapper.put(fieldName, value);
     }
+    @Override
     public void setValueWithoutChecks(String fieldName, Object value) {
         wrapper.put(fieldName, value);
     }
 
+    @Override
     public boolean isNull(String fieldName) {
         return values.get(fieldName) == null;
     }
+    @Override
     protected void setSize(String fieldName, long size) {
         sizes.put(fieldName, size);
     }
@@ -120,90 +128,111 @@ public class MapNode extends AbstractNode implements Node {
         }
     }
 
+    @Override
     public void commit() {
         throw new UnsupportedOperationException("Cannot commit map node");
     }
 
+    @Override
     public void cancel() {
     }
 
 
+    @Override
     public void delete(boolean deleteRelations) {
         throw new UnsupportedOperationException("Cannot delete map node");
     }
 
+    @Override
     public String toString() {
         return "Map Node" + values;
     }
 
+    @Override
     public void deleteRelations(String type) throws NotFoundException {
     }
 
+    @Override
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
+    @Override
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
 
 
+    @Override
     public boolean hasRelations() {
         return false;
     }
 
+    @Override
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         return 0;
 
     }
 
+    @Override
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         return BridgeCollections.EMPTY_NODELIST;
     }
 
+    @Override
     public int countRelatedNodes(String type) {
         return 0;
     }
 
+    @Override
     public StringList getAliases() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
+    @Override
     public void createAlias(String aliasName) {
         throw new UnsupportedOperationException("Map nodes have no aliases");
     }
 
+    @Override
     public void deleteAlias(String aliasName) {
         throw new UnsupportedOperationException("Map nodes have no aliases");
     }
 
+    @Override
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         throw new UnsupportedOperationException("Map nodes have no relations");
     }
 
 
+    @Override
     public void setContext(String context) {
         throw new UnsupportedOperationException("Map nodes have no security context");
     }
 
     // javadoc inherited (from Node)
+    @Override
     public String getContext() {
         throw new UnsupportedOperationException("Virtual nodes have no security context");
     }
 
 
     // javadoc inherited (from Node)
+    @Override
     public StringList getPossibleContexts() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
+    @Override
     public boolean mayWrite() {
         return true;
     }
 
+    @Override
     public boolean mayDelete() {
         return false;
     }
 
+    @Override
     public boolean mayChangeContext() {
         return false;
     }
@@ -213,6 +242,7 @@ public class MapNode extends AbstractNode implements Node {
     }
 
 
+    @Override
     protected Function getNodeFunction(String functionName) {
         return nodeManager.getFunction(functionName);
     }
