@@ -21,7 +21,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.2 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: DataTypeField.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
  * @since   MMBase-1.8.2
  */
 
@@ -30,12 +30,12 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     public DataTypeField(final Cloud cloud, final DataType dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
-                private final Map fieldTypes = new HashMap();
+                private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
                 {
                     fieldTypes.put(dataType.getName(), DataTypeField.this);
                 }
                 @Override
-                protected Map getFieldTypes() {
+                protected Map<String, Field> getFieldTypes() {
                     return Collections.unmodifiableMap(fieldTypes);
                 }
             };
@@ -75,7 +75,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         return dataType.getName();
     }
     public Collection validate(Object value) {
-        Collection errors = dataType.validate(value, null, this);
+        Collection<LocalizedString> errors = dataType.validate(value, null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());
     }
 

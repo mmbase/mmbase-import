@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.17 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.18 2007-02-10 17:44:03 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -458,7 +458,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public Collection<String> validate() {
-        List<String> errors = new ArrayList();
+        List<String> errors = new ArrayList<String>();
         FieldIterator fi = getNodeManager().getFields().fieldIterator();
         Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
@@ -577,7 +577,7 @@ public abstract class AbstractNode implements Node {
             } else {
                 Cloud c = getCloud();
                 if (c instanceof Comparable) {
-                    return ((Comparable) c).compareTo(n.getCloud());
+                    return ((Comparable<Cloud>) c).compareTo(n.getCloud());
                 } else {
                     return 0;
                 }
@@ -596,7 +596,7 @@ public abstract class AbstractNode implements Node {
     public boolean isChanged() {
         return false;
     }
-    public Set getChanged() {
+    public Set<String> getChanged() {
         return Collections.EMPTY_SET;
     }
 

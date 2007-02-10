@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.128 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.129 2007-02-10 17:44:03 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -53,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected Map<String, Field> fieldTypes = new HashMap();
+    protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.

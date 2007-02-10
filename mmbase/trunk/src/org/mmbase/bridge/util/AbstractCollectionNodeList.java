@@ -59,13 +59,13 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
         return super.add(o);
     }
     
-    public Collection getCollection() {
+    public Collection<Node> getCollection() {
         return wrappedCollection;
     }
 
-    private static List convertedList(Collection c, Cloud cloud) {
+    private static List<Node> convertedList(Collection<Node> c, Cloud cloud) {
         if (c instanceof List) {
-            return (List) c;
+            return (List<Node>) c;
         } else {
             if (cloud == null) {
                 cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
