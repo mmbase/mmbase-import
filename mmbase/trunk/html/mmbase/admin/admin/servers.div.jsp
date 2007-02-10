@@ -41,7 +41,7 @@
         <mm:field name="name">
           <mm:compare value="<%= MMBase.getMMBase().getMachineName() %>">
             <mm:link page="servers" referids="_@server">
-              <a href="${_}"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" /></a>
+              <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="next" /></a>
             </mm:link>
           </mm:compare>
         </mm:field>

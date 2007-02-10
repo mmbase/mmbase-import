@@ -45,12 +45,18 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
 </tr>
 <mm:nodelistfunction module="jdbc" name="POOLS">
   <tr>
-    <td colspan="2"><mm:field name="item1" id="item1" /></td>
+    <td colspan="2">
+      <mm:field name="item1" id="item1" write="false">
+		<mm:link page="databases-connections" referids="item1" component="core">
+		  <a href="${_}" title="view connections"><mm:write referid="item1" /></a>
+		</mm:link>
+      </mm:field>
+    </td>
     <td><mm:field name="item2" /></td>
     <td><mm:field name="item3" /></td>
     <td class="view">
       <mm:link page="databases-connections" referids="item1" component="core">
-        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" /></a>
+        <a href="${_}" title="view connections"><img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" /></a>
       </mm:link>
     </td>
   </tr>
