@@ -69,7 +69,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.7.1</version>
+            <version>1.8.0.7</version>
             <type>jar</type>
             <properties>
 				<war.bundle>${war.bundle}</war.bundle>
