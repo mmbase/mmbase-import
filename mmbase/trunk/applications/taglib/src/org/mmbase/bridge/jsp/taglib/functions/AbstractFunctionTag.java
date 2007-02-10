@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.27 2006-05-17 13:26:07 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.28 2007-02-10 15:21:51 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -143,7 +143,6 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
-            
             log.debug("Node-referrer?");
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 log.debug("explicitely not");
@@ -168,9 +167,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 log.debug("Found functionOrNode " + functionOrNode);
             }
             if (functionOrNode != null) {
-                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use                    
+                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use 
                     log.debug("using node-function!");
-                    return ((NodeProvider) functionOrNode).getNodeVar().getFunction(functionName);
+                    Node node = ((NodeProvider) functionOrNode).getNodeVar();
+                    return node != null ?  node.getFunction(functionName) : null;
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
