@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.25 2007-02-10 15:49:32 michiel Exp $
+ * @version $Id: BasicList.java,v 1.26 2007-02-10 16:48:54 nklasens Exp $
  */
 // FIX sort extends Comparable<E>
 public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
@@ -130,7 +130,7 @@ public class BasicList<E> extends ArrayList<E> implements BridgeList<E>  {
         return super.toArray();
     }
 
-    public BridgeList<E> subList(int fromIndex, int toIndex)  {
+    public BridgeList<E> subBridgeList(int fromIndex, int toIndex)  {
         return new BasicList<E>(super.subList(fromIndex, toIndex));
     }
 

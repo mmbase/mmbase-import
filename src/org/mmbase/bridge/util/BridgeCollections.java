@@ -19,7 +19,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BridgeCollections.java,v 1.7 2007-02-10 16:48:54 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -192,6 +192,9 @@ public abstract class BridgeCollections {
         public void sort(Comparator<? super E> comparator) { throw new UnsupportedOperationException(); }
 
         public List<E> subList(int fromIndex, int toIndex) {
+            return new UnmodifiableBridgeList<E>(c.subList(fromIndex, toIndex), parent != null ? parent : (BridgeList<E>) c);
+        }
+        public BridgeList<E> subBridgeList(int fromIndex, int toIndex) {
             return new UnmodifiableBridgeList<E>(c.subList(fromIndex, toIndex), parent != null ? parent : (BridgeList<E>) c);
         }
 
