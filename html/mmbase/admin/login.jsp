@@ -24,7 +24,7 @@
 <div id="wrap">
 <form id="loginbox" method="post" action="<mm:url page="$referrer" />">
 <mm:compare referid="reason" value="failed">
-  <p class="message">You failed to log in. Try again.</p>
+  <div class="message">You failed to log in. Try again.</div>
 </mm:compare>
 <fieldset>
 <input type="hidden" name="command" value="login" />
