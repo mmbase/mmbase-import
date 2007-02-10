@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.41 2006-12-18 19:00:30 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.42 2007-02-10 16:22:36 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -59,7 +59,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 Iterator<PublicCloneable> i = clone.entries.iterator();
                 clone.entries = new ArrayList();
                 while(i.hasNext()) {
-                    clone.entries.add((PublicCloneable) i.next().clone());
+                    clone.entries.add(i.next().clone());
                 }
                 clone.unusedKeys = (ArrayList) unusedKeys.clone();
                 return clone;
@@ -361,9 +361,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
-                    public void remove(int index) {
-                        throw new UnsupportedOperationException();
-                    }
                     public void add(Object o) {
                         throw new UnsupportedOperationException();
                     }
@@ -472,13 +469,13 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             Iterator<Bundle> j = clone.bundles.iterator();
             clone.bundles   = new ArrayList<Bundle>();
             while(j.hasNext()) {
-                clone.bundles.add((Bundle) (j.next().clone()));
+                clone.bundles.add((j.next().clone()));
             }
             Iterator<Map.Entry<Locale, LocalizedEntry>> i = clone.localized.entrySet().iterator();
             clone.localized = new HashMap();
             while(i.hasNext()) {
                 Map.Entry<Locale, LocalizedEntry> entry =  i.next();
-                clone.localized.put(entry.getKey(), (LocalizedEntry) (entry.getValue()).clone());
+                clone.localized.put(entry.getKey(), (entry.getValue()).clone());
             }
             clone.fallBack  = (ArrayList) fallBack.clone();
             return clone;

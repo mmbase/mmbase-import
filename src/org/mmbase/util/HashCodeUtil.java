@@ -80,43 +80,43 @@ final public class HashCodeUtil {
    }
    
    public static final int hashCode(int source, boolean[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (boolean element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
 
    public static final int hashCode(int source, int[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (int element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
 
    public static final int hashCode(int source, long[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (long element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
    
    public static final int hashCode(int source, float[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (float element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
    
    public static final int hashCode(int source, double[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (double element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
 
    public static final int hashCode(int source, Object[] x) {
-      for (int i = 0; i < x.length; ++i) {
-         source = hashCode(source, x[i]);
+      for (Object element : x) {
+         source = hashCode(source, element);
       }
       return source;
    }
@@ -124,8 +124,8 @@ final public class HashCodeUtil {
    
    public static final int hashCodeGentle(int source, Object[] x) {
       source = PRIME * source + x.length;
-      for (int i = 0; i < x.length; i++) {
-        source = PRIME * source + x[i].hashCode();
+      for (Object element : x) {
+        source = PRIME * source + element.hashCode();
       }
       return source;
    }

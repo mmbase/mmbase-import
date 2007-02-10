@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.174 2006-11-21 19:31:56 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.175 2007-02-10 16:22:37 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2478,8 +2478,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when a database error occurs
      */
     protected void deleteIndices(CoreField field) throws StorageException {
-        for (Iterator i = field.getParent().getStorageConnector().getIndices().values().iterator(); i.hasNext();) {
-            Index index = (Index)i.next();
+        for (Object element : field.getParent().getStorageConnector().getIndices().values()) {
+            Index index = (Index)element;
             if (index.contains(field)) {
                 delete(index);
             }
@@ -2551,8 +2551,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when a database error occurs
      */
     protected void createIndices(CoreField field) throws StorageException {
-        for (Iterator i = field.getParent().getStorageConnector().getIndices().values().iterator(); i.hasNext();) {
-            Index index = (Index)i.next();
+        for (Object element : field.getParent().getStorageConnector().getIndices().values()) {
+            Index index = (Index)element;
             if (index.contains(field)) {
                 create(index);
             }

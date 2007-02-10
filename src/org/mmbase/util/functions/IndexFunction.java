@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.13 2007-01-15 12:21:11 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -113,7 +113,7 @@ public class IndexFunction extends FunctionProvider {
                 lowercase = false;
                 buf.setCharAt(i, 'A');
                 continue;
-            } else if ((int) c < 128) {
+            } else if (c < 128) {
                 buf.setCharAt(i, (char) (c + 1));
                 return buf.toString();
             } else {
@@ -184,10 +184,6 @@ public class IndexFunction extends FunctionProvider {
 
     private static Parameter[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD, ROOT, SEPARATOR, JOINER, ROMAN, ROLE
-    };
-
-    private static Parameter[] MOVE_ARGS = new Parameter[] {
-        Parameter.CLOUD, ROOT, NEWROOT
     };
 
     /**

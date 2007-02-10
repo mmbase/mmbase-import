@@ -14,7 +14,6 @@ import org.mmbase.util.logging.*;
 import java.util.*;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.TypeRel;
-import org.mmbase.module.core.MMObjectNode;
 
 /**
  * The PostgreSQL query handler, implements {@link
@@ -37,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.29 2007-01-17 20:14:08 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.30 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {

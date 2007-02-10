@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.util.*;
 import org.mmbase.util.functions.*;
 
 /**
  * Abstract view implementation which implements getType and the specific parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractProcessor.java,v 1.3 2006-11-07 21:44:35 michiel Exp $
+ * @version $Id: AbstractProcessor.java,v 1.4 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractProcessor implements Processor {

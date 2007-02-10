@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
-import java.io.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
@@ -17,7 +16,7 @@ import org.mmbase.util.functions.Parameters;
  * nothing, it only can change the state of the block, and hence influence the renderers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.5 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: Processor.java,v 1.6 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface Processor {

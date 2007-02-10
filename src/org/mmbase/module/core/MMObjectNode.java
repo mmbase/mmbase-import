@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.201 2006-12-18 17:54:41 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.202 2007-02-10 16:22:37 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -843,7 +843,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     private byte[] useInputStream(String fieldName, InputStream stream) {        // first, convert to byte-array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int c;
         try {
             byte[] buf = new byte[1024];
             int n;
@@ -1038,7 +1037,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public long getLongValue(String fieldName) {
         Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (long) ((MMObjectNode)value).getNumber();
+        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
         return Casting.toLong(value);
     }
 
@@ -1053,7 +1052,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public float getFloatValue(String fieldName) {
         Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (float) ((MMObjectNode)value).getNumber();
+        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
         return Casting.toFloat(value);
     }
 
@@ -1068,7 +1067,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public double getDoubleValue(String fieldName) {
         Object value = getValue(fieldName);
-        if (value instanceof MMObjectNode) return (double) ((MMObjectNode)value).getNumber();
+        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
         return Casting.toDouble(value);
     }
 
@@ -1610,7 +1609,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             snodes.add("" + getNumber());
 
             SearchQuery query = clusterBuilder.getMultiLevelSearchQuery(snodes, fields, "NO", tables,  null, ordered, directions, search_type);
-            List v = (List) relatedCache.get(query);
+            List v = relatedCache.get(query);
             if (v == null) {
                 try {
                     v = clusterBuilder.getClusterNodes(query);
@@ -1706,7 +1705,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             log.error("Virtual node numbers: " + vNumbers.toString());
             StringBuffer rNumbers = new StringBuffer();
             for (int j = 0; j < result.size(); j++) {
-                int resultNumber = ((MMObjectNode) result.get(j)).getIntValue("number");
+                int resultNumber = (result.get(j)).getIntValue("number");
                 rNumbers.append(resultNumber).append(" ");
             }
             log.error("Real node numbers: " + rNumbers.toString());

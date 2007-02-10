@@ -11,20 +11,15 @@ package org.mmbase.storage.search.implementation.database.functions;
 
 
 import java.io.*;
-import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.*;
 import org.mmbase.util.logging.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
 
 /**
  * An SQL handle also recognizing 'FunctionValueConstraint's.
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionSqlHandler.java,v 1.2 2007-02-05 15:47:51 michiel Exp $
+ * @version $Id: FunctionSqlHandler.java,v 1.3 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.

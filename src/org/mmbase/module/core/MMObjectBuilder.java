@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.403 2006-12-06 13:03:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.404 2007-02-10 16:22:37 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1253,9 +1253,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         CoreField def = getField(fieldName);
         int dbpos = def.getStoragePosition();
         fields.remove(fieldName);
-        // move them all up one place
-        for (Iterator e = fields.values().iterator(); e.hasNext();) {
-            def = (CoreField) e.next();
+        for (Object element : fields.values()) {
+            def = (CoreField) element;
             int curpos = def.getStoragePosition();
             if (curpos >= dbpos) def.setStoragePosition(curpos - 1);
         }

@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.56 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.57 2007-02-10 16:22:37 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -555,8 +555,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 if (curCount > 0) {
                     synchronized(servletCountLock) {
                         log.info("Running servlets: " + curCount);
-                        for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
-                            log.info(e.next());
+                        for (Object element : runningServlets.values())
+                            log.info(element);
                     }
 
                 }// curCount>0

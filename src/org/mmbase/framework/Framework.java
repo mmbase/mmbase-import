@@ -9,12 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import javax.servlet.jsp.PageContext;
-import java.util.*;
 import java.io.*;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
 
 /**
@@ -22,7 +18,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.20 2007-02-09 13:32:47 michiel Exp $
+ * @version $Id: Framework.java,v 1.21 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface Framework {

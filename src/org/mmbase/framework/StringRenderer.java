@@ -11,7 +11,6 @@ package org.mmbase.framework;
 
 import java.util.*;
 import javax.servlet.http.*;
-import javax.servlet.*;
 import java.lang.reflect.Method;
 import java.io.*;
 import org.mmbase.util.functions.*;
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * The overly simple renderer which is simply based on a String present in the configuration file
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.5 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.6 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {

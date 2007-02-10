@@ -19,15 +19,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: ClassFunctionProvider.java,v 1.1 2006-09-15 17:03:30 michiel Exp $
+ * @version $Id: ClassFunctionProvider.java,v 1.2 2007-02-10 16:22:37 nklasens Exp $
  */
 public class ClassFunctionProvider extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassFunctionProvider.class);
 
-    private final Class clazz;
-
     public ClassFunctionProvider(Class clazz, Object instance) {
-        this.clazz = clazz;
         for (Method m : clazz.getMethods()) {
             if (! functions.containsKey(m.getName())) {
                 try {

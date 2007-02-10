@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * @since mmbase 1.6
  * @author Gerard van Enk
  * @author Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.9 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: BuilderList.java,v 1.10 2007-02-10 16:22:36 nklasens Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -95,8 +95,8 @@ public class BuilderList {
             Writer s = new OutputStreamWriter(System.out, "UTF-8");
             s.write("<builders>\n");
             String[] builderDirs = args[0].split(";");
-            for (int i = 0; i < builderDirs.length ; i++) {
-                ResourceLoader config = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderDirs[i]);
+            for (String element : builderDirs) {
+                ResourceLoader config = ResourceLoader.getConfigurationRoot().getChildResourceLoader(element);
                 bulList.listBuilders(config, s);
             }
             s.write("</builders>\n");

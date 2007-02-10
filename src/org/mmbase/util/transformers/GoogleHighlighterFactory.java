@@ -48,7 +48,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             log.debug("Creating transformer, with " + parameters);
         }
         URL referrer;
-        String referer = ((javax.servlet.http.HttpServletRequest) parameters.get(Parameter.REQUEST)).getHeader("Referer");
+        String referer = (parameters.get(Parameter.REQUEST)).getHeader("Referer");
         if (referer == null) return CopyCharTransformer.INSTANCE;
 
         try {
@@ -72,8 +72,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         String[] query = queryString.split("&");
 
         String s = null;
-        for (int i = 0; i < query.length; i++) {
-            String q = query[i];
+        for (String q : query) {
             if (q.startsWith("q=")) {
                 try {
                     s = java.net.URLDecoder.decode(q.substring(2), "UTF-8");

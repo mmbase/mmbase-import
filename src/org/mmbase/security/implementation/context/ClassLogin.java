@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.5 2005-12-29 20:43:16 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.6 2007-02-10 16:22:36 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -33,8 +33,8 @@ public class ClassLogin extends ContextLoginModule {
             throw new SecurityException("Class authentication failed  '" + userLoginInfo + "' (class not authorized)");
         }
         // get username
-        String userName = (String) li.getMap().get("username");
-        String reqRank  = (String) li.getMap().get("rank");
+        String userName = li.getMap().get("username");
+        String reqRank  = li.getMap().get("rank");
         if(userName == null && reqRank == null) throw new org.mmbase.security.SecurityException("expected the property 'username' and/or 'rank' with login");
 
         if ("anonymous".equals(reqRank) && userName == null) {

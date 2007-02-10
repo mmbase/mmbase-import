@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.11 2006-01-25 19:09:43 michiel Exp $
+ * @version $Id: Detector.java,v 1.12 2007-02-10 16:22:36 nklasens Exp $
  */
 
 public class Detector {
@@ -238,8 +238,8 @@ public class Detector {
      */
     private int byteArrayToInt(byte[] ar) {
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < ar.length; i++) {
-            buf.append(Integer.toHexString((int) ar[i] & 0x000000ff));
+        for (byte element : ar) {
+            buf.append(Integer.toHexString(element & 0x000000ff));
         }
         return Integer.decode("0x" + buf.toString()).intValue();
     }
@@ -249,8 +249,8 @@ public class Detector {
      */
     private long byteArrayToLong(byte[] ar) {
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < ar.length; i++) {
-            buf.append(Integer.toHexString((int) ar[i] & 0x000000ff));
+        for (byte element : ar) {
+            buf.append(Integer.toHexString(element & 0x000000ff));
         }
         return Long.decode("0x" + buf.toString()).longValue();
     }
@@ -317,8 +317,8 @@ public class Detector {
             // Hm. How did that binary arithmatic go?
             log.debug(
                       "dumb string conversion: 0x"
-                      + Integer.toHexString((int) lithmus[offset] & 0x000000ff)
-                      + Integer.toHexString((int) lithmus[offset + 1] & 0x000000ff));
+                      + Integer.toHexString(lithmus[offset] & 0x000000ff)
+                      + Integer.toHexString(lithmus[offset + 1] & 0x000000ff));
             
             switch (testComparator) {
             case '=' :
@@ -408,7 +408,7 @@ public class Detector {
         log.debug("testing byte for " + rawinput);
         if (test.equals("x")) {
             hasX = true;
-            xInt = (int) lithmus[offset];
+            xInt = lithmus[offset];
             xChar = (char) lithmus[offset];
             xString = "" + xChar;
             return true;
@@ -456,7 +456,7 @@ public class Detector {
                 break;
             default :
                 // Convert all characters not in the allowed XML character set
-                int n = (int) c;
+                int n = c;
                 /* -- below is actual xml standard definition of allowed characters
                    if (n == 0x9 || n == 0xA || n == 0xD || (n >= 0x20 && n <= 0xD7FF) || (n >= 0xE000 && n <= 0xFFFD) ||
                    (n >= 0x10000 && n <= 0x10FFFF)) {

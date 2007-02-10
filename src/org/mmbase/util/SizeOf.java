@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.17 2006-06-19 05:57:57 michiel Exp $
+ * @version $Id: SizeOf.java,v 1.18 2007-02-10 16:22:36 nklasens Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
@@ -211,8 +211,7 @@ public class SizeOf {
         Field flds[] = c.getDeclaredFields();
         int sz = 8; // wild guess for the size of an Object. (reference + hashcode?
 
-        for (int i = 0; i < flds.length; i++) {
-            Field f = flds[i];
+        for (Field f : flds) {
             if (!c.isInterface() &&  (f.getModifiers() & Modifier.STATIC) != 0) {
                 continue;
             }
@@ -233,8 +232,8 @@ public class SizeOf {
         }
 
         Class cv[] = c.getInterfaces();
-        for (int i = 0; i < cv.length; i++) {
-            sz += size_inst(obj, cv[i]) - 8; // 8: already guessed
+        for (Class element : cv) {
+            sz += size_inst(obj, element) - 8; // 8: already guessed
         }
 
         return sz;

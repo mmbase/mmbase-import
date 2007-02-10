@@ -24,7 +24,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.4 2006-01-25 18:03:47 michiel Exp $
+ * @version $Id: ResourceBundleReplacerFactory.java,v 1.5 2007-02-10 16:22:37 nklasens Exp $
  */
 
 public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory {
@@ -50,7 +50,7 @@ public class ResourceBundleReplacerFactory implements ParameterizedTransformerFa
             log.debug("Creating transformer, with " + parameters);
         }
         String baseName = (String) parameters.get("basename");
-        final ResourceBundle bundle = ResourceBundle.getBundle(baseName, (Locale) parameters.get(Parameter.LOCALE));
+        final ResourceBundle bundle = ResourceBundle.getBundle(baseName, parameters.get(Parameter.LOCALE));
         return new ResourceBundleReplacer(1, bundle, baseName);
     }
 

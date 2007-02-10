@@ -13,7 +13,6 @@ import java.util.*;
 import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.CollectionNodeList;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
@@ -114,8 +113,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             Hashtable cmds = new Hashtable();
             Hashtable vars = new Hashtable();
             Parameter[] def = arguments.getDefinition();
-            for (int i = 0; i < def.length; i++) {
-                Parameter param = def[i];
+            for (Parameter param : def) {
                 Object value = arguments.get(param);
                 if (String.class.isAssignableFrom(param.getTypeAsClass()) && cmds.size() == 0) {
                     cmds.put(getName(), value);

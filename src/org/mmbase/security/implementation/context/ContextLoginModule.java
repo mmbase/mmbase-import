@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.19 2005-12-29 20:43:16 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.20 2007-02-10 16:22:36 nklasens Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -158,7 +158,7 @@ public abstract class ContextLoginModule {
         if (identifyType != null || rank != null) {
             return (Element) found.getParentNode();
         } else {
-            return (Element) found;
+            return found;
         }
     }
 }

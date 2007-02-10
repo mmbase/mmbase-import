@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.18 2006-09-18 11:40:29 johannes Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.19 2007-02-10 16:22:36 nklasens Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -92,8 +92,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
     private boolean mayAddHeader(String header) {
-        for (int i=0; i<IGNORED_HEADERS.length; i++) {
-            if (IGNORED_HEADERS[i].equalsIgnoreCase(header)) {
+        for (String element : IGNORED_HEADERS) {
+            if (element.equalsIgnoreCase(header)) {
                 return false;
             }
         }

@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.38 2006-10-12 16:35:26 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.39 2007-02-10 16:22:37 nklasens Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -92,8 +92,8 @@ public class Jumpers extends MMObjectBuilder {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
             String url = node.getStringValue("url");
-            HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
-            HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
+            HttpServletRequest req = args.get(Parameter.REQUEST);
+            HttpServletResponse res = args.get(Parameter.RESPONSE);
             String link;
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
