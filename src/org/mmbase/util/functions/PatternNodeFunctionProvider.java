@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.13 2006-10-25 16:41:57 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -48,7 +48,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
     }
 
     public Function<String> getFunction(String name) {
-        Function func = (Function) functions.get(name);
+        Function func = functions.get(name);
         if (func == null) {
             func = new PatternNodeFunction(name);
             functions.put(name, func);

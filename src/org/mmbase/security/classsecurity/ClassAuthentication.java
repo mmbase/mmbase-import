@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.15 2006-11-24 15:17:28 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.16 2007-02-10 16:22:38 nklasens Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -151,8 +151,8 @@ public class ClassAuthentication {
         for (Login n : authenticatedClasses) {
             if (application == null || application.equals(n.application)) {
                 Pattern p = n.classPattern;
-                for (int j = 0; j < stack.length; j++) {
-                    String className = stack[j].getClassName();
+                for (StackTraceElement element : stack) {
+                    String className = element.getClassName();
                     if (className.startsWith("org.mmbase.security.")) continue;
                     if (className.startsWith("org.mmbase.bridge.implementation.")) continue;
                     log.trace("Checking " + className);

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.lang.reflect.*;
-import java.lang.reflect.Field;
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.15 2006-09-25 14:00:01 michiel Exp $
+ * @version $Id: Functions.java,v 1.16 2007-02-10 16:22:37 nklasens Exp $
  */
 public class Functions {
 
@@ -74,12 +73,12 @@ public class Functions {
     public static Method getMethodFromClass(Class claz, String name) {
         Method method = null;
         Method[] methods = claz.getMethods();
-        for (int j = 0; j < methods.length; j++) {
-            if (methods[j].getName().equals(name)) {
+        for (Method element : methods) {
+            if (element.getName().equals(name)) {
                 if (method != null) {
                     throw new IllegalArgumentException("There is more than one method with name '" + name + "' in " + claz);
                 }
-                method = methods[j];
+                method = element;
             }
         }
         if (method == null) {
@@ -124,8 +123,7 @@ public class Functions {
 
         log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0 ; i < fields.length; i++) {
-            Field field = fields[i];
+        for (Field field : fields) {
             int mod = field.getModifiers();
             // only static public final Parameter[] constants are considered
             if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) &&

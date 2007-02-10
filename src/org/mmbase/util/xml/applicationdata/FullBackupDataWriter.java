@@ -25,7 +25,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.5 2007-02-03 13:08:21 nklasens Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.6 2007-02-10 16:22:37 nklasens Exp $
  */
 public class FullBackupDataWriter {
 
@@ -63,9 +63,8 @@ public class FullBackupDataWriter {
      * @throws SearchQueryException if data could not be obtained from the database
      */
     static void writeNodes(String subTargetPath, MMBase mmbase, Logger logger) throws IOException, SearchQueryException {
-        // Get all loaded builders.
-        for (Iterator i  = mmbase.getBuilders().iterator(); i.hasNext(); ) {
-            MMObjectBuilder builder = (MMObjectBuilder) i.next();
+        for (Object element : mmbase.getBuilders()) {
+            MMObjectBuilder builder = (MMObjectBuilder) element;
 
             // Skip virtual builders and a set of system builders
             String builderName = builder.getTableName();

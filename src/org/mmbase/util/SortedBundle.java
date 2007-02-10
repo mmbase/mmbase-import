@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.24 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: SortedBundle.java,v 1.25 2007-02-10 16:22:36 nklasens Exp $
  */
 public class SortedBundle {
 
@@ -284,8 +284,7 @@ public class SortedBundle {
     private static void fillConstantsProvider(Class clazz, HashMap map) {
         while(clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
-            for (int i = 0 ; i < fields.length; i++) {
-                Field constant = fields[i];
+            for (Field constant : fields) {
                 if (Modifier.isStatic(constant.getModifiers())) {
                     String key = constant.getName().toUpperCase();
                     if (! map.containsKey(key)) { // super should not override this.
@@ -299,8 +298,8 @@ public class SortedBundle {
                 }
             }
             Class[] interfaces = clazz.getInterfaces();
-            for (int i = 0 ; i < interfaces.length; i ++) {
-                fillConstantsProvider(interfaces[i], map);
+            for (Class element : interfaces) {
+                fillConstantsProvider(element, map);
             }
             clazz = clazz.getSuperclass();
         }

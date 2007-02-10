@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.28 2006-06-06 19:58:21 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.29 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -300,7 +300,7 @@ public class ConstraintParser {
         String token = (String) iTokens.next();
         if (token.equals("'")) {
             // String value.
-            result = (String) iTokens.next();
+            result = iTokens.next();
             token = (String) iTokens.next();
             if (!token.equals("'")) {
                 throw new IllegalArgumentException("Unexpected token (expected \"'\"): \"" + token + "\"");

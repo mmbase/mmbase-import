@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Johannes Verelst
  * @since MMBase-1.8.1
- * @version $Id: Hex.java,v 1.2 2006-07-24 14:36:16 pierre Exp $
+ * @version $Id: Hex.java,v 1.3 2007-02-10 16:22:37 nklasens Exp $
  */
 
 public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
@@ -47,11 +47,11 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      */
     public String transform(byte[] bytes) {
         StringBuffer strbuf = new StringBuffer(bytes.length * 2);
-        for (int i = 0; i<bytes.length; i++) {
-            if (((int) bytes[i] & 0xff) < 0x10) {
+        for (byte element : bytes) {
+            if ((element & 0xff) < 0x10) {
                 strbuf.append("0");
             }
-            strbuf.append(Long.toString((int) bytes[i] & 0xff, 16));
+            strbuf.append(Long.toString(element & 0xff, 16));
         }
 
         return strbuf.toString();

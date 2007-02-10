@@ -117,7 +117,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                         boolean failed = false;
                         for (int p0 = p + 1; p0 < p + 4; p0++) {
                             c0 = s.charAt(p0);
-                            if (!((int)c0 >= '0' && (int) c0 <= '7')) {
+                            if (!(c0 >= '0' && c0 <= '7')) {
                                 failed = true;
                             }
                         }

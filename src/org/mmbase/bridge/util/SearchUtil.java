@@ -177,8 +177,8 @@ public class SearchUtil {
 
         NodeQuery query = parent.getCloud().createNodeQuery();
         Step step1 = query.addStep(parent.getNodeManager());
-        for (Iterator iter = parentNodes.iterator(); iter.hasNext();) {
-            Node parentNode = (Node) iter.next();
+        for (Object element : parentNodes) {
+            Node parentNode = (Node) element;
             query.addNode(step1, parentNode);
         }
 
@@ -565,8 +565,8 @@ public class SearchUtil {
 
     public static SortedSet createNodesConstraints(NodeList nodes) {
         SortedSet set = new TreeSet();
-        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-            Node node = (Node) iter.next();
+        for (Object element : nodes) {
+            Node node = (Node) element;
             set.add(new Integer(node.getNumber()));
         }
         return set;

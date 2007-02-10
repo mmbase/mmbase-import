@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.13 2007-01-02 19:37:15 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -43,8 +43,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public static Class getClass(Class claz, String name) {
         Class[] classes = claz.getDeclaredClasses();
-        for (int j=0; j < classes.length; j++) {
-            Class c = classes[j];
+        for (Class c : classes) {
             if (c.getName().endsWith("$" + name)) {
                 return c;
             }

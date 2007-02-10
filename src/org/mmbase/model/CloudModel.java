@@ -18,12 +18,10 @@ import java.io.*;
 public class CloudModel {
 
     private static Logger log = Logging.getLoggerInstance(CloudModel.class);
-    private String name;
     private String path;
     private HashMap builders = new HashMap();
 
     public CloudModel(String name) {
-        this.name =  name;
     }
 
     public CloudModelBuilder addBuilder(String buildername,String path) {

@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.67 2007-01-30 19:50:04 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.68 2007-02-10 16:22:38 nklasens Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -166,12 +166,12 @@ s     */
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
-            getProcessors = (Processor[]) origin.getProcessors.clone();
+            getProcessors = origin.getProcessors.clone();
         }
         if (origin.setProcessors == null) {
             setProcessors = null;
         } else {
-            setProcessors = (Processor[]) origin.setProcessors.clone();
+            setProcessors = origin.setProcessors.clone();
         }
     }
 
@@ -1110,7 +1110,7 @@ s     */
             if(value == null) {
                 value = new LocalizedEntryListFactory();
             }
-            return (LocalizedEntryListFactory) value;
+            return value;
         }
 
         public Collection<Map.Entry<C, String>> getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
@@ -1231,8 +1231,8 @@ s     */
                     break;
                 } else if (log.isDebugEnabled()) {
                     String errors = "";
-                    for (Iterator<LocalizedString> i = validationResult.iterator(); i.hasNext();) {
-                        errors += i.next().get(null);
+                    for (LocalizedString localizedString : validationResult) {
+                        errors += localizedString.get(null);
                     }
                     log.debug("Value " + value.getClass() + " " + value + " does not validate : " + errors);
                 }

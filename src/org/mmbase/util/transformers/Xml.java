@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.17 2005-12-21 08:05:01 michiel Exp $
+ * @version $Id: Xml.java,v 1.18 2007-02-10 16:22:37 nklasens Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -66,8 +66,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (int i =0 ; i < data.length; i++){
-            c = data[i];
+        for (char element : data) {
+            c = element;
             if (c == quot){
                 if (quot == '"') {
                     sb.append("&quot;");
@@ -92,8 +92,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (int i =0 ; i < data.length; i++){
-            c = data[i];
+        for (char element : data) {
+            c = element;
             if (c == '"') {
                 sb.append("&quot;");
             } else if (c == '\'')  {
@@ -132,8 +132,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public static void XMLEscape(String xml, StringBuffer sb) {
         char[] data = xml.toCharArray();
         char c;
-        for (int i =0 ; i < data.length; i++){
-            c = data[i];
+        for (char element : data) {
+            c = element;
             if (c =='&'){
                 sb.append("&amp;");
             }

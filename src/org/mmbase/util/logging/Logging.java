@@ -57,7 +57,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.40 2006-07-15 19:51:45 michiel Exp $
+ * @version $Id: Logging.java,v 1.41 2007-02-10 16:22:37 nklasens Exp $
  */
 
 
@@ -383,26 +383,26 @@ public class Logging {
 
         boolean mmbaseClassesFound = false;
         int appended = 0;
-        for (int i = 0; i < stackTrace.length; i++) {
-           String className = stackTrace[i].getClassName();
+        for (StackTraceElement element : stackTrace) {
+           String className = element.getClassName();
 
            if (className.indexOf("org.mmbase") > -1) {
                mmbaseClassesFound = true;
                // show mmbase taglib
                if (className.indexOf("bridge.jsp.taglib") > -1) {
-                   buf.append("\n        at ").append(stackTrace[i]);
+                   buf.append("\n        at ").append(element);
                    appended++;
                }
            } else {
                if (mmbaseClassesFound) {
                    // show none mmbase method which invoked an mmbase method.
-                   buf.append("\n        at ").append(stackTrace[i]);
+                   buf.append("\n        at ").append(element);
                    appended++;
                    break;
                }
                // show compiled jsp lines
                if (className.indexOf("_jsp") > -1) {
-                   buf.append("\n        at ").append(stackTrace[i]);
+                   buf.append("\n        at ").append(element);
                    appended++;
                }
            }

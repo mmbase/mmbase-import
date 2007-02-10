@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.87 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.88 2007-02-10 16:22:37 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -217,12 +217,12 @@ public class ClusterBuilder extends VirtualBuilder {
                         Parameters newPars = new Parameters(pars.getDefinition(), pars);
                         newPars.set(Parameter.FIELD, fieldName);
                         newPars.set("stringvalue", null);
-                        org.mmbase.bridge.Node bnode = (org.mmbase.bridge.Node) pars.get(Parameter.NODE);
+                        org.mmbase.bridge.Node bnode = pars.get(Parameter.NODE);
                         if (bnode != null) {
                             newPars.set(Parameter.NODE, bnode.getNodeValue(bulName));
                         }
                         newPars.set(Parameter.CORENODE, n);
-                        return (String) bul.guiFunction.getFunctionValue(newPars);
+                        return bul.guiFunction.getFunctionValue(newPars);
                     }
                 }
             }

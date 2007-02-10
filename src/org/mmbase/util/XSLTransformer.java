@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.36 2006-11-16 12:16:44 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.37 2007-02-10 16:22:36 nklasens Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -238,12 +238,12 @@ public class XSLTransformer {
         List exclude = (List) params.get("exclude");
 
         File[] files = xmlDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (exclude.contains(files[i].getName())) continue;
+        for (File element : files) {
+            if (exclude.contains(element.getName())) continue;
 
-            if (recurse && files[i].isDirectory()) {
-                if ("CVS".equals(files[i].getName())) continue;
-                File resultSubDir = new File(resultDir, files[i].getName());
+            if (recurse && element.isDirectory()) {
+                if ("CVS".equals(element.getName())) continue;
+                File resultSubDir = new File(resultDir, element.getName());
                 Map myParams;
                 if (params == null) {
                     myParams = new HashMap();
@@ -260,20 +260,20 @@ public class XSLTransformer {
                         myParams.put("root", myParams.get("root") + "../");
                     }
                 }
-                log.info("Transforming directory " + files[i] + " (root is " + myParams.get("root") + ")");
-                transform(files[i], xslFile, resultSubDir, recurse, myParams, considerDir);
+                log.info("Transforming directory " + element + " (root is " + myParams.get("root") + ")");
+                transform(element, xslFile, resultSubDir, recurse, myParams, considerDir);
             } else {
-                if (! files[i].getName().endsWith(".xml")) continue;
-                String fileName = files[i].getName();
+                if (! element.getName().endsWith(".xml")) continue;
+                String fileName = element.getName();
                 fileName = fileName.substring(0, fileName.length() - 4);
                 params.put("filename", fileName);
                 String extension = (String) params.get("extension");
                 if (extension == null) extension = "html";
                 File resultFile = new File(resultDir, fileName  + "." + extension);
-                if (resultFile.lastModified() > files[i].lastModified()) {
-                    log.info("Not transforming " + files[i] + " because " + resultFile + " is up to date");
+                if (resultFile.lastModified() > element.lastModified()) {
+                    log.info("Not transforming " + element + " because " + resultFile + " is up to date");
                 } else {
-                    log.info("Transforming file " + files[i] + " to " + resultFile);
+                    log.info("Transforming file " + element + " to " + resultFile);
                     try {
                         Result res;
                         if ("true".equals(params.get("dontopenfile"))) {
@@ -281,7 +281,7 @@ public class XSLTransformer {
                         } else {
                             res = new StreamResult(resultFile);
                         }
-                        transform(files[i], xslFile, res, params, considerDir);
+                        transform(element, xslFile, res, params, considerDir);
                     } catch (Exception e) {
                         log.error(e.toString());
                         log.error(Logging.stackTrace(e));

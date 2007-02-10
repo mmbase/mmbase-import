@@ -13,7 +13,6 @@ import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.GenericResponseWrapper;
 
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.18 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.19 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {

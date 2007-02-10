@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.46 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.47 2007-02-10 16:22:37 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -265,7 +265,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
         }
 
-        Object h;
         if (changed.contains(FIELD_HANDLE)) {
             // set those fields to null, which are not changed too:
             Collection cp = new ArrayList();
@@ -454,7 +453,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                     if (context == null) {
                         // no path to context-root specified explitiely, try to determin:
-                        HttpServletRequest request = (HttpServletRequest) a.get(Parameter.REQUEST);
+                        HttpServletRequest request = a.get(Parameter.REQUEST);
                         if (request == null) {
                             // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
                             servlet.append(AbstractServletBuilder.this.getServletPath()); // use 'absolute' path (starting with /)
@@ -532,7 +531,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 public String getFunctionValue(Node n, Parameters parameters) {
                     String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                     ResourceLoader webRoot = ResourceLoader.getWebRoot();
-                    HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    HttpServletRequest request = parameters.get(Parameter.REQUEST);
                     String absolute = parameters.getString("absolute");
                     String root;
                     if (request != null) {

@@ -12,7 +12,6 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import java.util.*;
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: CollectionNodeList.java,v 1.9 2007-02-10 16:22:38 nklasens Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractCollectionNodeList<Node> implements NodeList {

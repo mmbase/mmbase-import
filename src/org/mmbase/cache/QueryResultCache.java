@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.39 2007-01-03 09:16:21 nklasens Exp $
+ * @version $Id: QueryResultCache.java,v 1.40 2007-02-10 16:22:38 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -125,8 +125,8 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
     private void increaseCounters(SearchQuery query, Map<String, Integer> counters) {
-        for (Iterator iter = query.getSteps().iterator(); iter.hasNext();) {
-            Step step = (Step) iter.next();
+        for (Object element : query.getSteps()) {
+            Step step = (Step) element;
             String stepName = step.getTableName();
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
@@ -139,8 +139,8 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
     private void decreaseCounters(SearchQuery query, Map<String, Integer> counters) {
-        for (Iterator iter = query.getSteps().iterator(); iter.hasNext();) {
-            Step step = (Step) iter.next();
+        for (Object element : query.getSteps()) {
+            Step step = (Step) element;
             String stepName = step.getTableName();
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
@@ -181,15 +181,15 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             return true;
         }
         MMObjectBuilder srcbuilder = mmb.getMMObject(event.getRelationSourceType());
-        for (Iterator iter = srcbuilder.getAncestors().iterator(); iter.hasNext();) {
-            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+        for (Object element : srcbuilder.getAncestors()) {
+            MMObjectBuilder parent = (MMObjectBuilder) element;
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
         }
         MMObjectBuilder destbuilder = mmb.getMMObject(event.getRelationDestinationType());
-        for (Iterator iter = destbuilder.getAncestors().iterator(); iter.hasNext();) {
-            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+        for (Object element : destbuilder.getAncestors()) {
+            MMObjectBuilder parent = (MMObjectBuilder) element;
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
@@ -215,8 +215,8 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder destbuilder = mmb.getMMObject(event.getBuilderName());
-        for (Iterator iter = destbuilder.getAncestors().iterator(); iter.hasNext();) {
-            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+        for (Object element : destbuilder.getAncestors()) {
+            MMObjectBuilder parent = (MMObjectBuilder) element;
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
@@ -246,10 +246,8 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 remove(removeIter.next());
             }
             
-            // types in the oldTypesCounter which are not in the typeCounters are removed during the 
-            // evaluation of the keys and are not relevant anymore.
-            for (Iterator iter = typeCounters.keySet().iterator(); iter.hasNext();) {
-                String type = (String) iter.next();
+            for (Object element : typeCounters.keySet()) {
+                String type = (String) element;
                 if (foundTypeCounters.containsKey(type)) {
                     if (oldTypeCounters.containsKey(type)) {
                         // adjust counter

@@ -19,8 +19,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.module.core.MMBase;
-
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
@@ -29,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.26 2007-02-09 17:12:29 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.27 2007-02-10 16:22:37 nklasens Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {

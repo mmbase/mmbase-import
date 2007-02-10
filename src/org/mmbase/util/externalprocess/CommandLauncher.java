@@ -447,8 +447,8 @@ public class CommandLauncher {
      */
     public void printCommandLine(String[] commandArgs) {
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < commandArgs.length; i++) {
-            buf.append(commandArgs[i]);
+        for (String element : commandArgs) {
+            buf.append(element);
             buf.append(' ');
         }
         buf.append(lineSeparator);

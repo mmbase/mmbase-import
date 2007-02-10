@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: DateSupport.java,v 1.27 2007-02-10 16:22:36 nklasens Exp $
  */
 public class DateSupport {
 
@@ -543,23 +543,6 @@ public class DateSupport {
      * ----- private functions used by convertDateToLong --------
      */
 
-
-    /**
-     * @obsolete Do not use this method ever!!
-     */
-    private static long convertStringToLongWithTimeZone(String date, int hour, int minutes) {
-        // Set timezone
-        Calendar calendar = setTimeZone(hour, minutes);
-
-        // Now convert the datestring to calendardate
-        calendar = parseDate(calendar, date);
-
-        // calculate the milliseconds since 1970
-        Date mydate = calendar.getTime();
-
-        // return this calculation
-        return mydate.getTime();
-    }
 
     /**
      * @obsolete Do not use this method ever!!

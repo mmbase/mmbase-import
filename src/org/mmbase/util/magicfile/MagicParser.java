@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.10 2005-10-07 18:41:29 michiel Exp $
+ * @version $Id: MagicParser.java,v 1.11 2007-02-10 16:22:36 nklasens Exp $
  * @todo NOT TESTED YET
  */
 
@@ -41,9 +41,6 @@ public class MagicParser implements DetectorProvider {
     private static final Logger log = Logging.getLoggerInstance(MagicParser.class);
     private List detectors;
 
-    // what a mess:
-    // I think all of these members must be removed:
-    private boolean parsingFailure = false;
     private int offset;
     private String type;
     private String typeAND;
@@ -119,10 +116,8 @@ public class MagicParser implements DetectorProvider {
             // '&': In sublevel we can start relatively to where the previous match ended
             // '(': Read value at first address, and add that at second to it
             if (c == '&') {
-                parsingFailure = true;
                 throw new UnsupportedOperationException("parseOffsetString: >& offset feature not implemented\n(Tt is used only for HP Printer Job Language type)");
             } else if (c == '(') {
-                parsingFailure = true;
                 throw new UnsupportedOperationException("parseOffsetString: indirect offsets not implemented");
             }
             offset = Integer.decode(s.substring(startIndex, m)).intValue();
@@ -464,7 +459,6 @@ public class MagicParser implements DetectorProvider {
             log.warn(e.getMessage());
         } catch (Exception e) {
             log.error("parse failure at " + level + ": " + e.getMessage() + " for [" + line + "]");
-            parsingFailure = true;
         }
         detector.setType(type);
         detector.setOffset("" + offset);

@@ -11,11 +11,8 @@ package org.mmbase.framework;
 
 import java.util.*;
 import javax.servlet.http.*;
-import javax.servlet.*;
 import java.io.*;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.GenericResponseWrapper;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * (or wizard) itself (and frame it in a div, as requested by the contract of a HEAD block).
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.9 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.10 2007-02-10 16:22:36 nklasens Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
