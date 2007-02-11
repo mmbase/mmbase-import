@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.85 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.86 2007-02-11 20:05:50 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -306,8 +306,7 @@ public class BuilderReader extends DocumentReader {
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
-                for (Iterator<CoreField> i = parentfields.iterator();i.hasNext();) {
-                    CoreField f = i.next();
+                for (CoreField f : parentfields) {
                     CoreField newField = (CoreField)f.clone(f.getName());
                     newField.setParent(builder);
                     while(newField.getStoragePosition() >= pos) pos++;
@@ -364,8 +363,7 @@ public class BuilderReader extends DocumentReader {
             if (parentIndex != null) {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);
-                for (Iterator<Field> i = parentIndex.iterator(); i.hasNext(); ) {
-                    Field field = i.next();
+                for (Field field : parentIndex) {
                     mainIndex.add(builder.getField(field.getName()));
                 }
             }
@@ -395,8 +393,7 @@ public class BuilderReader extends DocumentReader {
                 for (Index parentIndex : parentIndices) {
                     Index newIndex = new Index(builder, parentIndex.getName());;
                     newIndex.setUnique(parentIndex.isUnique());
-                    for (Iterator<Field> parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
-                        Field field = parentIndexIter.next();
+                    for (Field field : parentIndex) {
                         newIndex.add(builder.getField(field.getName()));
                     }
                     results.add(newIndex);
