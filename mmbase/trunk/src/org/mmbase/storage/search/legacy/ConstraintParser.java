@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.29 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: ConstraintParser.java,v 1.30 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -295,13 +295,13 @@ public class ConstraintParser {
      *        a valid value expression (it may be a <em>field</em> instead).
      */
     // package visibility!
-    static Object parseValue(Iterator iTokens, StepField field) throws NumberFormatException {
+    static Object parseValue(Iterator<String> iTokens, StepField field) throws NumberFormatException {
         Object result = null;
-        String token = (String) iTokens.next();
+        String token = iTokens.next();
         if (token.equals("'")) {
             // String value.
             result = iTokens.next();
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equals("'")) {
                 throw new IllegalArgumentException("Unexpected token (expected \"'\"): \"" + token + "\"");
              }
@@ -329,9 +329,9 @@ public class ConstraintParser {
      * @return List of tokens.
      */
     // package visibility!
-    static List tokenize(String sqlConstraint) {
+    static List<String> tokenize(String sqlConstraint) {
         // Parse into separate tokens.
-        List tokens = new ArrayList();
+        List<String> tokens = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(sqlConstraint, " ()'\"=<>!,", true);
         tokenize:
             while (st.hasMoreTokens()) {
@@ -508,7 +508,7 @@ public class ConstraintParser {
     public Constraint toConstraint(String sqlConstraint) {
         Constraint result = null;
         try {
-            ListIterator iTokens = tokenize(sqlConstraint).listIterator();
+            ListIterator<String> iTokens = tokenize(sqlConstraint).listIterator();
             result = parseCondition(iTokens);
 
         // If this doesn't work, fall back to legacy code.
@@ -562,16 +562,16 @@ public class ConstraintParser {
      * @return The constraint.
      */
     // package visibility!
-    BasicConstraint parseCondition(ListIterator iTokens) {
+    BasicConstraint parseCondition(ListIterator<String> iTokens) {
         BasicCompositeConstraint composite = null;
         BasicConstraint constraint= null;
         while (iTokens.hasNext()) {
             boolean inverse = false;
-            String token = (String) iTokens.next();
+            String token = iTokens.next();
             if (token.equalsIgnoreCase("NOT")) {
                 // NOT.
                 inverse = true;
-                token = (String) iTokens.next();
+                token = iTokens.next();
             }
 
             if (token.equals("(")) {
@@ -591,7 +591,7 @@ public class ConstraintParser {
             }
 
             if (iTokens.hasNext()) {
-                token = (String) iTokens.next();
+                token = iTokens.next();
                 if (token.equals(")")) {
                     // Start of (simple or composite) constraint
                     // between parenthesis.
@@ -641,10 +641,10 @@ public class ConstraintParser {
      * @return The constraint.
      */
     // package visibility!
-    BasicConstraint parseSimpleCondition(ListIterator iTokens) {
+    BasicConstraint parseSimpleCondition(ListIterator<String> iTokens) {
         BasicConstraint result = null;
 
-        String token = (String) iTokens.next();
+        String token = iTokens.next();
         if (token.equalsIgnoreCase("StringSearch")) {
             // StringSearch constraint.
             return parseStringSearchCondition(iTokens);
@@ -654,7 +654,7 @@ public class ConstraintParser {
         if (function.equals("LOWER") || function.equals("UPPER")) {
             if (iTokens.next().equals("(")) {
                 // Function.
-                token = (String) iTokens.next();
+                token = iTokens.next();
             } else {
                 // Not a function.
                 iTokens.previous();
@@ -666,21 +666,21 @@ public class ConstraintParser {
 
         StepField field = getField(token);
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (function != null) {
             if (!token.equals(")")) {
                 throw new IllegalArgumentException(
                     "Unexpected token (expected \")\"): \""
                     + token + "\"");
             }
-            token = (String) iTokens.next();
+            token = iTokens.next();
         }
 
         boolean inverse = false;
         if (token.equalsIgnoreCase("NOT")) {
             // NOT LIKE/NOT IN/NOT BETWEEN
             inverse = true;
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equalsIgnoreCase("LIKE")
                 && !token.equalsIgnoreCase("IN")
                 && !token.equalsIgnoreCase("BETWEEN")) {
@@ -709,10 +709,10 @@ public class ConstraintParser {
 
         } else if (token.equalsIgnoreCase("IS")) {
             // IS [NOT] NULL
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (token.equalsIgnoreCase("NOT")) {
                 inverse = !inverse;
-                token = (String) iTokens.next();
+                token = iTokens.next();
             }
             if (token.equalsIgnoreCase("NULL")) {
                 result = new BasicFieldNullConstraint(field);
@@ -723,7 +723,7 @@ public class ConstraintParser {
             }
         } else if (token.equalsIgnoreCase("IN")) {
             // IN (value1, value2, ...)
-            String separator = (String) iTokens.next();
+            String separator = iTokens.next();
             if (!separator.equals("(")) {
                 throw new IllegalArgumentException(
                     "Unexpected token (expected \"(\"): \""
@@ -736,7 +736,7 @@ public class ConstraintParser {
                 iTokens.previous();
                 do {
                     Object value = parseValue(iTokens, field);
-                    separator = (String) iTokens.next();
+                    separator = iTokens.next();
                     if (separator.equals(",") || separator.equals(")")) {
                         fieldValueInConstraint.addValue(value);
                     } else {
@@ -751,7 +751,7 @@ public class ConstraintParser {
         } else if (token.equalsIgnoreCase("BETWEEN")) {
             // BETWEEN value1 AND value2
             Object value1 = parseValue(iTokens, field);
-            String separator = (String) iTokens.next();
+            String separator = iTokens.next();
             if (!separator.equals("AND")) {
                 throw new IllegalArgumentException(
                     "Unexpected token (expected \"AND\"): \""
@@ -780,7 +780,7 @@ public class ConstraintParser {
             result = fieldValueBetweenConstraint;
 
         } else if (token.equals("=")) {
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (token.equals("=")) {
                 try {
                     // == value
@@ -790,7 +790,7 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // == field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.EQUAL);
@@ -816,14 +816,14 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // = field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.EQUAL);
                 }
             }
         } else if (token.equals("<")) {
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (token.equals("=")) {
                 try {
                     // <= value
@@ -833,7 +833,7 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // <= field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.LESS_EQUAL);
@@ -847,7 +847,7 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // <> field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.NOT_EQUAL);
@@ -862,14 +862,14 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // < field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.LESS);
                 }
             }
         } else if (token.equals(">")) {
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (token.equals("=")) {
                 try {
                     // >= value
@@ -879,7 +879,7 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // >= field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.GREATER_EQUAL);
@@ -894,14 +894,14 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // > field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.GREATER);
                 }
             }
         } else if (token.equals("!")) {
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (token.equals("=")) {
                 try {
                     // != value
@@ -911,7 +911,7 @@ public class ConstraintParser {
                 } catch (NumberFormatException e) {
                     // != field2
                     iTokens.previous();
-                    token = (String) iTokens.next();
+                    token = iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
                         .setOperator(FieldCompareConstraint.NOT_EQUAL);
@@ -942,25 +942,25 @@ public class ConstraintParser {
      * @return The constraint.
      */
     private BasicStringSearchConstraint parseStringSearchCondition(
-            ListIterator iTokens) {
+            ListIterator<String> iTokens) {
 
-        String token = (String) iTokens.next();
+        String token = iTokens.next();
         if (!token.equals("(")) {
             throw new IllegalArgumentException("Unexpected token (expected \"(\"): \"" + token + "\"");
         }
 
         // Field
-        token = (String) iTokens.next();
+        token = iTokens.next();
         StepField field = getField(token);
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
         }
 
         // Searchtype
         int searchType;
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (token.equalsIgnoreCase("PHRASE")) {
             searchType = StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED;
         } else if (token.equalsIgnoreCase("PROXIMITY")) {
@@ -971,7 +971,7 @@ public class ConstraintParser {
             throw new IllegalArgumentException("Invalid searchtype (expected \"PHRASE\", \"PROXIMITY\" or \"WORD\": \"" + token + "\"");
         }
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \",\"): \""
@@ -980,7 +980,7 @@ public class ConstraintParser {
 
         // Matchtype
         int matchType;
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (token.equalsIgnoreCase("FUZZY")) {
             matchType = StringSearchConstraint.MATCH_TYPE_FUZZY;
         } else if (token.equalsIgnoreCase("LITERAL")) {
@@ -991,31 +991,31 @@ public class ConstraintParser {
             throw new IllegalArgumentException("Invalid matchtype (expected \"FUZZY\", \"LITERAL\" or \"SYNONYM\": \"" + token + "\"");
         }
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException("Unexpected token (expected \",\"): \""                + token + "\"");
         }
 
         // SearchTerms
         String searchTerms;
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals("'")) {
             throw new IllegalArgumentException("Unexpected token (expected \"'\" or \"\"\"): \"" + token + "\"");
         }
-        searchTerms = (String) iTokens.next();
-        token = (String) iTokens.next();
+        searchTerms = iTokens.next();
+        token = iTokens.next();
         if (!token.equals("'")) {
             throw new IllegalArgumentException("Unexpected token (expected \"'\" or \"\"\"): \"" + token + "\"");
         }
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
         }
 
         // CaseSensitive property
         boolean caseSensitive;
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (token.equalsIgnoreCase("true")) {
             caseSensitive = true;
         } else if (token.equalsIgnoreCase("false")) {
@@ -1024,7 +1024,7 @@ public class ConstraintParser {
             throw new IllegalArgumentException("Invalid caseSensitive value (expected \"true\" " + "or \"false\": \"" + token + "\"");
         }
 
-        token = (String) iTokens.next();
+        token = iTokens.next();
         if (!token.equals(")")) {
             throw new IllegalArgumentException("Unexpected token (expected \")\"): \"" + token + "\"");
         }
@@ -1036,27 +1036,27 @@ public class ConstraintParser {
 
         // .set(parametername, value)
         while (iTokens.hasNext()) {
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equalsIgnoreCase(".set")) {
                 iTokens.previous();
                 break;
             }
 
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equals("(")) {
                 throw new IllegalArgumentException("Unexpected token (expected \"(\"): \"" + token + "\"");
             }
 
-            String parameterName = (String) iTokens.next();
+            String parameterName = iTokens.next();
 
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equals(",")) {
                 throw new IllegalArgumentException("Unexpected token (expected \",\"): \"" + token + "\"");
             }
 
-            String parameterValue = (String) iTokens.next();
+            String parameterValue = iTokens.next();
 
-            token = (String) iTokens.next();
+            token = iTokens.next();
             if (!token.equals(")")) {
                 throw new IllegalArgumentException("Unexpected token (expected \")\"): \"" + token + "\"");
             }

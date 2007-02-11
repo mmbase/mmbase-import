@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.70 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: TypeDef.java,v 1.71 2007-02-11 14:46:14 nklasens Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -565,7 +565,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public Vector getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
+    public Vector<String> getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
             if (cmd.equals("builders")) {

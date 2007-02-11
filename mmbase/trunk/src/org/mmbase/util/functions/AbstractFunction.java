@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.18 2007-01-06 15:16:38 nklasens Exp $
+ * @version $Id: AbstractFunction.java,v 1.19 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -128,7 +128,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public Parameter<?>[] getParameterDefinition() {
+    public Parameter[] getParameterDefinition() {
         return parameterDefinition;
     }
 
@@ -172,7 +172,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
         returnType = type;
     }
 
-    public int compareTo(Function fun) {
+    public int compareTo(Function<R> fun) {
         return name.compareTo(fun.getName());
     }
 

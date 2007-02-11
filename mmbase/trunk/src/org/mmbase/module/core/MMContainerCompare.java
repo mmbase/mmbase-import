@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.7 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: MMContainerCompare.java,v 1.8 2007-02-11 14:46:13 nklasens Exp $
  * @todo   Should implement java.util.Comparator. Perhaps should be named MMObjectNodeComparator. Btw, this class is not used.
  * 
  */
@@ -32,27 +32,27 @@ public class MMContainerCompare implements CompareInterface {
 
     public final static boolean ASC=true;
     public final static boolean DESC=false;
-    private Vector orderfields;
-    private Vector orderdirections;
-    private Hashtable dataCompare=new Hashtable();
+    private Vector<String> orderfields;
+    private Vector<Boolean> orderdirections;
+    private Hashtable<String, CompareInterface> dataCompare=new Hashtable<String, CompareInterface>();
     private StringCompare strcompare=new StringCompare();
     private IntegerCompare intcompare=new IntegerCompare();
 
     public MMContainerCompare() {
-        orderfields=new Vector();
-        orderdirections=new Vector();
+        orderfields=new Vector<String>();
+        orderdirections=new Vector<Boolean>();
     }
 
-    public MMContainerCompare(Vector orderfields) {
-        orderdirections=new Vector();
+    public MMContainerCompare(Vector<String> orderfields) {
+        orderdirections=new Vector<Boolean>();
         this.orderfields=orderfields;
-        for (Enumeration e=orderfields.elements();e.hasMoreElements();) {
+        for (Enumeration<String> e=orderfields.elements();e.hasMoreElements();) {
             e.nextElement();
             orderdirections.addElement(Boolean.valueOf(ASC));
         }
     }
 
-    public MMContainerCompare(Vector orderfields,Vector orderdirections) {
+    public MMContainerCompare(Vector<String> orderfields,Vector<Boolean> orderdirections) {
         this.orderfields=orderfields;
         this.orderdirections=orderdirections;
     }
@@ -84,15 +84,15 @@ public class MMContainerCompare implements CompareInterface {
         return rtn;
     }
 
-    public void setOrderFields(Vector orderfields) {
+    public void setOrderFields(Vector<String> orderfields) {
         this.orderfields=orderfields;
     }
 
-    public void setOrderDirections(Vector orderdirections) {
+    public void setOrderDirections(Vector<Boolean> orderdirections) {
         this.orderdirections=orderdirections;
     }
 
-    public void setOrder(Vector orderfields,Vector orderdirections) {
+    public void setOrder(Vector<String> orderfields,Vector<Boolean> orderdirections) {
         this.orderfields=orderfields;
         this.orderdirections=orderdirections;
     }
@@ -116,15 +116,15 @@ public class MMContainerCompare implements CompareInterface {
         othernode=(MMObjectNode)other;
 
         i=0;
-        for (Enumeration e=orderfields.elements();e.hasMoreElements();i++) {
-            field=(String)e.nextElement();
+        for (Enumeration<String> e=orderfields.elements();e.hasMoreElements();i++) {
+            field=e.nextElement();
             thisdata=thisnode.getValue(field);
             otherdata=othernode.getValue(field);
             // Handle null data cases
             if (thisdata!=null) {
                 if (otherdata!=null) {
                     // data ? data
-                    comp=(CompareInterface)dataCompare.get(field);
+                    comp=dataCompare.get(field);
                     if (comp==null) {
                         if (thisdata instanceof String) {
                             comp=strcompare;
@@ -152,7 +152,7 @@ public class MMContainerCompare implements CompareInterface {
                     rtn=0;
                 }
             }
-            if (((Boolean)orderdirections.elementAt(i)).booleanValue()==DESC) {
+            if (orderdirections.elementAt(i).booleanValue()==DESC) {
                 rtn=0-rtn;
             }
             // No need to compare further if they are unequal

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.10 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
@@ -102,9 +102,9 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
         int result = SearchQueryHandler.SUPPORT_OPTIMAL;
-        Iterator iChilds = childs.iterator();
+        Iterator<Constraint> iChilds = childs.iterator();
         while (iChilds.hasNext()) {
-            Constraint constraint = (Constraint) iChilds.next();
+            Constraint constraint = iChilds.next();
             int support = constraint.getBasicSupportLevel();
             if (support < result) {
                 result = support;

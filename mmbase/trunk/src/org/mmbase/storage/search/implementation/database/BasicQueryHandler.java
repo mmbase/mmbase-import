@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.55 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.56 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -335,7 +335,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         // Truncate results to provide weak support for maxnumber.
         try {
             NodeCache nodeCache = NodeCache.getCache();
-            Cache typeCache = Cache.getCache("TypeCache");
+            Cache<Integer, Integer> typeCache = Cache.getCache("TypeCache");
             int builderType = builder.getObjectType();
             Integer oTypeInteger = Integer.valueOf(builderType);
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
