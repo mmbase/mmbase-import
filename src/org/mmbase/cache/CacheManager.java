@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.10 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: CacheManager.java,v 1.11 2007-02-11 19:21:11 nklasens Exp $
  */
 public class CacheManager {
 
@@ -110,14 +110,14 @@ public class CacheManager {
             if (only != null && ! only.equals(cacheName)) {
                 continue;
             }
-            Cache cache = getCache(cacheName);
+            Cache<?,?> cache = getCache(cacheName);
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
                 String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
-                    Map configValues = new HashMap();
+                    Map<String,String> configValues = new HashMap<String,String>();
                     for (Element attrNode: xmlReader.getChildElements(cacheImpl, "param")) {
                         String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
                         String paramValue = xmlReader.getElementValue(attrNode);
@@ -154,7 +154,7 @@ public class CacheManager {
                         queryCache.getReleaseStrategy().removeAllStrategies();
                         log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
-                        List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
+                        List<ReleaseStrategy> strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
                             log.debug("found " + strategies.size() + " globally configured strategies");
                             queryCache.addReleaseStrategies(strategies);
@@ -183,7 +183,7 @@ public class CacheManager {
      * @since 1.8
      */
     private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List<ReleaseStrategy> result = new ArrayList();
+        List<ReleaseStrategy> result = new ArrayList<ReleaseStrategy>();
 
         List<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
         if(strategyParentIterator.size() == 0){

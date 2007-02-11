@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.40 2006-07-31 13:30:25 michiel Exp $
+ * @version $Id: Query.java,v 1.41 2007-02-11 19:21:12 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -262,7 +262,7 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * @param v value
      * @return the new Constraint.
      */
-    FieldValueInConstraint createConstraint(StepField f, SortedSet v);
+    FieldValueInConstraint createConstraint(StepField f, SortedSet<Object> v);
 
     /**
      * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.

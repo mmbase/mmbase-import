@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.11 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: BasicStep.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -69,7 +69,7 @@ public class BasicStep implements Step {
      * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStep addNode(int nodeNumber) {
+    public Step addNode(int nodeNumber) {
         if (nodeNumber < 0) {
             throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
         }

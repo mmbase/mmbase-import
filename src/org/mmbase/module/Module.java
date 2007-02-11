@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.87 2007-01-30 19:57:17 michiel Exp $
+ * @version $Id: Module.java,v 1.88 2007-02-11 19:21:12 nklasens Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -288,7 +288,7 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     public void loadInitParameters(String contextPath) {
         try {
-            Map contextMap = ApplicationContextReader.getProperties(contextPath);
+            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
             if (!contextMap.isEmpty()) {
                 properties.putAll(contextMap);
             }

@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.71 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: TypeDef.java,v 1.72 2007-02-11 19:21:12 nklasens Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -575,11 +575,11 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         log.debug("executefunction of typedef");
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new ArrayList<Object>();
+            java.util.Map<String,String> info = (java.util.Map<String,String>) super.executeFunction(node, function, empty);
             info.put("gui", info.get("info") + " (localized)");
             if (args == null || args.size() == 0) {
                 return info;
@@ -648,7 +648,7 @@ public class TypeDef extends MMObjectBuilder {
                 constraint.addChild(constraint1);
                 constraint.addChild(constraint2);
                 q.setConstraint(constraint);
-                List typerels = typeRel.getNodes(q);
+                List<MMObjectNode> typerels = typeRel.getNodes(q);
                 if (typerels.size() > 0) {
                     throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
                 }

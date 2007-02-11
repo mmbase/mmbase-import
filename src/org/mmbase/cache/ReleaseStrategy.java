@@ -12,8 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.core.event.*;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.21 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.22 2007-02-11 19:21:11 nklasens Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -69,7 +68,7 @@ public abstract class ReleaseStrategy {
      * {@link #doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)}.
      *
      */
-    public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List cachedResult) {
+    public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List<MMObjectNode> cachedResult) {
         final Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
@@ -84,7 +83,7 @@ public abstract class ReleaseStrategy {
         }
     }
 
-    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
@@ -125,7 +124,7 @@ public abstract class ReleaseStrategy {
      * @param cachedResult
      * @return true if the cache entry should be released
      */
-    protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult);
+    protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult);
 
     /**
      * implement this method to create your own strategy.
@@ -135,7 +134,7 @@ public abstract class ReleaseStrategy {
      * @param cachedResult
      * @return true if the cache entry should be released
      */
-    protected abstract boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult);
+    protected abstract boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult);
 
     /*
      * (non-Javadoc)

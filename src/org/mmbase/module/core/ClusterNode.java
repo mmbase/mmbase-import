@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.27 2006-04-10 15:10:36 daniel Exp $
+ * @version $Id: ClusterNode.java,v 1.28 2007-02-11 19:21:11 nklasens Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -297,7 +297,7 @@ public class ClusterNode extends VirtualNode {
      * This is not allowed on a cluster node
      * @throws <code>RuntimeException</code>
      */
-    public Enumeration getRelations() {
+    public Enumeration<MMObjectNode> getRelations() {
         throw new RuntimeException("Cannot follow relations on a cluster node. ");
     }
 

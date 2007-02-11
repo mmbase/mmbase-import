@@ -11,6 +11,7 @@ package org.mmbase.storage.util;
 
 import java.util.ArrayList;
 
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMObjectBuilder;
 
 /**
@@ -18,9 +19,9 @@ import org.mmbase.module.core.MMObjectBuilder;
  *
  * @since  MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: Index.java,v 1.1 2005-08-22 08:14:02 pierre Exp $
+ * @version $Id: Index.java,v 1.2 2007-02-11 19:21:12 nklasens Exp $
  */
-public class Index extends ArrayList {
+public class Index extends ArrayList<Field> {
 
     /**
      * Name of the 'main' index of a builder (the 'nameless' index of all fields whose 'key' attribute is true)
@@ -53,7 +54,7 @@ public class Index extends ArrayList {
         this.unique = unique;
     }
 
-    public synchronized boolean add(Object field) {
+    public synchronized boolean add(Field field) {
         if (!contains(field)) {
             return super.add(field);
         } else {
@@ -61,7 +62,7 @@ public class Index extends ArrayList {
         }
     }
 
-    public synchronized boolean remove(Object field) {
+    public synchronized boolean remove(Field field) {
         return super.remove(field);
     }
 

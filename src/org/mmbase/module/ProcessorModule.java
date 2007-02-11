@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
+import java.util.Map.Entry;
+
 import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.Cloud;
@@ -35,7 +37,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * {@inheritDoc}
      **/
-    public MMObjectBuilder getListBuilder(String command, Map params) {
+    public MMObjectBuilder getListBuilder(String command, Map<String,Object> params) {
         return new VirtualBuilder(null);
     }
 
@@ -60,7 +62,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      */
     private static String getCommand(String functionName, Parameters arguments) {
         StringBuilder buf = new StringBuilder(functionName);
-        Iterator i = arguments.iterator();
+        Iterator<Object> i = arguments.iterator();
         while (i.hasNext()) {
             Object argument = i.next();
             if (argument instanceof String && ! "".equals(argument)) {
@@ -110,8 +112,8 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
 
         public Map getFunctionValue(Parameters arguments) {
-            Hashtable cmds = new Hashtable();
-            Hashtable vars = new Hashtable();
+            Hashtable<String,Object> cmds = new Hashtable<String,Object>();
+            Hashtable<String,Object> vars = new Hashtable<String,Object>();
             Parameter[] def = arguments.getDefinition();
             for (Parameter param : def) {
                 Object value = arguments.get(param);
@@ -132,16 +134,15 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector<VirtualNode> getNodeList(Object context, String command, Map params) {
+    public Vector<VirtualNode> getNodeList(Object context, String command, Map<String,Object> params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
         } else {
             tagger = new StringTagger("");
             if (params != null) {
-                for (Iterator entries = params.entrySet().iterator(); entries.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry) entries.next();
-                    String key=(String) entry.getKey();
+                for (Entry<String, Object> entry : params.entrySet()) {
+                    String key = entry.getKey();
                     Object o = entry.getValue();
                     if (o instanceof Vector) {
                         tagger.setValues(key, (Vector)o);
@@ -155,17 +156,17 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         if (context instanceof PageInfo) {
             sp = (PageInfo)context;
         }
-        Vector v = getList(sp, tagger, command);
+        Vector<String> v = getList(sp, tagger, command);
         int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
-        Vector fieldlist = tagger.Values("FIELDS");
+        Vector<String> fieldlist = tagger.Values("FIELDS");
         Vector<VirtualNode> res = new Vector<VirtualNode>(v.size() / items);
         MMObjectBuilder bul = getListBuilder(command, params);
         for(int i= 0; i < v.size(); i+=items) {
             VirtualNode node = new VirtualNode(bul);
             for(int j= 0; (j<items) && (j<v.size()); j++) {
                 if ((fieldlist!=null) && (j<fieldlist.size())) {
-                    node.setValue((String)fieldlist.get(j),v.get(i+j));
+                    node.setValue(fieldlist.get(j), v.get(i+j));
                 } else {
                     node.setValue("item"+(j+1),v.get(i+j));
                 }
@@ -178,14 +179,14 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * @javadoc
      **/
-    public Vector  getList(PageInfo sp,StringTagger params, String command) {
+    public Vector<String>  getList(PageInfo sp,StringTagger params, String command) {
         throw new UnsupportedOperationException("Module " + this.getClass().getName() + " does not implement LIST");
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
         return false;
     }
 

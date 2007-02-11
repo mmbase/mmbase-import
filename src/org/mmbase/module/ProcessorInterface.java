@@ -27,7 +27,7 @@ public interface ProcessorInterface  {
      * @param command the LIST command for which to retrieve the builder
      * @param params contains the attributes for the list
      */
-    public MMObjectBuilder getListBuilder(String command, Map params);
+    public MMObjectBuilder getListBuilder(String command, Map<String,Object> params);
 
     /**
      * Generate a list of values from a command to the processor.
@@ -37,7 +37,7 @@ public interface ProcessorInterface  {
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values contained in MMObjectNode objects
      */
-    public Vector getNodeList(Object context, String command, Map params);
+    public Vector<VirtualNode> getNodeList(Object context, String command, Map<String,Object> params);
 
     /**
      * Generate a list of values from a command to the processor.
@@ -45,7 +45,7 @@ public interface ProcessorInterface  {
      * @param tagger contains the attributes for the list
      * @param command the list command to execute.
      */
-    public Vector getList(PageInfo context, StringTagger tagger, String command);
+    public Vector<String> getList(PageInfo context, StringTagger tagger, String command);
 
     /**
      * Execute the commands provided in the form values.
@@ -53,7 +53,7 @@ public interface ProcessorInterface  {
      * @param cmds contains the list of commands to run
      * @param vars contains the attributes for the process
      */
-    public boolean process(PageInfo context, Hashtable cmds, Hashtable vars);
+    public boolean process(PageInfo context, Hashtable<String,Object> cmds, Hashtable<String,Object> vars);
 
     /**
      * Replace a command by a string.

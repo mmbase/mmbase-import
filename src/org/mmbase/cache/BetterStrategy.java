@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.24 2006-07-06 10:55:06 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.25 2007-02-11 19:21:11 nklasens Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -52,7 +52,7 @@ public class BetterStrategy extends ReleaseStrategy {
             "outcome of a query.";
     }
 
-    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         return shouldRelease(event, query);
     }
 
@@ -63,7 +63,7 @@ public class BetterStrategy extends ReleaseStrategy {
      *
      * @return true if query should be released
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         if (log.isDebugEnabled()) {
             log.debug(event.toString());
         }
@@ -200,8 +200,8 @@ public class BetterStrategy extends ReleaseStrategy {
             return false;
         }
         //test if all changed fields are aggreagting and of type count, if not: return false;
-        for(Iterator i = query.getFields().iterator();  i.hasNext(); ){
-            StepField field = (StepField) i.next();
+        for(Iterator<StepField> i = query.getFields().iterator();  i.hasNext(); ){
+            StepField field = i.next();
             if(event.getChangedFields().contains(field.getFieldName()) ){
                 if( ! (field instanceof AggregatedField)) {
                     return false;
@@ -217,8 +217,8 @@ public class BetterStrategy extends ReleaseStrategy {
             return true;
         }
         MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
-        for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
-            String fieldName = (String) i.next();
+        for (Iterator<String> i = event.getChangedFields().iterator(); i.hasNext();) {
+            String fieldName = i.next();
             if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){
                 return false;
             }
@@ -248,13 +248,13 @@ public class BetterStrategy extends ReleaseStrategy {
         MMObjectBuilder eventDest       = mmb.getBuilder(eventDestType);
 
 
-        Iterator i = query.getSteps().iterator();
-        Step prevStep = (Step) i.next();
+        Iterator<Step> i = query.getSteps().iterator();
+        Step prevStep = i.next();
         String stepDest = prevStep.getTableName();
         while (i.hasNext()) {
             String stepSource = stepDest;
             RelationStep step = (RelationStep) i.next();
-            Step nextStep = (Step) i.next();
+            Step nextStep = i.next();
             stepDest = nextStep.getTableName();
             boolean matchesProper =
                 (eventSourceType.equals(stepSource) || eventSource.isExtensionOf(mmb.getBuilder(stepSource))) &&
@@ -297,11 +297,11 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventBuilderName);
         search:
-        for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
-            String fieldName = (String) i.next();
+        for (Iterator<String> i = event.getChangedFields().iterator(); i.hasNext();) {
+            String fieldName = i.next();
 
             //first test the constraints
-            List constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
+            List<Constraint> constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
             if(constraintsForFieldList.size() > 0) {
                 constraintsFound = true;
                 if (log.isDebugEnabled()) {
@@ -311,8 +311,8 @@ public class BetterStrategy extends ReleaseStrategy {
             }
 
             // then test the fields (only if no constraint match was found)
-            for (Iterator fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
-                StepField field = (StepField) fieldIterator.next();
+            for (Iterator<StepField> fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
+                StepField field = fieldIterator.next();
                 if (field.getFieldName().equals(fieldName)
                     && (field.getStep().getTableName().equals(eventBuilderName) ||
                         eventBuilder.isExtensionOf(mmb.getBuilder(field.getStep().getTableName())))
@@ -326,7 +326,7 @@ public class BetterStrategy extends ReleaseStrategy {
             }
 
             //test the sortorders
-            List sortordersForFieldList = getSortordersForField(fieldName, eventBuilder, query.getSortOrders(), query);
+            List<SortOrder> sortordersForFieldList = getSortordersForField(fieldName, eventBuilder, query.getSortOrders(), query);
             if(sortordersForFieldList.size() > 0) {
                 sortordersFound = true;
                 if (log.isDebugEnabled()) {
@@ -363,13 +363,13 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        Iterator i = query.getSteps().iterator();
+        Iterator<Step> i = query.getSteps().iterator();
         while (i.hasNext()) {
-            Step step = (Step) i.next();
+            Step step = i.next();
             String table = step.getTableName();
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
-            Set nodes = step.getNodes();
+            Set<Integer> nodes = step.getNodes();
             if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
                 return true;
             }

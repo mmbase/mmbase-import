@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.84 2006-11-27 20:47:56 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.85 2007-02-11 19:21:12 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -118,8 +118,8 @@ public class BuilderReader extends DocumentReader {
      * editor/positions), which is used to find defaults if not specified.
      * @since MMBase-1.7
      */
-    private SortedSet searchPositions = new TreeSet();
-    private SortedSet inputPositions  = new TreeSet();
+    private SortedSet<Integer> searchPositions = new TreeSet<Integer>();
+    private SortedSet<Integer> inputPositions  = new TreeSet<Integer>();
 
     /**
      * @since MMBase-1.7
@@ -164,14 +164,14 @@ public class BuilderReader extends DocumentReader {
                 parentBuilder = mmbase.getBuilder(buildername);
                 inheritanceResolved = (parentBuilder != null);
                 if (inheritanceResolved) { // fill inputPositions, searchPositions
-                    Iterator fields = parentBuilder.getFields(NodeManager.ORDER_EDIT).iterator();
+                    Iterator<CoreField> fields = parentBuilder.getFields(NodeManager.ORDER_EDIT).iterator();
                     while (fields.hasNext()) {
-                        CoreField def = (CoreField) fields.next();
+                        CoreField def = fields.next();
                         inputPositions.add(new Integer(def.getEditPosition()));
                     }
                     fields = parentBuilder.getFields(NodeManager.ORDER_SEARCH).iterator();
                     while (fields.hasNext()) {
-                        CoreField def = (CoreField) fields.next();
+                        CoreField def = fields.next();
                         searchPositions.add(new Integer(def.getSearchPosition()));
                     }
                 }
@@ -284,7 +284,7 @@ public class BuilderReader extends DocumentReader {
      * @return a List of all Fields as CoreField
      * @since MMBase-1.8
      */
-    public List getFields() {
+    public List<CoreField> getFields() {
         return getFields(null, DataTypes.getSystemCollector());
     }
 
@@ -297,7 +297,7 @@ public class BuilderReader extends DocumentReader {
      * @return a List of all Fields as CoreField
      * @since MMBase-1.8
      */
-    public List getFields(MMObjectBuilder builder, DataTypeCollector collector) {
+    public List<CoreField> getFields(MMObjectBuilder builder, DataTypeCollector collector) {
         List<CoreField> results = new ArrayList<CoreField>();
         Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
@@ -306,8 +306,8 @@ public class BuilderReader extends DocumentReader {
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
-                for (Iterator i = parentfields.iterator();i.hasNext();) {
-                    CoreField f = (CoreField)i.next();
+                for (Iterator<CoreField> i = parentfields.iterator();i.hasNext();) {
+                    CoreField f = i.next();
                     CoreField newField = (CoreField)f.clone(f.getName());
                     newField.setParent(builder);
                     while(newField.getStoragePosition() >= pos) pos++;
@@ -364,8 +364,8 @@ public class BuilderReader extends DocumentReader {
             if (parentIndex != null) {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);
-                for (Iterator i = parentIndex.iterator(); i.hasNext(); ) {
-                    Field field = (Field) i.next();
+                for (Iterator<Field> i = parentIndex.iterator(); i.hasNext(); ) {
+                    Field field = i.next();
                     mainIndex.add(builder.getField(field.getName()));
                 }
             }
@@ -395,8 +395,8 @@ public class BuilderReader extends DocumentReader {
                 for (Index parentIndex : parentIndices) {
                     Index newIndex = new Index(builder, parentIndex.getName());;
                     newIndex.setUnique(parentIndex.isUnique());
-                    for (Iterator parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
-                        Field field = (Field) parentIndexIter.next();
+                    for (Iterator<Field> parentIndexIter = parentIndex.iterator(); parentIndexIter.hasNext(); ) {
+                        Field field = parentIndexIter.next();
                         newIndex.add(builder.getField(field.getName()));
                     }
                     results.add(newIndex);
@@ -885,7 +885,7 @@ public class BuilderReader extends DocumentReader {
     public Hashtable<String,String> getProperties() {
         Hashtable<String,String> results = new Hashtable<String,String>();
         if (parentBuilder != null) {
-            Map parentparams = parentBuilder.getInitParameters();
+            Map<String,String> parentparams = parentBuilder.getInitParameters();
             if (parentparams != null) {
                 results.putAll(parentparams);
             }
@@ -1031,8 +1031,8 @@ public class BuilderReader extends DocumentReader {
     public boolean equals(Object o) {
         if (o instanceof BuilderReader) {
             BuilderReader b = (BuilderReader) o;
-            List fields = getFields();
-            List otherFields = b.getFields();
+            List<CoreField> fields = getFields();
+            List<CoreField> otherFields = b.getFields();
             return
                 fields.equals(otherFields) &&
                 getMaintainer().equals(b.getMaintainer()) &&
@@ -1054,12 +1054,12 @@ public class BuilderReader extends DocumentReader {
      * @since MMBase-1.7
      */
     public boolean storageEquals(BuilderReader f) {
-        List otherFields = f.getFields();
-        List thisFields  = getFields();
+        List<CoreField> otherFields = f.getFields();
+        List<CoreField> thisFields  = getFields();
         if (otherFields.size() != thisFields.size()) return false;
         for (int i = 0; i < thisFields.size(); i++) {
-            CoreField thisField = (CoreField) thisFields.get(i);
-            CoreField otherField = (CoreField) otherFields.get(i);
+            CoreField thisField = thisFields.get(i);
+            CoreField otherField = otherFields.get(i);
             if (! thisField.storageEquals(otherField)) return false;
         }
         return true;

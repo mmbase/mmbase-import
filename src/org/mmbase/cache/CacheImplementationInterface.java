@@ -17,7 +17,7 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.7 2006-10-11 19:08:12 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.8 2007-02-11 19:21:11 nklasens Exp $
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface<K, V> extends Map<K, V> {
@@ -40,6 +40,6 @@ public interface CacheImplementationInterface<K, V> extends Map<K, V> {
     /**
      * Configure the implementation with the given configuration values
      */
-    void config(Map configuration);
+    void config(Map<String,String> configuration);
 
 }

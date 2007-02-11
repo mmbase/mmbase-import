@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.405 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.406 2007-02-11 19:21:11 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -904,9 +904,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void removeRelations(MMObjectNode node) {
         List<MMObjectNode> relsv = getRelations_main(node.getNumber());
         if (relsv != null) {
-            for(Iterator<MMObjectNode> rels = relsv.iterator(); rels.hasNext(); ) {
-                // get the relation node
-                MMObjectNode relnode = rels.next();
+            for (MMObjectNode relnode : relsv) {
                 // determine the true builder for this node
                 // (node.parent is always InsRel, but otype
                 //  indicates any derived builders, such as AuthRel)
@@ -1750,8 +1748,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     protected Collection<Function> getFunctions(MMObjectNode node) {
         Collection<Function<?>> builderFunctions = getFunctions();
         Collection<Function> nodeFunctions = new HashSet<Function>();
-        for (Iterator<Function<?>> i = builderFunctions.iterator(); i.hasNext();) {
-            Function<?> function = i.next();
+        for (Function<?> function : builderFunctions) {
             if (function instanceof NodeFunction) {
                 nodeFunctions.add(((NodeFunction<?>) function).newInstance(node));
             }

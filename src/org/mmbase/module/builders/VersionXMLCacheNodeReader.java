@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.8 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.9 2007-02-11 19:21:12 nklasens Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -136,16 +136,14 @@ public class VersionXMLCacheNodeReader {
         return handlers;
     }
 
-    /**
-    */
-    public Vector getDefines() {
-        Vector results = new Vector();
+    public Vector<Map<String,String>> getDefines() {
+        Vector<Map<String,String>> results = new Vector<Map<String,String>>();
         Node n1 = document.getFirstChild();
         if (n1 != null) {
             Node n2 = n1.getFirstChild();
             while (n2 != null) {
                 if (n2.getNodeName().equals("define")) {
-                    Hashtable rep = new Hashtable();
+                    Map<String,String> rep = new Hashtable<String,String>();
 
                     // decode all the needed values in the replace itself
                     NamedNodeMap nm = n2.getAttributes();

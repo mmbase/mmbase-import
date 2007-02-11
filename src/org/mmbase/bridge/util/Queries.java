@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.81 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: Queries.java,v 1.82 2007-02-11 19:21:12 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -143,11 +143,11 @@ abstract public class Queries {
             search = ClusterBuilder.getSearchDir(searchDir);
         }
 
-        List snodes   = StringSplitter.split(startNodes);
-        List tables   = StringSplitter.split(nodePath);
-        List f        = StringSplitter.split(fields);
-        List orderVec = StringSplitter.split(orderby);
-        List d        = StringSplitter.split(directions);
+        List<String> snodes   = StringSplitter.split(startNodes);
+        List<String> tables   = StringSplitter.split(nodePath);
+        List<String> f        = StringSplitter.split(fields);
+        List<String> orderVec = StringSplitter.split(orderby);
+        List<String> d        = StringSplitter.split(directions);
         try {
             // pitty that we can't use cloud.createQuery for this.
             // but all essential methods are on ClusterBuilder
