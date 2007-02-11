@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.54 2006-12-05 19:31:12 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.55 2007-02-11 20:42:32 nklasens Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -229,7 +229,7 @@ public class BasicCloudContext implements CloudContext {
         while (!MMBaseContext.isInitialized() || ! isUp()) {
             try {
                 check();
-                Thread.currentThread().sleep(10000);
+                Thread.sleep(10000);
                 log.debug("Sleeping another 10 secs");
             } catch (Exception e) {
                 // I hate java.
