@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.NodeManager;
@@ -32,7 +33,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.25 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: BuilderWriter.java,v 1.26 2007-02-11 20:05:50 nklasens Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -102,8 +103,7 @@ public class BuilderWriter extends DocumentWriter  {
         // names.singular
         Map<String,String> datamap=builder.getSingularNames();
         addComment("builder.singular",names);
-        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String,String> em= i.next();
+        for (Entry<String, String> em : datamap.entrySet()) {
             String language = em.getKey();
             String name = em.getValue();
             if ((parent==null) || !(name.equals(parent.getSingularName(language)))) {
@@ -114,8 +114,7 @@ public class BuilderWriter extends DocumentWriter  {
         // names.plural
         datamap=builder.getPluralNames();
         addComment("builder.plural",names);
-        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String,String> em= i.next();
+        for (Entry<String, String> em : datamap.entrySet()) {
             String language = em.getKey();
             String name = em.getValue();
             if ((parent==null) || !(name.equals(parent.getPluralName(language)))) {
@@ -130,8 +129,7 @@ public class BuilderWriter extends DocumentWriter  {
         // names.description
         datamap=builder.getDescriptions();
         addComment("builder.description",root);
-        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String,String> em= i.next();
+        for (Entry<String, String> em : datamap.entrySet()) {
             String language = em.getKey();
             String description = em.getValue();
             if ((parent==null) || !(description.equals(parent.getDescription(language)))) {
@@ -145,8 +143,7 @@ public class BuilderWriter extends DocumentWriter  {
         root.appendChild(properties);
         // properties.property
         datamap=builder.getInitParameters();
-        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String,String> em = i.next();
+        for (Entry<String, String> em : datamap.entrySet()) {
             String propname= em.getKey();
             String propvalue = em.getValue();
             if ((parent==null) || !(propvalue.equals(parent.getInitParameter(propname)))) {
@@ -160,8 +157,7 @@ public class BuilderWriter extends DocumentWriter  {
         root.appendChild(fieldlist);
         // obtain all fields defined in the builder
         List<CoreField> fields=builder.getFields(NodeManager.ORDER_CREATE);
-        for (Iterator<CoreField> f=fields.iterator(); f.hasNext();) {
-            CoreField fielddef = f.next();
+        for (CoreField fielddef : fields) {
             // skip otype, cannot occur in a builder xml file (doh)
             String fieldname=fielddef.getName();
             if (fieldname.equals("otype")) continue;
@@ -172,8 +168,7 @@ public class BuilderWriter extends DocumentWriter  {
             // check guidata
             Element descriptionsElm = null;
             Map<Locale, String> descriptionsmap = fielddef.getLocalizedDescription().asMap();
-            for (Iterator<Map.Entry<Locale, String>> i=descriptionsmap.entrySet().iterator(); i.hasNext();) {
-                Map.Entry<Locale, String> em= i.next();
+            for (Entry<Locale, String> em : descriptionsmap.entrySet()) {
                 Locale locale = em.getKey();
                 String description = em.getValue();
                 if ((parentField==null) || !(description.equals(parentField.getDescription(locale)))) {
@@ -184,8 +179,7 @@ public class BuilderWriter extends DocumentWriter  {
             }
             Element guiElm = null;
             Map<Locale, String> guinamemap = fielddef.getLocalizedGUIName().asMap();
-            for (Iterator<Map.Entry<Locale, String>> i= guinamemap.entrySet().iterator(); i.hasNext();) {
-                Map.Entry<Locale, String> em= i.next();
+            for (Entry<Locale, String> em : guinamemap.entrySet()) {
                 Locale locale = em.getKey();
                 String name = em.getValue();
                 if ((parentField==null) || !(name.equals(parentField.getGUIName(locale)))) {

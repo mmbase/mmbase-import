@@ -21,7 +21,7 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.3 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: NodeMap.java,v 1.4 2007-02-11 20:05:50 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -167,8 +167,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
 
     // javadoc inherited
     public void putAll(Map<? extends String, ? extends Object> map) {
-        for (Iterator<? extends Map.Entry<? extends String, ? extends Object>> i = map.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<? extends String, ? extends Object> e = i.next();
+        for (java.util.Map.Entry<? extends String, ? extends Object> e : map.entrySet()) {
             put(e.getKey(), e.getValue());
         }
     }

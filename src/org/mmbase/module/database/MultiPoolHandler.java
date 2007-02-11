@@ -68,15 +68,13 @@ public class MultiPoolHandler {
      * @since MMBase-1.6.2
      */
     public void shutdown() {
-        for (Iterator<MultiPool> i = pools.values().iterator(); i.hasNext();) {
-            MultiPool pool = i.next();
-	    pool.shutdown();
+        for (MultiPool pool : pools.values()) {
+            pool.shutdown();
 	}
     }
 
     public void checkTime() {
-	for (Iterator<MultiPool> i = pools.values().iterator(); i.hasNext();) {
-	    MultiPool pool = i.next();
+	for (MultiPool pool : pools.values()) {
 	    pool.checkTime();
 	}
     }
