@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMObjectNode;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.10 2007-02-10 16:22:38 nklasens Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.11 2007-02-11 19:21:11 nklasens Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
@@ -50,7 +50,7 @@ public class RelatedNodesCache extends QueryResultCache {
     // Used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
     // This seems a plausible thing to do.
 
-    private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap();
+    private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap<Integer, Set<SearchQuery>>();
 
 
     public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
@@ -67,7 +67,7 @@ public class RelatedNodesCache extends QueryResultCache {
     }
 
 
-    public synchronized List remove(Object key) {
+    public synchronized List<MMObjectNode> remove(Object key) {
         SearchQuery query = (SearchQuery) key;
         Integer number = (query.getSteps().get(0)).getNodes().first();
         Set<SearchQuery> keys = numberToKeys.get(number);
@@ -81,7 +81,7 @@ public class RelatedNodesCache extends QueryResultCache {
     synchronized void removeNode(Integer number) {
         Set<SearchQuery>  keys = numberToKeys.get(number);
         if (keys != null) {
-            Iterator i = keys.iterator();
+            Iterator<SearchQuery> i = keys.iterator();
             while (i.hasNext()) {
                 super.remove(i.next());
             }

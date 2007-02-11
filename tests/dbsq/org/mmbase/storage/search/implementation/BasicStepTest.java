@@ -3,13 +3,13 @@ package org.mmbase.storage.search.implementation;
 import junit.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.storage.search.Step;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -104,7 +104,7 @@ public class BasicStepTest extends TestCase {
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
         int nodeNumber1 = 2345;
-        BasicStep result = instance.addNode(nodeNumber1);
+        Step result = instance.addNode(nodeNumber1);
         nodes = instance.getNodes();
         assertTrue(nodes.size() == 2);
         iNodes = nodes.iterator();

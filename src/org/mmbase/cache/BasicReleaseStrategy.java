@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.13 2006-06-27 07:31:45 michiel Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.14 2007-02-11 19:21:11 nklasens Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -57,18 +57,18 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        Iterator i = query.getSteps().iterator();
+        Iterator<Step> i = query.getSteps().iterator();
         while (i.hasNext()) {
-            Step step = (Step) i.next();
+            Step step = i.next();
             String table = step.getTableName();
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
-            Set nodes = step.getNodes();
+            Set<Integer> nodes = step.getNodes();
             if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
                 return true;
             }
@@ -76,7 +76,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
         return false;
     }
 
-    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // no strategy for relation events
     	log.debug("basic strategy: flush: relation event");
         return true;

@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.217 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.218 2007-02-11 19:21:11 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -227,7 +227,7 @@ public class MMBase extends ProcessorModule {
      *
      * @since MMBase-1.6
      */
-    private Set<String> loading = new HashSet();
+    private Set<String> loading = new HashSet<String>();
 
     /**
      * Constructor to create the MMBase root module.
@@ -1044,9 +1044,9 @@ public class MMBase extends ProcessorModule {
                     builder.setParentBuilder(getRootBuilder());
                 }
 
-                Hashtable descriptions = parser.getDescriptions();
+                Hashtable<String,String> descriptions = parser.getDescriptions();
                 builder.setDescriptions(descriptions);
-                String desc = (String)descriptions.get(locale.getLanguage());
+                String desc = descriptions.get(locale.getLanguage());
                 // XXX" set description by builder?
                 builder.setDescription(desc);
                 builder.setSingularNames(parser.getSingularNames());

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.30 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: NodeEvent.java,v 1.31 2007-02-11 19:21:12 nklasens Exp $
  */
 public class NodeEvent extends Event {
 
@@ -216,7 +216,7 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map getOldValues(){
+    public final Map<String, Object> getOldValues(){
         return oldValues;
     }
 
@@ -229,7 +229,7 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map getNewValues(){
+    public final Map<String, Object> getNewValues(){
         return newValues;
     }
 

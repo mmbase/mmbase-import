@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.63 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.64 2007-02-11 19:21:12 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -121,10 +121,10 @@ public class BasicQuery implements Query  {
 
     // SearchQuery impl:
 
-    public List getSteps() {
+    public List<Step> getSteps() {
         return query.getSteps();
     }
-    public List getFields() {
+    public List<StepField> getFields() {
         return query.getFields();
     }
     public Constraint getConstraint() {
@@ -147,7 +147,7 @@ public class BasicQuery implements Query  {
     public int getOffset() {
         return query.getOffset();
     }
-    public List getSortOrders() {
+    public List<SortOrder> getSortOrders() {
         return query.getSortOrders();
     }
     public boolean isDistinct() {
@@ -531,7 +531,7 @@ public class BasicQuery implements Query  {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
 
-    public FieldValueInConstraint createConstraint(StepField f, SortedSet v) {
+    public FieldValueInConstraint createConstraint(StepField f, SortedSet<Object> v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
             StepField nf = createStepField(step, "number");

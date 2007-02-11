@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.28 2006-11-11 13:56:32 michiel Exp $
+ * @version $Id: TransactionResolver.java,v 1.29 2007-02-11 19:21:11 nklasens Exp $
  */
 class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
@@ -29,8 +29,8 @@ class TransactionResolver {
     }
 
     public boolean resolve(final Collection<MMObjectNode> nodes) {
-        Map<String, Integer> numbers = new HashMap(); /* Temp key -> Real node number */
-        Map<MMObjectNode, Collection<String>> nnodes  = new HashMap(); /* MMObjectNode --> List of changed fields */
+        Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
+        Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
         boolean success = true;
 
         // Find all unique keys and store them in a map to remap them later
@@ -46,7 +46,6 @@ class TransactionResolver {
                     log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
                 }
                 if (dbtype == Field.TYPE_INTEGER || dbtype == Field.TYPE_NODE) {
-                    int state = fd.getState();
                     if (fd.inStorage()) {
                         // Database field of type integer
                         String field = fd.getName();
@@ -65,7 +64,7 @@ class TransactionResolver {
                                     if (changedFields != null) {
                                         changedFields.add(field);
                                     } else {
-                                        changedFields = new ArrayList();
+                                        changedFields = new ArrayList<String>();
                                         changedFields.add(field);
                                         nnodes.put(node, changedFields);
                                     }
@@ -108,7 +107,6 @@ class TransactionResolver {
 
         // Get the numbers
         for (Map.Entry<String, Integer> numberEntry : numbers.entrySet()) {
-            String key =   numberEntry.getKey();
             Integer num = numberEntry.getValue();
             if (num == null || num.intValue() == -1) {
                 numberEntry.setValue(mmbase.getStorageManager().createKey());

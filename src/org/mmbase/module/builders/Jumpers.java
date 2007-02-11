@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.39 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Jumpers.java,v 1.40 2007-02-11 19:21:12 nklasens Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -155,7 +155,7 @@ public class Jumpers extends MMObjectBuilder {
         CoreField field = getField(fieldName); // "name");
         StepField queryField = query.getField(field);
         StepField numberField = query.getField(getField(FIELD_NUMBER));
-        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
+        query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = null;
         if (field.getType() == Field.TYPE_STRING) {
             cons = new BasicFieldValueConstraint(queryField, key);
@@ -169,9 +169,9 @@ public class Jumpers extends MMObjectBuilder {
         query.setConstraint(cons);
         query.setMaxNumber(1);
         try {
-            List resultList = getNodes(query);
+            List<MMObjectNode> resultList = getNodes(query);
             if (resultList.size() > 0) {
-                MMObjectNode node = (MMObjectNode) resultList.get(0);
+                MMObjectNode node = resultList.get(0);
                 return node.getStringValue("url");
             }
         } catch (SearchQueryException sqe) {
@@ -192,7 +192,7 @@ public class Jumpers extends MMObjectBuilder {
         if (key.equals("")) {
             url = jumperNotFoundURL;
         } else {
-            url = (String) jumpCache.get(key);
+            url = jumpCache.get(key);
             if (log.isDebugEnabled()) {
                 if (url != null) {
                     log.debug("Jumper - Cache hit on " + key);
@@ -259,7 +259,7 @@ public class Jumpers extends MMObjectBuilder {
         super.notify(event);
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> arguments) {
         if (function.equals("gui")) {
             String rtn;
             if (arguments == null || arguments.size() == 0) {
@@ -274,7 +274,7 @@ public class Jumpers extends MMObjectBuilder {
 
 }
 
-class JumpersCache extends Cache {
+class JumpersCache extends Cache<String,String> {
     public String getName() {
         return "JumpersCache";
     }

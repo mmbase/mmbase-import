@@ -30,7 +30,7 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.3 2007-02-11 19:21:12 nklasens Exp $
  */
 public class ContextDepthDataWriter  {
 
@@ -284,7 +284,7 @@ public class ContextDepthDataWriter  {
      * @param bul reference to the TypeDef builder, used for rertrieving builder types
      * @return a <code>HashSet</code>, containing the types (Integer) of all builders part of this application.
      */
-    static HashSet getFilterBuilders(Vector filter,TypeDef bul) {
+    static HashSet getFilterBuilders(List filter,TypeDef bul) {
         HashSet resultset=new HashSet();
         for(Iterator res=filter.iterator(); res.hasNext(); ) {
             Hashtable bset=(Hashtable)res.next();

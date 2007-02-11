@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.57 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: MMBaseServlet.java,v 1.58 2007-02-11 19:21:12 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -316,12 +316,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @param function the function that identifies the type of association
      * @return an unmodifiable list of servlet mappings associated with the function
      */
-    public static List getServletMappingsByAssociation(String function) {
+    public static List<String> getServletMappingsByAssociation(String function) {
         // check if any mappings were explicitly set for this function
         // if so, return that list.
         ServletEntry mapping = associatedServletMappings.get(function);
         if (mapping != null) {
-            List mappings = new ArrayList();
+            List<String> mappings = new ArrayList<String>();
             mappings.add(mapping.name);
             return mappings;
         }

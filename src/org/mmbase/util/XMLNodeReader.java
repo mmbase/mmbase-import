@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.44 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.45 2007-02-11 19:21:11 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -96,8 +96,8 @@ public class XMLNodeReader extends DocumentReader {
         return -1;
     }
 
-    public Vector getNodes(MMBase mmbase) {
-        Vector nodes = new Vector();
+    public Vector<MMObjectNode> getNodes(MMBase mmbase) {
+        Vector<MMObjectNode> nodes = new Vector<MMObjectNode>();
         Node n1 = document.getDocumentElement();
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());

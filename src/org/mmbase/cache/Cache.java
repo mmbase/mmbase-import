@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.43 2007-01-03 09:16:21 nklasens Exp $
+ * @version $Id: Cache.java,v 1.44 2007-02-11 19:21:11 nklasens Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -54,7 +54,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
-    void setImplementation(String clazz, Map configValues) {
+    void setImplementation(String clazz, Map<String,String> configValues) {
         try {
             Class clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
@@ -332,7 +332,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
         if (!(o instanceof Cache))
             return false;
-        Cache c = (Cache) o;
+        Cache<?,?> c = (Cache<?,?>) o;
         if (!c.getName().equals(getName()))
             return false;;
         return implementation.equals(o);
@@ -415,7 +415,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see CacheManager#getCaches
      */
-    public static Set getCaches() {
+    public static Set<String> getCaches() {
         return CacheManager.getCaches();
     }
 

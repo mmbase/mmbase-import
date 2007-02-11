@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.47 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.48 2007-02-11 19:21:12 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -125,9 +125,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
         }
         String result;
-        List ls = MMBaseServlet.getServletMappingsByAssociation(association);
+        List<String> ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
-            result = (String) ls.get(0);
+            result = ls.get(0);
             usesBridgeServlet = MMBaseServlet.getServletByMapping(result) instanceof BridgeServlet;
             // remove mask
             int pos = result.lastIndexOf("*");
@@ -246,7 +246,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Returns the fields which tell something about the 'handle' field, and can be calculated from it.
      */
 
-    abstract protected Set getHandleFields();
+    abstract protected Set<String> getHandleFields();
 
     public int insert(String owner, MMObjectNode node) {
         if (log.isDebugEnabled()) {
@@ -260,19 +260,19 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
     public boolean commit(MMObjectNode node) {
-        Collection changed = node.getChanged();
+        Collection<String> changed = node.getChanged();
         if (log.isDebugEnabled()) {
             log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
         }
 
         if (changed.contains(FIELD_HANDLE)) {
             // set those fields to null, which are not changed too:
-            Collection cp = new ArrayList();
+            Collection<String> cp = new ArrayList<String>();
             cp.addAll(getHandleFields());
             cp.removeAll(changed);
-            Iterator i = cp.iterator();
+            Iterator<String> i = cp.iterator();
             while (i.hasNext()) {
-                String f = (String) i.next();
+                String f = i.next();
                 if (node.getBuilder().hasField(f)) {
                     node.setValue(f, null);
                 }
@@ -574,13 +574,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executefunction of abstractservletbuilder for " + node.getNumber() + "." + function + " " + args);
         }
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new ArrayList<Object>();
+            Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
             info.put("mimetype", "Returns the mimetype associated with this object");

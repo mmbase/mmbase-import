@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.42 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: RelDef.java,v 1.43 2007-02-11 19:21:12 nklasens Exp $
  */
 public class RelDef extends MMObjectBuilder {
 
@@ -271,9 +271,9 @@ public class RelDef extends MMObjectBuilder {
         }
         query.setMaxNumber(1);
         try {
-            List reldefs = getNodes(query);
+            List<MMObjectNode> reldefs = getNodes(query);
             if (reldefs.size() != 0) {
-                node =(MMObjectNode)reldefs.get(0);
+                node = reldefs.get(0);
             }
         } catch (SearchQueryException sqe) {
             // should never happen
@@ -353,7 +353,7 @@ public class RelDef extends MMObjectBuilder {
             Integer value = new Integer(node.getNumber());
             Constraint constraint = new BasicFieldValueConstraint(query.getField(typeRel.getField("rnumber")), value);
             query.setConstraint(constraint);
-            List typerels = typeRel.getNodes(query);
+            List<MMObjectNode> typerels = typeRel.getNodes(query);
             if (typerels.size() > 0) {
                 throw new RuntimeException("Cannot delete reldef, it is referenced by typerels: " + typerels);
             }
@@ -447,7 +447,7 @@ public class RelDef extends MMObjectBuilder {
     }
 
     // Retrieves the relationbuildercache (initializes a new cache if the old one is empty)
-    private Map getRelBuilderCache() {
+    private Map<Integer, MMObjectBuilder> getRelBuilderCache() {
         // first make sure the buildercache is loaded
         if (relBuilderCache == null) {
             relBuilderCache = new HashMap<Integer, MMObjectBuilder>();
