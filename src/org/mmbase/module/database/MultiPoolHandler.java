@@ -26,7 +26,7 @@ public class MultiPoolHandler {
     private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
     private int maxConnections;
     private int maxQueries;
-    private Map pools = new ConcurrentHashMap();
+    private Map<String,MultiPool> pools = new ConcurrentHashMap<String,MultiPool>();
 
     private DatabaseSupport databaseSupport;
     private long maxLifeTime = 120000;
@@ -49,7 +49,7 @@ public class MultiPoolHandler {
     }
 
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-	MultiPool pool = (MultiPool) pools.get(url + "," + name + "," + password);
+	MultiPool pool = pools.get(url + "," + name + "," + password);
 	if (pool != null) {
 	    return pool.getFree();
 	} else {
@@ -68,21 +68,21 @@ public class MultiPoolHandler {
      * @since MMBase-1.6.2
      */
     public void shutdown() {
-        for (Iterator i = pools.values().iterator(); i.hasNext();) {
-            MultiPool pool = (MultiPool) i.next();
+        for (Iterator<MultiPool> i = pools.values().iterator(); i.hasNext();) {
+            MultiPool pool = i.next();
 	    pool.shutdown();
 	}
     }
 
     public void checkTime() {
-	for (Iterator i = pools.values().iterator(); i.hasNext();) {
-	    MultiPool pool = (MultiPool) i.next();
+	for (Iterator<MultiPool> i = pools.values().iterator(); i.hasNext();) {
+	    MultiPool pool = i.next();
 	    pool.checkTime();
 	}
     }
 
-    public Set keySet() {
-	return pools.keySet();
+    public Set<String> keySet() {
+        return pools.keySet();
     }
 
     /*
@@ -92,7 +92,7 @@ public class MultiPoolHandler {
     */
 
     public MultiPool get(String id) {
-        return (MultiPool) pools.get(id);
+        return pools.get(id);
     }
 
     public void setMaxConnections(int max) {
