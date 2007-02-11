@@ -22,13 +22,13 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.5 2006-09-22 14:48:22 andre Exp $
+ * @version $Id: FileLoginModule.java,v 1.6 2007-02-11 19:45:04 nklasens Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
     private File configFile = null;
 
-    public void load(Map properties) {
+    public void load(Map<String, Object> properties) {
         String passwordFile = (String)properties.get("file");
 
         if (passwordFile == null || passwordFile.equals("")) {

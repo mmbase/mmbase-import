@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.23 2006-09-27 10:59:21 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.24 2007-02-11 19:45:04 nklasens Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap();
+    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap<String, ContextLoginModule>();
     private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */

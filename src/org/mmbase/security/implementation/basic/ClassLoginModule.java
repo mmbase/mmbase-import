@@ -18,12 +18,12 @@ import org.mmbase.security.Rank;
  * Support for authentication method 'class' for 'basic' authentication.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClassLoginModule.java,v 1.5 2007-02-10 16:22:38 nklasens Exp $
+ * @version $Id: ClassLoginModule.java,v 1.6 2007-02-11 19:45:04 nklasens Exp $
  * @since   MMBase-1.8
  */
 public class ClassLoginModule implements LoginModule {
 
-    private Map<String, String> ranks = new HashMap();
+    private Map<String, String> ranks = new HashMap<String, String>();
 
     public void load(Map<String, Object> properties) {
         for (Map.Entry<String, Object> entry : properties.entrySet()) {

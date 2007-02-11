@@ -22,12 +22,13 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextCache.java,v 1.10 2006-09-27 10:59:21 michiel Exp $
+ * @version $Id: ContextCache.java,v 1.11 2007-02-11 19:45:04 nklasens Exp $
  */
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
 
-    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache = new org.mmbase.cache.Cache(50) {
+    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache 
+            = new org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>>(50) {
         public String getName()        { return "ContextRight"; }
             public String getDescription() { return "Context Security Implementation Rights Cache"; }
         };
@@ -40,13 +41,13 @@ public class ContextCache  {
         Map<String, Map<String, Boolean>> operationCache = globalRightCache.get(operation);
         // when operation not known, create
         if(operationCache == null) {
-            operationCache = new HashMap();
+            operationCache = new HashMap<String, Map<String, Boolean>>();
             globalRightCache.put(operation, operationCache);
         }
         Map<String, Boolean> contextCache =  operationCache.get(context);
         // when context not known, create
         if(contextCache == null) {
-            contextCache = new HashMap();
+            contextCache = new HashMap<String, Boolean>();
             operationCache.put(context, contextCache);
         }
         if(contextCache.containsKey(user)) {
@@ -86,7 +87,8 @@ public class ContextCache  {
         return contextCache.get(user);
     }
 
-    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache = new org.mmbase.cache.Cache(50) {
+    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache 
+        = new org.mmbase.cache.Cache<String, Set<String>>(50) {
             public String getName()        { return "ContextContext"; }
             public String getDescription() { return "Context Security Implementation Context Cache"; }
         };

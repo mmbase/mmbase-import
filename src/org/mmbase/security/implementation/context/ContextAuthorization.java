@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.42 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: ContextAuthorization.java,v 1.43 2007-02-11 19:45:04 nklasens Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -42,7 +42,8 @@ public class ContextAuthorization extends Authorization {
     private Document 	    document;
     private ContextCache    cache = new ContextCache();
 
-    protected  Cache<String, AllowingContexts> allowingContextsCache = new Cache(200) { // 200 users.
+    protected  Cache<String, AllowingContexts> allowingContextsCache 
+        = new Cache<String, AllowingContexts>(200) { // 200 users.
             public String getName()        { return "CS:AllowingContextsCache"; }
             public String getDescription() { return "Links user id to a set of contexts"; }
         };
@@ -50,9 +51,9 @@ public class ContextAuthorization extends Authorization {
     private int            maxContextsInQuery = 50; // must be configurable
 
     /** contains elements of type = Operation */
-    private Set<Operation>            globalAllowedOperations = new HashSet();
-    private Map<String, String>       replaceNotFound         = new HashMap();
-    private Map<UserContext, String>  userDefaultContexts     = new HashMap();
+    private Set<Operation>            globalAllowedOperations = new HashSet<Operation>();
+    private Map<String, String>       replaceNotFound         = new HashMap<String, String>();
+    private Map<UserContext, String>  userDefaultContexts     = new HashMap<UserContext, String>();
     private SortedSet<String>         allContexts;
 
     protected void load() {
@@ -133,7 +134,7 @@ public class ContextAuthorization extends Authorization {
         if (node.getStringValue("owner").equals(context)) return;
 
         // check if is a valid context for us..
-        Set possible = getPossibleContexts(user, nodeNumber);
+        Set<String> possible = getPossibleContexts(user, nodeNumber);
         if(!possible.contains(context)) {
             String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user;
             throw new SecurityException(msg);
@@ -164,7 +165,7 @@ public class ContextAuthorization extends Authorization {
     }
 
     private void setAllContexts() throws SecurityException {
-        allContexts = new TreeSet();
+        allContexts = new TreeSet<String>();
         String xpath = "/contextconfig/contexts/context";
         log.trace("going to execute the query:" + xpath );
         NodeIterator found;
@@ -181,7 +182,7 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    public Set getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
+    public Set<String> getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         if (log.isDebugEnabled()) {
             log.debug("get possible context on node #" + nodeNumber + " by user: " + user);
         }
@@ -205,7 +206,7 @@ public class ContextAuthorization extends Authorization {
                 log.debug("cache hit");
                 return list;
             }
-            list = new HashSet();
+            list = new HashSet<String>();
         }
 
         // possible contextes are dependeding of the context they're in...
@@ -328,7 +329,7 @@ public class ContextAuthorization extends Authorization {
                 log.debug("Found " + grants.getLength() + " grants on " + operation + " for context " + context) ;
             }
 
-            Set<String> allowedGroups = new HashSet();
+            Set<String> allowedGroups = new HashSet<String>();
             for(int currentNode = 0; currentNode < grants.getLength(); currentNode++) {
                 Node contains = grants.item(currentNode);
                 NamedNodeMap nnm = contains.getAttributes();
@@ -342,7 +343,7 @@ public class ContextAuthorization extends Authorization {
                 }
             }
 
-            boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
+            boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet<String>());
             if (log.isDebugEnabled()) {
                 if (allowed) {
                     log.debug("operation " + operation + " was permitted for user with id " + user);
@@ -381,7 +382,7 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
-        Set<String> fetchedGroups = new HashSet();
+        Set<String> fetchedGroups = new HashSet<String>();
         for (String groupname : groups) {
             // get the group we are researching....
             // well, since we are already exploring ourselve, no need to do it again....
@@ -527,7 +528,7 @@ public class ContextAuthorization extends Authorization {
 
     protected SortedSet<String> getDisallowingContexts(UserContext user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
-        SortedSet<String> set = new TreeSet();
+        SortedSet<String> set = new TreeSet<String>();
         for (String context : getAllContexts()) {
             if (! check(user, context, operation)) {
                 set.add(context);
@@ -558,7 +559,7 @@ public class ContextAuthorization extends Authorization {
                         contexts = disallowing;
                         inverse = true;
                     } else {
-                        contexts  = new TreeSet(getAllContexts());
+                        contexts  = new TreeSet<String>(getAllContexts());
                         contexts.removeAll(disallowing);
                         inverse = false;
                     }

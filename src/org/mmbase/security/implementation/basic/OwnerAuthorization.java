@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: OwnerAuthorization.java,v 1.13 2005-03-01 14:15:28 michiel Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.14 2007-02-11 19:45:04 nklasens Exp $
  */
 public class OwnerAuthorization extends Authorization {
 
@@ -41,7 +41,7 @@ public class OwnerAuthorization extends Authorization {
 
     private static MMObjectBuilder builder = null; // only to get Nodes from
 
-    private Set possibleContexts;
+    private Set<String> possibleContexts;
 
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
@@ -72,8 +72,10 @@ public class OwnerAuthorization extends Authorization {
         } else {
             log.warn("Could not find accounts!");
         }
-
-        possibleContexts = accounts.keySet();
+        possibleContexts = new HashSet<String>();
+        for (Object key : accounts.keySet()) {
+            possibleContexts.add((String) key);
+        }
         log.debug("file for accounts loaded");
     }
 
@@ -179,7 +181,7 @@ public class OwnerAuthorization extends Authorization {
      */
     public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // check if is a valid context for us..
-        Set possible = getPossibleContexts(user, nodeNumber);
+        Set<String> possible = getPossibleContexts(user, nodeNumber);
         if(!possible.contains(context)) {
             throw new SecurityException("could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user+"not a valid context");
         }
@@ -199,11 +201,11 @@ public class OwnerAuthorization extends Authorization {
     /**
      * Returns a list of all users in accounts.properties
      */
-    public Set getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public Set<String> getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
 
         if (possibleContexts == null) {
             log.warn("Security not loaded");
-            return new HashSet();
+            return new HashSet<String>();
         } else {
             return possibleContexts;
         }
