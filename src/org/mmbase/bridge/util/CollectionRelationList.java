@@ -11,8 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.BasicList;
-
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.4 2007-02-10 16:48:54 nklasens Exp $
+ * @version $Id: CollectionRelationList.java,v 1.5 2007-02-11 20:05:17 nklasens Exp $
  * @since MMBase-1.8
  */
 public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
