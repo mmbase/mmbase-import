@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.31 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.32 2007-02-11 20:04:56 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -50,12 +50,12 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     BasicNodeQuery(BasicNodeManager nodeManager) {
         super(nodeManager.cloud);
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
-        this.step = (Step) getSteps().get(0); // the only step
+        this.step = getSteps().get(0); // the only step
     }
     BasicNodeQuery(BasicNodeManager nodeManager, NodeSearchQuery q) {
         super(nodeManager.cloud);
         query = q;
-        this.step = (Step) getSteps().get(0); // the only step
+        this.step = getSteps().get(0); // the only step
     }
 
     /**
