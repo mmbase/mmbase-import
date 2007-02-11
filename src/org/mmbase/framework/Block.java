@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.23 2006-12-09 09:08:38 michiel Exp $
+ * @version $Id: Block.java,v 1.24 2007-02-11 14:46:14 nklasens Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -107,7 +107,7 @@ public class Block {
     }
 
 
-    void addParameters(Parameter<?>... params) {
+    void addParameters(Parameter ... params) {
         List<Parameter> help = new ArrayList<Parameter>();
         if (specific != null) {
             help.addAll(Arrays.asList(specific.getArguments()));

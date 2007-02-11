@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.11 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.12 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -396,8 +396,8 @@ public class QueryReader {
                 if (hasAttribute(queryElement,"element")) {
                   element = getAttribute(queryElement,"element");
                 } else {
-                    List<?> builders  = StringSplitter.split(path);
-                    element = (String)builders.get(builders.size()-1);
+                    List<String> builders  = StringSplitter.split(path);
+                    element = builders.get(builders.size()-1);
                 }
             }
             if (relateFrom != null) {

@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.27 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.28 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -169,7 +169,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         boolean multipleSteps = query.getSteps().size() > 1;
 
         // Fields expression
-        List lFields = new ArrayList();
+        List<StepField> lFields = new ArrayList<StepField>();
         lFields.addAll(query.getFields());
 
         // When 'distinct', make sure all fields used for sorting are
@@ -190,10 +190,10 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         boolean storesAsFile = org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
-        Iterator iFields = lFields.iterator();
+        Iterator<StepField> iFields = lFields.iterator();
         boolean appended = false;
         while (iFields.hasNext()) {
-            StepField field = (StepField) iFields.next();
+            StepField field = iFields.next();
             if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue;
             if (appended) {
                 sb.append(',');
@@ -268,7 +268,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // vector to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
-        List orElements = new ArrayList();
+        List<StringBuffer> orElements = new ArrayList<StringBuffer>();
 
         // save AND-Elements from relationString for migration to UNION-query
         StringBuffer andElements = new StringBuffer();

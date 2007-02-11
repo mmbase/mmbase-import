@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.10 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicStep.java,v 1.11 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -31,7 +31,7 @@ public class BasicStep implements Step {
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
-    protected SortedSet<Integer> nodes = new TreeSet();
+    protected SortedSet<Integer> nodes = new TreeSet<Integer>();
     /**
      * Constructor.
      *

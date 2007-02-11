@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.404 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.405 2007-02-11 14:46:13 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -109,7 +109,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Parameters for the age function
      * @since MMBase-1.7
      */
-    public final static Parameter[] AGE_PARAMETERS = {};
+    public final static Parameter<?>[] AGE_PARAMETERS = {};
 
     /**
      * Collection for temporary nodes,
@@ -118,7 +118,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @duplicate use Cache object instead
      * @scope protected
      */
-    public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
+    public static Map<String, MMObjectNode> temporaryNodes = new Hashtable<String, MMObjectNode>(TEMPNODE_DEFAULT_SIZE);
 
     /**
      * Default output when no data is available to determine a node's GUI description
@@ -176,7 +176,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Can be set with the &lt;descriptions&gt; tag in the xml builder file.
      * @scope protected
      */
-    public Hashtable descriptions;
+    public Hashtable<String,String> descriptions;
 
     /**
      * The default search age for this builder.
@@ -212,12 +212,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
      * @scope protected
      */
-    Hashtable singularNames;
+    Hashtable<String,String> singularNames;
 
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
      * @scope protected
      */
-    Hashtable pluralNames;
+    Hashtable<String,String> pluralNames;
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
@@ -230,7 +230,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Parameters for the GUI function
      * @since MMBase-1.7
      */
-    public final static Parameter[] GUI_PARAMETERS = org.mmbase.util.functions.GuiFunction.PARAMETERS;
+    public final static Parameter<?>[] GUI_PARAMETERS = org.mmbase.util.functions.GuiFunction.PARAMETERS;
 
     /**
      * The famous GUI function as a function object.
@@ -244,9 +244,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Parameters constants for the NodeFunction {@link #wrapFunction}.
      * @since MMBase-1.8
      */
-    protected final static Parameter[] WRAP_PARAMETERS = {
-        new Parameter(Parameter.FIELD, true),
-        new Parameter("length", Number.class, Integer.valueOf(20))
+    protected final static Parameter<?>[] WRAP_PARAMETERS = {
+        new Parameter<String>(Parameter.FIELD, true),
+        new Parameter<Number>("length", Number.class, Integer.valueOf(20))
     };
 
     /**
@@ -298,20 +298,20 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
      * @since MMBase-1.8
      */
-    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter("function", String.class) }, ReturnType.UNKNOWN) {
+    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter<Object>("function", String.class) }, ReturnType.UNKNOWN) {
             {
                 setDescription("Returns information about available functions");
             }
             protected Object getFunctionValue(Collection<Function<?>> functions, Parameters parameters) {
                 String function = (String) parameters.get("function");
                 if (function == null || function.equals("")) {
-                    Map<String, String> info = new HashMap();
-                    for (Function f : functions) {
+                    Map<String, String> info = new HashMap<String, String>();
+                    for (Function<?> f : functions) {
                         info.put(f.getName(), f.getDescription());
                     }
                     return info;
                 } else {
-                    Function func = getFunction(function);
+                    Function<?> func = getFunction(function);
                     if (func == null) return "No such function " + function;
                     return func.getDescription();
                 }
@@ -343,12 +343,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      *  Set of remote observers, which are notified when a node of this type changes
      */
-    private final Set<MMBaseObserver> remoteObservers = Collections.synchronizedSet(new HashSet());
+    private final Set<MMBaseObserver> remoteObservers = Collections.synchronizedSet(new HashSet<MMBaseObserver>());
 
     /**
      * Set of local observers, which are notified when a node of this type changes
      */
-    private final Set<MMBaseObserver> localObservers = Collections.synchronizedSet(new HashSet());
+    private final Set<MMBaseObserver> localObservers = Collections.synchronizedSet(new HashSet<MMBaseObserver>());
 
     /**
      * Reference to the builders that this builder extends.
@@ -373,7 +373,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Specified in the xml builder file with the <properties> tag.
      * The use of properties is determined by builder
      */
-    private Hashtable properties = null;
+    private Hashtable<String, String> properties = null;
 
     /**
      * The datatype collector for this builder
@@ -698,7 +698,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.6.2
      */
     public List<MMObjectBuilder> getDescendants() {
-        List<MMObjectBuilder> result = new ArrayList();
+        List<MMObjectBuilder> result = new ArrayList<MMObjectBuilder>();
         for (MMObjectBuilder builder : mmb.getBuilders()) {
             if (builder.isExtensionOf(this)) {
                 result.add(builder);
@@ -902,11 +902,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node whose relations to remove.
      */
     public void removeRelations(MMObjectNode node) {
-        List relsv = getRelations_main(node.getNumber());
+        List<MMObjectNode> relsv = getRelations_main(node.getNumber());
         if (relsv != null) {
-            for(Iterator rels = relsv.iterator(); rels.hasNext(); ) {
+            for(Iterator<MMObjectNode> rels = relsv.iterator(); rels.hasNext(); ) {
                 // get the relation node
-                MMObjectNode relnode = (MMObjectNode)rels.next();
+                MMObjectNode relnode = rels.next();
                 // determine the true builder for this node
                 // (node.parent is always InsRel, but otype
                 //  indicates any derived builders, such as AuthRel)
@@ -1170,7 +1170,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public MMObjectNode getTmpNode(String key) {
         MMObjectNode node = null;
-        node = (MMObjectNode) temporaryNodes.get(key);
+        node = temporaryNodes.get(key);
         if (node == null && log.isDebugEnabled()) {
             log.trace("getTmpNode(): node not found " + key);
         }
@@ -1183,7 +1183,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public void removeTmpNode(String key) {
         MMObjectNode node;
-        node=(MMObjectNode) temporaryNodes.remove(key);
+        node=temporaryNodes.remove(key);
         if (node == null) {
         log.debug("removeTmpNode: node with "+key+" didn't exists");
     }
@@ -1202,7 +1202,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a unmodifiable <code>Set</code> with the tables field names
      * @todo return an unmodifiable Set.
      */
-    public Set getFieldNames() {
+    public Set<String> getFieldNames() {
         return Collections.unmodifiableSet(fields.keySet());
     }
 
@@ -1645,7 +1645,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (log.isDebugEnabled()) {
                     log.debug("function = '" + function + "', fieldname = '" + name + "'");
                 }
-                List a = new ArrayList();
+                List<String> a = new ArrayList<String>();
                 a.add(name);
                 rtn = getFunctionValue(node, function, a);
 
@@ -1664,10 +1664,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return List of function parameters (may be functions themselves).
      * @deprecated use executeFunction(node, function, list)
      */
-    protected Vector getFunctionParameters(String fields) {
+    protected Vector<String> getFunctionParameters(String fields) {
         int commapos =  0;
         int nested =  0;
-        Vector v = new Vector();
+        Vector<String> v = new Vector<String>();
         int i;
         if (log.isDebugEnabled()) log.debug("Fields=" + fields);
         for(i = 0; i<fields.length(); i++) {
@@ -1707,8 +1707,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.6
      */
     // package because called from MMObjectNode
-    final Object getFunctionValue(MMObjectNode node, String functionName, List parameters) {
-        if (parameters == null) parameters = new ArrayList();
+    final Object getFunctionValue(MMObjectNode node, String functionName, List<?> parameters) {
+        if (parameters == null) parameters = new ArrayList<String>();
         // for backwards compatibility (calling with string function with more than one argument)
         if (parameters.size() == 1 && parameters.get(0) instanceof String) {
             String arg = (String) parameters.get(0);
@@ -1718,7 +1718,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             parameters = StringSplitter.splitFunctions(arg);
         }
-        Function function = getFunction(node, functionName);
+        Function<?> function = getFunction(node, functionName);
         if (function != null) {
             return function.getFunctionValueWithList(parameters);
         } else {
@@ -1734,10 +1734,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a Function object or <code>null</code> if no such function.
      * @since MMBase-1.8
      */
-    protected Function getFunction(MMObjectNode node, String functionName) {
-        Function function = getFunction(functionName);
+    protected Function<?> getFunction(MMObjectNode node, String functionName) {
+        Function<?> function = getFunction(functionName);
         if (function instanceof NodeFunction) {
-            return ((NodeFunction) function).newInstance(node);
+            return ((NodeFunction<?>) function).newInstance(node);
         } else {
             return null;
         }
@@ -1747,13 +1747,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Returns all Functions which are available (or at least known to be available) on a Node.
      * @since MMBase-1.8
      */
-    protected Collection<Function<?>> getFunctions(MMObjectNode node) {
-        Collection builderFunctions = getFunctions();
-        Collection nodeFunctions = new HashSet();
-        for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
-            Object function = i.next();
+    protected Collection<Function> getFunctions(MMObjectNode node) {
+        Collection<Function<?>> builderFunctions = getFunctions();
+        Collection<Function> nodeFunctions = new HashSet<Function>();
+        for (Iterator<Function<?>> i = builderFunctions.iterator(); i.hasNext();) {
+            Function<?> function = i.next();
             if (function instanceof NodeFunction) {
-                nodeFunctions.add(((NodeFunction) function).newInstance(node));
+                nodeFunctions.add(((NodeFunction<?>) function).newInstance(node));
             }
         }
         return nodeFunctions;
@@ -1764,7 +1764,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @inheritDoc
      * @since MMBase-1.8
      */
-    protected Function<Object> newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
+    protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new NodeFunction<Object>(name, parameters, returnType) {
                 public Object getFunctionValue(Node node, Parameters parameters) {
                     return MMObjectBuilder.this.executeFunction(getCoreNode(MMObjectBuilder.this, node),
@@ -1785,16 +1785,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * fit the function
      * @see #executeFunction
      */
-    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> arguments) {
         if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
         }
 
         if (function.equals("info")) {
-            Map info = new HashMap();
-            Iterator i = getFunctions(node).iterator();
+            Map<String,String> info = new HashMap<String,String>();
+            Iterator<Function> i = getFunctions(node).iterator();
             while (i.hasNext()) {
-                Function f = (Function) i.next();
+                Function f = i.next();
                 info.put(f.getName(), f.getDescription());
             }
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
@@ -1807,18 +1807,18 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         } else if (function.equals("wrap")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
-                String val = node.getStringValue((String)arguments.get(0));
-                int wrappos = Integer.parseInt((String)arguments.get(1));
+                String val = node.getStringValue((String) arguments.get(0));
+                int wrappos = Integer.parseInt((String) arguments.get(1));
                 return wrap(val, wrappos);
             } catch(Exception e) {}
 
         } else if (function.equals("substring")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("substring function needs 2 or 3 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
-                String val = node.getStringValue((String)arguments.get(0));
-                int len = Integer.parseInt((String)arguments.get(1));
+                String val = node.getStringValue((String) arguments.get(0));
+                int len = Integer.parseInt((String) arguments.get(1));
                 if (arguments.size() > 2) {
-                    String filler = (String)arguments.get(2);
+                    String filler = (String) arguments.get(2);
                     return substring(val, len, filler);
                 } else {
                     return substring(val, len, null);
@@ -1967,7 +1967,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a <code>Vector</code> with InsRel nodes
      * @todo Return-type and name of this function are not sound.
      */
-    public Vector getRelations_main(int src) {
+    public Vector<MMObjectNode> getRelations_main(int src) {
         InsRel bul = mmb.getInsRel();
         if (bul == null) {
             log.error("getMMObject(): InsRel not yet loaded");
@@ -2146,7 +2146,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param tok a list of strings that describe the (sub)command to execute
      * @return a <code>Vector</code> containing the result values as a <code>String</code>
      */
-    public Vector getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector<String> getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         throw new UnsupportedOperationException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
 
@@ -2195,7 +2195,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Set descriptions of the builder
      * @param e a <code>Hashtable</code> containing the descriptions
      */
-    public void setDescriptions(Hashtable e) {
+    public void setDescriptions(Hashtable<String,String> e) {
         this.descriptions = e;
         update();
     }
@@ -2215,7 +2215,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public String getDescription(String lang) {
         if (descriptions == null) return null;
-        String retval =(String)descriptions.get(lang);
+        String retval = descriptions.get(lang);
         if (retval == null){
             return getDescription();
         }
@@ -2226,7 +2226,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get descriptions of the builder
      * @return  a <code>Hashtable</code> containing the descriptions
      */
-    public Hashtable getDescriptions() {
+    public Hashtable<String,String> getDescriptions() {
         return descriptions;
     }
 
@@ -2255,9 +2255,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public String getSingularName(String lang) {
     String tmp = null;
         if (singularNames != null) {
-            tmp = (String)singularNames.get(lang);
-            if (tmp == null) tmp = (String)singularNames.get(mmb.getLanguage());
-            if (tmp == null) tmp = (String)singularNames.get("en");
+            tmp = singularNames.get(lang);
+            if (tmp == null) tmp = singularNames.get(mmb.getLanguage());
+            if (tmp == null) tmp = singularNames.get("en");
     }
         if (tmp == null) tmp = tableName;
         return tmp;
@@ -2281,9 +2281,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public String getPluralName(String lang) {
         String tmp = null;
         if (pluralNames != null){
-        tmp= (String)pluralNames.get(lang);
-            if (tmp == null) tmp = (String)pluralNames.get(mmb.getLanguage());
-            if (tmp == null) tmp = (String)pluralNames.get("en");
+        tmp= pluralNames.get(lang);
+            if (tmp == null) tmp = pluralNames.get(mmb.getLanguage());
+            if (tmp == null) tmp = pluralNames.get("en");
             if (tmp == null) tmp = getSingularName(lang);
     }
         if (tmp == null) tmp = tableName;
@@ -2357,30 +2357,30 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Sets a list of singular names (language - value pairs)
      */
-    public void setSingularNames(Hashtable names) {
-        singularNames=names;
+    public void setSingularNames(Hashtable<String,String> names) {
+        singularNames = names;
         update();
     }
 
     /**
      * Gets a list of singular names (language - value pairs)
      */
-    public Hashtable getSingularNames() {
+    public Hashtable<String,String> getSingularNames() {
         return singularNames;
     }
 
     /**
      * Sets a list of plural names (language - value pairs)
      */
-    public void setPluralNames(Hashtable names) {
-        pluralNames=names;
+    public void setPluralNames(Hashtable<String,String> names) {
+        pluralNames = names;
         update();
     }
 
     /**
      * Gets a list of plural names (language - value pairs)
      */
-    public Hashtable getPluralNames() {
+    public Hashtable<String,String> getPluralNames() {
         return pluralNames;
     }
 
@@ -2626,13 +2626,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public File getConfigFile() {
         // what is the location of our builder?
-        List files = ResourceLoader.getConfigurationRoot().getFiles(getConfigResource());
+        List<File> files = ResourceLoader.getConfigurationRoot().getFiles(getConfigResource());
         if (files.size() == 0) {
             return null;
         } else {
-            return (File) files.get(0);
+            return files.get(0);
         }
-        //return null;
     }
 
     /**
@@ -2640,7 +2639,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Changed properties will not be saved.
      * @param properties the properties to set
      */
-    void setInitParameters(Hashtable properties) {
+    void setInitParameters(Hashtable<String, String> properties) {
         this.properties = properties;
         update();
     }
@@ -2649,7 +2648,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get all builder properties
      * @return a <code>Hashtable</code> containing the current properties
      */
-    public Hashtable getInitParameters() {
+    public Hashtable<String, String> getInitParameters() {
         return properties;
     }
 
@@ -2659,12 +2658,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a <code>Map</code> containing the current properties
      * @since MMBase 1.8.2
      */
-    public Map getInitParameters(String contextPath) {
-        Map map = new HashMap();
+    public Map<String, String> getInitParameters(String contextPath) {
+        Map<String, String> map = new HashMap<String, String>();
         map.putAll(getInitParameters());
 
         try {
-            Map contextMap = ApplicationContextReader.getProperties(contextPath);
+            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
             if (!contextMap.isEmpty()) {
                 map.putAll(contextMap);
             }
@@ -2681,7 +2680,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param value value of the property
      */
     public void setInitParameter(String name, String value) {
-        if (properties == null) properties = new Hashtable();
+        if (properties == null) properties = new Hashtable<String, String>();
         properties.put(name,value);
         update();
     }
@@ -2695,7 +2694,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (properties == null) {
             return null;
         } else {
-            return (String)properties.get(name);
+            return properties.get(name);
         }
     }
 

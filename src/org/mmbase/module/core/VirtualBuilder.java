@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.22 2006-01-16 15:17:59 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.23 2007-02-11 14:46:13 nklasens Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
@@ -166,8 +166,8 @@ public class VirtualBuilder extends MMObjectBuilder {
      * Get text from a blob field from a database.
      * @since MMBase-1.8
      */
-    public Map getFields(MMObjectNode node) {
-        Map res = new HashMap();
+    public Map<String, CoreField> getFields(MMObjectNode node) {
+        Map<String, CoreField> res = new HashMap<String, CoreField>();
         // determine fields and field types
         Map values = node.getValues();
         synchronized(values) {

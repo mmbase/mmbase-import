@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.202 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.203 2007-02-11 14:46:13 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -790,7 +790,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @javadoc
      * @since MMBase-1.6
      */
-    public Object getFunctionValue(String functionName, List parameters) {
+    public Object getFunctionValue(String functionName, List<String> parameters) {
         return parent.getFunctionValue(this, functionName, parameters);
     }
 
@@ -1304,8 +1304,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *
      * @return An <code>Enumeration</code> containing the nodes
      */
-    public Enumeration getRelations() {
-        List relations = getRelationNodes();
+    public Enumeration<MMObjectNode> getRelations() {
+        List<MMObjectNode> relations = getRelationNodes();
         if (relations != null) {
             return Collections.enumeration(relations);
         } else {
@@ -1317,15 +1317,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      * @scope public?
      */
-    protected List getRelationNodes() {
+    protected List<MMObjectNode> getRelationNodes() {
         Integer number = Integer.valueOf(getNumber());
-        List relations;
+        List<MMObjectNode> relations;
         if (! relationsCache.contains(number)) {
             relations = parent.getRelations_main(getNumber());
             relationsCache.put(number, relations);
 
         } else {
-            relations = (List) relationsCache.get(number);
+            relations = (List<MMObjectNode>) relationsCache.get(number);
         }
         return relations;
     }
@@ -1356,12 +1356,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param otype the 'type' of relations to return. The type identifies a relation (InsRel-derived) builder, not a reldef object.
      * @return An <code>Enumeration</code> containing the nodes
      */
-    public Enumeration getRelations(int otype) {
-        Enumeration e = getRelations();
-        Vector result=new Vector();
+    public Enumeration<MMObjectNode> getRelations(int otype) {
+        Enumeration<MMObjectNode> e = getRelations();
+        Vector<MMObjectNode> result=new Vector<MMObjectNode>();
         if (e!=null) {
             while (e.hasMoreElements()) {
-                MMObjectNode tnode=(MMObjectNode)e.nextElement();
+                MMObjectNode tnode = e.nextElement();
                 if (tnode.getOType()==otype) {
                     result.addElement(tnode);
                 }
@@ -1376,7 +1376,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param wantedtype the 'type' of relations to return. The type identifies a relation (InsRel-derived) builder, not a reldef object.
      * @return An <code>Enumeration</code> containing the nodes
      */
-    public Enumeration getRelations(String wantedtype) {
+    public Enumeration<MMObjectNode> getRelations(String wantedtype) {
         int otype=parent.mmb.getTypeDef().getIntValue(wantedtype);
         if (otype!=-1) {
             return getRelations(otype);
@@ -1653,7 +1653,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
         List<MMObjectNode> list    = new ArrayList();
         int             ootype  = -1;
-        List <Integer> virtualNumbers = new ArrayList();
+        List <Integer> virtualNumbers = new ArrayList<Integer>();
 
         // fill the list
         Iterator<MMObjectNode> i = virtuals.iterator();

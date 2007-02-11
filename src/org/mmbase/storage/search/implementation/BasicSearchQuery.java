@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.36 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.37 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -190,7 +190,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
-        sortOrders = new ArrayList();
+        sortOrders = new ArrayList<SortOrder>();
         MMBase mmb = MMBase.getMMBase();
         for (SortOrder sortOrder : q.getSortOrders()) {
             StepField field = sortOrder.getField();
@@ -282,7 +282,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
 
-            Iterator k = constraint.getValues().iterator();
+            Iterator<Object> k = constraint.getValues().iterator();
             while (k.hasNext()) {
                 Object value = k.next();
                 newConstraint.addValue(value);
@@ -508,20 +508,20 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
     // javadoc is inherited
-    public List getSortOrders() {
+    public List<SortOrder> getSortOrders() {
         // return as unmodifiable list
         return Collections.unmodifiableList(sortOrders);
     }
 
     // javadoc is inherited
-    public List getSteps() {
+    public List<Step> getSteps() {
         // return as unmodifiable list
         return Collections.unmodifiableList(steps);
     }
 
 
     // javadoc is inherited
-    public List getFields() {
+    public List<StepField> getFields() {
         // return as unmodifiable list
         return Collections.unmodifiableList(fields);
     }

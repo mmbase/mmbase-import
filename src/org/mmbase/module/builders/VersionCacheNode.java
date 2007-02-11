@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.5 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: VersionCacheNode.java,v 1.6 2007-02-11 14:46:13 nklasens Exp $
  */
 public class VersionCacheNode extends Object {
 
     private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
     private MMObjectNode versionnode;
-    private Vector whens = new Vector();
+    private Vector<VersionCacheWhenNode> whens = new Vector<VersionCacheWhenNode>();
     private MMBase mmb;
 
     public VersionCacheNode(MMBase mmb) {
@@ -36,9 +36,9 @@ public class VersionCacheNode extends Object {
         // and we should signal a new version
 
         boolean dirty = false;
-        for (Enumeration e = whens.elements(); e.hasMoreElements();) {
-            VersionCacheWhenNode whennode = (VersionCacheWhenNode)e.nextElement();
-            Vector types = whennode.getTypes();
+        for (Enumeration<VersionCacheWhenNode> e = whens.elements(); e.hasMoreElements();) {
+            VersionCacheWhenNode whennode = e.nextElement();
+            Vector<String> types = whennode.getTypes();
 
             // check if im known in the types part
             if (types.contains(buildername)) {

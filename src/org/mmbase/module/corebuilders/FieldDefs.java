@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.DataTypes;
+import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.storage.util.Index;
 
@@ -24,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.57 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: FieldDefs.java,v 1.58 2007-02-11 14:46:14 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -360,7 +361,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
      * @deprecated use {@link Fields#sort}
      */
-    public static void sort(List fielddefs, int order) {
+    public static void sort(List<CoreField> fielddefs, int order) {
         Fields.sort(fielddefs, order);
     }
 

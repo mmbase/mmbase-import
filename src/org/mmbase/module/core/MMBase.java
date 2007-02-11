@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.216 2007-01-16 16:05:20 michiel Exp $
+ * @version $Id: MMBase.java,v 1.217 2007-02-11 14:46:13 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -137,7 +137,7 @@ public class MMBase extends ProcessorModule {
      * The map that contains all loaded builders. Includes virtual builders.
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
-    private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap();
+    private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap<String, MMObjectBuilder>();
 
     private CloudModel cloudModel;
 
