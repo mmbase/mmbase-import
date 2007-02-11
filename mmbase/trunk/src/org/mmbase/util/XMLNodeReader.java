@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
@@ -30,7 +29,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.45 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.46 2007-02-11 20:05:50 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -236,8 +235,7 @@ public class XMLNodeReader extends DocumentReader {
     public void loadBinairyFields(MMObjectNode newNode) {
         Set<String> fieldNames = newNode.getBuilder().getFieldNames();
         if(fieldNames!=null && fieldNames.size()>0){
-            for(Iterator<String> f = fieldNames.iterator(); f.hasNext();){
-                String fieldName = f.next();
+            for (String fieldName : fieldNames) {
                 int fieldDBType = newNode.getBuilder().getDBType(fieldName);
                 if(fieldDBType == Field.TYPE_BINARY){
                     try{
