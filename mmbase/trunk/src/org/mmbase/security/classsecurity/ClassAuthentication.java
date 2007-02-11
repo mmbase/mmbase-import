@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.16 2007-02-10 16:22:38 nklasens Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.17 2007-02-11 19:45:04 nklasens Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -67,7 +67,7 @@ public class ClassAuthentication {
     protected static synchronized void load(String configFile) throws SecurityException {
         List<URL> resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
         log.info("Loading " + configFile + "( " + resourceList + ")");
-        authenticatedClasses = new ArrayList();
+        authenticatedClasses = new ArrayList<Login>();
         ListIterator<URL> it = resourceList.listIterator();
         while (it.hasNext()) it.next();
         while (it.hasPrevious()) {
@@ -88,7 +88,7 @@ public class ClassAuthentication {
                     String clazz    = node.getAttributes().getNamedItem("class").getNodeValue();
                     String method   = node.getAttributes().getNamedItem("method").getNodeValue();
                     Node property   = node.getFirstChild();
-                    Map<String, String> map = new HashMap();
+                    Map<String, String> map = new HashMap<String, String>();
                     while (property != null) {
                         if (property instanceof Element && property.getNodeName().equals("property")) {
                             String name     = property.getAttributes().getNamedItem("name").getNodeValue();
@@ -105,7 +105,7 @@ public class ClassAuthentication {
         }
 
         { // last fall back, everybody may get the 'anonymous' cloud.
-            Map<String, String> map = new HashMap();
+            Map<String, String> map = new HashMap<String, String>();
             map.put("rank", "anonymous");
             authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map)));
         }

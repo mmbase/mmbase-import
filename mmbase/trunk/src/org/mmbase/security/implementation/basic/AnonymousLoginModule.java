@@ -19,13 +19,13 @@ import org.mmbase.util.logging.Logging;
  * Class AnonymousLoginModule
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AnonymousLoginModule.java,v 1.6 2004-12-16 12:14:05 michiel Exp $
+ * @version $Id: AnonymousLoginModule.java,v 1.7 2007-02-11 19:45:04 nklasens Exp $
  */
 
 public class AnonymousLoginModule implements LoginModule {
     private static final Logger log = Logging.getLoggerInstance(AnonymousLoginModule.class);
 
-    public void load(Map properties) {
+    public void load(Map<String, Object> properties) {
         // nah do nothing..
     }
 
