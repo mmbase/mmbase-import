@@ -15,12 +15,12 @@ import java.util.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheWhenNode.java,v 1.5 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: VersionCacheWhenNode.java,v 1.6 2007-02-11 19:21:12 nklasens Exp $
  */
-public class VersionCacheWhenNode extends Object {
+public class VersionCacheWhenNode {
 
     private Vector<String> types = new Vector<String>();
-    private Vector nodes = new Vector();
+    private Vector<String> nodes = new Vector<String>();
 
     public void addType(String type) {
         types.addElement(type);
@@ -34,7 +34,7 @@ public class VersionCacheWhenNode extends Object {
         return types;
     }
 
-    public Vector getNodes() {
+    public Vector<String> getNodes() {
         return nodes;
     }
 }

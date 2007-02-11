@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.53 2006-08-30 20:59:40 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.54 2007-02-11 19:21:11 nklasens Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -274,11 +274,11 @@ public class MMBaseContext {
      * @deprecated use {@link org.mmbase.util.ResourceLoader#getConfigurationRoot} with relative path
      */
     public  synchronized static String getConfigPath() {
-        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.size() == 0) {
             return null;
         } else {
-            return ((File) files.get(0)).getAbsolutePath();
+            return files.get(0).getAbsolutePath();
         }
     }
 

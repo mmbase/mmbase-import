@@ -18,7 +18,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.3 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: ApplicationReader.java,v 1.4 2007-02-11 19:21:12 nklasens Exp $
  */
 public class ApplicationReader extends DocumentReader {
 
@@ -106,10 +106,10 @@ public class ApplicationReader extends DocumentReader {
      * Get the applicationlist required by this application
      * @since MMBase-1.7
      */
-    public List getRequirements() {
-        List results = new Vector();
+    public List<Map<String,String>> getRequirements() {
+        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.requirements","requires")) {
-            Map bset=new HashMap();
+            Map<String,String> bset = new HashMap<String,String>();
             bset.put("name",getElementAttributeValue(n3,"name"));
             addAttribute(bset,n3,"maintainer");
             addAttribute(bset,n3,"version");
@@ -119,7 +119,7 @@ public class ApplicationReader extends DocumentReader {
         return results;
     }
 
-    private void addAttribute(Map bset, Element n, String attribute) {
+    private void addAttribute(Map<String,String> bset, Element n, String attribute) {
         String val = n.getAttribute(attribute);
         if (!val.equals("")) {
             bset.put(attribute,val);
@@ -129,14 +129,14 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get the Builders needed for this application
      */
-    public Vector getNeededBuilders() {
-        Vector results = new Vector();
+    public List<Map<String,String>> getNeededBuilders() {
+        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.neededbuilderlist","builder")) {
-            Hashtable bset = new Hashtable();
+            Map<String,String> bset = new HashMap<String,String>();
             bset.put("name",getElementValue(n3));
             addAttribute(bset,n3,"maintainer");
             addAttribute(bset,n3,"version");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }
@@ -144,17 +144,17 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get the RelDefs needed for this application
      */
-    public Vector getNeededRelDefs() {
-        Vector results = new Vector();
+    public List<Map<String,String>> getNeededRelDefs() {
+        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.neededreldeflist","reldef")) {
-            Hashtable bset = new Hashtable();
+            Map<String,String> bset = new HashMap<String,String>();
             addAttribute(bset,n3,"source");
             addAttribute(bset,n3,"target");
             addAttribute(bset,n3,"direction");
             addAttribute(bset,n3,"guisourcename");
             addAttribute(bset,n3,"guitargetname");
             addAttribute(bset,n3,"builder");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }
@@ -162,14 +162,14 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get allowed relations for this application
      */
-    public Vector getAllowedRelations() {
-        Vector results=new Vector();
+    public List<Map<String,String>> getAllowedRelations() {
+        List<Map<String,String>> results=new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.allowedrelationlist","relation")) {
-            Hashtable bset=new Hashtable();
+            Map<String,String> bset=new HashMap<String,String>();
             addAttribute(bset,n3,"from");
             addAttribute(bset,n3,"to");
             addAttribute(bset,n3,"type");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }
@@ -177,13 +177,13 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get datasources attached to this application
      */
-    public List getDataSources() {
-        Vector results = new Vector();
+    public List<Map<String,String>> getDataSources() {
+        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.datasourcelist","datasource")) {
-            Hashtable bset=new Hashtable();
+            Map<String,String> bset = new HashMap<String,String>();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }
@@ -192,13 +192,13 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get relationsources attached to this application
      */
-    public Vector getRelationSources() {
-        Vector results=new Vector();
+    public List<Map<String,String>> getRelationSources() {
+        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.relationsourcelist","relationsource")) {
-            Hashtable bset=new Hashtable();
+            Map<String,String> bset = new HashMap<String,String>();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }
@@ -206,14 +206,14 @@ public class ApplicationReader extends DocumentReader {
     /**
      * contextsources attached to this application
      */
-    public Vector getContextSources() {
-        Vector results=new Vector();
+    public List<Map<String,String>> getContextSources() {
+        List<Map<String,String>> results=new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.contextsourcelist","contextsource")) {
-            Hashtable bset=new Hashtable();
+            Map<String,String> bset = new HashMap<String,String>();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"type");
             addAttribute(bset,n3,"goal");
-            results.addElement(bset);
+            results.add(bset);
         }
         return results;
     }

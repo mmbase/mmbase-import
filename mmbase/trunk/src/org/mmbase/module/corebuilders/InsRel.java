@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.53 2006-12-18 18:02:35 michiel Exp $
+ * @version $Id: InsRel.java,v 1.54 2007-02-11 19:21:12 nklasens Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -482,9 +482,9 @@ public class InsRel extends MMObjectBuilder {
         constraint.addChild(getNumberConstraint(query,FIELD_DESTINATION, destination));
         constraint.addChild(getNumberConstraint(query,FIELD_ROLE, role));
         query.setConstraint(constraint);
-        Iterator i = builder.getNodes(query).iterator();
+        Iterator<MMObjectNode> i = builder.getNodes(query).iterator();
         if (i.hasNext()) {
-            result = (MMObjectNode)i.next();
+            result = i.next();
         }
         return result;
     }
@@ -513,7 +513,7 @@ public class InsRel extends MMObjectBuilder {
     * @param sourceNode this is the source MMObjectNode
     * @param nodeType Specifies the type of the nodes you want to have e.g. "pools"
     */
-    public Enumeration getRelated(String sourceNode, String nodeType) {
+    public Enumeration<MMObjectNode> getRelated(String sourceNode, String nodeType) {
         try {
             int source = Integer.parseInt(sourceNode);
             int otype = mmb.getTypeDef().getIntValue(nodeType);
@@ -529,7 +529,7 @@ public class InsRel extends MMObjectBuilder {
     * @param source this is the number of the source MMObjectNode
     * @param nodeType Specifies the type of the nodes you want to have e.g. "pools"
     */
-    public Enumeration getRelated(int source, String nodeType) {
+    public Enumeration<MMObjectNode> getRelated(int source, String nodeType) {
         try {
             int otype = -1;
             if (nodeType != null) {
@@ -548,8 +548,8 @@ public class InsRel extends MMObjectBuilder {
     * @param otype the object type of the nodes you want to have
     * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
-    public Enumeration getRelated(int source, int otype) {
-        Vector se = getRelatedVector(source,otype);
+    public Enumeration<MMObjectNode> getRelated(int source, int otype) {
+        Vector<MMObjectNode> se = getRelatedVector(source,otype);
         if (se != null) return se.elements();
         return null;
     }
@@ -560,7 +560,7 @@ public class InsRel extends MMObjectBuilder {
     * @param nodeType Specifies the type of the nodes you want to have e.g. "pools"
     * @param roleName the role of teh relation (name in reldef)
     */
-    public Enumeration getRelated(String sourceNode, String nodeType, String roleName) {
+    public Enumeration<MMObjectNode> getRelated(String sourceNode, String nodeType, String roleName) {
         try {
             int source = Integer.parseInt(sourceNode);
             int otype = mmb.getTypeDef().getIntValue(nodeType);
@@ -576,7 +576,7 @@ public class InsRel extends MMObjectBuilder {
     * @param nodeType Specifies the type of the nodes you want to have e.g. "pools"
     * @param roleName the name of the role of the relation (name in reldef)
     */
-    public Enumeration getRelated(int source, String nodeType, String roleName) {
+    public Enumeration<MMObjectNode> getRelated(int source, String nodeType, String roleName) {
         try {
             int otype = mmb.getTypeDef().getIntValue(nodeType);
             int role = mmb.getRelDef().getNumberByName(roleName);
@@ -592,8 +592,8 @@ public class InsRel extends MMObjectBuilder {
     * @param role Identifying number of the role (reldef)
     * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
-    public Enumeration getRelated(int source, int otype, int role) {
-        Vector se = getRelatedVector(source, otype, role);
+    public Enumeration<MMObjectNode> getRelated(int source, int otype, int role) {
+        Vector<MMObjectNode> se = getRelatedVector(source, otype, role);
         if (se != null) return se.elements();
         return null;
     }

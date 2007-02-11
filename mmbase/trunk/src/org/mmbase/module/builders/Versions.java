@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.19 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: Versions.java,v 1.20 2007-02-11 19:21:12 nklasens Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -37,9 +37,8 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         if (!initialized) {
             super.init();
             startCacheTypes();
-            List versionNodes = getNodes();
-            for (Iterator iter = versionNodes.iterator(); iter.hasNext();) {
-                MMObjectNode versionNode = (MMObjectNode) iter.next();
+            List<MMObjectNode> versionNodes = getNodes();
+            for (MMObjectNode versionNode : versionNodes) {
                 String name = versionNode.getStringValue("name");
                 String type = versionNode.getStringValue("type");
                 Integer number = new Integer(versionNode.getNumber());
@@ -160,11 +159,10 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
                 + event.getBuilderName() + " " + NodeEvent.newTypeToOldType(event.getType()));
         }
         String builder = event.getBuilderName();
-        Vector subs = (Vector) cacheVersionHandlers.get(builder);
+        Vector<VersionCacheNode> subs = cacheVersionHandlers.get(builder);
         int inumber = event.getNodeNumber();
         if (subs != null) {
-            for (Enumeration e = subs.elements(); e.hasMoreElements();) {
-                VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
+            for (VersionCacheNode cnode : subs) {
                 cnode.handleChanged(builder, inumber);
             }
         }

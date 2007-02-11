@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.core.event.*;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.SearchQuery;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.20 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.21 2007-02-11 19:21:11 nklasens Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -51,8 +52,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             //if the strategy is enabled and we have recorded settings, we must put them back
 
 
-            for(Iterator i = iterator(); i.hasNext();){
-                ReleaseStrategy strategy = (ReleaseStrategy)i.next();
+            for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
+                ReleaseStrategy strategy = i.next();
 
                 //if it must be switched on, we must use the memeory if present
                 if(newStatus == true){
@@ -87,8 +88,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * removes all strategies 
      */
     public void removeAllStrategies(){
-        for (Iterator i = iterator(); i.hasNext(); ){
-            removeStrategy((ReleaseStrategy)i.next());
+        for (Iterator<ReleaseStrategy> i = iterator(); i.hasNext(); ){
+            removeStrategy(i.next());
         }
     }
 
@@ -111,7 +112,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             + "combine. it is used as the base strategy for QueryResultCache subclasses.";
     }
 
-    public Iterator iterator() {
+    public Iterator<ReleaseStrategy> iterator() {
         return releaseStrategies.iterator();
     }
 
@@ -121,23 +122,23 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator i = releaseStrategies.iterator();
+        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
-            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
+            ReleaseStrategy strategy = i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
         return true;
     }
-    protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator i = releaseStrategies.iterator();
+        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
-            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
+            ReleaseStrategy strategy = i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
@@ -146,8 +147,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
 
     public void clear(){
         super.clear();
-        for(Iterator i = iterator(); i.hasNext();){
-            ReleaseStrategy rs = (ReleaseStrategy) i.next();
+        for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
+            ReleaseStrategy rs = i.next();
             rs.clear();
         }
     }

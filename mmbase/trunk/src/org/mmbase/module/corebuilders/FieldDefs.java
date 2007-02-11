@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.58 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: FieldDefs.java,v 1.59 2007-02-11 19:21:12 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -128,32 +128,32 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * available.
      * This maps new situation to old situation.
      */
-    protected class LocaleToStringMap extends AbstractMap {
-        private final Map map;
-        public LocaleToStringMap(Map m) {
+    protected class LocaleToStringMap extends AbstractMap<String,String> {
+        private final Map<Locale,String> map;
+        public LocaleToStringMap(Map<Locale,String> m) {
             map = m;
         }
-        public Set entrySet() {
-            return new AbstractSet() {
-                    public Iterator iterator() {
-                        return new Iterator() {
-                                private final Iterator i = map.entrySet().iterator();
+        public Set<Entry<String,String>> entrySet() {
+            return new AbstractSet<Entry<String,String>>() {
+                    public Iterator<Entry<String,String>> iterator() {
+                        return new Iterator<Entry<String,String>>() {
+                                private final Iterator<Entry<Locale,String>> i = map.entrySet().iterator();
                                 public boolean hasNext() {
                                     return i.hasNext();
                                 }
                                 public void remove() {
                                     throw new UnsupportedOperationException("");
                                 }
-                                public Object next() {
-                                    final Map.Entry entry = (Map.Entry) i.next();
-                                    return new Map.Entry() {
-                                            public Object getKey() {
-                                                return ((Locale) entry.getKey()).getLanguage();
+                                public Entry<String,String> next() {
+                                    final Entry<Locale,String> entry = i.next();
+                                    return new Map.Entry<String,String>() {
+                                            public String getKey() {
+                                                return entry.getKey().getLanguage();
                                             }
-                                            public Object getValue() {
+                                            public String getValue() {
                                                 return entry.getValue();
                                             }
-                                            public Object setValue(Object o) {
+                                            public String setValue(String o) {
                                                 return entry.setValue(o);
                                             }
                                         };
@@ -177,14 +177,14 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * @deprecated use {@link #getGUIName()}
      */
-    public Map getGUINames() {
+    public Map<String, String> getGUINames() {
         return new LocaleToStringMap(getLocalizedGUIName().asMap());
     }
 
     /**
      * @deprecated use {@link #getDescription()}
      */
-    public Map getDescriptions() {
+    public Map<String, String> getDescriptions() {
         return new LocaleToStringMap(getLocalizedDescription().asMap());
     }
 
@@ -351,7 +351,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param fielddefs the list to sort
      * @deprecated use Collections.sort
      */
-    public static void sort(List fielddefs) {
+    public static void sort(List<FieldDefs> fielddefs) {
         Collections.sort(fielddefs);
     }
 

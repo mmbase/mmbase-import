@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a table name and alias in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Step.java,v 1.3 2006-09-08 14:34:08 michiel Exp $
+ * @version $Id: Step.java,v 1.4 2007-02-11 19:21:12 nklasens Exp $
  * @since MMBase-1.7
  */
 public interface Step {
@@ -45,6 +45,15 @@ public interface Step {
      */
     SortedSet<Integer> getNodes();
 
+    /**
+     * Adds node to nodes.
+     *
+     * @param nodeNumber The nodenumber of the node.
+     * @return This <code>BasicStep</code> instance.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     */
+    public Step addNode(int nodeNumber);
+    
     /**
      * Compares this step to the specified object. The result is 
      * <code>true</code> if and only if the argument is a non-null 

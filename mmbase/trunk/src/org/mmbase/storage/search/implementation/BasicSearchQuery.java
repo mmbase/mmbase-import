@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.37 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.38 2007-02-11 19:21:12 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -147,25 +146,25 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 newRelationStep.setCheckedDirectionality(relationStep.getCheckedDirectionality());
                 newRelationStep.setRole(relationStep.getRole());
                 newRelationStep.setAlias(relationStep.getAlias());
-                Iterator j = relationStep.getNodes().iterator();
+                Iterator<Integer> j = relationStep.getNodes().iterator();
                 while (j.hasNext()) {
-                    newRelationStep.addNode(((Integer) j.next()).intValue());
+                    newRelationStep.addNode( j.next().intValue());
                 }
                 BasicStep next    = (BasicStep) relationStep.getNext();
                 BasicStep newNext = (BasicStep) newRelationStep.getNext();
                 newNext.setAlias(next.getAlias());
                 j = next.getNodes().iterator();
                 while (j.hasNext()) {
-                    newNext.addNode(((Integer) j.next()).intValue());
+                    newNext.addNode( j.next().intValue());
                 }
                 i.next(); // dealt with that already
 
             } else {
                 BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
                 newStep.setAlias(step.getAlias());
-                Iterator j = step.getNodes().iterator();
+                Iterator<Integer> j = step.getNodes().iterator();
                 while (j.hasNext()) {
-                    newStep.addNode(((Integer) j.next()).intValue());
+                    newStep.addNode( j.next().intValue());
                 }
             }
         }
@@ -434,9 +433,9 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        Iterator iFields = builder.getFields().iterator();
+        Iterator<CoreField> iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
-            CoreField field = (CoreField) iFields.next();
+            CoreField field = iFields.next();
             if (field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * there load and info from the config module).
  *
  * @sql
- * @version $Id: PropertiesProbe.java,v 1.11 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: PropertiesProbe.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -92,10 +92,10 @@ public class PropertiesProbe implements Runnable {
 
             query.setConstraint(constraint);
 
-            List nodes = parent.getNodes(query);
+            List<MMObjectNode> nodes = parent.getNodes(query);
             int max=0;
-            for (Iterator i = nodes.iterator(); i.hasNext() && max<1000;) {
-                MMObjectNode node = (MMObjectNode)i.next();
+            for (Iterator<MMObjectNode> i = nodes.iterator(); i.hasNext() && max<1000;) {
+                MMObjectNode node = i.next();
                 int number = node.getIntValue("parent");
                 log.info("Want delete on : " + number);
                 deleteProperties(number);
@@ -119,9 +119,8 @@ public class PropertiesProbe implements Runnable {
         */
         try {
             NodeSearchQuery query = new NodeSearchQuery(parent);
-            List nodes = parent.getNodes(query);
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                MMObjectNode node = (MMObjectNode)i.next();
+            List<MMObjectNode> nodes = parent.getNodes(query);
+            for (MMObjectNode node : nodes) {
                 parent.removeNode(node);
             }
         } catch (Exception e) {}

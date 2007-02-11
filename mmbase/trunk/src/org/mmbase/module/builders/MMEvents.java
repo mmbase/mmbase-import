@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.20 2006-06-20 20:41:30 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.21 2007-02-11 19:21:12 nklasens Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -117,7 +117,7 @@ public class MMEvents extends MMObjectBuilder {
     public void probeCall() {
         // the queue is really a bad idea have to make up
         // a better way.
-        Vector also = new Vector();
+        Vector<MMObjectNode> also = new Vector<MMObjectNode>();
         log.debug("MMEvent probe CALL");
         int now=(int)(System.currentTimeMillis()/1000);
         log.debug("The currenttime in seconds NOW="+now);
@@ -132,7 +132,7 @@ public class MMEvents extends MMObjectBuilder {
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0) {
-                snode = (MMObjectNode) also.lastElement();
+                snode = also.lastElement();
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -146,7 +146,7 @@ public class MMEvents extends MMObjectBuilder {
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0 ) {
-                enode = (MMObjectNode) also.lastElement();
+                enode = also.lastElement();
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -182,9 +182,9 @@ public class MMEvents extends MMObjectBuilder {
             }
             log.debug("Node local change "+wnode.getIntValue("number"));
             super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
-            Enumeration g=also.elements();
+            Enumeration<MMObjectNode> g=also.elements();
             while (g.hasMoreElements()) {
-                wnode=(MMObjectNode)g.nextElement();
+                wnode = g.nextElement();
                 if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) {
                     log.debug("Node local change "+wnode.getIntValue("number"));
                     super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");

@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import java.util.*;
+
 import org.mmbase.bridge.*;
 
 /**
@@ -20,11 +21,11 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.2 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: NodeMap.java,v 1.3 2007-02-11 19:21:12 nklasens Exp $
  * @since   MMBase-1.8
  */
 
-public class NodeMap extends NodeWrapper implements Map {
+public class NodeMap extends NodeWrapper implements Map<String, Object> {
 
     /**
      * @param node The Node which is wrapped, and is presented as a Map.
@@ -41,23 +42,28 @@ public class NodeMap extends NodeWrapper implements Map {
 
     // javadoc inherited
     public boolean containsKey(Object key) {
-        return getNodeManager().hasField((String) key);
+        if (key instanceof String) {
+            return getNodeManager().hasField((String) key);
+        }
+        else {
+            return false;
+        }
     }
 
     // javadoc inherited
     // code copied from AbstractMap
     public boolean containsValue(Object value) {
-        Iterator  i = entrySet().iterator();
+        Iterator<Entry<String, Object>>  i = entrySet().iterator();
         if (value==null) {
             while (i.hasNext()) {
-                Entry e = (Entry) i.next();
+                Entry<String, Object> e = i.next();
                 if (e.getValue()==null) {
                     return true;
                 }
             }
         } else {
             while (i.hasNext()) {
-                Entry  e = (Entry) i.next();
+                Entry<String,Object>  e = i.next();
                 if (value.equals(e.getValue())) {
                     return true;
                 }
@@ -72,18 +78,18 @@ public class NodeMap extends NodeWrapper implements Map {
     }
 
     // javadoc inherited
-    public Set entrySet() {
-        return new AbstractSet() {
+    public Set<Entry<String, Object>> entrySet() {
+        return new AbstractSet<Entry<String, Object>>() {
                 FieldList fields = getNodeManager().getFields();
                 @Override
-                public Iterator iterator() {
-                    return new Iterator() {
+                public Iterator<Entry<String, Object>> iterator() {
+                    return new Iterator<Entry<String, Object>>() {
                             FieldIterator i = fields.fieldIterator();
                             public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
-                                return new Map.Entry() {
+                            public Entry<String, Object>  next() {
+                                return new Map.Entry<String, Object>() {
                                         Field field = i.nextField();
-                                        public Object getKey() {
+                                        public String getKey() {
                                             return field.getName();
                                         }
                                         public Object getValue() {
@@ -110,12 +116,12 @@ public class NodeMap extends NodeWrapper implements Map {
 
     // javadoc inherited
     // todo: could be modifiable?
-    public Collection values() {
-        return new AbstractCollection() {
+    public Collection<Object> values() {
+        return new AbstractCollection<Object>() {
                 FieldList fields = getNodeManager().getFields();
                 @Override
-                public Iterator iterator() {
-                    return new Iterator() {
+                public Iterator<Object> iterator() {
+                    return new Iterator<Object>() {
                             FieldIterator i = fields.fieldIterator();
                             public boolean hasNext() { return i.hasNext();}
                             public Object  next() {
@@ -135,15 +141,15 @@ public class NodeMap extends NodeWrapper implements Map {
     }
 
     // javadoc inherited
-    public Set keySet() {
-        return new AbstractSet() {
+    public Set<String> keySet() {
+        return new AbstractSet<String>() {
                 FieldList fields = getNodeManager().getFields();
                 @Override
-                public Iterator iterator() {
-                    return new Iterator() {
+                public Iterator<String> iterator() {
+                    return new Iterator<String>() {
                             FieldIterator i = fields.fieldIterator();
                             public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
+                            public String  next() {
                                 Field field = i.nextField();
                                 return field.getName();
                             }
@@ -160,18 +166,17 @@ public class NodeMap extends NodeWrapper implements Map {
     }
 
     // javadoc inherited
-    public void putAll(Map map) {
-        Iterator i = map.entrySet().iterator();
-        while (i.hasNext()) {
-            Entry e = (Entry) i.next();
-            setValue((String) e.getKey(), e.getValue());
+    public void putAll(Map<? extends String, ? extends Object> map) {
+        for (Iterator<? extends Map.Entry<? extends String, ? extends Object>> i = map.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry<? extends String, ? extends Object> e = i.next();
+            put(e.getKey(), e.getValue());
         }
     }
 
     // javadoc inherited
-    public Object put(Object key, Object value) {
-        Object r = getValue((String) key);
-        setValue((String) key, value);
+    public Object put(String key, Object value) {
+        Object r = getValue(key);
+        setValue(key, value);
         return r;
     }
 

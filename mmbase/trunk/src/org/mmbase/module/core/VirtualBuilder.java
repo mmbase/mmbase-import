@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.23 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: VirtualBuilder.java,v 1.24 2007-02-11 19:21:11 nklasens Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
@@ -169,12 +169,12 @@ public class VirtualBuilder extends MMObjectBuilder {
     public Map<String, CoreField> getFields(MMObjectNode node) {
         Map<String, CoreField> res = new HashMap<String, CoreField>();
         // determine fields and field types
-        Map values = node.getValues();
+        Map<String, Object> values = node.getValues();
         synchronized(values) {
-            Iterator i = values.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> i = values.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
+                Map.Entry<String, Object> entry = i.next();
+                String fieldName = entry.getKey();
                 Object value = entry.getValue();
                 if (value == null) value = new Object();
                 DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
