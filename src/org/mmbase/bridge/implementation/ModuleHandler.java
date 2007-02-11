@@ -16,8 +16,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.functions.*;
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.34 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: ModuleHandler.java,v 1.35 2007-02-11 20:42:32 nklasens Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -103,7 +103,7 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public Map getProperties() {
-        return new HashMap(mmbaseModule.getInitParameters());
+        return new HashMap<String, String>(mmbaseModule.getInitParameters());
     }
 
     public String getDescription() {
@@ -176,15 +176,15 @@ public class ModuleHandler implements Module, InvocationHandler {
 
     public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
         if (mmbaseModule instanceof ProcessorInterface) {
-                Hashtable cmds = new Hashtable();
+                Hashtable<String, Object> cmds = new Hashtable<String, Object>();
                 if (parameter == null) { parameter = "-1"; }
                 cmds.put(command,parameter);
                 // weird change. should be fixed soon in Module.process
-                Hashtable partab = null;
+                Hashtable<String, Object> partab = null;
                 if (auxparameters != null) {
-                    partab = new Hashtable(auxparameters);
+                    partab = new Hashtable<String, Object>(auxparameters);
                 } else {
-                    partab = new Hashtable();
+                    partab = new Hashtable<String, Object>();
                 }
                 ((ProcessorInterface)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
                 if (auxparameters != null) auxparameters.putAll(partab);
@@ -202,12 +202,13 @@ public class ModuleHandler implements Module, InvocationHandler {
             Cloud cloud = getCloud(parameters);
             log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
             try {
-                List v = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
+                List<org.mmbase.module.core.VirtualNode> v 
+                    = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
                 log.info("Got list " + v);
                 if (v.size() == 0) {
                     return cloud.createNodeList();
                 } else {
-                    MMObjectNode node = (MMObjectNode) v.get(0);
+                    MMObjectNode node = v.get(0);
                     if (node instanceof org.mmbase.module.core.VirtualNode) {
                         VirtualNodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode) node, cloud);
                         return new BasicNodeList(v, tempNodeManager);

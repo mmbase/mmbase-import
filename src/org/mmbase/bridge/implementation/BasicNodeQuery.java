@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -31,13 +30,12 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.32 2007-02-11 20:04:56 nklasens Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.33 2007-02-11 20:42:32 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
-    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
     protected Step step = null;
 
     BasicNodeQuery(Cloud c) {
@@ -65,9 +63,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     BasicNodeQuery(Cloud cloud, SearchQuery q) {
         super(cloud);
         query = new BasicSearchQuery(q);
-        List steps = query.getSteps();
+        List<Step> steps = query.getSteps();
         if (steps.size() > 0) {
-            setNodeStep((Step) (steps.get(steps.size() -1 )));
+            setNodeStep( (steps.get(steps.size() -1 )));
         }
     }
 
@@ -120,9 +118,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
             BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField)field).coreField);
             return stepField;
         } else {
-            Iterator fields = query.getFields().iterator();
+            Iterator<StepField> fields = query.getFields().iterator();
             while(fields.hasNext()) {
-                StepField stepField = (StepField) fields.next();
+                StepField stepField = fields.next();
                 if (stepField.getStep().equals(step)) {
                     if (stepField.getFieldName().equals(field.getName())) {
                         return stepField;

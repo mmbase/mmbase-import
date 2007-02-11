@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.48 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.49 2007-02-11 20:42:32 nklasens Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -49,12 +49,12 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
             VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
-            Map fields = virtualBuilder.getFields(node);
-            Iterator i = fields.entrySet().iterator();
+            Map<String,CoreField> fields = virtualBuilder.getFields(node);
+            Iterator<Map.Entry<String,CoreField>> i = fields.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
-                CoreField fd = (CoreField) entry.getValue();
+                Map.Entry<String,CoreField> entry =  i.next();
+                String fieldName = entry.getKey();
+                CoreField fd = entry.getValue();
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(fieldName, ft);
             }
@@ -101,9 +101,9 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         } else {
             if (query != null) { // means not yet called (lazy loading of fields)
                 // code to solve the fields.
-                Iterator steps = query.getSteps().iterator();
+                Iterator<Step> steps = query.getSteps().iterator();
                 while (steps.hasNext()) {
-                    Step step = (Step) steps.next();
+                    Step step = steps.next();
                     DataType nodeType  = DataTypes.getDataType("node");
                     String name = step.getAlias();
                     if (name == null) name = step.getTableName();
@@ -124,9 +124,9 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                 }
                 if (! allowNonQueriedFields || query.isAggregating()) {
                     //hasField only returns true for queried fields
-                    Iterator fields = query.getFields().iterator();
+                    Iterator<StepField> fields = query.getFields().iterator();
                     while(fields.hasNext()) {
-                        StepField field = (StepField) fields.next();
+                        StepField field = fields.next();
                         Step step = field.getStep();
                         Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
                         String name = field.getAlias();

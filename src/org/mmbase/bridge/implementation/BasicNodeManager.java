@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.129 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.130 2007-02-11 20:42:32 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -274,7 +274,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public NodeManagerList getDescendants() {
-        List descs = getMMObjectBuilder().getDescendants();
+        List<MMObjectBuilder> descs = getMMObjectBuilder().getDescendants();
         return new BasicNodeManagerList(descs, cloud);
     }
 
@@ -438,7 +438,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
         int dir  = ClusterBuilder.getSearchDir(direction);
 
-        Enumeration typerelNodes;
+        Enumeration<MMObjectNode> typerelNodes;
         if (nodeManager != null) {
             int otherOType = nodeManager.getNumber();
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType, otherOType);
@@ -446,9 +446,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List nodes = new ArrayList();
+        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
         while (typerelNodes.hasMoreElements()) {
-            MMObjectNode n = (MMObjectNode) typerelNodes.nextElement();
+            MMObjectNode n = typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
                 int snumber = n.getIntValue("snumber");
                 int dnumber = n.getIntValue("dnumber");
@@ -500,9 +500,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
+            List<String> v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
             if (v == null) {
-                v = new ArrayList();
+                v = new ArrayList<String>();
             }
             int items=1;
             try {
@@ -510,13 +510,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             } catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
-            Vector fieldlist = params.Values("FIELDS");
-            Vector res = new Vector(v.size() / items);
+            Vector<String> fieldlist = params.Values("FIELDS");
+            Vector<MMObjectNode> res = new Vector<MMObjectNode>(v.size() / items);
             for (int i= 0; i<v.size(); i+=items) {
                 MMObjectNode node = new org.mmbase.module.core.VirtualNode(builder);
                 for(int j= 0; (j<items) && (j<v.size()); j++) {
                     if ((fieldlist!=null) && (j<fieldlist.size())) {
-                        node.setValue((String)fieldlist.get(j),v.get(i+j));
+                        node.setValue(fieldlist.get(j), v.get(i+j));
                     } else {
                         node.setValue("item"+(j+1),v.get(i+j));
                     }
