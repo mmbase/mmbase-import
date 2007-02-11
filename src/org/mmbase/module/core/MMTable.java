@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.26 2006-12-05 19:37:18 michiel Exp $
+ * @version $Id: MMTable.java,v 1.27 2007-02-11 14:46:13 nklasens Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -314,7 +314,7 @@ public abstract class MMTable extends FunctionProvider {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration search(String where) {
+    public Enumeration<MMObjectNode> search(String where) {
         return searchVector(where).elements();
     }
 
@@ -355,14 +355,14 @@ public abstract class MMTable extends FunctionProvider {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Vector searchVector(String where) {
+    public Vector<MMObjectNode> searchVector(String where) {
         // In order to support this method:
         // - Exceptions of type SearchQueryExceptions are caught.
         // - The result is converted to a vector.
-        Vector result = new Vector();
+        Vector<MMObjectNode> result = new Vector<MMObjectNode>();
         NodeSearchQuery query = storageConnector.getSearchQuery(where);
         try {
-            List nodes = getNodes(query);
+            List<MMObjectNode> nodes = getNodes(query);
             result.addAll(nodes);
         } catch (SearchQueryException e) {
             log.error(e);

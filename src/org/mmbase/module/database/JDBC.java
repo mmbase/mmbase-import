@@ -12,7 +12,6 @@ package org.mmbase.module.database;
 
 import java.util.*;
 import java.sql.*;
-import java.sql.DriverManager;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.51 2006-11-24 15:33:02 michiel Exp $
+ * @version $Id: JDBC.java,v 1.52 2007-02-11 14:46:14 nklasens Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 

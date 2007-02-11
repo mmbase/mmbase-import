@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
@@ -31,7 +32,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.24 2006-10-14 14:35:40 nklasens Exp $
+ * @version $Id: BuilderWriter.java,v 1.25 2007-02-11 14:46:14 nklasens Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -99,12 +100,12 @@ public class BuilderWriter extends DocumentWriter  {
         addComment("builder.names",root);
         root.appendChild(names);
         // names.singular
-        Map datamap=builder.getSingularNames();
+        Map<String,String> datamap=builder.getSingularNames();
         addComment("builder.singular",names);
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry em= (Map.Entry)i.next();
-            String language=(String)em.getKey();
-            String name=(String)em.getValue();
+        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<String,String> em= i.next();
+            String language = em.getKey();
+            String name = em.getValue();
             if ((parent==null) || !(name.equals(parent.getSingularName(language)))) {
                 Element elm=addContentElement("singular",name,names);
                 elm.setAttribute("xml:lang",language);
@@ -113,10 +114,10 @@ public class BuilderWriter extends DocumentWriter  {
         // names.plural
         datamap=builder.getPluralNames();
         addComment("builder.plural",names);
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry em= (Map.Entry)i.next();
-            String language=(String)em.getKey();
-            String name=(String)em.getValue();
+        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<String,String> em= i.next();
+            String language = em.getKey();
+            String name = em.getValue();
             if ((parent==null) || !(name.equals(parent.getPluralName(language)))) {
                 Element elm=addContentElement("plural",name,names);
                 elm.setAttribute("xml:lang",language);
@@ -129,10 +130,10 @@ public class BuilderWriter extends DocumentWriter  {
         // names.description
         datamap=builder.getDescriptions();
         addComment("builder.description",root);
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry em= (Map.Entry)i.next();
-            String language=(String)em.getKey();
-            String description=(String)em.getValue();
+        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<String,String> em= i.next();
+            String language = em.getKey();
+            String description = em.getValue();
             if ((parent==null) || !(description.equals(parent.getDescription(language)))) {
                 Element elm=addContentElement("description",description,descriptions);
                 elm.setAttribute("xml:lang",language);
@@ -144,10 +145,10 @@ public class BuilderWriter extends DocumentWriter  {
         root.appendChild(properties);
         // properties.property
         datamap=builder.getInitParameters();
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry em= (Map.Entry)i.next();
-            String propname=(String)em.getKey();
-            String propvalue=(String)em.getValue();
+        for (Iterator<Map.Entry<String,String>> i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<String,String> em = i.next();
+            String propname= em.getKey();
+            String propvalue = em.getValue();
             if ((parent==null) || !(propvalue.equals(parent.getInitParameter(propname)))) {
                 Element elm=addContentElement("property",propvalue,properties);
                 elm.setAttribute("name",propname);
@@ -158,9 +159,9 @@ public class BuilderWriter extends DocumentWriter  {
         addComment("builder.fieldlist",root);
         root.appendChild(fieldlist);
         // obtain all fields defined in the builder
-        List fields=builder.getFields(NodeManager.ORDER_CREATE);
-        for (Iterator f=fields.iterator(); f.hasNext();) {
-            CoreField fielddef=(CoreField)f.next();
+        List<CoreField> fields=builder.getFields(NodeManager.ORDER_CREATE);
+        for (Iterator<CoreField> f=fields.iterator(); f.hasNext();) {
+            CoreField fielddef = f.next();
             // skip otype, cannot occur in a builder xml file (doh)
             String fieldname=fielddef.getName();
             if (fieldname.equals("otype")) continue;
@@ -170,11 +171,11 @@ public class BuilderWriter extends DocumentWriter  {
             }
             // check guidata
             Element descriptionsElm = null;
-            datamap = fielddef.getLocalizedDescription().asMap();
-            for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-                Map.Entry em= (Map.Entry)i.next();
-                Locale locale = (Locale)em.getKey();
-                String description=(String)em.getValue();
+            Map<Locale, String> descriptionsmap = fielddef.getLocalizedDescription().asMap();
+            for (Iterator<Map.Entry<Locale, String>> i=descriptionsmap.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<Locale, String> em= i.next();
+                Locale locale = em.getKey();
+                String description = em.getValue();
                 if ((parentField==null) || !(description.equals(parentField.getDescription(locale)))) {
                     if (descriptionsElm == null) descriptionsElm = document.createElement("descriptions");
                     Element elm=addContentElement("description", description, descriptionsElm);
@@ -182,11 +183,11 @@ public class BuilderWriter extends DocumentWriter  {
                 }
             }
             Element guiElm = null;
-            datamap = fielddef.getLocalizedGUIName().asMap();
-            for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-                Map.Entry em= (Map.Entry)i.next();
-                Locale locale = (Locale)em.getKey();
-                String name=(String)em.getValue();
+            Map<Locale, String> guinamemap = fielddef.getLocalizedGUIName().asMap();
+            for (Iterator<Map.Entry<Locale, String>> i= guinamemap.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<Locale, String> em= i.next();
+                Locale locale = em.getKey();
+                String name = em.getValue();
                 if ((parentField==null) || !(name.equals(parentField.getGUIName(locale)))) {
                     if (guiElm == null) guiElm = document.createElement("gui");
                     Element elm=addContentElement("guiname", name, guiElm);

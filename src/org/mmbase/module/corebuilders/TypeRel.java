@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.75 2007-01-17 19:00:28 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.76 2007-02-11 14:46:14 nklasens Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -174,18 +174,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
             int rnumber = typeRel.getIntValue("rnumber");
 
-            List sources = sourceBuilder.getDescendants();
+            List<MMObjectBuilder> sources = sourceBuilder.getDescendants();
             sources.add(sourceBuilder);
 
-            List destinations = destinationBuilder.getDescendants();
+            List<MMObjectBuilder> destinations = destinationBuilder.getDescendants();
             destinations.add(destinationBuilder);
 
-            Iterator i = sources.iterator();
+            Iterator<MMObjectBuilder> i = sources.iterator();
             while (i.hasNext()) {
-                MMObjectBuilder s = (MMObjectBuilder) i.next();
-                Iterator j = destinations.iterator();
+                MMObjectBuilder s = i.next();
+                Iterator<MMObjectBuilder> j = destinations.iterator();
                 while (j.hasNext()) {
-                    MMObjectBuilder d = (MMObjectBuilder) j.next();
+                    MMObjectBuilder d = j.next();
                     MMObjectNode vnode = new VirtualTypeRelNode(s.getNumber(), d.getNumber(), rnumber);
                     added.add(vnode);
                 }
@@ -207,9 +207,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
-        Iterator i = added.iterator();
+        Iterator<MMObjectNode> i = added.iterator();
         while (i.hasNext()) {
-            MMObjectNode node = (MMObjectNode) i.next();
+            MMObjectNode node = i.next();
             if (! node.isVirtual()) {
                 // make sure 'real' nodes replace virtual nodes. (real and virtual nodes are equal, so will not be added to set otherwise)
                 // This is especially essential whey you use STRICT in contains
@@ -328,10 +328,10 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @return An <code>Enumeration</code> of nodes containing the reldef (not typerel!) sname
      * field
      */
-    protected Vector getAllowedRelationsNames(int snum, int dnum) {
-        Vector results = new Vector();
-        for (Enumeration e = getAllowedRelations(snum, dnum); e.hasMoreElements();) {
-            MMObjectNode node = (MMObjectNode) e.nextElement();
+    protected Vector<String> getAllowedRelationsNames(int snum, int dnum) {
+        Vector<String> results = new Vector<String>();
+        for (Enumeration<MMObjectNode> e = getAllowedRelations(snum, dnum); e.hasMoreElements();) {
+            MMObjectNode node = e.nextElement();
             int rnumber = node.getIntValue("rnumber");
             MMObjectNode snode = mmb.getRelDef().getNode(rnumber);
             results.addElement(snode.getStringValue("sname"));
@@ -406,7 +406,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * be retrieved through tagger).
      * @javadoc parameters
      */
-    public Vector getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector<String> getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken(); //Retrieving command.
             if (cmd.equals("ALLOWEDRELATIONSNAMES")) {

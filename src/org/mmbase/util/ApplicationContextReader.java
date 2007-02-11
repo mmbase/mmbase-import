@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.2 2006-07-06 14:34:22 pierre Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.3 2007-02-11 14:46:13 nklasens Exp $
  */
 public class ApplicationContextReader {
 
@@ -29,19 +29,19 @@ public class ApplicationContextReader {
     /**
      * @javadoc
      */
-    public static Map getProperties(String path) throws NamingException {
+    public static Map<String, String> getProperties(String path) throws NamingException {
         if (path == null || "".equals(path)) {
             throw new IllegalArgumentException("Path is empty");
         }
-        Map properties = new HashMap();
+        Map<String, String> properties = new HashMap<String, String>();
         Context env = getContext();
         if (env != null) {
-            NamingEnumeration ne = env.list(path);
+            NamingEnumeration<NameClassPair> ne = env.list(path);
             while (ne.hasMoreElements()) {
-                NameClassPair element = (NameClassPair) ne.nextElement();
+                NameClassPair element = ne.nextElement();
                 String contextName = element.getName();
                 String lookupName = env.composeName(contextName, path);
-                Object value = env.lookup(lookupName);
+                String value = env.lookup(lookupName).toString();
                 properties.put(contextName, value);
             }
         }

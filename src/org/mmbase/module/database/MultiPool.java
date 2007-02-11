@@ -20,14 +20,14 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.57 2005-12-17 16:18:58 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.58 2007-02-11 14:46:14 nklasens Exp $
  */
 public class MultiPool {
 
     private static final Logger log    = Logging.getLoggerInstance(MultiPool.class);
 
-    private List              pool     = null;
-    private List              busyPool = new ArrayList();
+    private List<MultiConnection>              pool     = null;
+    private List<MultiConnection>              busyPool = new ArrayList<MultiConnection>();
     private int               conMax   = 4;
     private DijkstraSemaphore semaphore = null;
     private int      totalConnections = 0;
@@ -87,7 +87,7 @@ public class MultiPool {
      * @since MMBase-1.7
     */
     protected void createPool() {
-        pool = new ArrayList();
+        pool = new ArrayList<MultiConnection>();
         MMBase mmb = MMBase.getMMBase();
         boolean logStack = true;
         try {
@@ -199,13 +199,13 @@ public class MultiPool {
         if (semaphore == null) return; // nothing to shut down
         synchronized (semaphore) {
             try {
-                for (Iterator i = busyPool.iterator(); i.hasNext();) {
-                    MultiConnection con = (MultiConnection) i.next();
+                for (Iterator<MultiConnection> i = busyPool.iterator(); i.hasNext();) {
+                    MultiConnection con = i.next();
                     con.realclose();
                 }
                 busyPool.clear();
-                for (Iterator i = pool.iterator(); i.hasNext();) {
-                    MultiConnection con = (MultiConnection) i.next();
+                for (Iterator<MultiConnection> i = pool.iterator(); i.hasNext();) {
+                    MultiConnection con = i.next();
                     con.realclose();
                 }
                 pool.clear();
@@ -264,8 +264,8 @@ public class MultiPool {
 
             long nowTime = System.currentTimeMillis();
 
-            for (Iterator i = busyPool.iterator(); i.hasNext();) {
-                MultiConnection con = (MultiConnection) i.next();
+            for (Iterator<MultiConnection> i = busyPool.iterator(); i.hasNext();) {
+                MultiConnection con = i.next();
 
                 boolean isClosed = true;
 
@@ -345,8 +345,8 @@ public class MultiPool {
                 // cannot happen, I hope...
                 log.error("Number of connections is not correct: " + busyPool.size() + " + " + pool.size () + " = " + (busyPool.size() + pool.size()) + " != " + conMax);
                 // Check if there are dups in the pools
-                for(Iterator i = busyPool.iterator(); i.hasNext();) {
-                    MultiConnection bcon = (MultiConnection) i.next();
+                for(Iterator<MultiConnection> i = busyPool.iterator(); i.hasNext();) {
+                    MultiConnection bcon = i.next();
                     int j = pool.indexOf(bcon);
                     if (j >= 0) {
                         if (log.isDebugEnabled()) {
@@ -358,7 +358,7 @@ public class MultiPool {
 
                 while(((busyPool.size() + pool.size()) > conMax) && pool.size()>2) {
                     // Remove too much ones.
-                    MultiConnection con = (MultiConnection) pool.remove(0);
+                    MultiConnection con = pool.remove(0);
                     if (log.isDebugEnabled()) {
                         log.debug("removing connection "+con);
                     }
@@ -397,7 +397,7 @@ public class MultiPool {
                 if (log.isDebugEnabled()) {
                     log.debug("Getting free connection from pool " + pool.size());
                 }
-                con = (MultiConnection) pool.remove(0);
+                con = pool.remove(0);
                 con.claim();
                 try {
                     if (con.isClosed()) {
@@ -501,9 +501,9 @@ public class MultiPool {
      *
      * @see JDBC#listConnections
      */
-    public Iterator getPool() {
+    public Iterator<MultiConnection> getPool() {
         synchronized(semaphore) {
-            return new ArrayList(pool).iterator();
+            return new ArrayList<MultiConnection>(pool).iterator();
         }
     }
 
@@ -514,9 +514,9 @@ public class MultiPool {
      * @see JDBC#listConnections
      */
 
-    public Iterator getBusyPool() {
+    public Iterator<MultiConnection> getBusyPool() {
         synchronized(semaphore) {
-            return new ArrayList(busyPool).iterator();
+            return new ArrayList<MultiConnection>(busyPool).iterator();
         }
     }
 

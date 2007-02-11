@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.43 2007-02-03 13:08:21 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.44 2007-02-11 14:46:13 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -234,10 +234,10 @@ public class XMLNodeReader extends DocumentReader {
     }
 
     public void loadBinairyFields(MMObjectNode newNode) {
-        Set fieldNames = newNode.getBuilder().getFieldNames();
+        Set<String> fieldNames = newNode.getBuilder().getFieldNames();
         if(fieldNames!=null && fieldNames.size()>0){
-            for(Iterator f = fieldNames.iterator(); f.hasNext();){
-                String fieldName = (String) f.next();
+            for(Iterator<String> f = fieldNames.iterator(); f.hasNext();){
+                String fieldName = f.next();
                 int fieldDBType = newNode.getBuilder().getDBType(fieldName);
                 if(fieldDBType == Field.TYPE_BINARY){
                     try{

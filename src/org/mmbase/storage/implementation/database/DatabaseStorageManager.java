@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.175 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.176 2007-02-11 14:46:13 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -110,7 +110,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Pool of changed nodes in a transaction
      */
-    protected final Map<MMObjectNode, String> changes = new HashMap();
+    protected final Map<MMObjectNode, String> changes = new HashMap<MMObjectNode, String>();
 
     /**
      * Constructor
@@ -864,7 +864,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // get a builders fields
-        List<CoreField> createFields = new ArrayList();
+        List<CoreField> createFields = new ArrayList<CoreField>();
         List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
         for (CoreField field : builderFields) {
             if (field.inStorage()) {
@@ -880,7 +880,7 @@ public class DatabaseStorageManager implements StorageManager {
         StringBuilder fieldNames = null;
         StringBuilder fieldValues = null;
 
-        List<CoreField> fields = new ArrayList();
+        List<CoreField> fields = new ArrayList<CoreField>();
         for (CoreField field : createFields) {
             // skip bytevalues that are written to file
             if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
@@ -1033,7 +1033,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during change
      */
     protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        List<CoreField> changeFields = new ArrayList();
+        List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
         Collection<String> fieldNames = node.getChanged();
         synchronized(fieldNames) { // make sure the set is not changed during this loop
@@ -1051,7 +1051,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
         // Create a String that represents the fields to be used in the commit
         StringBuilder setFields = null;
-        List<CoreField> fields = new ArrayList();
+        List<CoreField> fields = new ArrayList<CoreField>();
         for (CoreField field : changeFields) {
             // changing number is not allowed
             if ("number".equals(field.getName()) || "otype".equals(field.getName())) {
@@ -1504,7 +1504,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during delete
      */
     protected void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        List<CoreField>  blobFileField = new ArrayList();
+        List<CoreField>  blobFileField = new ArrayList<CoreField>();
         List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
         for (CoreField field : builderFields) {
             if (field.inStorage()) {
@@ -1827,7 +1827,7 @@ public class DatabaseStorageManager implements StorageManager {
             log.debug("found fields " + fields);
         }
 
-        List<CoreField> tableFields = new ArrayList();
+        List<CoreField> tableFields = new ArrayList<CoreField>();
         for (CoreField field : fields) {
             if (isPartOfBuilderDefinition(field)) {
                 tableFields.add(field);
@@ -2145,7 +2145,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected synchronized boolean exists(String tableName) throws StorageException {
         if(tableNameCache == null) {
             try {
-                tableNameCache = new HashSet();
+                tableNameCache = new HashSet<String>();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 String prefixTablename = factory.getMMBase().getBaseName();

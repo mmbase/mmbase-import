@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.42 2005-10-04 22:52:58 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.43 2007-02-11 14:46:13 nklasens Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -38,7 +38,7 @@ public class DayMarkers extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(DayMarkers.class);
 
     private int day = 0; // current day number/count
-    private Map daycache = new TreeMap();           // day -> mark, but ordered
+    private Map<Integer, Integer> daycache = new TreeMap<Integer, Integer>();           // day -> mark, but ordered
 
     private int smallestDay; // will be queried when this builder is started
 
@@ -120,7 +120,7 @@ public class DayMarkers extends MMObjectBuilder {
                 Step step = (Step) query.getSteps().get(0);
                 AggregatedField field = new BasicAggregatedField(
                     step, root.getField(FIELD_NUMBER), AggregatedField.AGGREGATION_TYPE_MAX);
-                List newFields = new ArrayList(1);
+                List<StepField> newFields = new ArrayList<StepField>(1);
                 newFields.add(field);
                 modifiedQuery.setFields(newFields);
                 List results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
@@ -261,7 +261,7 @@ public class DayMarkers extends MMObjectBuilder {
      */
     private int getDayCount(int wday) {
         log.debug("finding mark of day " + wday);
-        Integer result = (Integer)daycache.get(new Integer(wday));
+        Integer result = daycache.get(new Integer(wday));
         if (result!=null) { // already in cache
             return result.intValue();
         }
@@ -444,7 +444,7 @@ public class DayMarkers extends MMObjectBuilder {
         Step step = (Step) query.getSteps().get(0);
         AggregatedField field = new BasicAggregatedField(
             step, getField(FIELD_DAYCOUNT), AggregatedField.AGGREGATION_TYPE_MAX);
-        List newFields = new ArrayList(1);
+        List<StepField> newFields = new ArrayList<StepField>(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
         try {

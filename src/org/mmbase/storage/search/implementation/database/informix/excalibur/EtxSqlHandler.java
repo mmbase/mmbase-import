@@ -36,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.7 2005-10-05 12:26:11 michiel Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.8 2007-02-11 14:46:14 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -50,7 +50,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      * The indexed fields, stored as {@link #BuilderField BuilderField}
      *  instances.
      */
-    private Set indexedFields = new HashSet();
+    private Set<String> indexedFields = new HashSet<String>();
 
     /**
      * Creates a new instance of EtxueryHandler.
@@ -356,9 +356,9 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             "Unknown builder: \"" + builderName + "\".");
         }
 
-        Iterator iFieldNames = builder.getFieldNames().iterator();
+        Iterator<String> iFieldNames = builder.getFieldNames().iterator();
         while (iFieldNames.hasNext()) {
-            String fieldName = (String) iFieldNames.next();
+            String fieldName = iFieldNames.next();
             if (factory.getStorageIdentifier(fieldName).equals(dbField)) {
                 return builderName + "." + fieldName;
             }

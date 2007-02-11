@@ -104,8 +104,8 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * parameter ('vars'), and this is also returned (because sometimes also results are put in it).
      * @since MMBase-1.8
      */
-    protected class ProcessFunction extends AbstractFunction<Map> {
-        public ProcessFunction(String name, Parameter[] params) {
+    protected class ProcessFunction extends AbstractFunction<Map<?,?>> {
+        public ProcessFunction(String name, Parameter<Object>[] params) {
             super(name, params, ReturnType.MAP);
         }
 

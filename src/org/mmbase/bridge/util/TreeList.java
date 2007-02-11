@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.24 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: TreeList.java,v 1.25 2007-02-11 14:46:13 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -252,7 +252,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
     // javadoc inherited
     @Override
-    public ListIterator listIterator(int ind) {
+    public ListIterator<Node> listIterator(int ind) {
         return treeIterator(ind);
     }
 
@@ -457,7 +457,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
          * Returns the 'real' node, us the just used 'next' node of index.
          */
         protected final Node getRealNode(int index) {
-            ListIterator iterator = (ListIterator)nodeIterators.get(index);
+            ListIterator<Node> iterator = nodeIterators.get(index);
             return TreeList.this.getRealNode(index, iterator.previousIndex());
         }
 
@@ -536,7 +536,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                 }
             }
 
-            List<?> sortOrders = currentBranch.getQuery().getSortOrders();
+            List<SortOrder> sortOrders = currentBranch.getQuery().getSortOrders();
             final boolean contains = Queries.compare(previousNode, nextListNextNode, sortOrders) >= 0;
 
             if (log.isDebugEnabled()) {
@@ -568,7 +568,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
          */
         protected final Node getNextLeafNode() {
             Node smallestAvailableNode = null;
-            List smallestSortOrders = null;  // Sort-Orders list of smallest availabe node.
+            List<SortOrder> smallestSortOrders = null;  // Sort-Orders list of smallest availabe node.
             int i = -1;
 
             while(prepare(++i)) {
@@ -577,13 +577,13 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                     continue;
                 }
                 Branch branch = TreeList.this.branches.get(i);
-                List sortOrders = branch.getLeafQuery().getSortOrders();
+                List<SortOrder> sortOrders = branch.getLeafQuery().getSortOrders();
                 if (smallestAvailableNode == null) {
                     smallestAvailableNode = candidate;
                     smallestSortOrders    = sortOrders;
                     currentIterator       = i;
                 } else {
-                    List compareSortOrders = sortOrders.size() < smallestSortOrders.size() ? sortOrders : smallestSortOrders;
+                    List<SortOrder> compareSortOrders = sortOrders.size() < smallestSortOrders.size() ? sortOrders : smallestSortOrders;
                     int compare = Queries.compare(candidate, smallestAvailableNode, compareSortOrders);
                     if (compare < 0) {
                         smallestAvailableNode = candidate;

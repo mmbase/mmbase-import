@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.10 2007-02-03 13:08:21 nklasens Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.11 2007-02-11 14:46:14 nklasens Exp $
  */
 public class ApplicationInstaller {
 
@@ -50,7 +50,7 @@ public class ApplicationInstaller {
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
         for (String appResource :  applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
             ApplicationResult result = new ApplicationResult();
-            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
+            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet<String>(), true)) {
                 log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
             }
         }
@@ -69,7 +69,7 @@ public class ApplicationInstaller {
      * @return true if succesfull, false otherwise
      */
     public boolean installApplication(String applicationName, int requiredVersion,
-            String requiredMaintainer, ApplicationResult result, Set installationSet,
+            String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
             boolean autoDeploy) throws SearchQueryException {
 
         if (installationSet.contains(applicationName)) {
@@ -192,7 +192,7 @@ public class ApplicationInstaller {
     protected boolean installDataSources(List dataSources, String appName, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
 
-        List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
+        List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
             for (Iterator h = dataSources.iterator(); h.hasNext();) {
                 Map bh = (Map) h.next();
@@ -213,7 +213,7 @@ public class ApplicationInstaller {
         }
     }
 
-    private void installDatasource(MMObjectBuilder syncbul, XMLNodeReader nodeReader, List nodeFieldNodes, ApplicationResult result) {
+    private void installDatasource(MMObjectBuilder syncbul, XMLNodeReader nodeReader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodeReader.getExportSource();
         int timestamp = nodeReader.getTimeStamp();
 
@@ -248,7 +248,7 @@ public class ApplicationInstaller {
         }
     }
 
-    private void findFieldsOfTypeNode(List nodeFieldNodes, String exportsource, MMObjectNode newNode) {
+    private void findFieldsOfTypeNode(List<MMObjectNode> nodeFieldNodes, String exportsource, MMObjectNode newNode) {
         // determine if there were NODE fields, which need special treatment later.
         Collection fields = newNode.getBuilder().getFields();
         Iterator i = fields.iterator();
@@ -268,10 +268,10 @@ public class ApplicationInstaller {
         }
     }
 
-    private void treatNodeFields(List nodeFieldNodes, MMObjectBuilder syncbul) {
-        Iterator i = nodeFieldNodes.iterator();
+    private void treatNodeFields(List<MMObjectNode> nodeFieldNodes, MMObjectBuilder syncbul) {
+        Iterator<MMObjectNode> i = nodeFieldNodes.iterator();
         while (i.hasNext()) {
-            MMObjectNode importedNode = (MMObjectNode) i.next();
+            MMObjectNode importedNode = i.next();
             String exportsource = (String) importedNode.getValues().get("__exportsource");
             // clean it up
             importedNode.storeValue("__exportsource", null); // hack to remove it.

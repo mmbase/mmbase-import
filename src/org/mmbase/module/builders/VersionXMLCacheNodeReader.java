@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.7 2006-10-14 09:16:50 nklasens Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.8 2007-02-11 14:46:13 nklasens Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -57,7 +57,7 @@ public class VersionXMLCacheNodeReader {
 
     /**
     */
-    public Hashtable getCacheVersions(Hashtable handlers) {
+    public Hashtable<String, Vector<VersionCacheNode>> getCacheVersions(Hashtable<String, Vector<VersionCacheNode>> handlers) {
         Node n1 = document.getFirstChild();
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
@@ -77,9 +77,9 @@ public class VersionXMLCacheNodeReader {
                             // find the node
                             MMObjectNode versionnode = null;
                             String query = "name=='" + name + "'+type=='cache'";
-                            Enumeration b = parent.search(query);
+                            Enumeration<MMObjectNode> b = parent.search(query);
                             if (b.hasMoreElements()) {
-                                versionnode = (MMObjectNode)b.nextElement();
+                                versionnode = b.nextElement();
                             }
                             if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
                             VersionCacheNode cnode = new VersionCacheNode(parent.getMMBase());
@@ -103,9 +103,9 @@ public class VersionXMLCacheNodeReader {
 
                                                 // place ourselfs in the call hash
 
-                                                Vector subs = (Vector)handlers.get(type);
+                                                Vector<VersionCacheNode> subs = handlers.get(type);
                                                 if (subs == null) {
-                                                    subs = new Vector();
+                                                    subs = new Vector<VersionCacheNode>();
                                                     subs.addElement(cnode);
                                                     handlers.put(type, subs);
                                                 } else {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.8 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.9 2007-02-11 14:46:13 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -114,7 +114,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @throws StorageException if an error occurred during creation
      */
     protected void createObject(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        List createFields = new ArrayList();
+        List<CoreField> createFields = new ArrayList<CoreField>();
         List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
@@ -156,7 +156,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     }
 
     private void changeObject(MMObjectNode node, MMObjectBuilder builder) {
-        List changeFields = new ArrayList();
+        List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
         Collection fieldNames = node.getChanged();
         for (Iterator f = fieldNames.iterator(); f.hasNext();) {
@@ -200,7 +200,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     }
 
     private void deleteObject(MMObjectNode node, MMObjectBuilder builder) {
-        List blobFileField = new ArrayList();
+        List<CoreField> blobFileField = new ArrayList<CoreField>();
         List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
@@ -297,7 +297,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         List fields = builder.getFields(NodeManager.ORDER_CREATE);
 
         if (!super.exists(getTableName(builder))) {
-            List tableFields = new ArrayList();
+            List<CoreField> tableFields = new ArrayList<CoreField>();
             for (Iterator f = fields.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
                 // is it a database field, and not of the parent(except the number field)?
@@ -357,8 +357,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
 
         StringBuilder createTableFields = new StringBuilder();
-        Vector myFieldNames = new Vector();
-        Vector parentFieldNames = new Vector();
+        Vector<String> myFieldNames = new Vector<String>();
+        Vector<String> parentFieldNames = new Vector<String>();
 
         for (Iterator f = fields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
