@@ -12,7 +12,7 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.cache.CachePolicy;
+import org.mmbase.cache.*;
 import org.mmbase.util.logging.*;
 
 import java.util.*;
@@ -20,17 +20,21 @@ import java.util.*;
 /**
  * Iterates the big result of a query. It avoids using a lot of memory (which you would need if you
  * get the complete NodeList first), and pollution of the (node) cache. In this current
- * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the queries
- * are marked with {@link CachePolicy#NEVER}.
+ * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the batches
+ * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.6.2.1 2007-02-12 17:13:37 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class HugeNodeListIterator implements NodeIterator {
 
     public static final int DEFAULT_BATCH_SIZE = 10000;
+
+    // will not work through RMMCI, because caches are accessed.
+    protected static MultilevelCache multilevelCache  = MultilevelCache.getCache();
+    protected static NodeListCache nodeListCache = NodeListCache.getCache();
 
     // log
     private static final Logger log = Logging.getLoggerInstance(HugeNodeListIterator.class);
@@ -92,12 +96,13 @@ public class HugeNodeListIterator implements NodeIterator {
             log.trace("Running query: " + currentQuery);
         }
         NodeList list;
-        currentQuery.setCachePolicy(CachePolicy.NEVER);
         if (originalQuery instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) currentQuery;
             list = nq.getNodeManager().getList(nq);
+            nodeListCache.remove(nq);
         } else {
             list = currentQuery.getCloud().getList(currentQuery);
+            multilevelCache.remove(currentQuery);
         }
         if (log.isDebugEnabled()) {
             log.trace("Query result: " + list.size() + " nodes");
@@ -153,14 +158,14 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
-    public Node next() {
+    public Object next() {
         return nextNode();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Node previous() {
+    public Object previous() {
         return previousNode();
     }
     /**
@@ -184,7 +189,61 @@ public class HugeNodeListIterator implements NodeIterator {
      * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
      */
     protected int compares(Node node1, Node node2) {
-        return Queries.compare(node1, node2, originalQuery.getSortOrders());
+        if (node1 == null) return -1;
+        if (node2 == null) return +1;
+        int result = 0;
+        Iterator i = originalQuery.getSortOrders().iterator();
+        while (result == 0 && i.hasNext()) {
+            SortOrder order = (SortOrder) i.next();
+            Object value = getOrderFieldValue(node1, order);
+            Object value2 = getOrderFieldValue(node2, order);
+            // compare values - if they differ, detemrine whether
+            // they are bigger or smaller and return the result
+            // remaining fields are not of interest ionce a difference is found
+            if (value == null) {
+                if (value2 != null) {
+                    result = -1;
+                }
+            } else if (value2 == null) {
+                result = 1;
+            } else {
+                // compare the results
+                try {
+                    result = ((Comparable)value).compareTo(value2);
+                } catch (ClassCastException cce) {
+                    // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
+                    // warn and ignore this sortorder
+                    log.warn("Cannot compare values " + value +" and " + value2 + " in sortorder field " +
+                        order.getField().getFieldName() + " in step " + order.getField().getStep().getAlias());
+                }
+            }
+            // if the order of this field is descending,
+            // then the result of the comparison is the reverse (the node is 'greater' if the value is 'less' )
+            if (order.getDirection() == SortOrder.ORDER_DESCENDING) {
+                result = -result;
+            }
+        }
+        // if all fields match - return 0 as if equal
+        return result;
+    }
+
+    /**
+     * Obtains a value for the field of a sortorder from a given node.
+     * Used to set constraints based on sortorder.
+     */
+    private Object getOrderFieldValue(Node node, SortOrder order) {
+        String fieldName = order.getField().getFieldName();
+        Object value = node.getValue(fieldName);
+        if (value == null) {
+            value = node.getValue(order.getField().getStep().getAlias() + "." + fieldName);
+            if (value == null) {
+                value = node.getValue(order.getField().getStep().getTableName() + "." + fieldName);
+            }
+        }
+        if (value instanceof Node) {
+            value = new Integer(((Node)value).getNumber());
+        }
+        return value;
     }
 
     /**
@@ -205,8 +264,8 @@ public class HugeNodeListIterator implements NodeIterator {
                 // We don't use offset to determin the 'next' batch of query results
                 // because there could have been deletions/insertions.
                 // We use the sort-order to apply a constraint.
-                SortOrder order = originalQuery.getSortOrders().get(0);
-                Object value = Queries.getSortOrderFieldValue(previousNode, order);
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
+                Object value = getOrderFieldValue(previousNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
                     cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER_EQUAL, value);
@@ -247,8 +306,8 @@ public class HugeNodeListIterator implements NodeIterator {
                 previousNode = nodeIterator.previousNode();
             } else {
                 Query currentQuery = (Query) originalQuery.clone();
-                SortOrder order = originalQuery.getSortOrders().get(0);
-                Object value = Queries.getSortOrderFieldValue(nextNode, order);
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
+                Object value = getOrderFieldValue(nextNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
                     cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS_EQUAL, value);
@@ -282,14 +341,14 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * @throws UnsupportedOperationException
      */
-    public void add(Node o) {
+    public void add(Object o) {
         throw new UnsupportedOperationException("Optional operation 'add' not implemented");
     }
 
     /**
      * @throws UnsupportedOperationException
      */
-    public void set(Node o) {
+    public void set(Object o) {
         throw new UnsupportedOperationException("Optional operation 'set' not implemented");
     }
 
@@ -299,11 +358,10 @@ public class HugeNodeListIterator implements NodeIterator {
     public static void main(String[] args) {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         NodeQuery q = cloud.getNodeManager("object").createQuery();
-        HugeNodeListIterator nodeIterator = new HugeNodeListIterator(q, 20);
-        int i = 0;
+        HugeNodeListIterator nodeIterator = new HugeNodeListIterator(q);
         while (nodeIterator.hasNext()) {
             Node node = nodeIterator.nextNode();
-            System.out.println("" + (i++) + ": " + node.getNumber() + " " + node.getNodeManager().getName() + " " + node.getFunctionValue("gui", null).toString());
+            System.out.println(node.getFunctionValue("gui", null).toString());
         }
 
     }
