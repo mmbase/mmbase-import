@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.8 2007-02-05 14:39:10 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.9 2007-02-12 09:45:52 michiel Exp $
  */
 
 public class CronEntry {
@@ -283,7 +283,7 @@ public class CronEntry {
             return false;
         }
         CronEntry other = (CronEntry)o;
-        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers);
+        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers)  && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
 
 
