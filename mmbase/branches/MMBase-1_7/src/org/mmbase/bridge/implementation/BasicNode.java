@@ -10,19 +10,54 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.util.*;
-import org.mmbase.security.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.fields.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.w3c.dom.Element;
+import org.mmbase.bridge.BridgeException;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldValue;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationIterator;
+import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.StringList;
+import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.fields.ValueIntercepter;
+import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.VirtualNode;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.corebuilders.TypeRel;
+import org.mmbase.security.Operation;
+import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.util.Casting;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Basic implementation of Node. Wraps MMObjectNodes, adds security.
@@ -30,7 +65,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.123.2.4 2004-07-20 13:03:08 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.123.2.5 2007-02-12 17:30:30 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -813,45 +848,31 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-
     /**
+     * Returns a list of relations of the given node.
+     * @param role role of the relation
+     * @param nodeManager node manager on the other side of the relation
+     * @param searchDir direction of the relation
+     * @return list of relations
+     * @throws NotFoundException
+     *
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
-
-        RelationList  relations = getRelations(role, nodeManager);
-
-        int dir = RelationStep.DIRECTIONS_BOTH;
-        if (searchDir != null) {
-            dir = ClusterBuilder.getSearchDir(searchDir);
+        if (isNew()) {
+            // new nodes have no relations
+            return org.mmbase.bridge.util.BridgeCollections.EMPTY_RELATIONLIST;
         }
-        if (dir == RelationStep.DIRECTIONS_BOTH) return relations;
-
-        RelationIterator it = relations.relationIterator();
-
-        RelationList result = new BasicRelationList();
-
-        while (it.hasNext()) {
-            Relation relation = it.nextRelation();
-            switch(dir) {
-            case RelationStep.DIRECTIONS_DESTINATION:
-                if(relation.getSource().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            case RelationStep.DIRECTIONS_SOURCE:
-                if(relation.getDestination().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            default:
-                result.add(relation); // er..
-            }
-        }
-        return result;
+        if (searchDir == null) searchDir = "BOTH";
+        if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
+        NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
+        NodeManager nm = query.getNodeManager();
+    
+        assert nm instanceof RelationManager;
+        
+        return (RelationList) nm.getList(query);
     }
-
+    
     public boolean hasRelations() {
         return getNode().hasRelations();
     }
