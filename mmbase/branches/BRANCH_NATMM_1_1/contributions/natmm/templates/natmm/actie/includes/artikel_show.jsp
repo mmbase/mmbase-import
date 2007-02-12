@@ -4,7 +4,7 @@
 	   <div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
       <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
    </mm:node>
-   <span style="font:bold 110%;color:red">></span>
+   <span style="font:bold 110%;color:red"></span>
    <span class="colortitle"><mm:field name="titel"/></span>
    <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
    ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span><br/>
