@@ -37,6 +37,15 @@
 
   </target>
 
+  <target name="clean" depends="buildbase.clean">
+    <exec executable="make" dir="mmbase/kupu">
+      <arg line="clean" />
+    </exec>
+    <exec executable="make" dir="mmbase/kupu/mmbase">
+      <arg line="clean" />
+    </exec>
+  </target>
+
   <target name="template.include">
     <zipfileset dir="${project.source.dir}" prefix="${zip.name}/web-app">
       <patternset id="web-app.package.files" >
