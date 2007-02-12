@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.1.2.1 2007-02-05 13:15:48 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.1.2.2 2007-02-12 09:46:11 michiel Exp $
  */
 
 public class CronEntry {
@@ -105,7 +105,7 @@ public class CronEntry {
         this.name = name == null ? "" : name;
         this.className = className;
         this.cronTime = cronTime;
-        this.configuration = configuration;
+        this.configu5Bration = configuration;
         this.type = type;
 
         cronJob = (Runnable)Class.forName(className).newInstance();
@@ -254,7 +254,7 @@ public class CronEntry {
             return false;
         }
         CronEntry other = (CronEntry)o;
-        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers);
+        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers) && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
 
     private class ExceptionLoggingThread extends Thread {
