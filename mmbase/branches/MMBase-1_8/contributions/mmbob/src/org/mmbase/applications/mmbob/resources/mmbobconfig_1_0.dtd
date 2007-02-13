@@ -4,7 +4,7 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (properties*,generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postmaxsize,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
+<!ELEMENT forums (properties*,generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,maxpostsize,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
