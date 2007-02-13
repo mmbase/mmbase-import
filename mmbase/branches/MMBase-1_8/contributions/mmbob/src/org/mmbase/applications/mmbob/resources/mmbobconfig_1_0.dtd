@@ -4,17 +4,24 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
+<!ELEMENT forums (properties*,generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postmaxsize,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (alias*,generatedata*,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstart*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation,postarea*)>
+<!ELEMENT forum (properties*,alias*,generatedata*,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstart*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
 <!ATTLIST forum language CDATA #IMPLIED>
 <!ATTLIST forum alias CDATA #IMPLIED>
+
+<!ELEMENT properties (property+)>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property value CDATA #REQUIRED>
+
 
 <!ELEMENT postarea (generatedata*,guestreadmode*,guestwritemode*,threadstart*)>
 <!ATTLIST postarea id CDATA #IMPLIED>
@@ -125,6 +132,12 @@
 
 <!ELEMENT guestwritemode (#PCDATA)>
 <!ATTLIST guestwritemode type CDATA #IMPLIED>
+
+<!ELEMENT maxpostsize EMPTY>
+<!ATTLIST maxpostsize subject CDATA #REQUIRED>
+<!ATTLIST maxpostsize body CDATA #REQUIRED>
+<!ATTLIST maxpostsize truncatesubject CDATA #IMPLIED>
+
 
 <!ELEMENT swapoutunusedthreads (#PCDATA)>
 <!ATTLIST swapoutunusedthreads minutes CDATA #IMPLIED>

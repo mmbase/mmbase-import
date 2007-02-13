@@ -20,6 +20,10 @@
         <guestreadmode type="open" />
         <guestwritemode type="open" />
 
+        <!-- values are in number of chancters. when 'truncatesubject' is true, and a posting subject is too long, it is
+        truncated to the max valid lenght -->
+        <maxpostsize subject="64" body="32768" truncatesubject="false"/>
+
         <avatars>
             <upload enable="true"/>
             <gallery enable="true"/>

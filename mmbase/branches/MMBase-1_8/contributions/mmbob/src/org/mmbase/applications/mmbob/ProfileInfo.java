@@ -29,6 +29,9 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
+ * this class represents extra profile information attached to a poster.
+ * It contains a ProfielEntry instance for every profiel entry line in the xml
+ * configuration for the given forum
  * @author Daniel Ockeloen
  * 
  */
@@ -43,6 +46,8 @@ public class ProfileInfo {
     private String xml;
     private String external;
     private int synced;
+    
+    // map with ProfileEntry objects
     private HashMap entries = new HashMap();
 
     public static final String DTD_PROFILEINFO_1_0 = "profileinfo_1_0.dtd";
@@ -77,7 +82,12 @@ public class ProfileInfo {
         return id;
     }
 
-    public boolean save() {
+    /**
+     * stores the external profile fields in the corresponding profileInfo node
+     * in the cloud.
+     * @return
+     */
+    boolean save() {
         if (id != -1) {
             org.mmbase.bridge.Node node = ForumManager.getCloud().getNode(id);
             node.setValue("xml", encodeXML());
@@ -100,6 +110,10 @@ public class ProfileInfo {
         return true;
     }
 
+    /**
+     * reads the xml in which the extra profile information is stored in the cloud, and creates
+     * a number of ProfileInfo objects for it.
+     */
     private void decodeXML() {
         if (xml != null && !xml.equals("")) {
             try {
@@ -125,16 +139,16 @@ public class ProfileInfo {
                                 if (n2.getNodeValue().equals("true")) synced = true;
                             }
                             if (name != null) {
-                                ProfileEntry pe = new ProfileEntry();
-                                pe.setName(name);
+                                ProfileEntry profileEntry = new ProfileEntry();
+                                profileEntry.setName(name);
                                 org.w3c.dom.Node n4 = n.getFirstChild();
                                 if (n4 != null) {
-                                    pe.setValue(n4.getNodeValue());
+                                    profileEntry.setValue(n4.getNodeValue());
                                 } else {
-                                    pe.setValue("");
+                                    profileEntry.setValue("");
                                 }
-                                pe.setSynced(synced);
-                                entries.put(name, pe);
+                                profileEntry.setSynced(synced);
+                                entries.put(name, profileEntry);
                             }
                         }
                     }
@@ -145,6 +159,10 @@ public class ProfileInfo {
         }
     }
 
+    /**
+     * 
+     * @return the ProfileEntry instances this profileInfo contains.
+     */
     public Iterator getValues() {
         return entries.values().iterator();
     }
@@ -155,23 +173,30 @@ public class ProfileInfo {
         return null;
     }
 
+    /**
+     * change the value of or create a new ProfielEntry. Then synced is set to 'false'.
+     * Finally this profileInfo instance is added to the ExternalProfileManager's sync que;
+     * @param name
+     * @param value
+     * @return
+     */
     public String setValue(String name, String value) {
-        ProfileEntry pe = (ProfileEntry) entries.get(name);
-        if (pe == null) {
-            pe = new ProfileEntry();
-            entries.put(name, pe);
+        ProfileEntry profileEntry = (ProfileEntry) entries.get(name);
+        if (profileEntry == null) {
+            profileEntry = new ProfileEntry();
+            entries.put(name, profileEntry);
         }
-        pe.setName(name);
+        profileEntry.setName(name);
         String oldvalue = getValue(name).getValue();
         if (oldvalue == null || !oldvalue.equals(value)) {
-            pe.setValue(value);
-            pe.setSynced(false);
+            profileEntry.setValue(value);
+            profileEntry.setSynced(false);
             setSynced(false);
             save();
-            ProfileEntryDef pd = forum.getProfileDef(name);
-            if (pd != null) {
-                String external = pd.getExternal();
-                String externalname = pd.getExternalName();
+            ProfileEntryDef profileEntryDef = forum.getProfileDef(name);
+            if (profileEntryDef != null) {
+                String external = profileEntryDef.getExternal();
+//                String externalname = profileEntryDef.getExternalName();
 
                 if (external != null && !external.equals("")) {
                     ExternalProfilesManager.addToSyncQueue(this);
@@ -195,6 +220,9 @@ public class ProfileInfo {
         return body;
     }
 
+    /**
+     * This private method is never used!
+     */
     private void syncExternals() {
         Iterator pdi = forum.getProfileDefs();
         if (pdi != null) {
@@ -220,10 +248,19 @@ public class ProfileInfo {
         }
     }
 
+    /**
+     * returns the ProfileEntryDef from the parent Forum with the given name.
+     * @param name
+     * @return
+     */
     public ProfileEntryDef getProfileDef(String name) {
         return forum.getProfileDef(name);
     }
 
+    /**
+     * return the account of the poster this object belongs to
+     * @return
+     */
     public String getAccount() {
         return parent.getAccount();
     }

@@ -23,7 +23,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
- * forumManager ToDo: Write docs!
+ * This class is the mail config class for the forums. It represents the global
+ * forum configuration as it is stored in the mmbob xml, and wraps the configuration
+ * for individual forums. For this the ForumConfig class is used.
+ * TODO: this class should extend ForumConfig, and all double stuff can go.
  * 
  * @author Daniel Ockeloen (MMBased)
  */
@@ -31,6 +34,8 @@ public class ForumsConfig {
     private static Logger log = Logging.getLoggerInstance(ForumsConfig.class);
     private final Map fieldaliases = new HashMap();
     private final Map subs = new HashMap();
+    
+    //default values
     private String defaultaccount, defaultpassword;
     private String accountcreationtype = "open";
     private String accountremovaltype = "open";
@@ -48,6 +53,7 @@ public class ForumsConfig {
     private int postingsoverflowpostarea = 4;
     private int postingsoverflowthreadpage = 15;
     private HashMap emailtexts = new HashMap();
+    private Map properties = new HashMap();
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -70,34 +76,50 @@ public class ForumsConfig {
     private int quotasoftwarning = 60;
     private int quotawarning = 80;
     private boolean firstrun = true;
+    
+    private int postSubjectMaxSize = 128;
+    private int postBodyMaxSize = 32 * 1024;
+    //when this is true, postings with a subject longer than postSubjectMaxSize will
+    //be truncated, and errors will not occur. Otherwise the posting is rejected, and
+    //the user gets a meaningfull error message.
+    private boolean truncateSubject = true;
 
-    public ForumsConfig(DocumentReader reader, Element n) {
+    
+    public ForumsConfig(DocumentReader forumsConfigReader, Element forums) {
         log.debug("subhasmap cleared");
         if (firstrun) checkCloudModel();
         firstrun = false;
-        decodeConfig(reader, n);
+        decodeConfig(forumsConfigReader, forums);
     }
 
     public ForumsConfig() {}
 
-    private boolean decodeConfig(DocumentReader reader, Element n) {
-        NamedNodeMap nm = n.getAttributes();
-        if (nm != null) {
+    /**
+     * This method parses the mmbob xml configuration.
+     * 
+     * @param forumsConfigReader
+     * @param forums the forums element
+     * @return
+     */
+    private boolean decodeConfig(DocumentReader forumsConfigReader, Element forums) {
+        NamedNodeMap attributes = forums.getAttributes();
+        if (attributes != null) {
             String id = "default";
             String account = "admin";
             String password = "admin2k";
             // decode name
-            org.w3c.dom.Node n3 = nm.getNamedItem("id");
+            //TODO: This makes no sens. according to the dtd element forums has no attribute 'id'. I don't think it should have a body either.
+            org.w3c.dom.Node n3 = attributes.getNamedItem("id");
             if (n3 != null) {
                 id = n3.getNodeValue();
             }
             // decode account
-            n3 = nm.getNamedItem("account");
+            n3 = attributes.getNamedItem("account");
             if (n3 != null) {
                 account = n3.getNodeValue();
             }
             // decode password
-            n3 = nm.getNamedItem("password");
+            n3 = attributes.getNamedItem("password");
             if (n3 != null) {
                 password = n3.getNodeValue();
             }
@@ -105,37 +127,49 @@ public class ForumsConfig {
                 defaultaccount = account;
                 defaultpassword = password;
             }
+            
+            //decode properties
+            Element n2 = forumsConfigReader.getElementByPath(forums, "forums.properties");
+            if(n2 != null){
+                for(Iterator ns2 = forumsConfigReader.getChildElements(n2, "property"); ns2.hasNext(); ){
+                     n2 = (Element)ns2.next();
+                    attributes = n2.getAttributes();
+                    properties.put(attributes.getNamedItem("name").getNodeValue(), attributes.getNamedItem("value").getNodeValue());
+                }
+            }
+            
 
             // get xslt configuration
-            Element xsltElement = reader.getElementByPath("mmbobconfig.forums.xslts.postings");
+            Element xsltElement = forumsConfigReader.getElementByPath("mmbobconfig.forums.xslts.postings");
             if (xsltElement != null) {
                 xsltpostingsodd = xsltElement.getAttribute("odd");
                 xsltpostingseven = xsltElement.getAttribute("even");
             }
 
             // get avatar configuration
-            Element avatarsElement = reader.getElementByPath("mmbobconfig.forums.avatars");
-            Element avatarsUploadElement = reader.getElementByPath(avatarsElement, "avatars.upload");
+            Element avatarsElement = forumsConfigReader.getElementByPath("mmbobconfig.forums.avatars");
+            Element avatarsUploadElement = forumsConfigReader.getElementByPath(avatarsElement, "avatars.upload");
             avatarsUploadEnabled = avatarsUploadElement.getAttribute("enable");
-            Element avatarsGalleryElement = reader.getElementByPath(avatarsElement, "avatars.gallery");
+            Element avatarsGalleryElement = forumsConfigReader.getElementByPath(avatarsElement, "avatars.gallery");
             avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
-                nm = n2.getAttributes();
-                if (nm != null) {
+            //get the 'genereate data' configuration
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "generatedata"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
+                attributes = n2.getAttributes();
+                if (attributes != null) {
                     String role = null;
                     String dfile = null;
                     String tokenizer = null;
-                    n3 = nm.getNamedItem("role");
+                    n3 = attributes.getNamedItem("role");
                     if (n3 != null) {
                         role = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("file");
+                    n3 = attributes.getNamedItem("file");
                     if (n3 != null) {
                         dfile = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("tokenizer");
+                    n3 = attributes.getNamedItem("tokenizer");
                     if (n3 != null) {
                         tokenizer = n3.getNodeValue();
                     }
@@ -143,19 +177,20 @@ public class ForumsConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
-                nm = n2.getAttributes();
-                if (nm != null) {
-                    n3 = nm.getNamedItem("max");
+            //TODO: is this implemented in the xml, dtd?
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "quota"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
+                attributes = n2.getAttributes();
+                if (attributes != null) {
+                    n3 = attributes.getNamedItem("max");
                     if (n3 != null) {
                         setQuotaMax(n3.getNodeValue());
                     }
-                    n3 = nm.getNamedItem("softwarning");
+                    n3 = attributes.getNamedItem("softwarning");
                     if (n3 != null) {
                         setQuotaSoftWarning(n3.getNodeValue());
                     }
-                    n3 = nm.getNamedItem("warning");
+                    n3 = attributes.getNamedItem("warning");
                     if (n3 != null) {
                         setQuotaWarning(n3.getNodeValue());
                     }
@@ -164,76 +199,97 @@ public class ForumsConfig {
 
             // get time
             preloadchangedthreadstime = 0;
-            String tmp = getAttributeValue(reader, n, "preloadchangedthreads", "minutes");
+            String tmp = getAttributeValue(forumsConfigReader, forums, "preloadchangedthreads", "minutes");
             try {
                 if (tmp != null) preloadchangedthreadstime += Integer.parseInt(tmp) * 60;
             } catch (Exception e) {}
-            tmp = getAttributeValue(reader, n, "preloadchangedthreads", "hours");
+            
+            tmp = getAttributeValue(forumsConfigReader, forums, "preloadchangedthreads", "hours");
             try {
                 if (tmp != null) preloadchangedthreadstime += Integer.parseInt(tmp) * 3600;
             } catch (Exception e) {}
-            tmp = getAttributeValue(reader, n, "preloadchangedthreads", "days");
+            
+            tmp = getAttributeValue(forumsConfigReader, forums, "preloadchangedthreads", "days");
             try {
                 if (tmp != null) preloadchangedthreadstime += Integer.parseInt(tmp) * (3600 * 24);
             } catch (Exception e) {}
 
             // get time
             swapoutunusedthreadstime = 0;
-            tmp = getAttributeValue(reader, n, "swapoutunusedthreads", "minutes");
+            tmp = getAttributeValue(forumsConfigReader, forums, "swapoutunusedthreads", "minutes");
             try {
                 if (tmp != null) swapoutunusedthreadstime += Integer.parseInt(tmp) * 60;
             } catch (Exception e) {}
-            tmp = getAttributeValue(reader, n, "swapoutunusedthreads", "hours");
+            tmp = getAttributeValue(forumsConfigReader, forums, "swapoutunusedthreads", "hours");
             try {
                 if (tmp != null) swapoutunusedthreadstime += Integer.parseInt(tmp) * 3600;
             } catch (Exception e) {}
-            tmp = getAttributeValue(reader, n, "swapoutunusedthreads", "days");
+            tmp = getAttributeValue(forumsConfigReader, forums, "swapoutunusedthreads", "days");
             try {
                 if (tmp != null) swapoutunusedthreadstime += Integer.parseInt(tmp) * (3600 * 24);
             } catch (Exception e) {}
 
-            accountcreationtype = getAttributeValue(reader, n, "accountcreation", "type");
-            accountremovaltype = getAttributeValue(reader, n, "accountremoval", "type");
-            loginsystemtype = getAttributeValue(reader, n, "loginsystem", "type");
-            loginmodetype = getAttributeValue(reader, n, "loginmode", "type");
-            logoutmodetype = getAttributeValue(reader, n, "logoutmode", "type");
-            guestreadmodetype = getAttributeValue(reader, n, "guestreadmode", "type");
-            guestwritemodetype = getAttributeValue(reader, n, "guestwritemode", "type");
-            threadstartlevel = getAttributeValue(reader, n, "threadstart", "level");
+            accountcreationtype = getAttributeValue(forumsConfigReader, forums, "accountcreation", "type");
+            accountremovaltype = getAttributeValue(forumsConfigReader, forums, "accountremoval", "type");
+            loginsystemtype = getAttributeValue(forumsConfigReader, forums, "loginsystem", "type");
+            loginmodetype = getAttributeValue(forumsConfigReader, forums, "loginmode", "type");
+            logoutmodetype = getAttributeValue(forumsConfigReader, forums, "logoutmode", "type");
+            guestreadmodetype = getAttributeValue(forumsConfigReader, forums, "guestreadmode", "type");
+            guestwritemodetype = getAttributeValue(forumsConfigReader, forums, "guestwritemode", "type");
+            
+            try {
+                postBodyMaxSize = new Integer(getAttributeValue(forumsConfigReader, forums, "maxpostsize", "body")).intValue();
+            } catch (NumberFormatException e) {
+                log.error("configuration error: attribute 'body' of element 'maxpostsize' should have value of type integer. revert to default");
+            }
+            
+            try {
+                postSubjectMaxSize = new Integer(getAttributeValue(forumsConfigReader, forums, "maxpostsize", "subject")).intValue();
+            } catch (NumberFormatException e) {
+                log.error("configuration error: attribute 'subject' of element 'maxpostsize' should have value of type integer. revert to default");
+            }
+            
+            String s = getAttributeValue(forumsConfigReader, forums, "maxpostsize", "truncatesubject");
+            
+            if(s != null && ("true".equals(s)  || "false".equals(s))){
+                truncateSubject = new Boolean(s).booleanValue();
+            }
+            
+            threadstartlevel = getAttributeValue(forumsConfigReader, forums, "threadstart", "level");
 
-            contactInfoEnabled = getAttributeValue(reader, n, "contactinfo", "enable");
-            smileysEnabled = getAttributeValue(reader, n, "smileys", "enable");
-            privateMessagesEnabled = getAttributeValue(reader, n, "privatemessages", "enable");
-            String inttemp = getAttributeValue(reader, n, "postingsperpage", "value");
+            contactInfoEnabled = getAttributeValue(forumsConfigReader, forums, "contactinfo", "enable");
+            smileysEnabled = getAttributeValue(forumsConfigReader, forums, "smileys", "enable");
+            privateMessagesEnabled = getAttributeValue(forumsConfigReader, forums, "privatemessages", "enable");
+            String inttemp = getAttributeValue(forumsConfigReader, forums, "postingsperpage", "value");
             if (inttemp != null) {
                 postingsPerPage = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "speedposttime", "value");
+            inttemp = getAttributeValue(forumsConfigReader, forums, "speedposttime", "value");
             if (inttemp != null) {
                 speedposttime = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "postingsoverflowpostarea", "value");
+            inttemp = getAttributeValue(forumsConfigReader, forums, "postingsoverflowpostarea", "value");
             if (inttemp != null) {
                 postingsoverflowpostarea = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "postingsoverflowthreadpage", "value");
+            inttemp = getAttributeValue(forumsConfigReader, forums, "postingsoverflowthreadpage", "value");
             if (inttemp != null) {
                 postingsoverflowthreadpage = (Integer.valueOf(inttemp)).intValue();
             }
 
-            rooturl = getAttributeValue(reader, n, "urls", "root");
-            externalrooturl = getAttributeValue(reader, n, "urls", "externalroot");
-            fromEmailAddress = getAttributeValue(reader, n, "email", "from");
+            rooturl = getAttributeValue(forumsConfigReader, forums, "urls", "root");
+            externalrooturl = getAttributeValue(forumsConfigReader, forums, "urls", "externalroot");
+            fromEmailAddress = getAttributeValue(forumsConfigReader, forums, "email", "from");
 
-            if (getAttributeValue(reader, n, "replyoneachpage", "value").equals("true")) {
+            if (getAttributeValue(forumsConfigReader, forums, "replyoneachpage", "value").equals("true")) {
                 replyoneachpage = true;
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "layout"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "layout"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
                     Element footerNode = (Element) layoutList.item(0);
@@ -245,24 +301,25 @@ public class ForumsConfig {
                     htmlHeaderPath = headerNode.getAttribute("path");
                 }
             }
-            for (Iterator ns2 = reader.getChildElements(n, "filters"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "filters"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4 != null) {
-                    nm = n4.getAttributes();
-                    if (nm != null) {
+                    attributes = n4.getAttributes();
+                    if (attributes != null) {
                         String type = null;
                         String replace = null;
                         String with = null;
-                        n3 = nm.getNamedItem("type");
+                        n3 = attributes.getNamedItem("type");
                         if (n3 != null) {
                             type = n3.getNodeValue();
                         }
-                        n3 = nm.getNamedItem("replace");
+                        n3 = attributes.getNamedItem("replace");
                         if (n3 != null) {
                             replace = n3.getNodeValue();
                         }
-                        n3 = nm.getNamedItem("with");
+                        n3 = attributes.getNamedItem("with");
                         if (n3 != null) {
                             with = n3.getNodeValue();
                         }
@@ -274,15 +331,15 @@ public class ForumsConfig {
                     n4 = n4.getNextSibling();
                 }
             }
-            for (Iterator ns2 = reader.getChildElements(n, "emailtexts"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "emailtexts"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 org.w3c.dom.Node n4 = n2.getFirstChild();
                 while (n4 != null) {
-                    nm = n4.getAttributes();
-                    if (nm != null) {
+                    attributes = n4.getAttributes();
+                    if (attributes != null) {
                         String role = null;
                         String text = null;
-                        n3 = nm.getNamedItem("role");
+                        n3 = attributes.getNamedItem("role");
                         if (n3 != null) {
                             role = n3.getNodeValue();
                         }
@@ -292,37 +349,37 @@ public class ForumsConfig {
                     n4 = n4.getNextSibling();
                 }
             }
-            for (Iterator ns2 = reader.getChildElements(n, "alias"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
-                nm = n2.getAttributes();
-                if (nm != null) {
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "alias"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
+                attributes = n2.getAttributes();
+                if (attributes != null) {
                     String object = null;
                     String extern = null;
                     String field = null;
                     String externfield = null;
                     String key = null;
                     String externkey = null;
-                    n3 = nm.getNamedItem("object");
+                    n3 = attributes.getNamedItem("object");
                     if (n3 != null) {
                         object = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("extern");
+                    n3 = attributes.getNamedItem("extern");
                     if (n3 != null) {
                         extern = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("field");
+                    n3 = attributes.getNamedItem("field");
                     if (n3 != null) {
                         field = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("externfield");
+                    n3 = attributes.getNamedItem("externfield");
                     if (n3 != null) {
                         externfield = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("key");
+                    n3 = attributes.getNamedItem("key");
                     if (n3 != null) {
                         key = n3.getNodeValue();
                     }
-                    n3 = nm.getNamedItem("externkey");
+                    n3 = attributes.getNamedItem("externkey");
                     if (n3 != null) {
                         externkey = n3.getNodeValue();
                     }
@@ -338,9 +395,10 @@ public class ForumsConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "forum"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
-                ForumConfig config = new ForumConfig(reader, n2);
+            //read the individual forums.
+            for (Iterator ns2 = forumsConfigReader.getChildElements(forums, "forum"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
+                ForumConfig config = new ForumConfig(forumsConfigReader, n2);
                 subs.put(config.getId(), config);
             }
 
@@ -358,6 +416,22 @@ public class ForumsConfig {
 
     public String getDefaultAccount() {
         return defaultaccount;
+    }
+    
+    public String getProperty(String name){
+        return (String) properties.get(name);
+    }
+    
+    public void setProperty(String name, String value){
+        properties.put(name, value);
+    }
+    
+    public boolean hasProperties(){
+        return properties.size() > 0;
+    }
+    
+    public Iterator getPropertyNames(){
+        return properties.keySet().iterator();
     }
 
     /**
@@ -571,14 +645,25 @@ public class ForumsConfig {
         return htmlFooterPath;
     }
 
+    /**
+     * Writes the configuration to xml. Literally! Must be fixed!
+     **/
     public void save() {
 
-        // / OOOH NOOOO!
+        // /TODO: OOOH NOOOO!
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE mmbobconfig PUBLIC \"-//MMBase/DTD mmbob config 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd\">\n";
         body += "<mmbobconfig>\n";
         body += "\t<forums account=\"" + getDefaultAccount() + "\" password=\"" + getDefaultPassword() + "\" language=\"" + getLanguage()
                 + "\">\n";
+        if(properties.size() > 0){
+            body +="\t\t<properties>\n";
+            for(Iterator i = properties.keySet().iterator(); i.hasNext(); ){
+                String key = (String)i.next();
+                body += "\t\t\t<property name=\""+key+"\" value=\""+(String)properties.get(key)+"\" />\n";
+            }
+            body +="\t\t</properties>\n";
+        }
         body += "\t\t<generatedata role=\"body\" file=\"generate/body.txt\" tokenizer=\",!? \" />\n";
         body += "\t\t<generatedata role=\"smileys\" file=\"generate/smileys.txt\" tokenizer=\" \\n\\r\" />\n";
         body += "\t\t<generatedata role=\"punctuation\" file=\"generate/punctuation.txt\" tokenizer=\" \\n\\r\" />\n\n";
@@ -592,6 +677,7 @@ public class ForumsConfig {
         body += "\t\t<logoutmode type=\"" + getLogoutModeType() + "\" />\n";
         body += "\t\t<guestreadmode type=\"" + getGuestReadModeType() + "\" />\n";
         body += "\t\t<guestwritemode type=\"" + getGuestWriteModeType() + "\" />\n\n";
+        body += "\t\t<maxpostsize subject=\"" + getPostSubjecMaxSize() + "\" body=\"" +getPostBodyMaxSize()+ "\" truncatesubject=\""+new Boolean(truncateSubject).toString()+"\"/>\n\n";
         body += "\t\t<avatars>\n";
         body += "\t\t\t<upload enable=\"" + getAvatarsUploadEnabled() + "\"/>\n";
         body += "\t\t\t<gallery enable=\"" + getAvatarsGalleryEnabled() + "\"/>\n";
@@ -647,12 +733,23 @@ public class ForumsConfig {
             } else {
                 body += "\t\t<forum id=\"" + forum.getName() + "\" language=\"" + forum.getLanguage() + "\">\n";
             }
+            
+            //do the properties.
+            if(forum.hasProperties()){
+                body +="\t\t<properties>\n";
+                for(i = forum.getPropertyNames(); i.hasNext(); ){
+                    String key = (String)i.next();
+                    body += "\t\t\t<property name=\""+key+"\" value=\""+(String)forum.getProperty(key)+"\" />\n";
+                }
+                body +="\t\t</properties>\n";
+            }
             if (forum.getGuiEdit("loginsystem") == null || forum.getGuiEdit("loginsystem").equals("true")) {
                 body += "\t\t\t<loginsystem type=\"" + forum.getLoginSystemType() + "\" />\n";
             } else {
                 body += "\t\t\t<loginsystem type=\"" + forum.getLoginSystemType() + "\" guiedit=\"" + forum.getGuiEdit("loginsystem")
                         + "\" />\n";
             }
+            
             if (forum.getGuiEdit("loginmode") == null || forum.getGuiEdit("loginmode").equals("true")) {
                 body += "\t\t\t<loginmode type=\"" + forum.getLoginModeType() + "\" />\n";
             } else {
@@ -736,6 +833,14 @@ public class ForumsConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getPostBodyMaxSize() {
+        return postBodyMaxSize;
+    }
+
+    public int getPostSubjecMaxSize() {
+        return postSubjectMaxSize;
     }
 
     private void checkCloudModel() {
@@ -925,5 +1030,13 @@ public class ForumsConfig {
 
     public boolean getReplyOnEachPage() {
         return replyoneachpage;
+    }
+
+    /**
+     * returns true if a posting subject that is too long should be truncated.
+     * @return
+     */
+    public boolean truncateSubject() {
+        return truncateSubject;
     }
 }
