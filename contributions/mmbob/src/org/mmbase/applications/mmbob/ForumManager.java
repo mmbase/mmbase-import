@@ -73,6 +73,25 @@ public class ForumManager {
     private static boolean running = false;
     private static NodeManager forumnodemanager;
     private static Cloud cloud;
+    
+    
+    /**
+     * The caches can be configured with an XML file, this file can
+     * be changed which causes the caches to be reconfigured automaticly.
+     */
+    private static ResourceWatcher configWatcher = new ResourceWatcher () {
+            public void onChange(String resource) {
+                readConfig();
+            }
+        };
+
+    static { // configure
+        configWatcher.add("mmbob/mmbob.xml");
+        configWatcher.onChange("mmbob/mmbob.xml");
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
+
+    }
 
     /**
      * Initialization
@@ -360,7 +379,7 @@ public class ForumManager {
     }
     
     
-    private static DocumentReader configReader = null;
+    
     
    
 
