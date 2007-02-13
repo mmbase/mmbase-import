@@ -555,6 +555,8 @@
                             <mm:first>
                                 <tr>
                                     <td colspan="3"><h4 style="text-align: center;">Global properties</h4></td>
+                                </tr><tr>
+                                    <td colspan="3">${mlg.warning_changeglobalproperties}</td>
                                 </tr>
                             </mm:first>
                             <mm:link page="changeforum.jsp" referids="forumid,sub">
