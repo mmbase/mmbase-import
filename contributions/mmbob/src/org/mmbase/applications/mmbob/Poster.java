@@ -60,6 +60,7 @@ public class Poster {
 
     /**
      * Contructor
+     * the ProfileInfo field remains null
      * 
      * @param node poster Node
      * @param parent Forum that the poster belongs to

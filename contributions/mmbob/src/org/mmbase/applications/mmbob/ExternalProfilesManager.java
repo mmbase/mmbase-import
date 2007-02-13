@@ -32,7 +32,15 @@ public class ExternalProfilesManager implements Runnable {
     static private Logger log = Logging.getLoggerInstance(ExternalProfilesManager.class);
 
     static HashMap handlers = new HashMap();
+    /**
+     * the ProfileInfo objects that go into this queue are being used to synch the 
+     * external profile with. the values from these objects are copied into the external profile.
+     */
     static private ArrayList queue = new ArrayList();
+    /**
+     * the ProfileInfo objects that go into this queue are being synced to the external
+     * profile. the external values are copied into these objects.
+     */
     static private ArrayList checkqueue = new ArrayList();
 
     // thread
@@ -93,72 +101,21 @@ public class ExternalProfilesManager implements Runnable {
 
     /**
      * Main work loop
+     * first it iterates over the NodeInfo instances of the 'queue' queue, and tries to synchronize the
+     * external profile with the NodeInfo instance. 
+     * 
+     * than it iterates over all the ProfileInfo instances in the checkQueue queue and tries to synchronize the
+     * values of the nodeInfo object with the relevant ExternalProfileInterface, and the profileInfo 
+     * objects that are changed are saved.
+     * 
+     * 
      */
     public void doWork() {
         kicker.setPriority(Thread.MIN_PRIORITY + 1);
 
         while (kicker != null) {
             try {
-                while (!queue.isEmpty()) {
-                    ProfileInfo pi = (ProfileInfo) queue.get(0);
-                    Iterator i = pi.getValues();
-                    while (i.hasNext()) {
-                        ProfileEntry pe = (ProfileEntry) i.next();
-                        ProfileEntryDef pd = pi.getProfileDef(pe.getName());
-                        String external = pd.getExternal();
-                        String externalname = pd.getExternalName();
-                        ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
-                        if (externalname != null && !externalname.equals("") && !pe.getSynced()) {
-                            // String account = parent.getAccount();
-
-                            String account = pi.getAccount();
-                            if (externalname != null && !externalname.equals("")) {
-                                boolean result = ci.setValue(account, externalname, pe.getValue());
-                            } else {
-                                boolean result = ci.setValue(account, pe.getName(), pe.getValue());
-                            }
-                            pe.setSynced(true);
-                            pi.setSynced(true);
-                            pi.save();
-                        }
-                    }
-                    queue.remove(pi);
-                }
-                while (!checkqueue.isEmpty()) {
-                    ProfileInfo pi = (ProfileInfo) checkqueue.get(0);
-                    Iterator i = pi.getValues();
-                    while (i.hasNext()) {
-                        ProfileEntry pe = (ProfileEntry) i.next();
-                        ProfileEntryDef pd = pi.getProfileDef(pe.getName());
-                        if (pd != null) {
-                            String external = pd.getExternal();
-                            String externalname = pd.getExternalName();
-                            ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
-                            if (externalname != null && !externalname.equals("") && !pe.getSynced()) {
-
-                                String account = pi.getAccount();
-                                if (externalname != null && !externalname.equals("")) {
-                                    String value = ci.getValue(account, externalname);
-                                    if (value != null && !value.equals(pe.getValue())) {
-                                        pe.setValue(value);
-                                        pe.setSynced(true);
-                                        pi.setSynced(true);
-                                        pi.save();
-                                    }
-                                } else {
-                                    String value = ci.getValue(account, pe.getName());
-                                    if (value != null && !value.equals(pe.getValue())) {
-                                        pe.setValue(value);
-                                        pe.setSynced(true);
-                                        pi.setSynced(true);
-                                        pi.save();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    checkqueue.remove(pi);
-                }
+                syncQueues();
                 Thread.sleep(sleeptime);
             } catch (Exception f2) {
                 log.info("External profile sync error");
@@ -170,23 +127,116 @@ public class ExternalProfilesManager implements Runnable {
         }
     }
 
-    static public void addToSyncQueue(ProfileInfo pi) {
-        if (!queue.contains(pi)) queue.add(pi);
+    /**
+     * this method dous the actual syncing work
+     */
+    void syncQueues() {
+        //copy the values of these profileInfo objects into the external profile
+        List fields = new ArrayList();
+        while (!queue.isEmpty()) {
+            ProfileInfo profileInfo = (ProfileInfo) queue.get(0);
+            log.debug("For user "+profileInfo.getAccount()+" the profileInfo entries are copied to the external profile ");
+            
+            Iterator i = profileInfo.getValues();
+            while (i.hasNext()) {
+                ProfileEntry profileEntry = (ProfileEntry) i.next();
+                fields.add(profileEntry.getName());
+                ProfileEntryDef profileEntryDef = profileInfo.getProfileDef(profileEntry.getName());
+                String external = profileEntryDef.getExternal();
+                String externalname = profileEntryDef.getExternalName();
+                ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
+                if (externalname != null && !externalname.equals("") && !profileEntry.getSynced()) {
+                    // String account = parent.getAccount();
+
+                    String account = profileInfo.getAccount();
+                    if (externalname != null && !externalname.equals("")) {
+                        ci.setValue(account, externalname, profileEntry.getValue());
+                    } else {
+                        ci.setValue(account, profileEntry.getName(), profileEntry.getValue());
+                    }
+                    profileEntry.setSynced(true);
+                    profileInfo.setSynced(true);
+                    profileInfo.save();
+                }
+            }
+            log.debug("fields that were synched: "+fields.toString());
+            queue.remove(profileInfo);
+        }
+        //copy the values from the external profiles into these ProfileInfo's
+        fields.clear();
+        while (!checkqueue.isEmpty()) {
+            ProfileInfo profileInfo = (ProfileInfo) checkqueue.get(0);
+            log.debug("For user "+profileInfo.getAccount()+" the profileInfo the external profile values are copied into it's profileInfo object.");
+            Iterator i = profileInfo.getValues();
+            while (i.hasNext()) {
+                ProfileEntry profileEntry = (ProfileEntry) i.next();
+                ProfileEntryDef profileEntryDef = profileInfo.getProfileDef(profileEntry.getName());
+                fields.add(profileEntry.getName());
+                if (profileEntryDef != null) {
+                    String external = profileEntryDef.getExternal();
+                    String externalname = profileEntryDef.getExternalName();
+                    ExternalProfileInterface handler = ExternalProfilesManager.getHandler(external);
+                    if (externalname != null && !externalname.equals("") && !profileEntry.getSynced()) {
+
+                        //is this an external profile entry def?
+                        String account = profileInfo.getAccount();
+                        if (externalname != null && !externalname.equals("")) {
+                            String value = handler.getValue(account, externalname);
+                            if (value != null && !value.equals(profileEntry.getValue())) {
+                                profileEntry.setValue(value);
+                                profileEntry.setSynced(true);
+                                profileInfo.setSynced(true);
+                                profileInfo.save();
+                            }
+                        } else {
+                            //perhaps it is a local profile entry def.
+                            String value = handler.getValue(account, profileEntry.getName());
+                            if (value != null && !value.equals(profileEntry.getValue())) {
+                                profileEntry.setValue(value);
+                                profileEntry.setSynced(true);
+                                profileInfo.setSynced(true);
+                                profileInfo.save();
+                            }
+                        }
+                    }
+                }
+            }
+            log.debug("fields that were synched: "+fields.toString());
+            checkqueue.remove(profileInfo);
+        }
     }
 
-    static public void addToCheckQueue(ProfileInfo pi) {
-        if (!checkqueue.contains(pi)) checkqueue.add(pi);
+    /**
+     * ProfielInfo objects that go here are being used to sync the external profile with.
+     * @param profileInfo
+     */
+    static public void addToSyncQueue(ProfileInfo profileInfo) {
+        if (!queue.contains(profileInfo)) queue.add(profileInfo);
+    }
+
+    /**
+     * ProfielInfo objects that go here are being synched to the external profile
+     * @param profileInfo
+     */
+    static public void addToCheckQueue(ProfileInfo profileInfo) {
+        if (!checkqueue.contains(profileInfo)) checkqueue.add(profileInfo);
     }
 
     static public ExternalProfileInterface getHandler(String name) {
         return (ExternalProfileInterface) handlers.get(name);
     }
 
-    public static void loadExternalHandlers(Forum f) {
-        try {
-            Class newclass = Class.forName("org.apache.commons.logging.LogFactory");
-        } catch (Exception r) {}
-        Iterator pdi = f.getProfileDefs();
+    /**
+     * This method iterates over every profileEntryDef in a given forum and tries to 
+     * creates an ExternalProfileInterface instance for it based on it's property 'external'
+     * the instance is added to the 'handlers' collection
+     * @param forum
+     */
+    public static void loadExternalHandlers(Forum forum) {
+//        try {
+//            Class newclass = Class.forName("org.apache.commons.logging.LogFactory");
+//        } catch (Exception r) {}
+        Iterator pdi = forum.getProfileDefs();
         if (pdi != null) {
             while (pdi.hasNext()) {
                 ProfileEntryDef pd = (ProfileEntryDef) pdi.next();

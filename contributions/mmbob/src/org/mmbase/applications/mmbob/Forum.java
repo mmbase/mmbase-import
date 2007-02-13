@@ -19,6 +19,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
+import org.mmbase.applications.mmbob.util.IteratorList;
 import org.mmbase.bridge.*;
 import org.mmbase.cache.*;
 import org.mmbase.storage.search.*;
@@ -28,6 +29,14 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * This class represents an individual forum. Forum data is partly stored in an 
+ * mmbase node, and partly in the mmbob.xml forum configuration (mmbobconfig > forums > forum)
+ * 
+ * A forum object holds reference to a ForumConfig object that wraps all the configuration from the xml.
+ * 
+ * Forum configuration should not be changed directly. by using the methods on the forum object 
+ * the forum will decide what goes to the ForumConfig and what goes into the mmbase node.
+ * 
  * @author Daniel Ockeloen
  */
 public class Forum {
@@ -259,6 +268,11 @@ public class Forum {
         return true;
     }
 
+    /**
+     * Saves the complete forum xml configuration, and synchronizes the tree areas of this forum
+     * when the navigation method is 'tree'
+     * @return
+     */
     public boolean saveConfig() {
         ForumManager.saveConfig();
         if (getNavigationMethod().equals("tree")) syncTreeAreas();
@@ -266,7 +280,7 @@ public class Forum {
     }
 
     /**
-     * "Save direct" the forum
+     * Commit the forum node straight away.
      * 
      * @return <code>true</code>
      */
@@ -730,7 +744,7 @@ public class Forum {
      * 
      * @param posterid MMBase Objectnumber of the poster
      * @return Poster <code>null</code> if the poster was not found
-     */
+     **/
     public Poster getPoster(int posterid) {
         Poster p = (Poster) posters.get(new Integer(posterid));
         if (p != null) {
@@ -755,7 +769,7 @@ public class Forum {
      * get the total number of posters in the forum
      * 
      * @return number of posters in the forum
-     */
+     **/
     public int getPostersTotalCount() {
         return totalusers;
     }
@@ -764,7 +778,7 @@ public class Forum {
      * get the number of online posters for the forum
      * 
      * @return number of online posters
-     */
+     **/
     public int getPostersOnlineCount() {
         return onlineposters.size();
     }
@@ -1262,6 +1276,48 @@ public class Forum {
         }
         return ForumManager.getLogoutModeType();
     }
+    
+    /**
+     * @param name
+     * @return the property value or null
+     */
+    public String getProperty(String name){
+        if(config != null){
+            if(config.getPropety(name) != null){
+                return config.getPropety(name);
+            }
+        }
+        return null;
+    }
+    
+    public void setProperty(String name, String value){
+        if (checkConfig()) {
+            config.setProperty(name, value);
+        }
+    }
+    
+    /**
+     * @return true if either this forum or the global forum config has properties, as 
+     * this forum inherits the properties from the global config.
+     */
+    public boolean hasProperties(){
+        boolean localProperties = false;
+        if (checkConfig()) {
+            localProperties = config.hasProperties();
+        }
+        return localProperties;
+    }
+    
+    /**
+     * @return  an iterator that contains all the properties set for 
+     * this forum.
+     */
+    public Iterator getPropertyNames(){
+        if(checkConfig()){
+            return config.getPropertyNames();
+        }
+        return new ArrayList(0).iterator();
+    }
 
     public void setLogoutModeType(String type) {
         if (checkConfig()) {
@@ -1274,6 +1330,8 @@ public class Forum {
             config.setLoginSystemType(system);
         }
     }
+    
+    
 
     public void addProfileDef(ProfileEntryDef cm) {
         if (checkConfig()) {
@@ -1741,6 +1799,10 @@ public class Forum {
     }
 
     public ForumConfig getConfig() {
+        if(config == null){
+            log.error("forum config == null, resetting config");
+            resetConfig();
+        }
         return config;
     }
 

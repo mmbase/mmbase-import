@@ -1052,7 +1052,7 @@ public class PostArea {
 
     private boolean checkConfig() {
         if (config == null) {
-            log.info("BLA=" + getName() + " " + parent.getConfig());
+            log.debug("Post Area :=" + getName() + ", parent config: " + parent.getConfig());
             config = parent.getConfig().addPostAreaConfig(getName());
         }
         return true;

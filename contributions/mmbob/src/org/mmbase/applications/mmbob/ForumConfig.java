@@ -11,6 +11,7 @@
 package org.mmbase.applications.mmbob;
 
 import org.w3c.dom.*;
+
 import java.util.*;
 
 import org.mmbase.util.*;
@@ -58,17 +59,25 @@ public class ForumConfig {
     private int quotamax = 100;
     private int quotasoftwarning = 60;
     private int quotawarning = 80;
+    
+    private Map properties = new HashMap(); 
 
-    public ForumConfig(DocumentReader reader, Element n) {
-        decodeConfig(reader, n);
+    public ForumConfig(DocumentReader forumConfigReader, Element n) {
+        decodeConfig(forumConfigReader, n);
     }
 
     public ForumConfig(String id) {
         this.id = id;
     }
 
-    private boolean decodeConfig(DocumentReader reader, Element n) {
-        NamedNodeMap nm = n.getAttributes();
+    /**
+     * reads the config for a specific forum from xml.
+     * @param reader
+     * @param forum
+     * @return
+     */
+    private boolean decodeConfig(DocumentReader reader, Element forum) {
+        NamedNodeMap nm = forum.getAttributes();
         if (nm != null) {
             String account = "admin";
             String password = "admin2k";
@@ -101,45 +110,55 @@ public class ForumConfig {
                     clonemaster = true;
                 }
             }
+            
+//          decode properties
+            Element n2 = reader.getElementByPath(forum, "forum.properties");
+            if(n2 != null){
+                for(Iterator ns2 = reader.getChildElements(n2, "property"); ns2.hasNext(); ){
+                     n2 = (Element)ns2.next();
+                     NamedNodeMap attributes = n2.getAttributes();
+                    properties.put(attributes.getNamedItem("name").getNodeValue(), attributes.getNamedItem("value").getNodeValue());
+                }
+            }
 
-            accountcreationtype = getAttributeValue(reader, n, "accountcreation", "type");
-            accountremovaltype = getAttributeValue(reader, n, "accountremoval", "type");
-            loginsystemtype = getAttributeValue(reader, n, "loginsystem", "type");
-            setGuiEdit("loginsystem", getAttributeValue(reader, n, "loginsystem", "guiedit"));
-            loginmodetype = getAttributeValue(reader, n, "loginmode", "type");
-            setGuiEdit("loginmode", getAttributeValue(reader, n, "loginmode", "guiedit"));
-            logoutmodetype = getAttributeValue(reader, n, "logoutmode", "type");
-            setGuiEdit("logoutmode", getAttributeValue(reader, n, "logoutmode", "guiedit"));
-            guestreadmodetype = getAttributeValue(reader, n, "guestreadmode", "type");
-            setGuiEdit("guestreadmode", getAttributeValue(reader, n, "guestreadmode", "guiedit"));
-            guestwritemodetype = getAttributeValue(reader, n, "guestwritemode", "type");
-            setGuiEdit("guestwritemode", getAttributeValue(reader, n, "guestwritemode", "guiedit"));
-            threadstartlevel = getAttributeValue(reader, n, "threadstart", "level");
+            accountcreationtype = getAttributeValue(reader, forum, "accountcreation", "type");
+            accountremovaltype = getAttributeValue(reader, forum, "accountremoval", "type");
+            loginsystemtype = getAttributeValue(reader, forum, "loginsystem", "type");
+            setGuiEdit("loginsystem", getAttributeValue(reader, forum, "loginsystem", "guiedit"));
+            loginmodetype = getAttributeValue(reader, forum, "loginmode", "type");
+            setGuiEdit("loginmode", getAttributeValue(reader, forum, "loginmode", "guiedit"));
+            logoutmodetype = getAttributeValue(reader, forum, "logoutmode", "type");
+            setGuiEdit("logoutmode", getAttributeValue(reader, forum, "logoutmode", "guiedit"));
+            guestreadmodetype = getAttributeValue(reader, forum, "guestreadmode", "type");
+            setGuiEdit("guestreadmode", getAttributeValue(reader, forum, "guestreadmode", "guiedit"));
+            guestwritemodetype = getAttributeValue(reader, forum, "guestwritemode", "type");
+            setGuiEdit("guestwritemode", getAttributeValue(reader, forum, "guestwritemode", "guiedit"));
+            threadstartlevel = getAttributeValue(reader, forum, "threadstart", "level");
 
-            contactInfoEnabled = getAttributeValue(reader, n, "contactinfo", "enable");
-            smileysEnabled = getAttributeValue(reader, n, "smileys", "enable");
-            privateMessagesEnabled = getAttributeValue(reader, n, "privateMessages", "enable");
-            String inttemp = getAttributeValue(reader, n, "postingsperpage", "value");
+            contactInfoEnabled = getAttributeValue(reader, forum, "contactinfo", "enable");
+            smileysEnabled = getAttributeValue(reader, forum, "smileys", "enable");
+            privateMessagesEnabled = getAttributeValue(reader, forum, "privateMessages", "enable");
+            String inttemp = getAttributeValue(reader, forum, "postingsperpage", "value");
             if (inttemp != null) {
                 postingsPerPage = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "postingsoverflowpostarea", "value");
+            inttemp = getAttributeValue(reader, forum, "postingsoverflowpostarea", "value");
             if (inttemp != null) {
                 postingsoverflowpostarea = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "postingsoverflowthreadpage", "value");
+            inttemp = getAttributeValue(reader, forum, "postingsoverflowthreadpage", "value");
             if (inttemp != null) {
                 postingsoverflowthreadpage = (Integer.valueOf(inttemp)).intValue();
             }
 
-            inttemp = getAttributeValue(reader, n, "speedposttime", "value");
+            inttemp = getAttributeValue(reader, forum, "speedposttime", "value");
             if (inttemp != null) {
                 speedposttime = (Integer.valueOf(inttemp)).intValue();
             }
 
-            String stmp = getAttributeValue(reader, n, "replyoneachpage", "value");
+            String stmp = getAttributeValue(reader, forum, "replyoneachpage", "value");
             if (stmp != null) {
                 if (stmp.equals("true")) {
                     replyoneachpage = true;
@@ -148,14 +167,14 @@ public class ForumConfig {
                 }
             }
 
-            fromEmailAddress = getAttributeValue(reader, n, "email", "from");
+            fromEmailAddress = getAttributeValue(reader, forum, "email", "from");
 
-            String tmp = getAttributeValue(reader, n, "navigation", "method");
+            String tmp = getAttributeValue(reader, forum, "navigation", "method");
             if (tmp != null) navigationmethod = tmp;
-            setGuiEdit("navigationmethod", getAttributeValue(reader, n, "navigation", "guiedit"));
+            setGuiEdit("navigationmethod", getAttributeValue(reader, forum, "navigation", "guiedit"));
 
-            for (Iterator ns2 = reader.getChildElements(n, "layout"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "layout"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                 if (layoutList.getLength() > 0) {
                     Element footerNode = (Element) layoutList.item(0);
@@ -168,8 +187,8 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "avatars"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "avatars"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
                 if (avatarsList.getLength() > 0) {
                     Element uploadNode = (Element) avatarsList.item(0);
@@ -185,8 +204,8 @@ public class ForumConfig {
 
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "profileentry"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "profileentry"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
 
                 nm = n2.getAttributes();
                 if (nm != null) {
@@ -266,8 +285,8 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "generatedata"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String role = null;
@@ -289,8 +308,8 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "quota"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
                     n3 = nm.getNamedItem("max");
@@ -308,8 +327,8 @@ public class ForumConfig {
                 }
             }
 
-            for (Iterator ns2 = reader.getChildElements(n, "alias"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "alias"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String object = null;
@@ -353,8 +372,8 @@ public class ForumConfig {
                     fieldaliases.add(fa);
                 }
             }
-            for (Iterator ns2 = reader.getChildElements(n, "postarea"); ns2.hasNext();) {
-                Element n2 = (Element) ns2.next();
+            for (Iterator ns2 = reader.getChildElements(forum, "postarea"); ns2.hasNext();) {
+                n2 = (Element) ns2.next();
                 PostAreaConfig config = new PostAreaConfig(reader, n2);
                 subs.put(config.getId(), config);
             }
@@ -374,6 +393,8 @@ public class ForumConfig {
     public String getDefaultAccount() {
         return defaultaccount;
     }
+    
+    
 
     /**
      * ToDo: Write docs!
@@ -659,5 +680,25 @@ public class ForumConfig {
         String result = (String) setguieditvalues.get(key);
         if (result == null || result.equals("")) return "true";
         return result;
+    }
+
+    /**
+     * @param name
+     * @return the property value or null if the property is not there
+     */
+    public String getPropety(String name) {
+        return (String) properties.get(name);
+    }
+    
+    public void setProperty(String name, String value){
+        properties.put(name, value);
+    }
+    
+    public boolean hasProperties(){
+        return properties.size() > 0;
+    }
+    
+    public Iterator getPropertyNames(){
+        return properties.keySet().iterator();
     }
 }

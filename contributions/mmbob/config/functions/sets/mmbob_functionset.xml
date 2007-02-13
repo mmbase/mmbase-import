@@ -1356,4 +1356,77 @@
         <param name="pvalue" type="String" description="Value of profile value" />
         <return type="java.util.Map"></return>
     </function>
+
+    <function name="getForumProperties">
+        <description>Get the properties for a given forum</description>
+        <type>class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>getForumProperties</method>
+        <param name="forumid" type="String" required="true" description="MMBase node number of the forum" />
+        <return type="NodeList">
+            <field name="name" type="String" description="Name of this property" />
+            <field name="value" type="String" description="Value of this property" />
+        </return>
+    </function>
+
+    <function name="getGlobalProperties">
+        <description>Get the globally configured properties.</description>
+        <type>class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>getGlobalProperties</method>
+        <return type="NodeList">
+            <field name="name" type="String" description="Name of this property" />
+            <field name="value" type="String" description="Value of this property" />
+        </return>
+    </function>
+
+    <function name="forumHasProperties">
+        <description>Does the given forum have any properties set?</description>
+        <type>class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>forumHasProperties</method>
+        <param name="forumid" type="String" required="true" description="MMBase node number of the forum" />
+        <return type="Boolean"/>
+    </function>
+
+    <function name="globalHasProperties">
+        <description>Does the given forum have any properties set?</description>
+        <type>class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>globalHasProperties</method>
+        <return type="Boolean"/>
+    </function>
+
+    <function name="hasProperties">
+        <description>Does the given forum have any properties set?</description>
+        <type>class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>hasProperties</method>
+        <param name="forumid" type="String" required="true" description="MMBase node number of the forum" />
+        <return type="Boolean"/>
+    </function>
+    
+    <function name="setForumProperty">
+    	<description>Sets a forum property and saves the config when poster is administrator to the given forum</description>
+    	<type>Class</type>
+    	<class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+    	<method>setForumProperty</method>
+        <param name="forumid" type="Integer" required="true" description="MMBase node number of the forum" />
+        <param name="posterid" type="Integer" required="true" description="the current user" />
+        <param name="propertyname" type="String" required="true"  />
+        <param name="propertyvalue" type="String" required="true" description="MMBase node number of the forum" />
+    </function>
+
+    <function name="setGlobalProperty">
+    	<description>Sets a global property and saves the config when poster is administrator to the given forum</description>
+    	<type>Class</type>
+    	<class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+    	<method>setGlobalProperty</method>
+        <param name="forumid" type="Integer" required="true" description="MMBase node number of the forum" />
+        <param name="posterid" type="Integer" required="true" description="the current user" />
+        <param name="propertyname" type="String" required="true"  />
+        <param name="propertyvalue" type="String" required="true" description="MMBase node number of the forum" />
+    </function>
+
+
 </functionset>

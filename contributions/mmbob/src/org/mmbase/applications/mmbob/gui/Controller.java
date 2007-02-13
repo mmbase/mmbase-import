@@ -1591,9 +1591,7 @@ public class Controller {
     public Map postReply(String forumid, String postareaid, String postthreadid, String subject, String posterId, String body) {
         
         log.debug("*** post reply");
-        HashMap map = new HashMap();
-
-        if (subject.length() > 60) subject = subject.substring(0, 57) + "...";
+        HashMap map = new HashMap(1);
 
         Forum forum = ForumManager.getForum(forumid);
         int pos = posterId.indexOf("(");
@@ -1610,16 +1608,8 @@ public class Controller {
                     Poster poster = forum.getPosterNick(posterId);
                     if ((!postThead.getState().equals("closed") || !postThead.getState().equals("pinnedclosed") || postArea.isModerator(posterId))
                             && (poster == null || !poster.isBlocked())) {
-                        if (body.equals("")) {
-                            map.put("error", "no_body");
-                        } else if (poster != null && poster.checkDuplicatePost("", body)) {
-                            map.put("error", "duplicate_post");
-                        } else if (checkIllegalHtml(body)) {
-                            map.put("error", "illegal_html");
-                        } else if (poster != null && checkSpeedPosting(postArea, poster)) {
-                            map.put("error", "speed_posting");
-                            map.put("speedposttime", "" + postArea.getSpeedPostTime());
-                        } else {
+                        
+                        if (checkNewPosting(subject, body, poster, postArea, map, false)) {
                             body = postArea.filterContent(body);
                             subject = filterHTML(subject);
                             // temp fix for [ ] quotes.
@@ -1648,6 +1638,48 @@ public class Controller {
         }
         return map;
     }
+    
+    /**
+     * @param subject
+     * @param body
+     * @param poster
+     * @param postArea
+     * @param map the map in wich errors will be placed when they are found.
+     * @return true when this posting is legal
+     */
+    private boolean checkNewPosting(String subject, String body, Poster poster, PostArea postArea, Map map, boolean checkSubject){
+        
+        int postSubjectMaxSize = ForumManager.getPostSubjectMaxSize();
+        
+        if(checkSubject){
+            if (subject.length() > postSubjectMaxSize  && ForumManager.truncateSubject()){
+                subject = subject.substring(0, postSubjectMaxSize - 3) + "...";
+            }
+        }
+        
+        if (subject.equals("") && checkSubject) {
+            map.put("error", "no_subject");
+        } else if (body.equals("")) {
+            map.put("error", "no_body");
+        } else if (checkIllegalHtml(subject) && checkSubject) {
+            map.put("error", "illegal_html");
+        } else if (checkIllegalHtml(body)) {
+            map.put("error", "illegal_html");
+        } else if (poster != null && poster.checkDuplicatePost(subject, body)) {
+            map.put("error", "duplicate_post");
+        } else if (subject.length() > ForumManager.getPostSubjectMaxSize() && checkSubject) {
+            map.put("error", "maxpostsubjectsize");
+        } else if (body.length() > ForumManager.getPostBodyMaxSize()) {
+            map.put("error", "maxpostbodysize");
+        } else if (poster != null && checkSpeedPosting(postArea, poster)) {
+            map.put("error", "speed_posting");
+            map.put("speedposttime", "" + postArea.getSpeedPostTime());
+        }else{
+            return true;
+        }
+        return false;
+        
+    }
 
     /**
      * add a new post (postthread+1 posting) in a postarea, use postReply for all following postings in the postthread
@@ -1661,34 +1693,16 @@ public class Controller {
      */
     public Map newPost(String forumid, String postareaid, String subject, String posterId, String body, String mood) {
 
-        HashMap map = new HashMap();
-
-        if (subject.length() > 60) subject = subject.substring(0, 57) + "...";
-
+        HashMap map = new HashMap(1);
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
-            PostArea a = forum.getPostArea(postareaid);
+            PostArea postArea = forum.getPostArea(postareaid);
             Poster poster = forum.getPoster(posterId);
-            if (a != null && (poster == null || !poster.isBlocked())) {
-                if (subject.equals("")) {
-                    map.put("error", "no_subject");
-                } else if (body.equals("")) {
-                    map.put("error", "no_body");
-                } else if (checkIllegalHtml(subject)) {
-                    map.put("error", "illegal_html");
-                } else if (checkIllegalHtml(body)) {
-                    map.put("error", "illegal_html");
-                } else if (poster != null && poster.checkDuplicatePost(subject, body)) {
-                    map.put("error", "duplicate_post");
-                } else if (checkMaxPostSize(subject, body)) {
-                    map.put("error", "maxpostsize");
-                } else if (poster != null && checkSpeedPosting(a, poster)) {
-                    map.put("error", "speed_posting");
-                    map.put("speedposttime", "" + a.getSpeedPostTime());
-                } else {
-                    body = a.filterContent(body);
+            if (postArea != null && (poster == null || !poster.isBlocked())) {
+                if (checkNewPosting(subject, body, poster, postArea, map, true)) {
+                    body = postArea.filterContent(body);
                     subject = filterHTML(subject);
-                    int postthreadid = a.newPost(subject, poster, body, mood, false);
+                    int postthreadid = postArea.newPost(subject, poster, body, mood, false);
                     map.put("postthreadid", new Integer(postthreadid));
                     map.put("error", "none");
                     if (poster != null) {
@@ -2529,14 +2543,7 @@ public class Controller {
         return false;
     }
 
-    private boolean checkMaxPostSize(String subject, String body) {
-        if (subject.length() > 128) {
-            return true;
-        } else if (body.length() > (32 * 1024)) {
-            return true;
-        }
-        return false;
-    }
+   
 
     private boolean checkSpeedPosting(PostArea a, Poster poster) {
         if (poster.getLastPostTime() != -1) {
@@ -2852,5 +2859,5 @@ public class Controller {
         }
         return "true";
     }
-
+    
 }

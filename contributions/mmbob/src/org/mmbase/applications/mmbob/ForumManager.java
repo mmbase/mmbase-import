@@ -22,13 +22,19 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
 
 import org.mmbase.util.FileWatcher;
 
 /**
- * forumManager ToDo: Write docs!
+ * This class is the entry to to the forum. 
+ * It reads the configuration, instantiates all the forums and configures them.
+ * Through it's static methods the actual forum instances can be obtained.
+ * 
+ * This class also holds the global forum configuration by means of a ForumsConfig
+ * instance.
  * 
  * @author Daniel Ockeloen (MMBased)
  */
@@ -95,6 +101,15 @@ public class ForumManager {
             }
         }
     }
+    
+    /**
+     * This method is only there for testing purposes.
+     * It forces synching of the ques of the ExternalProfilesManager.
+     */
+    public static void kickExternalProfilesManager(){
+        log.debug("running the doWork() method on the ExternlProfilesManager");
+        externalprofilesmanager.syncQueues();
+    }
 
     /**
      * Determine if the forumManager passed it's initilization
@@ -148,6 +163,10 @@ public class ForumManager {
         return null;
     }
 
+    /**
+     * when one of the forums has the property 'clonemanster' set, it is returned
+     * @return
+     */
     public static Forum getForumCloneMaster() {
         Enumeration e = forums.elements();
         while (e.hasMoreElements()) {
@@ -200,6 +219,7 @@ public class ForumManager {
 
     /**
      * Called on init. Fill the forums hastable with all forums that are found in the cloud.
+     * Dous not read the forum xml config
      */
     private static void readForums() {
         NodeQuery query = forumnodemanager.createQuery();
@@ -215,7 +235,8 @@ public class ForumManager {
     }
 
     /**
-     * Create a new forum
+     * Create a new forum, if there is a forum that has the property 'clonemaster' set,
+     * than that forums configuration is copied.
      * 
      * @param name Name of the new forum
      * @param language Language of the new forum
@@ -237,50 +258,50 @@ public class ForumManager {
 
         node.commit();
 
-        Forum f = new Forum(node);
-        f.setId(node.getNumber());
-        f.setName(node.getStringValue("name"));
+        Forum newForum = new Forum(node);
+        newForum.setId(node.getNumber());
+        newForum.setName(node.getStringValue("name"));
 
-        forums.put(new Integer(f.getId()), f);
+        forums.put(new Integer(newForum.getId()), newForum);
 
-        Poster p = f.createPoster(account, password);
+        Poster p = newForum.createPoster(account, password);
 
         p.setEmail(email);
         p.savePoster();
 
         // check if we have a clone master
-        Forum cf = getForumCloneMaster();
-        if (cf != null) {
+        Forum forumClone = getForumCloneMaster();
+        if (forumClone != null) {
             // ok we have a clone master copy the wanted settings
-            f.setPostingsPerPage(cf.getPostingsPerPage());
-            f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
-            f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
-            f.setLanguage(cf.getLanguage());
-            f.setLoginSystemType(cf.getLoginSystemType());
-            f.setLoginModeType(cf.getLoginModeType());
-            f.setLogoutModeType(cf.getLogoutModeType());
-            f.setGuestReadModeType(cf.getGuestReadModeType());
-            f.setGuestWriteModeType(cf.getGuestWriteModeType());
-            f.setNavigationMethod(cf.getNavigationMethod());
-            f.setSpeedPostTime(cf.getSpeedPostTime());
-            f.setReplyOnEachPage(cf.getReplyOnEachPage());
-            f.save(); // some basic settings, weird
+            newForum.setPostingsPerPage(forumClone.getPostingsPerPage());
+            newForum.setPostingsOverflowPostArea(forumClone.getPostingsOverflowPostArea());
+            newForum.setPostingsOverflowThreadPage(forumClone.getPostingsOverflowThreadPage());
+            newForum.setLanguage(forumClone.getLanguage());
+            newForum.setLoginSystemType(forumClone.getLoginSystemType());
+            newForum.setLoginModeType(forumClone.getLoginModeType());
+            newForum.setLogoutModeType(forumClone.getLogoutModeType());
+            newForum.setGuestReadModeType(forumClone.getGuestReadModeType());
+            newForum.setGuestWriteModeType(forumClone.getGuestWriteModeType());
+            newForum.setNavigationMethod(forumClone.getNavigationMethod());
+            newForum.setSpeedPostTime(forumClone.getSpeedPostTime());
+            newForum.setReplyOnEachPage(forumClone.getReplyOnEachPage());
+            newForum.save(); // some basic settings, weird
 
             // check if we need to copy ProfileDefs
-            Iterator i = cf.getProfileDefs();
+            Iterator i = forumClone.getProfileDefs();
             if (i != null) {
                 while (i.hasNext()) {
                     ProfileEntryDef pd = (ProfileEntryDef) i.next();
-                    f.addProfileDef(pd);
+                    newForum.addProfileDef(pd);
                     if (pd.getName().equals("nick")) {
                         // kinda trick, we need a way to make forums.jsp optional for this *sigh*
                         if (nick != null && !nick.equals("")) p.setProfileValue("nick", nick);
                     }
                 }
             }
-            f.saveConfig();
+            newForum.saveConfig();
         }
-        f.addAdministrator(p);
+        newForum.addAdministrator(p);
         return node.getNumber();
     }
 
@@ -337,19 +358,25 @@ public class ForumManager {
         if (cloud == null) cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "name/password", getNamePassword("default"));
         return cloud;
     }
+    
+    
+    private static DocumentReader configReader = null;
+    
+   
 
     /**
-     * ToDo: Write docs! Called on init. reads configfile
+     *This method creates a ForumsConfig instance with the mmbob configuration xml.
+     *{@link org.mmbase.applications.mmbob.ForumsConfig.decodeConfig()} actually parses the xml.  
      */
     public static void readConfig() {
         try {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
-            DocumentReader reader = new DocumentReader(is, ForumManager.class);
+            DocumentReader forumsConfigReader = new DocumentReader(is, ForumManager.class);
             // decode forums
-            for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
-                Element n = (Element) ns.next();
-                if (n != null) {
-                    config = new ForumsConfig(reader, n);
+            for (Iterator ns = forumsConfigReader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
+                Element forums = (Element) ns.next();
+                if (forums != null) {
+                    config = new ForumsConfig(forumsConfigReader, forums);
                 }
             }
         } catch (Exception e) {
@@ -361,6 +388,9 @@ public class ForumManager {
         }
     }
 
+    /**
+     * writes the xml configuration.
+     */
     public static void saveConfig() {
         log.info("SAVE CONFIG !");
         if (config != null) {
@@ -651,6 +681,34 @@ public class ForumManager {
 
     public static boolean getReplyOnEachPage() {
         return config.getReplyOnEachPage();
+    }
+    
+    public static String getProperty(String name){
+        return config.getProperty(name);
+    }
+    
+    public static void setProperty(String name, String value){
+        config.setProperty(name, value);
+    }
+    
+    public static boolean hasProperties(){
+        return config.hasProperties();
+    }
+    
+    public static Iterator getPropertyNames(){
+        return config.getPropertyNames();
+    }
+    
+    public static int getPostBodyMaxSize(){
+        return config.getPostBodyMaxSize();
+    }
+    
+    public static int getPostSubjectMaxSize(){
+        return config.getPostSubjecMaxSize();
+    }
+
+    public static boolean truncateSubject() {
+        return config.truncateSubject();
     }
 
 }
