@@ -35,7 +35,8 @@
          <%=  lastSentMessage %>
       </div>  
       </br></br>
-      <input type="button" name="cancel" value="Sluiten" onClick="window.close()" style="width:150px;text-align:center;" />     
+      
+      <input type="button" name="cancel" value="Sluiten" onClick="opener.location.reload();self.close();" style="width:150px;text-align:center;" />     
    
    <% } else { %>
    
