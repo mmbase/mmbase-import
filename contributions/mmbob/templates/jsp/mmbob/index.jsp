@@ -195,16 +195,19 @@
                             </mm:field>
                             <br />
 
-                            <mm:write referid="mlg.number_of_messages" /> : <mm:field name="active_postcount" />
+                            <mm:field name="privatemessagesenabled">
+                                <mm:compare value="true"><mm:write referid="mlg.number_of_messages" /> : <mm:field name="active_postcount" /></mm:compare>
+                            </mm:field>
+
                             <%-- TODO: not yet implemented
                             <mm:write referid="mlg.Level" /> : <mm:field name="active_level" />--%>
 
                             <p>
                             <br />
-                            <mm:import id="mailboxid">Inbox</mm:import>
                             <mm:field name="privatemessagesenabled">
                                 <mm:compare value="true">
-                                    <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
+                                    <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid">
+                                        <mm:param name="mailboxid" value="Inbox" />
                                         <b><mm:write referid="mlg.you_have"/>
                                         <mm:field name="messagecount">
                                             <mm:compare value="">
@@ -278,7 +281,7 @@
                         <a href="${_}"><mm:write referid="mlg.All_members" /></a> |
                     </mm:link>
                     <mm:link page="bookmarked.jsp" referids="forumid" >
-                        <a href="${_}">Bookmarked</a> |
+                        <a href="${_}"><mm:write referid="mlg.bookmarked"/></a> |
                     </mm:link>
                     <mm:link page="search.jsp" referids="forumid" >
                         <a href="${_}"><mm:write referid="mlg.Search" /></a>
@@ -438,23 +441,23 @@
                     <td align="left">
                         <p />
                         <mm:link page="admin/changeforum.jsp" referids="forumid">
-                            <a href="${_}"><mm:write referid="mlg.change_forum" /></a><br />
+                            <a href="${_}"><mm:write referid="mlg.change_forum"/></a><br/>
                          </mm:link>
 
                          <mm:link page="admin/newadministrator.jsp" referids="forumid">
-                            <a href="${_}">Add administrator</a><br/>
+                            <a href="${_}"><mm:write referid="mlg.Add_administrator"/></a><br/>
                          </mm:link>
 
-                         <mm:link page="admin/removeadministrator.jsp" referids="forumid">
-                            <a href="${_}">Remove administrator</a><br/>
+                         <mm:link page="admin/Removeadministrator.jsp" referids="forumid">
+                            <a href="${_}"><mm:write referid="mlg.Remove_administrator"/></a><br/>
                          </mm:link>
 
                          <mm:link page="admin/newpostarea.jsp" referids="forumid">
-                            <a href="${_}"><mm:write referid="mlg.add_new_area" /></a><br/>
+                            <a href="${_}"><mm:write referid="mlg.add_new_area"/></a><br/>
                          </mm:link>
 
-                        <mm:link page="aadmin/profiles.jsp" referids="forumid">
-                            <a href="${_}">Profile management</a><br/>
+                        <mm:link page="admin/profiles.jsp" referids="forumid">
+                            <a href="${_}"><mm:write referid="mlg.Profile_management"/></a><br/>
                          </mm:link>
 
                         <p />
