@@ -348,13 +348,15 @@
                                                 <th>AvatarUpload</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsuploadenabled">
-                                                        <mm:import id="options" reset="true" vartype="List">on,off,default</mm:import>
+                                                        <mm:import id="options" reset="true" vartype="List">on:true,off:false,default:</mm:import>
                                                         <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">
-                                                                <c:set var="selected"><c:if test="${option == currentvalue}">selected</c:if></c:set>
-                                                                <option ${selected}>${option}</option>
+                                                            <c:set var="label">${fn:split(option, ':')[0]}</c:set>
+                                                            <c:set var="value">${fn:split(option, ':')[1]}</c:set>
+                                                                <c:set var="selected"><c:if test="${value == currentvalue}">selected</c:if></c:set>
+                                                                <option ${selected} value="${value}">${label}</option>
                                                         </mm:stringlist>
                                                     </select>
                                                 </td>
@@ -377,8 +379,10 @@
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">
-                                                                <c:set var="selected"><c:if test="${option == currentvalue}">selected</c:if></c:set>
-                                                                <option ${selected}>${option}</option>
+                                                            <c:set var="label">${fn:split(option, ':')[0]}</c:set>
+                                                            <c:set var="value">${fn:split(option, ':')[1]}</c:set>
+                                                            <c:set var="selected"><c:if test="${value == currentvalue}">selected</c:if></c:set>
+                                                            <option ${selected} value="${value}">${label}</option>
                                                         </mm:stringlist>
                                                     </select>
                                                 </td>
