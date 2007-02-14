@@ -2,7 +2,7 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
   <td width="540" valign="top"> 
-    <h2><!-- <mm:field name="number" /> --><mm:field name="title"/></h2>
+    <h2><mm:field name="title"/></h2>
     <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
   </td>
   <td>&nbsp;</td>
@@ -11,7 +11,7 @@
     <mm:content escaper="links">
       <mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
     </mm:content>
-      <mm:remove referid="news"/><mm:import id="news" /><%@ include file="/includes/urls.jsp" %>
+    <mm:remove referid="news"/><mm:import id="news" /><%@ include file="/includes/urls.jsp" %>
     <mm:content escaper="links">
       <mm:field name="body"><mm:isnotempty><div><mm:write /></div></mm:isnotempty></mm:field>
     </mm:content>
