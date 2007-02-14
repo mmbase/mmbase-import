@@ -388,6 +388,7 @@ public class ForumManager {
      *{@link org.mmbase.applications.mmbob.ForumsConfig.decodeConfig()} actually parses the xml.  
      */
     public static void readConfig() {
+        log.info("reparsing forum configuration");
         try {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
             DocumentReader forumsConfigReader = new DocumentReader(is, ForumManager.class);
