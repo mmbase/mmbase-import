@@ -524,8 +524,8 @@
                 <mm:compare referid="sub" value="properties">
                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
                         <tr>
-                            <th width="20%">Name</th>
-                            <th width="70%">Value</th>
+                            <th width="20%">${mlg.Name}</th>
+                            <th width="70%">${mlg.Value}</th>
                             <th width="10%">&nbsp;</th>
                         </tr>
 
