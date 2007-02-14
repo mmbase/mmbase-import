@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.11 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: CacheManager.java,v 1.12 2007-02-14 08:53:38 nklasens Exp $
  */
 public class CacheManager {
 
@@ -110,7 +110,7 @@ public class CacheManager {
             if (only != null && ! only.equals(cacheName)) {
                 continue;
             }
-            Cache<?,?> cache = getCache(cacheName);
+            Cache cache = getCache(cacheName);
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
