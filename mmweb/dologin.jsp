@@ -10,7 +10,7 @@
     } else {
        AccountHandler.login(cloud, request, response);
        String orgUrl = request.getParameter("orgLocation");
-       String url = orgUrl == null ? "/index.jsp" : orgUrl;
+       String url = orgUrl == null ? request.getContextPath() + "/index.jsp" : orgUrl;
        response.sendRedirect(url);
     }
   } catch(Exception ex) {
