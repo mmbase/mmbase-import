@@ -20,10 +20,10 @@
 	  <td>&nbsp;</td>
 	</tr><tr>
 	  <td width="540" valign="top">	
-	  <mm:field name="html(intro)"><mm:isnotempty><div class="newsintro"><mm:write /></div></mm:isnotempty></mm:field>
+	  <mm:field name="html(intro)" escape="none"><mm:isnotempty><div class="newsintro"><mm:write /></div></mm:isnotempty></mm:field>
 	  <mm:remove referid="news"/><mm:import id="news"/>
 	  <%@ include file="/includes/urls.jsp" %>
-	  <div class="newsbody"><mm:field name="html(body)" /></div>
+	  <div class="newsbody"><mm:field name="html(body)" escape="none"/></div>
 	  </td>
 	  <td align="left" valign="top">
 	  <!-- images -->
