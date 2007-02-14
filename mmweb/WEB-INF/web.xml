@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+  <description>
+    MMBase is an open-source content managment system. See http://www.mmbase.org/.
+    This is the test-environment.
+  </description>
+  <display-name>MMBase web-site</display-name>
+
+  <context-param>
+    <param-name>mmbase.taglib.eval_body_include</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  
 
   <filter>
     <filter-name>Jumpers Filter</filter-name>
@@ -8,6 +21,7 @@
     <description>Filter used for jumpers</description>
     <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
   </filter>
+
   <filter-mapping>
     <filter-name>Jumpers Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -78,17 +92,20 @@
     <error-code>404</error-code>
     <location>/index.jsp?page=21649</location>
   </error-page>
-
-  <!-- mmbase-taglib, -->
-  <taglib>
-    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
-  </taglib>
-
-  <taglib>
-    <taglib-uri>http://www.opensymphony.com/oscache</taglib-uri>
-    <taglib-location>/WEB-INF/lib/oscache.jar</taglib-location>
-  </taglib>
-
-
+  <error-page>
+    <error-code>400</error-code>
+    <location>/mmbase/errorpages/400.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/mmbase/errorpages/403.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/mmbase/errorpages/500.jsp</location
+  </error-page>error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/mmbase/errorpages/503.jsp</location>
+  </error-page>
 </web-app>
