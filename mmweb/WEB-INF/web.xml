@@ -102,7 +102,7 @@
   </error-page>
   <error-page>
     <exception-type>java.lang.Exception</exception-type>
-    <location>/mmbase/errorpages/500.jsp</location
+    <location>/mmbase/errorpages/500.jsp</location>
   </error-page>error-page>
   <error-page>
     <error-code>503</error-code>
