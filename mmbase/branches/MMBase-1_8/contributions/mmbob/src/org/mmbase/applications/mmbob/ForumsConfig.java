@@ -736,12 +736,12 @@ public class ForumsConfig {
             
             //do the properties.
             if(forum.hasProperties()){
-                body +="\t\t<properties>\n";
+                body +="\t\t\t<properties>\n";
                 for(i = forum.getPropertyNames(); i.hasNext(); ){
                     String key = (String)i.next();
-                    body += "\t\t\t<property name=\""+key+"\" value=\""+(String)forum.getProperty(key)+"\" />\n";
+                    body += "\t\t\t\t<property name=\""+key+"\" value=\""+(String)forum.getProperty(key)+"\" />\n";
                 }
-                body +="\t\t</properties>\n";
+                body +="\t\t\t</properties>\n\n";
             }
             if (forum.getGuiEdit("loginsystem") == null || forum.getGuiEdit("loginsystem").equals("true")) {
                 body += "\t\t\t<loginsystem type=\"" + forum.getLoginSystemType() + "\" />\n";
