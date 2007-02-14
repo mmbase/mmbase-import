@@ -7,9 +7,9 @@
         <td>
           <p>
           <mm:field name="readmore.readmore"/>
-          <a href="<mm:url><mm:param name="page"><mm:field name="pages.number"/></mm:param></mm:url>">
-          	<mm:field name="pages.title"/>
-          </a>
+          <a href="<mm:url>
+            <mm:param name="page"><mm:field name="pages.number"/></mm:param>
+          </mm:url>"><mm:field name="pages.title" /></a>
           </p>
         </td>
        </tr>
