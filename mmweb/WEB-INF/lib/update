@@ -7,7 +7,7 @@ for i in mmbase-crontab.jar mmbase-cloudcontextsecurity.jar mmbase-editwizard.ja
     mmbase-bugtracker.jar mmbase-rmmci-server.jar \
     mmbase-email.jar mmbase-packaging.jar mmbase-principletracker.jar\
     jstl.jar standard.jar \
-    xalan.jar \
+    xalan.jar serializer.jar \
     commons-fileupload.jar commons-lang.jar \
     backport-util-concurrent.jar\
     ; do
