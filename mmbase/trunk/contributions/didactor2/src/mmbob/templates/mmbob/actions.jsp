@@ -128,6 +128,11 @@
 	<mm:import externid="name" />
   <mm:import externid="description" />
 	<mm:nodefunction set="mmbob" name="newPostArea" referids="forumid,name,description,posterid@activeid">
+    <mm:field name="feedback">
+      <mm:isnotempty>
+        <mm:write />
+      </mm:isnotempty>
+    </mm:field>
     <mm:log><mm:field name="feedback" />. Created <mm:field name="newpostareadid" /> </mm:log>
 	</mm:nodefunction>
 </mm:compare>
