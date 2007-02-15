@@ -16,7 +16,7 @@
      <prompt xml:lang="en">left and small</prompt>
    </option>
 
-   <option id="3" xml:lang="nl">
+   <option id="3">
      <prompt xml:lang="nl">rechts klein</prompt>
      <prompt xml:lang="en">right and small</prompt>
    </option>
