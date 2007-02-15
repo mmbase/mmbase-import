@@ -1,5 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
 %><mm:cloud><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp"
 %>
@@ -23,7 +23,8 @@
   </mm:compare>
 </mm:notpresent>
 <mm:notpresent referid="pageshown">
-<mm:node number="$page"><%-- width total:
+<mm:node number="$page">
+<%-- width total:
 800 +/- = 150 (menu) + news (200 = +/- 30%) + whitespace (12) + articles (240 = +/- 35%) + 
   whitespace (12) + search (190 = +/- 25%)
 --%>
@@ -38,7 +39,8 @@
 	  orderby="mmevents.start" directions="DOWN"
 	  max="4">
 	  <mm:first>
-		<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
+		<h2>News</h2>		
+		<!-- category : <mm:field name="category.title" /> -->
 		<mm:field name="category.number" id="cat" write="false" />
 		<%-- what is the newspage of this category --%>
 		<mm:list nodes="$cat" path="category,pages" searchdir="destination"
@@ -74,7 +76,7 @@
   <td width="35%">
 <%-- ### articles ### --%>
 	<mm:related path="articles" max="1"><h2><mm:field name="articles.title"/></h2>
-		<p><mm:field name="articles.intro" /></p>
+		<p><mm:field name="articles.intro" escape="none" /><!-- incredibly, the intro is html?? --></p>
 	</mm:related>
 	<mm:related path="posrel,documentation" orderby="posrel.pos" directions="UP">
 		<mm:first>
