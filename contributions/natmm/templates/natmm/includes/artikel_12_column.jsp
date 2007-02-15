@@ -120,7 +120,9 @@ if(hasRightCell) {
             %>
             <table class="dotline"><tr><td height="3"></td></tr></table>
             <% 
-         } %>
+         }
+         if(!"-1".equals(artikelID)) {
+         %>
          <jsp:include page="../includes/shorty.jsp">
             <jsp:param name="s" value="<%= artikelID %>" />
             <jsp:param name="r" value="<%= rubriekID %>" />
@@ -128,6 +130,7 @@ if(hasRightCell) {
             <jsp:param name="sp" value="artikel,rolerel" />
             <jsp:param name="sr" value="2" />
          </jsp:include>
+         <% } %>
    	</td>
    </tr>
    </table><%
