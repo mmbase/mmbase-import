@@ -193,6 +193,7 @@
         <relation from="natuurgebieden" to="panno" type="posrel" />
         <relation from="natuurgebieden" to="paragraaf" type="readmore" />
         <relation from="natuurgebieden" to="shorty" type="posrel" />
+        <relation from="paragraaf" to="attachments" type="posrel" />
         <relation from="pagina" to="ads" type="contentrel" />
         <relation from="pagina" to="afdelingen" type="posrel" />
         <relation from="pagina" to="artikel" type="readmore" />
