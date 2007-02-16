@@ -47,12 +47,11 @@
                 <mm:import externid="subject" />
                 <mm:import externid="body" />
                 <mm:nodefunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
-                <mm:write referid="body" session="body" />
-
-                <mm:import id="error"><mm:field name="error" /></mm:import>
-                <mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>
-                <mm:write referid="speedposttime" session="speedposttime" />
-                <mm:write referid="error" session="error" />
+                    <mm:write referid="body" session="body" />
+                    <mm:import id="error"><mm:field name="error" /></mm:import>
+                    <mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>
+                    <mm:write referid="speedposttime" session="speedposttime" />
+                    <mm:write referid="error" session="error" />
                 </mm:nodefunction>
             </mm:compare>
 
