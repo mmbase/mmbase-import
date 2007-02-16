@@ -18,7 +18,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractSequentialBridgeList.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: AbstractSequentialBridgeList.java,v 1.4 2007-02-16 20:06:30 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,6 +45,7 @@ abstract public  class AbstractSequentialBridgeList<E> extends AbstractSequentia
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
+    abstract public BridgeList<E> subList(int a, int b);
 
 
 }

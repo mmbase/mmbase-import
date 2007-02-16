@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.5 2007-02-11 20:05:17 nklasens Exp $
+ * @version $Id: CollectionRelationList.java,v 1.6 2007-02-16 20:07:24 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
@@ -40,11 +40,11 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
         return get(index);
     }
 
-    public BridgeList<Relation> subBridgeList(int fromIndex, int toIndex)  {
-        return new CollectionRelationList(super.subList(fromIndex, toIndex), cloud);
+    public CollectionRelationList subList(int fromIndex, int toIndex)  {
+        return subRelationList(fromIndex, toIndex);
     }
     
-    public RelationList subRelationList(int fromIndex, int toIndex) {
+    public CollectionRelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new CollectionRelationList(subList(fromIndex, toIndex), nodeManager);
         } else {

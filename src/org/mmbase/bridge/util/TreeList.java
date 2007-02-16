@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.25 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: TreeList.java,v 1.26 2007-02-16 20:07:37 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -291,7 +291,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
     public NodeList subNodeList(int start, int end) {
         throw new UnsupportedOperationException("SubNodeLists not implemented for TreeList");
     }
-    public NodeList subBridgeList(int start, int end) {
+    public NodeList subList(int start, int end) {
         throw new UnsupportedOperationException("SubNodeLists not implemented for TreeList");
     }
 

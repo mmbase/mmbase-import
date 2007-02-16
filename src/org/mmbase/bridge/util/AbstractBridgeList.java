@@ -18,7 +18,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: AbstractBridgeList.java,v 1.4 2007-02-16 20:05:51 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -45,9 +45,10 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
+    public abstract BridgeList<E> subList(int f, int t);
 
     protected class BasicIterator implements ListIterator<E> {
-        protected ListIterator<E> iterator;
+        protected final ListIterator<E> iterator;
 
         protected BasicIterator() {
             this.iterator = AbstractBridgeList.this.listIterator();
