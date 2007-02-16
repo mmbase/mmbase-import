@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.23 2006-08-30 18:00:15 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.24 2007-02-16 20:17:14 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -119,11 +119,13 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
-        if (bodyContent != null) {
-            try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            if (bodyContent != null) {
+                try {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch (IOException ioe){
+                    throw new JspTagException(ioe.toString());
+                }
             }
         }
         return SKIP_BODY;
