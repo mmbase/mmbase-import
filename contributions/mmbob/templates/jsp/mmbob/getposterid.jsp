@@ -15,9 +15,9 @@
             <mm:field name="state">
               <mm:compare value="failed">
                 <mm:import id="loginfailed">true</mm:import>
-                        <mm:import id="posterid">-1</mm:import>
+                <mm:import id="posterid">-1</mm:import>
                 <mm:write referid="posterid" session="pid$forumid" />
-                                <mm:import id="loginfailedreason"><mm:field name="reason"/></mm:import>
+                <mm:import id="loginfailedreason"><mm:field name="reason"/></mm:import>
               </mm:compare>
               <mm:compare value="passed">
                 <mm:import id="loginfailed">false</mm:import>

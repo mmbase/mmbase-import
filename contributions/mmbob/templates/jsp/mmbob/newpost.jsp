@@ -127,20 +127,29 @@
   <tr><th colspan="3"><mm:write referid="mlg.Add_new_topic" /></th></tr>
   <tr><th colspan="3" align="center">
     <mm:compare referid="postresult" value="no_subject">
-    <font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
+        <font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
     </mm:compare>
+
     <mm:compare referid="postresult" value="no_body">
-    <font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
+        <font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
     </mm:compare>
+
     <mm:compare referid="postresult" value="duplicate_post">
-    <font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
+        <font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
     </mm:compare>
-    <mm:compare referid="postresult" value="maxpostsize">
-    <font color="red"><mm:write referid="mlg.problem_maxpostsize" /></font>
+
+    <mm:compare referid="postresult" value="maxpostsubjectsize">
+        <font color="red"><mm:write referid="mlg.problem_maxpostsubjectsize" /></font>
     </mm:compare>
+
+    <mm:compare referid="postresult" value="maxpostbodysize">
+        <font color="red"><mm:write referid="mlg.problem_maxpostbodysize" /></font>
+    </mm:compare>
+
     <mm:compare referid="postresult" value="illegal_html">
     <font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
     </mm:compare>
+
     <mm:compare referid="postresult" value="speed_posting">
     <font color="red"><mm:write referid="mlg.problem_speedposting" /><mm:write referid="speedposttime" /> sec ***</font>
     </mm:compare>
