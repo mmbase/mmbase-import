@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.5 2006-03-12 19:52:15 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.6 2007-02-16 20:44:12 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -66,7 +66,7 @@ public class MmxfGetString implements  Processor {
             log.debug("Idrelated " + relatedNodes);
         }
         generator.add(relatedNodes);
-        org.mmbase.bridge.NodeList relationsNodes = node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination");
+        org.mmbase.bridge.RelationList relationsNodes = node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination");
         if (log.isDebugEnabled()) {
             log.debug("Idrelations " + relationsNodes);
         }
