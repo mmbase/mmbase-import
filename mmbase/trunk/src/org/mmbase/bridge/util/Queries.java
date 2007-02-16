@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.82 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: Queries.java,v 1.83 2007-02-16 20:02:36 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -413,8 +413,9 @@ abstract public class Queries {
      * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
-    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive, int datePart) {
+    public static Constraint createConstraint(final Query query, final String fieldName, final int operator, final Object originalValue, final Object value2, final boolean caseSensitive, final int datePart) {
 
+        Object value = originalValue;
         StepField stepField = query.createStepField(fieldName);
         if (stepField == null) {
             throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
@@ -435,9 +436,9 @@ abstract public class Queries {
                 if (value instanceof String) { // it might be an alias!
                     if (cloud.hasNode((String) value)) {
                         Node node = cloud.getNode((String)value);
-                        value = new Integer(node.getNumber());
+                        value = Integer.valueOf(node.getNumber());
                     } else {
-                        value = new Integer(-1);
+                        value = Integer.parseInt((String) value);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Iterator i = ((Collection) value).iterator();
@@ -468,12 +469,22 @@ abstract public class Queries {
                     // a bit of a hack, perhaps we need something like a 'searchCast' or so.
                     value = Casting.toString(value);
                 } else {
-                    value = field.getDataType().cast(value, null, field);
+                    Object castedValue = field.getDataType().cast(value, null, field);
+                    if (castedValue == null && value != null && fieldType == Field.TYPE_NODE) {
+                        // non existing node-number, like e.g. -1 are csated to null,
+                        // but that is incorrect when e..g the operator is GREATER
+                        castedValue = Casting.toInteger(value);
+                    }
+                    value = castedValue;
 
                 }
             }
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
+
+            if (log.isDebugEnabled()) {
+                log.debug(" " + originalValue + " -> " + value + " -> " + compareValue);
+            }
 
             if (operator > 0 && operator < OPERATOR_IN) {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
