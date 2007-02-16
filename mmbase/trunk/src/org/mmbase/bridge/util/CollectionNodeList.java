@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.10 2007-02-10 16:48:54 nklasens Exp $
+ * @version $Id: CollectionNodeList.java,v 1.11 2007-02-16 20:06:58 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractCollectionNodeList<Node> implements NodeList {
@@ -42,11 +42,11 @@ public class CollectionNodeList extends AbstractCollectionNodeList<Node> impleme
     }
 
     public NodeList subNodeList(int fromIndex, int toIndex) {
-        return new CollectionNodeList(subList(fromIndex, toIndex), cloud);
+        return subList(fromIndex, toIndex);
     }
 
-    public BridgeList<Node> subBridgeList(int fromIndex, int toIndex)  {
-        return new CollectionNodeList(super.subList(fromIndex, toIndex));
+    public CollectionNodeList subList(int fromIndex, int toIndex)  {
+        return new CollectionNodeList(wrappedCollection.subList(fromIndex, toIndex));
     }
 
     public NodeIterator nodeIterator() {
