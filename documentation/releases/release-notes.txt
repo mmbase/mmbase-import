@@ -55,7 +55,9 @@ Bug Fixes:
 Known API incompatibilities of bridge, between 1.8 to 1.9.
 ---------------------------------------------------------
 
-- ..
+- Bridge. A RelationList is no NodeList any more (though a Relation is still a Node).
+
+- Taglib. <mm:url generates object of type org.mmbase.bridge.jsp.taglib.pageflow.Url (rather then String).
 
 
 ========================
