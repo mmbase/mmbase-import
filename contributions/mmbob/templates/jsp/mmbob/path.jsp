@@ -310,9 +310,9 @@
 
 <td align="right">
     <mm:compare referid="posterid" value="-1" inverse="true">
-         login: <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="posterid" />"><mm:write referid="active_nick" /></a>
-     <mm:compare referid="logoutmodetype" value="open">
-         [<a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg.Logout" /></a>]
+        <mm:link page="/mmbob/profile.jsp" referids="forumid,posterid">login: <a href="${_}"><mm:write referid="active_nick" /></a></mm:link>
+         <mm:compare referid="logoutmodetype" value="open">
+            <mm:link page="/mmbob/logout.jsp" referids="forumid"> [<a href="${_}"><mm:write referid="mlg.Logout" /></a>] </mm:link>
          </mm:compare>
 
     </mm:compare>

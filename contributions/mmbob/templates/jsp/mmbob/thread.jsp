@@ -317,6 +317,10 @@
                                                     <font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
                                                 </mm:compare>
 
+                                                <mm:compare referid="error" value="maxpostbodysize">
+                                                    <font color="red"><mm:write referid="mlg.problem_maxpostbodysize" /></font>
+                                                </mm:compare>
+
                                                 <mm:compare referid="error" value="duplicate_post">
                                                     <font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
                                                 </mm:compare>
