@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.12 2006-12-08 17:39:09 johannes Exp $
+ * @version $Id: ComponentTag.java,v 1.13 2007-02-16 20:12:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
@@ -31,6 +31,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
     private Attribute render   = Attribute.NULL;
     private Attribute blockName  = Attribute.NULL;
     private Attribute referids  = Attribute.NULL;
+    private Attribute windowState  = Attribute.NULL;
 
     protected final List<Map.Entry<String, Object>> extraParameters = new ArrayList<Map.Entry<String, Object>>();
 
@@ -38,6 +39,12 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
      */
     public void setName(String c) throws JspTagException {
         name = getAttribute(c);
+    }
+
+    /**
+     */
+    public void setWindowstate(String s) throws JspTagException {
+        windowState = getAttribute(s);
     }
 
     public void setRender(String r) throws JspTagException {
@@ -69,6 +76,8 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             }
             String rt = render.getString(this);
             Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
+            String ws = windowState.getString(this);
+            Renderer.WindowState windowStateValue = ws == null || "".equals(ws) ? Renderer.WindowState.NORMAL : Renderer.WindowState.valueOf(ws.toUpperCase());
             Renderer renderer = block.getRenderer(type);
             Parameters params = block.createParameters();
             fillStandardParameters(params);
@@ -81,10 +90,10 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             Parameters frameworkParams = fw.createFrameworkParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
-            fw.render(renderer, params, frameworkParams, w, Renderer.WindowState.NORMAL);
+            fw.render(renderer, params, frameworkParams, w, windowStateValue);
             used = true;
-        } catch (FrameworkException ioe) {
-            throw new TaglibException(ioe);
+        } catch (FrameworkException fe) {
+            throw new TaglibException(fe);
         }
     }
 
