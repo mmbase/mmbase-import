@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.65 2007-02-16 20:05:14 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.66 2007-02-16 20:49:28 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -515,7 +515,7 @@ public class BasicQuery implements Query  {
     }
 
     public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
-        if (v instanceof Node) v = new Integer(((Node)v).getNumber());
+        if (v instanceof Node) v = Integer.valueOf(((Node)v).getNumber());
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
@@ -531,18 +531,17 @@ public class BasicQuery implements Query  {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
 
-    public FieldValueInConstraint createConstraint(StepField f, SortedSet<Object> v) {
+    public FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
             StepField nf = createStepField(step, "number");
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(nf);
-            c.addValue(new Integer(-1));
+            c.addValue(Integer.valueOf(-1));
             return c;
         } else {
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(f);
-            Iterator<Object> i = v.iterator();
-            while (i.hasNext()) {
-                c.addValue(i.next());
+            for (Object o : v) {
+                c.addValue(o);
             }
             return c;
         }
