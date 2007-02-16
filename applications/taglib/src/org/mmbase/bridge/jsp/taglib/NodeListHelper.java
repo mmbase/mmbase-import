@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.34 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: NodeListHelper.java,v 1.35 2007-02-16 20:15:06 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -86,12 +86,13 @@ public class NodeListHelper implements ListProvider {
 
     /**
      * Data member to hold an iteration of the values to return.
-     * This variable is set in {@link #setReturnValues(NodeList, boolean)}, which
+     * This variable is set in {@link #setReturnValues(BridgeList<Node>, boolean)}, which
      * should be called from {@link AbstractNodeListTag#doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
     protected ListIterator<Node> nodeIterator;
-    protected BridgeList<Node>     returnList;
+    protected BridgeList<Node> returnList;
+
 
     /**
      * The current item
@@ -199,7 +200,7 @@ public class NodeListHelper implements ListProvider {
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            Node n = nodes.get(0); 
+            Node n = nodes.get(0);
             if (n != null) {
                 cloud = n.getCloud();
             } else {
@@ -268,7 +269,7 @@ public class NodeListHelper implements ListProvider {
             if (offseti < 0) {
                 offseti = 0;
             }
-            nodes = nodes.subBridgeList(offseti, to);
+            nodes = nodes.subList(offseti, to);
 
         }
         returnList   = nodes;
