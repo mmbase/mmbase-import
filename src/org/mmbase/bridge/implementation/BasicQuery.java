@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.64 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.65 2007-02-16 20:05:14 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -239,9 +239,9 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
         Integer seq = aliasSequences.get(name);
         if (seq == null) {
-            seq = new Integer(0);
+            seq = Integer.valueOf(0);
         } else {
-            seq = new Integer(seq.intValue() + 1);
+            seq = Integer.valueOf(seq.intValue() + 1);
         }
         aliasSequences.put(name, seq);
         return glueAlias(name, seq);
@@ -288,7 +288,7 @@ public class BasicQuery implements Query  {
             if (currentSeq.intValue() == 0) {
                 aliasSequences.put(aliasBase, null);
             } else {
-                aliasSequences.put(aliasBase, new Integer(currentSeq.intValue() - 1));
+                aliasSequences.put(aliasBase, Integer.valueOf(currentSeq.intValue() - 1));
             }
         }
         if ("".equals(alias)) {
@@ -354,7 +354,7 @@ public class BasicQuery implements Query  {
             MMObjectNode relDefNode = relDef.getNode(r);
             InsRel insrel = ((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
             BasicRelationStep step =  addRelationStep(insrel, otherNodeManager, relationDir);
-            step.setRole(new Integer(r));
+            step.setRole(Integer.valueOf(r));
             if (! cloud.hasNodeManager(role)) {
                 step.setAlias(createAlias(role));
             }
