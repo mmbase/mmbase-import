@@ -689,16 +689,18 @@ public class MembershipForm extends ActionForm {
      }
      message += " " + thisMember.getStringValue("lastname") + "," + newline + newline;
      message += "Welkom als nieuw lid bij Natuurmonumenten.  " +
-        "Fijn dat u de natuur in Nederland wilt steunen want de natuur kan niet zonder uw steun. " +
+        "Fijn dat u de natuur in Nederland wilt steunen want de natuur kan niet zonder uw steun. " +  newline + newline +
+        
+        "Binnen enkele weken ontvangt u het welkomstpakket met daarin \"Het Natuurboek\", een prachtig boek, " +
+        "boordevol informatie over natuur in Nederland voor jong en oud, het kwartaalmagazine Natuurbehoud en " +
+        "uw lidmaatschapspas met daarop uw persoonlijke lidmaatschapsnummer."  +  newline + newline +
+        
         "Om u zo snel mogelijk van dienst te zijn, geven wij u nu een tijdelijk lidmaatschapsnummer, " +
-        "waarmee u direct gratis bijzondere fiets- en wandelroutes van onze <a href='http://www.natuurmonumenten.nl/routes'>website</a> kunt dowloaden." + newline + newline;
+        "waarmee u direct gebruik kunt maken van alle voordelen en aanbiedingen voor leden zoals korting " + 
+        "op artikelen uit onze webwinkel. Kijk voor meer voordelen op <a href='http://www.natuurmonumenten.nl/steun_ons/acties_en_voordeel_voor_leden.htm'>onze website</a>" + newline + newline; 
+
      message += "Uw voorlopig lidnummer: 9002162" + newline + newline;
-     message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin \"Het Natuurboek\", een prachtig boek, " +
-         "boordevol informatie over natuur in Nederland voor jong en oud, " +
-    //  message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin de Natuurwijzer, " +
-    //  "het prachtige boek, boordevol informatie over natuur in Nederland, " +
-        "het kwartaalmagazine Natuurbehoud en uw lidmaatschapspas met daarop uw persoonlijke lidmaatschapsnummer." + newline +
-        "Vanaf dat moment kunt u inloggen op de site met uw eigen lidmaatschapsnummer." + newline + newline;
+
      if (thisMember.getStringValue("payment_type").equals("A")) {
         message += "U heeft aangegeven per acceptgiro te willen betalen, " +
             " deze sturen wij u binnen enkele weken toe. ";
