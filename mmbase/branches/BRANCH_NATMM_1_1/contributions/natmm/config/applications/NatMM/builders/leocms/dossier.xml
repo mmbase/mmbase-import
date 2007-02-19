@@ -14,7 +14,7 @@
       <description xml:lang="en"></description>
    </descriptions>
    <properties>
-      <property name="htmlFields">tekst tekst_fra tekst_eng tekst_de</property>
+      <property name="htmlFields">tekst tekst_fra tekst_eng tekst_de omschrijving</property>
    </properties>
    <fieldlist>
       <field>
