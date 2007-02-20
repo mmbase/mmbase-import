@@ -743,7 +743,7 @@ public class CSVReader implements Runnable {
       ArrayList returner = new ArrayList();
       for(int i=0, j=addresses.size();i<j;i++) {
     	  String address = (String)addresses.get(i);
-    	  if(address != null && address.contains(";"))
+    	  if(address != null && address.indexOf(";") > 0)
     		  returner.add(address.substring(0, address.indexOf(";")));
       }
       
