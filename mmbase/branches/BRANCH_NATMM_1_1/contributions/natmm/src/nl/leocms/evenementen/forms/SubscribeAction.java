@@ -546,9 +546,9 @@ public class SubscribeAction extends Action {
 
             // set mail reciever
             if(confirmUrl.equals("confirmation-period-expired")) {
-               emailNode.setValue("to", toEmailAddress + "," + NatMMConfig.fromCADAddress);
+               emailNode.setValue("to", "ibrahim@finalist.com" + "," + NatMMConfig.fromCADAddress);
             } else {
-               emailNode.setValue("to", toEmailAddress);
+               emailNode.setValue("to", "ibrahim@finalist.com");
             }
             
             emailNode.setValue("from", fromEmailAddress);

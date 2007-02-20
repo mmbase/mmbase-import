@@ -126,9 +126,9 @@
          <input type="hidden" name="p" value="<%=paginaID%>">
          <input type="hidden" name="actie" value="zoek">
          <span class="colortitle">Soort route</span><br>
-            &nbsp;<input type="checkbox" name="rt_Wandelroute" value="Wandelroute" <% if((!actie.equals("zoek")) || (rt_w != null)){%>checked<% } %>> Wandelen <br>
-            &nbsp;<input type="checkbox" name="rt_Fietsroute" value="Fietsroute" <% if((!actie.equals("zoek")) || (rt_f != null)){%>checked<% } %>> Fietsen <br>
-            &nbsp;<input type="checkbox" name="rt_Kanoroute" value="Kanoroute" <% if((!actie.equals("zoek")) || (rt_k != null)){%>checked<% } %>> Kanoeen <br>
+            &nbsp;<input type="checkbox" name="rt_Wandelroute" value="Wandelroute" <% if((!actie.equals("zoek")) || (rt_w != null)){%>checked<% } %>> Wandelroute <br>
+            &nbsp;<input type="checkbox" name="rt_Fietsroute" value="Fietsroute" <% if((!actie.equals("zoek")) || (rt_f != null)){%>checked<% } %>> Fietsroute <br>
+            &nbsp;<input type="checkbox" name="rt_Kanoroute" value="Kanoroute" <% if((!actie.equals("zoek")) || (rt_k != null)){%>checked<% } %>> Kanoroute <br>
          <br>
          <span class="colortitle">Afstand in kilometers</span><br>
             &nbsp;<input type="checkbox" name="rl_1" value="1" <% if((!actie.equals("zoek")) || (rl_1 != null)){%>checked<% } %>> 0-5 <br>
