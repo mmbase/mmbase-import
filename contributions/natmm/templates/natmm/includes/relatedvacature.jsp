@@ -94,7 +94,6 @@ if(verloopdatum.longValue()<nowSec) {
       	      </td>
             </tr>
          </mm:last>
-      </mm:attachment>
       </mm:relatednodes>
    </table>
    <%
