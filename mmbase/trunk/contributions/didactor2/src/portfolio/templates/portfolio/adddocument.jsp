@@ -148,9 +148,6 @@
     <mm:createnode type="attachments" id="currentitem">
       <mm:setfield name="title"><mm:write referid="_title"/></mm:setfield>
       <mm:setfield name="description"><mm:write referid="_description"/></mm:setfield>
-      <mm:setfield name="filename">${_handle.name}</mm:setfield>
-      <mm:setfield name="mimetype">${_handle.contentType}</mm:setfield>
-      <mm:setfield name="size">${_handle.size}</mm:setfield>
       <mm:fieldlist fields="handle">
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
