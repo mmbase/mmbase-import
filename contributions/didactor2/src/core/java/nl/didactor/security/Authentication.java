@@ -10,6 +10,8 @@ import org.mmbase.bridge.implementation.BasicCloudContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
+import org.mmbase.security.classsecurity.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -31,10 +33,6 @@ public class Authentication extends org.mmbase.security.Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     final List securityComponents = new CopyOnWriteArrayList();
-
-    private static final String KEY_REQUEST = "request";
-
-    private static final String KEY_RESPONSE = "response";
 
     /**
      * The method is called during loading of the security layer. It contains a
@@ -94,25 +92,48 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("Anonymous application: returning anonymous cloud");
             return ANONYMOUS;
         }
-
         if (log.isDebugEnabled()) {
             log.debug("login(" + application + ","+ loginInfo + "," + parameters + ")");
         }
+
+        if ("class".equals(application)) {
+            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
+            if (li == null) {
+                throw new org.mmbase.security.SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
+            }
+            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
+            if (userName != null) {
+                MMObjectNode user = users.getUser(userName);
+                UserContext uc = new UserContext(user, "class");
+                if (rank != null) {
+                    if (uc.getRank().getInt() < Rank.getRank(rank).getInt()) {
+                        return null;
+                    }
+                }
+                return uc;
+            } else {
+                if (rank == null) rank = "basic user";
+                UserContext uc = new UserContext("classuser", "classuser", Rank.getRank(rank), "class");
+                return uc;
+            }
+        }
+
         HttpServletRequest request = null;
         HttpServletResponse response = null;
         Rank desiredRank = null;
         if (loginInfo != null) {
-            request = (HttpServletRequest) loginInfo.get(KEY_REQUEST);
-            response = (HttpServletResponse) loginInfo.get(KEY_RESPONSE);
+            request = (HttpServletRequest) loginInfo.get(Parameter.REQUEST.getName());
+            response = (HttpServletResponse) loginInfo.get(Parameter.RESPONSE.getName());
             desiredRank = (Rank) loginInfo.get("rank");
         }
 
         // Always allow system access instantly
-        if ((request == null) || (response == null)) {
+        if ("login".equals(application) && ((request == null) || (response == null))) {
             // so if you do _not_ provide any credentials you get admin!?
-
-            log.debug("No request/response; returning system login");
-            return this.doSystemLogin(application);
+            // MM: I think this is silly, it must go, we have class-authentication
+            log.service("No request/response; returning system login ", new Exception());
+            return this.doSystemLogin("login");
         }
 
         // If the action is logging-out, try to find the component on which the
@@ -270,15 +291,24 @@ public class Authentication extends org.mmbase.security.Authentication {
     }
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
+        Parameters parameters;
         if ("anonymous".equals(application)) {
-            return new Parameters(PARAMETERS_ANONYMOUS);
+            parameters =  new Parameters(PARAMETERS_ANONYMOUS);
         } else if ("class".equals(application)) {
-            return Parameters.VOID;
+            parameters =  Parameters.VOID;
+        } else if ("name/password".equals(application)) {
+            parameters = new Parameters(new Parameter[] {PARAMETER_USERNAME,
+                                                         PARAMETER_PASSWORD,
+                                                         Parameter.REQUEST, Parameter.RESPONSE});
         } else if ("login".equals(application)) {
-            return new Parameters(new Parameter[] {new Parameter(PARAMETER_USERNAME, false), new Parameter(PARAMETER_PASSWORD, false)});
+            parameters = new Parameters(new Parameter[] {new Parameter(PARAMETER_USERNAME, false), 
+                                                         new Parameter(PARAMETER_PASSWORD, false), 
+                                                         Parameter.REQUEST, Parameter.RESPONSE});
         } else {
-            return new AutodefiningParameters();
+            parameters = new Parameters(new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE});
         }
+        log.info("Creating parameters for '" + application + "' -> " + parameters, new Exception());
+        return parameters;
     }
 
     /**
@@ -300,9 +330,9 @@ public class Authentication extends org.mmbase.security.Authentication {
         if (method == METHOD_ASIS) {
             return new String[] {"asis", "anonymous", "login", "class", "didactor-logout"};
         } else if (method == METHOD_DELEGATE) {
-            return new String[] {"login", "asis", "class", "didactor-logout"};
+            return new String[] {"login", "name/password", "asis", "class", "didactor-logout"};
         } else {
-            return new String[] {"asis", "login", "class", "didactor-logout"};
+            return new String[] {"asis", "login", "name/password", "class", "didactor-logout"};
         }
     }
 
