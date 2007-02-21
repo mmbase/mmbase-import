@@ -307,7 +307,9 @@ public class Authentication extends org.mmbase.security.Authentication {
         } else {
             parameters = new Parameters(new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE});
         }
-        log.info("Creating parameters for '" + application + "' -> " + parameters, new Exception());
+        if (log.isDebugEnabled()) {
+            log.debug("Creating parameters for '" + application + "' -> " + parameters);
+        }
         return parameters;
     }
 
