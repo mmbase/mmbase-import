@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.9 2007-02-21 10:33:53 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.10 2007-02-21 11:24:31 mmeeuwissen Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -92,7 +92,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             String onum = (String) session.getAttribute("didactor-plainlogin-userid");
             String app  = (String) session.getAttribute("didactor-plainlogin-application");
