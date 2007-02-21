@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.7 2007-02-16 20:16:39 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.8 2007-02-21 16:26:43 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -137,6 +137,15 @@ public class BinaryHandler extends AbstractTypeHandler {
     protected void setValue(Node node, Field field, FileItem bytes) throws JspTagException {
         if (bytes.getSize() > 0) {
             String fileName = bytes.getName();
+            int pos1 = fileName.lastIndexOf("/");
+            int pos2 = fileName.lastIndexOf("\\");
+            int pos = pos1 > pos2 ? pos1 : pos2;
+            if (pos > 0) {
+                fileName = fileName.substring(pos + 1);
+                if ("".equals(fileName)) {
+                    fileName = bytes.getName();
+                }
+            }
             String fileType = bytes.getContentType();
 
             try {
