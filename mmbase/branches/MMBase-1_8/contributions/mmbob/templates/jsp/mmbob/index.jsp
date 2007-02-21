@@ -448,7 +448,7 @@
                             <a href="${_}"><mm:write referid="mlg.Add_administrator"/></a><br/>
                          </mm:link>
 
-                         <mm:link page="admin/Removeadministrator.jsp" referids="forumid">
+                         <mm:link page="admin/removeadministrator.jsp" referids="forumid">
                             <a href="${_}"><mm:write referid="mlg.Remove_administrator"/></a><br/>
                          </mm:link>
 
