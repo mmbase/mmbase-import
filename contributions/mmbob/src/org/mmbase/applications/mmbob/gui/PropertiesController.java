@@ -36,7 +36,7 @@ public class PropertiesController {
      * @param forumid
      * @return
      */
-    public static List getGlobalProperties() {
+    public  List getGlobalProperties() {
         List properties = new ArrayList();
         Map property;
         for (Iterator i = ForumManager.getPropertyNames(); i.hasNext();) {
@@ -54,7 +54,7 @@ public class PropertiesController {
      * @param forumid
      * @return
      */
-    public static boolean forumHasProperties(String forumid){
+    public  boolean forumHasProperties(String forumid){
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
             return forum.hasProperties();
@@ -67,7 +67,7 @@ public class PropertiesController {
      * Are there any properties in the global forum configuration?
      * @return
      */
-    public static boolean globalHasProperties(){
+    public  boolean globalHasProperties(){
         return ForumManager.hasProperties();
     }
     
@@ -77,7 +77,7 @@ public class PropertiesController {
      * @param forumid
      * @return
      */
-    public static boolean hasProperties(String forumid){
+    public  boolean hasProperties(String forumid){
         return forumHasProperties(forumid) || globalHasProperties();
     }
     
@@ -90,7 +90,7 @@ public class PropertiesController {
      * @param propertyname
      * @param propertyvalue
      */
-    public static void setForumProperty(Integer forumid, Integer posterid, String propertyname, String propertyvalue){
+    public  void setForumProperty(Integer forumid, Integer posterid, String propertyname, String propertyvalue){
         Forum forum = ForumManager.getForum(forumid.toString());
         if (isAdministrator(forumid, posterid)) {
             forum.setProperty(propertyname, propertyvalue);
@@ -106,14 +106,14 @@ public class PropertiesController {
      * @param propertyname
      * @param propertyvalue
      */
-    public static void setGlobalProperty(Integer forumid, Integer posterid, String propertyname, String propertyvalue){
+    public  void setGlobalProperty(Integer forumid, Integer posterid, String propertyname, String propertyvalue){
         if(isAdministrator(forumid, posterid)){
             ForumManager.setProperty(propertyname, propertyvalue);
             ForumManager.saveConfig();
         }
     }
     
-    protected static boolean isAdministrator(Integer forumid, Integer posterid){
+    protected  boolean isAdministrator(Integer forumid, Integer posterid){
             Forum forum = ForumManager.getForum(forumid.toString());
             if (forum != null) {
                 Poster activePoster = forum.getPoster(posterid.intValue());
