@@ -79,7 +79,6 @@
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid"/></c:set>
     <mm:import id="image_state_pinned"><img align="absmiddle" src="${t}"></mm:import>
 
-
     <mm:import id="imageid" reset="true">state_hot</mm:import>
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
     <mm:import id="image_state_hot"><img align="absmiddle" src="${t}"></mm:import>
@@ -101,11 +100,19 @@
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
     <mm:import id="image_state_pinnedme"><img align="absmiddle" src="${t}"></mm:import>
 
+    <mm:import id="imageid" reset="true">state_pinnedclosed</mm:import>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_pinnedclosed"><img align="absmiddle" src="${t}"></mm:import>
+
+    <mm:import id="imageid" reset="true">state_pinnedclosed</mm:import>
+    <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
+    <mm:import id="image_state_pinnedclosedme"><img align="absmiddle" src="${t}"></mm:import>
+
+
 
     <mm:import id="imageid" reset="true">state_normalme</mm:import>
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
     <mm:import id="image_state_normalme"><img align="absmiddle" src="${t}"></mm:import>
-
 
     <mm:import id="imageid" reset="true">state_normalnewme</mm:import>
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
@@ -119,7 +126,6 @@
     <mm:import id="imageid" reset="true">state_hotnewme</mm:import>
     <c:set var="t"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></c:set>
     <mm:import id="image_state_hotnewme"><img align="absmiddle" src="${t}"></mm:import>
-
 
 
     <%--  mood icons--%>
