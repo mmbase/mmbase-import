@@ -21,6 +21,7 @@
                 <image id="state_normal" file="state_normal.gif" />
                 <image id="state_closed" file="state_closed.gif" />
                 <image id="state_pinned" file="state_pinned.gif" />
+                <image id="state_pinnedclosed" file="state_pinnedclosed.gif" />
                 <image id="state_normalnew" file="state_normalnew.gif" />
                 <image id="state_hot" file="state_hot.gif" />
                 <image id="state_hotnew" file="state_hotnew.gif" />
