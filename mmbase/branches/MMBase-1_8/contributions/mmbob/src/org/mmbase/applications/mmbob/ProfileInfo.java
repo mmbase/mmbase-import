@@ -66,6 +66,13 @@ public class ProfileInfo {
         // syncExternals();
     }
 
+    /**
+     * @param parent the poster this profileinfo object belongs to
+     * @param id the id of the corresponding node in the cloud
+     * @param xml the profile info from the mmbase node encoded as xml
+     * @param external 
+     * @param synced ?
+     */
     public ProfileInfo(Poster parent, int id, String xml, String external, int synced) {
         this.parent = parent;
         this.id = id;

@@ -80,19 +80,35 @@ public class ProfileEntryDef {
         return guiname;
     }
 
+    /**
+     * the name of the profile field
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * the name of the profile field
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * a fully qualified name of a class that implements ExternalProfileInterface
+     * @param external
+     */
     public void setExternal(String external) {
         log.info("SET EXTERNQAL=" + external + " PD=" + this);
         this.external = external;
     }
 
+    /**
+     * a fully qualified name of a class that implements ExternalProfileInterface
+     * @return
+     */
     public String getExternal() {
         return external;
     }
@@ -114,10 +130,18 @@ public class ProfileEntryDef {
         this.type = type;
     }
 
+    /**
+     * the identifier of the field in the external profile
+     * @return
+     */
     public String getExternalName() {
         return externalname;
     }
 
+    /**
+     * the identifier of the field in the external profile
+     * @return
+     */
     public String getExternalNameString() {
         if (externalname == null) return "";
         return externalname;
