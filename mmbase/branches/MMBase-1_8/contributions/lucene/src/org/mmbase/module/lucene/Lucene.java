@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.63 2006-07-18 06:30:51 michiel Exp $
+ * @version $Id: Lucene.java,v 1.63.2.1 2007-02-21 12:55:45 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -590,6 +590,14 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                 Document config = ResourceLoader.getDocument(url, true, Lucene.class);
                 log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
+
+                NodeList extractorElements = root.getElementsByTagName("extractor");
+                for (int i = 0; i < extractorElements.getLength(); i++) {
+                    Element extractorElement = (Element) extractorElements.item(i);
+                    String className = extractorElement.getAttribute("class");
+                    factory.addExtractor(className);
+                }
+
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
                     Element indexElement = (Element) indexElements.item(i);
