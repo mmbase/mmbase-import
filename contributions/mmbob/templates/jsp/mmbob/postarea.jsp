@@ -237,6 +237,7 @@
                                     <mm:write referid="image_state_hotnew" /> <mm:write referid="mlg.open_topic_popular_unread"/><p />
                                     <mm:write referid="image_state_pinned" /> <mm:write referid="mlg.pinned_topic"/><p />
                                     <mm:write referid="image_state_closed" /> <mm:write referid="mlg.closed_topic"/><p />
+                                    <mm:write referid="image_state_pinnedclosed" /> <mm:write referid="mlg.pinnedclosed_topic"/><p />
                                     <mm:write referid="image_state_normalme" /> <mm:write referid="mlg.topic_to_which_you_have_contributed"/><p />
                                 </td>
                             </tr>
