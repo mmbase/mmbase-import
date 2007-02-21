@@ -116,9 +116,7 @@
   <mm:compare referid="processupload" value="true">
 
     <%-- Get fields from multipart form --%>
-    <mm:import externid="_handle_name" from="multipart"/>
-    <mm:import externid="_handle_type" from="multipart"/>
-    <mm:import externid="_handle_size" from="multipart"/>
+    <mm:import externid="_handle" from="multipart"/>
     <mm:import externid="_title" from="multipart"/>
     <mm:import externid="_description" from="multipart"/>
     <mm:import externid="action1" from="multipart"/>
@@ -151,9 +149,9 @@
     <mm:createnode type="attachments" id="currentitem">
       <mm:setfield name="title"><mm:write referid="_title"/></mm:setfield>
       <mm:setfield name="description"><mm:write referid="_description"/></mm:setfield>
-      <mm:setfield name="filename"><mm:write referid="_handle_name"/></mm:setfield>
-      <mm:setfield name="mimetype"><mm:write referid="_handle_type"/></mm:setfield>
-      <mm:setfield name="size"><mm:write referid="_handle_size"/></mm:setfield>
+      <mm:setfield name="filename">${_handle.name}</mm:setfield>
+      <mm:setfield name="mimetype">${_handle.contentType}</mm:setfield>
+      <mm:setfield name="size">${_handle.size}</mm:setfield>
       <mm:fieldlist fields="handle">
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
