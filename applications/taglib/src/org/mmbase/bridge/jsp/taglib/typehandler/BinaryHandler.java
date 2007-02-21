@@ -32,7 +32,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.4.2.1 2007-02-21 16:25:05 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.4.2.2 2007-02-21 16:26:34 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -142,7 +142,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             if (pos > 0) {
                 fileName = fileName.substring(pos + 1);
                 if ("".equals(fileName)) {
-                    filename = bytes.getName();
+                    fileName = bytes.getName();
                 }
             }
             String fileType = bytes.getContentType();
