@@ -9,7 +9,6 @@ import org.mmbase.util.*;
 import java.io.InputStream;
 
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.security.classsecurity.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -22,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.8 2006-12-13 09:21:36 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.9 2007-02-21 10:33:53 mmeeuwissen Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -69,27 +68,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         checkBuilder();
 
-        if ("class".equals(application)) {
-            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
-            if (li == null) {
-                throw new org.mmbase.security.SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
-            }
-            String userName = (String) li.getMap().get(AuthenticationData.PARAMETER_USERNAME.getName());
-            String rank     = (String) li.getMap().get(AuthenticationData.PARAMETER_RANK.getName());
-            if (userName != null) {
-                MMObjectNode user = users.getUser(userName);
-                UserContext uc = new UserContext(user, "class");
-                if (rank != null) {
-                    if (uc.getRank().getInt() < Rank.getRank(rank).getInt()) {
-                        return null;
-                    }
-                }
-            } else {
-                if (rank == null) rank = "basic user";
-                UserContext uc = new UserContext("classuser", "classuser", Rank.getRank(rank), "class");
-                return uc;
-            }
-        }
+
 
         String sLogin = request.getParameter("username");
         String sPassword = request.getParameter("password");
@@ -120,8 +99,16 @@ public class PlainSecurityComponent implements AuthenticationComponent {
             if (onum != null) {
                 checkBuilder();
                 MMObjectNode user = users.getNode(onum);
-                log.debug("Found 'didactor-plainlogin-userid' in session");
-                return new UserContext(user, app == null ? "name/password" : app);
+                if (user != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found 'didactor-plainlogin-userid' in session user: " + user);
+                    }
+                    return new UserContext(user, app == null ? "login" : app);
+                } else {
+                    log.debug("Could not find user object number " + onum);
+                    session.removeAttribute("didactor-plainlogin-userid");
+                }
+
             } else {
                 log.debug("There is a session, but no 'didactor-plainlogin-userid' in it");
             }
