@@ -1282,7 +1282,7 @@ public class Controller {
      * @param email Email address of the new poster
      * @param gender Gender of the new poster
      * @param location Location of the new poster
-     * @return Feedback from the create command (accountused for example)
+     * @return Feedback from the create command [createerror|inuse|ok|passwordnotequal|firstnameerror|lastnameerror|emailerror]
      */
     public String createPoster(String forumid, String account, String password, String confirmpassword, String firstname, String lastname,
             String email, String gender, String location) {
@@ -1317,6 +1317,19 @@ public class Controller {
         }
     }
 
+    /**
+     * @param forumid
+     * @param account
+     * @param password
+     * @param confirmpassword
+     * @param nick
+     * @param firstname
+     * @param lastname
+     * @param email
+     * @param gender
+     * @param location
+     * @return possible feedback: [ok|createerror|inuse|passwordnotequal|nickinuse|firstnameerror|lastnameerror|emailerror]
+     */
     public String createPosterNick(String forumid, String account, String password, String confirmpassword, String nick, String firstname,
             String lastname, String email, String gender, String location) {
         if (password.equals(confirmpassword)) {
