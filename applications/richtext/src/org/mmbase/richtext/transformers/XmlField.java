@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.3 2007-01-05 12:31:07 michiel Exp $
+ * @version $Id: XmlField.java,v 1.4 2007-02-21 15:03:25 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -61,6 +61,9 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     private final static String XML_TAGEND   = "</mmxf>";
 
 
+    // to make it compile in 1.8
+    protected final static boolean LISTS_INSIDE_P   = true;
+    protected final static boolean LISTS_OUTSIDE_P  = false;
 
 
     private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
