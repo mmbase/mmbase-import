@@ -10,5 +10,10 @@
   <authenticate class="org\.apache\.jsp\.mmbob\..*">
     <property name="rank" value="administrator" />
   </authenticate>
+
+  <authenticate class="org\.mmbase\.applications\.mmbob\.ForumManager.*">
+    <property name="rank" value="administrator" />
+    <property name="username" value="admin" />
+  </authenticate>
 </security>
  

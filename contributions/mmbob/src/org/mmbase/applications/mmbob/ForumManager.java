@@ -33,7 +33,7 @@ import org.mmbase.util.FileWatcher;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: ForumManager.java,v 1.35 2007-01-16 18:01:57 michiel Exp $
+ * @version $Id: ForumManager.java,v 1.36 2007-02-21 11:22:14 michiel Exp $
  */
 public class ForumManager {
     private static final Logger log = Logging.getLoggerInstance(ForumManager.class);
@@ -364,7 +364,7 @@ public class ForumManager {
      * ToDo: Write docs!
      */
     public static Cloud getCloud() {
-        if (cloud == null) cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "name/password", getNamePassword("default"));
+        if (cloud == null) cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", getNamePassword("default"));
         return cloud;
     }
 
