@@ -1,10 +1,9 @@
 <%--
   This template adds a document to a folder.
---%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-
-<%-- expires is set so renaming a folder does not show the old name --%>
+--%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+%><%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:import externid="processupload">false</mm:import>
 <mm:cloud method="delegate" jspvar="cloud">
