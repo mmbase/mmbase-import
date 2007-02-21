@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*; import java.text.*;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.*;
+import javax.servlet.http.*;
 import javax.servlet.Servlet;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -69,7 +70,7 @@ public class TableTag extends CloudReferrerTag {
      * Return a label for a given identifier.
      */
     public String getLabel(String labelname) {
-        return (String)htmlLabels.get(labelname);
+        return ((String)htmlLabels.get(labelname)).replaceAll("\\$CONTEXT", ((HttpServletRequest) pageContext.getRequest()).getContextPath());
     }
 
     /**
