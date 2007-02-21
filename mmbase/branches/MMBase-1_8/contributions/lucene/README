@@ -13,7 +13,7 @@ To install MMBase-lucene:
 
 then:
 
-- Copy WEB-INF/lib/mmbase-lucene.jar to your WEB-INF/lib
+- Copy WEB-INF/lib/mmbase-lucene.jar and WEB-INF/lib/lucene-core-1.9.1.jar to your WEB-INF/lib
 
 - Install the administration pages found in templates in your webdir, e.g. in '/mmbase/lucene' or
   '/mmbase/admin/lucene'
