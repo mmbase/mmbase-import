@@ -140,7 +140,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                     }
                 }
             } else {
-                log.warn("Cannot logout a user whos session is null");
+                log.warn("Cannot log out a user whose session is null");
             }
 
             return null;
@@ -275,7 +275,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         } else if ("class".equals(application)) {
             return Parameters.VOID;
         } else if ("login".equals(application)) {
-            return new Parameters(PARAMETERS_NAME_PASSWORD);
+            return new Parameters(new Parameter[] {new Parameter(PARAMETER_USERNAME, false), new Parameter(PARAMETER_PASSWORD, false)});
         } else {
             return new AutodefiningParameters();
         }
