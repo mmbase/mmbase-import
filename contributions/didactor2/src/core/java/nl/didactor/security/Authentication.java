@@ -274,7 +274,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             return new Parameters(PARAMETERS_ANONYMOUS);
         } else if ("class".equals(application)) {
             return Parameters.VOID;
-        } else if ("name/password".equals(application)) {
+        } else if ("login".equals(application)) {
             return new Parameters(PARAMETERS_NAME_PASSWORD);
         } else {
             return new AutodefiningParameters();
