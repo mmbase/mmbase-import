@@ -1,8 +1,22 @@
 To install MMBase richtext:
 --------------------------------------------------------------------------------
 
+- You may want to download the latest version (compiled against 1.8.4, java 1.5) from:
+  http://www.mmbase.org/download/richtext/
+
+
 - You need a servlet 2.4 compatible application server like Tomcat 5. Your web.xml must be at least
    version 2.4 (to enable EL).
+
+	 index.jspx must be a 'welcome-file'
+	 something like this in web.xml:
+  <welcome-file-list>
+    <welcome-file>index.jspx</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
 
 - You need MMBase 1.8, complete with the shipped jstl.jar and standard.jar
 
@@ -26,6 +40,9 @@ To install the demo:
 
 To compile MMBase richtext from sources.
 --------------------------------------------------------------------------------
+The richtext of MMBase HEAD is developed a bit further, and does compmile agains MMBase 1.8. So you
+may want to do this because of that.
+
 To build the complete rich text package, you also need to check out kupu and build it. This happens
 automaticly by the ant script in this directory.
 
@@ -37,5 +54,6 @@ But it needs the following command-line tools
    here, but no luck. Used to build /mmbase/kupu/mmbase/index.jspx from *.kupu files.
 
 The target is 'package' to create a fresh mmbase-richtext.zip. 
+
 
 Michiel Meeuwissen <richtext@meeuw.org>
