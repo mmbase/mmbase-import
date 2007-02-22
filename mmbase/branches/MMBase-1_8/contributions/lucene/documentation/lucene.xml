@@ -7,7 +7,7 @@
 
     <date>2007-02-21</date>
 
-    <edition>$Id: lucene.xml,v 1.4.2.1 2007-02-21 11:15:17 andre Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.4.2.2 2007-02-22 15:23:58 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -178,7 +178,7 @@
         <para><example>
             <title>Example for jdbc-tag</title>
 
-            <programlisting id="luceneindex2.xml">
+            <programlisting id="luceneindex3.xml">
 &lt;?xml version="1.0"?&gt;
   &lt;index name="vraag"&gt;
     &lt;analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" /&gt;
