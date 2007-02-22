@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34.2.1 2007-01-03 09:16:27 nklasens Exp $
+ * @version $Id: QueryResultCache.java,v 1.34.2.2 2007-02-22 14:51:44 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -195,7 +195,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
             return true;
         }
         MMBase mmb = MMBase.getMMBase();
-        String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
+        String roleName = mmb.getRelDef().getBuilderName(new Integer(event.getRole()));
         if (typeCounters.containsKey(roleName)) {
             return true;
         }
