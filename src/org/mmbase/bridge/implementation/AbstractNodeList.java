@@ -23,10 +23,10 @@ import org.mmbase.util.logging.Logging;
 public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
 
     private static Logger log = Logging.getLoggerInstance(AbstractNodeList.class);
-    
+
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
-    
+
     public AbstractNodeList() {
         super();
     }
@@ -34,19 +34,19 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
     public AbstractNodeList(Collection c) {
         super(c);
     }
-    
+
     AbstractNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud = cloud;
     }
-    
+
     AbstractNodeList(Collection c, NodeManager nodeManager) {
         super(c);
         this.nodeManager = nodeManager;
         this.cloud = nodeManager.getCloud();
     }
 
-    protected Node convert(Object o) {
+    protected E convert(Object o) {
         Node node = convertWithBridgeToNode(cloud, nodeManager, o);
         if (node == null) {
             if (o instanceof MMObjectBuilder) { // a builder
@@ -56,13 +56,14 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
                 node = convertMMObjectNodetoBridgeNode(coreNode);
             }
         }
-        return node;
+        return (E) node;
     }
 
     public static Node convertWithBridgeToNode(Cloud cloud, NodeManager nodeManager, Object o) {
         Node node = null;
-        if (o instanceof String) { // a string indicates a nodemanager by name, or, if numeric, a node number..
-            String s = (String) o;
+        if (o == null) {
+        } else if (o instanceof CharSequence) { // a string indicates a nodemanager by name, or, if numeric, a node number..
+            String s = o.toString();
             if (org.mmbase.datatypes.StringDataType.NON_NEGATIVE_INTEGER_PATTERN.matcher(s).matches()) {
                 node = cloud.getNode(s);
             } else {
@@ -84,7 +85,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
         return node;
     }
 
-    private Node convertMMObjectNodetoBridgeNode(MMObjectNode coreNode) {
+    protected Node convertMMObjectNodetoBridgeNode(MMObjectNode coreNode) {
         Node node;
         MMObjectBuilder coreBuilder = coreNode.getBuilder();
         if (coreBuilder instanceof TypeDef) {
@@ -106,7 +107,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
             int rnumber = coreNode.getIntValue("rnumber");
             NodeManager nm1;
             if (cloud.hasNode(snumber)) {
-                nm1 = castToNodeManager(cloud.getNode(snumber)); 
+                nm1 = castToNodeManager(cloud.getNode(snumber));
             } else {
                 log.warn("Source of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("snumber") ? "NULL" : "" + snumber));
                 nm1 = cloud.getNodeManager("object");
@@ -120,7 +121,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
             }
             Node role;
             if (cloud.hasNode(rnumber)) {
-                role = cloud.getNode(rnumber); 
+                role = cloud.getNode(rnumber);
             } else {
                 log.warn("Role of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("rnumber") ? "NULL" : "" + rnumber));
                 role = cloud.getNode(BasicCloudContext.mmb.getRelDef().getNumberByName("related"));
@@ -182,5 +183,5 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
         }
         return node;
     }
-    
+
 }
