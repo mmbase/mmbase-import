@@ -19,7 +19,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.8 2007-02-16 20:06:41 michiel Exp $
+ * @version $Id: BridgeCollections.java,v 1.9 2007-02-23 15:02:08 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -289,40 +289,40 @@ public abstract class BridgeCollections {
     /* --------------------------------------------------------------------------------
      * Empty (and unmodifiable) Lists.
      */
-    static class EmptyBridgeList<E> extends UnmodifiableBridgeList<E> implements Serializable  {
+    static class EmptyBridgeList<E> implements BridgeList<E>, Serializable  {
         EmptyBridgeList() { }
 
         private static final Object[] EMPTY = new Object[] {};
-        @Override
         public final int size() { return 0; }
-        @Override
         public final boolean isEmpty() { return true; }
-        @Override
         public final boolean contains(Object o) { return false; }
-        @Override
         public final boolean containsAll(Collection<?> col) { return col.isEmpty(); }
-        @Override
         public final Object[] toArray() { return EMPTY; }
-        @Override
+        public <T> T[] toArray(T[] a) { return (T[]) toArray(); }
         public String toString() { return "[]"; }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public final ListIterator listIterator(int c) { return Collections.EMPTY_LIST.listIterator(c); }
-        @Override
+        public ListIterator<E> listIterator(final int s) { return Collections.EMPTY_LIST.listIterator();}
+        public ListIterator<E> listIterator() { return listIterator(0); }
+        public Iterator<E> iterator() { return listIterator(0); }
         public E get(int i) { throw new IndexOutOfBoundsException(); }
-        @Override
         public Object getProperty(Object key) { return null; }
-        @Override
         public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
-        @Override
         public int lastIndexOf(Object o) { return -1; }
-        @Override
         public int indexOf(Object o) { return -1; }
-        @Override
         public boolean equals(Object o) { return Collections.EMPTY_LIST.equals(o); }
-        @Override
         public int hashCode() { return Collections.EMPTY_LIST.hashCode(); }
+        public boolean add(Object o){ throw new UnsupportedOperationException(); }
+        public void add(int i, Object o) { throw new UnsupportedOperationException(); }
+        public E set(int i, Object o) { throw new UnsupportedOperationException(); }
+         public boolean remove(Object o) { throw new UnsupportedOperationException(); }
+         public E remove(int i) { throw new UnsupportedOperationException(); }
+         public boolean addAll(Collection<? extends E> coll) { throw new UnsupportedOperationException(); }
+         public boolean addAll(int i, Collection<? extends E> coll) { throw new UnsupportedOperationException(); }
+         public boolean removeAll(Collection<?> coll) { throw new UnsupportedOperationException(); }
+         public boolean retainAll(Collection<?> coll) { throw new UnsupportedOperationException(); }
+         public void clear() { throw new UnsupportedOperationException(); }
+        public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
+        public void sort() { throw new UnsupportedOperationException(); }
+        public void sort(Comparator<? super E> comparator) { throw new UnsupportedOperationException(); }
     }
 
     static class EmptyNodeList extends EmptyBridgeList<Node> implements NodeList {
