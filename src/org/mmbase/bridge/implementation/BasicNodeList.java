@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.51 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicNodeList.java,v 1.52 2007-02-23 16:26:48 michiel Exp $
  */
 public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
 
@@ -36,15 +36,11 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
 
 
     @Override
-    protected Node convert(Object o, int index) {
-        o = super.convert(o, index); 
-
+    protected Node convert(Object o) {
         if (o instanceof Node || o == null) {
             return (Node) o;
         }
-        Node node = convert(o);
-        set(index, node);
-        return node;
+        return super.convert(o); 
     }
 
     public Node getNode(int index) {
