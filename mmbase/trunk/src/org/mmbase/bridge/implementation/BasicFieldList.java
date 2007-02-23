@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicFieldList.java,v 1.23 2007-02-23 16:26:48 michiel Exp $
  */
 public class BasicFieldList extends BasicList<Field> implements FieldList {
 
@@ -33,13 +33,12 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
     }
 
     @Override
-    public Field convert(Object o, int index) {
+    protected Field convert(Object o) {
         if (o instanceof BasicField) {
             return (Field) o;
         } else if (o instanceof Field) {
             // core-field does not have a node-manager, fix that.
             Field f = new BasicField((Field)o, nodemanager);
-            set(index, f);
             return f;
         } else { // give it up
             // perhaps we could anticipated DataType, String those kind of things too.
