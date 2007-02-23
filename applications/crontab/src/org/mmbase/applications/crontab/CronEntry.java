@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.9 2007-02-12 09:45:52 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.10 2007-02-23 10:52:10 michiel Exp $
  */
 
 public class CronEntry {
@@ -233,10 +233,10 @@ public class CronEntry {
         String machineName = MMBase.getMMBase().getMachineName();
 
         if (! servers.matcher(machineName).matches()) {
-            log.service("This cron entry " + this + " must not run because this machine " + machineName + " does not match " + servers);
+            log.debug("This cron entry " + this + " must not run because this machine " + machineName + " does not match " + servers);
             return false;
         } else {
-            log.service(" " + machineName + " matched " + servers + " so must run");
+            log.debug(" " + machineName + " matched " + servers + " so must run");
         }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
