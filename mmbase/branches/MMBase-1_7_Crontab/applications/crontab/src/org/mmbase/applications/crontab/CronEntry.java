@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.1.2.3 2007-02-23 11:36:14 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.1.2.4 2007-02-23 17:54:01 michiel Exp $
  */
 
 public class CronEntry {
@@ -105,7 +105,7 @@ public class CronEntry {
         this.name = name == null ? "" : name;
         this.className = className;
         this.cronTime = cronTime;
-        this.configu5Bration = configuration;
+        this.configuration = configuration;
         this.type = type;
 
         cronJob = (Runnable)Class.forName(className).newInstance();
