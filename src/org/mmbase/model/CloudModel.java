@@ -19,7 +19,7 @@ public class CloudModel {
 
     private static Logger log = Logging.getLoggerInstance(CloudModel.class);
     private String path;
-    private HashMap builders = new HashMap();
+    private Map<String,CloudModelBuilder> builders = new HashMap<String,CloudModelBuilder>();
 
     public CloudModel(String name) {
     }
@@ -36,7 +36,7 @@ public class CloudModel {
     }
 
     public CloudModelBuilder getModelBuilder(String name) {
-        return (CloudModelBuilder)builders.get(name);
+        return builders.get(name);
     }
 
 

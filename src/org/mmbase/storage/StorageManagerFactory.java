@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.29 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.30 2007-02-24 21:57:51 nklasens Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -83,7 +83,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The query handler classes.
      * Assign a value to this class if you want to set a default query handler.
      */
-    protected List<Class> queryHandlerClasses = new ArrayList<Class>();
+    protected List<Class<?>> queryHandlerClasses = new ArrayList<Class<?>>();
 
     /**
      * @see #getSetSurrogator()
@@ -260,7 +260,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
-        List <Class> configuredClasses = reader.getSearchQueryHandlerClasses();
+        List <Class<?>> configuredClasses = reader.getSearchQueryHandlerClasses();
         if (configuredClasses.size() != 0) {
             queryHandlerClasses = configuredClasses;
         } else if (queryHandlerClasses.size() == 0) {

@@ -26,7 +26,7 @@ import org.mmbase.util.Encode;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.3 2006-03-24 13:08:30 nklasens Exp $
+ * @version $Id: NodeWriter.java,v 1.4 2007-02-24 21:57:51 nklasens Exp $
  */
 public class NodeWriter {
 
@@ -132,9 +132,9 @@ public class NodeWriter {
             }
         }
         MMObjectBuilder bul = node.getBuilder();
-        Iterator nd = bul.getFields().iterator();
+        Iterator<CoreField> nd = bul.getFields().iterator();
         while (nd.hasNext()) {
-            CoreField def = (CoreField)nd.next();
+            CoreField def = nd.next();
             if (def.inStorage()) {
                 String key = def.getName();
                 if (isRelationNode) {

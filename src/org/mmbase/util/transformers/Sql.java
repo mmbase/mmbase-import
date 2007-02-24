@@ -93,8 +93,8 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
-        HashMap h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
         return h;
     }

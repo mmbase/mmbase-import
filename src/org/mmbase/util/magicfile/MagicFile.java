@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.2 2006-07-21 11:32:35 michiel Exp $
+ * @version $Id: MagicFile.java,v 1.3 2007-02-24 21:57:50 nklasens Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -61,7 +61,7 @@ public class MagicFile {
      * Returns a list of detectors used by this MagicFile instance
      */
 
-    public List getDetectors() {
+    public List<Detector> getDetectors() {
         return detectors.getDetectors();
     }
 
@@ -104,14 +104,12 @@ public class MagicFile {
             lithmus = input;
         }
 
-        List list = getDetectors();
+        List<Detector> list = getDetectors();
         if (list == null) {
             log.warn("No detectors found");
             return FAILED;
         }
-        Iterator i = list.iterator();
-        while (i.hasNext()) {
-            Detector detector = (Detector)i.next();
+        for (Detector detector : list) {
             log.debug("Trying " + detector.getMimeType());
             if (detector != null && detector.test(lithmus)) {
                 //return detector.getDesignation();
@@ -125,12 +123,8 @@ public class MagicFile {
      * @javadoc
      */
     public String extensionToMimeType(String extension) {
-        Iterator i = getDetectors().iterator();
-        while (i.hasNext()) {
-            Detector detector = (Detector)i.next();
-            Iterator j = detector.getExtensions().iterator();
-            while (j.hasNext()) {
-                String ex = (String)j.next();
+        for (Detector detector : getDetectors()) {
+            for (String ex : detector.getExtensions()) {
                 if (ex.equalsIgnoreCase(extension)) {
                     return detector.getMimeType();
                 }
@@ -145,13 +139,11 @@ public class MagicFile {
      * @since MMBase-1.7.1
      */
     public String mimeTypeToExtension(String mimeType) {
-        Iterator i = getDetectors().iterator();
-        while (i.hasNext()) {
-            Detector detector = (Detector)i.next();
+        for (Detector detector : getDetectors()) {
             if (mimeType.equalsIgnoreCase(detector.getMimeType())) {
-                Iterator j = detector.getExtensions().iterator();
+                Iterator<String> j = detector.getExtensions().iterator();
                 if (j.hasNext()) {
-                    String ex = (String)j.next();
+                    String ex = j.next();
                     return ex;
                 }
             }
@@ -187,9 +179,7 @@ public class MagicFile {
             }
         } else {
             // show the known Detectors;
-            Iterator i = magicFile.getDetectors().iterator();
-            while (i.hasNext()) {
-                Detector d = (Detector)i.next();
+            for (Detector d : magicFile.getDetectors()) {
                 log.info(d.toString());
             }
         }

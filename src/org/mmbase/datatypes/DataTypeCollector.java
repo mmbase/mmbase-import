@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.11 2006-04-04 22:54:16 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.12 2007-02-24 21:57:51 nklasens Exp $
  */
 
 public final class DataTypeCollector {
@@ -154,7 +154,7 @@ public final class DataTypeCollector {
     public Collection getSpecializations(String name) {
         // TODO: see in addDataType
         Set set = (Set) specializations.get(name);
-        return set == null ? Collections.EMPTY_SET : Collections.unmodifiableSet(set);
+        return set == null ? Collections.emptySet() : Collections.unmodifiableSet(set);
     }
 
     /**

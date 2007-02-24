@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: RelativeTime.java,v 1.10 2007-02-24 21:57:50 nklasens Exp $
  */
 public class RelativeTime {
 
@@ -257,7 +257,7 @@ public class RelativeTime {
      */
     public static void main(String args[]) {
         //Use java org.mmbase.util.RelativeTime
-        Enumeration e;
+        Enumeration<?> e;
         String timeKey;
         int timeValue;
         Properties testProps = new Properties();

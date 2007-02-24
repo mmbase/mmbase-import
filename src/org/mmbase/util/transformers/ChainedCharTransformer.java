@@ -44,13 +44,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.24 2005-05-24 21:42:54 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.25 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
    
-    private List charTransformers = new ArrayList();
+    private List<CharTransformer> charTransformers = new ArrayList<CharTransformer>();
 
     public ChainedCharTransformer() {
         super();
@@ -75,10 +75,10 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
      *
      * @throws ClassCastException if collecion does not contain only CharTransformers
      */
-    public ChainedCharTransformer addAll(Collection col) {
-        Iterator i = col.iterator();
+    public ChainedCharTransformer addAll(Collection<CharTransformer> col) {
+        Iterator<CharTransformer> i = col.iterator();
         while (i.hasNext()) {
-            CharTransformer c = (CharTransformer) i.next();
+            CharTransformer c = i.next();
             add(c);
         }
         return this;
@@ -88,9 +88,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
      * Implementation without Threads. Not needed when transforming by String. 
      */
     public String transform(String string) {
-        ListIterator i = charTransformers.listIterator();
+        ListIterator<CharTransformer> i = charTransformers.listIterator();
         while (i.hasNext()) {
-            CharTransformer ct = (CharTransformer) i.next();
+            CharTransformer ct = i.next();
             string = ct.transform(string);            
         }
         return string;
@@ -104,16 +104,16 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
             Writer w = endWriter;  
             boolean closeWriterAfterUse = false; // This boolean indicates if 'w' must be flushed/closed after use.
 
-            List links = new ArrayList(); // keep track of the started threads, needing to wait
-                                            // for them later.
+            List<CharTransformerLink> links = new ArrayList<CharTransformerLink>();
+            // keep track of the started threads, needing to wait for them later.
 
             // going to loop backward through the list of CharTransformers, and starting threads for
             // every transformation, besides the last one (which is the first in the chain). This
             // transformation is performed, and the then started other Threads catch the result.
 
-            ListIterator i = charTransformers.listIterator(charTransformers.size());
+            ListIterator<CharTransformer> i = charTransformers.listIterator(charTransformers.size());
             while (i.hasPrevious()) {         
-                CharTransformer ct = (CharTransformer) i.previous();
+                CharTransformer ct = i.previous();
                 if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
                     CharTransformerLink link =  new CharTransformerLink(ct, r, w, closeWriterAfterUse);
@@ -129,9 +129,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                 }
             }
             // wait until all threads are ready, because only then this transformation is actually ready
-            Iterator ti = links.iterator();
+            Iterator<CharTransformerLink> ti = links.iterator();
             while (ti.hasNext()) {
-                CharTransformerLink l = (CharTransformerLink) ti.next();
+                CharTransformerLink l = ti.next();
                 try {
                     while (!l.ready()) {                            
                         synchronized(l) { // make sure we have the lock.

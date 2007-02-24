@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.45 2006-11-16 08:56:47 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.46 2007-02-24 21:57:50 nklasens Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -86,7 +86,7 @@ public abstract class FileWatcher {
 
 
 
-    private static Map props;
+    private static Map<String,Object> props;
 
 
     /**
@@ -95,7 +95,7 @@ public abstract class FileWatcher {
     static private Runnable watcher = new Runnable() {
             public void run() {
                 try {
-                    String delay =  (String) props.get("delay");
+                    String delay = (String) props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
                         log.service("Set thread delay time to " + THREAD_DELAY);
@@ -128,7 +128,7 @@ public abstract class FileWatcher {
     private long delay = DEFAULT_DELAY;
 
     private Set<FileEntry> files = new LinkedHashSet<FileEntry>();
-    private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
+    private Set<File> fileSet = new FileSet(); // (automaticly) wraps 'files'.
     private Set<File> removeFiles = new HashSet<File>();
     private boolean stop = false;
     private boolean continueAfterChange = false;
@@ -202,7 +202,7 @@ public abstract class FileWatcher {
      *
      * @since MMBase-1.8.
      */
-    public Set getFiles() {
+    public Set<File> getFiles() {
         return fileSet;
     }
 

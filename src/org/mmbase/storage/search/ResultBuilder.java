@@ -12,7 +12,6 @@ package org.mmbase.storage.search;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A <code>ResultBuilder</code> is a builder for
@@ -22,12 +21,10 @@ import org.mmbase.util.logging.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.8 2005-11-04 23:34:42 michiel Exp $
+ * @version $Id: ResultBuilder.java,v 1.9 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
-
-    private static final Logger log = Logging.getLoggerInstance(ResultBuilder.class);
 
     /**
      * Creator.
@@ -41,10 +38,10 @@ public class ResultBuilder extends VirtualBuilder {
         super(mmbase);
 
         // Create fieldsByAlias map.
-        List queryFields = query.getFields();
-        Iterator i = queryFields.iterator();
+        List<StepField> queryFields = query.getFields();
+        Iterator<StepField> i = queryFields.iterator();
         while (i.hasNext()) {
-            StepField field = (StepField) i.next();
+            StepField field = i.next();
             String fieldAlias = field.getAlias();
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();

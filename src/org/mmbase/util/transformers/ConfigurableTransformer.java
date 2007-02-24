@@ -36,7 +36,7 @@ public interface ConfigurableTransformer extends Transformer {
      *
      * @return A Map with String Integer/Class pairs.
      */
-    Map transformers();
+    Map<String,Config> transformers();
 
     /**
      * Returns the encoding that is currently active

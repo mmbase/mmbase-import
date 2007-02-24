@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.17 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: EventManager.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
  */
 public class EventManager {
 
@@ -51,7 +51,7 @@ public class EventManager {
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
-    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet();
+    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet<AbstractEventBroker>();
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
@@ -66,7 +66,7 @@ public class EventManager {
     private static AbstractEventBroker findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
-            Class aClass = Class.forName(className);
+            Class<?> aClass = Class.forName(className);
             return (AbstractEventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
             log.error("could not find class with name '" + className + "'", e);
@@ -96,9 +96,9 @@ public class EventManager {
     protected void configure(String resource) {
         log.service("Configuring the event manager");
         eventBrokers.clear();
-        Iterator i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
+        Iterator<URL> i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
         while (i.hasNext()) {
-            URL url = (URL) i.next();
+            URL url = i.next();
             try {
                 if (url.openConnection().getDoInput()) {
 

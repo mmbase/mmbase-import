@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.32 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.33 2007-02-24 21:57:51 nklasens Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -67,20 +67,19 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         Cache.putCache(constraintWrapperCache);
     }
 
-    private static final Map constraintMatcherConstructors = new HashMap();
+    private static final Map<String, Constructor> constraintMatcherConstructors = new HashMap<String, Constructor>();
     static {
         Class[] innerClasses = ConstraintsMatchingStrategy.class.getDeclaredClasses();
-        for (int i = 0; i < innerClasses.length; i++) {
-            Class innerClass = innerClasses[i];
+        for (Class innerClass : innerClasses) {
             if (innerClass.getName().endsWith("Matcher") && ! Modifier.isAbstract(innerClass.getModifiers())) {
                 String matcherClassName = innerClass.getName();
                 matcherClassName = matcherClassName.substring(matcherClassName.lastIndexOf("$") + 1);
                 Constructor con = null;
                 Constructor[] cons = innerClass.getConstructors();
-                for (int j = 0; j < cons.length; j++) {
-                    Class [] params = cons[j].getParameterTypes();
+                for (Constructor element0 : cons) {
+                    Class [] params = element0.getParameterTypes();
                     if(params.length == 1 && Constraint.class.isAssignableFrom(params[0])) {
-                        con = cons[j];
+                        con = element0;
                         break;
                     }
                 }
@@ -254,7 +253,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         // MM: I think the idea behind this is questionable.
         // How expensive is it?
-        Constructor matcherConstructor = (Constructor) constraintMatcherConstructors.get(constraintClassName + "Matcher");
+        Constructor matcherConstructor = constraintMatcherConstructors.get(constraintClassName + "Matcher");
         if (matcherConstructor == null) {
             log.error("Could not match constraint of type " + constraintClassName);
             matcherConstructor = UnsupportedConstraintMatcher.class.getConstructors()[0];
@@ -297,16 +296,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         public BasicCompositeConstraintMatcher(BasicCompositeConstraint constraint) throws NoSuchMethodException, InstantiationException, InvocationTargetException, IllegalAccessException  {
             wrappedCompositeConstraint = constraint;
             wrappedConstraints = new ArrayList<AbstractConstraintMatcher>();
-            for (Iterator<Constraint> i = wrappedCompositeConstraint.getChilds().iterator(); i.hasNext();) {
-                Constraint c = i.next();
+            for (Constraint c : wrappedCompositeConstraint.getChilds()) {
                 wrappedConstraints.add(findMatcherForConstraint(c));
             }
         }
 
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event) {
             int matches = 0;
-            for (Iterator<AbstractConstraintMatcher> i = findRelevantConstraints(valuesToMatch, event).iterator(); i.hasNext();) {
-                AbstractConstraintMatcher acm = i.next();
+            for (AbstractConstraintMatcher acm : findRelevantConstraints(valuesToMatch, event)) {
                 if (log.isDebugEnabled()) {
                     log.debug("** relevant constraint found: " + acm);
                 }
@@ -371,8 +368,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         private List<AbstractConstraintMatcher> findRelevantConstraints(Map<String,Object> valuesToMatch, NodeEvent event){
             List<AbstractConstraintMatcher> relevantConstraints = new ArrayList<AbstractConstraintMatcher>();
-            for (Iterator<AbstractConstraintMatcher> i = wrappedConstraints.iterator(); i.hasNext();) {
-                AbstractConstraintMatcher  matcher = i.next();
+            for (AbstractConstraintMatcher matcher : wrappedConstraints) {
                 if(matcher.eventApplies(valuesToMatch, event))relevantConstraints.add(matcher);
             }
             return relevantConstraints;
@@ -575,16 +571,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             char[] chars = constraintString.toCharArray();
             StringBuffer sb = new StringBuffer();
 
-            for(int i = 0; i < chars.length; i++){
-                if(chars[i] == '?'){
+            for (char element : chars) {
+                if(element == '?'){
                     sb.append(".");
-                } else if(chars[i] == '%'){
+                } else if(element == '%'){
                     sb.append(".*");
-                } else if(escapeChars.indexOf(chars[i]) > -1){
+                } else if(escapeChars.indexOf(element) > -1){
                     sb.append("\\");
-                    sb.append(chars[i]);
+                    sb.append(element);
                 } else{
-                    sb.append(chars[i]);
+                    sb.append(element);
                 }
             }
             if (log.isDebugEnabled()) {

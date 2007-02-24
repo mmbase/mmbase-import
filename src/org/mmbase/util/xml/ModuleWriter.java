@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+import java.util.Map.Entry;
+
 import org.mmbase.module.Module;
 import org.mmbase.util.XMLEntityResolver;
 
@@ -17,7 +19,7 @@ import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ModuleWriter.java,v 1.9 2007-02-24 21:57:50 nklasens Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
 
@@ -58,11 +60,10 @@ public class ModuleWriter extends DocumentWriter  {
         addComment("module.properties",root);
         root.appendChild(properties);
         // properties.property
-        Map datamap=module.getInitParameters();
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            String propname = (String) entry.getKey();
-            String propvalue = (String) entry.getValue();
+        Map<String, String> datamap=module.getInitParameters();
+        for (Entry<String, String> entry : datamap.entrySet()) {
+            String propname = entry.getKey();
+            String propvalue = entry.getValue();
             Element elm=addContentElement("property",propvalue,properties);
             elm.setAttribute("name",propname);
         }

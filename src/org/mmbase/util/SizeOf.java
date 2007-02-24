@@ -66,14 +66,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.18 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: SizeOf.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
     private static final Logger log = Logging.getLoggerInstance(SizeOf.class);
 
     public static final int SZ_REF = 4;
-    private static int size_prim(Class t) {
+    private static int size_prim(Class<?> t) {
         if      (t == Boolean.TYPE)   return 1;
         else if (t == Byte.TYPE)      return 1;
         else if (t == Character.TYPE) return 2;
@@ -96,7 +96,7 @@ public class SizeOf {
     public static int sizeof(double d)  { return 8; }
 
     // To avoid infinite loops (cyclic references):
-    private Set countedObjects = new HashSet();
+    private Set<Object> countedObjects = new HashSet<Object>();
 
     public static int getByteSize(Object obj) {
         return new SizeOf().sizeof(obj);
@@ -122,7 +122,7 @@ public class SizeOf {
             return 0;
         }
 
-        Class c = obj.getClass();
+        Class<?> c = obj.getClass();
 
         if (c.isArray()) {
             log.debug("an array");
@@ -135,8 +135,8 @@ public class SizeOf {
                 if (SizeMeasurable.class.isAssignableFrom(c)) return sizeof((SizeMeasurable) obj);
                 if (javax.servlet.http.HttpSession.class.isAssignableFrom(c))   return sizeof((javax.servlet.http.HttpSession) obj);
                 if (org.w3c.dom.Node.class.isAssignableFrom(c))   return sizeof((org.w3c.dom.Node) obj);
-                if (Map.class.isAssignableFrom(c))      return sizeof((Map) obj);
-                if (Collection.class.isAssignableFrom(c))      return sizeof((Collection) obj);
+                if (Map.class.isAssignableFrom(c))      return sizeof((Map<?,?>) obj);
+                if (Collection.class.isAssignableFrom(c))      return sizeof((Collection<?>) obj);
                 if (String.class.isAssignableFrom(c))   return sizeof((String) obj);
                 // it's odd that all these seem to cost 16 bytes each, but this is a result of simply trying it on Sun JVM 1.5
                 // See also http://www.javaworld.com/javaworld/javatips/jw-javatip130.html
@@ -152,23 +152,23 @@ public class SizeOf {
         }
     }
 
-    private int sizeof(Map m) {
+    private int sizeof(Map<?,?> m) {
         int len =
             size_inst(m, m.getClass()) + 
             m.size() * 30; // estimated overhead per entry. Is about correct for Hashtable and HashMap
-        Iterator i = m.entrySet().iterator();
+        Iterator<? extends Map.Entry<?,?>> i = m.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<?,?> entry = i.next();
             len += sizeof(entry.getKey());
             len += sizeof(entry.getValue());
         }
         return len;
     }
 
-    private int sizeof(Collection m) {
+    private int sizeof(Collection<?> m) {
         log.debug("sizeof List" );
         int len = size_inst(m, m.getClass());
-        Iterator i = m.iterator();
+        Iterator<?> i = m.iterator();
         while (i.hasNext()) {
             len += sizeof(i.next());
         }
@@ -178,9 +178,9 @@ public class SizeOf {
     private int sizeof(javax.servlet.http.HttpSession session) {
         log.debug("sizeof HttpSession");
         int len = size_inst(session, session.getClass());
-        Enumeration e = session.getAttributeNames();
+        Enumeration<String> e = session.getAttributeNames();
         while (e.hasMoreElements()) {
-            String attribute = (String) e.nextElement();
+            String attribute = e.nextElement();
             len += sizeof(attribute);
             len += sizeof(session.getAttribute(attribute));
         }
@@ -207,7 +207,7 @@ public class SizeOf {
     }
 
 
-    private int size_inst(Object obj, Class c) {
+    private int size_inst(Object obj, Class<?> c) {
         Field flds[] = c.getDeclaredFields();
         int sz = 8; // wild guess for the size of an Object. (reference + hashcode?
 
@@ -231,16 +231,16 @@ public class SizeOf {
             sz += size_inst(obj, c.getSuperclass()) - 8; // 8: already guessed
         }
 
-        Class cv[] = c.getInterfaces();
-        for (Class element : cv) {
+        Class<?> cv[] = c.getInterfaces();
+        for (Class<?> element : cv) {
             sz += size_inst(obj, element) - 8; // 8: already guessed
         }
 
         return sz;
     }
 
-    private int size_arr(Object obj, Class c) {
-        Class ct = c.getComponentType();
+    private int size_arr(Object obj, Class<?> c) {
+        Class<?> ct = c.getComponentType();
         int len = Array.getLength(obj);
 
         if (ct.isPrimitive()) {
@@ -260,7 +260,7 @@ public class SizeOf {
         final int SIZE = Math.round((float) Math.pow(10, 4)); // I hate java
 
         //final Object[] list = new Object[SIZE];
-        List list = new ArrayList();
+        List<Integer> list = new ArrayList<Integer>();
         //ArrayList list = new ArrayList();
         //Map map = new HashMap();
 

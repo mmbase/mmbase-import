@@ -21,12 +21,12 @@ import java.util.Vector;
  * @todo more OS support
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: EnvironmentReader.java,v 1.4 2003-09-01 13:29:47 pierre Exp $
+ * @version $Id: EnvironmentReader.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.6
  */
 public class EnvironmentReader {
     private static Properties envVars = null;
-    private static Vector rawVars = null;
+    private static Vector<String> rawVars = null;
 
     /**
      * Get value of environment properties
@@ -38,7 +38,7 @@ public class EnvironmentReader {
             return envVars;
 
         envVars = new Properties();
-        rawVars = new Vector(32);
+        rawVars = new Vector<String>(32);
         String lineSeparator = System.getProperty("line.separator");
 
         String command = getEnvCommand();
@@ -110,6 +110,6 @@ public class EnvironmentReader {
      */
     public static String[] getRawEnvVars() {
         getEnvVars();
-        return (String[])rawVars.toArray(new String[0]);
+        return rawVars.toArray(new String[0]);
     }
 }

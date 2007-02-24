@@ -14,6 +14,7 @@ import java.util.*;
 
 import javax.servlet.jsp.PageContext;
 
+import org.mmbase.bridge.Query;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.13 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: Editor.java,v 1.14 2007-02-24 21:58:52 nklasens Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -34,9 +35,9 @@ abstract public class Editor {
 
     private static final Logger log = Logging.getLoggerInstance(Editor.class);
 
-    protected final List queryList  = new ArrayList();      // query List
-    protected final List nodenrList = new ArrayList();      // nodenr List
-    protected final List fieldList = new ArrayList();       // fieldname List
+    protected final List<Query> queryList  = new ArrayList<Query>();      // query List
+    protected final List<String> nodenrList = new ArrayList<String>();      // nodenr List
+    protected final List<String> fieldList = new ArrayList<String>();       // fieldname List
 
     protected Parameters parameters = null;
 
@@ -50,13 +51,13 @@ abstract public class Editor {
         }
         return parameters;
     }
-    public final List getQueryList() {
+    public final List<Query> getQueryList() {
         return queryList;
     }
-    public final List  getNodenrList() {
+    public final List<String>  getNodenrList() {
         return nodenrList;
     }
-    public final List getFieldList() {
+    public final List<String> getFieldList() {
         return fieldList;
     }
 

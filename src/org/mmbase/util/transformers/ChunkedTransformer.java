@@ -90,9 +90,9 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     protected class Status {
         int replaced = 0;
-        Set used = null;
+        Set<Object> used = null;
         {
-            if (replaceFirstAll) used = new HashSet();
+            if (replaceFirstAll) used = new HashSet<Object>();
         }
     }
     protected Status newStatus() {
@@ -346,8 +346,8 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         }
     }
 
-    public Map transformers() {
-        Map h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put(base() + "_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
         h.put(base() + "_XMLTEXT",        new Config(RegexpReplacer.class, XMLTEXT,  "Search and replaces regexps, only in XML text() blocks."));
         h.put(base() + "_WORDS",          new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));

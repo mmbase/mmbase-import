@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * @since mmbase 1.6
  * @author Gerard van Enk
  * @author Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.10 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: BuilderList.java,v 1.11 2007-02-24 21:57:50 nklasens Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -38,7 +38,7 @@ public class BuilderList {
      * Generates the document and writes it to the result object.
      * @param result the StreamResult object where to store the configuration'
      */
-    public void write(Document doc, StreamResult result) throws IOException, TransformerException {
+    public void write(Document doc, StreamResult result) throws TransformerException {
         TransformerFactory tfactory = TransformerFactory.newInstance();
         tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
         // This creates a transformer that does a simple identity transform,
@@ -58,11 +58,11 @@ public class BuilderList {
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      */
     void listBuilders(ResourceLoader config, Writer writer) throws IOException {
-        Set xmls = config.getResourcePaths(ResourceLoader.XML_PATTERN, false);
+        Set<String> xmls = config.getResourcePaths(ResourceLoader.XML_PATTERN, false);
         writer.write("<buildertype name=\"" + config.getContext() + "\">\n");
-        Iterator i = xmls.iterator();
+        Iterator<String> i = xmls.iterator();
         while (i.hasNext()) {
-            String name = (String) i.next();
+            String name = i.next();
             try {
                 Document document = config.getDocument(name);
                 //only process builder config files
@@ -73,9 +73,9 @@ public class BuilderList {
             }
         }
         writer.write("</buildertype>\n");
-        Iterator j =  config.getChildContexts(null,  false).iterator();
+        Iterator<String> j =  config.getChildContexts(null,  false).iterator();
         while (j.hasNext()) {
-            String sub = (String) j.next();
+            String sub = j.next();
             if ("CVS".equals(sub)) continue;
             listBuilders(config.getChildResourceLoader(sub), writer);
         }

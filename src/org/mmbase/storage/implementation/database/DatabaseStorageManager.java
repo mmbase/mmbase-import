@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.176 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.177 2007-02-24 21:57:51 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1002,8 +1002,8 @@ public class DatabaseStorageManager implements StorageManager {
         // resolve aliases, if any.
         MMObjectBuilder builder = node.getBuilder();
         for (CoreField field: builder.getFields()) {
-            if (field.getName().equals(builder.FIELD_NUMBER))      continue;
-            if (field.getName().equals(builder.FIELD_OBJECT_TYPE)) continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
             if (field.getType() == Field.TYPE_NODE) {
                 Object value = node.getValue(field.getName());
                 if (value instanceof String) {
@@ -1341,7 +1341,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setListValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.ARRAY)) {
-            List list = Casting.toList(value);
+            List<?> list = Casting.toList(value);
             statement.setObject(index, list);
             node.storeValue(field.getName(), list);
         }
@@ -2530,8 +2530,7 @@ public class DatabaseStorageManager implements StorageManager {
         String result = null;
         if (index.size() == 1 || factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
             StringBuilder indexFields = new StringBuilder();
-            for (Iterator f = index.iterator(); f.hasNext();) {
-                CoreField field = (CoreField)f.next();
+            for (Field field : index) {
                 if (indexFields.length() > 0) {
                     indexFields.append(", ");
                 }

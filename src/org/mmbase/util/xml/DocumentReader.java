@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.32 2006-11-24 14:27:55 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.33 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -73,7 +73,7 @@ public class DocumentReader  {
 
     private String systemId;
 
-    static UtilReader.PropertiesMap utilProperties = null;
+    static UtilReader.PropertiesMap<Object> utilProperties = null;
     /**
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on
@@ -124,7 +124,7 @@ public class DocumentReader  {
      * @param source the input source from which to read the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, Class resolveBase) {
+    public DocumentReader(InputSource source, Class<?> resolveBase) {
         this(source, DocumentReader.validate(), resolveBase);
     }
 
@@ -136,7 +136,7 @@ public class DocumentReader  {
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
+    public DocumentReader(InputSource source, boolean validating, Class<?> resolveBase) {
         if (source == null) {
             throw new IllegalArgumentException("InputSource cannot be null");
         }

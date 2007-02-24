@@ -12,13 +12,12 @@ package org.mmbase.storage.search.implementation;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.StringSearchConstraint;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicStringSearchConstraint.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -30,10 +29,10 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     private int matchType = 0;
 
     /** Map storing additional parameters. */
-    private Map parameters = new HashMap(3);
+    private Map<String,Object> parameters = new HashMap<String,Object>(3);
 
     /** List of searchterms. */
-    private List searchTerms = null;
+    private List<String> searchTerms = null;
 
     /**
      * Creates a new instance of BasicStringSearchConstraint.
@@ -47,7 +46,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * @see #getMatchType
      */
     public BasicStringSearchConstraint(StepField field, int searchType,
-    int matchType, List searchTerms) {
+    int matchType, List<String> searchTerms) {
         this(field, searchType, matchType);
         setSearchTerms(searchTerms);
     }
@@ -159,21 +158,16 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      *
      * @param searchTerms the searchterms
      * @return This <code>BasicStringSearchConstraint</code> instance.
-     * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStringSearchConstraint setSearchTerms(List searchTerms) {
+    public BasicStringSearchConstraint setSearchTerms(List<String> searchTerms) {
         if (searchTerms.size() == 0) {
             throw new IllegalArgumentException(
             "Invalid search terms value: " + searchTerms);
         }
-        List newSearchTerms = new ArrayList();
-        Iterator iSearchTerms = searchTerms.iterator();
+        List<String> newSearchTerms = new ArrayList<String>();
+        Iterator<String> iSearchTerms = searchTerms.iterator();
         while (iSearchTerms.hasNext()) {
-            Object searchTerm = iSearchTerms.next();
-            if (!(searchTerm instanceof String)) {
-                throw new IllegalArgumentException(
-                "Invalid search term value: " + searchTerm);
-            }
+            String  searchTerm = iSearchTerms.next();
             newSearchTerms.add(searchTerm);
         }
         this.searchTerms = newSearchTerms;
@@ -193,7 +187,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             throw new IllegalArgumentException(
             "Invalid search terms value: \"" + searchTerms + "\"");
         }
-        List newSearchTerms = new ArrayList();
+        List<String> newSearchTerms = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(searchTerms);
         while (st.hasMoreTokens()) {
             newSearchTerms.add(st.nextToken());
@@ -246,7 +240,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     }
 
     // javadoc is inherited
-    public Map getParameters() {
+    public Map<String,Object> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 
@@ -283,7 +277,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     }
 
     // javadoc is inherited
-    public List getSearchTerms() {
+    public List<String> getSearchTerms() {
         return Collections.unmodifiableList(searchTerms);
     }
 

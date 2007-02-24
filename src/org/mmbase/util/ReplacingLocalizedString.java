@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.5 2006-11-11 12:56:39 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.6 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
@@ -45,14 +45,14 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     }
 
     public void replaceAll(String regexp, String replacement) {
-        replacements.add(new Entry(regexp, replacement));
+        replacements.add(new Entry<String, String>(regexp, replacement));
     }
 
     protected String replace(String input) {
         String output = input;
-        for (Map.Entry entry : replacements) {
+        for (Map.Entry<String, String> entry : replacements) {
             try {
-                output = output.replaceAll((String) entry.getKey(), (String) entry.getValue());
+                output = output.replaceAll(entry.getKey(), entry.getValue());
             } catch (Throwable t) {
                 log.warn("Could not replace " + entry + " in " + input + " because " + t);
             }
@@ -109,6 +109,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     }
 
 
+    @SuppressWarnings("unchecked")
     public Object clone() {
         ReplacingLocalizedString clone = (ReplacingLocalizedString) super.clone();
         clone.replacements = (List)((ArrayList)replacements).clone();

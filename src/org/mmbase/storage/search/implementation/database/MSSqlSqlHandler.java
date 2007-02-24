@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.2 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: MSSqlSqlHandler.java,v 1.3 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -25,6 +25,7 @@ public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      * 
      * We can also consider removing that odd behaviour from super.
      */
+    @Override
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
          boolean uppered = false;
          if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {

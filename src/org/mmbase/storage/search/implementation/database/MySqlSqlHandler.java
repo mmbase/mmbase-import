@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.17 2006-12-20 16:20:54 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.18 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -48,12 +48,14 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super();
     }
 
+    @Override
     protected String toSqlString(String str) {
         String res =  super.toSqlString(str).replaceAll("\\\\", "\\\\\\\\");
         return res;
     }
 
     // javadoc is inherited
+    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -76,10 +78,12 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc inherited
+    @Override
     protected boolean useLower(FieldCompareConstraint constraint) {
         return true; // necessary for the larger strings which are stored in blobs
     }
 
+    @Override
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
@@ -103,6 +107,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * @javadoc
      */
+    @Override
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
@@ -133,6 +138,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
     }
+    @Override
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
         if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
             sb.append("BINARY ");
@@ -144,6 +150,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 

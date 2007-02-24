@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.28 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: UtilReader.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
  */
 public class UtilReader {
 
@@ -198,7 +198,7 @@ public class UtilReader {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
-                            Collection<Map.Entry<String, Object>> entryList = new ArrayList();
+                            Collection<Map.Entry<String, Object>> entryList = new ArrayList<Map.Entry<String, Object>>();
 
                             for (Element entry : reader.getChildElements(p,"entry")) {
                                 String key = null;

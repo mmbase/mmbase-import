@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.68 2007-02-10 16:22:38 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.69 2007-02-24 21:57:51 nklasens Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -1114,7 +1114,7 @@ s     */
         }
 
         public Collection<Map.Entry<C, String>> getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
-            if (value == null) return Collections.EMPTY_LIST;
+            if (value == null) return Collections.emptyList();
             if (cloud == null) {
                 if (node != null) {
                     cloud = node.getCloud();

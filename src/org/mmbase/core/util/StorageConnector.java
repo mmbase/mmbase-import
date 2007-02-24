@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.17 2006-11-28 16:31:46 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
  */
 public class StorageConnector {
 
@@ -93,7 +93,7 @@ public class StorageConnector {
     protected final MMObjectBuilder builder;
 
     // indices for the storage layer
-    private Map<String, Index> indices = new HashMap();
+    private Map<String, Index> indices = new HashMap<String, Index>();
 
     /**
      * @javadoc
@@ -301,13 +301,13 @@ public class StorageConnector {
      * @return List containing real nodes, directly from this Builders
      */
     public List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals) throws SearchQueryException  {
-        List<MMObjectNode> result = new ArrayList();
+        List<MMObjectNode> result = new ArrayList<MMObjectNode>();
 
         int numbersSize = 0;
         NodeSearchQuery query = new NodeSearchQuery(builder);
         BasicStep step = (BasicStep) query.getSteps().get(0); // casting is ugly !!
 
-        List<Integer> subResult = new ArrayList();
+        List<Integer> subResult = new ArrayList<Integer>();
 
         for (MMObjectNode node : virtuals) {
             // check if this node is already in cache
@@ -352,7 +352,7 @@ public class StorageConnector {
         List<MMObjectNode> rawNodes = getRawNodes(query, true);
         // convert this list to a map, for easy reference when filling result.
          // would the creation of this Map not somehow be avoidable?
-        Map<Integer, MMObjectNode> rawMap = new HashMap();
+        Map<Integer, MMObjectNode> rawMap = new HashMap<Integer, MMObjectNode>();
         for (MMObjectNode n : rawNodes) {
             rawMap.put(n.getNumber(), n); 
         }
@@ -364,7 +364,7 @@ public class StorageConnector {
     /**
      * @since MMBase-1.8.2
      */
-    protected boolean assertSizes(Collection virtuals, Collection result) {
+    protected boolean assertSizes(Collection<MMObjectNode> virtuals, Collection<MMObjectNode> result) {
         if (virtuals.size() != result.size()) {
             log.error(" virtuals " + virtuals + " result " + result);
             return false;
@@ -392,7 +392,7 @@ public class StorageConnector {
         Step step = query.getSteps().get(0);
         CoreField numberField = builder.getField(MMObjectBuilder.FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(step, numberField, AggregatedField.AGGREGATION_TYPE_COUNT);
-        List<StepField> newFields = new ArrayList(1);
+        List<StepField> newFields = new ArrayList<StepField>(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
 
@@ -408,7 +408,7 @@ public class StorageConnector {
         return result.getIntValue(MMObjectBuilder.FIELD_NUMBER);
     }
 
-    private void verifyBuilderQuery(SearchQuery query) throws SearchQueryException {
+    private void verifyBuilderQuery(SearchQuery query) {
         String builderName = null;
         if (query instanceof NodeQuery) {
             builderName = ((NodeQuery)query).getNodeManager().getName();
@@ -433,7 +433,7 @@ public class StorageConnector {
      * (in that case searching a result should certainly returns such a chained map, because then of
      * course you don't have those).
      */
-    protected Map<SearchQuery, List<MMObjectNode>> getCache(SearchQuery query) {
+    protected QueryResultCache getCache(SearchQuery query) {
         List<Step> steps = query.getSteps();
         if (steps.size() == 3) {
             Step step0 = steps.get(0);
@@ -471,7 +471,7 @@ public class StorageConnector {
             results = builder.getMMBase().getSearchQueryHandler().getNodes(query, builder);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Found from cache" + ((Cache) getCache(query)).getName() + " " + results);
+                log.debug("Found from cache" + getCache(query).getName() + " " + results);
             }
         }
         return results;
@@ -540,7 +540,7 @@ public class StorageConnector {
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
     private void processSearchResults(List<MMObjectNode> results) {
-        Map<Integer, Set<MMObjectNode>> convert = new HashMap();
+        Map<Integer, Set<MMObjectNode>> convert = new HashMap<Integer, Set<MMObjectNode>>();
         int convertCount = 0;
         int convertedCount = 0;
         int cacheGetCount = 0;
@@ -582,7 +582,7 @@ public class StorageConnector {
                     Set<MMObjectNode> nodes = convert.get(nodeType);
                     // create an new entry for the type, if not yet there...
                     if (nodes == null) {
-                        nodes = new HashSet();
+                        nodes = new HashSet<MMObjectNode>();
                         convert.put(nodeType, nodes);
                     }
                     nodes.add(node);
@@ -622,7 +622,7 @@ public class StorageConnector {
             // and put them into one big hashmap (integer/node)
             // after that replace all the nodes in result, that
             // were invalid.
-            Map<Integer, MMObjectNode> convertedNodes = new HashMap();
+            Map<Integer, MMObjectNode> convertedNodes = new HashMap<Integer, MMObjectNode>();
 
             // process all the different types (builders)
             for (Map.Entry<Integer, Set<MMObjectNode>> typeEntry : convert.entrySet()) {
@@ -782,9 +782,9 @@ public class StorageConnector {
             }
         }
 
-        List childs = constraints.getChilds();
+        List<Constraint> childs = constraints.getChilds();
         if (childs.size() == 1) {
-            query.setConstraint((FieldValueConstraint) childs.get(0));
+            query.setConstraint(childs.get(0));
         } else if (childs.size() > 1) {
             query.setConstraint(constraints);
         }
