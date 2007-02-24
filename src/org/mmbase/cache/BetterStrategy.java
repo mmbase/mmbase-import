@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.25 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: BetterStrategy.java,v 1.26 2007-02-24 21:57:51 nklasens Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -200,8 +200,7 @@ public class BetterStrategy extends ReleaseStrategy {
             return false;
         }
         //test if all changed fields are aggreagting and of type count, if not: return false;
-        for(Iterator<StepField> i = query.getFields().iterator();  i.hasNext(); ){
-            StepField field = i.next();
+        for (StepField field : query.getFields()) {
             if(event.getChangedFields().contains(field.getFieldName()) ){
                 if( ! (field instanceof AggregatedField)) {
                     return false;
@@ -217,8 +216,7 @@ public class BetterStrategy extends ReleaseStrategy {
             return true;
         }
         MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
-        for (Iterator<String> i = event.getChangedFields().iterator(); i.hasNext();) {
-            String fieldName = i.next();
+        for (String fieldName : event.getChangedFields()) {
             if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){
                 return false;
             }
@@ -297,9 +295,7 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventBuilderName);
         search:
-        for (Iterator<String> i = event.getChangedFields().iterator(); i.hasNext();) {
-            String fieldName = i.next();
-
+        for (String fieldName : event.getChangedFields()) {
             //first test the constraints
             List<Constraint> constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
             if(constraintsForFieldList.size() > 0) {
@@ -310,9 +306,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 break search;
             }
 
-            // then test the fields (only if no constraint match was found)
-            for (Iterator<StepField> fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
-                StepField field = fieldIterator.next();
+            for (StepField field : query.getFields()) {
                 if (field.getFieldName().equals(fieldName)
                     && (field.getStep().getTableName().equals(eventBuilderName) ||
                         eventBuilder.isExtensionOf(mmb.getBuilder(field.getStep().getTableName())))

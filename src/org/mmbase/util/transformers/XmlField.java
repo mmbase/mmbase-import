@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.49 2007-01-05 19:56:46 michiel Exp $
+ * @version $Id: XmlField.java,v 1.50 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -965,8 +965,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         super(to);
     }
 
-    public Map transformers() {
-        Map h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put("MMXF_ASCII", new Config(XmlField.class, ASCII, "Converts xml to ASCII (cannoted be reversed)"));
         h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "XHTML 2 compliant XML."));
         h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "XHTML 2 compliant XML, but withough <br/> tags"));

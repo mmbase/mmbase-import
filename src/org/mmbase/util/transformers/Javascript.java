@@ -84,8 +84,8 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
-        Map h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put(SINGLE_QUOTES, new Config(Sql.class, ESCAPE_SINGLE_QUOTES, "Escape single quotes for Javascript statements"));
         h.put(DOUBLE_QUOTES, new Config(Sql.class, ESCAPE_DOUBLE_QUOTES, "Escape single quotes for Javascript statements"));
         return h;

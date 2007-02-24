@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.30 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: ConstraintParser.java,v 1.31 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -132,7 +132,7 @@ public class ConstraintParser {
      * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
      */
     private static String convertClausePartToDBS(String constraints) {
-        StorageManagerFactory factory = MMBase.getMMBase().getStorageManagerFactory();
+        StorageManagerFactory<?> factory = MMBase.getMMBase().getStorageManagerFactory();
         StringBuffer result = new StringBuffer();
         int posa = constraints.indexOf('[');
         while (posa > -1) {
@@ -276,7 +276,7 @@ public class ConstraintParser {
 
 
     private SearchQuery query = null;
-    private List steps = null;
+    private List<? extends Step> steps = null;
 
     /**
      * Parses string or numerical value from list of tokens, to match the type
@@ -394,8 +394,8 @@ public class ConstraintParser {
      * @return The field.
      */
 
-    public static StepField getField(String token, List steps) {
-        return getField(token, steps, null);
+    public static StepField getField(String token, List<? extends Step> steps) {
+        return getField(token, (List<BasicStep>) steps, null);
     }
     /**
      * Creates <code>StepField</code> corresponding to field indicated by
@@ -416,7 +416,7 @@ public class ConstraintParser {
      * @since MMBase-1.7.1
      */
 
-    static StepField getField(String token, List steps, SearchQuery query) {
+    static StepField getField(String token, List<BasicStep> steps, SearchQuery query) {
         BasicStep step = null;
         int bracketOffset = (token.startsWith("[") && token.endsWith("]")) ? 1 : 0;
         int idx = token.indexOf('.');
@@ -431,7 +431,7 @@ public class ConstraintParser {
                     throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
                 }
             } else {
-                step = (BasicStep) steps.get(0);
+                step = steps.get(0);
             }
         } else {
             step = getStep(token.substring(bracketOffset, idx), steps);
@@ -470,10 +470,10 @@ public class ConstraintParser {
      * @param steps The steps
      * @return The step.
      */
-    private static BasicStep getStep(String alias, List steps) {
-        Iterator iSteps = steps.iterator();
+    private static BasicStep getStep(String alias, List<BasicStep> steps) {
+        Iterator<BasicStep> iSteps = steps.iterator();
         while (iSteps.hasNext()) {
-            BasicStep step = (BasicStep) iSteps.next();
+            BasicStep step = iSteps.next();
             String alias2 = step.getAlias();
             if (alias2 == null) {
                 alias2 = step.getTableName();
@@ -547,7 +547,7 @@ public class ConstraintParser {
      */
     // package visibility!
     StepField getField(String token) {
-        return getField(token, steps, query);
+        return getField(token, (List<BasicStep>) steps, query);
     }
 
     /**

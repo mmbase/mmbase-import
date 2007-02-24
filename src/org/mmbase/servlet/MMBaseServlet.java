@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.58 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: MMBaseServlet.java,v 1.59 2007-02-24 21:57:52 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -69,7 +69,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * Map containing currently running servlets
      */
-    private static Map<MMBaseServlet, ServletReferenceCount> runningServlets = new HashMap();
+    private static Map<MMBaseServlet, ServletReferenceCount> runningServlets = new HashMap<MMBaseServlet, ServletReferenceCount>();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -300,7 +300,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     public static List<String> getServletMappings(String servletName) {
         List<String> ls = servletMappings.get(servletName);
         if (ls == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(ls);
         }
@@ -330,7 +330,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (name != null) {
             return getServletMappings(name);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -615,7 +615,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
          * List of URIs that call the servlet
          * @scope private
          */
-        List uris = new ArrayList();
+        List<String> uris = new ArrayList<String>();
         /**
          * Nr. of references
          * @scope private

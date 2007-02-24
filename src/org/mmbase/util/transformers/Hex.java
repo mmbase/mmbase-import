@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Johannes Verelst
  * @since MMBase-1.8.1
- * @version $Id: Hex.java,v 1.3 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Hex.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
@@ -35,8 +35,8 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
-        HashMap h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Hex.class, HEX, "Encoding bytearrays to and from a hexidecimal string"));
         return h;
     }

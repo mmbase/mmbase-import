@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.11 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: MagicParser.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
  * @todo NOT TESTED YET
  */
 
@@ -39,7 +38,7 @@ public class MagicParser implements DetectorProvider {
     public final static String DEFAULT_MAGIC_FILE = "/etc/mime-magic";
     
     private static final Logger log = Logging.getLoggerInstance(MagicParser.class);
-    private List detectors;
+    private List<Detector> detectors;
 
     private int offset;
     private String type;
@@ -61,7 +60,7 @@ public class MagicParser implements DetectorProvider {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
             String line;
-            detectors = new Vector();
+            detectors = new Vector<Detector>();
 
             while ((line = br.readLine()) != null) {
                 Detector d = createDetector(line);
@@ -75,7 +74,7 @@ public class MagicParser implements DetectorProvider {
         };
     }
 
-    public List getDetectors() {
+    public List<Detector> getDetectors() {
         return detectors;
     }
     // --------------------------------------------------------------------------------
@@ -482,9 +481,8 @@ public class MagicParser implements DetectorProvider {
 
         writer.write(
             "<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
-        Iterator i = getDetectors().iterator();
-        while (i.hasNext()) {
-            ((Detector)i.next()).toXML(writer);
+        for (Detector detector : getDetectors()) {
+            detector.toXML(writer);
         }
         writer.write("</detectorlist>\n</magic>\n");
         writer.close();

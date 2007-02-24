@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.17 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: TemplateCache.java,v 1.18 2007-02-24 21:57:52 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache<Object, Templates> {
@@ -141,10 +141,10 @@ public class TemplateCache extends Cache<Object, Templates> {
 
     private int remove(String file) {
         int removed = 0;
-        Iterator i =  entrySet().iterator();
+        Iterator<Map.Entry<Object, Templates>> i =  entrySet().iterator();
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
         while (i.hasNext()) {
-            Key mapKey = (Key) ((Map.Entry) i.next()).getKey();
+            Key mapKey = (Key) i.next().getKey();
             if (mapKey.getURL().equals(file)) {
                 if(remove(mapKey) != null) {
                     removed++;

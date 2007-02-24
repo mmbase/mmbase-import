@@ -36,7 +36,7 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.30 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.31 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -75,6 +75,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
     // javadoc is inherited
+    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -97,6 +98,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
+    @Override
     protected boolean useLower(FieldCompareConstraint constraint) {
         if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
             return false;
@@ -106,6 +108,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
+    @Override
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE ");
@@ -121,6 +124,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * UPPER(fieldname). This is mainly very bad if the query is also distinct. (ERROR: for SELECT
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
+    @Override
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
@@ -159,6 +163,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @javadoc
      */
+    @Override
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
@@ -197,6 +202,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
 
     // javadoc is inherited
+    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -248,6 +254,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
      */
+    @Override
     protected void appendTableName(StringBuffer sb, Step step) {
         if(step instanceof RelationStep) {
             RelationStep rs = (RelationStep) step;

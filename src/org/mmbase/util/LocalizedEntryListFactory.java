@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.42 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.43 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -637,7 +637,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
             } catch (IllegalArgumentException iae) {
                 log.error(iae);
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         }
 

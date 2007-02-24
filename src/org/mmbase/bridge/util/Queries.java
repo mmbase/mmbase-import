@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.83 2007-02-16 20:02:36 michiel Exp $
+ * @version $Id: Queries.java,v 1.84 2007-02-24 21:57:50 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -319,25 +319,25 @@ abstract public class Queries {
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart, Cloud cloud) {
         if (operator == OPERATOR_IN) {
-            SortedSet set;
+            SortedSet<Object> set;
             if (value instanceof SortedSet) {
-                set = (SortedSet)value;
+                set = (SortedSet<Object>)value;
             } else if (value instanceof NodeList) {
-                set = new TreeSet();
+                set = new TreeSet<Object>();
                 NodeIterator i = ((NodeList)value).nodeIterator();
                 while (i.hasNext()) {
                     Node node = i.nextNode();
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
                 }
             } else if (value instanceof Collection) {
-                set = new TreeSet();
+                set = new TreeSet<Object>();
                 Iterator i = ((Collection)value).iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
                 }
             } else {
-                set = new TreeSet();
+                set = new TreeSet<Object>();
                 if (!(value == null || value.equals(""))) {
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
                 }
@@ -443,7 +443,7 @@ abstract public class Queries {
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Iterator i = ((Collection) value).iterator();
                     value = new ArrayList();
-                    List list = (List) value;
+                    List<Object> list = (List<Object>) value;
                     while (i.hasNext()) {
                         Object v = i.next();
                         if (v instanceof Number) {
@@ -540,20 +540,20 @@ abstract public class Queries {
 
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
-            List constraints = new ArrayList();
-            Iterator i = constraint.getChilds().iterator();
+            List<Constraint> constraints = new ArrayList<Constraint>();
+            Iterator<Constraint> i = constraint.getChilds().iterator();
             while (i.hasNext()) {
-                Constraint cons = copyConstraint((Constraint) i.next(), sourceStep, query, step);
+                Constraint cons = copyConstraint(i.next(), sourceStep, query, step);
                 if (cons != null) constraints.add(cons);
             }
             int size = constraints.size();
             if (size == 0) return null;
-            if (size == 1) return (Constraint) constraints.get(0);
+            if (size == 1) return constraints.get(0);
             i = constraints.iterator();
             int op = constraint.getLogicalOperator();
-            Constraint newConstraint    = query.createConstraint((Constraint) i.next(), op, (Constraint) i.next());
+            Constraint newConstraint    = query.createConstraint(i.next(), op, i.next());
             while (i.hasNext()) {
-                newConstraint = query.createConstraint(newConstraint, op, (Constraint) i.next());
+                newConstraint = query.createConstraint(newConstraint, op, i.next());
             }
             query.setInverse(newConstraint, constraint.isInverse());
             return newConstraint;

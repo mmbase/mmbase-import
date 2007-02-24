@@ -15,7 +15,7 @@ import java.util.Map;
  * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
  *
  * @since MMBase-1.8
- * @version $Id: Entry.java,v 1.6 2006-09-08 12:12:26 michiel Exp $
+ * @version $Id: Entry.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
  * @author Michiel Meeuwissen
  */
 public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable, java.io.Serializable {
@@ -66,7 +66,7 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable, java
     }
     public boolean equals(Object o) {
         if (o instanceof Map.Entry) {
-            Map.Entry entry = (Map.Entry) o;
+            Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
             return
                 (key == null ? entry.getKey() == null : key.equals(entry.getKey())) &&
                 (value == null ? entry.getValue() == null : value.equals(entry.getValue()));

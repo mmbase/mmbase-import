@@ -18,13 +18,13 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.4 2007-02-16 20:05:51 michiel Exp $
+ * @version $Id: AbstractBridgeList.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
  * @since   MMBase-1.8
  */
 
-abstract public class AbstractBridgeList<E> extends AbstractList<E> implements BridgeList<E> {
+abstract public class AbstractBridgeList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E> {
 
-    private Map properties = new HashMap();
+    private Map<Object,Object> properties = new HashMap<Object,Object>();
 
     // javadoc inherited
     public Object getProperty(Object key) {
@@ -38,7 +38,7 @@ abstract public class AbstractBridgeList<E> extends AbstractList<E> implements B
 
     // javadoc inherited
     public void sort() {
-        Collections.sort((List) this);
+        Collections.sort(this);
     }
 
     // javadoc inherited

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.11 2006-09-25 14:08:45 michiel Exp $
+ * @version $Id: StorageReader.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class StorageReader<SM extends StorageManager> extends DocumentReader  {
@@ -135,9 +135,9 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
      * @return A List of Class objects, each being the SearchQueryHandler class, or an empty list if none was configured
      * @throws StorageConfigurationException if the class configured is invalid
      */
-    public List<Class> getSearchQueryHandlerClasses() throws StorageConfigurationException {
+    public List<Class<?>> getSearchQueryHandlerClasses() throws StorageConfigurationException {
         // override if otherwise specified
-        List<Class> classes = new ArrayList();
+        List<Class<?>> classes = new ArrayList<Class<?>>();
         Element root = document.getDocumentElement();
         NodeList handlerTagList = root.getElementsByTagName("searchqueryhandler");
         for(int i=0; i<handlerTagList.getLength(); i++) {
@@ -162,7 +162,7 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
      * @return attributes as a map
      */
     public Map<String, Object> getAttributes() {
-        Map<String, Object> attributes = new HashMap();
+        Map<String, Object> attributes = new HashMap<String, Object>();
         Element root = document.getDocumentElement();
         NodeList attributesTagList = root.getElementsByTagName("attributes");
         if (attributesTagList.getLength()>0) {
@@ -225,7 +225,7 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
      * @return disallowed fields as a map
      */
     public Map<String, String> getDisallowedFields() {
-        Map<String, String>  disallowedFields = new HashMap();
+        Map<String, String>  disallowedFields = new HashMap<String, String>();
         Element root = document.getDocumentElement();
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
         if (disallowedFieldsList.getLength() > 0) {
@@ -255,7 +255,7 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
      * @return a List of TypeMapping objects
      */
     public List<TypeMapping> getTypeMappings() {
-        List<TypeMapping> typeMappings = new ArrayList();
+        List<TypeMapping> typeMappings = new ArrayList<TypeMapping>();
         Element root = document.getDocumentElement();
         NodeList typeMappingsTagList = root.getElementsByTagName("type-mappings");
         if (typeMappingsTagList.getLength()>0) {

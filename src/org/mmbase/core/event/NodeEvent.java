@@ -10,9 +10,6 @@ package org.mmbase.core.event;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  * This class communicates a node event. in case of a change event, it contains
@@ -21,14 +18,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.31 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: NodeEvent.java,v 1.32 2007-02-24 21:57:50 nklasens Exp $
  */
 public class NodeEvent extends Event {
 
-
     private static final long serialVersionUID = 1L;
-
-    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     /**
      * Event type speicfic for MMBase nodes.
@@ -52,8 +46,8 @@ public class NodeEvent extends Event {
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.oldValues = oldValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(oldValues));
-        this.newValues = newValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(newValues));
+        this.oldValues = oldValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(oldValues));
+        this.newValues = newValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(newValues));
     }
 
 
@@ -79,7 +73,7 @@ public class NodeEvent extends Event {
         case TYPE_DELETE:
             return oldValues.keySet();
         default:
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
     }
 
@@ -236,12 +230,12 @@ public class NodeEvent extends Event {
 
     public static void main(String[] args) {
         //test serializable
-        Map  oldv = new HashMap(), newv = new HashMap();
+        Map<String,Object>  oldv = new HashMap<String,Object>(), newv = new HashMap<String,Object>();
         oldv.put("een","veen");
         oldv.put("twee","vtwee");
         newv.putAll(oldv);
 
-        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.TYPE_CHANGE);
+        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, Event.TYPE_CHANGE);
         System.out.println("event 1: " + event.toString());
 
     }

@@ -11,7 +11,6 @@ package org.mmbase.util.transformers;
 
 import java.io.*;
 import org.mmbase.util.ReaderInputStream;
-import org.mmbase.util.logging.*;
 
 /**
  * A CharTransformer which wraps a ByteToCharTransformer.
@@ -20,11 +19,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ByteCharTransformer.java,v 1.3 2006-10-02 14:31:01 michiel Exp $
+ * @version $Id: ByteCharTransformer.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(ByteCharTransformer.class);
 
     private ByteToCharTransformer byteToChars;
     private String encoding = "UTF-8";

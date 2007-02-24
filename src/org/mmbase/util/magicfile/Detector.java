@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.12 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: Detector.java,v 1.13 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class Detector {
@@ -66,7 +66,7 @@ public class Detector {
     private String test; // Test value
     private char testComparator; // What the test is like,
     private String message; // Designation for this type in 'magic' file
-    private List extensions; // Possible file extensions for this type
+    private List<String> extensions; // Possible file extensions for this type
     private String mimetype; // MimeType for this type
 
     // What are these?
@@ -74,7 +74,7 @@ public class Detector {
     private int xInt;
     private char xChar;
 
-    private List childList;
+    private List<Detector> childList;
 
     private boolean valid; // Set this if parsing of magic file fails
     private boolean hasX; // Is set when an 'x' value is matched
@@ -89,7 +89,7 @@ public class Detector {
             if (childList.size() == 0) {
                 log.debug("Hm. level = " + level + ", but childList is empty");
             } else {
-                ((Detector) childList.get(childList.size() - 1)).addChild(detector, level - 1);
+                (childList.get(childList.size() - 1)).addChild(detector, level - 1);
             }
         }
     }
@@ -97,8 +97,8 @@ public class Detector {
      * Detectors are instanciated by MagicXMLReader, and by Parser.
      */
     Detector() {
-        childList  = new ArrayList();
-        extensions = new ArrayList();
+        childList  = new ArrayList<Detector>();
+        extensions = new ArrayList<String>();
         mimetype   = "application/octet-stream";
         message    = "Unknown";
         valid      = true;
@@ -114,9 +114,9 @@ public class Detector {
         if (extensions.size() == 0) {
             return "";
         }
-        return (String) extensions.get(0);
+        return extensions.get(0);
     }
-    public List getExtensions() {
+    public List<String> getExtensions() {
         return extensions;
     }
 
@@ -186,7 +186,7 @@ public class Detector {
         if (hit) {
             log.debug("Detector " + this + " hit");
             for (int i = 0; i < childList.size(); i++) {
-                Detector child = (Detector) childList.get(i);
+                Detector child = childList.get(i);
                 if (child.test(lithmus)) {
                     String s = child.getDesignation();
                     if (s.startsWith("\\b")) {
@@ -549,9 +549,8 @@ public class Detector {
         f.write(s.toString());
         if (childList.size() > 0) {
             f.write(padStr + "  <childlist>\n");
-            Iterator i = childList.iterator();
-            while (i.hasNext()) {
-                ((Detector) i.next()).toXML(f, level + 1);
+            for (Detector detector : childList) {
+                detector.toXML(f, level + 1);
             }
             f.write(padStr + "  </childlist>\n");
         }
@@ -574,8 +573,7 @@ public class Detector {
             if (childList.size() > 0) {
                 res.append("\n");
                 for (int i = 0; i < childList.size(); i++) {
-                    res.append("> ").append(
-                                            ((Detector) childList.get(i)).toString());
+                    res.append("> ").append(childList.get(i).toString());
                 }
             }
             return res.toString();

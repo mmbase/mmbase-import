@@ -36,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.8 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.9 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -75,7 +75,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             StringSearchConstraint stringSearchConstraint
                 = (StringSearchConstraint) constraint;
             StepField field = stringSearchConstraint.getField();
-            Map parameters = stringSearchConstraint.getParameters();
+            Map<String,Object> parameters = stringSearchConstraint.getParameters();
 
             // TODO: how to implement inverse,
             // it is actually more complicated than this:
@@ -88,10 +88,10 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             append(getAllowedValue(field.getFieldName())).
             append(", Row('");
 
-            Iterator iSearchTerms
+            Iterator<String> iSearchTerms
                 = stringSearchConstraint.getSearchTerms().iterator();
             while (iSearchTerms.hasNext()) {
-                String searchTerm = (String) iSearchTerms.next();
+                String searchTerm = iSearchTerms.next();
                 sb.append(searchTerm);
                 if (iSearchTerms.hasNext()) {
                     sb.append(" ");
@@ -229,9 +229,9 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      *         false otherwise.
      */
     protected boolean hasAdditionalConstraints(SearchQuery query) {
-        Iterator iSteps = query.getSteps().iterator();
+        Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
-            Step step = (Step) iSteps.next();
+            Step step = iSteps.next();
             if (step instanceof RelationStep || step.getNodes().size() > 0) {
                 // Additional constraints on relations or nodes.
                 return true;
@@ -256,13 +256,11 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     StringSearchConstraint searchConstraint) {
         if (constraint instanceof CompositeConstraint) {
             // Composite constraint.
-            Iterator iChildConstraints
-            = ((CompositeConstraint) constraint).getChilds().iterator();
+            Iterator<Constraint> iChildConstraints
+                = ((CompositeConstraint) constraint).getChilds().iterator();
             while (iChildConstraints.hasNext()) {
-                Constraint childConstraint
-                = (Constraint) iChildConstraints.next();
-                if (containsOtherStringSearchConstraints(
-                childConstraint, searchConstraint)) {
+                Constraint childConstraint = iChildConstraints.next();
+                if (containsOtherStringSearchConstraints(childConstraint, searchConstraint)) {
                     // Another stringsearch constraint found in childs.
                     return true;
                 }
@@ -300,11 +298,11 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                     new BufferedReader(
                         new FileReader(etxConfigFile))));
 
-        for (Iterator eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
-            Element sbspace = (Element) eSbspaces.next();
+        for (Iterator<Element> eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
+            Element sbspace = eSbspaces.next();
             
-            for (Iterator eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
-                Element etxIndex = (Element) eEtxIndices.next();
+            for (Iterator<Element> eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
+                Element etxIndex = eEtxIndices.next();
                 String table = configReader.getEtxindexTable(etxIndex);
                 String field = configReader.getEtxindexField(etxIndex);
                 String index = configReader.getEtxindexValue(etxIndex);

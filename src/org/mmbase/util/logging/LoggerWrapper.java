@@ -17,16 +17,16 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.6 2006-08-30 17:54:00 michiel Exp $
+ * @version $Id: LoggerWrapper.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
  **/
 
 public class LoggerWrapper implements Logger {
 
-    private static final Set wrappers = new HashSet();
+    private static final Set<LoggerWrapper> wrappers = new HashSet<LoggerWrapper>();
 
 
     // package
-    static Set getWrappers() {
+    static Set<LoggerWrapper> getWrappers() {
         return Collections.unmodifiableSet(wrappers);
     }
 
