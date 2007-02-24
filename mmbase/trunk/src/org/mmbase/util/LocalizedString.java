@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.28 2006-11-24 15:31:48 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -204,7 +204,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * LocalizedString. It is an unmodifiable mapping: Locale -> localized value.
      */
     public Map<Locale, String> asMap() {
-        if (values == null) return Collections.EMPTY_MAP;
+        if (values == null) return Collections.emptyMap();
         return Collections.unmodifiableMap(values);
     }
 

@@ -10,29 +10,25 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database.functions;
 
 
-import java.io.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.*;
-import org.mmbase.util.logging.*;
 
 /**
  * An SQL handle also recognizing 'FunctionValueConstraint's.
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionSqlHandler.java,v 1.3 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: FunctionSqlHandler.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
 public class FunctionSqlHandler extends ChainedSqlHandler implements SqlHandler {
-    
-    private static final Logger log = Logging.getLoggerInstance(FunctionSqlHandler.class);
 
     //public InformixSqlHandler(Map disallowedValues) {
     //    super(disallowedValues);
     //    mmbase = MMBase.getMMBase();
     //}
     
-    public FunctionSqlHandler(SqlHandler successor) throws IOException {
+    public FunctionSqlHandler(SqlHandler successor) {
         super(successor);
         // log.fatal("MARCEL: FunctionSqlHandler: Instantiated");
        

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import org.mmbase.util.logging.*;
 
 /**
  * You need only to implement transform(Reader, Writer) you have the simplest
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(ReaderTransformer.class);
+
     // javadoc inherited
     public abstract Writer transform(Reader r, Writer w);
 

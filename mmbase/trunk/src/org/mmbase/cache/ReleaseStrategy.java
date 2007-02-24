@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.22 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.23 2007-02-24 21:57:51 nklasens Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -184,7 +184,7 @@ public abstract class ReleaseStrategy {
      */
     protected static List<Constraint> getConstraintsForField(String  fieldName, final MMObjectBuilder builder, Constraint constraint, final SearchQuery query){
         if(constraint == null) constraint = query.getConstraint();
-        if(constraint == null) return Collections.EMPTY_LIST;
+        if(constraint == null) return Collections.emptyList();
         List<Constraint> result = new ArrayList<Constraint>();
 
         if(constraint instanceof CompositeConstraint) {
@@ -228,7 +228,7 @@ public abstract class ReleaseStrategy {
      */
     protected static List<SortOrder> getSortordersForField(final String fieldName, final MMObjectBuilder builder, List<SortOrder> sortOrders, final SearchQuery query) {
         if(sortOrders == null) sortOrders = query.getSortOrders();
-        if(sortOrders == null) return Collections.EMPTY_LIST;
+        if(sortOrders == null) return Collections.emptyList();
         List<SortOrder> result = new ArrayList<SortOrder>();
         for (SortOrder order : sortOrders) {
             StepField sf = order.getField();

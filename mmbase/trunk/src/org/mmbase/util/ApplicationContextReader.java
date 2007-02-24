@@ -12,19 +12,14 @@ package org.mmbase.util;
 import java.util.*;
 import javax.naming.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * @javadoc
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.3 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
  */
 public class ApplicationContextReader {
-
-    private static Logger log = Logging.getLoggerInstance(ApplicationContextReader.class);
 
     /**
      * @javadoc

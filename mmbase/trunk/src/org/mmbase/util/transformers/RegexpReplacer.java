@@ -12,6 +12,7 @@ package org.mmbase.util.transformers;
 import java.util.*;
 import java.io.*;
 import java.util.regex.*;
+
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.Entry;
@@ -34,16 +35,16 @@ public class RegexpReplacer extends ChunkedTransformer {
     /**
      * Every extension of regexp-replacer can make use of this.
      */
-    private static final Map utilReaders = new HashMap();     // class -> utilreader
+    private static final Map<String,UtilReader> utilReaders = new HashMap<String,UtilReader>();     // class -> utilreader
 
     /**
      * The regexps for the unextended RegexpReplacer
      */
-    protected static final Collection regexps = new ArrayList();
+    protected static final Collection<Entry<Pattern,String>> regexps = new ArrayList<Entry<Pattern,String>>();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
-        protected Collection patterns;
-        PatternWatcher(Collection p) {
+        protected Collection<Entry<Pattern,String>> patterns;
+        PatternWatcher(Collection<Entry<Pattern,String>> p) {
             patterns = p;
         }
     }
@@ -66,7 +67,7 @@ public class RegexpReplacer extends ChunkedTransformer {
      * This on default gives the regexps configured for the base-class (a static member). You can
      * override this method to return another Collection.
      */
-    protected Collection getPatterns() {
+    protected Collection<Entry<Pattern,String>> getPatterns() {
         return regexps;
     }
 
@@ -81,14 +82,14 @@ public class RegexpReplacer extends ChunkedTransformer {
      * Reads defaults translation patterns into the given collection patterns. Override this for
      * other default patterns.
      */
-    protected void readDefaultPatterns(Collection patterns) {
+    protected void readDefaultPatterns(Collection<Entry<Pattern,String>> patterns) {
     }
 
     /**
      * Reads patterns from config-file into given Collection
      */
-    protected final void readPatterns(Collection patterns) {
-        UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
+    protected final void readPatterns(Collection<Entry<Pattern,String>> patterns) {
+        UtilReader utilReader = utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
             utilReader = new UtilReader(getConfigFile(),
                                         new PatternWatcher(patterns) {
@@ -101,7 +102,7 @@ public class RegexpReplacer extends ChunkedTransformer {
 
         patterns.clear();
 
-        Collection regs = (Collection) utilReader.getProperties().get("regexps");
+        Collection<?> regs = (Collection<?>) utilReader.getProperties().get("regexps");
         if (regs != null) {
             addPatterns(regs, patterns);
         } else {
@@ -117,9 +118,9 @@ public class RegexpReplacer extends ChunkedTransformer {
      *        expression. The value is still a String. New entries will be added to this collection
      *        by this function.
      */
-    protected static void addPatterns(Collection list, Collection patterns) {
+    protected static void addPatterns(Collection<?> list, Collection<Entry<Pattern,String>> patterns) {
         if (list != null) {
-            Iterator i = list.iterator();
+            Iterator<?> i = list.iterator();
             while (i.hasNext()) {
                 Object next = i.next();
                 Pattern p;
@@ -128,19 +129,19 @@ public class RegexpReplacer extends ChunkedTransformer {
                     log.warn("Found null in " + list);
                     continue;
                 } else if (next instanceof Map.Entry) {
-                    Map.Entry entry  = (Map.Entry) next;
+                    Map.Entry<?,?> entry  = (Map.Entry<?,?>) next;
                     p        = Pattern.compile(Casting.toString(entry.getKey()));
                     Object value = entry.getValue();
                     if (value instanceof Collection) {
                         result = null;
-                        Iterator j = ((Collection) value).iterator();
+                        Iterator<?> j = ((Collection<?>) value).iterator();
                         while (j.hasNext()) {
                             Object n = j.next();
                             if (! (n instanceof Map.Entry)) {
                                 log.warn("Could not understand " + n.getClass() + " '" + n + "' (in collection " + value + "). It should be a Map.Entry.");
                                 continue;
                             }
-                            Map.Entry subEntry = (Map.Entry) n;
+                            Map.Entry<?,?> subEntry = (Map.Entry<?,?>) n;
                             Object key = subEntry.getKey();
                             if ("key".equals(key)) {
                                 p        = Pattern.compile(Casting.toString(subEntry.getValue()));
@@ -158,21 +159,21 @@ public class RegexpReplacer extends ChunkedTransformer {
                     log.warn("Could not understand " + next.getClass() + " '" + next + "'. It should be a Map.Entry.");
                     continue;
                 }
-                patterns.add(new Entry(p, result));
+                patterns.add(new Entry<Pattern,String>(p, result));
             }
         }
     }
 
     protected boolean replace(String string, Writer w, Status status) throws IOException {
-        Iterator i  = getPatterns().iterator();
+        Iterator<Entry<Pattern,String>> i  = getPatterns().iterator();
 
         while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
-            Pattern p = (Pattern) entry.getKey();
+            Entry<Pattern,String> entry = i.next();
+            Pattern p = entry.getKey();
             if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
             if (m.matches()) {
-                String result = (String) entry.getValue();
+                String result = entry.getValue();
                 for (int j = m.groupCount(); j >= 0; j--) {
                     if (replaceFirst) {
                         result = result.replaceFirst("\\$" + j, m.group(j));

@@ -23,7 +23,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.7 2007-01-02 19:44:55 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.8 2007-02-24 21:57:52 nklasens Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -116,15 +116,15 @@ public abstract class DataTypeXml {
     private static Object getParameterValue(Element param) {
         String stringValue = DocumentReader.getNodeTextValue(param);
         NodeList childNodes = param.getChildNodes();
-        Collection subParams = null;
+        Collection<Entry<String, Object>> subParams = null;
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if (! (child instanceof Element)) continue;
             if (child.getLocalName().equals("param")) {
                 Element subParam = (Element) child;
-                if (subParams == null) subParams = new ArrayList();
+                if (subParams == null) subParams = new ArrayList<Entry<String, Object>>();
                 String name = subParam.getAttribute("name");
-                subParams.add(new Entry(name, getParameterValue(subParam)));
+                subParams.add(new Entry<String, Object>(name, getParameterValue(subParam)));
             }
         }
         if (subParams != null) {

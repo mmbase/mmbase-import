@@ -16,6 +16,7 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
+
 import java.util.Collection;
 
 /**
@@ -213,8 +214,8 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         hashcodeChanged = true;
     }
 
-    public Collection validate(Object value) {
-        Collection errors = getDataType().validate(value, null, this);
+    public Collection<String> validate(Object value) {
+        Collection<LocalizedString> errors = getDataType().validate(value, null, this);
         return LocalizedString.toStrings(errors, parent.getMMBase().getLocale());
     }
 

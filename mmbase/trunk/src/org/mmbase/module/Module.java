@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.88 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: Module.java,v 1.89 2007-02-24 21:57:51 nklasens Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -544,10 +544,10 @@ public abstract class Module extends DescribedFunctionProvider {
                         log.service("loading module from jar " + parser.getURLString());
                         URL url = new URL(parser.getURLString());
                         URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
-                        Class newClass = c.loadClass(className);
+                        Class<?> newClass = c.loadClass(className);
                         mod = (Module) newClass.newInstance();
                     } else {
-                        Class newClass = Class.forName(className);
+                        Class<?> newClass = Class.forName(className);
                         mod =  (Module) newClass.newInstance();
                     }
                     // set the module name property, and the default context

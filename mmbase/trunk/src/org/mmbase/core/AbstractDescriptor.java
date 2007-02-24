@@ -13,19 +13,16 @@ package org.mmbase.core;
 import java.util.*;
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.11 2007-02-10 16:22:38 nklasens Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
-
-    private static final Logger log = Logging.getLoggerInstance(AbstractDescriptor.class);
 
     protected String key;
     protected LocalizedString description;

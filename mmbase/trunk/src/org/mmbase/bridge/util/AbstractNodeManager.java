@@ -23,7 +23,7 @@ import org.mmbase.bridge.implementation.BasicFieldList;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -68,15 +68,15 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
 
     public FieldList createFieldList() {
-        return new BasicFieldList(Collections.EMPTY_LIST, this);
+        return new BasicFieldList(Collections.emptyList(), this);
     }
 
     public NodeList createNodeList() {
-        return new CollectionNodeList(Collections.EMPTY_LIST, this);
+        return new CollectionNodeList(Collections.emptyList(), this);
     }
 
     public RelationList createRelationList() {
-        return new CollectionRelationList(Collections.EMPTY_LIST, this);
+        return new CollectionRelationList(Collections.emptyList(), this);
     }
 
     public boolean mayCreateNode() {
@@ -155,7 +155,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return null;
     }
     public Map getProperties() {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     public NodeManagerList getDescendants() {
@@ -163,7 +163,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
     public Collection  getFunctions() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
 }

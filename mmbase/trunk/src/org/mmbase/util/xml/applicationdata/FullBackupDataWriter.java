@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml.applicationdata;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
@@ -25,7 +24,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.6 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.7 2007-02-24 21:57:51 nklasens Exp $
  */
 public class FullBackupDataWriter {
 
@@ -43,7 +42,7 @@ public class FullBackupDataWriter {
      * @throws IOException if a file could not be written
      * @throws SearchQueryException if data could not be obtained from the database
      */
-    public static void writeContext(ApplicationReader reader, String targetPath, MMBase mmbase, Logger logger) throws IOException, SearchQueryException {
+    public static void writeContext(ApplicationReader reader, String targetPath, MMBase mmbase, Logger logger) throws SearchQueryException {
         // Create directory for data files.
         String subTargetPath = targetPath + "/" + reader.getName() + "/";
         File file = new File(subTargetPath);
@@ -62,7 +61,7 @@ public class FullBackupDataWriter {
      * @throws IOException if a file could not be written
      * @throws SearchQueryException if data could not be obtained from the database
      */
-    static void writeNodes(String subTargetPath, MMBase mmbase, Logger logger) throws IOException, SearchQueryException {
+    static void writeNodes(String subTargetPath, MMBase mmbase, Logger logger) throws SearchQueryException {
         for (Object element : mmbase.getBuilders()) {
             MMObjectBuilder builder = (MMObjectBuilder) element;
 
@@ -86,7 +85,7 @@ public class FullBackupDataWriter {
             query.setConstraint(constraint);
 
             // Add this builder's nodes to set (by nodenumber).
-            List nodes = builder.getStorageConnector().getNodes(query, false);
+            List<MMObjectNode> nodes = builder.getStorageConnector().getNodes(query, false);
             writeNodes(subTargetPath, mmbase, logger, builder, nodes, isRelation);
         }
     }
@@ -100,15 +99,15 @@ public class FullBackupDataWriter {
      * @param logger Used to store messages that can be shown to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(String subTargetPath, MMBase mmbase, Logger logger, MMObjectBuilder builder, List nodes, boolean isRelation) {
+    static void writeNodes(String subTargetPath, MMBase mmbase, Logger logger, MMObjectBuilder builder, List<MMObjectNode> nodes, boolean isRelation) {
 
         // Create nodewriter for this builder
         NodeWriter nodeWriter = new NodeWriter(mmbase, logger, subTargetPath, builder.getTableName(), isRelation);
 
-        Iterator iNodes = nodes.iterator();
+        Iterator<MMObjectNode> iNodes = nodes.iterator();
         int nrWritten = 0;
         while (iNodes.hasNext()) {
-            MMObjectNode node = (MMObjectNode) iNodes.next();
+            MMObjectNode node =  iNodes.next();
             // Write node if it's of the correct type.
             if (node.getBuilder() == builder) {
                 nodeWriter.write(node);

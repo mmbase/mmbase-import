@@ -30,7 +30,7 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.3 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.4 2007-02-24 21:57:51 nklasens Exp $
  */
 public class ContextDepthDataWriter  {
 
@@ -56,7 +56,7 @@ public class ContextDepthDataWriter  {
      * @throws IOException if one or more files could not be written
      */
     public static boolean writeContext(ApplicationReader app, XMLContextDepthReader capp,String targetpath,
-                                       MMBase mmb, Logger logger) throws IOException {
+                                       MMBase mmb, Logger logger) {
         // First determine the startnodes, following the specs in the current context reader.
         int startnode=getStartNode(capp,mmb);
         if (startnode==-1) {
@@ -68,11 +68,11 @@ public class ContextDepthDataWriter  {
             return false;
         }
         // get valid builders to filter
-        HashSet fb=getFilterBuilders(app.getNeededBuilders(),mmb.getTypeDef());
+        HashSet<Integer> fb=getFilterBuilders(app.getNeededBuilders(),mmb.getTypeDef());
 
         // the trick is to get all nodes until depth x and filter them
-        HashSet relnodes = new HashSet();
-        HashSet nodes = new HashSet();
+        HashSet<Integer> relnodes = new HashSet<Integer>();
+        HashSet<Integer> nodes = new HashSet<Integer>();
         getSubNodes(startnode,depth,fb, nodes,relnodes,mmb);
 
         logger.info("Context found : "+nodes.size()+" nodes in application, "+relnodes.size()+" relations.");
@@ -96,7 +96,7 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeDataSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
+    static void writeDataSources(ApplicationReader app, HashSet<Integer> nodes, String targetpath,MMBase mmb, Logger logger) {
         writeNodes(app, nodes, targetpath, mmb, logger, false);
    }
 
@@ -109,7 +109,7 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeRelationSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
+    static void writeRelationSources(ApplicationReader app, HashSet<Integer> nodes, String targetpath,MMBase mmb, Logger logger) {
         writeNodes(app, nodes, targetpath, mmb, logger, true);
    }
 
@@ -122,7 +122,7 @@ public class ContextDepthDataWriter  {
      * @param logger Used to store messages that can be showmn to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(ApplicationReader app, HashSet nodes, String targetpath, MMBase mmb, Logger logger,
+    static void writeNodes(ApplicationReader app, HashSet<Integer> nodes, String targetpath, MMBase mmb, Logger logger,
             boolean isRelation) {
 
         //before we write the data first sort the list
@@ -131,17 +131,17 @@ public class ContextDepthDataWriter  {
         //where the message nodes contain a thread nodefield
         //upon creation there first must exist a thread message
         //so the "thread message" will have a lower number
-        List list = new Vector();
+        List<Integer> list = new Vector<Integer>();
         list.addAll(nodes);
-        Collections.sort(list, new Comparator(){
-            public int compare(Object o1, Object o2) {
-                return ((Integer)o1).compareTo((Integer)o2);
+        Collections.sort(list, new Comparator<Integer>(){
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);
             }
         }
         );
         // Retrieve an enumeration of sources to write
         // The list of sources retrieved is dependent on whether the nodes to write are data or relation nodes
-        Iterator res;
+        Iterator<Map<String,String>> res;
         if (isRelation) {
             res = app.getRelationSources().iterator();
         } else {
@@ -151,10 +151,10 @@ public class ContextDepthDataWriter  {
         String subtargetpath=targetpath+"/"+app.getName()+"/";
 
         // create a list of writer objects for the nodes
-        Hashtable nodeWriters = new Hashtable();
+        Hashtable<String, NodeWriter> nodeWriters = new Hashtable<String, NodeWriter>();
         while (res.hasNext()) {
-            Hashtable bset = (Hashtable)res.next(); // retrieve source builder name
-            String name = (String) bset.get("builder");
+            Map<String,String> bset = res.next(); // retrieve source builder name
+            String name = bset.get("builder");
 
             // Create nodewriter for this builder
             NodeWriter nw = new NodeWriter(mmb, logger, subtargetpath, name, isRelation);
@@ -164,12 +164,12 @@ public class ContextDepthDataWriter  {
         MMObjectBuilder bul = mmb.getMMObject("typedef"); // get Typedef object
         int nrofnodes=0;	// set total nodes to export to zero (is this used?).
         // Store all the nodes that apply using their corresponding NodeWriter object
-        for (Iterator nods=list.iterator(); nods.hasNext(); ) {
+        for (Integer integer : list) {
         // retrieve the node to export
-            int nr = ((Integer)nods.next()).intValue();
+            int nr = integer.intValue();
             MMObjectNode node = bul.getNode(nr);
             String name = node.getName();
-            NodeWriter nodeWriter = (NodeWriter)nodeWriters.get(name);
+            NodeWriter nodeWriter = nodeWriters.get(name);
             // export the node if the writer was found
             if (nodeWriter!=null) {
                 nodeWriter.write(node);
@@ -182,10 +182,10 @@ public class ContextDepthDataWriter  {
         }
 
         // close the files.
-        for (Enumeration e = nodeWriters.keys(); e.hasMoreElements();) {
-            String name = (String)e.nextElement();
+        for (Enumeration<String> e = nodeWriters.keys(); e.hasMoreElements();) {
+            String name = e.nextElement();
             NodeWriter nodeWriter;
-            nodeWriter = (NodeWriter)nodeWriters.get(name);
+            nodeWriter = nodeWriters.get(name);
             nodeWriter.done();
         }
     }
@@ -220,9 +220,9 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      */
 
-    static void getSubNodes(int startnodenr, int maxdepth, HashSet fb, HashSet nodesdoneSet, HashSet relationnodesSet,MMBase mmb) {
-        HashSet nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
-        HashSet nodesSet_next = new HashSet();  // holds all nodes not yet 'done' that are on the next level
+    static void getSubNodes(int startnodenr, int maxdepth, HashSet<Integer> fb, HashSet<Integer> nodesdoneSet, HashSet<Integer> relationnodesSet,MMBase mmb) {
+        HashSet<Integer> nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
+        HashSet<Integer> nodesSet_next = new HashSet<Integer>();  // holds all nodes not yet 'done' that are on the next level
         InsRel bul = mmb.getInsRel();		// builder for collecting relations. should be changed to MMRelations later on!
         Integer type = new Integer(bul.getNodeType(startnodenr));	// retrieve node type (new method in MMObjectBuiilder)
         if (!fb.contains(type)) {   // exit if the type of this node conflicts.
@@ -234,21 +234,21 @@ public class ContextDepthDataWriter  {
         // For each depth of the tree, traverse the nodes on that depth
         for (int curdepth=1;curdepth<=maxdepth;curdepth++) {
             nodesSet_current = nodesSet_next;	// use the next level of nodes to tarverse
-            nodesSet_next = new HashSet();          // and create a new holder for the nodes one level deeper
+            nodesSet_next = new HashSet<Integer>();          // and create a new holder for the nodes one level deeper
 
             // since the nodes on this level are 'almost done', and therefor should be skipped
             // when referenced in the next layer, add the current set to the set of nodes that are 'done'
             //
             nodesdoneSet.addAll(nodesSet_current);
             // iterate through the current level
-            for (Iterator curlist=nodesSet_current.iterator(); curlist.hasNext();) {
+            for (Iterator<Integer> curlist=nodesSet_current.iterator(); curlist.hasNext();) {
                 // get the next node's number
-                Integer thisnodenr = (Integer)curlist.next();
+                Integer thisnodenr = curlist.next();
                 // Iterate through all the relations of a node
                 // determining relations has to be adapted when using MMRelations!
-                for (Iterator rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
+                for (Iterator<MMObjectNode> rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
                     // get the relation node and node number
-                    MMObjectNode relnode=(MMObjectNode)rel.next();
+                    MMObjectNode relnode = rel.next();
                     Integer relnumber=new Integer(relnode.getIntValue("number"));
                     // check whether to add the referenced node
                     // and the relation between this node and the referenced one.
@@ -284,11 +284,10 @@ public class ContextDepthDataWriter  {
      * @param bul reference to the TypeDef builder, used for rertrieving builder types
      * @return a <code>HashSet</code>, containing the types (Integer) of all builders part of this application.
      */
-    static HashSet getFilterBuilders(List filter,TypeDef bul) {
-        HashSet resultset=new HashSet();
-        for(Iterator res=filter.iterator(); res.hasNext(); ) {
-            Hashtable bset=(Hashtable)res.next();
-            String name=(String)bset.get("name");
+    static HashSet<Integer> getFilterBuilders(List<Map<String,String>> filter,TypeDef bul) {
+        HashSet<Integer> resultset=new HashSet<Integer>();
+        for (Map<String, String> bset : filter) {
+            String name = bset.get("name");
             int value=bul.getIntValue(name);
             if (value!=-1) {
                 resultset.add(new Integer(value));
@@ -324,11 +323,11 @@ public class ContextDepthDataWriter  {
             MMObjectBuilder bul=mmb.getMMObject(builder);
             if (bul!=null) {
                 // find the nodes that match
-                Enumeration results=bul.search(where);
+                Enumeration<MMObjectNode> results=bul.search(where);
                 // check if there are any nodes
                 if (results.hasMoreElements()) {
                     // then return the first node found.
-                    MMObjectNode node=(MMObjectNode)results.nextElement();
+                    MMObjectNode node = results.nextElement();
                     return node.getIntValue("number");
                 }
             } else {

@@ -58,7 +58,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
         }
         return reader;
     }
-    private List detectors = null;
+    private List<Detector> detectors = null;
 
     private MagicXMLReader(InputSource is) {
         super(is, MagicXMLReader.class);
@@ -80,9 +80,9 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     /**
      * Returns all 'Detectors'.
      */
-    public List getDetectors() {
+    public List<Detector> getDetectors() {
         if (detectors == null) {
-            detectors = new CopyOnWriteArrayList();
+            detectors = new CopyOnWriteArrayList<Detector>();
             Element e = getElementByPath("magic.detectorlist");
             if (e == null) {
                 log.fatal("Could not find magic/detectorlist in magic.xml");

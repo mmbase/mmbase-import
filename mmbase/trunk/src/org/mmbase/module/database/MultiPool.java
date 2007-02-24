@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.58 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: MultiPool.java,v 1.59 2007-02-24 21:57:52 nklasens Exp $
  */
 public class MultiPool {
 
@@ -199,13 +199,11 @@ public class MultiPool {
         if (semaphore == null) return; // nothing to shut down
         synchronized (semaphore) {
             try {
-                for (Iterator<MultiConnection> i = busyPool.iterator(); i.hasNext();) {
-                    MultiConnection con = i.next();
+                for (MultiConnection con : busyPool) {
                     con.realclose();
                 }
                 busyPool.clear();
-                for (Iterator<MultiConnection> i = pool.iterator(); i.hasNext();) {
-                    MultiConnection con = i.next();
+                for (MultiConnection con : pool) {
                     con.realclose();
                 }
                 pool.clear();
@@ -345,8 +343,7 @@ public class MultiPool {
                 // cannot happen, I hope...
                 log.error("Number of connections is not correct: " + busyPool.size() + " + " + pool.size () + " = " + (busyPool.size() + pool.size()) + " != " + conMax);
                 // Check if there are dups in the pools
-                for(Iterator<MultiConnection> i = busyPool.iterator(); i.hasNext();) {
-                    MultiConnection bcon = i.next();
+                for (MultiConnection bcon : busyPool) {
                     int j = pool.indexOf(bcon);
                     if (j >= 0) {
                         if (log.isDebugEnabled()) {

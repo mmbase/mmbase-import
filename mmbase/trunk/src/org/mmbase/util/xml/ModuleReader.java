@@ -22,7 +22,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.6 2006-11-24 14:28:55 pierre Exp $
+ * @version $Id: ModuleReader.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -190,7 +190,7 @@ public class ModuleReader extends DocumentReader {
      * Get the properties of this builder
      */
     public Map<String, String> getProperties() {
-        Map<String, String> results = new LinkedHashMap();
+        Map<String, String> results = new LinkedHashMap<String, String>();
         for (Element el : getChildElements("module.properties","property")) {
             String name = getElementAttributeValue(el, "name");
             results.put(name, getElementValue(el));

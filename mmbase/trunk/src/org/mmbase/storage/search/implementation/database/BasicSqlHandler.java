@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.66 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.67 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -359,8 +359,6 @@ public class BasicSqlHandler implements SqlHandler {
         // Fields expression
         List<StepField> lFields = query.getFields();
 
-
-        boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         boolean appended = false;
         for (StepField field : lFields) {
             if (field.getType() == Field.TYPE_BINARY) continue;
@@ -441,9 +439,9 @@ public class BasicSqlHandler implements SqlHandler {
                 log.debug("Query is distinct, adding " + query.getSortOrders());
             }
             boolean needComma = appended;
-            Iterator iSortOrder = query.getSortOrders().iterator();
+            Iterator<SortOrder> iSortOrder = query.getSortOrders().iterator();
             while (iSortOrder.hasNext()) {
-                SortOrder sortOrder = (SortOrder) iSortOrder.next();
+                SortOrder sortOrder = iSortOrder.next();
                 StepField field = sortOrder.getField();
                 if (lFields.indexOf(field) == -1) {
                     if (needComma) sb.append(',');
@@ -455,9 +453,9 @@ public class BasicSqlHandler implements SqlHandler {
 
         // Tables
         sb.append(" FROM ");
-        Iterator iSteps = query.getSteps().iterator();
+        Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
-            Step step = (Step) iSteps.next();
+            Step step = iSteps.next();
             appendTableName(sb, step);
 
             if (iSteps.hasNext()) {
@@ -465,7 +463,7 @@ public class BasicSqlHandler implements SqlHandler {
             }
 
             // Included nodes.
-            SortedSet nodes = step.getNodes();
+            SortedSet<Integer> nodes = step.getNodes();
             if (nodes.size() > 0) {
                 if (sbNodes.length() > 0) {
                     sbNodes.append(" AND ");
@@ -474,9 +472,9 @@ public class BasicSqlHandler implements SqlHandler {
                 if (nodes.size() > 1) {
                     // only use IN(...) if there are really more numbers
                     sbNodes.append(" IN (");
-                    Iterator iNodes = nodes.iterator();
+                    Iterator<Integer> iNodes = nodes.iterator();
                     while (iNodes.hasNext()) {
-                        Integer node = (Integer) iNodes.next();
+                        Integer node = iNodes.next();
                         sbNodes.append(node);
                         if (iNodes.hasNext()) {
                             sbNodes.append(',');
@@ -725,7 +723,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                 // Field value-in constraint
                 FieldValueInConstraint valueInConstraint = (FieldValueInConstraint) fieldConstraint;
-                SortedSet values = valueInConstraint.getValues();
+                SortedSet<Object> values = valueInConstraint.getValues();
                 if (values.size() == 0) {
                     throw new IllegalStateException(
                     "Field value-in constraint specifies no values "
@@ -744,7 +742,7 @@ public class BasicSqlHandler implements SqlHandler {
                 if (values.size() > 1) {
                     // only use IN(...) if there are really more numbers
                     sb.append(overallInverse? " NOT IN (": " IN (");
-                    Iterator iValues = values.iterator();
+                    Iterator<Object> iValues = values.iterator();
                     while (iValues.hasNext()) {
                         Object value = iValues.next();
                         appendFieldValue(sb, value,
@@ -904,6 +902,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @SuppressWarnings("unused") // subclasses throw exception
     public int getSupportLevel(int feature, SearchQuery query)
     throws SearchQueryException {
         int result;
@@ -931,6 +930,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @SuppressWarnings("unused") // subclasses throw exception
     public int getSupportLevel(Constraint constraint, SearchQuery query)
             throws SearchQueryException {
         return constraint.getBasicSupportLevel();

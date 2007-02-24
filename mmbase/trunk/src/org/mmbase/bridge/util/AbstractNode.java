@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.18 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -597,7 +597,7 @@ public abstract class AbstractNode implements Node {
         return false;
     }
     public Set<String> getChanged() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     public void commit() {

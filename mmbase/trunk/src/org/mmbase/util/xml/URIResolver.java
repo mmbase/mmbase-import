@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.27 2006-08-24 14:39:58 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.28 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
@@ -167,7 +167,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      *
      */
     public URL getCwd() {
-        return ((Entry) dirs.get(0)).getDir();
+        return dirs.get(0).getDir();
     }
 
     /**
@@ -177,9 +177,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     public String getPath() {
         StringBuffer result = new StringBuffer();
-        Iterator i = dirs.iterator();
+        Iterator<Entry> i = dirs.iterator();
         while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
+            Entry entry = i.next();
             result.append(File.pathSeparatorChar);
             result.append(entry.getDir().toString());
         }
@@ -191,11 +191,11 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      *
      * @return A List with prefix:path Strings.
      */
-    public List getPrefixPath() {
-        List result = new ArrayList();
-        Iterator i = dirs.iterator();
+    public List<String> getPrefixPath() {
+        List<String> result = new ArrayList<String>();
+        Iterator<Entry> i = dirs.iterator();
         while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
+            Entry entry = i.next();
             result.add(entry.getPrefix() + entry.getDir().toString());
         }
         return result;
@@ -237,9 +237,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
             URL path = null;
             { // check all known prefixes
-                Iterator i = dirs.iterator();
+                Iterator<Entry> i = dirs.iterator();
                 while (i.hasNext()) {
-                    Entry entry = (Entry) i.next();
+                    Entry entry = i.next();
                     String pref = entry.getPrefix();
                     if (! "".equals(pref) && href.startsWith(pref)) { //explicitely stated!
                         path = entry.getPath(href.substring(entry.getPrefixLength()));
@@ -351,17 +351,14 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * This is a list of prefix/directory pairs which is used in the constructor of URIResolver.
      */
 
-    static public class EntryList extends ArrayList {
+    static public class EntryList extends ArrayList<Entry> {
         public EntryList() {
         }
 
         /**
          * @throws IllegalArgumentException If you don't add an Entry.
          */
-        public boolean add(Object o) {
-            if (!(o instanceof Entry)) {
-                throw new IllegalArgumentException("object must be of type Entry");
-            }
+        public boolean add(Entry o) {
             return super.add(o);
         }
 
@@ -427,7 +424,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             prefixLength = prefix.length(); // avoid calculating it again.
         }
 
-        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        private void writeObject(java.io.ObjectOutputStream out) {
             try {
                 out.writeUTF(prefix);
                 if (dir == null) {
@@ -439,7 +436,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 log.warn(t);
             }
         }
-        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException  {
+        private void readObject(java.io.ObjectInputStream in) {
             try {
                 prefix = in.readUTF();
                 Object o = in.readObject();

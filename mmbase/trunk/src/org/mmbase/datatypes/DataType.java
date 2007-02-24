@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.58 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: DataType.java,v 1.59 2007-02-24 21:57:51 nklasens Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
@@ -78,7 +78,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
-    public static final Collection<LocalizedString> VALID = Collections.EMPTY_LIST;
+    public static final Collection<LocalizedString> VALID = Collections.emptyList();
 
     /**
      * Inherit properties and processors from the passed datatype.

@@ -39,7 +39,7 @@ public class Transformers {
      */
 
     public static CharTransformer getCharTransformer(String name, String config, String errorId, boolean back) {
-        Class clazz;
+        Class<?> clazz;
         try {
             clazz = Class.forName(name);
         } catch (ClassNotFoundException ex) {
@@ -62,7 +62,7 @@ public class Transformers {
         if (t instanceof ParameterizedTransformerFactory) {
             ParameterizedTransformerFactory pt = (ParameterizedTransformerFactory) t;
             Parameters params = pt.createParameters();
-            Iterator it = org.mmbase.util.StringSplitter.split(config).iterator();
+            Iterator<String> it = org.mmbase.util.StringSplitter.split(config).iterator();
             int i = 0;
             while (it.hasNext()) {
                 params.set(i++, it.next());
@@ -119,7 +119,7 @@ public class Transformers {
      */
 
     public static ParameterizedTransformerFactory getTransformerFactory(String name, String errorId) {
-        Class clazz;
+        Class<?> clazz;
         try {
             clazz = Class.forName(name);
         } catch (ClassNotFoundException ex) {

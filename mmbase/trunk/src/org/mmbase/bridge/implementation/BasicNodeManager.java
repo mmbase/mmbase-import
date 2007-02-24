@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.130 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.131 2007-02-24 21:57:50 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -298,7 +298,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         if (builder != null) {
             return Collections.unmodifiableMap(builder.getInitParameters());
         } else {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 
@@ -585,15 +585,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public FieldList createFieldList() {
-        return new BasicFieldList(Collections.EMPTY_LIST, this);
+        return new BasicFieldList(Collections.emptyList(), this);
     }
 
     public NodeList createNodeList() {
-        return new BasicNodeList(Collections.EMPTY_LIST, this);
+        return new BasicNodeList(Collections.emptyList(), this);
     }
 
     public RelationList createRelationList() {
-        return new BasicRelationList(Collections.EMPTY_LIST, this);
+        return new BasicRelationList(Collections.emptyList(), this);
     }
 
 }

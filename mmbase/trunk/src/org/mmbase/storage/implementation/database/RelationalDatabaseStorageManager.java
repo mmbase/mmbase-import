@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
+import java.util.Iterator;
+
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageException;
 
@@ -18,7 +20,7 @@ import org.mmbase.storage.StorageException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.9 2005-10-07 18:49:22 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -50,9 +52,9 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         }
         try {
             // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-            java.util.Iterator i = builder.getAncestors().iterator();
+            Iterator<MMObjectBuilder> i = builder.getAncestors().iterator();
             while(i.hasNext()) {
-                MMObjectBuilder b = (MMObjectBuilder) i.next();
+                MMObjectBuilder b = i.next();
                 super.create(node, b);
             }
             super.create(node, builder);

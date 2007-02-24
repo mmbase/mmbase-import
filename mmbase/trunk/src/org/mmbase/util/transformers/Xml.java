@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.18 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Xml.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -42,8 +42,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
-        HashMap h = new HashMap();
+    public Map<String,Config> transformers() {
+        HashMap<String,Config> h = new HashMap<String,Config>();
         h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
         h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
         h.put("escape_wml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));

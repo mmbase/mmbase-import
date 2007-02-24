@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.3 2006-09-08 12:12:40 michiel Exp $
+ * @version $Id: ChainedIterator.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
  */
 public class ChainedIterator<E> implements Iterator<E> {
 
@@ -71,16 +71,16 @@ public class ChainedIterator<E> implements Iterator<E> {
      * Just testing
      */
     public static void main(String argv[]) {
-        ChainedIterator it = new ChainedIterator();
-        List o = new ArrayList();
-        List a = new ArrayList();
+        ChainedIterator<String> it = new ChainedIterator<String>();
+        List<String> o = new ArrayList<String>();
+        List<String> a = new ArrayList<String>();
         a.add("a");
         a.add("b");
-        List b = new ArrayList();
-        List c = new ArrayList();
+        List<String> b = new ArrayList<String>();
+        List<String> c = new ArrayList<String>();
         c.add("c");
         c.add("d");
-        List d = new ArrayList();
+        List<String> d = new ArrayList<String>();
         it.addIterator(o.iterator());
         it.addIterator(a.iterator());
         it.addIterator(b.iterator());

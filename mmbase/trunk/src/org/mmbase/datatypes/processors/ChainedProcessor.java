@@ -16,7 +16,7 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedProcessor.java,v 1.4 2006-09-06 18:23:02 michiel Exp $
+ * @version $Id: ChainedProcessor.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -24,7 +24,7 @@ public class ChainedProcessor implements Processor {
 
     private static final long serialVersionUID = 1L;
 
-    private List processors = new ArrayList();
+    private List<Processor> processors = new ArrayList<Processor>();
 
     public ChainedProcessor add(Processor proc) {
         processors.add(proc);
@@ -33,9 +33,9 @@ public class ChainedProcessor implements Processor {
 
     public Object process(Node node, Field field, Object value) {
 
-        Iterator i = processors.iterator();
+        Iterator<Processor> i = processors.iterator();
         while (i.hasNext()) {
-            Processor proc = (Processor) i.next();
+            Processor proc = i.next();
             value = proc.process(node, field, value);
         }
         return value;

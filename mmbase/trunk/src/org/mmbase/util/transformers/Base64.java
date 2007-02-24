@@ -37,8 +37,8 @@ public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTran
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
-        HashMap h = new HashMap();
+    public Map<String,Config> transformers() {
+        Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
         return h;
     }

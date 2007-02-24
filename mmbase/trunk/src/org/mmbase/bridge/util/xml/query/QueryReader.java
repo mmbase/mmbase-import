@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.12 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.13 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -248,8 +248,8 @@ public class QueryReader {
         return queryDefinition.query.createConstraint(stepField, getAliases(queryDefinition.query.getCloud(),names));
     }
 
-    protected static SortedSet getOTypes(Cloud cloud, List<String> names, boolean descendants) {
-        SortedSet set = new TreeSet();
+    protected static SortedSet<Integer> getOTypes(Cloud cloud, List<String> names, boolean descendants) {
+        SortedSet<Integer> set = new TreeSet<Integer>();
         Iterator<String> i = names.iterator();
         while (i.hasNext()) {
             NodeManager nm = cloud.getNodeManager(i.next());

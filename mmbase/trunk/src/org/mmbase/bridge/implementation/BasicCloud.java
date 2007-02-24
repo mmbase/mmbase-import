@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
@@ -29,9 +30,9 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.173 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.174 2007-02-24 21:57:50 nklasens Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
+public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -767,8 +768,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         log.debug("Creating iterator");
         ListIterator<Node> li = resultNodeList.listIterator();
         while (li.hasNext()) {
-            log.debug("next");
             Node o = li.next();
+            log.debug("next");
             if (log.isDebugEnabled()) {
                 log.debug(o.getClass().getName());
             }
@@ -934,8 +935,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @param o the object to compare it with
      * @return compare number
      */
-    public int compareTo(Object o) {
-        int h1 = ((Cloud)o).getCloudContext().hashCode();
+    public int compareTo(Cloud o) {
+        int h1 = o.getCloudContext().hashCode();
         int h2 = cloudContext.hashCode();
 
         // mm: why not simply return h2 - h1?
@@ -1002,19 +1003,19 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     public NodeList createNodeList() {
-        return new BasicNodeList(Collections.EMPTY_LIST, this);
+        return new BasicNodeList(BridgeCollections.EMPTY_NODELIST, this);
     }
 
     public RelationList createRelationList() {
-        return new BasicRelationList(Collections.EMPTY_LIST, this);
+        return new BasicRelationList(BridgeCollections.EMPTY_RELATIONLIST, this);
     }
 
     public NodeManagerList createNodeManagerList() {
-        return new BasicNodeManagerList(Collections.EMPTY_LIST, this);
+        return new BasicNodeManagerList(BridgeCollections.EMPTY_NODEMANAGERLIST, this);
     }
 
     public RelationManagerList createRelationManagerList() {
-        return new BasicRelationManagerList(Collections.EMPTY_LIST, this);
+        return new BasicRelationManagerList(BridgeCollections.EMPTY_RELATIONMANAGERLIST, this);
     }
 
     /**

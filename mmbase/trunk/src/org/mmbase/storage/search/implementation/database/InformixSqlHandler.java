@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.28 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -63,9 +63,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @return <code>true</code> if the given query will contain a UNION
      */
     private boolean isUnionQuery(SearchQuery query) {
-        Iterator iSteps = query.getSteps().iterator();
+        Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
-            Step step = (Step) iSteps.next();
+            Step step = iSteps.next();
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
                 // If the query contains RelationSteps that are bi-directional
@@ -79,6 +79,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -98,6 +99,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -151,6 +153,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
             throws SearchQueryException {
 
@@ -179,9 +182,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         // across databases, while requiring no modification in the calling
         // code.
         if (query.isDistinct()) {
-            Iterator iSortOrder = query.getSortOrders().iterator();
+            Iterator<SortOrder> iSortOrder = query.getSortOrders().iterator();
             while (iSortOrder.hasNext()) {
-                SortOrder sortOrder = (SortOrder) iSortOrder.next();
+                SortOrder sortOrder = iSortOrder.next();
                 StepField field = sortOrder.getField();
                 if (lFields.indexOf(field) == -1) {
                     lFields.add(field);
@@ -189,7 +192,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
         }
 
-        boolean storesAsFile = org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator<StepField> iFields = lFields.iterator();
         boolean appended = false;
         while (iFields.hasNext()) {
@@ -275,9 +277,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         // Tables
         sb.append(" FROM ");
-        Iterator iSteps = query.getSteps().iterator();
+        Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
-            Step step = (Step) iSteps.next();
+            Step step = iSteps.next();
             String tableName = step.getTableName();
             String tableAlias = step.getAlias();
 
@@ -305,16 +307,16 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             // Included nodes.
-            SortedSet nodes = step.getNodes();
+            SortedSet<Integer> nodes = step.getNodes();
             if (nodes.size() > 0) {
                 if (sbNodes.length() > 0) {
                     sbNodes.append(" AND ");
                 }
                 appendField(sbNodes, step, "number", multipleSteps);
                 sbNodes.append(" IN (");
-                Iterator iNodes = nodes.iterator();
+                Iterator<Integer> iNodes = nodes.iterator();
                 while (iNodes.hasNext()) {
-                    Integer node = (Integer) iNodes.next();
+                    Integer node = iNodes.next();
                     sbNodes.append(node);
                     if (iNodes.hasNext()) {
                         sbNodes.append(",");
@@ -576,7 +578,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 unionConstraints.insert(0, " AND ");
             }
 
-            List combinedElements = new ArrayList();
+            List<String> combinedElements = new ArrayList<String>();
             boolean skipCombination = false;
             for (int counter = 0; counter < orElements.size(); counter++) {
                 for (int counter2 = counter; counter2 < orElements.size(); counter2++) {
@@ -608,8 +610,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                3) Here we're going to create a new BaseQuery,
                   we need that in order to re-use that for every union
             */
-            Iterator e = combinedElements.iterator();
-            String combinedElement = "";
             int teller = 1;
 
             // New base-query. We need to reuse that for every union
@@ -627,8 +627,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             // now add the combined relation-constraints as UNIONS
+            Iterator<String> e = combinedElements.iterator();
             while (e.hasNext()) {
-                combinedElement = (String) e.next();
+                String combinedElement = e.next();
                 if (teller != 1) {
                     if (sb.indexOf("COUNT") > -1) {
                         unionRelationConstraints.append(" UNION ALL ").append(baseQuery);
@@ -678,12 +679,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 5) adding ORDER BY
                    eg. ORDER BY 1,3,4
             */
-            List sortOrders = query.getSortOrders();
+            List<SortOrder> sortOrders = query.getSortOrders();
             if (sortOrders.size() > 0) {
                 sb.append(" ORDER BY ");
-                Iterator iSortOrders = sortOrders.iterator();
+                Iterator<SortOrder> iSortOrders = sortOrders.iterator();
                 while (iSortOrders.hasNext()) {
-                    SortOrder sortOrder = (SortOrder) iSortOrders.next();
+                    SortOrder sortOrder = iSortOrders.next();
 
                     // Field alias.
                     String fieldAlias = sortOrder.getField().getAlias();
@@ -772,12 +773,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             // ORDER BY
-            List sortOrders = query.getSortOrders();
+            List<SortOrder> sortOrders = query.getSortOrders();
             if (sortOrders.size() > 0) {
                 sb.append(" ORDER BY ");
-                Iterator iSortOrders = sortOrders.iterator();
+                Iterator<SortOrder> iSortOrders = sortOrders.iterator();
                 while (iSortOrders.hasNext()) {
-                    SortOrder sortOrder = (SortOrder) iSortOrders.next();
+                    SortOrder sortOrder = iSortOrders.next();
 
                     // Field alias.
                     String fieldAlias = sortOrder.getField().getAlias();

@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.44 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: ResourceLoader.java,v 1.45 2007-02-24 21:57:50 nklasens Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -290,7 +290,7 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
         if (path.length() > 0 && path.charAt(path.length() - 1) == '/') path = path.substring(0, path.length() - 1);
-        String dir = getDirectory(path);
+
         int i = path.lastIndexOf('/');
         path = path.substring(i + 1);
         if (path.length() > 0 && path.charAt(0) == '/') path = path.substring(1);
@@ -560,7 +560,7 @@ public class ResourceLoader extends ClassLoader {
             return Collections.list(getResources(name));
         } catch (IOException io) {
             log.warn(io);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -718,7 +718,7 @@ public class ResourceLoader extends ClassLoader {
      * @throws SAXException If the resource does not present parseable XML.
      * @throws IOException
      */
-    public Document getDocument(String name, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException  {
+    public Document getDocument(String name, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException  {
         return getDocument(getResource(name), validation, baseClass);
     }
 
@@ -726,7 +726,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Static version of {@link #getDocument(String, boolean, Class)}, can e.g. be used in combination with {@link #getResourceList(String)}
      */
-    public static Document getDocument(URL url, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException {
+    public static Document getDocument(URL url, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException {
         boolean xsd = validation;
         if (validation) {
             // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
@@ -1094,10 +1094,10 @@ public class ResourceLoader extends ClassLoader {
             }
             return new FileConnection(u, getFile(name), writeable);
         }
-        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
-        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         File f = new File(dir, name);
@@ -1254,7 +1254,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return new NodeConnection(u, name, type);
         }
-        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
@@ -1469,11 +1469,11 @@ public class ResourceLoader extends ClassLoader {
                 try {
                     String currentRoot  = root + ResourceLoader.this.context.getPath();
                     String resourcePath = currentRoot + (recursive == null ? "" : recursive);
-                    Collection c = servletContext.getResourcePaths(resourcePath);
+                    Collection<String> c = servletContext.getResourcePaths(resourcePath);
                     if (c == null) return results;
-                    Iterator j = c.iterator();
+                    Iterator<String> j = c.iterator();
                     while (j.hasNext()) {
-                        String res = (String) j.next();
+                        String res = j.next();
                         if (res.equals(resourcePath + "/")) {
                             // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
                             continue;
@@ -1561,7 +1561,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             } catch (Throwable t) {
                 log.warn(t);
-                return Collections.enumeration(Collections.EMPTY_LIST);
+                return Collections.enumeration( Collections.EMPTY_LIST);
             }
         }
         public URLConnection openConnection(String name) {
@@ -1917,7 +1917,7 @@ public class ResourceLoader extends ClassLoader {
                 arg = argv[1];
             }
             if (arg.equals("*") || arg.equals("**")) {
-                Iterator i = resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**")).iterator();
+                Iterator<String> i = resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**")).iterator();
                 while (i.hasNext()) {
                     System.out.println("" + i.next());
                 }

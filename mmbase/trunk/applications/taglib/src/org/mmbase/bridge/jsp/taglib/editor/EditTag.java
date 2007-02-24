@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.20 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: EditTag.java,v 1.21 2007-02-24 21:58:52 nklasens Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -53,7 +53,7 @@ import org.xml.sax.InputSource;
 public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
-    private static final Map edittagTypes = new HashMap();      // edittagtype -> editordefinition
+    private static final Map<String, EditorDefinition> edittagTypes = new HashMap<String, EditorDefinition>();      // edittagtype -> editordefinition
 
     static {
         try {
@@ -89,7 +89,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
                             log.error("Error connecting or resource not found: " + e);
                         }
                     }
-                    ArrayList l = new ArrayList(edittagTypes.keySet());
+                    ArrayList<String> l = new ArrayList<String>(edittagTypes.keySet());
                     Collections.sort(l);
                     log.service("Found edit-tag types " + l);
                 }
@@ -177,7 +177,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
 
 
-        EditorDefinition def = (EditorDefinition) edittagTypes.get(getType());
+        EditorDefinition def = edittagTypes.get(getType());
         if (def == null) {
             throw new JspTagException("'" + getType() + "' is not a known edit type. Known are " + edittagTypes.keySet());
         }

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.9 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -88,9 +88,9 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 super.create(node, builder);
             } else {
                 // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-                java.util.Iterator i = builder.getAncestors().iterator();
+                Iterator<MMObjectBuilder> i = builder.getAncestors().iterator();
                 while(i.hasNext()) {
-                    MMObjectBuilder b = (MMObjectBuilder) i.next();
+                    MMObjectBuilder b = i.next();
                     createObject(node, b);
                 }
                 createObject(node, builder);
@@ -115,9 +115,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      */
     protected void createObject(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         List<CoreField> createFields = new ArrayList<CoreField>();
-        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        for (Iterator f = builderFields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
+        List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+        for (CoreField field : builderFields) {
             if (field.inStorage() && (!this.isInheritedField(field) || field.getName().equals(this.getNumberField().getName()))) {
                 createFields.add(field);
             }
@@ -158,9 +157,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     private void changeObject(MMObjectNode node, MMObjectBuilder builder) {
         List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
-        Collection fieldNames = node.getChanged();
-        for (Iterator f = fieldNames.iterator(); f.hasNext();) {
-            String key = (String)f.next();
+        Collection<String> fieldNames = node.getChanged();
+        for (String key : fieldNames) {
             CoreField field = builder.getField(key);
             if ((field != null) && field.inStorage() && !isInheritedField(field)) {
                 changeFields.add(field);
@@ -201,9 +199,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
     private void deleteObject(MMObjectNode node, MMObjectBuilder builder) {
         List<CoreField> blobFileField = new ArrayList<CoreField>();
-        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        for (Iterator f = builderFields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
+        List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+        for (CoreField field : builderFields) {
             if (field.inStorage() && !isInheritedField(field)) {
                 if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
                     blobFileField.add(field);
@@ -294,12 +291,11 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             }
         }
         String tablename = getTableName(builder);
-        List fields = builder.getFields(NodeManager.ORDER_CREATE);
+        List<CoreField> fields = builder.getFields(NodeManager.ORDER_CREATE);
 
         if (!super.exists(getTableName(builder))) {
             List<CoreField> tableFields = new ArrayList<CoreField>();
-            for (Iterator f = fields.iterator(); f.hasNext();) {
-                CoreField field = (CoreField)f.next();
+            for (CoreField field : fields) {
                 // is it a database field, and not of the parent(except the number field)?
                 if (isPartOfBuilderDefinition(field) || field.getName().equals(getNumberField().getName())) {
                     tableFields.add(field);
@@ -318,7 +314,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         return true;
     }
 
-    private void createView(MMObjectBuilder builder, MMObjectBuilder inheritedBuilder, List fields, String tablename) throws StorageError {
+    private void createView(MMObjectBuilder builder, MMObjectBuilder inheritedBuilder, List<CoreField> fields, String tablename) throws StorageError {
         log.debug("Creating a view for " + builder);
         Scheme viewScheme = factory.getScheme(Schemes.CREATE_VIEW, Schemes.CREATE_VIEW_DEFAULT);
         Scheme createInsertTriggerScheme = null;
@@ -346,8 +342,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         String viewname = getViewName(builder);
 
         StringBuilder createViewFields = new StringBuilder();
-        for (Iterator f = fields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
+        for (CoreField field : fields) {
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
                 if (createViewFields.length() > 0) {
                     createViewFields.append(", ");
@@ -360,8 +355,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         Vector<String> myFieldNames = new Vector<String>();
         Vector<String> parentFieldNames = new Vector<String>();
 
-        for (Iterator f = fields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
+        for (CoreField field : fields) {
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
 
                 if (createTableFields.length() > 0) {

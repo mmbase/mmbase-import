@@ -34,7 +34,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.4 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
@@ -56,14 +56,14 @@ public class EtxIndexCreator {
         // Get database connection:
         // 1 - read database configuration
         ModuleReader moduleReader = new ModuleReader(new InputSource(new FileInputStream(configDir + "/modules/jdbc.xml")));
-        Map properties = moduleReader.getProperties();
-        String url = (String) properties.get("url");
-        String host = (String) properties.get("host");
-        String port = (String) properties.get("port");
-        String database = (String) properties.get("database");
-        String user = (String) properties.get("user");
-        String password = (String) properties.get("password");
-        String driver = (String) properties.get("driver");
+        Map<String, String> properties = moduleReader.getProperties();
+        String url = properties.get("url");
+        String host = properties.get("host");
+        String port = properties.get("port");
+        String database = properties.get("database");
+        String user = properties.get("user");
+        String password = properties.get("password");
+        String driver = properties.get("driver");
         // 2 - construct url, substituting database, host and port when needed
         int pos = url.indexOf("$DBM");
         if (pos != -1) {
@@ -125,12 +125,12 @@ public class EtxIndexCreator {
                         new BufferedReader(
                             new FileReader(etxConfigFile))));
 
-            for (Iterator iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
-                Element sbspace = (Element) iSbspaces.next();
+            for (Iterator<Element> iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
+                Element sbspace = iSbspaces.next();
                 String sbspaceName = configReader.getSbspaceName(sbspace);
 
-                for (Iterator iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
-                    Element etxindex = (Element) iEtxindices.next();
+                for (Iterator<Element> iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
+                    Element etxindex = iEtxindices.next();
                     String name = configReader.getEtxindexValue(etxindex);
                     String table = configReader.getEtxindexTable(etxindex);
                     String field = configReader.getEtxindexField(etxindex);
