@@ -2,8 +2,8 @@
 <urls exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
 	<node number="8516" owner="system">
 		<url>http://www.mmbase.org/download</url>
-		<name>Download MMbase</name>
-		<description>Download MMbase</description>
+		<name>Download MMBase</name>
+		<description>Download MMBase</description>
 	</node>
 
 	<node number="8514" owner="system">
