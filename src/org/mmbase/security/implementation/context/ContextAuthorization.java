@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.43 2007-02-11 19:45:04 nklasens Exp $
+ * @version $Id: ContextAuthorization.java,v 1.44 2007-02-25 17:56:59 nklasens Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -572,7 +572,7 @@ public class ContextAuthorization extends Authorization {
                         return COMPLETE_CHECK;
                     } else {
                         // may read nothing
-                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), new Integer(-1));
+                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), -1);
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
                 }

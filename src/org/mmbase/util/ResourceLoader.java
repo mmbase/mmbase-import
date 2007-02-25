@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.45 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ResourceLoader.java,v 1.46 2007-02-25 17:56:58 nklasens Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1258,7 +1258,7 @@ public class ResourceLoader extends ClassLoader {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
-                    Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  new Integer(type));
+                    Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  type);
                     Constraint nameConstraint = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("LIKE"),  ResourceLoader.this.context.getPath().substring(1) + "%");
 
                     BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
@@ -1334,7 +1334,7 @@ public class ResourceLoader extends ClassLoader {
                 try {
                     NodeQuery query = resourceBuilder.createQuery();
                     Constraint constraint1 = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("="), realName);
-                    Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), new Integer(type));
+                    Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), type);
 
                     BasicCompositeConstraint  constraint  = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
                     constraint.addChild(constraint1);

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.14 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.15 2007-02-25 17:56:58 nklasens Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -69,7 +69,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
             Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
                 return true;
             }
         }

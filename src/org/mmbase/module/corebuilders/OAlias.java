@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.21 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: OAlias.java,v 1.22 2007-02-25 17:56:58 nklasens Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -42,7 +42,7 @@ public class OAlias extends MMObjectBuilder {
         public String getDescription() { return "Cache for node aliases"; }
         };
 
-    private static final Integer NOT_FOUND = new Integer(-1);
+    private static final Integer NOT_FOUND = -1;
 
     public OAlias() {
         numberCache.putCache();
@@ -75,7 +75,7 @@ public class OAlias extends MMObjectBuilder {
                 if (i.hasNext()) {
                     MMObjectNode node = i.next();
                     int rtn = node.getIntValue("destination");
-                    numberCache.put(name, new Integer(rtn));
+                    numberCache.put(name, rtn);
                     return rtn;
                 } else {
                     numberCache.put(name, NOT_FOUND);
@@ -100,7 +100,7 @@ public class OAlias extends MMObjectBuilder {
      */
     public String getAlias(int number) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), new Integer(number));
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), number);
         query.setConstraint(constraint);
         try {
             Iterator<MMObjectNode> i = getNodes(query).iterator();
@@ -184,7 +184,7 @@ public class OAlias extends MMObjectBuilder {
                 MMObjectNode node = getNode(number);
                 numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
             } else if (ctype.equals("d")) {
-                Integer n = new Integer(number);
+                Integer n = Integer.valueOf(number);
                 Iterator<Map.Entry<String,Integer>> i = numberCache.entrySet().iterator();
                 while (i.hasNext()) {
                     Map.Entry<String,Integer> entry = i.next();

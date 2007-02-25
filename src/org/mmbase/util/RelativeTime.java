@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.10 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: RelativeTime.java,v 1.11 2007-02-25 17:56:58 nklasens Exp $
  */
 public class RelativeTime {
 
@@ -261,20 +261,20 @@ public class RelativeTime {
         String timeKey;
         int timeValue;
         Properties testProps = new Properties();
-        testProps.put("23:59:59.999", new Integer(86399999));
-        testProps.put("0:0:0.0"     , new Integer(0));
-        testProps.put("23:0:0.0"    , new Integer(82800000));
-        testProps.put("0:59:0.0"    , new Integer(3540000));
-        testProps.put("0:0:59.0"    , new Integer(59000));
-        testProps.put("0:0:0.999"   , new Integer(999));
-        testProps.put("1:33:59.5"   , new Integer(5639500));
-        testProps.put("1:33:59.52"  , new Integer(5639520));
-        testProps.put("1:33:59.521" , new Integer(5639521));
-        testProps.put("1:33:59.012" , new Integer(5639012));
-        testProps.put("1:33:09.002" , new Integer(5589002));
-        testProps.put("24:33:09.002", new Integer(88389002));
-        testProps.put("0:0:2.100"   , new Integer(2100));
-        testProps.put("0:0:2.010"   , new Integer(2010));
+        testProps.put("23:59:59.999", 86399999);
+        testProps.put("0:0:0.0"     , 0);
+        testProps.put("23:0:0.0"    , 82800000);
+        testProps.put("0:59:0.0"    , 3540000);
+        testProps.put("0:0:59.0"    , 59000);
+        testProps.put("0:0:0.999"   , 999);
+        testProps.put("1:33:59.5"   , 5639500);
+        testProps.put("1:33:59.52"  , 5639520);
+        testProps.put("1:33:59.521" , 5639521);
+        testProps.put("1:33:59.012" , 5639012);
+        testProps.put("1:33:09.002" , 5589002);
+        testProps.put("24:33:09.002", 88389002);
+        testProps.put("0:0:2.100"   , 2100);
+        testProps.put("0:0:2.010"   , 2010);
 
         log.info("----------------------------------------");
         log.info("|Testing RelativeTime util class       |");
@@ -331,7 +331,7 @@ public class RelativeTime {
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
                     timeValue = convertTimeToInt(timeKey);
-                    log.info("convertTimeToInt using timeKey="+timeKey+" , timeValue="+timeValue+" in testProps? "+testProps.contains(new Integer(timeValue)));
+                    log.info("convertTimeToInt using timeKey="+timeKey+" , timeValue="+timeValue+" in testProps? "+testProps.contains(timeValue));
                 }
             } else if (args[0].equals("convertTimeToInt2")) {
                 log.info("Testing method: "+args[0]);

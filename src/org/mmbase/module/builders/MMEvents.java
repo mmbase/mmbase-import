@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.21 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: MMEvents.java,v 1.22 2007-02-25 17:56:59 nklasens Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -128,7 +128,7 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField startField = query.getField(getField("start"));
             query.addSortOrder(startField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, new Integer(now), new Integer(now + notifyWindow)));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, now, now + notifyWindow));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0) {
@@ -142,7 +142,7 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField stopField = query.getField(getField("stop"));
             query.addSortOrder(stopField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, new Integer(now), new Integer(now + notifyWindow)));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, now, now + notifyWindow));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0 ) {

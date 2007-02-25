@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.12 2007-02-14 08:53:38 nklasens Exp $
+ * @version $Id: CacheManager.java,v 1.13 2007-02-25 17:56:58 nklasens Exp $
  */
 public class CacheManager {
 
@@ -128,7 +128,7 @@ public class CacheManager {
                 String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
                 cache.setActive(status.equalsIgnoreCase("active"));
                 try {
-                    Integer size = new Integer(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
+                    Integer size = Integer.valueOf(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
                     cache.setMaxSize(size.intValue());
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {

@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.90 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.91 2007-02-25 17:56:59 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -381,7 +381,7 @@ public class ClusterBuilder extends VirtualBuilder {
     public Vector<MMObjectNode> searchMultiLevelVector(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where, List<String> sortFields,
             List<String> directions, int searchDir) {
         List<Integer> searchDirs = new ArrayList<Integer>();
-        searchDirs.add(new Integer(searchDir));
+        searchDirs.add(searchDir);
         return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
     }
 
@@ -471,7 +471,7 @@ public class ClusterBuilder extends VirtualBuilder {
         String tab = getTableName(table);
         int rnumber = mmb.getRelDef().getNumberByName(tab);
         if (rnumber != -1) {
-            return mmb.getRelDef().getBuilderName(new Integer(rnumber));
+            return mmb.getRelDef().getBuilderName(rnumber);
         } else {
             return tab;
         }
@@ -553,7 +553,7 @@ public class ClusterBuilder extends VirtualBuilder {
     public BasicSearchQuery getMultiLevelSearchQuery(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where,
             List<String> sortFields, List<String> directions, int searchDir) {
         List<Integer> searchDirs = new ArrayList<Integer>();
-        searchDirs.add(new Integer(searchDir));
+        searchDirs.add(searchDir);
         return getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
     }
 
@@ -624,7 +624,7 @@ public class ClusterBuilder extends VirtualBuilder {
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
         if (snodes != null && snodes.size() > 0) {
-            Integer nodeNumber= new Integer(-1);
+            Integer nodeNumber= -1;
 
             // Copy list, so the original list is not affected.
             List<Integer> snodeNumbers = new ArrayList<Integer>();
@@ -636,13 +636,13 @@ public class ClusterBuilder extends VirtualBuilder {
             for (int i= snodes.size() - 1; i >= 0; i--) {
                 String str= snodes.get(i);
                 try {
-                    nodeNumber= new Integer(str);
+                    nodeNumber= Integer.valueOf(str);
                 } catch (NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias
                     // table then
-                    nodeNumber= new Integer(mmb.getOAlias().getNumber(str));
+                    nodeNumber= mmb.getOAlias().getNumber(str);
                     if (nodeNumber.intValue() < 0) {
-                        nodeNumber= new Integer(0);
+                        nodeNumber= 0;
                     }
                 }
                 snodeNumbers.add(nodeNumber);
@@ -802,12 +802,12 @@ public class ClusterBuilder extends VirtualBuilder {
                 throw new IllegalArgumentException(msg);
             } else {
                 bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
-                roles.put(tableAlias, new Integer(rnumber));
+                roles.put(tableAlias, rnumber);
             }
         } else if (bul instanceof InsRel) {
             int rnumber= mmb.getRelDef().getNumberByName(tableName);
             if (rnumber != -1) {
-                roles.put(tableAlias, new Integer(rnumber));
+                roles.put(tableAlias, rnumber);
             }
         }
         if (log.isDebugEnabled()) {

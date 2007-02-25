@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: CVSReader.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
  */
 public class CVSReader {
 
@@ -129,7 +129,7 @@ public class CVSReader {
         while (tok.hasMoreTokens()) {
             String part=tok.nextToken();
             part = Strip.DoubleQuote(part,Strip.BOTH);
-            results.put(part,new Integer(i++));
+            results.put(part,i++);
         }
         return results;
     }

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.16 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: ExampleBuilder.java,v 1.17 2007-02-25 17:56:59 nklasens Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -44,7 +44,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
      * otherwise it is pickup up by the automatich function detection.
      */
     protected final static Parameter[] LISTLATEST_PARAMETERS = {
-        new Parameter<Integer>("max", Integer.class, new Integer(10)), /* name, type, default value */
+        new Parameter<Integer>("max", Integer.class, 10), /* name, type, default value */
         new Parameter<Cloud>(Parameter.CLOUD, true)                  /* true: required! */
     };
 
