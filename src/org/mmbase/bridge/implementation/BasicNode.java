@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.218 2007-02-25 18:03:21 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.219 2007-02-25 18:12:16 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -426,7 +426,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public double getDoubleValue(String fieldName) {
-        Double result = new Double(getNode().getDoubleValue(fieldName));
+        Double result = getNode().getDoubleValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result = (Double) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result);

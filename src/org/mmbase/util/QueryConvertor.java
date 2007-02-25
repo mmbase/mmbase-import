@@ -41,7 +41,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.31 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: QueryConvertor.java,v 1.32 2007-02-25 18:12:16 nklasens Exp $
  */
 public class QueryConvertor {
 
@@ -318,7 +318,7 @@ class DBQuery  extends ParseItem {
                 fieldValueConstraint.setCaseSensitive(false);
             } else {
                 // Numerical field.
-                Object numericalValue = new Double(condition.value.getValue());
+                Object numericalValue = Double.valueOf(condition.value.getValue());
                 fieldValueConstraint = new BasicFieldValueConstraint(field, numericalValue);
             }
 
