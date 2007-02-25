@@ -527,7 +527,7 @@ public class SearchUtil {
         }
         else {
             constraint = query.createConstraint(query.getStepField(field),
-                    new Long(from), new Long(to));
+                    Long.valueOf(from), Long.valueOf(to));
         }
         return constraint;
     }
