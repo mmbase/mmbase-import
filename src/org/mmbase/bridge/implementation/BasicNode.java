@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.217 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.218 2007-02-25 18:03:21 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -416,7 +416,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public long getLongValue(String fieldName) {
-        Long result = new Long(getNode().getLongValue(fieldName));
+        Long result = getNode().getLongValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result = (Long) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result);
