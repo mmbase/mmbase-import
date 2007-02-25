@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.33 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: ConstraintParser.java,v 1.34 2007-02-25 18:18:24 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -1063,7 +1063,7 @@ public class ConstraintParser {
 
             if (parameterName.equalsIgnoreCase("FUZZINESS")) {
                 result.setParameter(StringSearchConstraint.PARAM_FUZZINESS,
-                    new Float(parameterValue));
+                    Float.valueOf(parameterValue));
             } else if (parameterName.equalsIgnoreCase("PROXIMITY_LIMIT")) {
                 result.setParameter(
                     StringSearchConstraint.PARAM_PROXIMITY_LIMIT,

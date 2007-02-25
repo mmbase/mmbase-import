@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.219 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.220 2007-02-25 18:18:24 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -406,7 +406,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public float getFloatValue(String fieldName) {
-        Float result = new Float(getNode().getFloatValue(fieldName));
+        Float result = getNode().getFloatValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result = (Float) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result);
