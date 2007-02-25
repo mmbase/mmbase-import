@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.177 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.178 2007-02-25 17:56:59 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1205,7 +1205,7 @@ public class DatabaseStorageManager implements StorageManager {
             case Field.TYPE_INTEGER : {
                 int storeValue = Casting.toInt(value);
                 statement.setInt(index, storeValue);
-                node.storeValue(field.getName(), new Integer(storeValue));
+                node.storeValue(field.getName(), storeValue);
                 break;
             }
             case Field.TYPE_FLOAT : {
@@ -1735,7 +1735,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (o instanceof Integer) {
                     return o;
                 } else if (o instanceof Number) {
-                    return new Integer(((Number)o).intValue());
+                    return Integer.valueOf(((Number)o).intValue());
                 } else {
                     return o;
                 }

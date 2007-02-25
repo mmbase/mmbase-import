@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.41 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: QueryResultCache.java,v 1.42 2007-02-25 17:56:58 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -130,10 +130,10 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             String stepName = step.getTableName();
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
-                counters.put(stepName, new Integer(count + 1));
+                counters.put(stepName, count + 1);
             }
             else {
-                counters.put(stepName, new Integer(1));
+                counters.put(stepName, 1);
             }
         }
     }
@@ -145,7 +145,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
                 if (count > 1) {
-                    counters.put(stepName, new Integer(count - 1));
+                    counters.put(stepName, count - 1);
                 }
                 else {
                     counters.remove(stepName);
@@ -256,14 +256,14 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                         int foundValue = foundTypeCounters.get(type);
                         if (guessedValue - oldValue > 0) {
                             int newValue = foundValue + (guessedValue - oldValue);
-                            foundTypeCounters.put(type, new Integer(newValue));
+                            foundTypeCounters.put(type, newValue);
                         }
                     }
                     else {
                         int guessedValue = typeCounters.get(type);
                         int foundValue = foundTypeCounters.get(type);
                         int newValue = foundValue + guessedValue;
-                        foundTypeCounters.put(type, new Integer(newValue));
+                        foundTypeCounters.put(type, newValue);
                     }
                 }
                 else {

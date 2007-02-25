@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.43 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: RelDef.java,v 1.44 2007-02-25 17:56:58 nklasens Exp $
  */
 public class RelDef extends MMObjectBuilder {
 
@@ -256,7 +256,7 @@ public class RelDef extends MMObjectBuilder {
         MMObjectNode node = null;
         NodeSearchQuery query = new NodeSearchQuery(this);
         if (usesbuilder) {
-            Integer value = new Integer(relBuilder.getNumber());
+            Integer value = relBuilder.getNumber();
             Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("builder")), value);
             query.setConstraint(constraint);
         } else {
@@ -350,7 +350,7 @@ public class RelDef extends MMObjectBuilder {
         try {
             MMObjectBuilder typeRel = mmb.getTypeRel();
             NodeSearchQuery query = new NodeSearchQuery(typeRel);
-            Integer value = new Integer(node.getNumber());
+            Integer value = node.getNumber();
             Constraint constraint = new BasicFieldValueConstraint(query.getField(typeRel.getField("rnumber")), value);
             query.setConstraint(constraint);
             List<MMObjectNode> typerels = typeRel.getNodes(query);
@@ -366,7 +366,7 @@ public class RelDef extends MMObjectBuilder {
         try {
             MMObjectBuilder insRel = mmb.getInsRel();
             NodeSearchQuery query = new NodeSearchQuery(insRel);
-            Integer value = new Integer(node.getNumber());
+            Integer value = node.getNumber();
             Constraint constraint = new BasicFieldValueConstraint(query.getField(insRel.getField("rnumber")), value);
             query.setConstraint(constraint);
             int i = insRel.count(query);

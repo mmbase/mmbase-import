@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.72 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: TypeDef.java,v 1.73 2007-02-25 17:56:58 nklasens Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -142,7 +142,7 @@ public class TypeDef extends MMObjectBuilder {
         }
         if (result != -1) {
             // update the cache
-            Integer number = new Integer(result);
+            Integer number = result;
             String name = node.getStringValue("name");
             getNameToNumberCache().put(name, number);
             getNumberToNameCache().put(number, name);
@@ -283,7 +283,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return the name of the builder as a string, null if not found
      */
     public String getValue(int type) {
-        String result = getNumberToNameCache().get(new Integer(type));
+        String result = getNumberToNameCache().get(type);
         if (result == null) {
             log.warn("Could not find builder name for typedef number " + type);
         }
@@ -298,7 +298,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getValue(String type) {
         try {
-            return getNumberToNameCache().get(new Integer(Integer.parseInt(type)));
+            return getNumberToNameCache().get(Integer.parseInt(type));
         } catch(Exception e) {
             return "unknown";
         }
@@ -604,7 +604,7 @@ public class TypeDef extends MMObjectBuilder {
                 return rtn;
             }
         } else if (function.equals("defaultsearchage")) {
-            return new Integer(getBuilder(node).getSearchAge());
+            return getBuilder(node).getSearchAge();
         } else {
             return super.executeFunction(node, function, args);
         }
@@ -617,7 +617,7 @@ public class TypeDef extends MMObjectBuilder {
             // inactive builder, does it have nodes?
             MMObjectBuilder rootBuilder = mmb.getRootBuilder();
             NodeSearchQuery q = new NodeSearchQuery(rootBuilder);
-            Integer value = new Integer(typeDefNode.getNumber());
+            Integer value = typeDefNode.getNumber();
             Constraint constraint = new BasicFieldValueConstraint(q.getField(rootBuilder.getField("otype")), value);
             q.setConstraint(constraint);
             try {
@@ -641,7 +641,7 @@ public class TypeDef extends MMObjectBuilder {
             try {
                 MMObjectBuilder typeRel = mmb.getTypeRel();
                 NodeSearchQuery q = new NodeSearchQuery(typeRel);
-                Integer value = new Integer(typeDefNode.getNumber());
+                Integer value = typeDefNode.getNumber();
                 BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
                 Constraint constraint1 = new BasicFieldValueConstraint(q.getField(typeRel.getField("snumber")), value);
                 Constraint constraint2 = new BasicFieldValueConstraint(q.getField(typeRel.getField("dnumber")), value);

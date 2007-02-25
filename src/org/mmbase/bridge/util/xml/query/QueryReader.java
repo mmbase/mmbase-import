@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.13 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.14 2007-02-25 17:56:59 nklasens Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -143,8 +143,8 @@ public class QueryReader {
         NodeQuery query = dayMarks.createQuery();
         StepField step = query.createStepField("daycount");
         int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-        Integer day = new Integer(currentDay  - age);
-        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
+        int day = currentDay  - age;
+        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(day));
         query.setConstraint(constraint);
         query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
         query.setMaxNumber(1);
@@ -200,17 +200,17 @@ public class QueryReader {
             int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
                 // BETWEEN constraint
-                constraint = queryDefinition.query.createConstraint(stepField, new Integer(maxMarker + 1), new Integer(getDayMark(cloud, minAge - 1)));
+                constraint = queryDefinition.query.createConstraint(stepField, Integer.valueOf(maxMarker + 1), Integer.valueOf(getDayMark(cloud, minAge - 1)));
             } else {
-                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(cloud, minAge - 1)));
+                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
             }
         } else if (maxAge != -1) { // only on max
             int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
-                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, new Integer(maxMarker + 1));
+                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
             }
         } else if (minAge > 0) {
-            constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(cloud, minAge - 1)));
+            constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
         }
         return constraint;
     }
@@ -253,11 +253,11 @@ public class QueryReader {
         Iterator<String> i = names.iterator();
         while (i.hasNext()) {
             NodeManager nm = cloud.getNodeManager(i.next());
-            set.add(new Integer(nm.getNumber()));
+            set.add(nm.getNumber());
             if (descendants) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
                 while (j.hasNext()) {
-                    set.add(new Integer(j.nextNodeManager().getNumber()));
+                    set.add(j.nextNodeManager().getNumber());
                 }
             }
         }

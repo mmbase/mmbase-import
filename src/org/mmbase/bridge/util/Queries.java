@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.84 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Queries.java,v 1.85 2007-02-25 17:56:59 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -287,7 +287,7 @@ abstract public class Queries {
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         if (stringValue == null) return null;
         try {
-            return new Integer(stringValue);
+            return Integer.valueOf(stringValue);
         } catch (NumberFormatException e) {
             try {
                 return new Double(stringValue);
@@ -327,7 +327,7 @@ abstract public class Queries {
                 NodeIterator i = ((NodeList)value).nodeIterator();
                 while (i.hasNext()) {
                     Node node = i.nextNode();
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, node.getNumber()));
                 }
             } else if (value instanceof Collection) {
                 set = new TreeSet<Object>();
@@ -452,9 +452,9 @@ abstract public class Queries {
                             String s = Casting.toString(v);
                             if (cloud.hasNode(s)) {
                                 Node node = cloud.getNode(s);
-                                list.add(new Integer(node.getNumber()));
+                                list.add(node.getNumber());
                             } else {
-                                list.add(new Integer(-1));
+                                list.add(-1);
                             }
 
                         }
@@ -1210,7 +1210,7 @@ abstract public class Queries {
 
         }
         if (value instanceof Node) {
-            value = new Integer(((Node)value).getNumber());
+            value = ((Node)value).getNumber();
         }
         return value;
     }

@@ -30,7 +30,7 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.4 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.5 2007-02-25 17:56:58 nklasens Exp $
  */
 public class ContextDepthDataWriter  {
 
@@ -224,13 +224,13 @@ public class ContextDepthDataWriter  {
         HashSet<Integer> nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
         HashSet<Integer> nodesSet_next = new HashSet<Integer>();  // holds all nodes not yet 'done' that are on the next level
         InsRel bul = mmb.getInsRel();		// builder for collecting relations. should be changed to MMRelations later on!
-        Integer type = new Integer(bul.getNodeType(startnodenr));	// retrieve node type (new method in MMObjectBuiilder)
+        Integer type = bul.getNodeType(startnodenr);	// retrieve node type (new method in MMObjectBuiilder)
         if (!fb.contains(type)) {   // exit if the type of this node conflicts.
             // essentially, no nodes are added. This can only occur if the context of
             // an application specified an invalid node.
             return;
         }
-        nodesSet_next.add(new Integer(startnodenr)); // add the very first node to the set...
+        nodesSet_next.add(startnodenr); // add the very first node to the set...
         // For each depth of the tree, traverse the nodes on that depth
         for (int curdepth=1;curdepth<=maxdepth;curdepth++) {
             nodesSet_current = nodesSet_next;	// use the next level of nodes to tarverse
@@ -249,7 +249,7 @@ public class ContextDepthDataWriter  {
                 for (Iterator<MMObjectNode> rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
                     // get the relation node and node number
                     MMObjectNode relnode = rel.next();
-                    Integer relnumber=new Integer(relnode.getIntValue("number"));
+                    Integer relnumber=relnode.getIntValue("number");
                     // check whether to add the referenced node
                     // and the relation between this node and the referenced one.
                     // if relation is in pool, save trouble and do not traverse further
@@ -257,12 +257,12 @@ public class ContextDepthDataWriter  {
                         // determine node referenced
                         int nodenumber=getRelatedNode(thisnodenr.intValue(),relnode);
                         // check type of referenced node
-                        type = new Integer(bul.getNodeType(nodenumber));
+                        type = bul.getNodeType(nodenumber);
                         if (fb.contains(type)) {	// good node? then proceed
                             // add the relation node
                             relationnodesSet.add(relnumber);
                             // if the node has been 'done', don't add it!
-                            Integer nodeNumber=new Integer(nodenumber);
+                            Integer nodeNumber=nodenumber;
                             if (!nodesdoneSet.contains(nodeNumber)) {
                                 // because we use a set, no double nodes will be added (cool, uh?)
                                 nodesSet_next.add(nodeNumber);
@@ -290,7 +290,7 @@ public class ContextDepthDataWriter  {
             String name = bset.get("name");
             int value=bul.getIntValue(name);
             if (value!=-1) {
-                resultset.add(new Integer(value));
+                resultset.add(value);
             } else {
                 log.error("XMLContextDepthWriter -> can't get intvalue for : "+name);
             }

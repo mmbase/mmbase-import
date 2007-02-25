@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
  */
 public class ApplicationInstaller {
 
@@ -237,7 +237,7 @@ public class ApplicationInstaller {
                             findFieldsOfTypeNode(nodeFieldNodes, exportsource, newNode);
                         }
                     }
-                    NodeCache.getCache().remove(new Integer(localnumber));
+                    NodeCache.getCache().remove(localnumber);
                 }
                 n.remove();
             }
@@ -519,7 +519,7 @@ public class ApplicationInstaller {
 
     private List<MMObjectNode> getSyncnodes(MMObjectBuilder syncbul, String exportsource, int exportnumber) throws SearchQueryException {
         NodeSearchQuery existQuery = new NodeSearchQuery(syncbul);
-        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportnumber")), new Integer(exportnumber));
+        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportnumber")), exportnumber);
         BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportsource")), exportsource);
         BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         constraint.addChild(constraint1);

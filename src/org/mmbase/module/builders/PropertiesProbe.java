@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * there load and info from the config module).
  *
  * @sql
- * @version $Id: PropertiesProbe.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: PropertiesProbe.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -83,7 +83,7 @@ public class PropertiesProbe implements Runnable {
             StepField keyField = query.getField(parent.getField("key"));
             BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(keyField, "LASTVISIT");
             StepField valueField = query.getField(parent.getField("value"));
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(valueField, new Integer(10536));
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(valueField, 10536);
             constraint2.setOperator(FieldCompareConstraint.LESS);
 
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);

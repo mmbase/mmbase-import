@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.40 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: Jumpers.java,v 1.41 2007-02-25 17:56:59 nklasens Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -161,7 +161,7 @@ public class Jumpers extends MMObjectBuilder {
             cons = new BasicFieldValueConstraint(queryField, key);
         } else if (field.getType() == Field.TYPE_INTEGER) {
             try {
-                cons = new BasicFieldValueConstraint(queryField, new Integer(key));
+                cons = new BasicFieldValueConstraint(queryField, key);
             } catch(NumberFormatException e) { log.error("this key("+key+") should be a number because field("+fieldName+") is of type int!");
                 cons = null;
             }

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.20 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: Versions.java,v 1.21 2007-02-25 17:56:59 nklasens Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -41,7 +41,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             for (MMObjectNode versionNode : versionNodes) {
                 String name = versionNode.getStringValue("name");
                 String type = versionNode.getStringValue("type");
-                Integer number = new Integer(versionNode.getNumber());
+                Integer number = versionNode.getNumber();
 
                 String key = type + "_" + name;
                 if (versionsCache.containsKey(key)) {
@@ -110,7 +110,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             int number = insert("system", node);
 
             String key = type + "_" + name;
-            versionsCache.put(key, new Integer(number));
+            versionsCache.put(key, number);
         } else {
             node.setValue("maintainer", maintainer);
             node.setValue("version", version);
