@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.21 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.22 2007-02-25 18:18:24 nklasens Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -61,7 +61,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
                     strategy.setEnabled( memory == null ? true :  memory.booleanValue());
                 } else {
                     //if it must switch of, we must record the status
-                    childStrategyMemory.put(strategy.getName(), new Boolean(strategy.isEnabled()));
+                    childStrategyMemory.put(strategy.getName(), strategy.isEnabled());
                     strategy.setEnabled(false);
                     strategy.clear();
                 }

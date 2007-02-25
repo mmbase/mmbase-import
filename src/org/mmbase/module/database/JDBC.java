@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.52 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: JDBC.java,v 1.53 2007-02-25 18:18:24 nklasens Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -171,7 +171,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         String tmp = getInitParameter("probetime");
         if (tmp != null) {
             try {
-                probeTime = (new Float(tmp)).longValue() * 1000;
+                probeTime = Float.valueOf(tmp).longValue() * 1000;
                 log.info("Set jdbc-probeTime to " + probeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified probetime is not a invalid float :" + e + "(using default " + (probeTime / 1000) + " s)");
