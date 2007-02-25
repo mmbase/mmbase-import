@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.101 2007-02-25 18:03:21 nklasens Exp $
+ * @version $Id: Casting.java,v 1.102 2007-02-25 18:12:16 nklasens Exp $
  */
 
 import java.util.*;
@@ -172,7 +172,7 @@ public class Casting {
                     res = Long.valueOf("" + value);
                 } catch (NumberFormatException nfe) {
                     try {
-                        res = new Double("" + value);
+                        res = Double.valueOf("" + value);
                     } catch (NumberFormatException nfe1) {
                         res = Integer.valueOf(-1);
                     }

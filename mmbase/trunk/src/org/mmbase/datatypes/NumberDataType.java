@@ -16,7 +16,7 @@ import org.mmbase.util.Casting;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.23 2007-01-06 15:08:45 nklasens Exp $
+ * @version $Id: NumberDataType.java,v 1.24 2007-02-25 18:12:16 nklasens Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number&Comparable<E>> extends ComparableDataType<E> {
@@ -40,7 +40,7 @@ abstract public class NumberDataType<E extends Number&Comparable<E>> extends Com
                 throw new CastException("Not a number: " + preCast);
             }
         }
-        return new Double(Casting.toDouble(preCast)); // this makes it e.g. possible to report that 1e20 is too big for an integer.
+        return Casting.toDouble(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
     }
 
 
