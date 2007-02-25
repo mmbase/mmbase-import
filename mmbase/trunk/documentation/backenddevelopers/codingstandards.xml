@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.10 2006-06-21 05:24:39 michiel Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.11 2007-02-25 22:01:15 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -52,7 +52,7 @@
   </section>
   <section id="introduction">
     <title>Introduction</title>
-    <para>We understamd that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
+    <para>We understand that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
     guidelines. We are using them to keep the code readable. Don't take it personally when someone points you to the coding standards when you submit
     some code. We will accept your code anyway.</para>
   </section>
