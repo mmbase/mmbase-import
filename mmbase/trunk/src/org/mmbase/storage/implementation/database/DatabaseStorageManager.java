@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.178 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.179 2007-02-25 18:03:21 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1223,7 +1223,7 @@ public class DatabaseStorageManager implements StorageManager {
             case Field.TYPE_LONG : {
                 long storeValue = Casting.toLong(value);
                 statement.setLong(index, storeValue);
-                node.storeValue(field.getName(), new Long(storeValue));
+                node.storeValue(field.getName(), storeValue);
                 break;
             }
             default:
