@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.24 2007-02-25 18:03:21 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.25 2007-02-25 18:12:16 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -241,7 +241,7 @@ public class VirtualNode extends AbstractNode implements Node {
 
     @Override
     public double getDoubleValue(String fieldName) {
-        Double result = new Double(getNode().getDoubleValue(fieldName));
+        Double result = getNode().getDoubleValue(fieldName);
         return result.doubleValue();
     }
 

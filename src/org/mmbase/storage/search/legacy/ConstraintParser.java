@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.32 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ConstraintParser.java,v 1.33 2007-02-25 18:12:16 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -311,10 +311,10 @@ public class ConstraintParser {
                 fieldType == Field.TYPE_FLOAT || fieldType == Field.TYPE_INTEGER ||
                 fieldType == Field.TYPE_LONG || fieldType == Field.TYPE_NODE) {
                 // String represents a numerical value.
-                result = new Double((String) result);
+                result = Double.valueOf((String) result);
             }
         } else {
-            result = new Double(token);
+            result = Double.valueOf(token);
         }
         return result;
     }
