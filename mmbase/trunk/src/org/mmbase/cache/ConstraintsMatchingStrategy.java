@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.33 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.34 2007-02-25 17:56:58 nklasens Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -493,8 +493,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 }
                 return intMatches(constraintLong, longToCompare, operator);
             }  else if (fieldType.equals(Node.class)) {
-                if(constraintValue instanceof MMObjectNode) constraintValue = new Integer(((MMObjectNode)constraintValue).getNumber());
-                if(valueToCompare instanceof MMObjectNode) valueToCompare   = new Integer(((MMObjectNode)valueToCompare).getNumber());
+                if(constraintValue instanceof MMObjectNode) constraintValue = ((MMObjectNode)constraintValue).getNumber();
+                if(valueToCompare instanceof MMObjectNode) valueToCompare   = ((MMObjectNode)valueToCompare).getNumber();
                 int constraintInt = Casting.toInt(constraintValue, Integer.MAX_VALUE);
                 int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
 //              if either value could not be cast to a Node, return true, which is safe

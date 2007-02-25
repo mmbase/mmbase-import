@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.44 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.45 2007-02-25 17:56:59 nklasens Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -261,7 +261,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         // why is this not stored in real properties?
 
         setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
+        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, transactionIsolation);
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 

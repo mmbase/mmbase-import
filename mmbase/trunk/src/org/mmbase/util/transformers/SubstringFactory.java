@@ -23,15 +23,15 @@ import java.io.Writer;
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.7 2006-03-07 14:01:03 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.8 2007-02-25 17:56:59 nklasens Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
 
 
     protected final static Parameter[] PARAMS = {
-        new Parameter("from", Integer.class, new Integer(0)),
-        new Parameter("to"  , Integer.class, new Integer(Integer.MAX_VALUE)),
+        new Parameter("from", Integer.class, 0),
+        new Parameter("to"  , Integer.class, Integer.MAX_VALUE),
         new Parameter("ellipsis"  , String.class, "")
     };
 

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.27 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: DateSupport.java,v 1.28 2007-02-25 17:56:58 nklasens Exp $
  */
 public class DateSupport {
 
@@ -587,17 +587,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, new Integer(token).intValue());
+        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, new Integer(token).intValue());
+        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
+        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, new Integer(token).intValue());
+        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
         return (cal);
     }
 
@@ -615,17 +615,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, new Integer(token).intValue());
+        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
+        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, new Integer(token).intValue());
+        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, new Integer(token).intValue());
+        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
         return (cal);
     }
 

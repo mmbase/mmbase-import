@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.23 2007-02-25 17:56:59 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -222,7 +222,7 @@ public class VirtualNode extends AbstractNode implements Node {
 
     @Override
     public int getIntValue(String fieldName) {
-        Integer result = new Integer(getNode().getIntValue(fieldName));
+        Integer result = getNode().getIntValue(fieldName);
         return result.intValue();
 
     }

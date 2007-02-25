@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.26 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: BetterStrategy.java,v 1.27 2007-02-25 17:56:58 nklasens Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -364,7 +364,7 @@ public class BetterStrategy extends ReleaseStrategy {
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
             Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
                 return true;
             }
         }

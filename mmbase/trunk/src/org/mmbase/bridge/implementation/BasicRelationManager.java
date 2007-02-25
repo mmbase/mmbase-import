@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.38 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicRelationManager.java,v 1.39 2007-02-25 17:56:59 nklasens Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -160,7 +160,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         }
         NodeAndId n = createMMObjectNode();
         BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
-        relation.setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
+        relation.setValueWithoutChecks("rnumber", relDefNode.getNumber());
         return relation;
     }
 

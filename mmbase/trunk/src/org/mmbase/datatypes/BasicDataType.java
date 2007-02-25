@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.69 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.70 2007-02-25 17:56:59 nklasens Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
@@ -1055,7 +1055,7 @@ s     */
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query, constraint);
                 if (!node.isNew()) {
-                    constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
+                    constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, node.getNumber());
                     Queries.addConstraint(query, constraint);
                 }
                 if(log.isDebugEnabled()) {

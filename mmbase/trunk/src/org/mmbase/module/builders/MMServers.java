@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.47 2007-01-03 09:16:21 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.48 2007-02-25 17:56:59 nklasens Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -377,7 +377,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             constraint1.addChild(constraint1a);
             constraint1.addChild(constraint1b);
             constraint1.setInverse(true);
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), new Integer(ACTIVE));
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(query.getField(getField("state")), ACTIVE);
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
             constraint.addChild(constraint1);
             constraint.addChild(constraint2);

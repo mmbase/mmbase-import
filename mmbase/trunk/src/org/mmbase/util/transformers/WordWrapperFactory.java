@@ -26,7 +26,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(WordWrapperFactory.class);
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<Integer>("length", Integer.class, new Integer(80))
+        new Parameter<Integer>("length", Integer.class, 80)
     };
 
     public Parameters createParameters() {

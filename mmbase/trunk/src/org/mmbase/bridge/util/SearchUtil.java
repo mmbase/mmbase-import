@@ -552,7 +552,7 @@ public class SearchUtil {
         for (Iterator iter = types.iterator(); iter.hasNext();) {
             String type = (String) iter.next();
             NodeManager manager = cloud.getNodeManager(type);
-            set.add(new Integer(manager.getNumber()));
+            set.add(manager.getNumber());
         }
         Field field = query.getNodeManager().getField("otype");
         return createInConstraint(query, field, set);
@@ -567,7 +567,7 @@ public class SearchUtil {
         SortedSet set = new TreeSet();
         for (Object element : nodes) {
             Node node = (Node) element;
-            set.add(new Integer(node.getNumber()));
+            set.add(node.getNumber());
         }
         return set;
     }

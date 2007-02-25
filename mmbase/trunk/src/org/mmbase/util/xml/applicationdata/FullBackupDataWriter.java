@@ -24,7 +24,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.7 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.8 2007-02-25 17:56:58 nklasens Exp $
  */
 public class FullBackupDataWriter {
 
@@ -81,7 +81,7 @@ public class FullBackupDataWriter {
 
             NodeSearchQuery query = new NodeSearchQuery(builder);
             StepField otypeField = query.getField(builder.getField(MMObjectBuilder.FIELD_OBJECT_TYPE));
-            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(otypeField, new Integer(builder.getObjectType()));
+            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(otypeField, builder.getObjectType());
             query.setConstraint(constraint);
 
             // Add this builder's nodes to set (by nodenumber).

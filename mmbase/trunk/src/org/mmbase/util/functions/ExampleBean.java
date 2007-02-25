@@ -12,14 +12,14 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.9 2006-06-20 20:51:49 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.10 2007-02-25 17:56:59 nklasens Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
 
     private static final Logger log = Logging.getLoggerInstance(ExampleBean.class);
     private String parameter1;
-    private Integer parameter2 = new Integer(0);
+    private Integer parameter2 = 0;
     private String parameter3 = "default";
     private Node node;
     private Cloud cloud;
@@ -65,7 +65,7 @@ public final class ExampleBean {
     }
 
     public Integer integerFunction() {
-        return new Integer(parameter2.intValue() * 3);
+        return parameter2 * 3;
     }
 
     /**
@@ -120,7 +120,7 @@ public final class ExampleBean {
             NodeManager nm = node.getNodeManager();
             NodeQuery q = nm.createQuery();
             StepField field = q.getStepField(nm.getField("number"));
-            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, new Integer(node.getNumber())));
+            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, Integer.valueOf(node.getNumber())));
             q.addSortOrder(field, SortOrder.ORDER_ASCENDING);
             q.setMaxNumber(1);
             NodeIterator i = nm.getList(q).nodeIterator();
@@ -130,7 +130,7 @@ public final class ExampleBean {
             MMObjectBuilder builder = MMBase.getMMBase().getBuilder(node.getNodeManager().getName());
             NodeSearchQuery query = new NodeSearchQuery(builder);
             StepField field = query.getField(builder.getField("number"));
-            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(node.getNumber()));
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, node.getNumber());
             cons.setOperator(FieldCompareConstraint.GREATER);
             query.setConstraint(cons);
             query.addSortOrder(field);

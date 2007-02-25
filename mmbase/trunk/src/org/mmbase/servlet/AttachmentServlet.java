@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.10 2006-06-13 07:29:54 andre Exp $
+ * @version $Id: AttachmentServlet.java,v 1.11 2007-02-25 17:56:59 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet
@@ -32,11 +32,11 @@ public class AttachmentServlet extends HandleServlet {
 
     protected Map getAssociations() {
         Map a = super.getAssociations();
-        a.put("attachments", new Integer(50)); // Is very good in attachments (determines mime-type
+        a.put("attachments", 50); // Is very good in attachments (determines mime-type
                                                // starting with 'attachments' builder fields),
 
-        a.put("images",      new Integer(10)); // And also can do images (but is not aware of // icaches)
-        a.put("downloads",   new Integer(0));
+        a.put("images",      10); // And also can do images (but is not aware of // icaches)
+        a.put("downloads",   0);
         return a;
     }
 
