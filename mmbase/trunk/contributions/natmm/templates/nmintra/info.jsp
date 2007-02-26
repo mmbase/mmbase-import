@@ -96,7 +96,7 @@ if(!articleId.equals("-1")) {
               for (Iterator it = hsetArticles.iterator(); it.hasNext(); ) {
                 String article = (String) it.next();
                 %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
-                  tmapArticles.put(cloud.getNode(article).getLongValue("embargo"),article);
+                  tmapArticles.put(new Long(cloud.getNode(article).getLongValue("embargo")),article);
                 %></mm:list><%
               }
               int listSize = tmapArticles.size(); 
@@ -121,6 +121,7 @@ if(!articleId.equals("-1")) {
                 listSize = tmapArticles.size(); 
                 for(int i= 0; i< listSize && i < objectPerPage; i++) {
                   Long nextEmbargoDate = (Long) tmapArticles.lastKey();
+                  
                   String article = (String) tmapArticles.get(nextEmbargoDate);
                   %>
                   <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= "artikel.number = '" + article + "'" %>"><%
