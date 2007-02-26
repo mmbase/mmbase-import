@@ -212,6 +212,7 @@
 		<!-- copy the builders from WEB-INF/config/applications/NMIntra/builders to WEB-INF/config/builders/applications -->
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config/builders/applications" overwrite="true">
 			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/LeoCMS/builders" />
+			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/NatMM/builders" />			
 			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/NMIntra/builders" />
 		</copy>
 
