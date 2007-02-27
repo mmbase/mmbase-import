@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.16 2007-01-23 21:34:07 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.17 2007-02-27 13:38:34 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -150,7 +150,9 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 if (query.getCloud().hasNode(number.intValue())) {
                     Node node = query.getCloud().getNode(number.intValue());
                     NodeManager nm = node.getNodeManager();
-                    for (Step step : q.getSteps()) {
+                    //for (Step step : q.getSteps()) {
+                    for (Iterator i = q.getSteps().iterator(); i.hasNext();) {
+                        Step step = (Step) i.next();
                         NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
                         if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
                             StepField numberField = q.createStepField(step, "number");

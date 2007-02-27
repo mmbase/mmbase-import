@@ -30,14 +30,14 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.16 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.17 2007-02-27 13:38:34 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
     static private final Logger log = Logging.getLoggerInstance(JdbcIndexDefinition.class);
 
     private static final int CACHE_SIZE = 10 * 1024;
-    protected static Cache<String, LazyMap> nodeCache = new Cache(CACHE_SIZE) {
+    protected static Cache/*<String, LazyMap>*/ nodeCache = new Cache(CACHE_SIZE) {
             {
                 putCache();
             }
@@ -296,7 +296,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         if (id == null) {
             throw new IllegalArgumentException("No number found in " + doc);
         }
-        LazyMap m =  nodeCache.get(id);
+        LazyMap m =  (LazyMap) nodeCache.get(id); // 
         if (m == null) {
             Map<String, String> keys = new HashMap();
             for (String keyWord : keyWords) {
