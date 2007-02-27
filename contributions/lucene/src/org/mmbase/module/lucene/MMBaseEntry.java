@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.15 2007-01-23 21:34:07 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.16 2007-02-27 13:38:34 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -87,7 +87,9 @@ public class MMBaseEntry implements IndexEntry {
         document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-            for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
+            //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
+            for (FieldIterator i = node.getNodeManager().getFields().fieldIterator(); i.hasNext();) {
+                org.mmbase.bridge.Field field = i.nextField();
                 if (field.getName().indexOf(".") >=0 ) continue;
                 if (id.equals(field.getName())) continue; // was added already
                 Node subNode = node.getNodeValue(field.getName());
