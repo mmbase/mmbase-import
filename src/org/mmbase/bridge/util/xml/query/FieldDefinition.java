@@ -16,8 +16,9 @@ import org.w3c.dom.Element;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
+ * @version $Id: FieldDefinition.java,v 1.6.2.1 2007-02-27 13:37:55 michiel Exp $
  * @since MMBase-1.8
+ * @javadoc
  **/
 public class FieldDefinition {
 
@@ -32,6 +33,7 @@ public class FieldDefinition {
      */
     public StepField stepField = null;
 
+    public java.util.regex.Pattern optional = null;
 
     /**
      * Constructor
