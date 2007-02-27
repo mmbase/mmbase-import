@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.83 2007-01-23 21:31:34 michiel Exp $
+ * @version $Id: Lucene.java,v 1.84 2007-02-27 13:38:34 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -74,35 +74,35 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * Parameter constants for Lucene functions.
      */
-    protected final static Parameter<String> VALUE = new Parameter("value", String.class);
+    protected final static Parameter/*<String>*/ VALUE = new Parameter("value", String.class);
     static { VALUE.setDescription("the search term(s)"); }
 
-    protected final static Parameter<String> INDEX = new Parameter("index", String.class);
+    protected final static Parameter/*<String>*/ INDEX = new Parameter("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
 
-    protected final static Parameter<Class> CLASS = new Parameter("class", Class.class, IndexDefinition.class);
+    protected final static Parameter/*<Class>*/ CLASS = new Parameter("class", Class.class, IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
  
-    protected final static Parameter<String> SORTFIELDS = new Parameter("sortfields", String.class);
-    protected final static Parameter<String> FIELDS     = new Parameter("fields", String.class);
-    protected final static Parameter<String> ANALYZER   = new Parameter("analyzer", String.class);
-    protected final static Parameter<Integer>  OFFSET = new Parameter("offset", Integer.class, 0);
+    protected final static Parameter/*<String>*/ SORTFIELDS = new Parameter("sortfields", String.class);
+    protected final static Parameter/*<String>*/ FIELDS     = new Parameter("fields", String.class);
+    protected final static Parameter/*<String>*/ ANALYZER   = new Parameter("analyzer", String.class);
+    protected final static Parameter/*<Integer>*/  OFFSET = new Parameter("offset", Integer.class, 0);
     static { OFFSET.setDescription("for creating sublists"); }
 
-    protected final static Parameter<Integer> MAX = new Parameter("max", Integer.class, Integer.MAX_VALUE);
+    protected final static Parameter/*<Integer>*/ MAX = new Parameter("max", Integer.class, Integer.MAX_VALUE);
     static { MAX.setDescription("for creating sublists"); }
 
-    protected final static Parameter<String>  EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
+    protected final static Parameter/*<String>*/  EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
     static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
 
-    protected final static Parameter<String>  FILTER = new Parameter("filter", String.class);
+    protected final static Parameter/*<String>*/  FILTER = new Parameter("filter", String.class);
 
     /*
     protected final static Parameter EXTRACONSTRAINTSLIST = new Parameter("constraints", List.class);
     static { EXTRACONSTRAINTSLIST.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
     */
 
-    protected final static Parameter<String> IDENTIFIER = new Parameter("identifier", String.class);
+    protected final static Parameter/*<String>*/ IDENTIFIER = new Parameter("identifier", String.class);
     static { IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index."); }
 
     static {
@@ -121,7 +121,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
 
     public static Lucene getLucene() {
-        return getModule(Lucene.class);
+        //return getModule(Lucene.class); // java 1.5
+        return (Lucene) getModule("lucene");
     }
 
     /**
@@ -167,10 +168,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This may take a while.
      * This function can be called through the function framework.
      */
-    protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
+    //protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
+    protected Function/*<Void>*/ fullIndexFunction = new AbstractFunction/*<Void>*/("fullIndex", new Parameter[] {INDEX}, ReturnType.VOID) {
         public Void getFunctionValue(Parameters arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
-            String index = arguments.get(INDEX);
+            String index = (String) arguments.get(INDEX);
             if (index == null || "".equals(index)) {
                 scheduler.fullIndex();
             } else {
@@ -188,13 +190,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * if the Parameter 'index' has value null, all indexes are iterated over, otherwise
      * the right index is addressed.
      */
-    protected Function<Void> deleteIndexFunction = new AbstractFunction<Void>("deleteIndex", INDEX, IDENTIFIER, CLASS) {
+    //protected Function<Void> deleteIndexFunction = new AbstractFunction<Void>("deleteIndex", INDEX, IDENTIFIER, CLASS) {
+    protected Function/*<Void>*/ deleteIndexFunction = new AbstractFunction/*<Void>*/("deleteIndex", new Parameter[] {INDEX, IDENTIFIER, CLASS}, ReturnType.VOID) {
             public Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 if(!readOnly){
-                    String index      = arguments.get(INDEX);
-                    String identifier = arguments.get(IDENTIFIER);
-                    Class  klass      = arguments.get(CLASS);
+                    String index      = (String) arguments.get(INDEX);
+                    String identifier = (String) arguments.get(IDENTIFIER);
+                    Class  klass      = (Class)  arguments.get(CLASS);
                     if(index == null || "".equals(index)){
                         scheduler.deleteIndex(identifier, klass);
                     } else {
@@ -214,7 +217,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function can be called through the function framework.
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
-    protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
+    //protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
+    protected Function updateIndexFunction = new AbstractFunction("updateIndex", new Parameter[] {new Parameter(IDENTIFIER, true),  CLASS}, ReturnType.VOID) {
             public Void getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
@@ -229,7 +233,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * This function returns the status of the scheduler. For possible values see: Lucene.Scheduler
      */
-    protected Function<Integer> statusFunction = new AbstractFunction<Integer>("status") {
+    //protected Function<Integer> statusFunction = new AbstractFunction<Integer>("status") {
+    protected Function/*<Integer>*/ statusFunction = new AbstractFunction/*<Integer>*/("status", Parameter.EMPTY, ReturnType.INTEGER) {
         public Integer getFunctionValue(Parameters arguments) {
             return scheduler == null ? Scheduler.READONLY : scheduler.getStatus();
         }
@@ -237,9 +242,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(statusFunction);
     }
-    protected Function<String> statusDescriptionFunction = new AbstractFunction<String>("statusdescription", Parameter.LOCALE) {
+    //protected Function<String> statusDescriptionFunction = new AbstractFunction<String>("statusdescription", Parameter.LOCALE) {
+    protected Function/*<String>*/ statusDescriptionFunction = new AbstractFunction/*<String>*/("statusdescription", new Parameter[] { Parameter.LOCALE}, ReturnType.UNKNOWN) {
         public String getFunctionValue(Parameters arguments) {
-            Locale locale = arguments.get(Parameter.LOCALE);
+            Locale locale = (Locale) arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
                                                      SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
@@ -251,8 +257,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(statusDescriptionFunction);
     }
-
-    protected Function<Scheduler.Assignment> assignmentFunction = new AbstractFunction<Scheduler.Assignment>("assignment") {
+    
+    //protected Function <Scheduler.Assignment> assignmentFunction = new AbstractFunction<Scheduler.Assignment/ ("assignment") {
+    protected Function /*<Scheduler.Assignment>*/ assignmentFunction = new AbstractFunction /*<Scheduler.Assignment>*/ ("assignment", Parameter.EMPTY, ReturnType.UNKNOWN) {
         public Scheduler.Assignment getFunctionValue(Parameters arguments) {
             return scheduler == null ? null : scheduler.getAssignment();
         }
@@ -260,7 +267,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(assignmentFunction);
     }
-    protected Function<Collection<Scheduler.Assignment>> queueFunction = new AbstractFunction("queue") {
+    //protected Function<Collection<Scheduler.Assignment>> queueFunction = new AbstractFunction("queue") {
+    protected Function queueFunction = new AbstractFunction("queue", Parameter.EMPTY, ReturnType.UNKNOWN) {
         public Collection<Scheduler.Assignment> getFunctionValue(Parameters arguments) {
             return scheduler == null ? Collections.EMPTY_LIST : scheduler.getQueue();
         }
@@ -269,7 +277,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(queueFunction);
     }
 
-    protected Function<Boolean> readOnlyFunction = new AbstractFunction<Boolean>("readOnly"){
+    //protected Function<Boolean> readOnlyFunction = new AbstractFunction<Boolean>("readOnly"){
+    protected Function /*<Boolean>*/ readOnlyFunction = new AbstractFunction /*<Boolean>*/("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
         public Boolean getFunctionValue(Parameters arguments) {
             return readOnly;
         }
@@ -281,7 +290,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * This function returns Set with the names of all configured indexes (ordered alphabeticly)
      */
-    protected Function<Set<String>> listFunction = new AbstractFunction<Set<String>>("list") {
+    //protected Function /*<Set<String>>*/ listFunction = new AbstractFunction /*<Set<String>>*/ ("list") {
+    protected Function  listFunction = new AbstractFunction ("list", Parameter.EMPTY, ReturnType.SET) {
             public Set<String> getFunctionValue(Parameters arguments) {
                 return new TreeSet<String>(indexerMap.keySet());
             }
@@ -294,10 +304,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      *This function returns the description as configured for a specific index and a specific locale.
      */
-    protected Function<String>  descriptionFunction = new AbstractFunction<String>("description", INDEX, Parameter.LOCALE) {
+    //protected Function/*<String>*/  descriptionFunction = new AbstractFunction/*<String>*/("description", INDEX, Parameter.LOCALE) {
+    protected Function/*<String>*/  descriptionFunction = new AbstractFunction/*<String>*/("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING) {
             public String getFunctionValue(Parameters arguments) {
                 String key    = arguments.getString(INDEX);
-                Locale locale = arguments.get(Parameter.LOCALE);
+                Locale locale = (Locale) arguments.get(Parameter.LOCALE);
                 Indexer index = indexerMap.get(key);
                 return index.getDescription().get(locale);
             }
@@ -311,16 +322,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER) {
+    //protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER) {
+    protected Function searchFunction = new AbstractFunction("search", new Parameter[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.NODELIST) {
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-                String value       = arguments.getString(VALUE);
-                String index       = arguments.getString(INDEX);
-                String sortFields  = arguments.get(SORTFIELDS);
-                String[] sortFieldArray = sortFields == null ? null : StringSplitter.split(sortFields).toArray(new String[] {});
-                String fields      = arguments.get(FIELDS);
-                String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : StringSplitter.split(fields).toArray(new String[] {});
+                String value       = (String) arguments.getString(VALUE);
+                String index       = (String) arguments.getString(INDEX);
+                String sortFields  = (String) arguments.get(SORTFIELDS);
+                String[] sortFieldArray = sortFields == null ? null : (String []) StringSplitter.split(sortFields).toArray(new String[] {});
+                String fields      = (String) arguments.get(FIELDS);
+                String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : (String []) StringSplitter.split(fields).toArray(new String[] {});
                 Analyzer analyzer = null;
-                String an = arguments.get(ANALYZER);
+                String an = (String) arguments.get(ANALYZER);
                 if (an != null && ! "".equals(an)) {
                     try {
                         Class clazz = Class.forName(an);
@@ -329,8 +341,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         throw new RuntimeException(e);
                     }
                 }
-                int offset         = arguments.get(OFFSET);
-                int max            = arguments.get(MAX);
+                int offset         = (Integer) arguments.get(OFFSET);
+                int max            = (Integer) arguments.get(MAX);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 String filter     = arguments.getString(FILTER);
                 log.debug("using analyzer " + analyzer);
@@ -346,7 +358,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     extraConstraints = ec.toString().trim();
                 }
                 */
-                Cloud cloud         = arguments.get(Parameter.CLOUD);
+                Cloud cloud         = (Cloud) arguments.get(Parameter.CLOUD);
                 cloud.setProperty(Cloud.PROP_XMLMODE, "flat"); //
                 try {
                     return getSearcher(index).search(cloud, value, 
@@ -373,18 +385,18 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * This function returns the size of a query on an index.
      */
-    protected Function<Integer> searchSizeFunction = new AbstractFunction<Integer>("searchsize",
-                                                                 VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
+    //protected Function<Integer> searchSizeFunction = new AbstractFunction<Integer>("searchsize", VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
+    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.INTEGER) {
         public Integer getFunctionValue(Parameters arguments) {
-            String value = arguments.getString(VALUE);
-            String index = arguments.getString(INDEX);
-            String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
-            String filter = arguments.getString(FILTER);
-            String fields      = arguments.get(FIELDS);
-            String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : StringSplitter.split(fields).toArray(new String[] {});
-            Cloud cloud  =  arguments.get(Parameter.CLOUD);
+            String value = (String) arguments.getString(VALUE);
+            String index = (String) arguments.getString(INDEX);
+            String extraConstraints = (String) arguments.getString(EXTRACONSTRAINTS);
+            String filter = (String) arguments.getString(FILTER);
+            String fields      = (String) arguments.get(FIELDS);
+            String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : (String[]) StringSplitter.split(fields).toArray(new String[] {});
+            Cloud cloud  =  (Cloud) arguments.get(Parameter.CLOUD);
             Analyzer analyzer = null;
-            String an = arguments.get(ANALYZER);
+            String an = (String) arguments.get(ANALYZER);
             if (an != null && ! "".equals(an)) {
                 try {
                     Class clazz = Class.forName(an);
@@ -401,7 +413,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     }
 
 
-    protected Function<Integer> unAssignFunction = new AbstractFunction<Integer>("unassign", new Parameter("id", Integer.class, true)) {
+    //protected Function<Integer> unAssignFunction = new AbstractFunction<Integer>("unassign", new Parameter("id", Integer.class, true)) {
+    protected Function/*<Integer>*/ unAssignFunction = new AbstractFunction/*<Integer>*/("unassign", new Parameter[] {new Parameter("id", Integer.class, true)}, ReturnType.INTEGER) {
             public Integer getFunctionValue(Parameters arguments) {
                 int id = (Integer) arguments.get("id");
                 if (scheduler != null) {
@@ -414,7 +427,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(unAssignFunction);
     }
-    protected Function<String> interruptFunction = new AbstractFunction<String>("interrupt") {
+    //protected Function<String> interruptFunction = new AbstractFunction<String>("interrupt") {
+    protected Function/*<String>*/ interruptFunction = new AbstractFunction/*<String>*/("interrupt", Parameter.EMPTY, ReturnType.STRING) {
             public String getFunctionValue(Parameters arguments) {
                 if (scheduler != null) {
                     if (scheduler.getStatus() > Scheduler.IDLE) {
@@ -434,9 +448,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(interruptFunction);
     }
 
-    protected Function<Date> lastFullIndexFunction = new AbstractFunction<Date>("last", INDEX) {
+    //protected Function<Date> lastFullIndexFunction = new AbstractFunction<Date>("last", INDEX) {
+    protected Function/*<Date>*/ lastFullIndexFunction = new AbstractFunction/*<Date>*/("last", new Parameter[] {INDEX}, ReturnType.UNKNOWN) {
         public Date getFunctionValue(Parameters arguments) {
-            String key = arguments.get(INDEX);
+            String key = (String) arguments.get(INDEX);
             Indexer index = indexerMap.get(key);
             if (index != null) {
                 return index.getLastFullIndex();
@@ -448,29 +463,33 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(lastFullIndexFunction);
 
-        addFunction(new AbstractFunction<Indexer>("default") {
+        //addFunction(new AbstractFunction<Indexer>("default") {
+        addFunction(new AbstractFunction/*<Indexer>*/("default", Parameter.EMPTY, ReturnType.UNKNOWN){ 
                 public Indexer getFunctionValue(Parameters arguments) {
                     return indexerMap.get(defaultIndex);
                 }
             });
 
-        addFunction(new AbstractFunction<List<String>>("errors", INDEX, OFFSET, MAX) {
+        //addFunction(new AbstractFunction<List<String>>("errors", INDEX, OFFSET, MAX) {
+        addFunction(new AbstractFunction("errors", new Parameter[] {INDEX, OFFSET, MAX}, ReturnType.LIST) {
                 public List<String> getFunctionValue(Parameters arguments) {
-                String index = arguments.getString(INDEX);
-                List<String> errors = indexerMap.get(index).getErrors();
-                int offset = arguments.get(OFFSET);
-                int toIndex = offset + arguments.get(MAX);
-                if (toIndex > errors.size()) toIndex = errors.size();
-                return indexerMap.get(index).getErrors().subList(offset, toIndex);
-            }
+                    String index = arguments.getString(INDEX);
+                    List<String> errors = indexerMap.get(index).getErrors();
+                    int offset = (Integer) arguments.get(OFFSET);
+                    int toIndex = offset + (Integer) arguments.get(MAX);
+                    if (toIndex > errors.size()) toIndex = errors.size();
+                    return indexerMap.get(index).getErrors().subList(offset, toIndex);
+                }
             });
-        addFunction(new AbstractFunction<Long>("nodes", INDEX) {
+        //addFunction(new AbstractFunction<Long>("nodes", INDEX) {
+        addFunction(new AbstractFunction("nodes", new Parameter[] {INDEX}, ReturnType.LONG) {
             public Long getFunctionValue(Parameters arguments) {
                 String index = arguments.getString(INDEX);
                 return searcherMap.get(index).getNumberOfProducedNodes();
             }
             });
-        addFunction(new AbstractFunction<Date>("config") {
+        //addFunction(new AbstractFunction<Date>("config") {
+        addFunction(new AbstractFunction("config",Parameter.EMPTY, ReturnType.UNKNOWN) {
             public Date getFunctionValue(Parameters arguments) {
                 return configReadTime;
             }
@@ -659,7 +678,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             // And of course, the new event-mechanism must be used.
             if (!readOnly) {
                 // register. Unfortunately this can currently only be done through the core
-                for (Step step : queryDefinition.query.getSteps() ) {
+                //for (Step step : queryDefinition.query.getSteps() ) {
+                for (Iterator i = queryDefinition.query.getSteps().iterator(); i.hasNext();) {
+                    Step step = (Step) i.next();
                     MMObjectBuilder builder = mmbase.getBuilder(step.getTableName());
                     log.service("Observing for builder " + builder.getTableName() + " for index " + queryElement.getAttribute("name"));
                     builder.addEventListener(this);
