@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.8 2006-07-06 09:52:30 michiel Exp $
+ * @version $Id: Event.java,v 1.8.2.1 2007-02-27 13:32:43 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -62,6 +62,12 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     public Event(String machine) {
         this(machine, TYPE_UNSPECIFIED);
+    }
+    /**
+     * @since MMBase-1.8.4
+     */
+    public Event() {
+        this(MMBase.getMMBase().getMachineName());
     }
 
     public Object clone(){
