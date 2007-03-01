@@ -1,6 +1,6 @@
-DIDACTOR 2.1
+DIDACTOR 2.3
 
-This is the Didactor 2.1 distribution, released on 20 feb 2005.
+This is the Didactor 2.3 distribution, released on .....
 
 There are two ways to build the software: building it in this directory
 based on the 'build.xml' file, or creating a custom build including custom
