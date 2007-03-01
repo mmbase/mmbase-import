@@ -1,42 +1,43 @@
-<% String title = "Log in"; %>
-<%@ include file="inc_top.jsp" %>
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<%@ include file="inc/top.jsp" %>
+<mm:content>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
-	<title>my_editors - <%= title %></title>
-	<link rel="stylesheet" href="my_editors.css" type="text/css" />
-	<link href="img/favicon.ico" rel="icon" type="image/x-icon">
-	<link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<mm:import id="pagetitle">Login</mm:import>
+<%@ include file="inc/head.jsp" %>
+  <link rel="stylesheet" href="css/login.css" type="text/css" />
 </head>
-<body bgcolor="#FFFFFF">
-<div style="margin-left: 50px; margin-right: 50px; margin-top: 50px; margin-bottom: 50px;" align="center">
+<body class="login">
+
 <mm:import externid="username" from="parameters" />
 <mm:import externid="reason">please</mm:import>
 <mm:import externid="referrer">index.jsp</mm:import>
+
+<form id="loginbox" method="post" action="<mm:url page="$referrer" />">
 <mm:compare referid="reason" value="failed">
-	<p class="message">You failed to log in. Try again.</p>
-	<p>&nbsp;</p>
+  <div class="message">You failed to log in. Try again.</div>
 </mm:compare>
-<form method="post" action="<mm:url page="$referrer" />">
-<input type="hidden" name="command" value="login">
-<input type="hidden" name="cloud" value="mmbase"><!-- also default -->
-<input type="hidden" name="authenticate" value="name/password">
-<table border="0" cellspacing="0" cellpadding="4" class="table-left">
-  <tr>
-	<td width="50"><img src="img/mmbase-edit-40.gif" alt="my_editors" width="41" height="40" border="0" hspace="4" vspace="4" /></td>
-	<td>
-	  <div class="top-title">my_editors</div>
-	  <div class="top-links">Generic JSP editors for MMBase</div>
-	</td>
-  </tr>
-  <tr><td>&nbsp;</td><td><b>Please login</b></td></tr>
-  <tr><td class="name">Name</td><td><input type="text" name="username" /></td></tr>
-  <tr><td class="name">Password</td><td><input type="password" name="password" /></td></tr>
-  <tr><td>&nbsp;</td><td><input type="submit" name="Login" value="login" /></td></tr>
-</table>
+<fieldset>
+<input type="hidden" name="command" value="login" />
+<input type="hidden" name="authenticate" value="name/password" />
+  <div class="first">
+    <h2>my_editors</h2>
+    <p>Generic editors for MMBase</p>
+    <h4>Please login</h4>
+  </div>
+  <div class="row">
+    <label for="username">Name</label>
+    <input type="text" id="username" name="username" />
+  </div>
+  <div class="row">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" />
+  </div>
+  <div class="lastrow">
+    <input type="submit" name="Login" value="login" />
+  </div>
+</fieldset>
 </form>
-</div>
+
 </body>
 </html>
+</mm:content>
