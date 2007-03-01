@@ -29,9 +29,9 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.2 2006-12-02 17:44:32 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.3 2007-03-01 08:52:03 pierre Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
+ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable /*, Serializable */ {
 
     private static final long serialVersionUID = 1;
 
