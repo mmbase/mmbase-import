@@ -29,8 +29,8 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker,calendar,poll,didactor" />
-  <target name="all.not.compiling" depends="" />
+  <target name="all.compiling"   depends="init,aselect,mmbar,lucene,principletracker,calendar,poll,didactor" />
+  <target name="all.not.compiling" depends="thememanager,multilanguagegui,mmbob" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
   <target name="jars" depends="all">
