@@ -83,7 +83,7 @@
 
   <target name="mmbase.distro" depends="mmbase.distro.exists,mmbase.distro.download" unless="mmbase.distro.expanded.exists" >
     <unzip src="${mmbase.zip}" dest="${build.dir}/" />
-    <move file="${build.dir}/${mmbase.version}" tofile="${build.dir}/mmbase" />
+    <rename src="${build.dir}/${mmbase.version}" dest="${build.dir}/mmbase" />
   </target>
 
   <target name="webapp" depends="create.dirs,build,mmbase.distro">
