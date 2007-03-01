@@ -457,6 +457,7 @@
      <tstamp />
      <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
           basedir="${build.dir}/webapp"
+          defaultexcludes="${defaultexcludes}"
      />
    </target>
 
