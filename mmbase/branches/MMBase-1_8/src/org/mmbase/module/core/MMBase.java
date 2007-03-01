@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.1 2006-09-10 17:04:36 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.200.2.2 2007-03-01 08:57:01 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -143,7 +143,7 @@ public class MMBase extends ProcessorModule {
     private CloudModel cloudModel;
 
     /**
-     * Determines whether MMBase is in development mode. 
+     * Determines whether MMBase is in development mode.
      * @see #inDevelopment()
      * @since MMBase-1.8.1
      */
@@ -247,7 +247,10 @@ public class MMBase extends ProcessorModule {
      */
     public synchronized void init() {
         if (mmbaseState >= STATE_STARTED_INIT) {
-            log.debug("Already initing");
+            log.debug("Already initialized or initializing");
+            return;
+        } else if (mmbaseState == STATE_SHUT_DOWN) {
+            log.warn("was shutdown... should NOT restart again!");
             return;
         }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
@@ -351,7 +354,7 @@ public class MMBase extends ProcessorModule {
 
         log.debug("Loading builders:");
 
-	cloudModel = ModelsManager.addModel("default","default.xml");
+    cloudModel = ModelsManager.addModel("default","default.xml");
 
         loadBuilders();
 
@@ -445,13 +448,13 @@ public class MMBase extends ProcessorModule {
     public boolean isShutdown() {
         return  mmbaseState == STATE_SHUT_DOWN;
     }
-   
+
     /**
      * Returns <code>true</code> when MMBase is in development mode.
      * This can be used to determine behavior with regards to common errors,
-     * such as whether or not to throw an exception when a non-existing field 
+     * such as whether or not to throw an exception when a non-existing field
      * in a buidler is referenced.
-     * The value for this property ('true' or 'false') can be set in the "development" 
+     * The value for this property ('true' or 'false') can be set in the "development"
      * property in the mmbaseroot.xml configuration file.
      * The default value is <code>false</code>.
      * @since MMBase-1.8.1
@@ -534,7 +537,7 @@ public class MMBase extends ProcessorModule {
         // if the type is not for the current builder, determine the real builder
         return getTypeDef().getValue(nodeType);
     }
-    
+
     public MMObjectBuilder getBuilderForNode(final int number) {
         String builderName = getBuilderNameForNode(number);
         MMObjectBuilder nodeBuilder = null;
@@ -550,7 +553,7 @@ public class MMBase extends ProcessorModule {
         }
         return nodeBuilder;
     }
-    
+
     /**
      * @since MMBase-1.8
      */
@@ -911,7 +914,7 @@ public class MMBase extends ProcessorModule {
             String resourceName = ResourceLoader.getName(builderXml);
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
-	    if (cloudModel != null) {
+        if (cloudModel != null) {
                 cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
             }
         }
@@ -1100,7 +1103,7 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-	    if (cloudModel != null) {
+        if (cloudModel != null) {
                 cloudModel.addBuilder(builderName,path+builderName+".xml");
             }
             return loadBuilderFromXML(builderName, path);
