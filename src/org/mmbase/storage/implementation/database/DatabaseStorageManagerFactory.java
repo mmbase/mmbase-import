@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.45 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.46 2007-03-01 16:03:37 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -307,7 +307,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             String databaseResourcePath;
             // First, determine the database name from the parameter set in mmbaseroot
             String databaseName = mmbase.getInitParameter("database");
-            if (databaseName != null) {
+            if (databaseName != null && ! "".equals(databaseName)) {
                 // if databasename is specified, attempt to use the database resource of that name
                 if (databaseName.endsWith(".xml")) {
                     databaseResourcePath = databaseName;
