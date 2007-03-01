@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.218 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.219 2007-03-01 09:01:05 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -243,8 +243,11 @@ public class MMBase extends ProcessorModule {
      */
     public synchronized void init() {
         if (mmbaseState >= STATE_STARTED_INIT) {
-            log.debug("Already initing");
+            log.debug("Already initialized or initializing");
             return;
+        } else if (mmbaseState == STATE_SHUT_DOWN) {
+            log.warn("was shutdown... should NOT restart again!");
+	    return;
         }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
