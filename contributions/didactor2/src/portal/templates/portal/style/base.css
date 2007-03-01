@@ -20,7 +20,8 @@ div.x1 {
 
 }
 
-div.column div.menu *, div.column div.menu {
+div.column div.menu *, 
+div.column div.menu {
   background-color: #e2641b;
   color: black;
   font-family: Arial Black, Arial, Verdana,sans-serif;  
@@ -33,7 +34,7 @@ div.column div.menu ul {
 div.column div.menu a { 
   text-decoration: none;
   color: #003bc5;
-  font-size: 170%;
+  font-size: 150%;
 }
 div.column div.menu a:hover { 
   color: #000;

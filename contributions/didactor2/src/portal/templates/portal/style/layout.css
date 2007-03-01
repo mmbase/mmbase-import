@@ -34,6 +34,10 @@ div.x3 {
 div.column * {
   margin-left: 1ex;
 }
+div.column ul {
+  margin-left: 0ex;
+}
+
 div.column h1 {
   font-size: normal;
   padding-left: 1ex;
