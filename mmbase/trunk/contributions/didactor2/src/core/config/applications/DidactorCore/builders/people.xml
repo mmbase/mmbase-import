@@ -31,8 +31,10 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">First Name</guiname>
-        <guiname xml:lang="fr">Nom</guiname>
+        <guiname xml:lang="fr">Prénom</guiname>
         <guiname xml:lang="nl">Voornaam</guiname>
+        <guiname xml:lang="ro">Prenume</guiname>
+        <guiname xml:lang="bg">Собствено име</guiname>
       </gui>
       <editor>
         <positions>
@@ -83,8 +85,10 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Last Name</guiname>
-        <guiname xml:lang="fr">Nom De Famille</guiname>
+        <guiname xml:lang="fr">Nom de famille</guiname>
         <guiname xml:lang="nl">Achternaam</guiname>
+        <guiname xml:lang="ro">Nume</guiname>
+        <guiname xml:lang="bg">Фамилия</guiname>
       </gui>
       <editor>
         <positions>
@@ -106,6 +110,8 @@
         <guiname xml:lang="nl">Adres</guiname>
         <guiname xml:lang="en">Address</guiname>
         <guiname xml:lang="fr">Adresse</guiname>
+        <guiname xml:lang="ro">Adresa</guiname>
+        <guiname xml:lang="bg">Адрес</guiname>
       </gui>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -121,6 +127,8 @@
         <guiname xml:lang="nl">Postcode</guiname>
         <guiname xml:lang="en">Zipcode</guiname>
         <guiname xml:lang="fr">Zipcode</guiname>
+        <guiname xml:lang="ro">Cod postal</guiname>
+        <guiname xml:lang="bg">Пощ. код</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -137,6 +145,8 @@
         <guiname xml:lang="nl">Plaats</guiname>
         <guiname xml:lang="en">City</guiname>
         <guiname xml:lang="fr">Ville</guiname>
+        <guiname xml:lang="ro">Oras</guiname>
+        <guiname xml:lang="bg">Град</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -152,6 +162,9 @@
       <gui>
         <guiname xml:lang="en">Country</guiname>
         <guiname xml:lang="nl">Land</guiname>
+        <guiname xml:lang="fr">Pay</guiname>
+        <guiname xml:lang="ro">Tara</guiname>
+        <guiname xml:lang="bg">Държава</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
       <!-- todo 'countries' could be an enumeration -->
@@ -196,8 +209,10 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Email Address</guiname>
-        <guiname xml:lang="fr">Email</guiname>
-        <guiname xml:lang="nl">Email Adres</guiname>
+        <guiname xml:lang="fr">Adresse courriel (mail)</guiname>
+        <guiname xml:lang="nl">Email-adres</guiname>
+        <guiname xml:lang="ro">Adresa de email</guiname>
+        <guiname xml:lang="bg">ел. поща</guiname>
       </gui>
       <editor>
         <positions>
@@ -234,6 +249,8 @@
       <gui>
         <guiname xml:lang="nl">Gebruikersnaam</guiname>
         <guiname xml:lang="en">Username</guiname>
+        <guiname xml:lang="bg">Потребителско име</guiname>
+        <guiname xml:lang="ro">Utilizator</guiname>
       </gui>
       <editor>
         <positions>
@@ -255,6 +272,8 @@
       <gui>
         <guiname xml:lang="nl">Wachtwoord</guiname>
         <guiname xml:lang="en">Password</guiname>
+        <guiname xml:lang="bg">Парола</guiname>
+        <guiname xml:lang="ro">Parola</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
