@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.3 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: MagicFile.java,v 1.4 2007-03-02 21:04:16 nklasens Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -29,7 +29,7 @@ public class MagicFile {
     public static final String FAILED = "Failed to determine type";
     // application/octet-stream?
 
-    protected static int BUFSIZE = 4598;
+    protected static final int BUFSIZE = 4598;
     // Read a string of maximally this length from the file
     // Is this garanteed to be big enough?
 
@@ -80,12 +80,21 @@ public class MagicFile {
      * @return Type of the file as determined by the magic file
      */
     protected String getMimeType(File file) throws IOException {
-        byte[] lithmus = new byte[BUFSIZE];
-        //log.debug("path = "+path);
-        FileInputStream fir = new FileInputStream(file);
-        int res = fir.read(lithmus, 0, BUFSIZE);
-        log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
-        return getMimeType(lithmus);
+        FileInputStream fir = null;
+        try {
+            byte[] lithmus = new byte[BUFSIZE];
+            fir = new FileInputStream(file);
+            int res = fir.read(lithmus, 0, BUFSIZE);
+            log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
+            return getMimeType(lithmus);
+        } catch (IOException ioe) {
+            throw ioe;
+        }
+        finally {
+            if (fir != null) {
+                fir.close();
+            }
+        }
     }
 
     /**
@@ -110,9 +119,8 @@ public class MagicFile {
             return FAILED;
         }
         for (Detector detector : list) {
-            log.debug("Trying " + detector.getMimeType());
-            if (detector != null && detector.test(lithmus)) {
-                //return detector.getDesignation();
+            if (detector.test(lithmus)) {
+                log.debug("Trying " + detector.getMimeType());
                 return detector.getMimeType();
             }
         }
