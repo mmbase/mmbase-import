@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 import org.mmbase.bridge.Field;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.11 2007-03-02 21:03:05 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -388,10 +387,17 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 query = query.replaceAll("\\(\\s*\\)", "");
             }
 
-            Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
-            s.executeUpdate(query);
-            s.close();
+            PreparedStatement s = null; 
+            try {
+                s = activeConnection.prepareStatement(query);
+                s.executeUpdate();
+            }
+            finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
             logQuery(query, startTime);
 
             if (createInsertTriggerScheme != null) {
@@ -424,10 +430,18 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
 
-                s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
-                s.executeUpdate(query);
-                s.close();
+                PreparedStatement s2 = null; 
+                try {
+                    s2 = activeConnection.prepareStatement(query);
+                    s2.executeUpdate();
+                }
+                finally {
+                    if (s2 != null) {
+                        s2.close();
+                    }
+                }
+
                 logQuery(query, startTime2);
             }
 
@@ -438,10 +452,17 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
 
-                s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
-                s.executeUpdate(query);
-                s.close();
+                PreparedStatement s3 = null; 
+                try {
+                    s3 = activeConnection.prepareStatement(query);
+                    s3.executeUpdate();
+                }
+                finally {
+                    if (s3 != null) {
+                        s3.close();
+                    }
+                }
                 logQuery(query, startTime2);
             }
 
@@ -471,18 +492,26 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
 
-                s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
-                s.executeUpdate(query);
-                s.close();
+                PreparedStatement s4 = null; 
+                try {
+                    s4 = activeConnection.prepareStatement(query);
+                    s4.executeUpdate();
+                }
+                finally {
+                    if (s4 != null) {
+                        s4.close();
+                    }
+                }
                 logQuery(query, startTime2);
             }
 
-            tableNameCache.add(viewname.toUpperCase());
+            addToTableNameCache(viewname);
         } catch (SQLException se) {
             throw new StorageException(se.getMessage() + " in query:" + query, se);
         } finally {
             releaseActiveConnection();
         }
     }
+
 }
