@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.205 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.206 2007-03-02 21:02:12 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1728,7 +1728,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 log.error("This otype(" + otype + ") does not denote a valid typedef-name(" + name + ")!");
             }
         } else {
-            log.error("This otype(" + otype + ") gives no name(" + name + ") from typedef!");
+            log.error("This otype(" + otype + ") gives no name from typedef!");
         }
         return result;
     }
