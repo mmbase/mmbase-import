@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.5 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.6 2007-03-02 21:01:15 nklasens Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -59,13 +59,13 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     }
 
 
-    protected SortedSet getOTypes(List names) throws JspTagException {
+    protected SortedSet<Integer> getOTypes(List<String> names) throws JspTagException {
         Cloud cloud = getCloudVar();
-        SortedSet set = new TreeSet();
-        Iterator i = names.iterator();
+        SortedSet<Integer> set = new TreeSet<Integer>();
+        Iterator<String> i = names.iterator();
         boolean desc = descendants.getBoolean(this, true);
         while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager((String) i.next());
+            NodeManager nm = cloud.getNodeManager(i.next());
             set.add(new Integer(nm.getNumber()));
             if (desc) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();

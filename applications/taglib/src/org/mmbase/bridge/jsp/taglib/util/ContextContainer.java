@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.58 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ContextContainer.java,v 1.59 2007-03-02 21:01:15 nklasens Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -122,7 +122,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
 
-    public Set entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         return getBacking().entrySet();
     }
 
@@ -225,7 +225,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             if (c instanceof ContextContainer) {
                 return new ContextContainerPair((ContextContainer)c, newKey, wentDown);
             } else if (c instanceof Map) {
-                return new MapPair((Map)c, newKey, wentDown);
+                return new MapPair((Map<String, Object>)c, newKey, wentDown);
             } else {
                 return new BeanPair(c, newKey, wentDown);
             }
@@ -310,7 +310,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    Set keySet(boolean checkParent) {
+    Set<String> keySet(boolean checkParent) {
         if (checkParent) {
             return keySet();
         } else {
@@ -425,11 +425,11 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    void unRegisterAll(Set set) throws JspTagException {
+    void unRegisterAll(Set<String> set) throws JspTagException {
         if (set == null) return;
-        Iterator i = set.iterator();
+        Iterator<String> i = set.iterator();
         while (i.hasNext()) {
-            String key = (String) i.next();
+            String key = i.next();
             unRegister(key);
         }
 
@@ -496,7 +496,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 throw new TaglibException("Unsupported Encoding ", e);
             }
         } else if (value instanceof List) {
-            ListIterator i = ((List)value).listIterator();
+            ListIterator<Object> i = ((List<Object>)value).listIterator();
             while(i.hasNext()) {
                 i.set(fixEncoding(i.next(), encoding));
             }
@@ -793,8 +793,8 @@ class ContextContainerPair extends Pair {
  * @since MMBase-1.8
  */
 class MapPair extends Pair {
-    private Map map;
-    MapPair(Map c, String k, boolean w) {
+    private Map<String, Object> map;
+    MapPair(Map<String, Object> c, String k, boolean w) {
         super(k, w);
         map = c;
     }
@@ -821,7 +821,7 @@ class MapPair extends Pair {
  */
 class BeanPair extends Pair {
     private Object bean;
-    private Class clazz;
+    private Class<? extends Object> clazz;
     BeanPair(Object c, String k, boolean w) {
         super(k, w);
         bean = c;

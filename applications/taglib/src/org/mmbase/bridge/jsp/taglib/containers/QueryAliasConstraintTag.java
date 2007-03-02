@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -60,11 +60,11 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
         return new Integer(node.getNumber());
     }
 
-    protected SortedSet getAliases(List names) throws JspTagException {
-        SortedSet set = new TreeSet();
-        Iterator i = names.iterator();
+    protected SortedSet<Integer> getAliases(List<String> names) throws JspTagException {
+        SortedSet<Integer> set = new TreeSet<Integer>();
+        Iterator<String> i = names.iterator();
         while (i.hasNext()) {
-            set.add(getAlias((String) i.next()));
+            set.add(getAlias(i.next()));
         }
         return set;
     }
