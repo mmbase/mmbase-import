@@ -44,7 +44,7 @@ public class CommandLauncher {
      * Counts how many comands are launched
      * Also used for () identification
      */
-    protected static int counter = 0;
+    private static int counter = 0;
 
     /**
      * The process object representing the external process
