@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.21 2006-06-23 15:21:51 michiel Exp $
+ * @version $Id: TreeList.java,v 1.21.2.1 2007-03-02 16:04:54 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -242,6 +242,8 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         if (branch.leafResult == null) {
             NodeQuery query = branch.getLeafQuery();
             branch.leafResult =  cloud.getList(query);
+            branch.leafResult.setProperty(REAL_NODES, null);
+
             if (branch.leafConstraint == null) {
                 branch.result = branch.leafResult;
             }
