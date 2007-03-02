@@ -21,7 +21,7 @@ import java.util.Vector;
  * @todo more OS support
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: EnvironmentReader.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: EnvironmentReader.java,v 1.6 2007-03-02 21:05:15 nklasens Exp $
  * @since MMBase-1.6
  */
 public class EnvironmentReader {
@@ -71,7 +71,9 @@ public class EnvironmentReader {
                 if (outputStream != null) {
                     outputStream.close();
                 }
-            } catch (IOException e) {}
+            } catch (IOException e) {
+                //ignore
+            }
         }
         rawVars.trimToSize();
         return envVars;
