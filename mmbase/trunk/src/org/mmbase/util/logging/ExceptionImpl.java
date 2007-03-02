@@ -25,15 +25,15 @@ import org.apache.log4j.spi.LocationInfo;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ExceptionImpl.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ExceptionImpl.java,v 1.8 2007-03-02 21:05:15 nklasens Exp $
  */
 
 public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
 
     private String cat;
     private static   Map<String,Logger> instances = new HashMap<String,Logger>();
-    protected static int exceptionLevel  = Level.WARN_INT;
-    protected static Level staticLevel  = Level.WARN;
+    private static int exceptionLevel  = Level.WARN_INT;
+    private static Level staticLevel  = Level.WARN;
 
     private ExceptionImpl(String c) {
         cat = c;
