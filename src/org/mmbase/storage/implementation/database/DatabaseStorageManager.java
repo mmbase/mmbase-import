@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.181 2007-02-25 18:18:24 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.182 2007-03-02 21:03:05 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -49,20 +49,20 @@ public class DatabaseStorageManager implements StorageManager {
     private static final CharTransformer UNICODE_ESCAPER = new org.mmbase.util.transformers.UnicodeEscaper();
 
     // maximum size of the key buffer
-    protected static Integer bufferSize = null;
+    private static Integer bufferSize = null;
 
     /**
      * This sets contains all existing tables which could by associated with MMBase builders. This
      * is because they are queried all at once, but requested for existance only one at a time.
      * @since MMBase-1.7.4
      */
-    protected static Set<String> tableNameCache = null;
+    private static Set<String> tableNameCache = null;
 
     /**
      * This sets contains all verified tables.
      * @since MMBase-1.8.1
      */
-    protected static Set<String> verifiedTablesCache = new HashSet<String>();
+    private static Set<String> verifiedTablesCache = new HashSet<String>();
 
     /**
      * Whether the warning about blob on legacy location was given.
@@ -544,9 +544,12 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
             String query = scheme.format(this, builder, field, builder.getField("number"), node);
             getActiveConnection();
-            Statement s = activeConnection.createStatement();
-            ResultSet result = s.executeQuery(query);
+            
+            PreparedStatement s = null; 
+            ResultSet result = null;
             try {
+                s = activeConnection.prepareStatement(query);
+                result = s.executeQuery();
                 if ((result != null) && result.next()) {
                     Blob blob = getBlobValue(result, 1, field, mayShorten);
                     if (blob != null) {
@@ -559,7 +562,12 @@ public class DatabaseStorageManager implements StorageManager {
                     throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found with query '" + query + "'");
                 }
             } finally {
-                result.close();
+                if (result != null) {
+                    result.close();
+                }
+                if (s != null) {
+                    s.close();
+                }
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1522,11 +1530,19 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
             String query = scheme.format(this, tablename, builder.getField("number"), node);
             getActiveConnection();
-            Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
-            s.executeUpdate(query);
-            s.close();
+            PreparedStatement s = null;
+            try {
+                s = activeConnection.prepareStatement(query);
+                s.executeUpdate();
+            }
+            finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
             logQuery(query, startTime);
+
             // delete blob files too
             for (CoreField field : blobFileField) {
                 String fieldName = field.getName();
@@ -1907,10 +1923,17 @@ public class DatabaseStorageManager implements StorageManager {
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
-                Statement s = activeConnection.createStatement();
                 long startTime = getLogStartTime();
-                s.executeUpdate(query);
-                s.close();
+                PreparedStatement s = null; 
+                try {
+                    s = activeConnection.prepareStatement(query);
+                    s.executeUpdate();
+                }
+                finally {
+                    if (s != null) {
+                        s.close();
+                    }
+                }
                 logQuery(query, startTime);
             }
             // create the table
@@ -1921,13 +1944,20 @@ public class DatabaseStorageManager implements StorageManager {
                 query = query.replaceAll("\\(\\s*\\)", "");
             }
 
-            Statement s = activeConnection.createStatement();
+            PreparedStatement s = null; 
             long startTime = getLogStartTime();
-            s.executeUpdate(query);
-            s.close();
+            try {
+                s = activeConnection.prepareStatement(query);
+                s.executeUpdate();
+            }
+            finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
             logQuery(query, startTime);
 
-            tableNameCache.add(tableName.toUpperCase());
+            addToTableNameCache(tableName);
 
             // create indices and unique constraints
             for (Index index : builder.getStorageConnector().getIndices().values()) {
@@ -1941,6 +1971,11 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    protected void addToTableNameCache(String name) {
+        tableNameCache.add(name.toUpperCase());        
+    }
+
+    
     /**
      * Creates a field type definition, of the format '[fieldtype] NULL' or
      * '[fieldtype] NOT NULL' (depending on whether the field is nullable).

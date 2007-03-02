@@ -34,7 +34,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.6 2007-03-02 21:03:05 nklasens Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
@@ -205,11 +205,10 @@ public class EtxIndexCreator {
                 + "PHRASE_SUPPORT='MAXIMUM', "
                 + "WORD_SUPPORT='PATTERN') IN " + sbspace;
 
-            Statement st = null;
+            PreparedStatement st = null;
             try {
-                System.out.println(sqlCreateIndex);
-                st = con.createStatement();
-                st.executeUpdate(sqlCreateIndex);
+                st = con.prepareStatement(sqlCreateIndex);
+                st.executeUpdate();
                 System.out.println("Index " + name + " created.");
             } finally {
                 if (st != null) {
