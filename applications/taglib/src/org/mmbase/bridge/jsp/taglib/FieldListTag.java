@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.58 2007-02-10 15:28:34 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.59 2007-03-02 21:01:15 nklasens Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -241,7 +241,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (add != Attribute.NULL) {
             Object addObject = getObject(add.getString(this));
             if (addObject instanceof Collection) {
-                returnList.addAll((Collection) addObject);
+                returnList.addAll((Collection<Field>) addObject);
             } else {
                 returnList.add((Field) addObject);
             }
@@ -249,7 +249,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (retain != Attribute.NULL) {
             Object retainObject = getObject(retain.getString(this));
             if (retainObject instanceof Collection) {
-                returnList.retainAll((Collection) retainObject);
+                returnList.retainAll((Collection<Field>) retainObject);
             } else {
                 returnList.retainAll(Collections.singletonList(retainObject));
             }
@@ -257,7 +257,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (remove != Attribute.NULL) {
             Object removeObject = getObject(remove.getString(this));
             if (removeObject instanceof Collection) {
-                returnList.removeAll((Collection) removeObject);
+                returnList.removeAll((Collection<Field>) removeObject);
             } else {
                 returnList.remove(removeObject);
             }

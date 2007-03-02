@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.31 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: Attribute.java,v 1.32 2007-03-02 21:01:15 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -185,7 +185,7 @@ public class Attribute {
             containsVars = false;
             return; // if none, return imediately.
         } else {
-            attributeParts = new ArrayList();
+            attributeParts = new ArrayList<Part>();
             containsVars = true;
         }
 

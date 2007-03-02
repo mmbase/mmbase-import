@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.35 2007-02-16 20:15:06 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.36 2007-03-02 21:01:15 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -220,7 +220,7 @@ public class NodeListHelper implements ListProvider {
             Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
             if (addObject != null) {
                 if (addObject instanceof Collection) {
-                    nodes.addAll((Collection) addObject);
+                    nodes.addAll((Collection<Node>) addObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.add(Casting.toNode(addObject, cloud));
@@ -231,7 +231,7 @@ public class NodeListHelper implements ListProvider {
             Object retainObject = thisTag.getObjectConditional(retain.getString(thisTag));
             if (retainObject != null) {
                 if (retainObject instanceof Collection) {
-                    nodes.retainAll((Collection) retainObject);
+                    nodes.retainAll((Collection<Node>) retainObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
@@ -242,7 +242,7 @@ public class NodeListHelper implements ListProvider {
             Object removeObject = thisTag.getObjectConditional(remove.getString(thisTag));
             if (removeObject != null) {
                 if (removeObject instanceof Collection) {
-                    nodes.removeAll((Collection) removeObject);
+                    nodes.removeAll((Collection<Node>) removeObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.remove((Casting.toNode(removeObject, cloud)));

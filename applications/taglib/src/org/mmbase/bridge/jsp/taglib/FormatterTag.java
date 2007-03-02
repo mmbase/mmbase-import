@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.72 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: FormatterTag.java,v 1.73 2007-03-02 21:01:15 nklasens Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -57,7 +57,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     protected Attribute namespaceAware   = Attribute.NULL;
     protected Attribute referids   = Attribute.NULL;
 
-    protected List       extraParameters      = new ArrayList();
+    protected List<Entry<String, Object>>       extraParameters      = new ArrayList<Entry<String, Object>>();
 
     protected Source   xsltSource = null;
 
@@ -217,7 +217,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
-        extraParameters.add(new Entry(key, value));
+        extraParameters.add(new Entry<String, Object>(key, value));
     }
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
@@ -532,7 +532,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         // set some parameters to the XSLT style sheet.
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
         //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
@@ -562,11 +562,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         //other options
         // a=b,c=d,e=f
         if (options != Attribute.NULL) {
-            Iterator i = options.getList(this).iterator();
+            Iterator<String> i = options.getList(this).iterator();
             while (i.hasNext()) {
-                String option = (String) i.next();
+                String option = i.next();
                 // List   o = StringSplitter.split(option, "=");
-                List o = Arrays.asList( option.trim().split("\\s*=\\s*") );
+                List<String> o = Arrays.asList( option.trim().split("\\s*=\\s*") );
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
 
@@ -577,9 +577,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
         }
         params.putAll(Referids.getReferids(referids, this));
-        Iterator i = extraParameters.iterator();
+        Iterator<Entry<String, Object>> i = extraParameters.iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<String, Object> entry = i.next();
             params.put(entry.getKey(), entry.getValue());
         }
 

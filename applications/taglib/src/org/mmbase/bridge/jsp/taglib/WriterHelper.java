@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.91 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: WriterHelper.java,v 1.92 2007-03-02 21:01:15 nklasens Exp $
  */
 
 public class WriterHelper {
@@ -126,7 +126,7 @@ public class WriterHelper {
      * 'underscore' stack, containing the values for '_'.
      * @since MMBase_1.8
      */
-    private   Stack _Stack;
+    private   Stack<Object> _Stack;
     // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
@@ -320,7 +320,7 @@ public class WriterHelper {
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
                         // make a vector of size 1.
-                        Vector vector = new Vector();
+                        Vector<Object> vector = new Vector<Object>();
                         vector.add(v);
                         v = vector;
                     } else {
@@ -403,9 +403,9 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (Stack<Object>) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
-            _Stack = new Stack();
+            _Stack = new Stack<Object>();
             pushed = false;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }

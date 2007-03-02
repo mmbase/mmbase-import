@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.21 2007-02-24 21:58:52 nklasens Exp $
+ * @version $Id: EditTag.java,v 1.22 2007-03-02 21:01:15 nklasens Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -71,12 +71,12 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
                     ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
-                    List resources = taglibLoader.getResourceList(resource);
+                    List<URL> resources = taglibLoader.getResourceList(resource);
                     log.service("Reading edittag resources: " + resources);
-                    ListIterator i = resources.listIterator();
+                    ListIterator<URL> i = resources.listIterator();
                     while (i.hasNext()) {
                         try {
-                            URL u = (URL) i.next();
+                            URL u = i.next();
                             URLConnection con = u.openConnection();
                             if (con.getDoInput()) {
                                 log.debug("Reading edittag resource: " + u);
@@ -242,11 +242,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
     static class EditorDefinition {
-        private final Class clazz;
-        private final Map   params = new HashMap(); /* String -> String */
+        private final Class<?> clazz;
+        private final Map<String, String>   params = new HashMap<String, String>(); /* String -> String */
 
         public EditorDefinition(Element element) throws ClassNotFoundException {
-            Class c = null;
+            Class<?> c = null;
             org.w3c.dom.NodeList childNodes = element.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 if (childNodes.item(i) instanceof Element) {
