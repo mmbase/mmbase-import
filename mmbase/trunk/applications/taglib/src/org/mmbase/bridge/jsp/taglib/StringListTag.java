@@ -22,15 +22,15 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.34 2006-11-21 14:01:42 michiel Exp $
+ * @version $Id: StringListTag.java,v 1.35 2007-03-02 21:01:15 nklasens Exp $
  * @since MMBase-1.7
  */
 
 public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { 
     // need to extend NodeReferrer because of AliasListTag, no MI in java.
 
-    protected List returnList;
-    protected Iterator iterator;
+    protected List<String> returnList;
+    protected Iterator<String> iterator;
     protected int      currentItemIndex = -1;
 
     protected Attribute  max        = Attribute.NULL;
@@ -112,7 +112,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     /**
      * Creates the actual list of strings.
      */
-    protected List getList() throws JspTagException {
+    protected List<String> getList() throws JspTagException {
         throw new JspTagException("Should use 'referid' attribute on liststrings tag");
     }
 
@@ -128,10 +128,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
     }
 
-    /**
-     *
-     *
-     */
+    @SuppressWarnings("unchecked")
     public int doStartTag() throws JspTagException{
 
         collector = new ContextCollector(getContextProvider());
@@ -145,9 +142,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
                 throw new JspTagException("Context variable " + getReferid() + " is not a Collection");
             }
             if (o instanceof List) {
-                returnList = (List) o;
+                returnList = (List<String>) o;
             } else {
-                returnList = new ArrayList((Collection) o);
+                returnList = new ArrayList<String>((Collection<String>) o);
             }
             truncateList();
             if (getReferid().equals(getId())) { // in such a case, don't whine
@@ -158,13 +155,13 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
 
         if (getId() != null) {
-            returnList = new ArrayList(returnList);
+            returnList = new ArrayList<String>(returnList);
         }
         if (add != Attribute.NULL) {
             Object addObject = getObjectConditional(add.getString(this));
             if (addObject != null) {
                 if (addObject instanceof Collection) {
-                    returnList.addAll((Collection) addObject);
+                    returnList.addAll((Collection<String>) addObject);
                 } else {
                     returnList.add(Casting.toString(addObject));
                 }
@@ -174,7 +171,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             Object retainObject = getObjectConditional(retain.getString(this));
             if (retainObject != null) {
                 if (retainObject instanceof Collection) {
-                    returnList.retainAll((Collection) retainObject);
+                    returnList.retainAll((Collection<String>) retainObject);
                 } else {
                     returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
                 }
@@ -184,7 +181,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             Object removeObject = getObjectConditional(remove.getString(this));
             if (removeObject != null) {
                 if (removeObject instanceof Collection) {
-                    returnList.removeAll((Collection) removeObject);
+                    returnList.removeAll((Collection<String>) removeObject);
                 } else {
                     returnList.remove(Casting.toString(removeObject));
                 }

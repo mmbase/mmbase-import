@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.8 2007-03-02 21:01:15 nklasens Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -35,7 +35,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
 
     protected Attribute operator  = Attribute.NULL;
 
-    private List constraints;
+    private List<Constraint> constraints;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -60,10 +60,10 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         constraints.add(cons);
     }
 
-    private Constraint addConstraint(Query query, int op, List constraints) throws JspTagException {
+    private Constraint addConstraint(Query query, int op, List<Constraint> constraints) throws JspTagException {
         Constraint newConstraint = null;
-        for (Iterator i = constraints.iterator(); i.hasNext();) {
-            Constraint constraint = (Constraint) i.next();
+        for (Iterator<Constraint> i = constraints.iterator(); i.hasNext();) {
+            Constraint constraint = i.next();
             if (newConstraint == null) {
                 newConstraint = constraint;
             } else {
@@ -85,7 +85,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
     }
 
     public int doStartTag() throws JspTagException {
-        constraints = new ArrayList();
+        constraints = new ArrayList<Constraint>();
         return EVAL_BODY;
     }
 

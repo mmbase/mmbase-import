@@ -16,6 +16,7 @@ import java.util.Stack;
 
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.tree.ShrinkTag.Entry;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -45,7 +46,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.21 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: TreeTag.java,v 1.22 2007-03-02 21:01:15 nklasens Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -177,7 +178,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
      */
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        shrinkStack = new Stack();
+        shrinkStack = new Stack<Entry>();
         collector = new ContextCollector(getContextProvider());
 
         // serve parent timer tag:

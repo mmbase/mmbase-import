@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.24 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.25 2007-03-02 21:01:15 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -46,7 +46,7 @@ public class NodeProviderHelper implements NodeProvider {
      * 'underscore' stack, containing the values for '_node'.
      * @since MMBase_1.8
      */
-    private   Stack _Stack;
+    private   Stack<NodeChanger> _Stack;
     // whether this tag pushed something on the stack already.
     private   int pushed = 0;
 
@@ -132,9 +132,9 @@ public class NodeProviderHelper implements NodeProvider {
         }
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
+        _Stack = (Stack<NodeChanger>) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
         if (_Stack == null) {
-            _Stack = new Stack();
+            _Stack = new Stack<NodeChanger>();
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);

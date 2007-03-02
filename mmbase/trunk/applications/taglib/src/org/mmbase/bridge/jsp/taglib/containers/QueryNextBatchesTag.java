@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -56,7 +56,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
 
 
-    protected List getList() throws JspTagException {
+    protected List<String> getList() throws JspTagException {
         QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         int offset = query.getOffset();
@@ -71,7 +71,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         int totalSize = Queries.count(query);
 
         indexOffSet = offset / maxNumber + 1 + indexOffsetOffset.getInt(this, 0);
-        List resultList = new ArrayList();
+        List<String> resultList = new ArrayList<String>();
 
         int maxTotalSize = maxtotal.getInt(this, -1);
 
@@ -95,7 +95,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         while (offset + maxNumber < totalSize) {
             offset += maxNumber;
-            resultList.add(new Integer(offset));
+            resultList.add(String.valueOf(offset));
             if (maxSize > 0 && resultList.size() == maxSize) break;
         }
         return resultList;
