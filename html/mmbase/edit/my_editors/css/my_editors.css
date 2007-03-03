@@ -43,6 +43,7 @@ a:active { color: #D6E44B; }
 {
     border: 1px solid #c8cfd9;
     max-width: 1400px;
+    min-width: 670px;
 }
 
 #header
@@ -56,23 +57,25 @@ a:active { color: #D6E44B; }
 #crumbpath
 {
     background-color: #d4d4d4;
-    font-size: 0.85em;
+    font-size: 0.9em;
     padding: 1px 0 4px 12px;
     border-bottom: 1px solid #c8cfd9;
 }
 
 #content
 {
-    float: right;
-    width: 70%;
-    min-width: 420px;
+	float: right;
+	width: 70%;
+	min-width: 420px;
+	z-index: 9;
 }
 
 #sidebar
 {
     float: left;
     width: 30%;
-    min-width: 180px;
+    min-width: 240px;
+	z-index: 8;
 }
 
 /* to create space between columns */
@@ -87,11 +90,19 @@ a:active { color: #D6E44B; }
 
 .padcontent
 {
+    margin: 0;
     padding: 0 0 0 10px;
-    background-image: url(../img/schaduw.png);
+    background-image: url(../img/shadow.png);
     background-repeat: repeat-y;
     background-position: 0 0;
-    margin-bottom: 10px;
+}
+
+.padfoot
+{
+	background-image: url(../img/shadow-foot.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	height: 12px;
 }
 
 #footer
@@ -374,7 +385,6 @@ textarea
     border-bottom: 1px solid #c8cfd9;
 }
 
-#results caption { /*font-size: 1.2em;*/ }
 #results th { border-bottom: 1px solid #c8cfd9; }
 
 #results th, #results td
@@ -512,15 +522,7 @@ label.rel
     width: 24px;
 }
 
-#relate { /*border: 1px solid #c8cfd9;*/ }
-
-#relate h2
-{
-    padding-left: 12%;
-    clear: both;
-    background-color: #ccc;
-}
-
+#relate .firstrow {	border-top: 1px solid #c8cfd9; }
 #relate h3 { margin-left: 12%; }
 #relate label strong { display: block; }
 
@@ -530,8 +532,8 @@ label.rel
     margin-left: 12%;
 }
 
-#search label { font-weight: bold; }
 
+#search label { font-weight: bold; }
 #search
 {
     border-bottom: 1px solid #c8cfd9;
@@ -553,22 +555,67 @@ label a:hover { cursor: help; }
     -moz-border-radius: 14px;
 }
 
-#config
+.config .padsidebar
 {
-	border-bottom: 1px solid #ccc;
-	padding: 1em;
+	border: 0;
+	padding-top: 4px;
 }
 
-#config h2
-{
-	margin: 0;
-	padding: 4px;
-}
-
-#config p
+.config h2
 {
 	margin: 0;
 	padding: 4px;
 }
 
-#config legend { display: none; }
+.config p
+{
+	margin: 0;
+	padding: 4px;
+}
+
+.config legend { display: none; }
+
+#config { padding: 1em; }
+#helpbox
+{
+	margin: 0 auto 5px auto;
+	width: 220px;
+	border: 1px solid #c8cfd9;
+	padding: 0;
+}
+
+#helpbox h3
+{
+	background: #ccc;
+	margin: 0;
+}
+
+#helpbox dl
+{
+	width: 180px;
+	float: left;
+	padding: 4px;
+	margin: 0;
+	display: inline; /* fixes some IE/Win bug */
+}
+#helpbox dt
+{
+	float: right;
+	width: 150px;
+	margin: 0;
+	padding: 0;
+	font-size: 1.1em;
+}
+#helpbox dd
+{
+	margin: 0 6px 0 0;
+	width: 24px;
+	padding: 0;
+	float: left;
+}
+#helpbox dd img { float: right; }
+#helpbox .stopfloat
+{
+	clear: both;
+	height: 1px;
+}

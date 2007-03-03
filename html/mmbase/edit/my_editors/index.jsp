@@ -122,6 +122,7 @@ function countRelations(input, response) {
   </div><!-- / .padsidebar -->
 </div><!-- / #sidebar -->
 <div id="content">
+<mm:present referid="ntype">
   <div class="padcontent">
   <!-- ### search and results ### -->
   <mm:compare referid="searchbox" value="after" inverse="true"><%@ include file="inc/searchbox.jsp" %></mm:compare>
@@ -140,6 +141,7 @@ function countRelations(input, response) {
 --%>
   </div><!-- / .padder -->
   <div class="padfoot">&nbsp;</div>
+</mm:present>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->
