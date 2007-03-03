@@ -2,6 +2,7 @@
 <mm:content type="text/html" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="nr" escape="text/html,trimmer" />  <%-- the node we're going to edit --%>
+<mm:import id="nr" reset="true"><mm:node number="$nr"><mm:field name="number" /></mm:node></mm:import>
 <mm:import externid="pagetitle">Edit <mm:node number="$nr" notfound="skipbody"><mm:nodeinfo type="type" id="ntype" /></mm:node> node</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
@@ -39,10 +40,10 @@
     <mm:import id="searchdir" jspvar="searchdir" reset="true">destination</mm:import>
     <%@ include file="inc/relations.jsp" %>
     <mm:present referid="rel">
-	  <script type="text/javascript">
-	  toggle('edit_<mm:write referid="rel" />');
-	  </script>
-	</mm:present>
+      <script type="text/javascript">
+      toggle('edit_<mm:write referid="rel" />');
+      </script>
+    </mm:present>
   </mm:node>
   </div><!-- / .padsidebar -->
 </div><!-- / #sidebar -->
