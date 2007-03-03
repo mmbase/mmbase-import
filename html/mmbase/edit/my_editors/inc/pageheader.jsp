@@ -11,7 +11,7 @@
     <ul>
       <li><a class="top-links" href="index.jsp">home</a> -</li>
       <li><a class="top-links" href="tools.jsp">tools</a> -</li>
-      <li><a class="top-links" href="config.jsp">configure</a> -</li>
+      <li><a class="top-links" href="config.jsp">configure &amp; help</a> -</li>
       <li>logged on as:  <%= cloud.getUser().getIdentifier() %> (rank: <%= cloud.getUser().getRank() %>) -</li>
       <li><a href="logout.jsp">log out</a></li>
     </ul>

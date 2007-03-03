@@ -6,10 +6,62 @@
 <head>
   <%@ include file="inc/head.jsp" %>
 </head>
-<body>
+<body class="config">
 <div id="frame">
 <%@ include file="inc/pageheader.jsp" %>
 <div id="sidebar">
+<div class="padsidebar">
+  <div id="helpbox">
+  <h3>About the icons</h3>
+  <dl>
+	<dt>new object</dt>
+	<dd><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>delete object</dt>
+	<dd><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>edit object</dt>
+	<dd><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>relate object as a child</dt>
+	<dd><img src="img/mmbase-relleft.png" alt="relate child" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>relate object as a parent</dt>
+	<dd><img src="img/mmbase-relright.png" alt="relate parent" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>up</dt>
+	<dd><img src="img/mmbase-up.png" alt="up" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>down</dt>
+	<dd><img src="img/mmbase-down.png" alt="down" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>left</dt>
+	<dd><img src="img/mmbase-left.png" alt="left" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>right</dt>
+	<dd><img src="img/mmbase-right.png" alt="right" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>ok</dt>
+	<dd><img src="img/mmbase-ok.png" alt="ok" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>help</dt>
+	<dd><img src="img/mmbase-help.png" alt="help" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>home</dt>
+	<dd><img src="img/mmbase-home.png" alt="home" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>cancel action</dt>
+	<dd><img src="img/mmbase-cancel.png" alt="cancel" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>reload</dt>
+	<dd><img src="img/mmbase-reload.png" alt="reload" width="21" height="20" /></dd>
+  </dl><dl>
+	<dt>search</dt>
+	<dd><img src="img/mmbase-search.png" alt="search" width="21" height="20" /></dd>
+  </dl>
+  <div class="stopfloat">&nbsp;</div>
+  </div><!-- /#helpbox -->
+</div><!-- /.padsidebar -->
 </div><!-- / #sidebar -->
 <div id="content">
   <div class="padcontent">
