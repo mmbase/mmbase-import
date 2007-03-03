@@ -26,12 +26,12 @@
     </thead>
     <tbody>
     <mm:notpresent referid="delete">
-	  <mm:node number="$nr">
-	  <tr>
-		<td class="name"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.png" alt="edit object" width="21" height="20" /></a></mm:maywrite></td>
-		<td>Edit the node</td>
-	  </tr>
-	  </mm:node>
+      <mm:node number="$nr">
+      <tr>
+        <td class="name"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.png" alt="edit object" width="21" height="20" /></a></mm:maywrite></td>
+        <td>Edit the node</td>
+      </tr>
+      </mm:node>
     </mm:notpresent>
     <mm:present referid="delete">
       <tr>
@@ -53,8 +53,8 @@
       <fieldset>
       <div class="firstrow">
         <strong># <mm:field name="number" /></strong>
-		<mm:maywrite><a href="<mm:url page="edit_object.jsp" referids="nr" />" title="edit node"><img src="img/mmbase-edit.png" alt="edit object" width="21" height="20" /></a></mm:maywrite>
-		<h2>Delete node <mm:function name="gui" /> (<mm:nodeinfo type="type" />)</h2>
+        <mm:maywrite><a href="<mm:url page="edit_object.jsp" referids="nr" />" title="edit node"><img src="img/mmbase-edit.png" alt="edit object" width="21" height="20" /></a></mm:maywrite>
+        <h2>Delete node <mm:function name="gui" /> (<mm:nodeinfo type="type" />)</h2>
       </div>  
       <mm:fieldlist type="edit">
         <div class="row">
@@ -78,17 +78,17 @@
       <mm:maydelete>
       <mm:import id="nr_relations" jspvar="nr_rels" vartype="String"><mm:countrelations /></mm:import>
       <div class="lastrow">
-		<% 
-		int nr_rel = Integer.parseInt(nr_rels);
-		if (nr_rel > 0) { 
-		%>
-		  <p class="message">This node has <%= nr_rel %> relation(s) with other node(s).</p>
-		  <input type="submit" name="delete" value="Delete_with_relations" />
-		<% } else { %>
-		  <input type="submit" name="delete" value="Delete" />
-		<% } %>
-		</mm:maydelete>
-		<mm:maydelete inverse="true"><p class="message">You are not allowed to delete this node.</p></mm:maydelete>
+        <% 
+        int nr_rel = Integer.parseInt(nr_rels);
+        if (nr_rel > 0) { 
+        %>
+          <p class="message">This node has <%= nr_rel %> relation(s) with other node(s).</p>
+          <input type="submit" name="delete" value="Delete_with_relations" />
+        <% } else { %>
+          <input type="submit" name="delete" value="Delete" />
+        <% } %>
+        </mm:maydelete>
+        <mm:maydelete inverse="true"><p class="message">You are not allowed to delete this node.</p></mm:maydelete>
       </div>
       </fieldset>
     </form>
@@ -103,16 +103,17 @@
     </div>
     <div class="row">
       <div class="message">
-		The node of type <b><mm:nodeinfo type="guitype" nodetype="$ntype" /></b> (<mm:write referid="ntype" />) is deleted.<br />
-		<a href="<mm:url page="index.jsp" referids="ntype" />" title="back to the overview of <mm:write referid="ntype" />"><img src="img/mmbase-left.png" alt="go back" width="21" height="20" /></a>
-		Back to the <a href="<mm:url page="index.jsp" referids="ntype" />">overview of <mm:write referid="ntype" /></a>.
+        The node of type <b><mm:nodeinfo type="guitype" nodetype="$ntype" /></b> (<mm:write referid="ntype" />) is deleted.<br />
+        <a href="<mm:url page="index.jsp" referids="ntype" />" title="back to the overview of <mm:write referid="ntype" />"><img src="img/mmbase-left.png" alt="go back" width="21" height="20" /></a>
+        Back to the <a href="<mm:url page="index.jsp" referids="ntype" />">overview of <mm:write referid="ntype" /></a>.
       </div>
     </div>
     
   </mm:present>
   </div><!-- / #node-->
   
-  </div><!-- / .padder -->
+  </div><!-- / .padcontent -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->

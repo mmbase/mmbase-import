@@ -79,8 +79,8 @@
       </mm:present>
       <div class="message">    
         <h4>
-		  Your new node <mm:function name="gui" /> (<mm:field name="number" />) is saved
-		  <a onclick="toggleTwo('newnode','editnewnode');return false;" href="#" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
+          Your new node <mm:function name="gui" /> (<mm:field name="number" />) is saved
+          <a onclick="toggleTwo('newnode','editnewnode');return false;" href="#" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
         </h4>
         <mm:present referid="new_alias"><mm:compare referid="new_alias" value="" inverse="true"><p>With alias '<mm:write referid="new_alias" />'</p></mm:compare></mm:present>
       </div>
@@ -89,18 +89,20 @@
       </mm:notpresent>
     </mm:node>
     
+    <%-- display new node --%>
     <mm:node referid="new_node">
       <div id="newnode">
-		<mm:fieldlist type="list">
-		  <div class="row">
-			<label for="mm_<mm:fieldinfo type="name" />">
-			  <strong><mm:fieldinfo type="guiname" /></strong>
-			  <a onmouseover="toggle('descr_<mm:fieldinfo type="name" />');return false;" onmouseout="toggle('descr_<mm:fieldinfo type="name" />');return false;"><mm:fieldinfo type="name" /></a>
-			</label>
-			<span class="content"><mm:fieldinfo type="guivalue" /></span>
-			<div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
-		  </div>
-		</mm:fieldlist>
+        <mm:fieldlist type="list">
+          <div class="row">
+            <label for="mm_<mm:fieldinfo type="name" />">
+              <strong><mm:fieldinfo type="guiname" /></strong>
+              <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a>
+            </label>
+            <span class="content"><mm:fieldinfo type="guivalue" /></span>
+            <div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
+          </div>
+        </mm:fieldlist>
+        <div class="lastrow">&nbsp;</div>
       </div>
       
       <%-- showing the new node to edit --%>
@@ -112,7 +114,7 @@
           <div class="row">
             <label for="mm_<mm:fieldinfo type="name" />">
               <strong><mm:fieldinfo type="guiname" /></strong>
-              <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />', event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />');return false;"><mm:fieldinfo type="name" /></a>
+              <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a>
             </label>
             <span class="content"><mm:fieldinfo type="input" /></span>
             <div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
@@ -168,7 +170,8 @@
   </mm:notpresent><%-- /the_relation --%>
 </div><!-- / #node -->
   
-  </div><!-- / .padder -->
+  </div><!-- / .padcontent -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->
