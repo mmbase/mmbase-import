@@ -4,7 +4,6 @@
 <mm:present referid="rnr">
 <mm:present referid="rkind">
   <div class="firstrow">
-    <a href="asd"><img src="img/mmbase-relright.png" alt="edit" width="21" height="20" /></a>
     <h2>Objects related</h2>
   </div>
   <mm:compare referid="dir" value="source">

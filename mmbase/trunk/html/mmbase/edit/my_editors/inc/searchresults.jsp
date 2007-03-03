@@ -33,7 +33,7 @@
 	<th scope="col"><mm:fieldinfo type="guiname" /></th>
 	</mm:fieldlist>
 	<th class="icon">
-	  <mm:maycreate type="$ntype"><a href="<mm:url page="new_object.jsp" referids="ntype" />" title="a new node of this type"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a></mm:maycreate>
+	  <mm:maycreate type="$ntype"><a href="<mm:url page="new_object.jsp" referids="ntype,nr?,rkind?,dir?" />" title="a new node of this type"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a></mm:maycreate>
 	</th>
   </tr>
 
