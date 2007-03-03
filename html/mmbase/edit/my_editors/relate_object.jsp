@@ -49,13 +49,14 @@
   <div class="padcontent">
   
   <%@ include file="inc/relating.jsp" %>
-  
   <mm:notpresent referid="rnr">
-    <!-- ### results ### --><%@ include file="inc/searchresults.jsp" %><!-- ### /results ###-->
-    <!-- ### search ### --><%@ include file="inc/searchbox.jsp" %><!-- ### /search ### -->
+	<mm:compare referid="searchbox" value="after" inverse="true"><%@ include file="inc/searchbox.jsp" %></mm:compare>
+	<%@ include file="inc/searchresults.jsp" %>
+	<mm:compare referid="searchbox" value="after"><%@ include file="inc/searchbox.jsp" %></mm:compare>
   </mm:notpresent>
   
   </div><!-- / .padcontent -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->

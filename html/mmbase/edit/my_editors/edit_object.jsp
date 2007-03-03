@@ -105,7 +105,8 @@
 </div><!-- / #node -->
 </mm:node>
 
-  </div><!-- / .padder -->
+  </div><!-- / .padcontent -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <mm:notpresent referid="nodefound">Node not found.</mm:notpresent>
 <%@ include file="inc/footer.jsp" %>

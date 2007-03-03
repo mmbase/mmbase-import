@@ -14,6 +14,7 @@
 <div id="content">
   <div class="padcontent">
 <div id="config">
+
 <%-- read defaults or configuration --%>
 <mm:import externid="max_items" vartype="Integer"><mm:write referid="max" /></mm:import>
 <mm:import externid="max_days" vartype="Integer"><mm:write referid="days" /></mm:import>
@@ -21,7 +22,6 @@
 <mm:import externid="search_box"><mm:write referid="searchbox" /></mm:import>
 
 <mm:import externid="savethis" />
-
 <mm:present referid="savethis">
   <mm:write cookie="my_editors_maxitems" referid="max_items" />
   <mm:write cookie="my_editors_maxdays"  referid="max_days" />
@@ -75,6 +75,7 @@
 
 	</div><!-- / #config -->  
   </div><!-- / .padcontent -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->

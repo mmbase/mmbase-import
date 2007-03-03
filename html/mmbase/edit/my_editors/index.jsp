@@ -78,39 +78,39 @@ function countRelations(input, response) {
     </tr>
     </thead>
     <tbody>
-	  
-	  <%-- all nodetypes --%>
-	  <mm:import vartype="List" id="typelist" />
-	  <mm:listnodescontainer type="typedef">
-		<mm:sortorder field="name" />
-		<mm:listnodes>
-		  <mm:import id="name" reset="true"><mm:field name="name" /></mm:import>
-		  <mm:import id="dnumber" reset="true">no</mm:import>
-		  <mm:fieldlist nodetype="$name" type="create">
-			<mm:fieldinfo type="name" id="fldname" write="false" />
-			<mm:compare referid="fldname" value="dnumber"><%-- test for fieldname dnumber --%>
-			  <mm:import id="dnumber" reset="true">yes</mm:import>
-			</mm:compare>
-		  </mm:fieldlist>
-		  <%-- import typedefs --%>
-		  <mm:compare referid="list" value="all" inverse="true">			
-			<mm:compare referid="dnumber" value="no"><%-- import only without dnumber --%>
-			  <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
-			</mm:compare>
-		  </mm:compare>
-		  <mm:compare referid="list" value="all"><%-- import all typedefs --%>
-			  <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
-		  </mm:compare>
-		</mm:listnodes>
-	  </mm:listnodescontainer>
+      
+      <%-- all nodetypes --%>
+      <mm:import vartype="List" id="typelist" />
+      <mm:listnodescontainer type="typedef">
+        <mm:sortorder field="name" />
+        <mm:listnodes>
+          <mm:import id="name" reset="true"><mm:field name="name" /></mm:import>
+          <mm:import id="dnumber" reset="true">no</mm:import>
+          <mm:fieldlist nodetype="$name" type="create">
+            <mm:fieldinfo type="name" id="fldname" write="false" />
+            <mm:compare referid="fldname" value="dnumber"><%-- test for fieldname dnumber --%>
+              <mm:import id="dnumber" reset="true">yes</mm:import>
+            </mm:compare>
+          </mm:fieldlist>
+          <%-- import typedefs --%>
+          <mm:compare referid="list" value="all" inverse="true">            
+            <mm:compare referid="dnumber" value="no"><%-- import only without dnumber --%>
+              <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
+            </mm:compare>
+          </mm:compare>
+          <mm:compare referid="list" value="all"><%-- import all typedefs --%>
+              <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
+          </mm:compare>
+        </mm:listnodes>
+      </mm:listnodescontainer>
 
       <mm:listnodes referid="typelist">
-		<mm:import id="name" reset="true"><mm:field name="name" /></mm:import>
+        <mm:import id="name" reset="true"><mm:field name="name" /></mm:import>
         <tr <mm:odd>class="odd"</mm:odd><mm:even>class="even"</mm:even>>
           <td class="right"><mm:write referid="name" /></td>
           <td>
             <a href="index.jsp?ntype=<mm:write referid="name" />" title="List <mm:nodeinfo type="guitype" nodetype="$name" /> nodes"><mm:nodeinfo type="guitype" nodetype="$name" /></a>
-		  </td>
+          </td>
           <td>
             <mm:maycreate type="$name"><a href="new_object.jsp?ntype=<mm:write referid="name" />" title="Create a new <mm:nodeinfo type="guitype" nodetype="$name" /> node"><img src="img/mmbase-new.png" alt="new node" width="21" height="20" /></a></mm:maycreate>
           </td>
@@ -119,7 +119,7 @@ function countRelations(input, response) {
 
     </tbody>
     </table>
-  </div><!-- / .padder -->
+  </div><!-- / .padsidebar -->
 </div><!-- / #sidebar -->
 <div id="content">
   <div class="padcontent">
@@ -139,6 +139,7 @@ function countRelations(input, response) {
 </ul>
 --%>
   </div><!-- / .padder -->
+  <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->
