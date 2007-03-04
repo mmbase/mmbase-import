@@ -11,8 +11,8 @@ import org.mmbase.util.logging.Logging;
 /**
  * Some class
  *
- * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
+ * @version $Id: FriendlyLink.java,v 1.2 2007-03-04 21:06:07 andre Exp $
  */
 abstract public class FriendlyLink {
     private static final Logger log = Logging.getLoggerInstance(FriendlyLink.class);
@@ -29,9 +29,11 @@ abstract public class FriendlyLink {
 //    }
     
     /**
-     * Reads the configuration
+     * Configure method parses a DOM element passed by UrlFilter with the configuration
+     * that is specific for this type of friendlylink.
      *
-     * @return 
+     * @param  element  The DOM element friendlylink from 'friendlylinks.xml' 
+     *
      */
     protected abstract void configure(Element el);
 
