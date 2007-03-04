@@ -26,9 +26,9 @@ import org.mmbase.util.logging.Logging;
  * The filtering and conversion to a URL pointing to an existing JSP template is 
  * done by UrlConverter.
  *
- * @author Finalist IT Group / peter
+ * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @version $Id: UrlFilter.java,v 1.3 2007-03-04 21:06:07 andre Exp $
  */
 
 public class UrlFilter implements Filter, MMBaseStarter  {
@@ -74,7 +74,7 @@ public class UrlFilter implements Filter, MMBaseStarter  {
     }
 
     public void setInitException(ServletException se) {
-        // never mind, simply, ignore
+        // never mind, simply ignore
     }
 
 	/**

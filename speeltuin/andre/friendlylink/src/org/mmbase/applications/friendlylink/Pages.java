@@ -11,10 +11,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Converts ugly links
+ * Converts ugly technical links to friendlier links and converts them back to the original
+ * technical url.
  *
- * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
+ * @version $Id: Pages.java,v 1.6 2007-03-04 21:06:07 andre Exp $
  */
 public class Pages extends FriendlyLink {
 
@@ -23,14 +24,14 @@ public class Pages extends FriendlyLink {
     private final LocalizedString description = null;
 
     public static String SEPARATOR = "/";
-    public final static String PAGE_EXTENSION = ".html";    // page ext that should be appended
+    public final static String PAGE_EXTENSION = ".html";    // page ext that could be appended
     public static String PAGE_PARAM = "nr";
     
     /**
      * Configure method parses a DOM element passed by UrlFilter with the configuration
      * that is specific for this type of friendlylink
      *
-     * @param  element  A DOM element from 'friendlylinks.xml' 
+     * @param  element  The DOM element friendlylink from 'friendlylinks.xml' 
      *
      */
     protected void configure(Element element) {
@@ -40,6 +41,27 @@ public class Pages extends FriendlyLink {
         String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(descrElement);
         
         log.debug("Found the description: " + description);
+
+        org.w3c.dom.NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element childElement = (Element) childNodes.item(i);
+                if (childElement.getLocalName().equals("class")) {
+                    String className = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
+                    // c = Class.forName(className);
+                }  else if (childElement.getLocalName().equals("parameter")) {
+                    String name = childElement.getAttribute("name");
+                    String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
+                    log.debug("Found parameter name '" + name + "' and value '" + value + "'");
+                    //if (params.put(name, value) != null) {
+                    //    log.error("Parameter '" + name + "' is defined more than once in " + XMLWriter.write(element, true));
+                    //}
+
+                }
+            }
+        }
+
+
     }
 
     /**
@@ -104,7 +126,7 @@ public class Pages extends FriendlyLink {
             
             flink = new StringBuffer();         // overwrite
             // flink.append(contextpath).append(SEPARATOR).append(friendlyUrl);
-            flink.append(friendlyUrl);                        // NO CONTEXT !!
+            flink.append(friendlyUrl);                        // NO CONTEXT !! leave that to <mm:url />
             flink.append(PAGE_EXTENSION);       // appending .html at the end
             
             // TODO: check if this friendlylink already exists in cache and change it?
@@ -113,7 +135,7 @@ public class Pages extends FriendlyLink {
                 
                 flink = new StringBuffer();			// overwrite again
             	flink.append(friendlyUrl).append("_").append(pagenr);
-            	flink.append(PAGE_EXTENSION);       // appending .html at the end
+            	if (!"".equals(PAGE_EXTENSION)) flink.append(PAGE_EXTENSION);       // appending .html at the end
             }
             
             cache.putURLEntry(jspUrl, flink.toString());
@@ -122,7 +144,9 @@ public class Pages extends FriendlyLink {
             if (log.isDebugEnabled()) log.debug("Created 'userfriendly' link: " + flink.toString());
         }
         
-        if (log.isDebugEnabled()) log.debug("Returning flink: " + flink.toString());
+        // should append / to beginning !
+        flink.insert(0, "/");
+        // if (log.isDebugEnabled()) log.debug("Returning flink: " + flink.toString());
         return flink.toString();
     }
     
@@ -221,18 +245,29 @@ public class Pages extends FriendlyLink {
      * @return  technical link
      */
     public String convertToJsp(String flink, String params) {
-        if (log.isDebugEnabled()) log.debug("Trying to find '" + flink + "'");
+        if (log.isDebugEnabled()) log.debug("Trying to find a technical url for '" + flink + "'");
         
         StringBuffer jspurl = new StringBuffer();
         jspurl.append(flink);
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         UrlCache cache = UrlConverter.getCache();
         
+        StringTokenizer st = new StringTokenizer(flink, "/");
+        String title = "";
+        int tokens = st.countTokens();
+        while (st.hasMoreTokens()) {
+            title = st.nextToken();
+            log.debug("token '" + title + "' of " + tokens + " tokens");
+        }
+        
+        if (title.indexOf(PAGE_EXTENSION) > -1) title = title.substring(0, title.indexOf(PAGE_EXTENSION));
+        
+/*        
         String title = "";
         title = flink.substring(flink.lastIndexOf("/") + 1, flink.length() - 5);
         title = title.toLowerCase();
         if (log.isDebugEnabled()) log.debug("title: " + title);
-        
+*/        
         NodeManager nm = cloud.getNodeManager("pages");
         org.mmbase.bridge.NodeList nl = nm.getList("LOWER(title) = '" + title + "'", null, null);
         if (nl.size() > 0) {
@@ -240,7 +275,7 @@ public class Pages extends FriendlyLink {
             String number = n.getStringValue("number");
             
             if (log.isDebugEnabled()) {
-                log.debug("Found a node with number '" + number + "' having this friendlylink as a 'title'." );
+                log.debug("Found a node with number '" + number + "' having this friendlylink as a title." );
             }
             
             // TODO: checken met getRootPath(cloud, pagenr)

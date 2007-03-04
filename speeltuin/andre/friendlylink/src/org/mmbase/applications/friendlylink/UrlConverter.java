@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBaseContext;
  * TODO: Create a method to be called at initialization of webapp to fill the cache with links
  * 
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @version $Id: UrlConverter.java,v 1.3 2007-03-04 21:06:07 andre Exp $
  */
 public class UrlConverter {
 
@@ -64,7 +64,7 @@ public class UrlConverter {
     /**
     * Converts a 'userfriendly' URL into a technical URL (like f.e. 'index.jsp').
     * It first consults the cache, if not found consults the map with FriendlyLinks to 
-    * try to map the friendlylink to a js.
+    * try to map the friendlylink to a jsp.
     *
     * @param contextpath the webapp context
     * @param flink    contains the URL to be converted

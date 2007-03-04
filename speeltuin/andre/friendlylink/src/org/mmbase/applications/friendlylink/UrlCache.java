@@ -14,9 +14,9 @@ import org.mmbase.util.logging.Logging;
  * Added methods to check if a certain cache entry exists.
  * It depends on the MMBase OSCache application.
  *
- * @author Finalist IT Group / peter
+ * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @version $Id: UrlCache.java,v 1.3 2007-03-04 21:06:07 andre Exp $
  */
 
 public class UrlCache {
