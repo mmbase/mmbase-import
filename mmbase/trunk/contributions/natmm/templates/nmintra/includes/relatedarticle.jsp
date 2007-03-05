@@ -19,7 +19,7 @@
     ><mm:list nodes="<%= paginaID %>" path="pagina,gebruikt,paginatemplate"
         ><mm:field name="pagina.titel_fra" jspvar="showDate" vartype="String" write="false"
         ><mm:field name="paginatemplate.url" jspvar="template" vartype="String" write="false"><%
-            if(template.indexOf("info.jsp")>-1||template.indexOf("calendar.jsp")>-1) {
+            if(template.indexOf("homepage.jsp")>-1||template.indexOf("info.jsp")>-1||template.indexOf("calendar.jsp")>-1) {
                 %><%@include file="../includes/poolanddate.jsp" %><%
             } 
         %></mm:field
