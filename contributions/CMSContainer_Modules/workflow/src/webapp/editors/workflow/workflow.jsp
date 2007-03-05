@@ -310,7 +310,9 @@
       <%@include file="../pages.jsp" %>
    </mm:last>
 </mm:list>
-
+<c:set var="remark">
+	<fmt:message key="workflow.action.reject.remark"/>
+</c:set>
 &nbsp;&nbsp;&nbsp; <input type="checkbox" name="checkAll" onClick="checkAllElement(this, '')"/>
           <input type="hidden" name="actionvalue" value=""/>
              <input type='hidden' id="remark" name="remark" value="[unchanged-item]" />
@@ -319,18 +321,18 @@
              <input name="action" value="<fmt:message key="workflow.action.finish" />" onclick="setActionValue('finish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'finished' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
              <c:if test="${acceptedEnabled}">
              <input name="action" value="<fmt:message key="workflow.action.accept" />" onclick="setActionValue('accept')" type="submit"/>
              </c:if>
              <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="setActionValue('publish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'approved' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
              <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="setActionValue('publish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'published' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
           </c:if>
        </form>
 
