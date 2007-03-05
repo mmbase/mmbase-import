@@ -18,8 +18,7 @@ if(javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("weblog.jsp")>0) 
 // Articles: when posrel.pos should be 1 or 7, imgFormat has to be "rightcolumn" to show the image
 // Teasers and shorties: when imgFormat is "half_shorty" the image should be scalled to 50% of the columnwidth
 
-boolean imagePartOfColumn = !(imgFormat.equals("rightcolumn")) || (posrel_pos.equals("1") || posrel_pos.equals("7"));
-
+boolean imagePartOfColumn = imgFormat.equals("rightcolumn") ^ !(posrel_pos.equals("1") || posrel_pos.equals("7"));
 boolean isShortyOrTeaserImage = imgFormat.indexOf("shorty")>-1;
 boolean fitToThirdColumn = imgFormat.indexOf("fittothirdcolumn")>-1;
 

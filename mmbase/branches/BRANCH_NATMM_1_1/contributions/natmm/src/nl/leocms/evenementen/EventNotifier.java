@@ -68,7 +68,7 @@ public class EventNotifier implements Runnable {
       while(uNodes.hasNext()) {
          String emailAddress = uNodes.nextNode().getStringValue(emailField);
          if(emailAddress!=null&&!emailAddress.equals("")) {
-            emailNode.setValue("to", "ibrahim@finalist.com");
+            emailNode.setValue("to", emailAddress);
             emailNode.commit();
             emailNode.getValue("mail(oneshotkeep)");
             nEmailSend++;
