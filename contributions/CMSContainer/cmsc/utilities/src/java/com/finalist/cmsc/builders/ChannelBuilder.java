@@ -119,9 +119,12 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
 
     private String convertToFragment(String name) {
         String pathFragment = EncodingUtil.convertNonAscii(name);
-        pathFragment = pathFragment.replaceAll("\\s", "_");
+        pathFragment = pathFragment.replaceAll("\\s", "_");        
+        while (pathFragment.length() > 1 && pathFragment.substring(0, 1).matches("[_.-]") ) {        	
+        	pathFragment = pathFragment.substring(1, pathFragment.length());        	
+        }
         pathFragment = pathFragment.replaceAll("[^a-zA-Z_0-9_.-]", "");
-        pathFragment = pathFragment.toLowerCase();
+        pathFragment = pathFragment.toLowerCase();        
         return pathFragment;
     }
 
