@@ -45,14 +45,14 @@ function checkAllBoolean(what, type) {
    }
 }
 
-function setActionValue(value, status) {
+function setActionValue(value, status, remark) {
    if (submitValid(true)) {
       document.forms[0].actionvalue.value=value;
       if(status) {
         document.forms[0].status.value=status;
       }
       if (value == 'reject') {
-         var comment = prompt("Opmerking ?","");
+         var comment = prompt(remark,"");
          if (comment == null) {
             return false;
          }
