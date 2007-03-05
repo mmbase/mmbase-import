@@ -97,6 +97,7 @@ public class MembershipForm extends ActionForm {
    private String dayofbirthDate;
    private int dayofbirthMonth;
    private String dayofbirthYear;
+   private ArrayList streets;		// used to extract multiple streets for one zip code
 
    TreeMap zipCodeMap;
 
@@ -107,6 +108,7 @@ public class MembershipForm extends ActionForm {
          zipCodeMap = (TreeMap) application.getAttribute("zipCodeMap");
          if(zipCodeMap==null) {
             (new CSVReader(CSVReader.ONLY_ZIPCODELOAD)).run();
+            zipCodeMap = (TreeMap) application.getAttribute("zipCodeMap");
          }
       }
       return country_code!=null && country_code.equals(DEFAULT_COUNTRY) && (zipCodeMap!=null);
@@ -170,13 +172,32 @@ public class MembershipForm extends ActionForm {
    public String getLastname() { return lastname; }
    public void setLastname(String lastname) { this.lastname = SubscribeForm.cleanName(lastname); }
 
+   /*
    public String getStreet() {
       if(assertZipCodeMap()) {
          street = CSVReader.getStreet(zipCodeMap, zipcode, street);
       }
       return street;
    }
+   */
+   public String getStreet() {
+	      return street;
+	   }
    public void setStreet(String street) { this.street = street.toUpperCase(); }
+
+   /**
+    * Returns all streets for the zip code specified in this object.
+    * 
+    * @return All streets for a passed zip code or an empty arraylist if none can be found
+    */
+   public ArrayList getStreets() {
+	   if(assertZipCodeMap()) {
+		   return CSVReader.getStreets(zipCodeMap, zipcode, street);
+	   }
+	   return new ArrayList();
+   }
+   public void setStreets(Object streets) { }
+   
 
    public String getHousenumber() { return housenumber; }
    public void setHousenumber(String housenumber) { this.housenumber = housenumber; }

@@ -3,6 +3,9 @@
 %><script>
 <%= "<!--" %>
 function postIt(searchtype) {
+
+
+
 var href = "?p=<%= paginaID %>&pst=";
 var nums = '';
 if(searchtype != 'clear' ) {
@@ -16,15 +19,16 @@ if(searchtype != 'clear' ) {
             String formulierveld_number = thisFormField.getStringValue("number");
 				String formulierveld_else = thisFormField.getStringValue("label_eng");
             if(formulierveld_type.equals("6")) { // *** date ***
-            %> var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_day"].value);
+            %> var answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_day"].value);
                if(answer != '') {
                   href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_day=" + answer;
                }
-               var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_month"].value);
+               var answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_month"].value);
                if(answer != '') {
                   href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_month=" + answer;
                }
-               var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_year"].value);
+               var answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_year"].value);
+               
                if(answer != '') {
                   href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_year=" + answer;
             }
@@ -32,13 +36,15 @@ if(searchtype != 'clear' ) {
             } else if(formulierveld_type.equals("5")) { // *** check boxes ***
                %> var else_answer = '';<% 
 					if (formulierveld_else.equals("1")){
-						 %>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+						 %>else_answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
 					} %>
 						if (else_answer != ''){
+						
 							href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_else=" + else_answer;
 						}
 						<mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
-                  var answer = document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />;
+                  var answer = toUtf(document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />);
+                
                   if(answer.checked) {
   	                  href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />=" + answer.value;
 							if (nums != '') { nums += ','; }
@@ -46,7 +52,8 @@ if(searchtype != 'clear' ) {
 						}
                </mm:related><%
             } else if(formulierveld_type.equals("4")) { // *** radio buttons ***
-            %> var answer = document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>;
+            %> var answer = toUtf(document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>);
+            
 					var flag = false;
                for (var i=0; i < answer.length; i++){
                   if(answer[i].checked) {
@@ -65,8 +72,9 @@ if(searchtype != 'clear' ) {
                }
 					var else_answer = '';<% 
    				if (formulierveld_else.equals("1")) {
-						%>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+						%>else_answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
 					} %>
+					
 					if (else_answer != '') {
 						if (flag){
 							href += ", " + else_answer;
@@ -78,11 +86,12 @@ if(searchtype != 'clear' ) {
 
             else if(formulierveld_type.equals("1")||formulierveld_type.equals("2")||formulierveld_type.equals("3")) {
             // *** textarea, textline, dropdown ***
-             %>var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>"].value);
+             %>var answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>"].value);
 					var else_answer = '';<% 
    				if (formulierveld_else.equals("1")) {
-						%>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+						%>else_answer = toUtf(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
 					} %>
+					
 					if ((else_answer != '') || (answer != '')){
 						href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=";
 						if (answer != ''){
@@ -124,6 +133,50 @@ function handleEnter (field, event) {
 	} 
 	else
 	return true;
+}
+
+function utf8(wide) {
+  var c, s;
+  var enc = "";
+  var i = 0;
+  while(i<wide.length) {
+    c= wide.charCodeAt(i++);
+    // handle UTF-16 surrogates
+    if (c>=0xDC00 && c<0xE000) continue;
+    if (c>=0xD800 && c<0xDC00) {
+      if (i>=wide.length) continue;
+      s= wide.charCodeAt(i++);
+      if (s<0xDC00 || c>=0xDE00) continue;
+      c= ((c-0xD800)<<10)+(s-0xDC00)+0x10000;
+    }
+    // output value
+    if (c<0x80) enc += String.fromCharCode(c);
+    else if (c<0x800) enc += String.fromCharCode(0xC0+(c>>6),0x80+(c&0x3F));
+    else if (c<0x10000) enc += String.fromCharCode(0xE0+(c>>12),0x80+(c>>6&0x3F),0x80+(c&0x3F));
+    else enc += String.fromCharCode(0xF0+(c>>18),0x80+(c>>12&0x3F),0x80+(c>>6&0x3F),0x80+(c&0x3F));
+  }
+  return enc;
+}
+
+var hexchars = "0123456789ABCDEF";
+
+function toHex(n) {
+  return hexchars.charAt(n>>4)+hexchars.charAt(n & 0xF);
+}
+
+var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+function toUtf(s) {
+  var s = utf8(s);
+  var c;
+  var enc = "";
+  for (var i= 0; i<s.length; i++) {
+    if (okURIchars.indexOf(s.charAt(i))==-1)
+      enc += "%"+toHex(s.charCodeAt(i));
+    else
+      enc += s.charAt(i);
+  }
+  return enc;
 }
 <%= "//-->" %>
 </script><%
