@@ -103,7 +103,7 @@
     <td valign="top"><% boolean imageExists = false; 
         %><mm:list nodes="<%= employeeId %>" path="medewerkers,images" max="1"
             ><% imageTemplate = "+s(110)"; 
-                %><a href="javascript:launchCenter('imageview.jsp?image=<mm:field name="images.number" 
+                %><a href="javascript:launchCenter('/nmintra/imageview.jsp?image=<mm:field name="images.number" 
                     />', 'popup_<mm:field name="images.number" 
                     />', 600, 800, ',scrollbars,resizable=yes')"><img src=<%@include file="../imagessource.jsp" 
                     %> alt="" border="0"></a>
