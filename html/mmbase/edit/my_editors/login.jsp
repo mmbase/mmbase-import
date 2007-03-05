@@ -26,11 +26,11 @@
   </div>
   <div class="row">
     <label for="username">Name</label>
-    <input type="text" id="username" name="username" />
+    <input type="text" id="username" name="username" tabindex="1" />
   </div>
   <div class="row">
     <label for="password">Password</label>
-    <input type="password" id="password" name="password" />
+    <input type="password" id="password" name="password" tabindex="2" />
   </div>
   <div class="lastrow">
     <input type="submit" name="Login" value="login" />
