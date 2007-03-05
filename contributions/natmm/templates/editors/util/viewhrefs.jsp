@@ -82,8 +82,8 @@ if(thisOffset+1<(listSize/pageSize + 1)) {
   %>&nbsp;<a href="viewhrefs.jsp?offset=<%= thisOffset+1 %>">>></a><%
 }
 
-int i= thisOffset;
-while(i<thisOffset+pageSize) {
+int startPage = thisOffset*pageSize;
+for(int i=startPage;i<startPage + pageSize;i++){
    if(i<articles.size()) {
       %><mm:node number="<%= (String) articles.get(i) %>">
          <mm:field name="titel" jspvar="titel" vartype="String" write="false">
