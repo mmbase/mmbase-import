@@ -2,16 +2,13 @@ package nl.mmatch;
 
 import java.util.*;
 import java.io.*;
-import java.text.*;
 import javax.servlet.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
-import nl.leocms.evenementen.Evenement;
 import nl.leocms.util.*;
 import nl.leocms.util.tools.*;
-import nl.leocms.applications.NatMMConfig;
 
 /**
  * @author Henk Hangyi (MMatch)
@@ -699,17 +696,64 @@ public class CSVReader implements Runnable {
     return logMessage;
    }
 
+   
+   
+   
+   
+   /**
+    * Returns all addresses that match the specified zip code from the specified map.
+    * 
+    * @param zipCodeMap The map to retrieve the addresses from
+    * @param zipCode The zip code to retrieve the addresses for
+    * 
+    * @return The retrieved addresses in an arraylist or null if none could be found
+    */
+   public static ArrayList getAddresses(TreeMap zipCodeMap, String zipCode) {
+	   if(zipCodeMap != null && zipCode != null)
+		   return (ArrayList)zipCodeMap.get(zipCode);
+	   return null;
+   }
+   
    public static String getAddress(TreeMap zipCodeMap, String zipCode) {
       String address = null;
-      if(zipCodeMap!=null&&zipCode!=null&&!zipCode.equals("")) {
-         address = (String) zipCodeMap.get(zipCode);
-      }
+      
+      // map contains arraylists now
+      ArrayList addresses = getAddresses(zipCodeMap, zipCode);
+      if(addresses != null)
+         address = (String)addresses.get(0);
       return address;
    }
 
+   /**
+    * Returns all street names for the specified zip code from the specified map.
+    * 
+    * @param zipCodeMap The map to retrieve the addresses from
+    * @param zipCode The zip code to retrieve the addresses for
+    * @param street The value to return if the specified zip code could not be found in the map
+    * 
+    * @return The retrieved street names or the value of the parameter specified, if no street could be found
+    */
+   public static ArrayList getStreets(TreeMap zipCodeMap, String zipCode, String street) {
+      ArrayList addresses = getAddresses(zipCodeMap, zipCode);
+      if(addresses == null) {
+    	  addresses = new ArrayList();
+    	  addresses.add(street);
+    	  return addresses;
+      }
+      ArrayList returner = new ArrayList();
+      for(int i=0, j=addresses.size();i<j;i++) {
+    	  String address = (String)addresses.get(i);
+    	  if(address != null && address.indexOf(";") > 0)
+    		  returner.add(address.substring(0, address.indexOf(";")));
+      }
+      
+      return returner;
+   }
+
    public static String getStreet(TreeMap zipCodeMap, String zipCode, String street) {
-      String address = getAddress(zipCodeMap,zipCode);
-      return (address!=null ? address.substring(0,address.indexOf(";")) : street );
+      ArrayList streets = getStreets(zipCodeMap, zipCode, street);
+      
+      return (String)streets.get(0);
    }
 
    public static String getCity(TreeMap zipCodeMap, String zipCode, String city) {
@@ -717,9 +761,21 @@ public class CSVReader implements Runnable {
       return (address!=null ? address.substring(address.lastIndexOf(";")+1) : city );
    }
 
+   /**
+    * This checks whether the specified house number is within the valid range on the streets of the specified zip code.
+    *  
+    * @param zipCodeMap The map to extract the streets from
+    * @param zipCode The zip code to check against
+    * @param iHouseNumber The house number to verify
+    * 
+    * @return True if one of the addresses is within the valid range, false otherwise
+    */
    public static boolean isInRange(TreeMap zipCodeMap, String zipCode, int iHouseNumber) {
-      String address = getAddress(zipCodeMap,zipCode);
-      boolean isInRange = true;
+      ArrayList addresses = getAddresses(zipCodeMap,zipCode);
+
+      boolean isInRange = false;
+      for(int i=0, j=addresses.size();i<j;i++) {
+	      String address = (String)addresses.get(i);
       if(address!=null) {
          int p1 = address.indexOf(";");
          int p2 = address.indexOf("_");
@@ -737,6 +793,9 @@ public class CSVReader implements Runnable {
             } else { // B = both
             }
          }
+      }
+	      if(isInRange)
+	    	  break;
       }
       return isInRange;
    }
@@ -805,7 +864,17 @@ public class CSVReader implements Runnable {
                  sbAddress.append(sCode);
                  sbAddress.append(';');
                  sbAddress.append(sCity);
-                 zipCodeMap.put(sZipCode, sbAddress.toString());
+                 
+                 // we might have multiple entries for one zip code
+                 // (e.g. left and right side of street different names)
+                 // thus we will use an arraylist of strings
+                 ArrayList streets = (ArrayList)zipCodeMap.get(sZipCode);
+                 if(streets == null) {
+                	 streets = new ArrayList();
+                	 zipCodeMap.put(sZipCode, streets);
+                 }
+                 streets.add(sbAddress.toString());
+                 
                  zipcodes++;
               }
               nextLine = dataFileReader.readLine();

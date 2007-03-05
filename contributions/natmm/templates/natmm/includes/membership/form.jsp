@@ -1,5 +1,8 @@
 <%@page import="nl.leocms.forms.MembershipForm,nl.leocms.evenementen.forms.SubscribeAction" %>
 <%@include file="/taglibs.jsp" %>
+<%@page import="java.util.ArrayList"%>
+<%@page import="nl.mmatch.CSVReader"%>
+<%@page import="java.util.Enumeration"%>
 <mm:cloud jspvar="cloud">
    <%@include file="../calendar.jsp" %>
    <%@include file="../image_vars.jsp" %>
@@ -66,6 +69,11 @@
 		<bean:define id="actionId" property="action" name="MembershipForm" scope="session" type="java.lang.String"/>
       <bean:define id="validateCounter" property="validateCounter" name="MembershipForm" scope="session" type="java.lang.Integer"/>
 		<bean:define id="phoneOnClickEvent" property="phoneOnClickEvent" name="MembershipForm" scope="session" type="java.lang.String"/>
+		<logic:notEmpty property="street" name="MembershipForm">
+			<bean:define id="selectedStreet" property="street" name="MembershipForm" scope="session" type="java.lang.String" />
+		</logic:notEmpty>
+		<bean:define id="allStreets" property="streets" name="MembershipForm" scope="session" type="java.util.ArrayList" />
+		
 		<% 
       if ((actionId.equals(MembershipForm.initAction)) || (actionId.equals(MembershipForm.correctAction))) {
 		int ti = 0;
@@ -107,7 +115,10 @@
 			            <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;text-align:right;<% if(!isIE) { %>padding-top:1px;<% } %>"><% 
                         
                         ti++;
-                        if (i==8) {
+			            
+			            switch(i) {
+			            	
+			            	case 8: {
                            %>
                            <html:select property="country_code" style="width:177px;font-size:11px;" tabindex="<%= "" + ti %>"><% 
                               for(int j = 0; j< countryNames.length; j++) {
@@ -116,7 +127,10 @@
                               } 
                            %></html:select>
                            <%
-                        } else if (i==9) { 
+                           		break;
+                        	} 
+			            	case 9: {
+
                            %><html:text property="dayofbirthDate" style="width:43px;border:0;" tabindex="<%= "" + ti %>"/><%
                            ti++;
 									%><html:select property="dayofbirthMonth" style="width:89px;font-size:10px;" tabindex="<%= "" + ti %>">
@@ -127,10 +141,42 @@
                            %></html:select><%
                            ti++;
 									%><html:text property="dayofbirthYear" style="width:43px;border:0;" tabindex="<%= "" + ti %>"/><% 
+								break;
+			            	}
+			            	case 3: {
+			            		String userSelectedStreet = (String)pageContext.getAttribute("selectedStreet");
+								// maybe nothing has been entered or we have only one street
+			            		if(allStreets == null || allStreets.size() == 0) {
+			            		%>
+								<html:text property="street" style="width:100%;border:0;" tabindex="<%= "" + ti %>"/>
+								<%
+			            		} else if(allStreets.size() == 1) {
+			            		%>
+								<input type="text" name="street" value="<%= allStreets.get(0) %>" style="width:100%;border:0;" tabindex="<%= "" + ti %>"/>
+								<%
                         } else {
+                           %>
+			            		<select name="street" style="width:100%;border:0;" tabindex="<%= "" + ti %>">
+				            		<logic:iterate id="currentStreet" property="streets" name="MembershipForm" type="java.lang.String">
+				            			<logic:equal name="currentStreet" value="<%= userSelectedStreet %>">
+											<option value="<bean:write name="currentStreet" />" selected="selected"><bean:write name="currentStreet" /></option>
+										</logic:equal>
+										<logic:notEqual name="currentStreet" value="<%= userSelectedStreet %>">
+											<option value="<bean:write name="currentStreet" />"><bean:write name="currentStreet" /></option>
+										</logic:notEqual>
+				            		</logic:iterate>
+			            		</select>
+			            		
+			            		<%
+			            		}
+								break;
+	                        }
+			            	default: {
                            %>
                            <html:text property="<%= properties[i] %>" style="width:100%;border:0;" onclick="<%= (labels[i].equals("Telefoon") ? phoneOnClickEvent : "") %>" tabindex="<%= "" + ti %>"/>
                            <%
+                           		break;
+			            	}
                         }
 
                      %></td>

@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.4 2006-10-25 14:58:55 henk Exp $
+  @version $Id: prompts.xsl,v 1.5 2007-03-05 15:57:31 jruijter Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -52,11 +52,11 @@
 <xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" alt="Nieuw"/></xsl:template>
 <xsl:variable name="tooltip_new">Voeg een nieuw item toe aan de lijst</xsl:variable>
 <!-- remove button prompts and tooltips (for relations) -->
-<xsl:template name="prompt_remove"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder"/></xsl:template>
+<xsl:template name="prompt_remove"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder dit item uit de lijst"/></xsl:template>
 <xsl:variable name="tooltip_remove">Verwijder dit item uit de lijst</xsl:variable>
 <!-- delete button prompts and tooltips (for objects) -->
-<xsl:template name="prompt_delete"><img src="{$mediadir}delete.gif" border="0"  alt="Verwijder"/></xsl:template>
-<xsl:variable name="tooltip_delete">Verwijder dit item</xsl:variable>
+<xsl:template name="prompt_delete"><img src="{$mediadir}delete.gif" border="0"  alt="Verwijder dit item uit de database"/></xsl:template>
+<xsl:variable name="tooltip_delete">Verwijder dit item uit de database</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Weet u zeker dat u dit item wilt verwijderen?</xsl:template>
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Opslaan &amp; beëindigen</xsl:template>
