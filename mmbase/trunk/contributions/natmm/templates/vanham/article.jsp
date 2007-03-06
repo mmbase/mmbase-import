@@ -25,7 +25,7 @@
     <td colspan="21">
     <table cellpadding="3" cellspacing="0" border="1"  class="content">
       <tr class="doc"><td></td></tr>
-      <mm:node number="<%=artikelID%>">
+      <mm:node number="<%=artikelID%>" notfound="skipbody">
       <tr>
         <td class="def" style="width:690px;padding-top:26px;padding-bottom:14px;"><a name="0" id="0"></a>
           <mm:field name="titel_zichtbaar"
