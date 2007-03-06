@@ -5,9 +5,9 @@ Author: J. de Ruijter
 A. How to install NatMM (Natuurmonumenten internet)
 ---------------------------------------------------
 
-1. modify the following configuration files:
-   * filters.properties
-   * natmmconfig.properties
+1. modify the following configuration files (choose from /conf/internet/):
+   * /conf/filters.properties
+   * /conf/natmmconfig.properties
 
 2. run the following ant target:
    > ant war.natmm.internet
@@ -26,9 +26,9 @@ A. How to install NatMM (Natuurmonumenten internet)
 B. How to install NMIntra (Natuurmonumenten intranet)
 ---------------------------------------------------
 
-1. modify the following configuration files:
-   * filters.properties
-   * nmintraconfig.properties
+1. modify the following configuration files (choose from /conf/intranet/):
+   * /conf/filters.properties
+   * /conf/nmintraconfig.properties
    
 2. run the following ant target:
    > ant war.natmm.intranet
