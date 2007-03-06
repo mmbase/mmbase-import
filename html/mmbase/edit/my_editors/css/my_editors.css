@@ -82,10 +82,11 @@ a:active { color: #D6E44B; }
 /*.padder { padding: 0.5em; }*/
 .padsidebar
 {
-    padding: 0;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
+	padding: 0;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+	background-color: #fff;
 }
 
 .padcontent
@@ -95,6 +96,7 @@ a:active { color: #D6E44B; }
     background-image: url(../img/shadow.png);
     background-repeat: repeat-y;
     background-position: 0 0;
+	background-color: #fff;
 }
 
 .padfoot
