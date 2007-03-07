@@ -5,12 +5,14 @@
 <mm:cloud jspvar="cloud">
 <mm:locale language="nl">
 <%
+imgFormat = ""; 
+
 String objectID = request.getParameter("o");
 String formatID = request.getParameter("f"); if(formatID!=null) { imgFormat = formatID; }
 String showintroID = request.getParameter("s"); if(showintroID==null) { showintroID = "true"; }
 String showdateID = request.getParameter("q"); if(showdateID==null) { showdateID = "false"; }
 
-imgFormat = ""; 
+
 String shortyRol = ""; 
 int iParCntr = 1;
 boolean showNextDotLine = false;
