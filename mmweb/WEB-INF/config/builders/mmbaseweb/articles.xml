@@ -55,7 +55,6 @@
          <gui>
             <guiname xml:lang="en">Title</guiname>
             <guiname xml:lang="nl">Titel</guiname>
-            <guitype>string</guitype>
          </gui>
          <!-- editor related  -->
          <editor>
@@ -87,7 +86,6 @@
          <gui>
             <guiname xml:lang="en">Subtitle</guiname>
             <guiname xml:lang="nl">Ondertitel</guiname>
-            <guitype>string</guitype>
          </gui>
          <!-- editor related  -->
          <editor>
@@ -151,7 +149,6 @@
          <gui>
             <guiname xml:lang="en">Body</guiname>
             <guiname xml:lang="nl">Tekst</guiname>
-            <guitype>string</guitype>
          </gui>
          <!-- editor related  -->
          <editor>
@@ -183,7 +180,6 @@
          <gui>
             <guiname xml:lang="en">Quote title</guiname>
             <guiname xml:lang="nl">Quote titel</guiname>
-            <guitype>string</guitype>
          </gui>
          <!-- editor related  -->
          <editor>
@@ -215,7 +211,6 @@
          <gui>
             <guiname xml:lang="en">Quote</guiname>
             <guiname xml:lang="nl">Quote</guiname>
-            <guitype>string</guitype>
          </gui>
          <!-- editor related  -->
          <editor>

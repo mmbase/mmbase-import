@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE caches PUBLIC "-//MMBase/DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
+<!DOCTYPE caches PUBLIC "-//MMBase//DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
 <!--
   Not all caches are configurable already, but those which are, can be
   configured here. It can also be done by the admin pages, but
@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.1 2003-11-11 12:27:20 mmweb Exp $
+  @version $Id: caches.xml,v 1.2 2007-03-07 15:07:27 mmweb Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -22,13 +22,37 @@
     <size>4096</size>
   </cache>
 
+  <!-- simple node lists -->
+  <cache name="NodeListCache">
+    <status>active</status>
+    <size>300</size>
+  </cache>
+
   <!-- cluster nodes -->
   <cache name="MultilevelCache">
     <status>active</status>
     <size>300</size>
   </cache>
 
-  <!-- related nodes, used in InsRel -->
+  <!-- used for queries like select max(votes) and select count(title) -->
+  <cache name="AggregatedResultCache">
+    <status>active</status>
+    <size>300</size>
+  </cache>
+
+  <!-- related nodes -->
+  <cache name="RelatedNodesCache">
+    <status>active</status>
+    <size>300</size>
+  </cache>
+
+  <!-- relation nodes -->
+  <cache name="RelationsCache">
+    <status>active</status>
+    <size>300</size>
+  </cache>
+
+  <!-- related nodes, (not?) used in InsRel -->
   <cache name="RelatedCache">
     <status>active</status>
     <size>25</size>
@@ -40,12 +64,14 @@
     <size>128</size>
   </cache>
 
-  <!-- Object type cache in MMObjectBuilder -->
+  <!-- Object type cache in MMObjectBuilder.
+       Used by MMBase to perform
+       object number to object type lookup
+  -->
   <cache name="TypeCache">
     <status>active</status>
     <size>20000</size>
   </cache>
-
 
   <!-- ================================================================================
   Caches for XSL Transformations
@@ -86,7 +112,16 @@
   <!-- Small image handles are caches as well -->
   <cache name="ImageHandles">
     <status>active</status>
-    <size>129</size>
+    <size>128</size>
   </cache>
 
+  <!-- ================================================================================
+  Jumpers cache
+  ================================================================================  -->
+  <!-- If you use jumpers, you might want to configure its cache
+  <cache name="JumpersCache">
+    <status>active</status>
+    <size>1000</size>
+  </cache>
+  -->
 </caches>

@@ -22,7 +22,7 @@
         <field>
       <gui>
         <guiname xml:lang="en">answer</guiname>
-        <guitype>string</guitype>
+        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
