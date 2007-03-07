@@ -47,6 +47,9 @@
     <replace file="${build.config.dir}/log/log4j.xml"
              token="$${mmbase.logdir}"
              value="${mmbase.logdir}"/>
+    <replace file="${build.config.dir}/log/log4j.xml"
+             token="$${mmbase.logfile}"
+             value="${mmbase.logfile}"/>
     <replace file="${build.config.dir}/modules/jdbc.xml"
              token="$${jdbc.password}"
              value="${jdbc.password}"/>
