@@ -92,6 +92,11 @@
         <include name="**"/>
       </fileset>
     </copy>
+    <copy todir="${build.dir}/webapp/WEB-INF/lib" preservelastmodified="true">
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+        <include name="**"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="config">
@@ -165,8 +170,6 @@
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/lib">
             <include name="**"/>
-          </fileset>
-          <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" >
           </fileset>
         </copy>
       </then>
