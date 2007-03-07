@@ -68,7 +68,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
       </mm:write>
     </mm:write>
 
-    <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
+    <cal:calendar view="month" language="${language}" country="NL" date="<%=format.format(calendar.getTime())%>">
      <di:usercalwriter /> 
     
       <table class="cal" cellspacing="0">
