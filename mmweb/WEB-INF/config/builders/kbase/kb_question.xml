@@ -40,7 +40,7 @@
     <field>
       <gui>
         <guiname xml:lang="en">description</guiname>
-        <guitype>string</guitype>
+        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
