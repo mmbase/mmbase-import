@@ -56,6 +56,11 @@
                   <li><a href="<mm:url page="taskmanagement/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.taskmanagement" /></a></li>
                </mm:haspage>    
                   <li><a href="<mm:url page="usermanagement/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.profile" /></a></li>
+               <mm:haspage page="/editors/modules/">
+                  <mm:hasrank minvalue="siteadmin">
+                     <li><a href="<mm:url page="modules/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.modules" /></a></li>
+                  </mm:hasrank>
+               </mm:haspage>
                <mm:haspage page="/editors/admin/">
                   <mm:hasrank minvalue="administrator">
                      <li><a href="<mm:url page="admin/index.jsp" />" target="bottompane" onclick="selectMenu(this.parentNode)"><fmt:message key="topmenu.admin" /></a></li>

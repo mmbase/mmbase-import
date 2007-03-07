@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -91,7 +90,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 		this.path = path;
 	}
 
-	public void doTag() throws JspException, IOException {
+	public void doTag() throws IOException {
 
 		PageContext ctx = (PageContext) getJspContext();
 		List<DumpingNode> dumpingNodes = buildDumpingNodesForDefaults();
@@ -102,37 +101,57 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 	
 	private List<DumpingNode> buildDumpingNodesForDefaults() {
 		List<DumpingNode> dumpingNodes = new ArrayList<DumpingNode>();
-		dumpingNodes.add(new DumpingNode("stylesheet"));
-		dumpingNodes.add(new DumpingNode("view"));
-		dumpingNodes.add(new DumpingNode("portletdefinition"));
-	 	 												  
-		DumpingNode dnPortletparameter = new DumpingNode("portletparameter");
+
+        DumpingNode dnTypedefs = new DumpingNode("typedef");
+        DumpingNode dnViews = new DumpingNode("view");
+        DumpingNode dnStylesheets = new DumpingNode("stylesheet");
+        DumpingNode dnSinglgePortletdefinition = new DumpingNode("portletdefinition");
+        DumpingNode dnMultiplePortletdefinition = new DumpingNode("portletdefinition");
+        DumpingNode dnPortlet = new DumpingNode("portlet");
+        DumpingNode dnPortletparameter = new DumpingNode("portletparameter");
+        DumpingNode dnLayout = new DumpingNode("layout");
+        
+        dumpingNodes.add(dnTypedefs);
+        dumpingNodes.add(dnViews);
+        dumpingNodes.add(dnStylesheets);
+        dumpingNodes.add(dnSinglgePortletdefinition);
+        dumpingNodes.add(dnMultiplePortletdefinition);
+        dumpingNodes.add(dnLayout);
+
+        dnPortlet.addChildNode(dnPortletparameter);
+        dnPortlet.addChildNode(dnViews);
+
+        dnViews.addChildNode(dnTypedefs);
+        
+		dnSinglgePortletdefinition.addChildConstraint(new DumpingConstraint("type", DumpingConstraint.OPERATOR_EQUALS, "single"));
+		dnSinglgePortletdefinition.addChildNode(dnPortlet);
 		
-		DumpingNode dnPortlet = new DumpingNode("portlet");
-		dnPortlet.addChildNode(dnPortletparameter);
-		
-		DumpingNode dnPortletdefinition = new DumpingNode("portletdefinition");
-		dnPortletdefinition.addChildConstraint(new DumpingConstraint("type", DumpingConstraint.OPERATOR_EQUALS, "single"));
-		dnPortletdefinition.addChildNode(dnPortlet);
-		
-		DumpingNode dnLayout = new DumpingNode("layout");
-		dnLayout.addChildNode(dnPortletdefinition);
-		dumpingNodes.add(dnLayout);
+        dnSinglgePortletdefinition.addChildNode(dnTypedefs);
+
+        dnMultiplePortletdefinition.addChildConstraint(new DumpingConstraint("type", DumpingConstraint.OPERATOR_EQUALS, "multiple"));
+        dnMultiplePortletdefinition.addChildNode(dnTypedefs);
+        dnMultiplePortletdefinition.addChildNode(dnViews);
+        
+		dnLayout.addChildNode(dnSinglgePortletdefinition);
 		
 		return dumpingNodes;
 	}
 
 
 	private String doBackup(List<DumpingNode> dumpingNodes) throws IOException {
-		HashMap<String,HashSet<Node>> backupMap = buildBackupMap(dumpingNodes);
-		String report = exportBackupMap(backupMap);
+        Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+		HashMap<String,HashSet<Node>> backupMap = buildBackupMap(dumpingNodes, cloud);
+		String report = exportBackupMap(backupMap, cloud);
 		return report;
 	}
 
 
-	private String exportBackupMap(HashMap<String,HashSet<Node>> backupMap) throws IOException {
+	private String exportBackupMap(HashMap<String,HashSet<Node>> backupMap, Cloud cloud) throws IOException {
 		StringBuffer report = new StringBuffer();
 		
+        // Use manager for Object and Insrel field checking
+        NodeManager inselManager = cloud.getNodeManager("insrel");
+        
 		for(Iterator<String> i = backupMap.keySet().iterator(); i.hasNext();) {
 			String key = i.next();
 			HashSet<Node> values = backupMap.get(key);
@@ -149,8 +168,8 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 			StringBuffer sb = new StringBuffer();
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 			sb.append("<").append(key).append(" exportsource=\"cmsc file dumper\" timestamp=\"").append(timestamp).append("\">\n");
-			for(Iterator ni = values.iterator(); ni.hasNext();) {
-				Node node = (Node) ni.next();
+			for(Iterator<Node> ni = values.iterator(); ni.hasNext();) {
+				Node node = ni.next();
 				sb.append("\t<node number=\"").append(node.getNumber()).append("\" owner=\"").append(node.getContext());
 				if(node instanceof Relation) {
 					Relation relation = (Relation) node;
@@ -169,7 +188,8 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 				
 				for(FieldIterator fi = node.getNodeManager().getFields().fieldIterator(); fi.hasNext();) {
 					Field field = fi.nextField();
-					if(field.getState() == Field.STATE_PERSISTENT) {
+					if(!inselManager.hasField(field.getName()) && 
+                            (field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM)) {
 						String fieldName = field.getName();
 						if(!node.isNull(fieldName)) {
 							sb.append("\t\t<").append(fieldName).append(">");
@@ -198,8 +218,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 	}
 
 
-	private HashMap<String,HashSet<Node>> buildBackupMap(List<DumpingNode> dumpingNodes) {
-		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+	private HashMap<String,HashSet<Node>> buildBackupMap(List<DumpingNode> dumpingNodes, Cloud cloud) {
 		HashMap<String,HashSet<Node>> backupMap = new HashMap<String,HashSet<Node>>();
 		for(Iterator<DumpingNode> i = dumpingNodes.iterator(); i.hasNext();) {
 			buildBackupMapNode(cloud, backupMap, i.next());

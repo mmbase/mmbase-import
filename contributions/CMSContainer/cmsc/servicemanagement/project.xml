@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-servicemanagement</artifactId>
-    <name>CMS container servicemanagement</name>
-    <shortDescription>CMS container servicemanagement</shortDescription>
+    <name>CMS Container servicemanagement</name>
+    <shortDescription>CMS Container servicemanagement</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

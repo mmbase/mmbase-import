@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -19,7 +20,8 @@ import org.mmbase.util.logging.Logging;
 
 public class LinkValidatorCronJob implements CronJob {
 
-    private static Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
+    private static final int TIMEOUT = 15000;
+   private static Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
 
     public void init(CronEntry cronEntry) {
         // empty
@@ -34,7 +36,7 @@ public class LinkValidatorCronJob implements CronJob {
     }
 
     private void checkExternalLinks() {
-        log.info("LinkValidation thread started");
+        log.info("LinkValidation thread started [freek]");
 
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
@@ -44,13 +46,13 @@ public class LinkValidatorCronJob implements CronJob {
         for (int i = 0; i < linkElements.size(); i++) {
             Node linkNode = linkElements.getNode(i);
             String url = linkNode.getStringValue("url");
-            log.debug("Found url: [" + url + "]");
             boolean valid;
-            if (url.startsWith("#")) {
+            if (url.startsWith("#") || url.startsWith("mailto:")) {
                 valid = true;
             } else {
                 valid = isValid(url);
             }
+            log.debug("Found url: [" + url + "] ("+valid+")");
             linkNode.setStringValue("valid", valid ? "1" : "0");
             linkNode.commit();
         }
@@ -61,11 +63,17 @@ public class LinkValidatorCronJob implements CronJob {
         // Commons HTTP). Completely URLEncoding does not work either (slashes
         // should not be encoded for example), so just replaced all the spaces
         // with a plus sign.
-        String escapedUrl = url.replace(' ', '+');
-        boolean valid = false;
-        HttpClient httpclient = new HttpClient();
-        GetMethod httpget = new GetMethod(escapedUrl);
+       
+       boolean valid = false;
+       url = url.trim();
+       String escapedUrl = url.replace(' ', '+');
+       GetMethod httpget = null;
+       
         try {
+           HttpClient httpclient = new HttpClient();
+           httpclient.setTimeout(TIMEOUT);
+           httpclient.setConnectionTimeout(TIMEOUT);
+           httpget = new GetMethod(escapedUrl);
             int responseCode = httpclient.executeMethod(httpget);
             valid = responseCode == HttpStatus.SC_OK;
             if (!valid) {
@@ -75,9 +83,12 @@ public class LinkValidatorCronJob implements CronJob {
             log.debug("Found an invalid url : " + escapedUrl, ex);
         } catch (IOException ex) {
             log.debug("Got a IOException for url : " + escapedUrl, ex);
-            valid = false;
+        } catch (Throwable t) {
+           log.debug("Got an unexpected Throwable for url : " + escapedUrl, t);
         } finally {
-            httpget.releaseConnection();
+           if(httpget != null) {
+              httpget.releaseConnection();
+           }
         }
         return valid;
     }

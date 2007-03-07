@@ -72,8 +72,8 @@ public class SiteManagement {
 		return cService.getPageFromPath(path);
 	}
 
-    public static List getStylesheetForPageByPath(String path) {
-		return cService.getStylesheetForPageByPath(path);
+    public static List<Stylesheet> getStylesheetForPageByPath(String path, boolean override) {
+		return cService.getStylesheetForPageByPath(path, override);
 	}
 	public static Site getSiteFromPath(String path) {
 		return cService.getSiteFromPath(path);

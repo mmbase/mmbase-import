@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
@@ -62,6 +64,7 @@ public class TitleTag extends CmscTag {
 				}
 			} else {
 				// write
+                title = StringEscapeUtils.escapeHtml(title);
 				ctx.getOut().print(title);
 			}
 		} else {

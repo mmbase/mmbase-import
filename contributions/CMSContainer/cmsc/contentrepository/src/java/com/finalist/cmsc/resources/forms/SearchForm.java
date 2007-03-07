@@ -9,10 +9,15 @@ public class SearchForm extends PagerForm {
 	private String objectid;
 
     public SearchForm() {
-        // empty
+        this(null, null);
     }
     
-	public SearchForm(String contenttypes) {
+    public SearchForm(String contenttypes) {
+       this(contenttypes, null);
+    }
+    
+	public SearchForm(String contenttypes, String defaultOrder) {
+      super(defaultOrder);
 	    this.contenttypes = contenttypes;
     }
 

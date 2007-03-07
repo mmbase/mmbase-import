@@ -43,12 +43,14 @@ public class LuceusUtil {
 				sb.append(prefix);
 				sb.append(".");
 			}
-			sb.append(fieldName);
-			String prefixedName = sb.toString();
 
 			// ignore these internal fields
 			if (!fieldName.equalsIgnoreCase("number") && !fieldName.equalsIgnoreCase("otype")
 					&& !fieldName.equalsIgnoreCase("owner")) {
+				
+				sb.append(fieldName);
+				String prefixedName = sb.toString();
+				
 				if (managerField.getType() == Field.TYPE_STRING) {
 					String str = contentElement.getStringValue(fieldName).replaceAll("<.+?>", "");
 					doc.add(EnvelopeFieldFactory.getStringField(prefixedName, str));
@@ -82,10 +84,21 @@ public class LuceusUtil {
 				} else {
 					log.warn("Unsupported type:'" + managerField.getType() + "'");
 				}
+			} else if (fieldName.equalsIgnoreCase("number")) {
+				sb.append("id");
+				String prefixedName = sb.toString();
+				doc.add(EnvelopeFieldFactory.getStringField(prefixedName, contentElement.getStringValue(fieldName)));
 			}
 			sb = null;
 		}
 		fields = null;
 	}
 
+	public static void nodeFields(Node contentElement, Envelope doc) {
+		if (contentElement != null) {
+			String prefix = contentElement.getNodeManager().getName();
+			nodeFields(contentElement, doc, prefix);
+		}
+	}
+	
 }

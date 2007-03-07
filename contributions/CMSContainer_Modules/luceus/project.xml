@@ -8,7 +8,7 @@
 -->
 <project>
 	<extend>${basedir}/../maven-base/project.xml</extend>
-	<name>CMS container luceus module</name>
+	<name>CMS Container luceus module</name>
 	<artifactId>cmsc-modules-luceus</artifactId>
 	<shortDescription>Luceus module for the content search in the frontend</shortDescription>
 

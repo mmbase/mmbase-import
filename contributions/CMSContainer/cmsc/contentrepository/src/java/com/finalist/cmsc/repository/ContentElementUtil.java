@@ -349,5 +349,24 @@ public class ContentElementUtil {
         }
         SearchUtil.addConstraint(query, archivedate);
     }
+    
+    public static boolean matchArchive(Node content, String archive) {
+        if (StringUtil.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
+            return true;
+        }
+        // Precision of now is based on minutes.
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long date = cal.getTimeInMillis();
+        
+        Date archiveDate = content.getDateValue(ARCHIVEDATE_FIELD);
+        if ("old".equalsIgnoreCase(archive)) {
+            return archiveDate.getTime() < date;
+        }
+        else {
+            return archiveDate.getTime() >= date;
+        }
+    }
 
 }

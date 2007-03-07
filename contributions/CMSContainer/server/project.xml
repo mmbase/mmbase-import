@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-serverpatch</artifactId>
-    <name>CMS container sever patch</name>
+    <name>CMS Container sever patch</name>
     <shortDescription>Server configuration patch</shortDescription>
     
     <dependencies>

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-tasks</artifactId>
-    <name>CMS container tasks</name>
-    <shortDescription>CMS container tasks</shortDescription>
+    <name>CMS Container tasks</name>
+    <shortDescription>CMS Container tasks</shortDescription>
 </project>
 

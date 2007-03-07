@@ -2,7 +2,11 @@
 <!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <optionlist name="Gender">
    <option id="m">
-Man</option>
+      <prompt xml:lang="nl">Man</prompt>
+      <prompt xml:lang="en">Male</prompt>
+   </option>
    <option id="v">
-Vrouw</option>
+      <prompt xml:lang="nl">Vrouw</prompt>
+      <prompt xml:lang="en">Female</prompt>
+   </option>
 </optionlist>

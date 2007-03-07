@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-maintenance</artifactId>
-    <name>CMS container maintenance</name>
-    <shortDescription>CMS container maintenance</shortDescription>
+    <name>CMS Container maintenance</name>
+    <shortDescription>CMS Container maintenance</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

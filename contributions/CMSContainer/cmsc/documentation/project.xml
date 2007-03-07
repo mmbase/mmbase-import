@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-documentation</artifactId>
-    <name>CMS container documentation</name>
-    <shortDescription>CMS container documentation</shortDescription>
+    <name>CMS Container documentation</name>
+    <shortDescription>CMS Container documentation</shortDescription>
     <dependencies>
         <dependency>
             <groupId>mmapps</groupId>

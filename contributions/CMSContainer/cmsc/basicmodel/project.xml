@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-basicmodel</artifactId>
-    <name>CMS container basic content model</name>
-    <shortDescription>CMS container basic content model</shortDescription>
+    <name>CMS Container basic content model</name>
+    <shortDescription>CMS Container basic content model</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

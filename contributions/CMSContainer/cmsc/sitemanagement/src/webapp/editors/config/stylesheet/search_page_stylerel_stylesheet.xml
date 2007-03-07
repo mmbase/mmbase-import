@@ -15,7 +15,7 @@
 		</field>
 	</item>
 	
-	<command name="search" nodepath="stylesheet" age="-1" fields="title">
+	<command name="search" nodepath="stylesheet" age="-1" fields="title" pagelength="20" orderby="title">
 		<prompt xml:lang="en">Search stylesheet</prompt>
 		<prompt xml:lang="nl">Zoek stylesheet</prompt>
 		<search-filter>

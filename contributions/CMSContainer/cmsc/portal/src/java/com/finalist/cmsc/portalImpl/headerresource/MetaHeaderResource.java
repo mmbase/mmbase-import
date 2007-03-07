@@ -27,25 +27,30 @@ public class MetaHeaderResource extends HeaderResource {
 	}
 
 	public void render(StringBuffer buffer) {
-        buffer.append("<meta name=\"");
-        if(isDublin()) {
-        	buffer.append("DC.");
-        }
-        buffer.append(name);
-        buffer.append("\" content=\"");
-        buffer.append((content == null)?"":XmlUtil.xmlEscape(content));
-        buffer.append("\"");
-        if (lang != null) {
-            buffer.append(" lang=\"");
-            buffer.append(lang);
+        if (content != null && content.length() > 0) {
+            buffer.append("<meta name=\"");
+            if(isDublin()) {
+            	buffer.append("DC.");
+            }
+            buffer.append(name);
+            buffer.append("\" content=\"");
+            String contentStr = "";
+            contentStr = content.replaceAll("\"", "");
+            contentStr = XmlUtil.xmlEscape(contentStr);
+            buffer.append(contentStr);
             buffer.append("\"");
+            if (lang != null) {
+                buffer.append(" lang=\"");
+                buffer.append(lang);
+                buffer.append("\"");
+            }
+            if (httpEquiv != null) {
+                buffer.append(" http-equiv=\"");
+                buffer.append(httpEquiv);
+                buffer.append("\"");
+            }
+            buffer.append("/>");
         }
-        if (httpEquiv != null) {
-            buffer.append(" http-equiv=\"");
-            buffer.append(httpEquiv);
-            buffer.append("\"");
-        }
-        buffer.append("/>");
 	}
 	
 	public String toString() {

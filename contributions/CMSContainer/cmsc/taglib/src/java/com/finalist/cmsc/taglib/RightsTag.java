@@ -13,6 +13,7 @@ import org.mmbase.bridge.Node;
 import net.sf.mmapps.commons.bridge.CloudUtil;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.UserRole;
 
@@ -39,9 +40,8 @@ public class RightsTag extends SimpleTagSupport {
 			role = RepositoryUtil.getRole(cloud, node, true);
 		}
 		else {
-			String type = node.getNodeManager().getName();
 			// if it is a page
-			if(type.equals("page") || type.equals("site")) {
+			if(PagesUtil.isPageType(node)) {
 				NavigationUtil.getRole(cloud, node, true);
 			}
 			// else, try the content itself

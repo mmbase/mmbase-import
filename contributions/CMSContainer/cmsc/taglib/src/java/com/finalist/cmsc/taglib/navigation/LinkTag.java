@@ -157,11 +157,13 @@ public class LinkTag extends SimpleTagSupport {
 	 *        aliases
 	 */
 	private void setDestString(String s) {
-		if (StringUtils.isNumeric(s)) {
-			page = SiteManagement.getPage(Integer.parseInt(s));
-		} else {
-			page = SiteManagement.getPageFromPath(s);
-		}
+        if (!StringUtils.isBlank(s)) {
+    		if (StringUtils.isNumeric(s)) {
+    			page = SiteManagement.getPage(Integer.parseInt(s));
+    		} else {
+    			page = SiteManagement.getPageFromPath(s);
+    		}
+        }
 	}
 
 	public void setVar(String var) {

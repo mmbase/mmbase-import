@@ -20,7 +20,7 @@ GRANT ALL PRIVILEGES ON *.* TO <user>@"%" IDENTIFIED BY '<password>' WITH GRANT 
 // describe objects like tables
 DESCRIBE <table_name>;
 
-// Showw all tables in database
+// Show all tables in database
 SHOW TABLES;
 
 // Show statement to recreate table
@@ -33,6 +33,9 @@ RENAME TABLE <table_name> TO <new_table_name>;
 ALTER TABLE <table_name> MODIFY <field_name> varchar(<size>);
 
 alter table <table_name> change column <old_field_name> <new_field_name> varchar(<size>);
+
+// Convert table to InnoDB
+alter table <table_name> ENGINE = INNODB;
 
 // Dump restore databases
 mysqldump --opt <database> > backup-file.sql

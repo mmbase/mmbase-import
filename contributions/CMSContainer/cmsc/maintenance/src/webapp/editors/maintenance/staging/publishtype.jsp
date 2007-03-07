@@ -48,9 +48,12 @@
 	
 		<mm:import externid="publishall"/>
 
-		<% Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server"); 
-		CloudInfo localCloudInfo = CloudInfo.getCloudInfo(cloud);
-	    CloudInfo remoteCloudInfo = CloudInfo.getCloudInfo(remoteCloud);%>
+		<% 
+		CloudInfo localCloudInfo = CloudInfo.getDefaultCloudInfo();
+		int remoteCloudNumber = org.mmbase.remotepublishing.builders.PublishingQueueBuilder.getCloudNumber("live.server");
+        CloudInfo remoteCloudInfo = CloudInfo.getCloudInfo(remoteCloudNumber);
+		%>
+
 		<mm:listnodes type="$nodetype" jspvar="node">
 			<%
 			if (!PublishManager.isPublished(localCloudInfo,node)) { 

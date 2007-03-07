@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.services.ServiceManager;
 
@@ -73,10 +74,19 @@ public class Search {
     
     public static Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager) {
         if (cService == null) {
-            log.info("SearchService not started");
+            log.error("SearchService not started");
             return null;
         }
         return cService.findLinkedSecondaryContent(contentElement, nodeManager);
+    }
+    
+    public static Set<Node> findLinkedSecondaryContent (Node contentElement, String nodeManager, String relType) {
+    	if (cService == null) {
+            log.error("SearchService not started");
+            return null;
+        }
+    	
+    	return cService.findLinkedSecondaryContent(contentElement, nodeManager, relType, SearchUtil.DESTINATION);
     }
 
     public static boolean hasContentPages(Node content) {

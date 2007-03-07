@@ -17,11 +17,15 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import net.sf.mmapps.commons.util.StringUtil;
+
 public class SelectTag extends SimpleTagSupport {
 
     public String var;
 
     public String selected;
+    
+    public String defaultValue;
     
     public void setVar(String var) {
         this.var = var;
@@ -34,6 +38,9 @@ public class SelectTag extends SimpleTagSupport {
 
         selected = (String) request.getAttribute(var);
         
+        if (StringUtil.isEmpty(selected)) {
+            selected = defaultValue;
+        }
         ctx.getOut().print("<select name=\"" + var + "\">");
         JspFragment frag = getJspBody();
         if (frag != null) {
@@ -44,6 +51,15 @@ public class SelectTag extends SimpleTagSupport {
     
     public String getSelected() {
         return selected;
+    }
+
+    
+    public String getDefault() {
+        return defaultValue;
+    }
+
+    public void setDefault(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
     
 }

@@ -9,7 +9,10 @@
  */
 package com.finalist.cmsc.module.luceusmodule;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
@@ -48,10 +51,13 @@ public class IndexUpdateTask implements Runnable {
 
 	private int id;
 
+	private CustomContentHandler cch;
+	
 	public IndexUpdateTask(LuceusModule module, LinkedBlockingQueue<QueuedUpdate> queue, int id) {
 		this.module = module;
 		this.in = queue;
 		this.id = id;
+		this.cch = module.getCustomContentHandler();
 	}
 
 	public void run() {
@@ -270,7 +276,7 @@ public class IndexUpdateTask implements Runnable {
 	private void commit(Envelope doc, Node pageNode, Node contentElement) {
 
 		NodeManager nm = contentElement.getNodeManager();
-		String nmName = nm.getName();
+		String nmName = nm.getName();		
         if (module.excludeType(nmName)) {
             return;
         }
@@ -306,7 +312,7 @@ public class IndexUpdateTask implements Runnable {
 			for (Iterator<Node> aIter = attachments.iterator(); aIter.hasNext();) {
 				Node attachment = aIter.next();
 				if (module.isDoSecondaryWithPrimary()) {
-					LuceusUtil.nodeFields(attachment, doc, null);
+					LuceusUtil.nodeFields(attachment, doc);
 				}
 				commit(doc.duplicate(), attachment);
 			}
@@ -317,23 +323,33 @@ public class IndexUpdateTask implements Runnable {
 			for (Iterator<Node> uIter = urls.iterator(); uIter.hasNext();) {
 				Node url = uIter.next();
 				if (module.isDoSecondaryWithPrimary()) {
-					LuceusUtil.nodeFields(url, doc, null);
+					LuceusUtil.nodeFields(url, doc);
 				}
 				commit(doc.duplicate(), url);
 			}
 		}
 
-		if (module.isDoImages()) {
-			Set<Node> images = Search.findLinkedSecondaryContent(contentElement, "images");
+		if (module.isDoImages()) {			
+			Set<Node> images = Search.findLinkedSecondaryContent(contentElement, "images", "imagerel");
 			for (Iterator<Node> iIter = images.iterator(); iIter.hasNext();) {
 				Node image = iIter.next();
 				if (module.isDoSecondaryWithPrimary()) {
-					LuceusUtil.nodeFields(image, doc, "image");
+					LuceusUtil.nodeFields(image, doc);
 				}
 				commit(doc.duplicate(), image);
 			}
 		}
 
+		if (cch != null) {
+			Set<Node> custom = cch.findLinkedContent(contentElement);
+			for (Iterator<Node> cIter = custom.iterator(); cIter.hasNext();) {
+				Node customNode = cIter.next();
+				if (module.isDoSecondaryWithPrimary()) {
+					LuceusUtil.nodeFields(customNode, doc);
+				}
+			}
+		}
+		
 		Indexer idx = module.getIndexer();
 		if (idx != null) {
 			idx.write(doc);
