@@ -34,7 +34,7 @@
   }
   
 </script>
-<div style="overflow:auto">
+<div style="widht: 65%; padding-right: 20px; "> 
 <mm:node number="$qnode">
   <h3><mm:field name="question"/></h3>
   <p><mm:field name="description"/></p>
@@ -46,7 +46,7 @@
   
   <h5>answers to this quetion:</h5>
   <mm:relatednodes type="kb_answer" orderby="number" directions="up">
-    <div style="max-height:600px;overflow:auto;margin-top:10px;">
+    <div style="margin-top:10px;">
       <mm:maycreate type="kb_answer">
       <a href="javascript:goEditAnswer(<mm:field name="number"/>)">
         <img src="<mm:write referid="realpath"/>/img/smallpen.gif" border="0"/>

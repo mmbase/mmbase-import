@@ -3,23 +3,38 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html">
 <html>
-<head>
-<title>Generic MMBase admin pages</title>
-<link rel="stylesheet" type="text/css" href="../css/mmbase-dev.css">
-</head>
+  <head>
+    <title>Welcome to MMBase</title>
+    <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
+    <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
 
-<body>
-<h1><%=org.mmbase.Version.get() %></h1>
-
-<ul>
-  <li><a href="<mm:url page="/editors" />">Editwizards</a></li>
-  <li><a href="<mm:url page="edit/" />">Generic editors</a></li>
-  <li><a href="<mm:url page="edit/my_editors/" />">Generic editors ('my editors')</a></li>
-  <li><a href="<mm:url page="mmeditors/" />">Generic editors ('scan-like editors')</a></li>
-  <li><a href="<mm:url page="admin/" />">Admin pages</a></li>
-  <li><a href="<mm:url page="security/" />">Security administration</a></li>
-</ul>
-
+  </head>
+<body  class="basic">
+  <mm:cloud rank="basic user">
+    <h1><mm:cloudinfo type="mmbaseversion" /></h1>
+    <ul>
+      <mm:haspage page="edit">
+        <li>
+          <a href="edit">Generic editors</a>
+          <mm:haspage page="edit/my_editors">
+            (<a href="edit/my_editors">my editors</a>)
+          </mm:haspage>
+        </li>
+      </mm:haspage>
+      <mm:haspage page="admin">
+        <li><a href="admin">Admin pages</a></li>
+      </mm:haspage>
+      <mm:haspage page="security">
+        <li><a href="security">Security administration</a></li>
+      </mm:haspage>
+      <mm:haspage page="mpl-1.0.jsp">
+        <li><a href="mpl-1.0.jsp">License</a></li>
+      </mm:haspage>
+    </ul>
+    <hr />
+    Logged in as <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
+  </mm:cloud>
 </body>
 </html>
 </mm:content>

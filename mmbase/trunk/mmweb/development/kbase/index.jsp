@@ -30,13 +30,19 @@
  	 l.add(realpath+"/js/treeview.js");
 	 pageContext.setAttribute("jScripts",l);
 	 
-	 //body onload event toevoegen
+   //body onload event toevoegen
 	 List l1=new ArrayList();
          l1.add("setImageDir('"+realpath+"/img/')");
 	 l1.add("setCurrentFolder("+node.trim()+")");
 	 l1.add("setEditor("+isEditor(wolk)+")");
          l1.add("setExtraParamsJs('" + getParamsFormatted("url", getExtraParams(request)) + "')");
 	 pageContext.setAttribute("bLoadEvs",l1);
+
+  //linkjes voor css
+	List l2 = new ArrayList();
+	l2.add("css/kbase-form.css");
+	l2.add("css/treeview.css");
+	pageContext.setAttribute("cssScripts", l2);
 %>
 	
 <%@include file="/includes/header.jsp" %>

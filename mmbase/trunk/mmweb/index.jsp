@@ -5,8 +5,6 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <mm:content type="text/html">
 <mm:cloud>
- <%@include file="login/login.jsp" %>
-
  <mm:import externid="template" />
 
  <mm:present referid="template"><%-- template url explicity specified --%>
@@ -18,6 +16,7 @@
    <%@include file="includes/getids.jsp" %>
 
    <mm:node number="$page" notfound="skipbody">
+
      <mm:relatednodes type="templates">
        <mm:field name="url" id="templatefound">
          <mm:include debug="html" page="$_" />
