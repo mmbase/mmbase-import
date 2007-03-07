@@ -6,7 +6,7 @@
 	<title>Datum van verschijning (dit veld is verplicht)</title>
 	<item>
 		<title></title>
-		<field name="start" ftype="date" dttype="date">
+		<field name="start" ftype="datetime" dttype="date">
 			<prompt>Datum</prompt>
 		</field>
 	 </item>

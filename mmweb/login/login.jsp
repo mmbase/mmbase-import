@@ -1,6 +1,7 @@
 <%@page import="java.util.*,javax.servlet.http.*,org.mmbase.bridge.*"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%
+// what a hackery.
 {
 // are we logged in with cookies?
 Cookie cookie[] = request.getCookies();
@@ -17,7 +18,7 @@ String id = null;
 Object o = session.getAttribute("cloud_mmbase");
 Cloud cloud = (Cloud) o;
 if(o != null) {
-  User u = cloud.getUser();
+  org.mmbase.security.UserContext u = cloud.getUser();
   if(u != null && u.isValid()) {
     id = u.getIdentifier();
   }

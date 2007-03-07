@@ -3,15 +3,14 @@
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp" %>
-<div id="pagecontent">
 <div id="textcontent">
 
 <mm:node number="$page">
   <mm:relatednodes id="docs" type="documentation">
     <h2><mm:field name="title" /></h2>
     <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
-    <mm:field name="html(intro)" escape="p"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
-	<mm:field name="html(body)"><mm:isnotempty><p><mm:write /></p></mm:isnotempty></mm:field>
+    <mm:field name="html(intro)" escape="none"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+	<mm:field name="html(body)" escape="none"><mm:isnotempty><p><mm:write /></p></mm:isnotempty></mm:field>
   </mm:relatednodes>
   
   <h2>View CVS</h2>
@@ -31,6 +30,6 @@
   <mm:include cite="true" page="lastchanges-stable.html" />  --%>
 </mm:node>
 
-</div></div>
+</div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
