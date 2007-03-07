@@ -46,6 +46,16 @@
       <!-- 10 minutes (default is one hour)-->
       <param-value>600</param-value>
     </init-param>
+    <init-param>
+      <!-- Whether to accepts image conversion on the URL -->
+      <param-name>convert</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <init-param>
+      <!-- Field of image node to use for 'last modified' -->
+      <param-name>lastmodifiedfield</param-name>
+      <param-value></param-value>
+    </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>
 
@@ -59,6 +69,11 @@
       <param-name>expire</param-name>
       <!-- 10 minutes (default is one hour)-->
       <param-value>600</param-value>
+    </init-param>
+    <init-param>
+      <!-- Field of attachment node to use for 'last modified' -->
+      <param-name>lastmodifiedfield</param-name>
+      <param-value></param-value>
     </init-param>
     <load-on-startup>3</load-on-startup>
   </servlet>

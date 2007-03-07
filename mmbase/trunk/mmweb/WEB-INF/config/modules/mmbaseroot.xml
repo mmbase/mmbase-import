@@ -8,5 +8,6 @@
     <property name="basename">foundation</property>
     <property name="language">en</property>
     <property name="encoding">UTF-8</property>
+    <property name="development">true</property>
   </properties>
 </module>

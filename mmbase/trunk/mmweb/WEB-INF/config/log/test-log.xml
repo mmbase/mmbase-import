@@ -40,14 +40,23 @@
   
   
   <!-- categories -->
-    <logger name="org.mmbase.security" >
+  <logger name="org.mmbase.security" >
     <level class="&mmlevel;" value ="warn" />
+  </logger>
+
+<logger name="org.mmbase.security.classsecurity" >
+    <level class="&mmlevel;" value ="service" />
+  </logger>
+
+
+<logger name="org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag" >
+    <level class="&mmlevel;" value ="service" />
   </logger>
 
 
   <!-- 'page logging' goes to a different appender -->
   <logger name="org.mmbase.PAGE" additivity="false">
-    <level class="&mmlevel;" value ="info" />
+    <level class="&mmlevel;" value ="debug" />
     <appender-ref ref="pagedebug" />
   </logger>
 

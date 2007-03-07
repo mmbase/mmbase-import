@@ -3,7 +3,7 @@
 <!-- LinkFinder is a 'tranformer' (org.mmbase.util.transformers.LinkFinder)
      and can e.g. be used as 'escaper' in Taglib.
      @since MMBase-1.8
-     @version $Id: linkfinder.xml,v 1.1 2004-08-02 17:27:33 mmweb Exp $
+     @version $Id: linkfinder.xml,v 1.2 2007-03-07 15:07:27 mmweb Exp $
      @author Michiel Meeuwissen
 -->
 <util>
@@ -16,11 +16,11 @@
         etc.
 
       -->
-      <entry><key>.+@.+</key>     <value>&lt;a href="mailto:$0"&gt;$0&lt;/a&gt;</value></entry>
+      <entry><key>[^&amp;].*@.+</key>     <value>&lt;a href="mailto:$0"&gt;$0&lt;/a&gt;</value></entry>
       <entry><key>http://.+</key> <value>&lt;a href="$0"&gt;$0&lt;/a&gt;</value></entry>
       <entry><key>https://.+</key><value>&lt;a href="$0"&gt;$0&lt;/a&gt;</value></entry>
       <entry><key>ftp://.+</key>  <value>&lt;a href="$0"&gt;$0&lt;/a&gt;</value></entry>
-      <entry><key>#([0-9]+)</key> <value>&lt;a href="http://www.mmbase.org/testing?portal=199&amp;page=546&amp;btemplate=fullview.jsp&amp;bugnumber=$0"&gt;#$0&lt;/a&gt;</value></entry>
+      <entry><key>#([0-9]+)</key> <value>&lt;a href="http://www.mmbase.org/testing?portal=199&amp;page=546&amp;btemplate=fullview.jsp&amp;bugnumber=$1"&gt;$0&lt;/a&gt;</value></entry>
     </property>
   </properties>
 </util>
