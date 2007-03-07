@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+
 <%@page import="java.util.*" %>
 <%@page import="java.net.*" %>
 <%@page import="org.mmbase.bridge.*" %>
@@ -221,7 +221,7 @@
        currentNav = addChildPagesOfPortal(nav,portalPages,subpages,currentPageString);
        if (currentNav == null){
             %><!-- current Nav was null... --><%
-            currentNav = (Nav)nav.childs.get(0);
+            currentNav = nav.childs.size() > 0 ? (Nav)nav.childs.get(0) : null;
        }
        //for (int x =0 ; x < subportal.size() ; x ++){
 //                Node portalNode = subportal.getNode(x);
@@ -231,5 +231,5 @@
 //        }
 
 %>
-<%= ((Nav)nav.childs.get(0)).toDiv() %>
+<%= nav.childs.size() > 0 ? ((Nav)nav.childs.get(0)).toDiv() : "NO NAV" %>
 </mm:cloud>
