@@ -1,21 +1,31 @@
 package com.finalist.cmsc.repository.xml;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import net.sf.mmapps.commons.util.HttpUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.xml.sax.SAXException;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.finalist.cmsc.util.XsltUtil;
 
 /**
  * The XMLServlet is a basic servlet for retrieving data from MMBase. A remote system can
@@ -35,11 +45,11 @@ public class XMLServlet extends HttpServlet {
    private static final String CONTENT_TYPE = "contentType";
    private static final String PK = "pk";
    private static final String PREVIEWDATE = "previewdate";
-   private static final String FROM_INDEX = "listFromIndex";
-   private static final String TO_INDEX = "listToIndex";
-   private static final String FILTER_NAME = "filterAttributeName";
-   private static final String FILTER_VALUE = "filterAttributeValue";
-   private static final String SORT_NAME = "sortAttribute";
+   private static final String FROM_INDEX = "fromIndex";
+   private static final String TO_INDEX = "toIndex";
+   private static final String FILTER_NAME = "filterName";
+   private static final String FILTER_VALUE = "filterValue";
+   private static final String SORT_NAME = "sort";
    private static final String SORT_DIRECTION = "sortDirection";
    private static final String NUMBERS_ONLY = "numbersOnly";
    /**
@@ -48,84 +58,33 @@ public class XMLServlet extends HttpServlet {
    public static final String CS = "/";
 
    /**
-    * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
-   /**
     * This method handles all requests, checks the request to see what data is required
     * and calls the proper methods for creating the xml. After processing the proper XML is
     * written out to the HttpServletResponse.
+    * 
+    * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
+    *      javax.servlet.http.HttpServletResponse)
     *
     * @param request  The HttpServletRequest to this servlet.
     * @param response The HttpServletResponse this servlet will write to.
     */
    protected void service(HttpServletRequest request, HttpServletResponse response) {
+      Cloud cloud = getCloud();
+      String xsl = getXslTemplate(request);
 
-      // This cloud can only be read from.
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-      
       // Primary key request
       String pk = request.getParameter(PK);
       if (!StringUtil.isEmptyOrWhitespace(pk)) {
-         log.debug("PRIMARY KEY " + pk);
-         String xml = "";
-         try {
-            Node node = cloud.getNode(pk);
-            if (RepositoryUtil.isContentChannel(node)) {
-               xml = XMLController.toXml(node);
-            }
-            else {
-               xml = XMLController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
-            }
-            HttpUtil.sendXml(xml, response);
-            return;
-         }
-         catch (Exception e) {
-            sendError("Creating xml failed", response);
-            return;
-         }
-      }
-
-      // Check the contentType
-      String contentType = request.getParameter(CONTENT_TYPE);
-      log.debug("CONTENTTYPE " + contentType);
-
-      if (StringUtil.isEmptyOrWhitespace(contentType)) {
-         sendError("Content type is empty", response);
+         processSingle(response, cloud, xsl, pk);
          return;
       }
-      contentType = contentType.toLowerCase();
 
-      // For all remaining content types, a channel must be specified
+      // For all remaining parameters, a channel must be specified
 
       // Check the channel
       String channel = request.getParameter(CHANNEL);
-
-      if (StringUtil.isEmptyOrWhitespace(channel)) {
-         sendError("Channel is empty", response);
-         return;
-      }
-
-      log.debug("CHANNEL PATH = " + channel);
-
-      Node channelNode = null;
-      try {
-         channelNode = RepositoryUtil.getChannelFromPath(cloud, channel);
-      }
-      catch (NotFoundException nfe) {
-         sendError("Channel not found", response);
-         return;
-      }
-
-      if (channelNode == null) {
-         sendError("Channel not found", response);
-         return;
-      }
-      
-      // Handle other content types
-      if (!ContentElementUtil.isContentType(contentType)) {
-         sendError("Unknown content type", response);
-         return;
-      }
+      // Check the contentType
+      String[] contentTypes = request.getParameterValues(CONTENT_TYPE);
 
       String fromIndex = request.getParameter(FROM_INDEX);
       String toIndex = request.getParameter(TO_INDEX);
@@ -136,64 +95,156 @@ public class XMLServlet extends HttpServlet {
       String previewdateParam = request.getParameter(PREVIEWDATE);
       String numbersOnly = request.getParameter(NUMBERS_ONLY);
 
-      NodeQuery query = cloud.createNodeQuery();
-      Step step1 = query.addStep(channelNode.getNodeManager());
-      query.addNode(step1, channelNode);
+      if ((contentTypes == null) || (contentTypes.length == 0)) {
+          sendError("no content types specified", response);
+          return;
+       }
 
-      NodeManager contentManager = cloud.getNodeManager(contentType);
-      RelationStep step2 = query.addRelationStep(contentManager, RepositoryUtil.CONTENTREL, "destination");
-      Step step3 = step2.getNext();
-      query.setNodeStep(step3); // makes it ready for use as NodeQuery
+       // loop through contentTypes
+       for (int i = 0; i < contentTypes.length; i++) {
+          log.debug("CONTENTTYPE " + contentTypes[i]);   
 
+          if (StringUtil.isEmptyOrWhitespace(contentTypes[i])) {
+              sendError("Content type is empty", response);
+              return;
+          }
+
+          contentTypes[i] = contentTypes[i].toLowerCase();   
+
+          // Handle other content types
+          if (!ContentElementUtil.isContentType(contentTypes[i])) {
+             sendError("Unknown content type", response);
+             return;
+          }
+       }
+      
+      processList(response, xsl, cloud, channel, Arrays.asList(contentTypes), fromIndex, toIndex, filterName,
+            filterValue, sortName, sortDirection, previewdateParam, numbersOnly);
+   }
+
+    protected void processSingle(HttpServletResponse response, Cloud cloud, String xsl, String pk) {
+        log.debug("PRIMARY KEY " + pk);
+         String xml = "";
+         try {
+            Node node = cloud.getNode(pk);
+            if (RepositoryUtil.isContentChannel(node)) {
+               xml = XMLController.toXml(node);
+            }
+            else {
+               xml = XMLController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
+            }
+            HttpUtil.sendXml(xml, response);
+            xml = transformXml(xsl, xml);
+            return;
+         } catch (IOException e) {
+             if (log.isDebugEnabled()) {
+                 log.debug(Logging.stackTrace(e));
+             }
+            sendError("IO with xslt failed", response);
+            return;
+         } catch (TransformerException e) {
+             if (log.isDebugEnabled()) {
+                 log.debug(Logging.stackTrace(e));
+             }
+            sendError("Transformer with xslt failed", response);
+            return;
+         } catch (ParserConfigurationException e) {
+             if (log.isDebugEnabled()) {
+                 log.debug(Logging.stackTrace(e));
+             }
+            sendError("ParserConfiguration with xslt failed", response);
+            return;
+         } catch (SAXException e) {
+             if (log.isDebugEnabled()) {
+                 log.debug(Logging.stackTrace(e));
+             }
+            sendError("SAX with xslt failed", response);
+            return;
+         } catch (Exception e) {
+            sendError("Creating xml failed", response);
+            return;
+         }
+    }
+
+    protected Cloud getCloud() {
+        // This cloud can only be read from.
+        Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+        return cloud;
+    }
+
+   protected void processList(HttpServletResponse response, String xsl, Cloud cloud,
+        String channel, List<String> contentTypes, String fromIndex, String toIndex, String filterName,
+        String filterValue, String sortName, String sortDirection, String previewdateParam,
+        String numbersOnly) {
+    
+      if (StringUtil.isEmptyOrWhitespace(channel)) {
+         sendError("Channel is empty", response);
+         return;
+      }
+
+      log.debug("CHANNEL PATH = " + channel);
+
+      Node channelNode = null;
+      try {
+          if (StringUtils.isNumeric(channel)) {
+              channelNode = cloud.getNode(channel);
+          }
+          else {
+              channelNode = RepositoryUtil.getChannelFromPath(cloud, channel);
+          }
+      }
+      catch (NotFoundException nfe) {
+         sendError("Channel not found", response);
+         return;
+      }
+
+      if (channelNode == null) {
+         sendError("Channel not found", response);
+         return;
+      }
+
+      // determine offset and max number
+      int offSet = -1;
+      int maxNumber = -1;
+      
+      if (!StringUtil.isEmptyOrWhitespace(fromIndex) && !StringUtil.isEmptyOrWhitespace(toIndex)) {
+         offSet = getInt(fromIndex, 0);
+         maxNumber = Math.max(getInt(toIndex, -1) - getInt(fromIndex, 0), -1);
+      }      
+
+      // create query
+      NodeQuery query = 
+         RepositoryUtil.createLinkedContentQuery(channelNode, contentTypes, sortName, sortDirection, false, null, offSet, maxNumber, -1, -1, -1);
+
+      NodeManager queryNodeManager = query.getNodeManager();
+
+      // add other constraints
       if (!StringUtil.isEmptyOrWhitespace(filterName) && !StringUtil.isEmptyOrWhitespace(filterValue)) {
-         Field field = contentManager.getField(filterName);
-         FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
+         // check if field exsists
+         if (queryNodeManager.hasField(filterName)) {
+            Field field = queryNodeManager.getField(filterName);
+            FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
                FieldCompareConstraint.LIKE,
                "%" + filterValue + "%");
-         query.setConstraint(constraint);
+            SearchUtil.addConstraint(query, constraint);
+         }
+         else {
+            sendError("Cannot add constraint for field: " + filterName, response);
+            return;
+         }
       }
 
       if (previewdateParam != null) {
          Integer date = null;
          if (previewdateParam.matches("^\\d+$")) {
             date = new Integer(previewdateParam);
-            Constraint orginal = query.getConstraint();
-            Field field = contentManager.getField("expirydate");
-            Constraint expirydate = query.createConstraint(query.getStepField(field), FieldCompareConstraint.GREATER_EQUAL, date);
-            field = contentManager.getField("publishdate");
-            Constraint publishdate = query.createConstraint(query.getStepField(field), FieldCompareConstraint.LESS_EQUAL, date);
-            Constraint composite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
-
-            if (orginal == null) {
-               query.setConstraint(composite);
-            }
-            else {
-               query.setConstraint(query.createConstraint(composite, CompositeConstraint.LOGICAL_AND, orginal));
-            }
+            ContentElementUtil.addLifeCycleConstraint(query, date);
          }
       }
 
-      if (!StringUtil.isEmptyOrWhitespace(sortName)) {
-          StepField sf = query.getStepField(contentManager.getField(sortName));
-          int dir = SortOrder.ORDER_ASCENDING;
-          if ("DOWN".equalsIgnoreCase(sortDirection)) {
-             dir = SortOrder.ORDER_DESCENDING;
-          }
-          query.addSortOrder(sf, dir);
-       }
-       else {
-           Field field = cloud.getNodeManager("contentrel").getField("pos");
-           StepField posSF = query.createStepField(step2, field);
-           query.addSortOrder(posSF, SortOrder.ORDER_ASCENDING);
-       }
-
        int contentSize = Queries.count(query);
-       if (!StringUtil.isEmptyOrWhitespace(fromIndex) && !StringUtil.isEmptyOrWhitespace(toIndex)) {
-          query.setOffset(getInt(fromIndex, 0));
-          query.setMaxNumber(Math.max(getInt(toIndex, -1) - getInt(fromIndex, 0), -1));
-       }
 
-       NodeList contentlist = query.getNodeManager().getList(query);
+       NodeList contentlist = queryNodeManager.getList(query);
        String xml = "";
        try {
          if (Boolean.valueOf(numbersOnly).booleanValue()) {
@@ -202,16 +253,59 @@ public class XMLServlet extends HttpServlet {
          else {
              xml = XMLController.toXml(channelNode, contentlist, contentSize);
          }
-       }
-       catch (Exception e) {
+         
+         xml = transformXml(xsl, xml);
+
+       } catch (IOException e) {
+           if (log.isDebugEnabled()) {
+               log.debug(Logging.stackTrace(e));
+           }
+          sendError("IO with xslt failed", response);
+          return;
+       } catch (TransformerException e) {
+           if (log.isDebugEnabled()) {
+               log.debug(Logging.stackTrace(e));
+           }
+          sendError("Transformer with xslt failed", response);
+          return;
+       } catch (ParserConfigurationException e) {
+           if (log.isDebugEnabled()) {
+               log.debug(Logging.stackTrace(e));
+           }
+          sendError("ParserConfiguration with xslt failed", response);
+          return;
+       } catch (SAXException e) {
+           if (log.isDebugEnabled()) {
+               log.debug(Logging.stackTrace(e));
+           }
+          sendError("SAX with xslt failed", response);
+          return;
+       } catch (Exception e) {
            if (log.isDebugEnabled()) {
                log.debug(Logging.stackTrace(e));
            }
           sendError("Creating xml failed", response);
           return;
-       }
+      }
+      
        HttpUtil.sendXml(xml, response);
-   }
+    }
+
+    private String transformXml(String xsl, String xml) throws IOException, TransformerException,
+            ParserConfigurationException, SAXException {
+         if (!StringUtil.isEmpty(xsl)) {
+            // get xslt source and xml source
+            InputStream xslSrc = getClass().getClassLoader().getResourceAsStream(xsl);
+            // transform
+            XsltUtil xsltUtil = new XsltUtil(xml, xslSrc, null);
+            xml = xsltUtil.transformToString(null);
+         }
+        return xml;
+    }
+
+    protected String getXslTemplate(HttpServletRequest request) {
+        return null;
+    }
 
    /**
     * Retrieves the int-value held in a String. This method will return the default value

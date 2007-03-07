@@ -56,14 +56,15 @@ public class HttpUtil {
         				value = ((String[]) objectValue)[0]; 
         			}
         			
-        			queryString.append(URLEncoder.encode(key, "UTF-8"));
+        			queryString.append(URLEncoder.encode(key, SITE_ENCODING));
                 	queryString.append("=");
-                	queryString.append(URLEncoder.encode(value, "UTF-8"));
+                	queryString.append(URLEncoder.encode(value, SITE_ENCODING));
                 	if(i.hasNext()) {
                 		queryString.append("&");
                 	}
         		}
         		method.setQueryString(queryString.toString());
+            
         	}
         	
             int response = getHttpClient().executeMethod(method);
@@ -101,7 +102,7 @@ public class HttpUtil {
 
             HttpClient client = new HttpClient();
             client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Jakarta Commons-HttpClient/3.0 (CMSContainer Server Side Include Portlet)");
+                "Jakarta Commons-HttpClient/3.0 (CMS Container Server Side Include Portlet)");
             client.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, SITE_ENCODING);
 
             // Retry 10 times, even when request was already fully sent

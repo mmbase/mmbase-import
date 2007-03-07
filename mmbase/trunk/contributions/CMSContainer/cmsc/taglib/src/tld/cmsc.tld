@@ -163,6 +163,15 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<description>
+				if override only take the sheets of the first page we find.
+				by default it will take all stylesheets to the root (false)
+			</description>
+			<name>override</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<description>Insert one of the images of a page</description>
@@ -409,7 +418,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>JSP variable name to put the current NavChannel in.</description>
+			<description>JSP variable name to put the current Page in.</description>
 			<name>var</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -436,6 +445,12 @@
 			<description>Site or NavChannel.</description>
 			<name>origin</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>JSP variable name to put the boolean in.</description>
+			<name>var</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -629,6 +644,12 @@
 			<description>JSP variable to set selected.</description>
 			<name>var</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>Default value when selected is not set.</description>
+			<name>default</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -890,4 +911,29 @@ The var to write it to.
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>	
+	<tag>
+		<description>Tag that checks if given password is oke.</description>
+		<name>validate-password</name>
+		<tag-class>com.finalist.cmsc.taglib.ValidatePasswordTag</tag-class>
+		<body-content>empty</body-content>	
+		<attribute>
+			<description>The password to be compared.</description>
+			<name>md5Password</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The password that the client typed in.</description>
+			<name>givenPassword</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The returned result of this tag.</description>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>	
+	
 </taglib>

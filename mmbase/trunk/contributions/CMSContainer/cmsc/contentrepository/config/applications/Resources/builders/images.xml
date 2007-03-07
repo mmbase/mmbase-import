@@ -335,6 +335,50 @@
 		</db>
 	</field>
 
+
+    <field>
+      <descriptions>
+
+        <description xml:lang="en">Alt text</description>
+        <description xml:lang="nl">Alternatieve text</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Alt text</guiname>
+        <guiname xml:lang="nl">Alternatieve text</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>14</input>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>alt</name>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+
+        <description xml:lang="en">Caption</description>
+        <description xml:lang="nl">Bijschift</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Caption</guiname>
+        <guiname xml:lang="nl">Bijschift</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>14</input>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>caption</name>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+
     <!--
         If you use this field, then you ensure that no duplicate images can be uploaded.
     -->

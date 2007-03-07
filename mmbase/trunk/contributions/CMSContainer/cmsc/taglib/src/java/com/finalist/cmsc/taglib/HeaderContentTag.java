@@ -63,7 +63,7 @@ public class HeaderContentTag  extends CmscTag {
             headerResources.add(new MetaHeaderResource(false, "author", site.getCreator(), siteLanguage, null));
             headerResources.add(new MetaHeaderResource(false, "copyright", site.getRights(), siteLanguage, null));
             headerResources.add(new MetaHeaderResource(false, "language", siteLanguage, null, "language"));
-            headerResources.add(new MetaHeaderResource(false, "generator", "CMS container", null, null));
+            headerResources.add(new MetaHeaderResource(false, "generator", "CMS Container", null, null));
 
             if (dublin) {
             	headerResources.add(new LinkHeaderResource(true, "schema.DC", "http://dublincore.org/documents/dces/", null));

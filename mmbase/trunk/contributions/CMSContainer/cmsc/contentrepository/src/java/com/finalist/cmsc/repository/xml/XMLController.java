@@ -10,6 +10,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.sf.mmapps.commons.bridge.NodeFieldComparator;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -17,6 +18,8 @@ import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.finalist.cmsc.mmbase.ResourcesUtil;
+import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
@@ -31,11 +34,21 @@ public class XMLController {
    private static List<String> disallowedRelationTypes = new ArrayList<String>();
    static {
        disallowedTypes.add(RepositoryUtil.CONTENTCHANNEL);
+       disallowedTypes.add(RepositoryUtil.CONTENTELEMENT);
        disallowedTypes.add(SecurityUtil.USER);
+
+       disallowedTypes.add("layout");
+       disallowedTypes.add("portletdefinition");
+       disallowedTypes.add("view");
+       disallowedTypes.add("stylesheet");
+       disallowedTypes.add("portlet");
+       
        
        disallowedRelationTypes.add(RepositoryUtil.CREATIONREL);
        disallowedRelationTypes.add(RepositoryUtil.DELETIONREL);
        disallowedRelationTypes.add(SecurityUtil.ROLEREL);
+       disallowedRelationTypes.add("navrel");
+       disallowedRelationTypes.add("namedrel");
    }
    
    public static String toXmlNumbersOnly(Node node, NodeList nodes, int contentSize) throws Exception {
@@ -162,6 +175,8 @@ public class XMLController {
       
       Element nodeElement = document.createElement(manager.getName());
       toXmlFields(node, document, nodeElement, fieldsAsAttribute);
+      addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
+      
       processedNodes.put(new Integer(node.getNumber()), node);
 
       if (addRelations && !nodesSeenButNotProcessed.contains(new Integer(node.getNumber()))) {
@@ -187,6 +202,47 @@ public class XMLController {
       return nodeElement;
    }
    
+   private static void addExternalUrl(Node node, Document document, Element nodeElement,
+        boolean fieldsAsAttribute) {
+    
+       String url = null;
+       String builderName = node.getNodeManager().getName();
+
+       if ("attachments".equals(builderName) || "images".equals(builderName)) {
+           url = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
+       } else {
+           if ("urls".equals(builderName)) {
+               url = node.getStringValue("url");
+           }
+           else {
+               if (ContentElementUtil.isContentElement(node)) {
+                   url =  ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
+                       node.getStringValue("number"), node.getStringValue("title"));
+               }
+               else {
+                   if ("page".equals(builderName) || "site".equals(builderName)) {
+                       url = node.getStringValue("externalurl");
+                       if (StringUtil.isEmpty(url)) {
+                           url =  ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
+                                   node.getStringValue("number"), node.getStringValue("title"));
+                       }
+                   }
+               }
+           }
+       }
+       if (!StringUtil.isEmpty(url)) {
+           if (fieldsAsAttribute) {
+               nodeElement.setAttribute("externalUrl", url);
+            }
+            else {
+               Element element = document.createElement("externalUrl");
+               element.appendChild(document.createTextNode(url));
+               nodeElement.appendChild(element);
+            }
+       }
+       
+   }
+
    public static void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute) {
       toXmlFields(node, document, nodeElement, fieldsAsAttribute, false);
    }

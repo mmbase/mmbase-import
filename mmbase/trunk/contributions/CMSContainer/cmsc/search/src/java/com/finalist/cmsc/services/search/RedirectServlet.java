@@ -68,7 +68,7 @@ public class RedirectServlet extends BridgeServlet {
             redirect = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
         }
         
-        if (PagesUtil.isPage(node)) {
+        if (PagesUtil.isPageType(node)) {
             Page page = SiteManagement.getPage(node.getNumber());
             if (page != null) {
                 String link = SiteManagement.getPath(page, !ServerUtil.useServerName());

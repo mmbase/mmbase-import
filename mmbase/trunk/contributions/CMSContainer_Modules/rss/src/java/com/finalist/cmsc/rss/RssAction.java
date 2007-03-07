@@ -91,9 +91,10 @@ public class RssAction extends MMBaseAction {
         NodeManager nodeManager = query.getNodeManager();
 
         addPublicationDateConstraint(nodeManager, query);
-        addRssConstraint(nodeManager, query);
         
         NodeList results = query.getNodeManager().getList(query);
+        // Remove all contentelements which do not want to be shown in rss.
+        removeRssNodes(results);
         
         // Set everyting on the request.
         request.setAttribute(RESULT_COUNT, Integer.valueOf(Queries.count(query)));
@@ -179,11 +180,14 @@ public class RssAction extends MMBaseAction {
         SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, days);
     }
 
-    private void addRssConstraint(NodeManager nodeManager, NodeQuery query) {
-        // not all content elements have a use_in_rss flag
-        if (nodeManager.hasField("use_in_rss")) {
-            Field field = nodeManager.getField("use_in_rss");
-            SearchUtil.addEqualConstraint(query, field, Boolean.TRUE);
+
+    private void removeRssNodes(NodeList results2) {
+        for (Iterator iterator = results2.iterator(); iterator.hasNext();) {
+            Node node = (Node) iterator.next();
+            if (node.getNodeManager().hasField("use_in_rss")
+                    && !node.getBooleanValue("use_in_rss")) {
+                iterator.remove();
+            }
         }
     }
 }

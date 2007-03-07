@@ -744,6 +744,29 @@ public class RepositoryUtil {
            }
     }
 
+    public static Node createContentChannelPath(Cloud cloud, String path) {
+        String[] fragments = TreeUtil.getPathFragments(path);
+        Node parentChannel = getRootNode(cloud);
+        String rootPathFragment = parentChannel.getStringValue(FRAGMENT_FIELD);
+        if (! rootPathFragment.equals(fragments[0])) {
+            throw new IllegalArgumentException("path does not start with root pathfragment (" + rootPathFragment + ")");
+        }
+        
+        for (int i = 1; i < fragments.length; i++) {
+            String fragment = fragments[i];
+
+            if (!hasChild(parentChannel, fragment)) {
+                Node contentChannel = RepositoryUtil.createChannel(cloud, fragment, fragment);
+                RepositoryUtil.appendChild(parentChannel, contentChannel);
+                parentChannel = contentChannel;
+            }
+            else {
+                parentChannel = RepositoryUtil.getChild(parentChannel, fragment);
+            }
+        }
+        return parentChannel;
+    }
+    
     public static Node createChannel(Cloud cloud, String name) {
         return createChannel(cloud, name, null);
     }
@@ -835,7 +858,7 @@ public class RepositoryUtil {
     }
 
     public static void setGroupRights(Cloud cloud, Node user, Map rights) {
-        SecurityUtil.setGroupRights(cloud, user, rights, CONTENTCHANNEL);
+        SecurityUtil.setGroupRights(cloud, user, rights, treeManagers);
     }
 
     public static List getUsersWithRights(Node channel, Role requiredRole) {

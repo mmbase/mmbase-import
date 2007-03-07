@@ -56,6 +56,13 @@ public class LinkedImagesTag  extends NodeReferrerTag {
 
     /** Holds value of property width. */
     private Attribute width = Attribute.NULL;
+
+    /** Holds value of property popup. */
+    private Attribute popup = Attribute.NULL;
+
+    /** Holds value of property max. */
+    private Attribute max = Attribute.NULL;
+
     
     public void setPosition(String position) throws JspTagException {
         this.position = getAttribute(position);
@@ -83,12 +90,20 @@ public class LinkedImagesTag  extends NodeReferrerTag {
     
     public void setVspace(String vspace) throws JspTagException {
        this.vspace = getAttribute(vspace);
-   }
+    }
    
     public void setWidth(String width) throws JspTagException {
        this.width = getAttribute(width);
-   }
-   
+    }
+
+    public void setMax(String max) throws JspTagException {
+        this.max = getAttribute(max);
+    }
+
+    public void setPopup(String popup) throws JspTagException {
+        this.popup = getAttribute(popup);
+    }
+    
     /**
      * This tag returns links to content.
      *
@@ -125,6 +140,11 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                    }
                }
            }
+           
+           int maxSize = max.getInt(this, Integer.MAX_VALUE);
+           while(list.size() > maxSize) {
+               list.remove(list.size() - 1);
+           }
 
            String outputValue = "";
            
@@ -136,16 +156,24 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                     
                     int width = imagerel.getIntValue("width");
                     int height = imagerel.getIntValue("height");
+                    if(width == -1 && height == -1) {
+                       width = image.getIntValue("width");
+                       height = image.getIntValue("height");
+                    }
                     String crop = imagerel.getStringValue("crop");
                     String legendType = imagerel.getStringValue("legend");
                     boolean popup = imagerel.getBooleanValue("popup");
 
                     if(this.width != Attribute.NULL) {
-                       int maxWidth = this.width.getInt(this, 0);
-                       if(maxWidth > width) {
-                          height = height*maxWidth/width;
-                          width = maxWidth;
+                       int forcedWidth = this.width.getInt(this, 0);
+                       if(width != forcedWidth) {
+                          height = height*forcedWidth/width;
+                          width = forcedWidth;
                        }
+                    }
+
+                    if(this.popup != Attribute.NULL) {
+                        popup = this.popup.getBoolean(this, false);
                     }
                     
                     ImageTag imgTag = new ImageTag();
@@ -157,8 +185,18 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                     imgTag.setExternalAttributes(getOtherAttributes());
                     String templateStr = imgTag.getTemplate(image, null, width, height, crop);
                     Dimension dim = imgTag.getDimension(image, templateStr);
-                    String servletArgument = imgTag.getServletArgument(image, templateStr);
-                    String servletPath = getServletPath(imgTag, image, servletArgument);
+
+                    Node cachedNode = imgTag.getServletNode(image, templateStr);
+
+                    String servletArgument;
+                    if (cachedNode == null) {
+                        cachedNode = image;
+                        servletArgument = cachedNode.getStringValue("number");
+                    } else {
+                        servletArgument = imgTag.getServletArgument(cachedNode, templateStr);
+                    }
+                    
+                    String servletPath = getServletPath(imgTag, cachedNode, servletArgument);
                     outputValue += imgTag.getOutputValue(image, servletPath, dim, legendType, popup);
                 }
             }

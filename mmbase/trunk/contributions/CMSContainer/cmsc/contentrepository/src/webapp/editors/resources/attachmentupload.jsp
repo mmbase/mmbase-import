@@ -114,11 +114,14 @@
                     <mm:listnodes>
 
 					<mm:field name="title" escape="js-single-quotes" jspvar="title">
-						<%
-						title = ((String)title).replaceAll("[\"]","@quot;");
-						%>
-	                    <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>', '<mm:attachment />');</mm:import>
-	                </mm:field>
+						<mm:attachment escape="js-single-quotes" jspvar="attachment">
+							<%
+							title = ((String)title).replaceAll("[\"]","@quot;");
+							attachment = ((String)attachment).replaceAll("[\"]","@quot;");
+							%>
+	                    <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>', '<%=attachment%>');</mm:import>
+                    </mm:attachment>
+                </mm:field>
                     <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                        <td>
                         <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>

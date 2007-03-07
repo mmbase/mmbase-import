@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-security</artifactId>
-    <name>CMS container security</name>
-    <shortDescription>CMS container security</shortDescription>
+    <name>CMS Container security</name>
+    <shortDescription>CMS Container security</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

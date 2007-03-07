@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-search</artifactId>
-    <name>CMS container search</name>
-    <shortDescription>CMS container search</shortDescription>
+    <name>CMS Container search</name>
+    <shortDescription>CMS Container search</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

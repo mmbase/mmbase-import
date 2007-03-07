@@ -15,8 +15,11 @@ import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.implementation.BasicNode;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.cache.CachePolicy;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
@@ -135,11 +138,14 @@ public class StatusCronJob implements CronJob {
 			try {
 				Node node = i.nextNode();
 				if (ContentElementUtil.isContentElement(node)) {
-					node.setStringValue(FIELD_STATUS, newStatus);
 					
-					cleckDates(node);
-					
-					node.commit();
+               MMObjectNode objectNode = MMBase.getMMBase().getBuilder("contentelement").getNode(node.getNumber());
+               
+               objectNode.setValue(FIELD_STATUS, newStatus);
+               cleckDates(objectNode);
+					objectNode.commit();
+               
+               log.debug("Altered MMObjectNode "+objectNode.getNumber());
 					resultOk++;
 				} else {
 					log.debug("Node " + node.getNumber() + " is not a contentelement!");
@@ -151,21 +157,21 @@ public class StatusCronJob implements CronJob {
 		return resultOk;
 	}
 
-	private void cleckDates(Node node) {
-		Date publishDate = node.getDateValue(FIELD_PUBLISHDATE);
-		Date archiveDate = node.getDateValue(FIELD_ARCHIVEDATE);
-		Date expireDate = node.getDateValue(FIELD_EXPIREDATE);
+	private void cleckDates(MMObjectNode objectNode) {
+		Date publishDate = objectNode.getDateValue(FIELD_PUBLISHDATE);
+		Date archiveDate = objectNode.getDateValue(FIELD_ARCHIVEDATE);
+		Date expireDate = objectNode.getDateValue(FIELD_EXPIREDATE);
 		
 		if(archiveDate.getTime() < publishDate.getTime()) {
 			archiveDate = publishDate;
-			node.setDateValue(FIELD_ARCHIVEDATE, archiveDate);
-			log.debug("fixed archive date for: "+node.getNumber());
+         objectNode.setValue(FIELD_ARCHIVEDATE, archiveDate);
+			log.debug("fixed archive date for: "+objectNode.getNumber());
 		}
 		
 		if(expireDate.getTime() < archiveDate.getTime()) {
 			expireDate = archiveDate;
-			node.setDateValue(FIELD_EXPIREDATE, expireDate);
-			log.debug("fixed expire date for: "+node.getNumber());
+         objectNode.setValue(FIELD_EXPIREDATE, expireDate);
+			log.debug("fixed expire date for: "+objectNode.getNumber());
 		}
 	}
 

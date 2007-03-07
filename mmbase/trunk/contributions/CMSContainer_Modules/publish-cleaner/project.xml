@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-publish-cleaner</artifactId>
-    <name>CMS container publish-cleaner</name>
-    <shortDescription>CMS container publish-cleaner</shortDescription>
+    <name>CMS Container publish-cleaner</name>
+    <shortDescription>CMS Container publish-cleaner</shortDescription>
 	<dependencies>
 		<dependency>
 			<groupId>mmapps</groupId>

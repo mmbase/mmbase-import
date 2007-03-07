@@ -3,7 +3,7 @@
 	<b>Trefwoorden:</b>
 	<br/>
 	U hoeft geen trefwoorden op te geven bij het toevoegen van een element. Trefwoorden worden,
-	in dat geval, automatisch door de CMSContainer gegenereerd. De CMSContainer zal bepaalde 
+	in dat geval, automatisch door de CMS Container gegenereerd. De CMS Container zal bepaalde 
 	woorden niet gebruiken om artikels te indexeren (bijvoorbeeld lidwoorden).
 </p>
 <p>

@@ -10,7 +10,7 @@ public class UrlForm extends SearchForm {
     private String valid;
 
     public UrlForm() {
-        super("urls");
+        super("urls", "name");
     }
 
     public String getDescription() {

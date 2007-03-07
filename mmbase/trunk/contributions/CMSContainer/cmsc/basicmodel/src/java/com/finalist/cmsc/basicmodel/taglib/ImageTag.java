@@ -242,4 +242,8 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     private String replaceLineFeeds(String str, String replacement) {
     	return str.replaceAll("[\\r\\n]+", replacement);
     }
+    
+    public Node getServletNode(Node node, String template) {
+        return super.getServletNode(node, template);
+    }
 }

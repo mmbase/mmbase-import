@@ -17,7 +17,7 @@ limitations under the License.
 -->
 <project>
   <extend>${basedir}/../../maven-base/project.xml</extend>
-  <name>CMS container Portal Driver</name>
+  <name>CMS Container Portal Driver</name>
   <artifactId>cmsc-portal</artifactId>
   <shortDescription>
     Simple portal that allows usage of Pluto.

@@ -304,45 +304,6 @@ public class SecurityUtil {
           relation.commit();
     }
 
-    public static List setGroupRights(Node channel, Role requiredRole, String managerName, String relationName) {
-        String[] treeManagers = new String[] { managerName };
-        return setGroupRights(channel, requiredRole, treeManagers, relationName);
-    }
-    
-   public static List setGroupRights(Node channel, Role requiredRole, String[] treeManagers, String relationName) {
-      Cloud cloud = channel.getCloud();
-      
-      // get all channel nodes in path. First is root nofe. last is the same aame as channel parameter
-      List path = TreeUtil.getPathToRoot(channel, treeManagers, relationName);
-      List<Node> users = new ArrayList<Node>();
-
-      Iterator iter = path.iterator();
-      while (iter.hasNext()) {
-         Node channelNode = (Node) iter.next();
-
-         RelationManager rolerelManager = cloud.getRelationManager(channelNode.getNodeManager().getName(), USER, ROLEREL);
-
-         RelationList rolerels = rolerelManager.getRelations(channelNode);
-
-         RelationIterator rels = rolerels.relationIterator();
-         while (rels.hasNext()) {
-            Relation relation = rels.nextRelation();
-
-            Node destinationUser = relation.getDestination();
-
-            // add users with at least required role
-            if (relation.getIntValue(ROLE_FIELD) >= requiredRole.getId()) {
-               addToList(users, destinationUser);
-            }
-            // Remove users with a lower role then required
-            if (relation.getIntValue(ROLE_FIELD) < requiredRole.getId()) {
-               removeFromList(users, destinationUser);
-            }
-         }
-      }
-      return users;
-   }
-
    private static void addToList(List<Node> l, Node node) {
        for (int i = 0; i < l.size(); i++) {
           Node n = l.get(i);

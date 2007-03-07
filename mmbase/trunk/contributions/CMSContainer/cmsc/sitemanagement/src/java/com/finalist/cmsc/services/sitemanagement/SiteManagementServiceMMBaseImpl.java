@@ -127,12 +127,15 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	}
 
     @Override
-	public List<Stylesheet> getStylesheetForPageByPath (String path) {
+	public List<Stylesheet> getStylesheetForPageByPath (String path, boolean override) {
         List<Page> pagesToRoot = getListFromPath(path);//get all pages to root
         List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
 
-        for(int count = 0; count < pagesToRoot.size(); count++){
-            Page page = pagesToRoot.get(count);
+        // if override only take the sheets of the first page we find
+        for(int count = 0; count < pagesToRoot.size() && (!override || stylesheets.size() == 0); count++){
+           
+           // reverse looping
+            Page page = pagesToRoot.get(pagesToRoot.size() - count - 1);
 
             List<Integer> stylesheetNumbers = page.getStylesheet();
             for (int j =0; j <stylesheetNumbers.size(); j++) {
@@ -202,8 +205,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
     private void removeDefinitionsBasedOnRank(List<PortletDefinition> defs) {
         Cloud cloud = getUserCloud();
         Rank rank = cloud.getUser().getRank();
-        for (Iterator iter = defs.iterator(); iter.hasNext();) {
-            PortletDefinition definition = (PortletDefinition) iter.next();
+        for (Iterator<PortletDefinition> iter = defs.iterator(); iter.hasNext();) {
+            PortletDefinition definition = iter.next();
             if (definition.getRank() > rank.getInt()) {
                 iter.remove();
             }

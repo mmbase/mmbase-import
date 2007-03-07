@@ -8,7 +8,7 @@
 		<title><fmt:message key="cleanicaches.title" /></title>
 	</head>
 	<body>
-<mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
+<mm:cloud jspvar="cloud" rank="basic user" method="http">
 
 	<mm:listnodes type="icaches">
 		<mm:deletenode />

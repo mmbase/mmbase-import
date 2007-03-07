@@ -17,7 +17,7 @@ limitations under the License.
 -->
 <project>
   <extend>${basedir}/../../maven-base/project.xml</extend>
-  <name>CMS container portlets</name>
+  <name>CMS Container portlets</name>
   <artifactId>cmsc-portlets</artifactId>
   <shortDescription>
     Portlets for the CMSC portal and repository
@@ -48,6 +48,12 @@ limitations under the License.
 			<type>jar</type>
 		</dependency>
      <dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-security</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+     	<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-servicemanagement</artifactId>
 			<version>${cmsc.version}</version>

@@ -58,6 +58,8 @@ public class PagesUtil {
     public static final String LAYOUTREL = "layoutrel";
     public static final String STYLEREL = "stylerel";
 
+    public static final String POS_FIELD = "pos";
+    
     private static final String NAMEDALLOWEDREL = "namedallowrel";
 
     public static final String STYLESHEET = "stylesheet";
@@ -229,7 +231,7 @@ public class PagesUtil {
     }
     
     public static NodeList getStylesheet(Node pageNode) {
-        return pageNode.getRelatedNodes(STYLESHEET, STYLEREL, DESTINATION);
+       return SearchUtil.findRelatedOrderedNodeList(pageNode, STYLESHEET, STYLEREL, STYLEREL+"."+POS_FIELD);
     }
     
 

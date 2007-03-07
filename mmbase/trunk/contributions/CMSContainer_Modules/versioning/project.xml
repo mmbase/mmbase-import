@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-versioning</artifactId>
-    <name>CMS container versioning</name>
-    <shortDescription>CMS container versioning</shortDescription>
+    <name>CMS Container versioning</name>
+    <shortDescription>CMS Container versioning</shortDescription>
 </project>
 

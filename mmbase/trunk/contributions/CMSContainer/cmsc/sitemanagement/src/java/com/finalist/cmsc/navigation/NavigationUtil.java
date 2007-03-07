@@ -367,10 +367,6 @@ public class NavigationUtil {
         SecurityUtil.setGroupRights(cloud, group, rights, treeManagers);
     }
 
-    public static List setGroupRights(Node page, Role requiredRole) {
-        return SecurityUtil.setGroupRights(page, requiredRole, treeManagers, NAVREL);
-    }
-
     public static void addRole(Cloud cloud, String pageNumber, Node group, Role role) {
         SecurityUtil.addRole(cloud, pageNumber, group, role, treeManagers);
     }

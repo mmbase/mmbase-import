@@ -132,6 +132,12 @@ function openRepositoryWithChannel() {
 		</cmsc:select></td>
 	</tr>
 	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.startindex" />:</td>
+		<td>
+			<input type="text" name="startindex" value="${startindex}" />
+		</td>
+	</tr>
+	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.maxelements" />:</td>
 		<td>
 			<input type="text" name="maxElements" value="${maxElements}" />
@@ -144,7 +150,7 @@ function openRepositoryWithChannel() {
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.usepaging" />:</td>
-		<td><cmsc:select var="usePaging">
+		<td><cmsc:select var="usePaging" default="false">
 			<cmsc:option value="true" message="edit_defaults.yes" />
 			<cmsc:option value="false" message="edit_defaults.no" />
 		</cmsc:select></td>

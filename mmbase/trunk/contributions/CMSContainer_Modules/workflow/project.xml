@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-workflow</artifactId>
-    <name>CMS container workflow</name>
-    <shortDescription>CMS container workflow</shortDescription>
+    <name>CMS Container workflow</name>
+    <shortDescription>CMS Container workflow</shortDescription>
 </project>
 

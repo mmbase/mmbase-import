@@ -15,7 +15,7 @@
 		</field>
 	</item>
 	
-	<command name="search" nodepath="layout" age="-1" fields="title">
+	<command name="search" nodepath="layout" age="-1" fields="title" orderby="title">
 		<prompt xml:lang="en">Search layout</prompt>
 		<prompt xml:lang="nl">Zoek template</prompt>
 		<search-filter>

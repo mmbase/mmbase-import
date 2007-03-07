@@ -15,6 +15,7 @@ import net.sf.mmapps.commons.util.KeywordUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
+import org.mmbase.datatypes.StringDataType;
 import org.mmbase.datatypes.processors.CommitProcessor;
 
 
@@ -33,8 +34,12 @@ public class KeywordProcessor implements CommitProcessor {
             FieldList fields = node.getNodeManager().getFields();
             for (Iterator iter = fields.iterator(); iter.hasNext();) {
                 Field managerField = (Field) iter.next();
-                if (managerField.getType() == Field.TYPE_STRING
-                        && !ContentElementUtil.isContentElementField(managerField)) {
+                
+                if(managerField.getDataType() instanceof StringDataType
+                    && !((StringDataType)managerField.getDataType()).isPassword() 
+                    && !managerField.isVirtual()
+                    && !ContentElementUtil.isContentElementField(managerField)){
+
                     String text = node.getStringValue(managerField.getName());
                     if (!StringUtil.isEmptyOrWhitespace(text)) {
                         text = text.replaceAll("<.+?>", "");

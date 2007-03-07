@@ -43,7 +43,7 @@
 				</c:if>
 
 				<c:if test="${notOnLive == 1}">
-					<fmt:message key="egemmail.export.good.notOnLive"/><br/>
+					<fmt:message key="egemmail.export.notOnLive.one"/><br/>
 				</c:if>
 				<c:if test="${notOnLive > 1}">
 					<fmt:message key="egemmail.export.notOnLive"><fmt:param>${notOnLive}</fmt:param></fmt:message><br/>

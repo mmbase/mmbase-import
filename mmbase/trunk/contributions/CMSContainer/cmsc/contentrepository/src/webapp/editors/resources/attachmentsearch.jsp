@@ -84,7 +84,7 @@
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
 	           	<mm:listnodes referid="results">
-	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment />');</mm:import>
+	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment escape="js-single-quotes"/>');</mm:import>
 	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
 	                     <td style="white-space:nowrap;">
   						    <c:if test="${action != 'select'}">

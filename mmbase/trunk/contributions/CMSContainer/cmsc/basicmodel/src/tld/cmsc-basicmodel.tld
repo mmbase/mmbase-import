@@ -123,7 +123,7 @@
 		<attribute>
 			<description>Images have to match this position in the imagerel</description>
 			<name>position</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -161,6 +161,16 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>	
+		<attribute>
+			<name>popup</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>max</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<description>This tag creates a list of related content elements.</description>
@@ -195,6 +205,80 @@
 			<description>The name of a node field to sort on.</description>
 			<name>sort</name>
 			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>	
+	<!-- ################ -->
+	<!-- FontImage Tag -->	
+	<!-- ################ -->	
+	<tag>
+		<description>Tag that puts text into an image according to the given parameters.</description>
+		<name>fontimage</name>
+		<tag-class>com.finalist.cmsc.basicmodel.taglib.FontImageTag</tag-class>
+		<tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
+		<body-content>scriptless</body-content>	
+		<attribute>
+			<description>The width of the image.</description>
+			<name>width</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>	
+		<attribute>
+			<description>The height of the image.</description>
+			<name>height</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<description>The text subtags for the tag above.</description>
+		<name>imagetext</name>
+		<tag-class>com.finalist.cmsc.basicmodel.taglib.ImageTextTag</tag-class>
+		<body-content>empty</body-content>	
+		<attribute>
+			<description>The font that is parsed in the image.</description>
+			<name>font</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The pointsize of the font.</description>
+			<name>pointSize</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The color of the text that is in the image.</description>
+			<name>color</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				The effect to use. This can be any supported mmbase convert command (e.g. for imagemagick: "stroke(black)" )
+				Or custom commands specially for this tag (only one supported at the moment: "outline(white)").
+			</description>
+			<name>effect</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The text that is in the image.</description>
+			<name>text</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The x position of the start of the text in the image.</description>
+			<name>x</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The y position of the start of the text in the image.</description>
+			<name>y</name>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

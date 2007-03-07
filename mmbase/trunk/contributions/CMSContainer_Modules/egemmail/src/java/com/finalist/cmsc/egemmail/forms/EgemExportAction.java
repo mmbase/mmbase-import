@@ -112,14 +112,14 @@ public class EgemExportAction extends MMBaseFormlessAction {
 		if(node.getNodeManager().hasField("intro")) {
 			String intro = node.getStringValue("intro");
 			if(intro != null && intro.length() > 0) {
-				return intro.replaceAll("<.*?>","");
+				return replaceHtml(intro);
 			}
 		}
 		
 		if(node.getNodeManager().hasField("body")) {
 			String body = node.getStringValue("body");
 			if(body != null && body.length() > 0) {
-				String messageBody = body.replaceAll("<.*?>","");
+				String messageBody = replaceHtml(body);
 				if(messageBody.length() > 300) {
 					int bestIndex = Math.max(messageBody.lastIndexOf(" ", 300), messageBody.lastIndexOf(".", 300)+1); 
 					messageBody = messageBody.substring(0,bestIndex);
@@ -131,4 +131,11 @@ public class EgemExportAction extends MMBaseFormlessAction {
 		// no field found, just use an empty field
 		return "";
 	}
+
+    private String replaceHtml(String str) {
+        String message = str.replaceAll("<.*?>","");
+         message = message.replace("&quot;", "\"");
+         message = message.replace("&#039;", "\'");
+        return message;
+    }
 }
