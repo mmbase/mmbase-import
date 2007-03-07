@@ -3,6 +3,8 @@
 ><mm:field name="posrel.pos" jspvar="posrel_pos" vartype="String" write="false"
 ><mm:field name="images.number" write="false" jspvar="images_number" vartype="String"><% 
 
+
+
 if(javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("weblog.jsp")>0) {
 
 	// images have different position for weblog articles, compare the two option_lists
@@ -18,7 +20,9 @@ if(javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("weblog.jsp")>0) 
 // Articles: when posrel.pos should be 1 or 7, imgFormat has to be "rightcolumn" to show the image
 // Teasers and shorties: when imgFormat is "half_shorty" the image should be scalled to 50% of the columnwidth
 
-boolean imagePartOfColumn = imgFormat.equals("rightcolumn") ^ !(posrel_pos.equals("1") || posrel_pos.equals("7"));
+
+boolean imagePartOfColumn = (imgFormat.equals("rightcolumn") || imgFormat.equals("fittothirdcolumn")) ^ !(posrel_pos.equals("1") || posrel_pos.equals("7"));
+
 boolean isShortyOrTeaserImage = imgFormat.indexOf("shorty")>-1;
 boolean fitToThirdColumn = imgFormat.indexOf("fittothirdcolumn")>-1;
 
