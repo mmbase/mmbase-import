@@ -68,7 +68,7 @@
 					<th></th>
 					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
 						key="urlsearch.namecolumn" /></a></th>
-					<th><fmt:message key="urlsearch.urlcolumn" /></th>
+					<th><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
                     <th><fmt:message key="urlsearch.validcolumn" /></th>
 				</tr>
 				<tbody class="hover">

@@ -75,15 +75,18 @@ public class ObjectID implements org.apache.pluto.om.common.ObjectID, java.io.Se
     }
 
     static public ObjectID createFromString(String idStr) {
-        char[] id = idStr.toCharArray();
-        int _id = 1;
-        for (int i = 0; i < id.length; i++) {
-            if ((i % 2) == 0)
-                _id *= id[i];
-            else
-                _id ^= id[i];
-            _id = Math.abs(_id);
-        }
+//        char[] id = idStr.toCharArray();
+//        int _id = 1;
+//        for (int i = 0; i < id.length; i++) {
+//            if ((i % 2) == 0)
+//                _id *= id[i];
+//            else
+//                _id ^= id[i];
+//            _id = Math.abs(_id);
+//        }
+        
+        // The above seems very complicated and has the smae result with "" and "45"
+        int _id = idStr.hashCode();
         return new ObjectID(_id, idStr);
     }
 }

@@ -17,7 +17,7 @@
 		</field>
 	</item>
 	
-	<command name="search" nodepath="portletdefinition" age="-1" fields="title" pagelength="20">
+	<command name="search" nodepath="portletdefinition" age="-1" fields="title" pagelength="20" orderby="title">
 		<prompt xml:lang="en">Search portlet definition</prompt>
 		<prompt xml:lang="nl">Zoek portlet definitie</prompt>
 		<search-filter>

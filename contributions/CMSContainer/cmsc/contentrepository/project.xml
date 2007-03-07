@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <artifactId>cmsc-contentrepository</artifactId>
-    <name>CMS container contentrepository</name>
-    <shortDescription>CMS container contentrepository</shortDescription>
+    <name>CMS Container contentrepository</name>
+    <shortDescription>CMS Container contentrepository</shortDescription>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>

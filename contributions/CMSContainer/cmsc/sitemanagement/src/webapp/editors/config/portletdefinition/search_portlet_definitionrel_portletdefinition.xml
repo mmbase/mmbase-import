@@ -12,7 +12,7 @@
 		<field ftype="startwizard" wizardname="config/portletdefinition/portletdefinition" inline="true" />
 	</item>
 	
-	<command name="search" nodepath="portletdefinition" age="-1" fields="title">
+	<command name="search" nodepath="portletdefinition" age="-1" fields="title" orderby="title">
 		<prompt xml:lang="en">Search portlet definition</prompt>
 		<prompt xml:lang="nl">Zoek portlet definitie</prompt>
 		<search-filter>

@@ -54,7 +54,7 @@ public abstract class SiteManagementService extends Service {
 
     public abstract String getPath(int pageid, boolean includeRoot);
     
-    public abstract List getStylesheetForPageByPath(String page);     
+    public abstract List<Stylesheet> getStylesheetForPageByPath(String page, boolean override);     
         
 	public abstract List<Page> getListFromPath(String path);
 

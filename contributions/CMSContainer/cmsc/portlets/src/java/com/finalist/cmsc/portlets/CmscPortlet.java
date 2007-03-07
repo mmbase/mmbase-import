@@ -16,13 +16,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.core.CoreUtils;
 import org.apache.pluto.core.InternalPortletRequest;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 import org.mmbase.security.UserContext;
 
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
@@ -159,7 +159,7 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
     }
     
-    private List<Locale> getLocales(RenderRequest request) {
+    protected List<Locale> getLocales(RenderRequest request) {
         PortletMode mode = request.getPortletMode();
         
         List<Locale> locales = new ArrayList<Locale>();
@@ -176,17 +176,10 @@ public abstract class CmscPortlet extends GenericPortlet {
         if(editorsLocale == null) {
         	Cloud cloud = CloudUtil.getCloudFromThread();
         	if(cloud != null) {
-	        	UserContext user = cloud.getUser();
-	        	if(user != null) {
-					String username = user.getIdentifier();
-		        	if(username != null && !username.equals("anonymous")) {
-		        		
-		        		NodeList userNodes = cloud.getNodeManager("user").getList("username = '"+username+"'", null, null);
-		        		if(userNodes.size() > 0) {
-		        			editorsLocale = new Locale(userNodes.getNode(0).getStringValue("language"));
-		        		}
-		        	}
-	        	}
+                Locale userLocale = getUserLocale(cloud);
+                if (userLocale != null) {
+                    editorsLocale = userLocale;
+                }
         	}
         	
         	if(editorsLocale == null) { 
@@ -200,6 +193,18 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
         
         return locales;
+    }
+
+    private Locale getUserLocale(Cloud cloud) {
+        Locale userLocale = null;
+    	String username = cloud.getUser().getIdentifier();
+    	if(username != null && !username.equals("anonymous")) {
+    		Node userNode = SecurityUtil.getUserNode(cloud);
+    		if(userNode != null) {
+                userLocale = new Locale(userNode.getStringValue("language"));
+    		}
+    	}
+        return userLocale;
     }
 
     /**

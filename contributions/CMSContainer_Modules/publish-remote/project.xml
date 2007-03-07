@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-publish-remote</artifactId>
-    <name>CMS container publish-remote</name>
-    <shortDescription>CMS container publish-remote</shortDescription>
+    <name>CMS Container publish-remote</name>
+    <shortDescription>CMS Container publish-remote</shortDescription>
 	<dependencies>
 		<dependency>
 			<groupId>mmapps</groupId>

@@ -18,8 +18,13 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
  */
 public class InsertStylesheetTag extends AbstractListTag {
         
-        protected List getList() {   
-            return SiteManagement.getStylesheetForPageByPath(getPath());
-        }
+   private boolean override = false;
+   
+   protected List getList() {   
+      return SiteManagement.getStylesheetForPageByPath(getPath(), override);
+   }
 	
+   public void setOverride(String override) {
+      this.override = (override != null) && (override.equals("true"));
+   }
 }

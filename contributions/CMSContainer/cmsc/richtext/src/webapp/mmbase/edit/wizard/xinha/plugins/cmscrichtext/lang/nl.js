@@ -7,7 +7,7 @@
   "Path": "Pad",
   "You are in TEXT MODE.  Use the [<>] button to switch back to WYSIWYG.": "U bent in TEKST-mode. Gebruik de [<>] knop om terug te keren naar WYSIWYG-mode.",
   "The full screen mode is known to cause problems with Internet Explorer, due to browser bugs that we weren": "Fullscreen-mode veroorzaakt problemen met Internet Explorer door bugs in de webbrowser die we niet kunnen omzeilen. Hierdoor kunnen de volgende effecten optreden: verknoeide teksten, een verlies aan editor-functionaliteit en/of willekeurig vastlopen van de webbrowser. Als u Windows 95 of 98 gebruikt, is het zeer waarschijnlijk dat u een algemene beschermingsfout (",
-  "The Paste button does not work in Mozilla based web browsers (technical security reasons). Press CTRL-V on your keyboard to paste directly.": "Door beveiliginsredenen werkt in Mozilla gebaseerde brwosers de plakknop niet. Druk CTRL-V op het toetsenbord om direct te plakken.",
+  "The Paste button does not work in Mozilla based web browsers (technical security reasons). Press CTRL-V on your keyboard to paste directly.": "Door beveiliginsredenen werkt in Mozilla gebaseerde browsers de plakknop niet. Druk CTRL-V op het toetsenbord om direct te plakken.",
   "You need to select some text before create a link": "U moet een stuk tekst selectern voordat een link gemaakt kan worden",
   "Your Document is not well formed. Check JavaScript console for details.": "Uw document is niet in een goed formaat. Zie de JavaScript console voor meer informatie",
   "Search": "Zoeken",

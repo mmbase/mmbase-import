@@ -45,7 +45,6 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
     protected static final String TOTAL_ELEMENTS = "totalElements";
 
     protected static final String ARCHIVE = "archive";
-    protected static final String USE_LIFECYCLE = "useLifecycle";
 
     protected static final String MAX_ELEMENTS = "maxElements";
     protected static final String DIRECTION = "direction";
@@ -55,14 +54,12 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
     protected static final String VIEW_TYPE = "viewtype";
     protected static final String DISPLAY_TYPE = "displaytype";
 
-	private static final String YEAR = "year";
-	private static final String MONTH = "month";
-	private static final String DAY = "day";
-	
-	private static final String ARCHIVE_PAGE = "archivepage";
-	private static final String START_INDEX = "startindex";
-		
+    protected static final String YEAR = "year";
+    protected static final String MONTH = "month";
+    protected static final String DAY = "day";
     
+    protected static final String ARCHIVE_PAGE = "archivepage";
+    protected static final String START_INDEX = "startindex";
 
     protected void saveParameters(ActionRequest request, String portletId) {
         setPortletNodeParameter(portletId, CONTENTCHANNEL, request.getParameter(CONTENTCHANNEL));
@@ -87,8 +84,8 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         if (nodesMap.size() == 1) {
             String displayType  = request.getParameter(DISPLAYTYPE_PARAM);
             if (displayType == null || "detail".equals(displayType)) {
-                Iterator nodesIt = nodesMap.values().iterator();
-                Node n = (Node) nodesIt.next();
+                Iterator<Node> nodesIt = nodesMap.values().iterator();
+                Node n = nodesIt.next();
                 response.setRenderParameter(ELEMENT_ID, String.valueOf(n.getNumber()));
             }
         }
@@ -178,14 +175,15 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
                 useLifecycleBool = false;
             }
             
-            int totalItems = ContentRepository.countContentElements(channel, contenttypes, orderby, direction, 
-                    useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
+            int totalItems = countContentElements(req, contenttypes, channel, offset, orderby,
+                    direction, archive, elementsPerPage, year, month, day, useLifecycleBool);
             if (startIndex > 0) {
             	totalItems = totalItems - startIndex; 
             }
             
-            List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction, 
-                    useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
+            List<ContentElement> elements = getContentElements(req, contenttypes, channel, offset,
+                    orderby, direction, archive, elementsPerPage, year, month, day,
+                    useLifecycleBool);
             
             setAttribute(req, ELEMENTS, elements);
             if (contenttypes != null && !contenttypes.isEmpty()) {
@@ -235,6 +233,22 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         else {
             setMetaData(req, elementId);
         }
+    }
+
+    protected int countContentElements(RenderRequest req, List<String> contenttypes, String channel, int offset,
+            String orderby, String direction, String archive, int elementsPerPage, int year,
+            int month, int day, boolean useLifecycleBool) {
+        int totalItems = ContentRepository.countContentElements(channel, contenttypes, orderby, direction, 
+                useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
+        return totalItems;
+    }
+
+    protected List<ContentElement> getContentElements(RenderRequest req, List<String> contenttypes, String channel,
+            int offset, String orderby, String direction, String archive, int elementsPerPage,
+            int year, int month, int day, boolean useLifecycleBool) {
+        List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction, 
+                useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
+        return elements;
     }
 
     public int getOffset(int currentPage, int pageSize) {

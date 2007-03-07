@@ -57,7 +57,7 @@ public class BulkUploadUtil {
             log.warn("Could not load properties from " + CONFIGURATION_RESOURCE_NAME + ", using defaults", ex);
         }
         for (String image : images.split(",")) {
-            supportedImages.add(image);
+            supportedImages.add(image.trim());
         }
     }
     

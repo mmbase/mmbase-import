@@ -8,7 +8,7 @@
 -->
 <project>
 	<extend>${basedir}/../maven-base/project.xml</extend>
-	<name>CMS container page wizard module</name>
+	<name>CMS Container page wizard module</name>
 	<artifactId>cmsc-modules-pagewizard</artifactId>
 	<shortDescription>Page wizard module, an easier way to build pages</shortDescription>
 	<description>A shortcut for editors so it takes less time to create a new page.</description>

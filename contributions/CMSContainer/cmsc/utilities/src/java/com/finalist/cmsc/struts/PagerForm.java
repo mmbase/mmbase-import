@@ -12,8 +12,6 @@ package com.finalist.cmsc.struts;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
 import org.apache.struts.action.*;
 import org.mmbase.storage.search.SortOrder;
 
@@ -22,12 +20,19 @@ public class PagerForm extends ActionForm {
 
     private String offset;
     private int resultCount;
-    private String order = "title";
+    private String order;
     private int direction = 1;
     private List results = new ArrayList();
 
+    public PagerForm() {
+       this("title");
+    }
     
-    public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
+    public PagerForm(String order) {
+       this.order = order;
+    }
+
+   public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
         // ensure valid direction
         if (direction != SortOrder.ORDER_DESCENDING) {
             direction = SortOrder.ORDER_ASCENDING;

@@ -371,7 +371,7 @@ public class TreeUtil {
        String nManagerName = root.getNodeManager().getName();
        String fragmentFieldname = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
        
-       String[] fragments = path.split(PATH_SEPARATOR);
+       String[] fragments = getPathFragments(path);
        if (root.getStringValue(fragmentFieldname).equals(path)) {
           if (useCache) {
               TreePathCache.addToCache(treeManagers[0], path, root.getNumber());
@@ -386,6 +386,15 @@ public class TreeUtil {
          }
        }
        return channel;
+    }
+
+    /**
+     * @param path
+     * @return
+     */
+    public static String[] getPathFragments(String path) {
+        String[] fragments = path.split(PATH_SEPARATOR);
+        return fragments;
     }
 
     private static Node getChannelFromPath(Cloud cloud, String[] fragments, Node root, String[] treeManagers,

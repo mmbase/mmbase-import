@@ -72,12 +72,19 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 }
                 if (pageNodes.isEmpty()) {
                     // all matches are sites
-                    pageQueryNode = pages.getNode(0);
+                    filterPageQueryNodes(pages, content);
+                    if (!pages.isEmpty()) {
+                        pageQueryNode = pages.getNode(0);
+                    }
+                    
                     return getPageInfo(pageQueryNode, true);
                 }
                 else {
                     // find page which is most suitable to use as detail page
-                    pageQueryNode = pageNodes.get(0);
+                    filterPageQueryNodes(pageNodes, content);
+                    if (!pageNodes.isEmpty()) {
+                        pageQueryNode = pageNodes.get(0);
+                    }
                     return getPageInfo(pageQueryNode, true);
                 }
             }
@@ -85,19 +92,40 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return null;
     }
 
+    private void filterPageQueryNodes(List<Node> pages, Node content) {
+        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+            Node pageQueryNode = iter.next();
+            boolean keep = evaluatePageQueryNode(pageQueryNode, content);
+            if (! keep) {
+                iter.remove();
+            }
+        }
+    }
+    
+    private boolean evaluatePageQueryNode(Node pageQueryNode, Node content) {
+        Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
+        String key = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
+        if ("contentchannel".equals(key)) {
+            String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
+            Integer portletId = page.getPortlet(portletWindowName);
+            Portlet portlet = SiteManagement.getPortlet(portletId);
+            if (portlet != null) {
+                return evaluateArchive(portlet, content);
+            }
+        }
+        return true;
+    }
+
+    private boolean  evaluateArchive(Portlet portlet, Node content) {
+        String archive = portlet.getParameterValue("archive");
+        return ContentElementUtil.matchArchive(content, archive);
+    }
+
     @Override
     public List<PageInfo> findAllDetailPagesForContent(Node content) {
         List<PageInfo> result = new ArrayList<PageInfo>();
         
-        NodeList pages = findPagesForContent(content, null);
-        List<PageInfo> infos = new ArrayList<PageInfo>();
-        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
-            Node pageNode = iter.next();
-            PageInfo pageInfo = getPageInfo(pageNode, true);
-            if (pageInfo != null && !infos.contains(pageInfo)) {
-                infos.add(pageInfo);
-            }
-        }
+        List<PageInfo> infos = findAllDetailPages(content);
         
         // The homepage (Site object) has a lower preference than a page deeper in the tree
         // For detail pages skip the homepage
@@ -112,7 +140,26 @@ public class SearchServiceMMBaseImpl extends SearchService {
             result = infos;
         }
         
+        
+        
         return result;
+    }
+
+    private List<PageInfo> findAllDetailPages(Node content) {
+        NodeList pages = findPagesForContent(content, null);
+        
+        List<PageInfo> infos = new ArrayList<PageInfo>();
+        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+            Node pageNode = iter.next();
+            PageInfo pageInfo = getPageInfo(pageNode, true);
+            if (pageInfo != null && !infos.contains(pageInfo)) {
+                infos.add(pageInfo);
+            }
+        }
+        
+        
+        
+        return infos;
     }
     
     @Override
@@ -154,6 +201,11 @@ public class SearchServiceMMBaseImpl extends SearchService {
                         }
                     }
                 }
+            }
+            // Check if a portlet exists on this position
+            Integer portletId = page.getPortlet(portletWindowName);
+            if (portletId == -1) {
+                return null;
             }
 
             String pagePath = SiteManagement.getPath(page, !ServerUtil.useServerName());
@@ -204,6 +256,10 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 pages = cloud.getList(collectionquery);
             }
         }
+        if (content != null) {
+            filterPageQueryNodes(pages, content);
+        }
+        
         return pages;
     }
 
@@ -251,8 +307,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
                     continue;
                 }
                 
-                List parameters = portlet.getPortletparameters();
-                for (Iterator iter = parameters.iterator(); iter.hasNext();) {
+                List<Object> parameters = portlet.getPortletparameters();
+                for (Iterator<Object> iter = parameters.iterator(); iter.hasNext();) {
                     Object param = iter.next();
                     if (param instanceof NodeParameter) {
                         String value = ((NodeParameter) param).getValueAsString();
@@ -260,10 +316,17 @@ public class SearchServiceMMBaseImpl extends SearchService {
                             Node found = cloud.getNode(value);
                             if (RepositoryUtil.isContentChannel(found)) {
                                 NodeList elements = RepositoryUtil.getLinkedElements(found);
-                                result.addAll(elements);
+                                for (Iterator<Node> iterator = elements.iterator(); iterator.hasNext();) {
+                                    Node contentElement = iterator.next();
+                                    if (evaluateArchive(portlet, contentElement)) {
+                                        result.add(contentElement);
+                                    }
+                                }
                             } else { 
                                 if (ContentElementUtil.isContentElement(found)) {
-                                    result.add(found);
+                                    if (evaluateArchive(portlet, found)) {
+                                        result.add(found);
+                                    }
                                 }
                             }
                         }
@@ -289,39 +352,35 @@ public class SearchServiceMMBaseImpl extends SearchService {
     
     @Override
     public Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager) {
-        Set<Node> result = new HashSet<Node>();
-
-        NodeList celist = contentElement.getRelatedNodes(nodeManager, "posrel", "DESTINATION");
-        Iterator<Node> attachmentsIter = celist.iterator();
-        while (attachmentsIter.hasNext()) {
-            Node attachmentNode = attachmentsIter.next();
-            log.debug("linked content (" + nodeManager + ") '" + attachmentNode.getNumber() + "'");
-            result.add(attachmentNode);
-        }
-
-        NodeList ce2list = contentElement.getRelatedNodes(nodeManager, "inlinerel", "DESTINATION");
-        Iterator<Node> attachmentsIter2 = ce2list.iterator();
-        while (attachmentsIter2.hasNext()) {
-            Node attachmentNode2 = attachmentsIter2.next();
-            log.debug("linked inline content (" + nodeManager + ") '" + attachmentNode2.getNumber() + "'");
-            result.add(attachmentNode2);
-        }
-
-        return result;
+        Set<Node> result = findLinkedSecondaryContent(contentElement, nodeManager, "posrel", "DESTINATION");
+        result.addAll(findLinkedSecondaryContent(contentElement, nodeManager, "inlinerel", "DESTINATION"));
+        
+        return result;        
     }
     
+    public Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager, String relType, String direction) {
+    	Set<Node> result = new HashSet<Node>();
+    	
+    	NodeList ceList = contentElement.getRelatedNodes(nodeManager, relType, direction);
+    	Iterator<Node> ceIt = ceList.iterator();
+    	while (ceIt.hasNext()) {
+    		Node node = ceIt.next();
+    		log.debug("Linked content (" + nodeManager + ") '" + node.getNumber() + "'");
+    		result.add(node);
+    	}
+    	return result;
+    }
+    @Override
     public String getPortletWindow(int pageId, String elementNumber) {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         Node node = cloud.getNode(elementNumber);
         if (ContentElementUtil.isContentElement(node)) {
-            NodeList pages = findPagesForContent(node, null);
-            if (!pages.isEmpty()) {
-                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = iter.next();
-                    int pageNumber = pageNode.getIntValue(PagesUtil.PAGE + ".number");
-                    
-                    if (pageId == pageNumber) {
-                        return pageNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
+            List<PageInfo> infos = findAllDetailPages(node);
+            
+            if (!infos.isEmpty()) {
+                for (PageInfo pageInfo : infos) {
+                    if (pageId == pageInfo.getPageNumber()) {
+                        return pageInfo.getWindowName();
                     }
                 }
             }

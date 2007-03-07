@@ -285,11 +285,11 @@ public class PortalURL {
 		}
       
       
-      url.append(getBasePortalURL(environment));
       if(host != null) {
          url.append(secure ? SECURE_PROTOCOL : INSECURE_PROTOCOL);
          url.append(host);
     }
+      url.append(getBasePortalURL(environment));
 
 		String global = getGlobalNavigationAsString();
 		if (global.length() > 0) {

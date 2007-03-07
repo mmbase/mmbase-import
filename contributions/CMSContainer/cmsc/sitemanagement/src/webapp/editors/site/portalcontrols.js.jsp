@@ -3,7 +3,7 @@
 
 var usermode = 'all';
 var oldChannelsCols = '0,*';
-
+ 
 function frameLoaded() {
 	if (isPortalPage()) {
 		insertHTMLBeforeEnd( getBodyElement( getDocument('content') ), getPageControls());

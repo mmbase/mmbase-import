@@ -68,6 +68,8 @@ public class LuceusModule extends Module {
     
     private List<String> excludeTypes = new ArrayList<String>();
 
+	private CustomContentHandler customContentHandler;
+    
 	public void init() {
 		loadInitParameters("com/luceus");
 
@@ -186,6 +188,16 @@ public class LuceusModule extends Module {
             }
         }
 
+		// read customhandlerclass and create instance
+		String customContentHandlerClassname = getInitParameter("custom-content-handler-classname");
+		if (customContentHandlerClassname != null) {
+			try {
+				customContentHandler = (CustomContentHandler) Class.forName(customContentHandlerClassname).newInstance();
+			} catch (Exception e) {
+				log.warn("Unable to create CustomContentHandler! (" + e.getMessage() + ")");
+			}
+		}
+        
 		in = new LinkedBlockingQueue<QueuedUpdate>(updateQueueSize);
 
 		if (doListeners) {
@@ -193,6 +205,9 @@ public class LuceusModule extends Module {
 			new ContentElementEventListener(this);
 			new NodeParameterEventListener(this);
 			new SecondaryContentEventListener(this);
+			if (customContentHandler != null) {
+				customContentHandler.registerListeners(this);
+			}
 		}
 
 		ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(execs);
@@ -274,7 +289,7 @@ public class LuceusModule extends Module {
 		addToQueue(new QueuedUpdate(QueuedUpdate.METHOD_UPDATE_SECONDARYCONTENT_INDEX, nodeNumber));
 	}
 
-	protected Cloud getAnonymousCloud() {
+	public Cloud getAnonymousCloud() {
 		return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
 	}
     
@@ -363,6 +378,10 @@ public class LuceusModule extends Module {
 
 	public boolean isDoUrls() {
 		return doUrls;
+	}
+
+	public CustomContentHandler getCustomContentHandler() {
+		return customContentHandler;
 	}
 
 }
