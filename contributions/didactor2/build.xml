@@ -10,9 +10,6 @@
   <property file="build.properties"/>
   <property file="configure.properties"/>
 
-  <property file="mmbase.logdir"  value="${catalina.base}" />
-  <property file="mmbase.logfile" value="didactor" />
-
   <property name="defaultexcludes" value="no" />
 
   <property name="mmbase.version"         value="mmbase-1.8.4.20070224" />

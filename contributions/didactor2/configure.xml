@@ -21,6 +21,10 @@
   <property file="my.properties"/>
   <property file="build.properties"/>
   <property file="configure.properties"/>
+  
+  <property file="mmbase.logdir"  value="${catalina.base}" />
+  <property file="mmbase.logfile" value="didactor" />
+
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
   <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
   <property name="build.wizards.dir" value="${build.webapp.dir}/editwizards" />
