@@ -13,11 +13,6 @@
 			<prompt xml:lang="en">Resource</prompt>
 			<prompt xml:lang="nl">Template</prompt>
 		</field>
-		<field fdatapath="field[@name=&apos;allow&apos;]" ftype="enum">
-			<prompt xml:lang="en">Allow</prompt>
-			<prompt xml:lang="nl">Toestaan</prompt>
-			<optionlist select="boolean" />
-		</field>
 		<field ftype="startwizard" wizardname="config/view/view" inline="true" />
 	</item>
 	
@@ -32,6 +27,8 @@
 	</command>
 
 	<action type="create">
-		<relation destinationtype="view" role="allowrel"></relation>
+		<relation destinationtype="view" role="allowrel">
+         <field name="allow">1</field>      
+      </relation>
 	</action>
 </list>
