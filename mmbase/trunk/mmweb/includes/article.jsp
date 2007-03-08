@@ -22,7 +22,7 @@
         <tr><td align="center" valign="top">
         <mm:node element="images">
         <a href="#" onClick="javascript:launchCenter('<mm:url page="includes/slideshow.jsp">
-          <mm:param name="image"><mm:field name="number" /></mm:param></mm:url>', 'center', 550, 740)" title="Click to enlarge image"><img src="<mm:image template="s(120)" />" alt="<mm:field name="alt" />" width="120" border="0" /></a>
+          <mm:param name="image"><mm:field name="number" /></mm:param></mm:url>', 'center', 550, 740)" title="Click to enlarge image"><img src="<mm:image template="s(120)" />" alt="<mm:field name="title" />" width="120" border="0" /></a>
         <mm:field name="title"><mm:isnotempty><br /><span class="imgtitle"><mm:write /> </span></mm:isnotempty></mm:field>
         </mm:node>
         </td></tr>
