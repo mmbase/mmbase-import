@@ -17,6 +17,10 @@
 	    <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p %c{3} %M.%L %x - %m%n" />
  		<!-- <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p - %m%n" /> -->
 	    </layout>
+        <filter class="com.finalist.cmsc.logging.ExceptionStringMatchFilter"> 
+            <param name="StringToMatch" value="ClientAbortException" /> 
+            <param name="AcceptOnMatch" value="false" /> 
+        </filter> 
 	</appender>
 
 	<appender name="sqllogfile" class="org.apache.log4j.DailyRollingFileAppender" >
