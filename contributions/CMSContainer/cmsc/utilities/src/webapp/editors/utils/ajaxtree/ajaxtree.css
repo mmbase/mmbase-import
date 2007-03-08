@@ -100,16 +100,14 @@ div.htmlarea-context-menu td.label a {
   text-decoration: none;
 }
 
+
 div.htmlarea-context-menu tr.separator td.label div {
   margin-right: 3px;
 }
 
 div.htmlarea-context-menu tr.item_hover {
   background-color: #316ac5;
-}
-
-div.htmlarea-context-menu tr.item_hover td.label a{
-  text-decoration: none;
+  cursor: pointer; cursor: hand;
   color: #fff;
 }
 
