@@ -22,7 +22,7 @@
   <property file="build.properties"/>
   <property file="configure.properties"/>
   
-  <property name="mmbase.logdir"  value="${catalina.base}" />
+  <property name="mmbase.logdir"  value="${catalina.base}/logs" />
   <property name="mmbase.logfile" value="didactor" />
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
