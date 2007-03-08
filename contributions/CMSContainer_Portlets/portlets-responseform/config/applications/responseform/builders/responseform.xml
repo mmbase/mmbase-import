@@ -179,8 +179,8 @@
          </descriptions>
          <!-- gui related -->
          <gui>
-            <guiname xml:lang="nl">Gebruikersemail afzender</guiname>
-            <guiname xml:lang="en">User email sender</guiname>
+            <guiname xml:lang="nl">Afzender email</guiname>
+            <guiname xml:lang="en">Sender email</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -212,8 +212,8 @@
          </descriptions>
          <!-- gui related -->
          <gui>
-            <guiname xml:lang="nl">Gebruikersemailafzender naam</guiname>
-            <guiname xml:lang="en">User email sender name</guiname>
+            <guiname xml:lang="nl">Afzender naam</guiname>
+            <guiname xml:lang="en">Sender name</guiname>
          </gui>
          <!-- editor related -->
          <editor>

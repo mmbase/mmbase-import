@@ -26,13 +26,13 @@
 		<prompt xml:lang="nl">Email tekst</prompt>
         <prompt xml:lang="en">Email body</prompt>
 	</field>
-    <field name="useremailsender" dtpattern="^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$">
-		<prompt xml:lang="nl">Gebruikersemail afzender</prompt>
-        <prompt xml:lang="en">User email sender</prompt>
+    <field name="useremailsender" dtpattern="^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$" dtrequired="true">
+		<prompt xml:lang="nl">Afzender email</prompt>
+        <prompt xml:lang="en">Sender email</prompt>
 	</field>
-	<field name="useremailsendername">
-		<prompt xml:lang="nl">Gebruikersemail afzender naam</prompt>
-        <prompt xml:lang="en">User email sender name</prompt>
+	<field name="useremailsendername" dtrequired="true">
+		<prompt xml:lang="nl">Afzender naam</prompt>
+        <prompt xml:lang="en">Sender name</prompt>
 	</field>
     <field name="useremailsubject">
 		<prompt xml:lang="nl">Gebruikersemail onderwerp</prompt>
