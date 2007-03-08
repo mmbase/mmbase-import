@@ -9,11 +9,6 @@
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
 		</field>
-		<field fdatapath="field[@name=&apos;allow&apos;]" ftype="enum">
-			<prompt xml:lang="en">Allow</prompt>
-			<prompt xml:lang="nl">Toestaan</prompt>
-			<optionlist select="boolean" />
-		</field>
 	</item>
 	
 	<command name="search" nodepath="typedef" age="-1" fields="name" pagelength="20">
@@ -27,6 +22,8 @@
 	</command>
 
 	<action type="create">
-		<relation destinationtype="typedef" role="allowrel"></relation>
+		<relation destinationtype="typedef" role="allowrel">
+         <field name="allow">1</field>      
+      </relation>
 	</action>
 </list>
