@@ -4,9 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
-import javax.swing.text.html.parser.*;
 import java.io.*;
-import java.net.*;
 import org.mmbase.util.functions.*;
 
 
@@ -27,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.1 2007-03-02 17:31:53 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.2 2007-03-08 08:51:38 nklasens Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 

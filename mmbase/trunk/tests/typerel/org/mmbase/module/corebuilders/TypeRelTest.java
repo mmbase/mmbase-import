@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.12 2006-08-30 18:08:17 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.13 2007-03-08 08:51:38 nklasens Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -450,7 +450,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         while (i.hasNext()) i.next(); // fast forward.
 
         while (i.hasPrevious()) {
-            Node node = (Node) i.previous();
+            Node node = i.previous();
             System.out.print("D"); //eleting " + node);
             node.delete();
         }

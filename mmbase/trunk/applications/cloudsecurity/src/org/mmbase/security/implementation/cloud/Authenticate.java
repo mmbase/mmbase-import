@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.1 2006-10-13 17:11:11 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.2 2007-03-08 08:51:37 nklasens Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -91,7 +91,7 @@ public class Authenticate extends Authentication {
             if (li == null) {
                 throw new SecurityException("Class authentication failed  (class not authorized)");
             }
-            String userName = (String) li.getMap().get("username");
+            String userName = li.getMap().get("username");
             if (userName == null && "administrator".equals(li.getMap().get("rank"))) userName = "admin";
             if (userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
             if (userName.equals("admin") || builder.exists(userName, null)) {

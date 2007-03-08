@@ -91,10 +91,10 @@ public class Controller {
 
         PackageInterface p=null;
         if (wv.equals("best")) {
-            p=(PackageInterface)PackageManager.getPackage(id);
+            p=PackageManager.getPackage(id);
         } else {
             // ok lets decode the version and provider we want
-            p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
+            p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
 
@@ -139,10 +139,10 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wb);
+            b=BundleManager.getBundle(id,wv,wb);
         }
         if (b!=null) {
 
@@ -187,10 +187,10 @@ public class Controller {
 
         PackageInterface p=null;
         if (wv.equals("best")) {
-            p=(PackageInterface)PackageManager.getPackage(id);
+            p=PackageManager.getPackage(id);
         } else {
             // ok lets decode the version and provider we want
-            p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
+            p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
 
@@ -216,10 +216,10 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wb);
+            b=BundleManager.getBundle(id,wv,wb);
         }
         if (b!=null) {
             Iterator steps=b.getInstallSteps();
@@ -241,10 +241,10 @@ public class Controller {
 
         PackageInterface p=null;
         if (wv.equals("best")) {
-            p=(PackageInterface)PackageManager.getPackage(id);
+            p=PackageManager.getPackage(id);
         } else {
             // ok lets decode the version and provider we want
-            p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
+            p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
             virtual.setValue("name",p.getName());
@@ -277,10 +277,10 @@ public class Controller {
 
         PackageInterface p=null;
         if (wv.equals("best")) {
-            p=(PackageInterface)PackageManager.getPackage(id);
+            p=PackageManager.getPackage(id);
         } else {
             // ok lets decode the version and provider we want
-            p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
+            p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
             List people=p.getRelatedPeople(type);
@@ -307,10 +307,10 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+            b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
             List people=b.getRelatedPeople(type);
@@ -336,19 +336,19 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+            b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
             List screenshots=b.getScreenshots();
             if (screenshots!=null) {
                 for (Iterator i = screenshots.iterator(); i.hasNext();) {
                         MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("name",(String)i.next());
-                	virtual.setValue("file",(String)i.next());
-                	virtual.setValue("description",(String)i.next());
+                	virtual.setValue("name",i.next());
+                	virtual.setValue("file",i.next());
+                	virtual.setValue("description",i.next());
                 	list.add(virtual);
             	}
             }
@@ -363,19 +363,19 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+            b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
             List starturls=b.getStarturls();
             if (starturls!=null) {
                 for (Iterator i = starturls.iterator(); i.hasNext();) {
                         MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("name",(String)i.next());
-                	virtual.setValue("link",(String)i.next());
-                	virtual.setValue("description",(String)i.next());
+                	virtual.setValue("name",i.next());
+                	virtual.setValue("link",i.next());
+                	virtual.setValue("description",i.next());
                 	list.add(virtual);
             	}
             }
@@ -391,10 +391,10 @@ public class Controller {
 
         BundleInterface b=null;
         if (wv.equals("best")) {
-            b=(BundleInterface)BundleManager.getBundle(id);
+            b=BundleManager.getBundle(id);
         } else {
             // ok lets decode the version and provider we want
-            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+            b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
             virtual.setValue("name",b.getName());
@@ -439,10 +439,10 @@ public class Controller {
     public boolean createPackage(String id,String wv,String wp) {
         PackageInterface p=null;
         if (wv.equals("best")) {
-            p=(PackageInterface)PackageManager.getPackage(id);
+            p=PackageManager.getPackage(id);
         } else {
             // ok lets decode the version and provider we want
-            p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
+            p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
             //InstallManager.installPackage(p);

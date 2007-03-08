@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase. The mmbaseusers builder used to store nothing more than name/password combination. 
  *
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.1 2006-10-13 17:11:11 nklasens Exp $
+ * @version $Id: UserBuilder.java,v 1.2 2007-03-08 08:51:37 nklasens Exp $
  */
 public class UserBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(UserBuilder.class);
@@ -30,7 +30,7 @@ public class UserBuilder extends MMObjectBuilder {
      * {@inheritDoc}
      */
     public boolean init() {
-        String encoding = (String) getInitParameters().get("encoding");
+        String encoding = getInitParameters().get("encoding");
         if(encoding==null) {
             log.warn("no property 'encoding' defined in '"+getTableName()+".xml' using default encoding");
             encoder = new org.mmbase.util.Encode("MD5");

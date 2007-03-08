@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.51 2007-02-10 16:52:47 nklasens Exp $
+ * @version $Id: Users.java,v 1.52 2007-03-08 08:51:37 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -93,7 +93,7 @@ public class Users extends MMObjectBuilder {
         rankCache.putCache();
         userCache.putCache();
 
-        String s = (String)getInitParameters().get("encoding");
+        String s = getInitParameters().get("encoding");
         if (s == null) {
             log.debug("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
             encoder = new Encode("MD5");
@@ -102,7 +102,7 @@ public class Users extends MMObjectBuilder {
         }
         log.service("Using " + encoder.getEncoding() + " as our encoding for password");
 
-        s = (String)getInitParameters().get("userNameCaseSensitive");
+        s = getInitParameters().get("userNameCaseSensitive");
         if (s != null) {
             userNameCaseSensitive = "true".equals(s);
             log.debug("property 'userNameCaseSensitive' set to '" +userNameCaseSensitive);

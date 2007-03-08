@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.*;
-import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.tests.*;
 import org.mmbase.bridge.util.CollectionNodeList;
@@ -20,7 +19,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.10 2006-01-14 19:12:08 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.11 2007-03-08 08:51:37 nklasens Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {

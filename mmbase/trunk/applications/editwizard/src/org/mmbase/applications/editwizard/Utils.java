@@ -27,7 +27,6 @@ import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
-import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.XMLErrorHandler;
 import org.mmbase.util.XMLEntityResolver;
 
@@ -41,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.42 2006-09-29 15:47:39 pierre Exp $
+ * @version $Id: Utils.java,v 1.43 2007-03-08 08:51:36 nklasens Exp $
  */
 
 public class Utils {

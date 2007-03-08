@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.65 2006-11-28 12:36:39 michiel Exp $
+ * @version $Id: Config.java,v 1.66 2007-03-08 08:51:36 nklasens Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -823,7 +823,7 @@ public class Config implements java.io.Serializable {
             if(config.subObjects.size() == 0) {
                 return config.backPage;
             } else {
-                return ((SubConfig) config.subObjects.peek()).page;
+                return (config.subObjects.peek()).page;
             }
         }
 

@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.22 2006-08-30 18:05:58 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.23 2007-03-08 08:51:37 nklasens Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -415,7 +415,7 @@ public class CommunityPrc extends ProcessorModule {
         if (number.indexOf("_") < 0)
             node = messageBuilder.getNode(number);
         else
-            node = (MMObjectNode)MMObjectBuilder.temporaryNodes.get(number);
+            node = MMObjectBuilder.temporaryNodes.get(number);
         Vector relatedNodes = messageBuilder.getTemporaryRelated(node, (String)params.get("TYPE"),offset,max);
         return relatedNodes;
     }

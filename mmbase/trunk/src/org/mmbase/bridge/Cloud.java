@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.60 2006-11-10 14:20:10 michiel Exp $
+ * @version $Id: Cloud.java,v 1.61 2007-03-08 08:51:38 nklasens Exp $
  */
 public interface Cloud {
 
@@ -588,7 +588,7 @@ public interface Cloud {
      * Retrieves all properties previously set for this cloud.
      * @since MMBase-1.8
      */
-    public Map getProperties();
+    public Map<Object, Object> getProperties();
 
     /**
      * Returns all Function objects from a function set.
