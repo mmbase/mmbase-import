@@ -9,8 +9,8 @@
   <mm:relatednodes id="docs" type="documentation">
     <h2><mm:field name="title" /></h2>
     <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
-    <mm:field name="html(intro)" escape="none"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
-	<mm:field name="html(body)" escape="none"><mm:isnotempty><p><mm:write /></p></mm:isnotempty></mm:field>
+    <mm:field name="html(intro)" escape="none"><mm:isnotempty><mm:write escape="none" /></mm:isnotempty></mm:field>
+	<mm:field name="html(body)" escape="none"><mm:isnotempty><p><mm:write escape="none" /></p></mm:isnotempty></mm:field>
   </mm:relatednodes>
   
   <h2>View CVS</h2>
