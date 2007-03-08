@@ -11,12 +11,22 @@
 		<script src="../utils/window.js" type="text/javascript"></script>
 		<script src="../utils/rowhover.js" type="text/javascript"></script>
 	    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
+	    <script type="text/javascript">
+			function refreshChannels() {
+				refreshFrame('channels');
+				if (window.opener) {
+					window.close();
+				}
+			}
+		</script>
 	</head>
-	<body 
-		<c:if test="${not empty param.message}">      
-			onload="alert('${param.message}');"
-		</c:if>
+	<body onload="refreshChannels();"
 	>
+		<c:if test="${not empty param.message}">      
+			<script type="text/javascript">
+				addLoadEvent(alert('${param.message}'));
+			</script>
+		</c:if>
 	
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
