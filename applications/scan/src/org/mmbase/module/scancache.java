@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.43 2006-09-08 14:57:39 michiel Exp $
+ * @version $Id: scancache.java,v 1.44 2007-03-08 08:51:38 nklasens Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -575,7 +575,7 @@ public class scancache extends Module implements scancacheInterface {
         if (mmbase!=null) {
             NetFileSrv bul=(NetFileSrv)mmbase.getMMObject("netfilesrv");
             if (bul!=null) {
-                ((NetFileSrv)bul).fileChange("pages","main",filename);
+                (bul).fileChange("pages","main",filename);
             }
         } else {
             log.error("signalNetFileSrv("+filename+"): can't use NetFileSrv builder");

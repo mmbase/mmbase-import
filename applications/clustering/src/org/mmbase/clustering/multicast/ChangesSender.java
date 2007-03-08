@@ -16,7 +16,6 @@ import java.io.*;
 import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.12 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.13 2007-03-08 08:51:38 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 

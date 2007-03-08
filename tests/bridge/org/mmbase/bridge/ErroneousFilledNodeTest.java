@@ -11,10 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
-import java.text.*;
 import java.util.*;
-import org.w3c.dom.Document;
-
 import org.mmbase.util.*;
 import org.mmbase.datatypes.*;
 

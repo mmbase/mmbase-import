@@ -12,7 +12,6 @@ package org.mmbase.applications.xmlimporter;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.module.Module;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.9 2007-02-11 14:46:54 nklasens Exp $
+ * @version $Id: Transaction.java,v 1.10 2007-03-08 08:51:37 nklasens Exp $
  */
 public class Transaction implements Runnable {
 

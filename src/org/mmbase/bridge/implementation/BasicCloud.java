@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.174 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.175 2007-03-08 08:51:37 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -977,7 +977,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         properties.put(key, value);
     }
 
-    public Map getProperties() {
+    public Map<Object, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
     }
 

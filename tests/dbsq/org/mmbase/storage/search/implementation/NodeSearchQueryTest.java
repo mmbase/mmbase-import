@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -96,7 +96,7 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of getField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testGetField() {
-        Step step = (Step) instance.getSteps().get(0);
+        Step step = instance.getSteps().get(0);
         Collection fields = images.getFields();
         for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
             CoreField field = (CoreField) iFields.next();
@@ -143,7 +143,7 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of addField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testAddField() {
-        Step step = (Step) instance.getSteps().get(0);
+        Step step = instance.getSteps().get(0);
 
         // Adding field, should throw UnsupportedOperationException.
         try {
@@ -154,7 +154,7 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of addAggregatedField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testAddAggregatedField() {
-        Step step = (Step) instance.getSteps().get(0);
+        Step step = instance.getSteps().get(0);
 
         // Adding field, should throw UnsupportedOperationException.
         try {

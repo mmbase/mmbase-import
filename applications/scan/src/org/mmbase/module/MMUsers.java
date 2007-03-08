@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.13 2004-10-01 08:42:46 pierre Exp $
+ * @version $Id: MMUsers.java,v 1.14 2007-03-08 08:51:38 nklasens Exp $
  */
 public class MMUsers extends ProcessorModule {
 
@@ -309,12 +309,12 @@ public class MMUsers extends ProcessorModule {
         // Go through all properties...
         for (Enumeration p    = props.elements (); p.hasMoreElements (); ) {
             MMObjectNode n    = (MMObjectNode)p.nextElement ();
-            String       key  = (String)n.getStringValue ("key");
-            String       type = (String)n.getStringValue ("ptype");
+            String       key  = n.getStringValue ("key");
+            String       type = n.getStringValue ("ptype");
 
             v.addElement (key);
 
-            if (type.equals ("string")) v.addElement ((String)n.getStringValue ("value"));
+            if (type.equals ("string")) v.addElement (n.getStringValue ("value"));
             // Place for more types...
             else v.addElement ("<NON-PRINTABLE>");
         }
@@ -336,7 +336,7 @@ public class MMUsers extends ProcessorModule {
             if (node != null) {
                 String type = node.getStringValue ("ptype");
 
-                if (type.equals ("string")) v.addElement ((String)node.getStringValue("value"));
+                if (type.equals ("string")) v.addElement (node.getStringValue("value"));
                 // Place for more types...
                 else v.addElement ("<NON-PRINTABLE>");
             }
@@ -433,7 +433,7 @@ public class MMUsers extends ProcessorModule {
         if (users == null) users = mmbase.getMMObject ("users");
 
         // obtain the correct node so we can get its hashtable of properties nodes
-        MMObjectNode usernode = (MMObjectNode)users.getNode(userid);
+        MMObjectNode usernode = users.getNode(userid);
 
         if (usernode!=null) {
             Hashtable properties = usernode.getProperties();

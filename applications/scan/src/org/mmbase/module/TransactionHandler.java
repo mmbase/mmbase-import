@@ -147,7 +147,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         String exceptionPage = "exception.shtml";
         XMLCheckErrorHandler errorHandler = new XMLCheckErrorHandler();
 
-        DocumentBuilder db = XMLBasicReader.getDocumentBuilder(true, (ErrorHandler)errorHandler);
+        DocumentBuilder db = XMLBasicReader.getDocumentBuilder(true, errorHandler);
 
         try {
             if (xFile != null) {

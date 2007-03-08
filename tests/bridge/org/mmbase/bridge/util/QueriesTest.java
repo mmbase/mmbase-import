@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.util;
-import java.util.*;
-import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.tests.*;
