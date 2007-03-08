@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.68.2.1 2006-12-05 20:59:30 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.68.2.2 2007-03-08 19:23:02 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -626,7 +626,7 @@ public class TypeDef extends MMObjectBuilder {
             q.setConstraint(constraint);
             try {
                 if (rootBuilder.count(q) > 0) {
-                    throw new RuntimeException("Cannot delete this (inactive) builder, it still contains nodes");
+                    throw new RuntimeException("Cannot delete this (inactive) builder with otype=" + value + ", it still contains nodes " + q);
                 }
             } catch (SearchQueryException sqe) {
                 // should never happen
