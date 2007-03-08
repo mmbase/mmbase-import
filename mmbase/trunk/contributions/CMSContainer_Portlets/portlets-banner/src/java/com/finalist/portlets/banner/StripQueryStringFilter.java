@@ -1,7 +1,6 @@
 package com.finalist.portlets.banner;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;

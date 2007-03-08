@@ -7,9 +7,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-
 import com.finalist.cmsc.struts.MMBaseAction;
 
 public class ChooseWizardAction extends MMBaseAction {

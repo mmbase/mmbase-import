@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.ServiceManager;
 

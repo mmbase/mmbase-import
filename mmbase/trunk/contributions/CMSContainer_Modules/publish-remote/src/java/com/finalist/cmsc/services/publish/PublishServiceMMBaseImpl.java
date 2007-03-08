@@ -18,7 +18,6 @@ import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.publish.*;
 import com.finalist.cmsc.services.workflow.Workflow;
-import com.finalist.cmsc.util.bundles.JstlUtil;
 
 
 public class PublishServiceMMBaseImpl extends PublishService implements PublishListener {

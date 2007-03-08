@@ -3,7 +3,6 @@ package com.finalist.util.module;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.Module;
 
 public class ModuleUtil {

@@ -21,7 +21,6 @@
 package com.jsptags.navigation.pager;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
 import com.jsptags.navigation.pager.parser.*;
 
 public final class IndexTag extends PagerTagSupport {
