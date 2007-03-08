@@ -196,6 +196,10 @@
           <fileset dir="src/${component}/lib">
             <include name="*.jar" />
           </fileset>
+	  <fileset
+	      dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+	    <include name="*.jar" />
+	  </fileset>
         </path>
         <mkdir dir="${build.dir}/classes/${component}" />
 
