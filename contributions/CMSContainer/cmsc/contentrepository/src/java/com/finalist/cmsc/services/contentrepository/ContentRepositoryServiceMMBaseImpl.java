@@ -151,11 +151,11 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 	 */
 	public List<NodetypeBean> getContentTypes() {
 		Cloud cloud = getCloud();
-		List types = ContentElementUtil.getContentTypes(cloud);
+		List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
         
         List<NodetypeBean> result = new ArrayList<NodetypeBean>();
-        for (Iterator iter = types.iterator(); iter.hasNext();) {
-            NodeManager nm = (NodeManager) iter.next();
+        for (Iterator<NodeManager> iter = types.iterator(); iter.hasNext();) {
+            NodeManager nm = iter.next();
             NodetypeBean ct = (NodetypeBean) MMBaseNodeMapper.copyNode(nm, NodetypeBean.class);
             result.add(ct);
         }

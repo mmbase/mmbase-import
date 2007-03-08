@@ -49,7 +49,7 @@ public class LinkTag extends SimpleTagSupport {
 	/**
 	 * Params added by nested param tag
 	 */
-	private Map params = new HashMap();
+	private Map<String, Object> params = new HashMap<String, Object>();
 
 	private Page page;
 

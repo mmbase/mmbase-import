@@ -196,7 +196,7 @@ public class RepositoryUtil {
      * @param node - node
      * @return List with the path to the root. First item is the root and last is the node
      */
-    public static List getPathToRoot(Node node) {
+    public static List<Node> getPathToRoot(Node node) {
         return TreeUtil.getPathToRoot(node, treeManagers, CHILDREL);
     }
 
@@ -498,8 +498,8 @@ public class RepositoryUtil {
     public static boolean isLinkedToChannel(Node content, Node channelNode) {
         boolean isLinkedToChannel = false;
         NodeList channels = getContentChannels(content);
-        for (Iterator iter = channels.iterator(); iter.hasNext();) {
-            Node channel = (Node) iter.next();
+        for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+            Node channel = iter.next();
             if (channelNode.getNumber() == channel.getNumber()) {
                 isLinkedToChannel = true;
             }
@@ -795,8 +795,8 @@ public class RepositoryUtil {
             appendChild(destChannel, newChannel);
 
             NodeList children = getOrderedChildren(sourceChannel);
-            for (Iterator iter = children.iterator(); iter.hasNext();) {
-                Node childChannel = (Node) iter.next();
+            for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+                Node childChannel = iter.next();
                 copyChannel(childChannel, newChannel);
             }
 
@@ -857,11 +857,11 @@ public class RepositoryUtil {
        return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
     }
 
-    public static void setGroupRights(Cloud cloud, Node user, Map rights) {
+    public static void setGroupRights(Cloud cloud, Node user, Map<Integer, UserRole> rights) {
         SecurityUtil.setGroupRights(cloud, user, rights, treeManagers);
     }
 
-    public static List getUsersWithRights(Node channel, Role requiredRole) {
+    public static List<Node> getUsersWithRights(Node channel, Role requiredRole) {
         return SecurityUtil.getUsersWithRights(channel, requiredRole, treeManagers, CHILDREL);
     }
 

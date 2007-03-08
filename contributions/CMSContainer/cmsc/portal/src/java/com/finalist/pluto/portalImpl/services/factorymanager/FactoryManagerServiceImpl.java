@@ -45,9 +45,9 @@ import com.finalist.cmsc.services.Properties;
 public class FactoryManagerServiceImpl extends FactoryManagerService {
 	private static Log log = LogFactory.getLog(FactoryManagerServiceImpl.class);
 
-	private Map factoryMap = new HashMap();
+	private Map<Class, Factory> factoryMap = new HashMap<Class, Factory>();
 
-	private List factoryList = new LinkedList();
+	private List<Factory> factoryList = new LinkedList<Factory>();
 
 	private final static String CONFIG_FACTORY_PRE = "factory.";
 
@@ -62,8 +62,8 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 	protected void init(ServletConfig config, Properties aProperties) throws Exception {
 		log.info("FactoryManager: Loading factories...");
 
-		Map factoryImpls = new HashMap();
-		Map factoryProps = new HashMap();
+		Map<String, String> factoryImpls = new HashMap<String, String>();
+		Map<String, HashMap> factoryProps = new HashMap<String, HashMap>();
 
 		Iterator configNames = aProperties.keys();
 		String lastFactoryInterfaceName = null;
@@ -74,7 +74,7 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 				if ((lastFactoryInterfaceName != null) && (name.startsWith(lastFactoryInterfaceName))) {
 					String propertyName = name.substring(lastFactoryInterfaceName.length() + 1);
 					String propertyValue = aProperties.getString(configName);
-					Map properties = (Map) factoryProps.get(lastFactoryInterfaceName);
+					Map<String, String> properties = factoryProps.get(lastFactoryInterfaceName);
 					properties.put(propertyName, propertyValue);
 				} else {
 					String factoryInterfaceName = name;
@@ -89,8 +89,8 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 
 		int numAll = 0;
 
-		for (Iterator iter = factoryImpls.keySet().iterator(); iter.hasNext();) {
-			String factoryInterfaceName = (String) iter.next();
+		for (Iterator<String> iter = factoryImpls.keySet().iterator(); iter.hasNext();) {
+			String factoryInterfaceName = iter.next();
 
 			numAll++;
 
@@ -106,13 +106,13 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 				continue;
 			}
 
-			String factoryImplName = (String) factoryImpls.get(factoryInterfaceName);
+			String factoryImplName = factoryImpls.get(factoryInterfaceName);
 			Class factoryImpl = null;
 			Factory factory = null;
 			try {
 				factoryImpl = Class.forName(factoryImplName);
 				factory = (Factory) factoryImpl.newInstance();
-				Map props = (Map) factoryProps.get(factoryInterfaceName);
+				Map props = factoryProps.get(factoryInterfaceName);
 				log.info(StringUtils.nameOf(factoryInterface) + " initializing...");
 				factory.init(config, props);
 				log.info(StringUtils.nameOf(factoryInterface) + " done.");
@@ -154,8 +154,8 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 		if (config != null)
 			context = config.getServletContext();
 		// destroy the services in reverse order
-		for (Iterator iterator = factoryList.iterator(); iterator.hasNext();) {
-			Factory factory = (Factory) iterator.next();
+		for (Iterator<Factory> iterator = factoryList.iterator(); iterator.hasNext();) {
+			Factory factory = iterator.next();
 			try {
 				factory.destroy();
 			} catch (Exception exc) {
@@ -179,7 +179,7 @@ public class FactoryManagerServiceImpl extends FactoryManagerService {
 	public Factory getFactory(Class theClass) {
 		// at this state the services map is read-only,
 		// therefore we can go without synchronization
-		Factory f = (Factory) factoryMap.get(theClass);
+		Factory f = factoryMap.get(theClass);
 		return f;
 	}
 

@@ -12,6 +12,7 @@ package com.finalist.cmsc.taglib;
 import java.util.List;
 
 import com.finalist.cmsc.beans.om.ContentChannel;
+import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.services.contentrepository.ContentRepository;
 
 /**
@@ -19,9 +20,9 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  * 
  * @author Wouter Heijke
  */
-public class ListContentElementsTag extends AbstractListTag {
+public class ListContentElementsTag extends AbstractListTag<ContentElement> {
 
-	protected List getList() {
+	protected List<ContentElement> getList() {
 		if (origin != null) {
 			if (origin instanceof ContentChannel) {
 				return ContentRepository.getContentElements((ContentChannel)origin);

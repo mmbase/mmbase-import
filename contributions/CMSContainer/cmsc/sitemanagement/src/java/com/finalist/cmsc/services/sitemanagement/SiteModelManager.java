@@ -342,8 +342,8 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         if (v != null) {
             List<String> vTypes = v.getContenttypes();
             if (!vTypes.isEmpty()) {
-                for (Iterator iter = vTypes.iterator(); iter.hasNext();) {
-                    String type = (String) iter.next();
+                for (Iterator<String> iter = vTypes.iterator(); iter.hasNext();) {
+                    String type = iter.next();
                     if (dTypes.isEmpty() || dTypes.contains(type)) {
                         types.add(type);
                     }

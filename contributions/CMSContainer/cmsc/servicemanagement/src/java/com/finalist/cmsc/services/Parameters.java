@@ -27,27 +27,27 @@ import javax.servlet.ServletContext;
 
 public class Parameters extends NameValuePairs {
 
-    public Parameters(Map params) {
-        Iterator iterator = params.keySet().iterator();
+    public Parameters(Map<String,String> params) {
+        Iterator<String> iterator = params.keySet().iterator();
 
         while (iterator.hasNext()) {
-            String name = (String) iterator.next();
+            String name = iterator.next();
 
-            super.add(name, (String) params.get(name));
+            super.add(name, params.get(name));
         }
     }
 
     public Parameters(ServletConfig aConfig) {
-        for (Enumeration e = aConfig.getInitParameterNames(); e.hasMoreElements();) {
-            String name = (String) e.nextElement();
+        for (Enumeration<String> e = aConfig.getInitParameterNames(); e.hasMoreElements();) {
+            String name = e.nextElement();
 
             super.add(name, aConfig.getInitParameter(name));
         }
     }
 
     public Parameters(ServletContext aContext) {
-        for (Enumeration e = aContext.getInitParameterNames(); e.hasMoreElements();) {
-            String name = (String) e.nextElement();
+        for (Enumeration<String> e = aContext.getInitParameterNames(); e.hasMoreElements();) {
+            String name = e.nextElement();
 
             super.add(name, aContext.getInitParameter(name));
         }
@@ -81,18 +81,18 @@ public class Parameters extends NameValuePairs {
      */
 
     public void removeWithPrefix(String aPrefix) {
-        List deletables = new ArrayList();
+        List<String> deletables = new ArrayList<String>();
 
-        for (Iterator iter = names(); iter.hasNext();) {
-            String name = (String) iter.next();
+        for (Iterator<String> iter = names(); iter.hasNext();) {
+            String name = iter.next();
 
             if (name.startsWith(aPrefix)) {
                 deletables.add(name);
             }
         }
 
-        for (Iterator iter = deletables.iterator(); iter.hasNext();) {
-            super.removeEntry((String) iter.next());
+        for (Iterator<String> iter = deletables.iterator(); iter.hasNext();) {
+            super.removeEntry(iter.next());
         }
     }
 }

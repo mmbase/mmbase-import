@@ -42,10 +42,10 @@ public class PortalURL {
 
     private String basePortalURL = null;
     private boolean secure = false;
-	private List startGlobalNavigation = new ArrayList();
-	private List startLocalNavigation = new ArrayList();
-	private HashMap encodedStartControlParameter = new HashMap();
-	private HashMap startStateLessControlParameter = new HashMap();
+	private List<String> startGlobalNavigation = new ArrayList<String>();
+	private List<String> startLocalNavigation = new ArrayList<String>();
+	private HashMap<String, Object> encodedStartControlParameter = new HashMap<String, Object>();
+	private HashMap<String, String> startStateLessControlParameter = new HashMap<String, String>();
    private String host;
 
 	private boolean analyzed = false;
@@ -133,7 +133,7 @@ public class PortalURL {
 	 * by the Browser, therefore the local navigation cleared.
 	 */
 	public void setLocalNavigation() {
-		startLocalNavigation = new ArrayList();
+		startLocalNavigation = new ArrayList<String>();
 	}
 
 	/**
@@ -184,12 +184,12 @@ public class PortalURL {
 
 	public String getGlobalNavigationAsString() {
 		StringBuffer result = new StringBuffer(200);
-		Iterator iterator = startGlobalNavigation.iterator();
+		Iterator<String> iterator = startGlobalNavigation.iterator();
 		if (iterator.hasNext()) {
-			result.append((String) iterator.next());
+			result.append(iterator.next());
 			while (iterator.hasNext()) {
 				result.append("/");
-				String st = (String) iterator.next();
+				String st = iterator.next();
 				result.append(st);
 			}
 		}
@@ -198,28 +198,28 @@ public class PortalURL {
 
 	public String getLocalNavigationAsString() {
 		StringBuffer result = new StringBuffer(30);
-		Iterator iterator = startLocalNavigation.iterator();
+		Iterator<String> iterator = startLocalNavigation.iterator();
 		if (iterator.hasNext()) {
-			result.append((String) iterator.next());
+			result.append(iterator.next());
 			while (iterator.hasNext()) {
 				result.append(".");
-				result.append((String) iterator.next());
+				result.append(iterator.next());
 			}
 		}
 		return result.toString();
 	}
 
 	public String getControlParameterAsString(PortalControlParameter controlParam) {
-		Map encodedStateFullParams = encodedStartControlParameter;
+		Map<String, Object> encodedStateFullParams = encodedStartControlParameter;
 		if (controlParam != null) {
 			encodedStateFullParams = controlParam.getEncodedStateFullControlParameter();
 		}
 
 		StringBuffer result = new StringBuffer(100);
-		Iterator iterator = encodedStateFullParams.keySet().iterator();
+		Iterator<String> iterator = encodedStateFullParams.keySet().iterator();
 		while (iterator.hasNext()) {
 			result.append("/");
-			String encodedName = (String) iterator.next();
+			String encodedName = iterator.next();
 			String encodedValue = (String) encodedStateFullParams.get(encodedName);
 			if (encodedValue != null) {
 				// appends the prefix (currently "_") in front of the encoded
@@ -235,16 +235,16 @@ public class PortalURL {
 
 	public String getRequestParameterAsString(PortalControlParameter controlParam) {
 		if (controlParam != null) {
-			Map requestParams = controlParam.getRequestParameter();
+			Map<String, String[]> requestParams = controlParam.getRequestParameter();
 			StringBuffer result = new StringBuffer(100);
-			Iterator iterator = requestParams.keySet().iterator();
+			Iterator<String> iterator = requestParams.keySet().iterator();
 			boolean hasNext = iterator.hasNext();
 			if (hasNext) {
 				result.append("?");
 			}
 
 			while (hasNext) {
-				String name = (String) iterator.next();
+				String name = iterator.next();
 				Object value = requestParams.get(name);
 				String[] values = value instanceof String ? new String[] { (String) value } : (String[]) value;
 
@@ -321,29 +321,29 @@ public class PortalURL {
         }
 	}
 
-	Map getClonedEncodedStateFullControlParameter() {
+	Map<String, Object> getClonedEncodedStateFullControlParameter() {
 		analyzeRequestInformation();
-		return (Map) encodedStartControlParameter.clone();
+		return (Map<String, Object>) encodedStartControlParameter.clone();
 	}
 
-	Map getClonedStateLessControlParameter() {
+	Map<String, String> getClonedStateLessControlParameter() {
 		analyzeRequestInformation();
-		return (Map) startStateLessControlParameter.clone();
+		return (Map<String, String>) startStateLessControlParameter.clone();
 	}
 
 	void analyzeControlInformation(PortalControlParameter control) {
-		encodedStartControlParameter = (HashMap) control.getEncodedStateFullControlParameter();
-		startStateLessControlParameter = (HashMap) control.getStateLessControlParameter();
+		encodedStartControlParameter = (HashMap<String, Object>) control.getEncodedStateFullControlParameter();
+		startStateLessControlParameter = (HashMap<String, String>) control.getStateLessControlParameter();
 	}
 
 	void analyzeRequestInformation() {
 		if (analyzed)
 			return;
 
-		startGlobalNavigation = new ArrayList();
-		startLocalNavigation = new ArrayList();
-		encodedStartControlParameter = new HashMap();
-		startStateLessControlParameter = new HashMap();
+		startGlobalNavigation = new ArrayList<String>();
+		startLocalNavigation = new ArrayList<String>();
+		encodedStartControlParameter = new HashMap<String, Object>();
+		startStateLessControlParameter = new HashMap<String, String>();
 
 		// check the complete pathInfo for
 		// * navigational information
@@ -401,9 +401,9 @@ public class PortalURL {
     
 	public void clearRenderParameters(PortletWindow portletWindow) {
 		String prefix = PortalControlParameter.getRenderParamKey(portletWindow);
-		Iterator keyIterator = encodedStartControlParameter.keySet().iterator();
+		Iterator<String> keyIterator = encodedStartControlParameter.keySet().iterator();
 		while (keyIterator.hasNext()) {
-			String name = (String) keyIterator.next();
+			String name = keyIterator.next();
 			if (name.startsWith(prefix)) {
 				keyIterator.remove();
 			}

@@ -25,10 +25,10 @@ import org.apache.pluto.om.window.PortletWindowListCtrl;
 
 public class PortletWindowListImpl implements PortletWindowList, PortletWindowListCtrl {
 
-	HashMap windows;
+	HashMap<String, PortletWindow> windows;
 
 	public PortletWindowListImpl() {
-		windows = new HashMap();
+		windows = new HashMap<String, PortletWindow>();
 	}
 
 	// PortletWindowList implementation.
@@ -38,7 +38,7 @@ public class PortletWindowListImpl implements PortletWindowList, PortletWindowLi
 	 * 
 	 * @return An iterator containg all elements
 	 */
-	public Iterator iterator() {
+	public Iterator<PortletWindow> iterator() {
 
 		return windows.values().iterator();
 	}
@@ -51,7 +51,7 @@ public class PortletWindowListImpl implements PortletWindowList, PortletWindowLi
 	 *         portlet window with the given id
 	 */
 	public PortletWindow get(ObjectID id) {
-		return (PortletWindow) windows.get(id.toString());
+		return windows.get(id.toString());
 	}
 
 	// PortletWindowListCtrl implementation.

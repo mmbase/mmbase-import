@@ -22,7 +22,7 @@ public class PreferenceImpl implements Preference, PreferenceCtrl, Serializable 
 
 	private String name;
 
-	private List values = new ArrayList();
+	private List<Object> values = new ArrayList<Object>();
 
 	private boolean readOnly;
 
@@ -50,7 +50,7 @@ public class PreferenceImpl implements Preference, PreferenceCtrl, Serializable 
 		this.values.add(value);
 	}
     
-    public Iterator getValues() {
+    public Iterator<Object> getValues() {
         return values.iterator();
     }
     
@@ -80,7 +80,7 @@ public class PreferenceImpl implements Preference, PreferenceCtrl, Serializable 
         else {
             StringUtils.newLine(buffer, indent);
             buffer.append("{");
-            Iterator iterator = values.iterator();
+            Iterator<Object> iterator = values.iterator();
             if (iterator.hasNext()) {
                 StringUtils.newLine(buffer, indent);
                 buffer.append((String) iterator.next());

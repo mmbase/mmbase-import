@@ -26,7 +26,7 @@ public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, 
 
 	private ClassLoader classLoader;
 
-	private Vector locales;
+	private Vector<Locale> locales;
 
 	private boolean resourceBundleInitialized;
 
@@ -39,7 +39,7 @@ public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, 
     private String keywords;
 
 	public LanguageSetImpl() {
-		locales = new Vector();
+		locales = new Vector<Locale>();
 	}
 
 
@@ -71,7 +71,7 @@ public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, 
 		return null;
 	}
 
-	public Iterator getLocales() {
+	public Iterator<Locale> getLocales() {
 		return locales.iterator();
 	}
 
@@ -79,7 +79,7 @@ public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, 
 		Locale defLoc = null;
 
 		if (locales != null && locales.size() > 0) {
-			defLoc = (Locale) locales.firstElement();
+			defLoc = locales.firstElement();
 			if (defLoc == null) {
 				defLoc = new Locale("en", "");
 				locales.add(defLoc);
@@ -119,9 +119,9 @@ public class LanguageSetImpl extends AbstractSupportSet implements LanguageSet, 
 	// create and add all resource bundle information as Language objects to
 	// this set
 	private void initResourceBundle() {
-		Iterator iter = locales.iterator();
+		Iterator<Locale> iter = locales.iterator();
 		while (iter.hasNext()) {
-			Locale locale = (Locale) iter.next();
+			Locale locale = iter.next();
 			ResourceBundle bundle = null;
 			bundle = loadResourceBundle(locale);
 			if (bundle != null) {

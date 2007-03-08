@@ -64,12 +64,12 @@ public abstract class TreeAction extends MMBaseAction {
                 if (path != null && path.indexOf(TreeUtil.PATH_SEPARATOR) < 0){
                     path = null;
                 }
-                List children = getChildren(cloud, path);
+                List<String> children = getChildren(cloud, path);
 
                 PrintWriter out = HttpUtil.getWriterForXml(response);    
                 out.write("<options>");
-                for (Iterator iter = children.iterator(); iter.hasNext();) {
-                    String element = (String) iter.next();
+                for (Iterator<String> iter = children.iterator(); iter.hasNext();) {
+                    String element = iter.next();
                     out.write("<option>"+element+"</option>");                    
                 }
                 out.write("</options>");
@@ -80,10 +80,10 @@ public abstract class TreeAction extends MMBaseAction {
             String channel = getChannelId(request, cloud);
             if (!StringUtil.isEmpty(channel) && !"notfound".equals(channel)) {
                 Node channelNode = cloud.getNode(channel);
-                List openChannels = getOpenChannels(channelNode);
+                List<Node> openChannels = getOpenChannels(channelNode);
                 if (openChannels != null) {
-                    for (Iterator iter = openChannels.iterator(); iter.hasNext();) {
-                        Node node = (Node) iter.next();
+                    for (Iterator<Node> iter = openChannels.iterator(); iter.hasNext();) {
+                        Node node = iter.next();
                         info.expand(node.getNumber());
                     }
                     addToRequest(request, "channel", channelNode);
@@ -107,8 +107,8 @@ public abstract class TreeAction extends MMBaseAction {
 
     protected abstract TreeInfo getTreeInfo(Cloud cloud);
     protected abstract Node getRootNode(Cloud cloud);
-    protected abstract List getOpenChannels(Node channelNode);
+    protected abstract List<Node> getOpenChannels(Node channelNode);
     protected abstract AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid);
-    protected abstract List getChildren(Cloud cloud, String path);
+    protected abstract List<String> getChildren(Cloud cloud, String path);
 
 }

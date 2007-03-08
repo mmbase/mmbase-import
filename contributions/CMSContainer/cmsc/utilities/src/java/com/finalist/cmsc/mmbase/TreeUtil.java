@@ -64,9 +64,7 @@ public class TreeUtil {
     }
     
     public static Node getParent(Node node, String[] treeManagers, String relationName) {
-        for (int i = 0; i < treeManagers.length; i++) {
-            String manager = treeManagers[i];
-            
+        for (String manager : treeManagers) {
             if (node.getCloud().hasRelationManager(manager, node.getNodeManager().getName(), relationName)) {
                 NodeList parentList = node.getRelatedNodes(manager, relationName, "SOURCE");
                 if (!parentList.isEmpty()) {
@@ -84,9 +82,7 @@ public class TreeUtil {
     }
     
     public static Relation getParentRelation(Node node, String[] treeManagers, String relationName) {
-        for (int i = 0; i < treeManagers.length; i++) {
-            String manager = treeManagers[i];
-            
+        for (String manager : treeManagers) {
             if (node.getCloud().hasRelationManager(manager, node.getNodeManager().getName(), relationName)) {
                 
                 RelationList parentList = node.getRelations(relationName, node.getCloud().getNodeManager(manager), "SOURCE");
@@ -108,9 +104,9 @@ public class TreeUtil {
         boolean isParent = false;
         
         // check that the source channel is not a parent of the destination channel
-        List pathNodes = getPathToRoot(destChannel, treeManagers, relationName);
-        for (Iterator iter = pathNodes.iterator(); iter.hasNext();) {
-            Node channel = (Node) iter.next();
+        List<Node> pathNodes = getPathToRoot(destChannel, treeManagers, relationName);
+        for (Iterator<Node> iter = pathNodes.iterator(); iter.hasNext();) {
+            Node channel = iter.next();
             if (channel.getNumber() == sourceChannel.getNumber()) {
                 isParent = true;
             }
@@ -125,7 +121,7 @@ public class TreeUtil {
      * @param relationName relation between the managers
      * @return List with the path to the root. First item is the root and last is the node
      */
-    public static List getPathToRoot(Node node, String relationName) {
+    public static List<Node> getPathToRoot(Node node, String relationName) {
         String[] treeManagers = new String[] { node.getNodeManager().getName() };
         return getPathToRoot(node, treeManagers, relationName);
     }
@@ -218,9 +214,9 @@ public class TreeUtil {
 
     public static String getPathToRootStringWithoutCache(Node node, String[] treeManagers, String relationName, String[] fragmentFieldnames) {
         String pathStr = "";
-        List path = getPathToRoot(node, treeManagers, relationName);
-        for (Iterator i = path.iterator(); i.hasNext();) {
-            Node n = (Node) i.next();
+        List<Node> path = getPathToRoot(node, treeManagers, relationName);
+        for (Iterator<Node> i = path.iterator(); i.hasNext();) {
+            Node n = i.next();
 
             String nManagerName = n.getNodeManager().getName();
             String fragmentFieldname = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
@@ -301,9 +297,9 @@ public class TreeUtil {
      */
     public static String getTitlesString(Node node, String[] treeManagers, String relationName, String titleFieldname, boolean includeRoot) {
        String result = "";
-       List path = getPathToRoot(node, treeManagers, relationName);
+       List<Node> path = getPathToRoot(node, treeManagers, relationName);
        for (int i = 0; i < path.size(); i++) {
-           Node n = (Node) path.get(i);
+           Node n = path.get(i);
            if (i == path.size() - 1 && !includeRoot) {
                continue;
            }
@@ -485,8 +481,8 @@ public class TreeUtil {
     public static boolean hasChild(Node parent, String fragment, String[] treeManagers,
             String relationName, String[] fragmentFieldnames) {
         NodeList children = getChildren(parent, relationName);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            Node child = (Node) iter.next();
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node child = iter.next();
             String nManagerName = child.getNodeManager().getName();
             String fragmentfield = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
             String value = child.getStringValue(fragmentfield);
@@ -507,8 +503,8 @@ public class TreeUtil {
     public static Node getChild(Node parentChannel, String fragment, String[] treeManagers,
             String relationName, String[] fragmentFieldnames) {
         NodeList children = getChildren(parentChannel, relationName);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            Node child = (Node) iter.next();
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node child = iter.next();
             String nManagerName = child.getNodeManager().getName();
             String fragmentfield = getFragmentFieldname(nManagerName, treeManagers, fragmentFieldnames);
             String value = child.getStringValue(fragmentfield);

@@ -19,9 +19,9 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  * 
  * @author Wouter Heijke
  */
-public class ListContentChannelsTag extends AbstractListTag {
+public class ListContentChannelsTag extends AbstractListTag<ContentChannel> {
 
-    protected List getList() {
+    protected List<ContentChannel> getList() {
         if (origin != null) {
             if (origin instanceof ContentChannel) {
                 return ContentRepository.getContentChannels((ContentChannel)origin);

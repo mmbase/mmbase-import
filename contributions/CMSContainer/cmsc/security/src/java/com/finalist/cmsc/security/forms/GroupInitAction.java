@@ -33,8 +33,8 @@ public class GroupInitAction extends MMBaseAction {
          groupForm.setDescription(node.getStringValue("description"));
          groupForm.setId(Integer.parseInt(id));
          NodeList members = SecurityUtil.getMembers(node);
-         for (Iterator iter = users.iterator(); iter.hasNext();) {
-            Node user = (Node) iter.next();
+         for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
+            Node user = iter.next();
             String label = getLabel(user);
             LabelValueBean bean = new LabelValueBean(label, String.valueOf(user.getNumber()));
             if (members.contains(user)) {
@@ -47,8 +47,8 @@ public class GroupInitAction extends MMBaseAction {
       } else {
          // new 
           groupForm.setId(-1);
-          for (Iterator iter = users.iterator(); iter.hasNext();) {
-              Node user = (Node) iter.next();
+          for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
+              Node user = iter.next();
               String label = getLabel(user);
               LabelValueBean bean = new LabelValueBean(label, String.valueOf(user.getNumber()));
               usersList.add(bean);

@@ -128,7 +128,7 @@ public class SqlExecutor {
       return CloudProviderFactory.getCloudProvider().getAdminCloud();
    }
    
-   public static Map getUserCredentials(String username, String password) {
+   public static Map<String,String> getUserCredentials(String username, String password) {
       Map<String,String> result = new HashMap<String,String>(3, 0.7f);
       result.put("username", username);
       result.put("password", password);

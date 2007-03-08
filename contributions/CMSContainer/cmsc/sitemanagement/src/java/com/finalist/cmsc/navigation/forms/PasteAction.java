@@ -32,8 +32,8 @@ public class PasteAction extends TreePasteAction {
         }
         
         NodeList children = NavigationUtil.getOrderedChildren(newPage);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            Node childPage = (Node) iter.next();
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node childPage = iter.next();
             addWorkflow(childPage);
         }
     }

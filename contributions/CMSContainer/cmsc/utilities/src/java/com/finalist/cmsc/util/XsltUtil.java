@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -19,7 +18,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author <a href="mailto:nico@klasens.net"> Nico Klasens </A>
@@ -246,7 +244,7 @@ public class XsltUtil {
     * @throws TransformerException if Transformation fails
     * @throws IOException if IO fails
     */
-   private final void xsltTransform(StreamResult streamresult, Map params)
+   private final void xsltTransform(StreamResult streamresult, Map<String,Object> params)
       throws TransformerException, IOException {
 
       Source source = createXSLSource();
@@ -263,13 +261,13 @@ public class XsltUtil {
     * @param       transformer     The transformer.
     * @param       params          The params to be placed. Standard name/value pairs.
     */
-   private static void setStylesheetParams(Transformer transformer, Map params){
+   private static void setStylesheetParams(Transformer transformer, Map<String,Object> params){
        if (params==null) return;
 
-       Iterator i = params.entrySet().iterator();
+       Iterator<Map.Entry<String,Object>> i = params.entrySet().iterator();
        while (i.hasNext()){
-           Map.Entry entry = (Map.Entry) i.next();
-           transformer.setParameter((String) entry.getKey(), entry.getValue());
+           Map.Entry<String,Object> entry = i.next();
+           transformer.setParameter( entry.getKey(), entry.getValue());
        }
    }
    
@@ -281,15 +279,11 @@ public class XsltUtil {
     * @throws FOPException if FOP fails
     * @throws IOException if IO fails
     * @throws TransformerException if Transformation fails
-    * @throws ParserConfigurationException if Parse Configuration fails
-    * @throws SAXException if SAX fails
     */
-   public String transformToString(Map params)
+   public String transformToString(Map<String,Object> params)
       throws
          IOException,
-         TransformerException,
-         ParserConfigurationException,
-         SAXException {
+         TransformerException {
 
       CharArrayWriter caw = new CharArrayWriter();
       xsltTransform(new StreamResult(caw), params);
@@ -303,15 +297,11 @@ public class XsltUtil {
     * @throws FOPException if FOP fails
     * @throws IOException if IO fails
     * @throws TransformerException if Transformation fails
-    * @throws ParserConfigurationException if Parse Configuration fails
-    * @throws SAXException if SAX fails
     */
-   public void transformToServletResponse(HttpServletResponse response, Map params)
+   public void transformToServletResponse(HttpServletResponse response, Map<String,Object> params)
       throws
          IOException,
-         TransformerException,
-         ParserConfigurationException,
-         SAXException {
+         TransformerException {
 
       String xml = transformToString(params);
       response.setContentType(mimeType);

@@ -25,7 +25,7 @@ import org.mmbase.bridge.RelationManagerList;
  */
 public class Comparer {
    
-   public static List compareModels(Cloud localCloud, Cloud remoteCloud) {
+   public static List<String> compareModels(Cloud localCloud, Cloud remoteCloud) {
       List<String> messages = new ArrayList<String>();
       
       compareNodeManagers(localCloud, remoteCloud, messages);
@@ -179,7 +179,7 @@ public class Comparer {
    }
    
    
-   public static List compareManagers(Cloud localCloud, Cloud remoteCloud, String managerName, String keyField) {
+   public static List<String> compareManagers(Cloud localCloud, Cloud remoteCloud, String managerName, String keyField) {
       List<String> messages = new ArrayList<String>();
       
       NodeManager localManager = localCloud.getNodeManager(managerName); 
@@ -224,8 +224,8 @@ public class Comparer {
 
    public static void compareNodes(List<String> messages, NodeManager localManager, Node localNode, Node remoteNode) {
       FieldList fields = localManager.getFields();
-      for (Iterator iter = fields.iterator(); iter.hasNext();) {
-         Field field = (Field) iter.next();
+      for (Iterator<Field> iter = fields.iterator(); iter.hasNext();) {
+         Field field = iter.next();
          if (!localNode.getValue(field.getName()).equals(remoteNode.getValue(field.getName()))) {
             messages.add("ERR: field '"+field.getName()+"' not equal");
          }

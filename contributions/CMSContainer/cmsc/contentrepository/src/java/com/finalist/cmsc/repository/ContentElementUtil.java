@@ -55,9 +55,9 @@ public class ContentElementUtil {
     public static List<NodeManager> getContentTypes(Cloud cloud) {
         List<NodeManager> result = new ArrayList<NodeManager>();
         NodeManagerList nml = cloud.getNodeManagers();
-        Iterator v = nml.iterator();
+        Iterator<NodeManager> v = nml.iterator();
         while (v.hasNext()) {
-            NodeManager nm = (NodeManager) v.next();
+            NodeManager nm = v.next();
             if (ContentElementUtil.isContentType(nm)) {
                 result.add(nm);
             }
@@ -119,8 +119,8 @@ public class ContentElementUtil {
 
     public static void removeContentBlock(Node node) {
         List<Node> nodes = findContentBlockNodes(node);
-        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-            Node removeNode = (Node) iter.next();
+        for (Iterator<Node> iter = nodes.iterator(); iter.hasNext();) {
+            Node removeNode = iter.next();
             removeNode.delete(true);
         }
     }

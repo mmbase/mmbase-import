@@ -95,8 +95,8 @@ public class BulkUploadUtil {
 
     private static boolean isZipFile(BinaryData binary) {
 	
-    	for(int count = 0; count < ZIP_MIME_TYPES.length; count++) {
-    		if(ZIP_MIME_TYPES[count].equalsIgnoreCase(binary.getContentType())) {
+    	for (String element : ZIP_MIME_TYPES) {
+    		if(element.equalsIgnoreCase(binary.getContentType())) {
     			return true;
     		}
     	}

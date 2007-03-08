@@ -19,6 +19,8 @@ public class LanguageImpl implements Language, java.io.Serializable {
 
     // ResourceBundle creation part
 
+    private static final long serialVersionUID = 9023275378993097543L;
+
     private static class DefaultsResourceBundle extends ListResourceBundle {
 
         private Object[][] resources;
@@ -37,10 +39,10 @@ public class LanguageImpl implements Language, java.io.Serializable {
 
     private static class ResourceBundleImpl extends ResourceBundle {
 
-        private HashMap data;
+        private HashMap<String, Object> data;
 
         public ResourceBundleImpl(ResourceBundle bundle, ResourceBundle defaults) {
-            data = new HashMap();
+            data = new HashMap<String, Object>();
 
             importData(defaults);
             importData(bundle);
@@ -48,8 +50,8 @@ public class LanguageImpl implements Language, java.io.Serializable {
 
         private void importData(ResourceBundle bundle) {
             if (bundle != null) {
-                for (Enumeration enumerator = bundle.getKeys(); enumerator.hasMoreElements();) {
-                    String key = (String) enumerator.nextElement();
+                for (Enumeration<String> enumerator = bundle.getKeys(); enumerator.hasMoreElements();) {
+                    String key = enumerator.nextElement();
                     Object value = bundle.getObject(key);
                     data.put(key, value);
                 }
@@ -60,7 +62,7 @@ public class LanguageImpl implements Language, java.io.Serializable {
             return data.get(key);
         }
 
-        public Enumeration getKeys() {
+        public Enumeration<String> getKeys() {
             return new Enumerator(data.keySet());
         }
     }
@@ -73,7 +75,7 @@ public class LanguageImpl implements Language, java.io.Serializable {
 
     private ResourceBundle bundle;
 
-    private Collection keywords;
+    private Collection<String> keywords;
 
 	public LanguageImpl() {
 		this(Locale.ENGLISH, null, "", "", "");
@@ -104,7 +106,7 @@ public class LanguageImpl implements Language, java.io.Serializable {
         return shortTitle;
     }
 
-    public Iterator getKeywords() {
+    public Iterator<String> getKeywords() {
         return keywords.iterator();
     }
 
@@ -113,8 +115,8 @@ public class LanguageImpl implements Language, java.io.Serializable {
     }
 
     // internal methods.
-    private ArrayList toList(String value) {
-        ArrayList keywords = new ArrayList();
+    private List<String> toList(String value) {
+        List<String> keywords = new ArrayList<String>();
 
         for (StringTokenizer st = new StringTokenizer(value, ","); st.hasMoreTokens();) {
             keywords.add(st.nextToken().trim());
@@ -146,7 +148,7 @@ public class LanguageImpl implements Language, java.io.Serializable {
         buffer.append("shortTitle='");
         buffer.append(shortTitle);
         buffer.append("'");
-        Iterator iterator = keywords.iterator();
+        Iterator<String> iterator = keywords.iterator();
         if (iterator.hasNext()) {
             StringUtils.newLine(buffer, indent);
             buffer.append("Keywords:");
@@ -181,14 +183,14 @@ public class LanguageImpl implements Language, java.io.Serializable {
         return locale.hashCode();
     }
 
-    public void setKeywords(Collection keywords) {
+    public void setKeywords(Collection<String> keywords) {
         this.keywords.clear();
         this.keywords.addAll(keywords);
     }
 
     public void setKeywords(String keywordStr) {
         if (keywords == null) {
-            keywords = new ArrayList();
+            keywords = new ArrayList<String>();
         }
         StringTokenizer tok = new StringTokenizer(keywordStr, ",");
         while (tok.hasMoreTokens()) {

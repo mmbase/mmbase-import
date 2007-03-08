@@ -70,7 +70,7 @@ public abstract class AbstractFragment implements Fragment {
 		return initParameters;
 	}
 
-	public abstract Collection getChildFragments();
+	public abstract Collection<Fragment> getChildFragments();
 
 	public abstract void addChild(Fragment child);
 

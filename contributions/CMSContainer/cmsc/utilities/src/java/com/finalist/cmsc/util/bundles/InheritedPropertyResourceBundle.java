@@ -127,21 +127,21 @@ public class InheritedPropertyResourceBundle extends ResourceBundle {
       Vector<String> temp = new Vector<String>();
 
       // get all keys for the backed PropertyResourceBundle
-      for (Enumeration e = instance.getKeys(); e.hasMoreElements();) {
-         temp.add((String)e.nextElement());
+      for (Enumeration<String> e = instance.getKeys(); e.hasMoreElements();) {
+         temp.add(e.nextElement());
       }
 
       // add all keys from parent bundles if they exist.
       if (relationships != null) {
-         for (Enumeration f = relationships.elements(); f.hasMoreElements();) {
+         for (Object element : relationships) {
 
             InheritedPropertyResourceBundle iprb = (InheritedPropertyResourceBundle)
-               f.nextElement();
+               element;
 
             // get all keys for this parent.
-            for (Enumeration g = iprb.getKeys(); g.hasMoreElements();) {
+            for (Enumeration<String> g = iprb.getKeys(); g.hasMoreElements();) {
 
-               String k = (String)g.nextElement();
+               String k = g.nextElement();
 
                // only add the key if it does not already exist.
                if (!temp.contains(k)) temp.add(k);
@@ -175,10 +175,10 @@ public class InheritedPropertyResourceBundle extends ResourceBundle {
       if (retVal == null) {
          // resource not found in PropertyResourceBundle, check all parents.
          if (relationships != null) {
-            for (Enumeration e = relationships.elements(); e.hasMoreElements();) {
+            for (Object element : relationships) {
 
                // attempt to get the resource from the current parent bundle.
-               retVal = ((InheritedPropertyResourceBundle)e.nextElement()).
+               retVal = ((InheritedPropertyResourceBundle)element).
                   handleGetObject(key);
 
                if (retVal != null) return retVal;
@@ -225,8 +225,8 @@ public class InheritedPropertyResourceBundle extends ResourceBundle {
     * Gets the parent bundles associated with this instance.
     * @return an Enumeration of the parent resource bundles.
     */
-   public Enumeration getRelationships() {
-      if (relationships == null) return (new Vector().elements());
+   public Enumeration<InheritedPropertyResourceBundle> getRelationships() {
+      if (relationships == null) return (new Vector<InheritedPropertyResourceBundle>().elements());
       return relationships.elements();
    }
 }

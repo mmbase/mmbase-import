@@ -45,7 +45,7 @@ public class PortalControlParameter {
 
 	static public final String STATE = "st";
 
-	private Map requestParameter = new HashMap();
+	private Map<String, String[]> requestParameter = new HashMap<String, String[]>();
 
 	/**
 	 * The map containing the encoded statefull control parameters. They are
@@ -53,9 +53,9 @@ public class PortalControlParameter {
 	 * and render parameters only are encoded using {{@link #encodeRenderParamName(PortletWindow, String)}}
 	 * and {{@link #encodeRenderParamValues(String[])}}.
 	 */
-	private Map encodedStateFullControlParameter;
+	private Map<String, Object> encodedStateFullControlParameter;
 
-	private Map stateLessControlParameter;
+	private Map<String, String> stateLessControlParameter;
 
 	private PortalURL url;
 
@@ -200,10 +200,10 @@ public class PortalControlParameter {
 	public static String encodeRenderParamValues(String[] paramValues) {
 		StringBuffer returnvalue = new StringBuffer(100);
 		returnvalue.append(paramValues.length);
-		for (int i = 0; i < paramValues.length; i++) {
+		for (String element : paramValues) {
 			returnvalue.append("_");
-			if (paramValues[i] != null) {
-				returnvalue.append(encodeString(paramValues[i]));
+			if (element != null) {
+				returnvalue.append(encodeString(element));
 			}
 		}
 		return returnvalue.toString();
@@ -274,9 +274,9 @@ public class PortalControlParameter {
 	 */
 	public void clearRenderParameters(PortletWindow portletWindow) {
 		String prefix = getRenderParamKey(portletWindow);	
-		Iterator keyIterator = encodedStateFullControlParameter.keySet().iterator();
+		Iterator<String> keyIterator = encodedStateFullControlParameter.keySet().iterator();
 		while (keyIterator.hasNext()) {
-			String encodedName = (String) keyIterator.next();
+			String encodedName = keyIterator.next();
 			if (encodedName.startsWith(prefix)) {
 				keyIterator.remove();
 			}
@@ -317,7 +317,7 @@ public class PortalControlParameter {
     }
 
 	public String getPIDValue() {
-		String value = (String) stateLessControlParameter.get(getPortletIdKey());
+		String value = stateLessControlParameter.get(getPortletIdKey());
 		return value == null ? "" : value;
 	}
 
@@ -327,9 +327,9 @@ public class PortalControlParameter {
 
     public String getPortletWindowOfAction() {
         String id = null;
-        Iterator iterator = getStateLessControlParameter().keySet().iterator();
+        Iterator<String> iterator = getStateLessControlParameter().keySet().iterator();
         while (iterator.hasNext()) {
-            String name = (String) iterator.next();
+            String name = iterator.next();
             if (name.startsWith(ACTION)) {
                 id = name.substring(ACTION.length() + 1);
             }
@@ -372,12 +372,12 @@ public class PortalControlParameter {
         return PREV_STATE + "_" + windowid;
     }
 
-	public Iterator getRenderParamNames(PortletWindow window) {
-		ArrayList returnvalue = new ArrayList();
+	public Iterator<String> getRenderParamNames(PortletWindow window) {
+		ArrayList<String> returnvalue = new ArrayList<String>();
 		String prefix = getRenderParamKey(window);
-		Iterator keyIterator = encodedStateFullControlParameter.keySet().iterator();
+		Iterator<String> keyIterator = encodedStateFullControlParameter.keySet().iterator();
 		while (keyIterator.hasNext()) {
-			String encodedName = (String) keyIterator.next();
+			String encodedName = keyIterator.next();
 			if (encodedName.startsWith(prefix)) {
 				// remove specific render parameter name encoding
 				String decodedName = decodeRenderParamName(window, encodedName);
@@ -395,7 +395,7 @@ public class PortalControlParameter {
 		return decodedValues;
 	}
 
-	public Map getRequestParameter() {
+	public Map<String, String[]> getRequestParameter() {
 		return requestParameter;
 	}
 
@@ -407,7 +407,7 @@ public class PortalControlParameter {
 			return WindowState.NORMAL;
 	}
 
-	public Map getEncodedStateFullControlParameter() {
+	public Map<String, Object> getEncodedStateFullControlParameter() {
 		return encodedStateFullControlParameter;
 	}
 
@@ -420,14 +420,14 @@ public class PortalControlParameter {
         return STATE + "_" + windowid;
     }
 
-	public Map getStateLessControlParameter() {
+	public Map<String, String> getStateLessControlParameter() {
 		return stateLessControlParameter;
 	}
 
 	public boolean isOnePortletWindowMaximized() {
-		Iterator iterator = encodedStateFullControlParameter.keySet().iterator();
+		Iterator<String> iterator = encodedStateFullControlParameter.keySet().iterator();
 		while (iterator.hasNext()) {
-			String encodedName = (String) iterator.next();
+			String encodedName = iterator.next();
 			if (encodedName.startsWith(STATE)) {
 				if (encodedStateFullControlParameter.get(encodedName).equals(WindowState.MAXIMIZED.toString())) {
 					return true;

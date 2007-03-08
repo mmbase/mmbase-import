@@ -19,7 +19,7 @@ public class FileWalker {
     *      in the returned collection
     * @return  A collection of File objects
     */
-   public static Collection getFiles(String startingDirectory, FileFilter filter) {
+   public static Collection<File> getFiles(String startingDirectory, FileFilter filter) {
       ListProcessor list = new ListProcessor();
       walk(startingDirectory, filter, list, true, false );
       return list.getList();
@@ -34,7 +34,7 @@ public class FileWalker {
     *      directory in the returned collection
     * @return  A collection of File objects
     */
-   public static Collection getDirectories(String startingDirectory, FileFilter filter) {
+   public static Collection<File> getDirectories(String startingDirectory, FileFilter filter) {
       ListProcessor list = new ListProcessor();
       walk(startingDirectory, filter, list, false, true );
       return list.getList();
@@ -50,7 +50,7 @@ public class FileWalker {
     *      file/directory in the returned collection
     * @return  A collection of File objects
     */
-   public static Collection getFilesAndDirectories(String startingDirectory, FileFilter filter ) {
+   public static Collection<File> getFilesAndDirectories(String startingDirectory, FileFilter filter ) {
       ListProcessor list = new ListProcessor();
       walk(startingDirectory, filter, list, true, true );
       return list.getList();
@@ -76,8 +76,7 @@ public class FileWalker {
       final List<File> pendingDirectories = new LinkedList<File>();
 
       final File[] files = dir.listFiles();
-      for (int i = 0; i < files.length; i++) {
-         final File currentFile = files[i];
+      for (final File currentFile : files) {
          if (includeFiles && currentFile.isFile() && filter != null && filter.accept(currentFile)) {
             processor.processFile(currentFile);
          } else if (currentFile.isDirectory()) {

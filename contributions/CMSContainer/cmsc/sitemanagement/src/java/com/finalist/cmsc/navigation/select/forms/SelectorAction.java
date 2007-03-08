@@ -65,7 +65,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return info;
     }
 
-    protected List getOpenChannels(Node channelNode) {
+    protected List<Node> getOpenChannels(Node channelNode) {
         if (PagesUtil.isPageType(channelNode)) {
             return NavigationUtil.getPathToRoot(channelNode);
         }
@@ -85,12 +85,12 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return t;
     }
     
-    protected List getChildren(Cloud cloud, String path) {
+    protected List<String> getChildren(Cloud cloud, String path) {
         List<String> strings = new ArrayList<String>();
         if (StringUtil.isEmpty(path)) {
             NodeList sites = SiteUtil.getSites(cloud);
-            for (Iterator iter = sites.iterator(); iter.hasNext();) {
-                Node child = (Node) iter.next();
+            for (Iterator<Node> iter = sites.iterator(); iter.hasNext();) {
+                Node child = iter.next();
                 strings.add(child.getStringValue(TreeUtil.PATH_FIELD));
             }
         }
@@ -98,8 +98,8 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
             Node parentNode = NavigationUtil.getPageFromPath(cloud, path);
             if(parentNode != null) {
                 NodeList children = NavigationUtil.getChildren(parentNode);
-                for (Iterator iter = children.iterator(); iter.hasNext();) {
-                    Node child = (Node) iter.next();
+                for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+                    Node child = iter.next();
                     strings.add(child.getStringValue(TreeUtil.PATH_FIELD));
                 }
             }

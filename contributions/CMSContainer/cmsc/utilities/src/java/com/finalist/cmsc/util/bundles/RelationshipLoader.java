@@ -85,11 +85,11 @@ public class RelationshipLoader {
       relationships = new Vector<InheritedPropertyResourceBundle>();
 
       // gets all parent bundle names from the file.
-      Enumeration e = getRelationshipNames();
+      Enumeration<String> e = getRelationshipNames();
 
       while (e.hasMoreElements()) {
 
-         String curName = (String)e.nextElement();
+         String curName = e.nextElement();
 
          // Gets the InheritedPropertyResourceBundle from the
          // manager with parent bundle name and the locale
@@ -106,9 +106,9 @@ public class RelationshipLoader {
     * @param source the InheritedPropertyResourceBundle.
     */
    protected void createRelations(InheritedPropertyResourceBundle source) {
-      for (Enumeration e = relationships.elements(); e.hasMoreElements();) {
+      for (Object element : relationships) {
          InheritedPropertyResourceBundle cur =
-            (InheritedPropertyResourceBundle)e.nextElement();
+            (InheritedPropertyResourceBundle)element;
 
          source.addRelationship(cur);
 
@@ -121,7 +121,7 @@ public class RelationshipLoader {
     * @return all resource bundle names defined in the relationships
     * file.
     */
-   private Enumeration getRelationshipNames() {
+   private Enumeration<String> getRelationshipNames() {
 
       Vector<String> retVal = new Vector<String>();
 

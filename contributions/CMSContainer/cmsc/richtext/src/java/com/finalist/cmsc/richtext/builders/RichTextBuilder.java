@@ -63,9 +63,9 @@ public class RichTextBuilder extends MMObjectBuilder {
             resolveIds = Boolean.valueOf(resolve);
         }
         
-        Collection fields = getFields();
-        for (Iterator iter = fields.iterator(); iter.hasNext();) {
-            CoreField field = (CoreField) iter.next();
+        Collection<CoreField> fields = getFields();
+        for (Iterator<CoreField> iter = fields.iterator(); iter.hasNext();) {
+            CoreField field = iter.next();
             DataType dataType = field.getDataType();
             while(StringUtil.isEmpty(dataType.getName())) {
                 dataType = dataType.getOrigin();
@@ -104,7 +104,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         if (!resolveIds) {
             return number;
         }
-        List fields = getFields(NodeManager.ORDER_EDIT);
+        List<Field> fields = getFields(NodeManager.ORDER_EDIT);
         List<String> idsList = new ArrayList<String>();
         resolve(node, idsList, fields, true);
         if (!idsList.isEmpty()) {
@@ -123,13 +123,13 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
         
         // Resolve images
-        List fields = getFields(NodeManager.ORDER_EDIT);
+        List<Field> fields = getFields(NodeManager.ORDER_EDIT);
 
         boolean htmlFieldChanged = false;
         
-        Iterator checkFields = fields.iterator();
+        Iterator<Field> checkFields = fields.iterator();
         while (checkFields.hasNext()) {
-            Field field = (Field) checkFields.next();
+            Field field = checkFields.next();
             if (field != null) {
                 String fieldName = field.getName();
                 if (htmlFields.contains(fieldName) && node.getChanged().contains(fieldName)) {
@@ -149,9 +149,9 @@ public class RichTextBuilder extends MMObjectBuilder {
         if (committed) {
             if (htmlFieldChanged) {
                 // remove outdated inlinerel
-                Enumeration idrels = node.getRelations(RichText.INLINEREL_NM);
+                Enumeration<MMObjectNode> idrels = node.getRelations(RichText.INLINEREL_NM);
                 while (idrels.hasMoreElements()) {
-                    MMObjectNode rel = (MMObjectNode) idrels.nextElement();
+                    MMObjectNode rel = idrels.nextElement();
                     String referid = rel.getStringValue(RichText.REFERID_FIELD);
                     if ((rel.getIntValue("snumber") == node.getNumber()) && !idsList.contains(referid)) {
                         inlinerelBuilder.removeNode(rel);
@@ -160,9 +160,9 @@ public class RichTextBuilder extends MMObjectBuilder {
                 }
 
                 // remove outdated imageinlinerel
-                Enumeration imagerels = node.getRelations(RichText.IMAGEINLINEREL_NM);
+                Enumeration<MMObjectNode> imagerels = node.getRelations(RichText.IMAGEINLINEREL_NM);
                 while (imagerels.hasMoreElements()) {
-                    MMObjectNode rel = (MMObjectNode) imagerels.nextElement();
+                    MMObjectNode rel = imagerels.nextElement();
                     String referid = rel.getStringValue(RichText.REFERID_FIELD);
                     if (!idsList.contains(referid)) {
                         imagerelBuilder.removeNode(rel);
@@ -175,10 +175,10 @@ public class RichTextBuilder extends MMObjectBuilder {
         return committed;
     }
 
-    private void resolve(MMObjectNode node, List<String> idsList, List fields, boolean isSnsert) {
-        Iterator iFields = fields.iterator();
+    private void resolve(MMObjectNode node, List<String> idsList, List<Field> fields, boolean isSnsert) {
+        Iterator<Field> iFields = fields.iterator();
         while (iFields.hasNext()) {
-            Field field = (Field) iFields.next();
+            Field field = iFields.next();
    
             if (field != null) {
                 String fieldName = field.getName();
@@ -548,9 +548,9 @@ public class RichTextBuilder extends MMObjectBuilder {
     private MMObjectNode getRelation(String id, MMObjectBuilder builder, String idField) {
         NodeSearchQuery query = getQuery(id, builder, idField);
         try {
-            List nodes = builder.getNodes(query);
-            for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-                MMObjectNode imagerel = (MMObjectNode) iter.next();
+            List<MMObjectNode> nodes = builder.getNodes(query);
+            for (Iterator<MMObjectNode> iter = nodes.iterator(); iter.hasNext();) {
+                MMObjectNode imagerel = iter.next();
                 return imagerel;
             }
         } catch (SearchQueryException e) {

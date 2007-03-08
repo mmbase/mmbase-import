@@ -139,11 +139,11 @@ public abstract class NameValuePairs {
 		return (getBoolean(aName, aDefault ? Boolean.TRUE : Boolean.FALSE).booleanValue());
 	}
 
-	public Iterator names() {
+	public Iterator<String> names() {
 		return (new EntryIterator(this));
 	}
 
-	public final Iterator keys() {
+	public final Iterator<String> keys() {
 		return (names());
 	}
 
@@ -170,8 +170,8 @@ public abstract class NameValuePairs {
 		if (aValues == null)
 			throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot be null."));
 
-		for (int i = 0; i < aValues.length; i++) {
-			if (aValues[i] == null)
+		for (String element : aValues) {
+			if (element == null)
 				throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot contain null."));
 		}
 
@@ -197,8 +197,8 @@ public abstract class NameValuePairs {
 
 		Entry result = null;
 
-		for (Iterator iter = iEntries.iterator(); iter.hasNext();) {
-			Entry entry = (Entry) iter.next();
+		for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
+			Entry entry = iter.next();
 
 			if (entry.iName.equals(aName)) {
 				result = entry;
@@ -219,8 +219,8 @@ public abstract class NameValuePairs {
 
 		boolean found = false;
 
-		for (Iterator iter = iEntries.iterator(); iter.hasNext();) {
-			Entry entry = (Entry) iter.next();
+		for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
+			Entry entry = iter.next();
 
 			if (entry.iName.equals(aName)) {
 				iter.remove();
@@ -237,7 +237,7 @@ public abstract class NameValuePairs {
 
 	private NameValuePairs iParent;
 
-	private List iEntries = new LinkedList();
+	private List<Entry> iEntries = new LinkedList<Entry>();
 
 	private String findString(String aName) {
 		String result = null;
@@ -254,7 +254,7 @@ public abstract class NameValuePairs {
 		return iParent;
 	}
 
-	List getEntries() {
+	List<Entry> getEntries() {
 		return iEntries;
 	}
 
@@ -286,11 +286,11 @@ public abstract class NameValuePairs {
 		}
 	}
 
-	private static class EntryIterator implements Iterator {
+	private static class EntryIterator implements Iterator<String> {
 
 		private NameValuePairs iPairs;
 
-		private Iterator iIterator;
+		private Iterator<Entry> iIterator;
 
 		private EntryIterator(NameValuePairs aPairs) {
 			iPairs = aPairs;
@@ -305,10 +305,10 @@ public abstract class NameValuePairs {
 			return (iIterator.hasNext());
 		}
 
-		public Object next() {
+		public String next() {
 			if (!nextParent())
 				return null;
-			return (((Entry) iIterator.next()).iName);
+			return (iIterator.next().iName);
 		}
 
 		public void remove() {

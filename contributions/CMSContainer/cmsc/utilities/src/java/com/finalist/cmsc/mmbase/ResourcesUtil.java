@@ -116,9 +116,9 @@ public class ResourcesUtil {
             }
         }
         String result;
-        List ls = MMBaseServlet.getServletMappingsByAssociation(association);
+        List<String> ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
-            result = (String) ls.get(0);
+            result = ls.get(0);
             // remove mask
             int pos = result.lastIndexOf("*");
             if (pos > 0) {

@@ -128,17 +128,17 @@ public class TreePathCache {
             String path = cKey.getPath();
             List<TreePathCacheKey> entriesToChange = new ArrayList<TreePathCacheKey>();
 
-            Iterator iter = channelCache.keySet().iterator();
+            Iterator<TreePathCacheKey> iter = channelCache.keySet().iterator();
             while (iter.hasNext()) {
-                TreePathCacheKey key = (TreePathCacheKey) iter.next();
+                TreePathCacheKey key = iter.next();
                 if (key.getPath().startsWith(path + '/')) {
                     entriesToChange.add(key);
                 }
             }
 
-            Iterator entriesIter = entriesToChange.iterator();
+            Iterator<TreePathCacheKey> entriesIter = entriesToChange.iterator();
             while (entriesIter.hasNext()) {
-                TreePathCacheKey key = (TreePathCacheKey) entriesIter.next();
+                TreePathCacheKey key = entriesIter.next();
                 Integer tempNode = (Integer) channelCache.remove(key);
                 String newKey = key.getPath().replaceFirst(path + '/', newPath + '/');
                 channelCache.put(new TreePathCacheKey(newKey), tempNode);

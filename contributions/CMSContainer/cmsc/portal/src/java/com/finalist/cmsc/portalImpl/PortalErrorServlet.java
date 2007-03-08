@@ -156,10 +156,10 @@ public class PortalErrorServlet extends PortalServlet {
         out.println("<html><head><title>" + request.getAttribute(ERROR_STATUS_CODE)
                 + " " + request.getAttribute(ERROR_MESSAGE) + "</title></head><body><table>"); 
         // Print vars
-        for (int i = 0; i < vars.length; i++) {
+        for (String element : vars) {
             out.println(
-                "<tr><td>" + vars[i] + "</td><td>" +
-                request.getAttribute(vars[i]) + 
+                "<tr><td>" + element + "</td><td>" +
+                request.getAttribute(element) + 
                 "</td></tr>");
         }
         out.println("</table></body></html>");

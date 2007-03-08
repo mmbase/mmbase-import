@@ -74,7 +74,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return info;
     }
 
-    protected List getOpenChannels(Node channelNode) {
+    protected List<Node> getOpenChannels(Node channelNode) {
         if (RepositoryUtil.isContentChannel(channelNode)) {
             return RepositoryUtil.getPathToRoot(channelNode);
         }
@@ -89,7 +89,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return t;
     }
     
-    protected List getChildren(Cloud cloud, String path) {
+    protected List<String> getChildren(Cloud cloud, String path) {
         List<String> strings = new ArrayList<String>();
         if (StringUtil.isEmpty(path)) {
             Node parentNode = RepositoryUtil.getRootNode(cloud);
@@ -106,8 +106,8 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
                     children = RepositoryUtil.getChildren(parentNode);
                 }
                 
-                for (Iterator iter = children.iterator(); iter.hasNext();) {
-                    Node child = (Node) iter.next();
+                for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+                    Node child = iter.next();
                     strings.add(child.getStringValue(TreeUtil.PATH_FIELD));
                 }
             }

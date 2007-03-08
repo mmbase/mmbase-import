@@ -35,13 +35,13 @@ public class PortalContextProviderImpl implements PortalContextProvider {
 	/** Portal information */
 	private String info;
 	/** supported portlet modes by this portal */
-	private Vector modes;
+	private Vector<PortletMode> modes;
 
 	/** supported window states by this portal */
-	private Vector states;
+	private Vector<WindowState> states;
 
 	/** portal properties */
-	private HashMap properties = new HashMap();
+	private HashMap<String, String> properties = new HashMap<String, String>();
 
 	public PortalContextProviderImpl() {
 		// these are the minimum modes that the portal needs to support
@@ -59,18 +59,18 @@ public class PortalContextProviderImpl implements PortalContextProvider {
 			throw new IllegalArgumentException("Property name == null");
 		}
 
-		return (String) properties.get(name);
+		return properties.get(name);
 	}
 
-	public java.util.Collection getPropertyNames() {
+	public java.util.Collection<String> getPropertyNames() {
 		return properties.keySet();
 	}
 
-	public java.util.Collection getSupportedPortletModes() {
+	public java.util.Collection<PortletMode> getSupportedPortletModes() {
 		return modes;
 	}
 
-	public java.util.Collection getSupportedWindowStates() {
+	public java.util.Collection<WindowState> getSupportedWindowStates() {
 		return states;
 	}
 
@@ -80,26 +80,26 @@ public class PortalContextProviderImpl implements PortalContextProvider {
 
 	// internal methods.
 
-	private Vector getDefaultModes() {
+	private Vector<PortletMode> getDefaultModes() {
 
-		Vector m = new Vector();
+		Vector<PortletMode> m = new Vector<PortletMode>();
 
 		String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
 
-		for (int i = 0; i < supportedModes.length; i++) {
-			m.add(new PortletMode(supportedModes[i].toString().toLowerCase()));
+		for (String element : supportedModes) {
+			m.add(new PortletMode(element.toString().toLowerCase()));
 		}
 
 		return m;
 	}
 
-	private Vector getDefaultStates() {
-		Vector s = new Vector();
+	private Vector<WindowState> getDefaultStates() {
+		Vector<WindowState> s = new Vector<WindowState>();
 
 		String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
 
-		for (int i = 0; i < supportedStates.length; i++) {
-			s.add(new WindowState(supportedStates[i].toString().toLowerCase()));
+		for (String element : supportedStates) {
+			s.add(new WindowState(element.toString().toLowerCase()));
 		}
 
 		return s;
@@ -118,8 +118,8 @@ public class PortalContextProviderImpl implements PortalContextProvider {
 	}
 
 	// expects enumeration of PortletMode objects
-	public void setSupportedPortletModes(Enumeration portletModes) {
-		Vector v = new Vector();
+	public void setSupportedPortletModes(Enumeration<PortletMode> portletModes) {
+		Vector<PortletMode> v = new Vector<PortletMode>();
 		while (portletModes.hasMoreElements()) {
 			v.add(portletModes.nextElement());
 		}
@@ -127,8 +127,8 @@ public class PortalContextProviderImpl implements PortalContextProvider {
 	}
 
 	// expects enumeration of WindowState objects
-	public void setSupportedWindowStates(Enumeration windowStates) {
-		Vector v = new Vector();
+	public void setSupportedWindowStates(Enumeration<WindowState> windowStates) {
+		Vector<WindowState> v = new Vector<WindowState>();
 		while (windowStates.hasMoreElements()) {
 			v.add(windowStates.nextElement());
 		}

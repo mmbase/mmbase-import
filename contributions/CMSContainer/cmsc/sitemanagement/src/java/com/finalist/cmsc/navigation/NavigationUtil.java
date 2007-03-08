@@ -69,7 +69,7 @@ public class NavigationUtil {
      * @param node - node
      * @return List with the path to the root. First item is the root and last is the node
      */
-    public static List getPathToRoot(Node node) {
+    public static List<Node> getPathToRoot(Node node) {
         return TreeUtil.getPathToRoot(node, treeManagers, NAVREL);
     }
 
@@ -265,8 +265,8 @@ public class NavigationUtil {
 
     public static NodeList getVisibleChildren(Node parentNode) {
         NodeList children = getOrderedChildren(parentNode);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            Node child = (Node) iter.next();
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node child = iter.next();
             if (!child.getBooleanValue(PagesUtil.VISIBLE_FIELD)) {
                 iter.remove();
             }
@@ -304,8 +304,8 @@ public class NavigationUtil {
             appendChild(destPage, newPage);
 
             NodeList children = getOrderedChildren(sourcePage);
-            for (Iterator iter = children.iterator(); iter.hasNext();) {
-                Node childPage = (Node) iter.next();
+            for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+                Node childPage = iter.next();
                 copyPage(childPage, newPage);
             }
             return newPage;
@@ -363,7 +363,7 @@ public class NavigationUtil {
        return SecurityUtil.getRole(page, rightsInherited, pagesWithRole);
     }
 
-    public static void setGroupRights(Cloud cloud, Node group, Map rights) {
+    public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights) {
         SecurityUtil.setGroupRights(cloud, group, rights, treeManagers);
     }
 
@@ -377,8 +377,8 @@ public class NavigationUtil {
 
     public static void deletePage(Node pageNode) {
         NodeList children = getOrderedChildren(pageNode);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            Node childPage = (Node) iter.next();
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node childPage = iter.next();
             deletePage(childPage);
         }
         PagesUtil.deletePage(pageNode);
@@ -449,7 +449,7 @@ public class NavigationUtil {
         return SecurityUtil.getRole(page, true, pagesWithRole);
     }
 
-    public static List getUsersWithRights(Node channel, Role requiredRole) {
+    public static List<Node> getUsersWithRights(Node channel, Role requiredRole) {
         return SecurityUtil.getUsersWithRights(channel, requiredRole, treeManagers, NAVREL);
     }
 }

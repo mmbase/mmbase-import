@@ -71,7 +71,7 @@ public interface Fragment {
 	 * @return a collection containing objects implementing the interface
 	 *         fragment
 	 */
-	public Collection getChildFragments();
+	public Collection<Fragment> getChildFragments();
 
 	/**
 	 * Adds an child to the fragment

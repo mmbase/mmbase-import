@@ -85,7 +85,7 @@ public class ScriptReader {
      * @return Value of property queries.
      *
      */
-    public List getQueries() {
+    public List<String> getQueries() {
         return queries;
     }
 }

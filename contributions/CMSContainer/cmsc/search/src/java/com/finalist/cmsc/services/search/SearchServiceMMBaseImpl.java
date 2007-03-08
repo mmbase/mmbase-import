@@ -309,8 +309,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 }
                 
                 List<Object> parameters = portlet.getPortletparameters();
-                for (Iterator<Object> iter = parameters.iterator(); iter.hasNext();) {
-                    Object param = iter.next();
+                for (Object param : parameters) {
                     if (param instanceof NodeParameter) {
                         String value = ((NodeParameter) param).getValueAsString();
                         if (value != null) {

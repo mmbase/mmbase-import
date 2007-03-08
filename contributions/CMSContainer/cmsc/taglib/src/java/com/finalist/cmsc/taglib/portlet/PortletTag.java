@@ -114,15 +114,15 @@ public class PortletTag extends SimpleTagSupport {
             boolean mayEditPortlet = SiteManagementAdmin.mayEdit(portlet);
             
             // if portlet supports portlet modes
-            Iterator modes = supported.getPortletModes();
+            Iterator<PortletMode> modes = supported.getPortletModes();
             while (modes.hasNext()) {
-                PortletMode mode = (PortletMode) modes.next();
+                PortletMode mode = modes.next();
 
                 // check whether portal also supports portlet mode
                 boolean portalSupport = false;
-                Iterator portalSupportedModes = portalContextProvider.getSupportedPortletModes().iterator();
+                Iterator<PortletMode> portalSupportedModes = portalContextProvider.getSupportedPortletModes().iterator();
                 while (portalSupportedModes.hasNext()) {
-                    PortletMode portalSupportedMode = (PortletMode) portalSupportedModes.next();
+                    PortletMode portalSupportedMode = portalSupportedModes.next();
                     if (mode.equals(portalSupportedMode)) {
                         portalSupport = true;
                         break;
@@ -172,9 +172,9 @@ public class PortletTag extends SimpleTagSupport {
             }
 
             // get the list of window states this Portlet supports
-            Iterator states = portalContextProvider.getSupportedWindowStates().iterator();
+            Iterator<WindowState> states = portalContextProvider.getSupportedWindowStates().iterator();
             while (states.hasNext()) {
-                WindowState state = (WindowState) states.next();
+                WindowState state = states.next();
                 env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
                 PortalURL stateURL = env.getRequestedPortalURL();
                 PortalControlParameter control = new PortalControlParameter(stateURL);
@@ -220,11 +220,11 @@ public class PortletTag extends SimpleTagSupport {
             title = string;
         }
 
-        public List getAvailablePortletModes() {
+        public List<PortletModeInfo> getAvailablePortletModes() {
             return availablePortletModes;
         }
 
-        public List getVisiblePortletModes() {
+        public List<PortletModeInfo> getVisiblePortletModes() {
             return visiblePortletModes;
         }
 
@@ -240,7 +240,7 @@ public class PortletTag extends SimpleTagSupport {
             }
         }
 
-        public List getAvailablePortletWindowStates() {
+        public List<PortletWindowStateInfo> getAvailablePortletWindowStates() {
             return availablePortletWindowStates;
         }
 
@@ -257,7 +257,7 @@ public class PortletTag extends SimpleTagSupport {
 
     }
 
-    public static class PortletWindowStateInfo implements Comparable {
+    public static class PortletWindowStateInfo implements Comparable<PortletWindowStateInfo> {
 
         private String label;
 
@@ -268,15 +268,8 @@ public class PortletTag extends SimpleTagSupport {
         /**
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
-        public int compareTo(Object compare) {
-            if (!(compare instanceof PortletWindowStateInfo)) {
-                throw new ClassCastException(compare + " is not a "
-                        + PortletWindowStateInfo.class.getName());
-            }
-            else {
-                PortletWindowStateInfo other = (PortletWindowStateInfo) compare;
-                return this.getLabel().compareTo(other.getLabel());
-            }
+        public int compareTo(PortletWindowStateInfo compare) {
+            return this.getLabel().compareTo(compare.getLabel());
         }
 
         public PortletWindowStateInfo(String stateLabel, String activationURL, boolean isCurrent) {
@@ -315,7 +308,7 @@ public class PortletTag extends SimpleTagSupport {
 
     }
 
-    public static class PortletModeInfo implements Comparable {
+    public static class PortletModeInfo implements Comparable<PortletModeInfo> {
 
         private String name;
         private String url;
@@ -360,15 +353,8 @@ public class PortletTag extends SimpleTagSupport {
         /**
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
-        public int compareTo(Object compare) {
-            if (!(compare instanceof PortletModeInfo)) {
-                throw new ClassCastException(compare + " is not a "
-                        + PortletModeInfo.class.getName());
-            }
-            else {
-                PortletModeInfo other = (PortletModeInfo) compare;
-                return this.getName().compareTo(other.getName());
-            }
+        public int compareTo(PortletModeInfo compare) {
+            return this.getName().compareTo(compare.getName());
         }
 
         public String toString() {

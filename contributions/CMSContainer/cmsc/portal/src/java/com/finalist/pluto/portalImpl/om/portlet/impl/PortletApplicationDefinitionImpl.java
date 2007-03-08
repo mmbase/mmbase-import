@@ -12,6 +12,8 @@ package com.finalist.pluto.portalImpl.om.portlet.impl;
 import java.io.Serializable;
 import java.util.*;
 
+import javax.portlet.PortletMode;
+
 import org.apache.pluto.om.portlet.*;
 import org.apache.pluto.om.servlet.WebApplicationDefinition;
 import org.apache.pluto.util.StringUtils;
@@ -28,7 +30,7 @@ public class PortletApplicationDefinitionImpl implements PortletApplicationDefin
 
 	private String version;
 
-    private List customPortletMode = new ArrayList();
+    private List<PortletMode> customPortletMode = new ArrayList<PortletMode>();
 
     private List customPortletState = new ArrayList();
 

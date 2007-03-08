@@ -134,8 +134,8 @@ public class XMLBS {
             throw new IllegalStateException();
         }
 
-        for (Iterator it = tokens.iterator(); it.hasNext();) {
-            Token tok = (Token) it.next();
+        for (Iterator<Token> it = tokens.iterator(); it.hasNext();) {
+            Token tok = it.next();
             out.write(tok.toString().getBytes());
         }
         out.flush();
@@ -358,8 +358,8 @@ public class XMLBS {
      */
     private void mergeAdjoinedText() {
         Token last = null;
-        for (Iterator it = tokens.iterator(); it.hasNext();) {
-            Token tok = (Token) it.next();
+        for (Iterator<Token> it = tokens.iterator(); it.hasNext();) {
+            Token tok = it.next();
             if (tok instanceof TextToken && last instanceof TextToken) {
                 it.remove();
                 TextToken txt = (TextToken) tok;
@@ -410,9 +410,9 @@ public class XMLBS {
                         if (tag.isCloseTag() && last != null && tag.isSameTag(last)) {
                             // see if what's between last and this is whitespace
                             boolean allWhite = true;
-                            List l = tokens.subList(lastPos + 1, i);
-                            for (Iterator it = l.iterator(); it.hasNext();) {
-                                Token t = (Token) it.next();
+                            List<Token> l = tokens.subList(lastPos + 1, i);
+                            for (Iterator<Token> it = l.iterator(); it.hasNext();) {
+                                Token t = it.next();
                                 if (t instanceof CommentToken) {
                                     continue;
                                 }
@@ -528,8 +528,8 @@ public class XMLBS {
          * @return true if any parent open tag of given close tag
          */
         public boolean hasOpenFor(TagToken tag) {
-            for (Iterator it = trail.iterator(); it.hasNext();) {
-                TagToken t = (TagToken) it.next();
+            for (Iterator<TagToken> it = trail.iterator(); it.hasNext();) {
+                TagToken t = it.next();
                 if (t.isSameTag(tag)) {
                     return true;
                 }
@@ -542,8 +542,8 @@ public class XMLBS {
          * @return true if any parent can contain given token
          */
         public boolean hasContainerFor(Token tok) {
-            for (Iterator it = trail.iterator(); it.hasNext();) {
-                TagToken t = (TagToken) it.next();
+            for (Iterator<TagToken> it = trail.iterator(); it.hasNext();) {
+                TagToken t = it.next();
                 if (structure.canContain(t, tok)) {
                     return true;
                 }

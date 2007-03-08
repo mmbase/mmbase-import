@@ -20,7 +20,7 @@ import net.sf.mmapps.commons.util.StringUtil;
 /**
  * Register a list as attribute in the request.
  */
-public abstract class AbstractListTag extends CmscTag {
+public abstract class AbstractListTag<E> extends CmscTag {
 
 	public Object origin;
 	
@@ -33,12 +33,12 @@ public abstract class AbstractListTag extends CmscTag {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		
-		List list = getList();
+		List<E> list = getList();
         // handle result
 		setAttribute(request, list);
 	}
 
-    protected void setAttribute(HttpServletRequest request, List list) {
+    protected void setAttribute(HttpServletRequest request, List<E> list) {
 		if (!StringUtil.isEmpty(var)) {
 			// put in variable
 			if (list != null) {
@@ -60,6 +60,6 @@ public abstract class AbstractListTag extends CmscTag {
 		this.origin = origin;
 	}
 
-	protected abstract List getList();
+	protected abstract List<E> getList();
 
 }

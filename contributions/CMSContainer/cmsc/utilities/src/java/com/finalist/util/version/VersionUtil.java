@@ -2,6 +2,7 @@ package com.finalist.util.version;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.jar.Attributes;
 
 import javax.servlet.ServletContext;
 
@@ -29,8 +30,8 @@ public class VersionUtil {
 				java.util.jar.Manifest mf = new java.util.jar.Manifest(manifestURL.openStream());
 				java.util.Map<String, java.util.jar.Attributes> entries = mf.getEntries();
 				version = "unknown";
-				for(java.util.Iterator i = entries.values().iterator(); i.hasNext();) {
-					java.util.jar.Attributes attributes = (java.util.jar.Attributes)i.next();
+				for(java.util.Iterator<Attributes> i = entries.values().iterator(); i.hasNext();) {
+					java.util.jar.Attributes attributes = i.next();
 					String implementationVersion = attributes.getValue("Implementation-Version");
 					if(implementationVersion != null) {
 						version = implementationVersion;

@@ -37,8 +37,8 @@ public class LayoutCacheEntryFactory extends MMBaseCacheEntryFactory {
             Node definitionNode = relation.getDestination();
             String name = relation.getStringValue(PagesUtil.NAME_FIELD);
             String[] names = name.split(",");
-            for (int i = 0; i < names.length; i++) {
-                String position = names[i].trim();
+            for (String element : names) {
+                String position = element.trim();
                 layout.addDefinition(position, definitionNode.getNumber());
             }
         }

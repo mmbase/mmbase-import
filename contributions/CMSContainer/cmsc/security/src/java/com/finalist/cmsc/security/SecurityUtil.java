@@ -82,9 +82,9 @@ public class SecurityUtil {
 
     private static UserRole getRole(String path, TreeMap<String, UserRole> channelsWithRole) {
        UserRole resultRole = null;
-       Iterator keysIter = channelsWithRole.keySet().iterator();
+       Iterator<String> keysIter = channelsWithRole.keySet().iterator();
        while (keysIter.hasNext()) {
-          String keyPath = (String) keysIter.next();
+          String keyPath = keysIter.next();
 
           // most specific keys are first in order so when the path of the channel startswith
           // the keypath we have the channel where the rights are from inherited.
@@ -100,9 +100,9 @@ public class SecurityUtil {
     
     public static Map<Integer,UserRole> buildRolesFromRequest(HttpServletRequest request) {
         Map<Integer,UserRole> roles = new HashMap<Integer,UserRole>();
-        Enumeration requestEnum = request.getParameterNames();
+        Enumeration<String> requestEnum = request.getParameterNames();
         while (requestEnum.hasMoreElements()) {
-           String name= (String) requestEnum.nextElement();
+           String name= requestEnum.nextElement();
            if (name.startsWith("role_")) {
               String role = request.getParameter(name);
               if (!role.equals("-1")) {
@@ -226,20 +226,19 @@ public class SecurityUtil {
         }
     }
     
-    public static void setGroupRights(Cloud cloud, Node group, Map rights, String managerName) {
+    public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights, String managerName) {
         checkGroup(group);
         String[] treeManagers = new String[] { managerName };
         setGroupRights(cloud, group, rights, treeManagers);
     }
     
-    public static void setGroupRights(Cloud cloud, Node group, Map rights, String[] treeManagers) {
+    public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights, String[] treeManagers) {
         checkGroup(group);
         clearUserRoles(cloud, treeManagers);
         
         List<Integer> rolesDone = new ArrayList<Integer>();
         
-        for (int i = 0; i < treeManagers.length; i++) {
-            String managerName = treeManagers[i];
+        for (String managerName : treeManagers) {
             if (cloud.hasRelationManager(GROUP, managerName, ROLEREL)) {
                 RelationList list = group.getRelations(ROLEREL, cloud.getNodeManager(managerName), DESTINATION);
                 for (RelationIterator iter = list.relationIterator(); iter.hasNext();) {
@@ -247,7 +246,7 @@ public class SecurityUtil {
                    Integer channelNumber = new Integer(rolerel.getDestination().getNumber());
                    if (rights.containsKey(channelNumber)) {
                       rolesDone.add(channelNumber);
-                      UserRole role = (UserRole) rights.get(channelNumber);
+                      UserRole role = rights.get(channelNumber);
                       if (role == null) {
                          rolerel.delete();
                       } else {
@@ -259,10 +258,10 @@ public class SecurityUtil {
             }
         }
 
-        Iterator keys = rights.keySet().iterator();
+        Iterator<Integer> keys = rights.keySet().iterator();
         while (keys.hasNext()) {
-           Integer channelNumber = (Integer) keys.next();
-           UserRole role = (UserRole) rights.get(channelNumber);
+           Integer channelNumber = keys.next();
+           UserRole role = rights.get(channelNumber);
            if (!rolesDone.contains(channelNumber) && role != null) {
               Node channelNode = cloud.getNode(channelNumber.intValue());
               addRole(group, channelNode, role.getRole());
@@ -276,8 +275,8 @@ public class SecurityUtil {
 
 
     public static void clearUserRoles(Cloud cloud) {
-        for (Iterator iter = cloud.getProperties().keySet().iterator(); iter.hasNext();) {
-            String property = (String) iter.next();
+        for (Iterator<String> iter = cloud.getProperties().keySet().iterator(); iter.hasNext();) {
+            String property = iter.next();
             if (property.startsWith(CMSC_USERROLES)) {
                 cloud.setProperty(property, null);
             }
@@ -362,8 +361,8 @@ public class SecurityUtil {
 
     public static NodeList getUsers(Cloud cloud) {
         NodeList users = SearchUtil.findOrderedNodeList(cloud, USER, "username");
-        for (Iterator iter = users.iterator(); iter.hasNext();) {
-            Node user = (Node) iter.next();
+        for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
+            Node user = iter.next();
             if ("anonymous".equalsIgnoreCase(user.getStringValue("username"))) {
                 iter.remove();
                 break;
@@ -377,8 +376,8 @@ public class SecurityUtil {
         List<String> currentMembers = new ArrayList<String>();
 
         NodeList membersList = SecurityUtil.getMembers(groupNode);
-        for (Iterator iter = membersList.iterator(); iter.hasNext();) {
-            Node member = (Node) iter.next();
+        for (Iterator<Node> iter = membersList.iterator(); iter.hasNext();) {
+            Node member = iter.next();
             currentMembers.add(String.valueOf(member.getNumber()));
         }
         if (newMembers != null) {
@@ -480,18 +479,18 @@ public class SecurityUtil {
         }
     }
 
-    public static List getUsersWithRights(Node channel, Role requiredRole, String managerName, String relationName) {
+    public static List<Node> getUsersWithRights(Node channel, Role requiredRole, String managerName, String relationName) {
         String[] treeManagers = new String[] { managerName };
         return getUsersWithRights(channel, requiredRole, treeManagers, relationName);
     }
 
-    public static List getUsersWithRights(Node channel, Role requiredRole, String[] treeManagers, String relationName) {
-        List path = TreeUtil.getPathToRoot(channel, treeManagers, relationName);
+    public static List<Node> getUsersWithRights(Node channel, Role requiredRole, String[] treeManagers, String relationName) {
+        List<Node> path = TreeUtil.getPathToRoot(channel, treeManagers, relationName);
         List<Node> groups = new ArrayList<Node>();
 
-        Iterator iter = path.iterator();
+        Iterator<Node> iter = path.iterator();
         while (iter.hasNext()) {
-           Node pathChannel = (Node) iter.next();
+           Node pathChannel = iter.next();
            RelationManager rolerelManager = channel.getCloud().getRelationManager(GROUP, pathChannel.getNodeManager().getName(), ROLEREL);
 
            RelationList rolerels = rolerelManager.getRelations(pathChannel);
@@ -512,12 +511,12 @@ public class SecurityUtil {
         }
         
         List<Node> users = new ArrayList<Node>();
-        Iterator groupIter = groups.iterator();
+        Iterator<Node> groupIter = groups.iterator();
         while (groupIter.hasNext()) {
-           Node group = (Node) groupIter.next();
-           List userNodes = getMembers(group);
-           for (Iterator iterator = userNodes.iterator(); iterator.hasNext();) {
-                Node user = (Node) iterator.next();
+           Node group = groupIter.next();
+           List<Node> userNodes = getMembers(group);
+           for (Iterator<Node> iterator = userNodes.iterator(); iterator.hasNext();) {
+                Node user = iterator.next();
                 addToList(users, user);
            }
         }

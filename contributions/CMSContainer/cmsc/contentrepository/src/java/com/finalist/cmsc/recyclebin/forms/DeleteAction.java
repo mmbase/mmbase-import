@@ -37,9 +37,9 @@ public class DeleteAction extends MMBaseFormlessAction {
            Node objectNode = null;
             Node trash = RepositoryUtil.getTrashNode(cloud);
             NodeList garbage = RepositoryUtil.getLinkedElements(trash);
-            for (Iterator iter = garbage.iterator(); iter.hasNext();) {
+            for (Iterator<Node> iter = garbage.iterator(); iter.hasNext();) {
                try {
-                   objectNode = (Node) iter.next();
+                   objectNode = iter.next();
                    if (Workflow.hasWorkflow(objectNode)) {
                       // at this time complete is the same as remove
                       Workflow.complete(objectNode);
