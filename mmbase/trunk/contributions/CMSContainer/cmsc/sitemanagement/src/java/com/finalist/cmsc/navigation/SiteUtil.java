@@ -79,6 +79,8 @@ public class SiteUtil {
         if (administrators != null) {
             NavigationUtil.addRole(cloud, site, administrators, Role.WEBMASTER);
         }
+        NavigationUtil.getNavigationInfo(cloud).expand(site);
+        
         return site;
     }
 
