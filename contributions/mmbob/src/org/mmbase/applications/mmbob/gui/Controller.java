@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.70 2007-01-16 19:07:36 michiel Exp $
+ * @version $Id: Controller.java,v 1.71 2007-03-08 14:28:03 michiel Exp $
  */
 public class Controller {
 
@@ -1846,15 +1846,19 @@ public class Controller {
                         f.addAdministrator(mp);
                     } else {
                         log.warn("Cannot make " + sadministratorid + " administrator by " + activeid + " because she is no adminstrator herself: " + ap);
+                        return false;
                     }
                 } else {
                     log.warn("Could not find poster with id " + moderatorid);
+                    return false;
                 }
             } else {
                 log.warn("No forum with id " + forumid + " found");
+                return false;
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            return false;
         }
         return true;
     }
