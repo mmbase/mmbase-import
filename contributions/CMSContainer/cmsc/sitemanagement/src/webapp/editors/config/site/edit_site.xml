@@ -61,5 +61,4 @@
 	<list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />
 	<list include="config/images/search_page_namedrel_images.xml" />
 
-	<list include="config/typedef/search_site_allowrel_typedef.xml" />
 </form-schema>
