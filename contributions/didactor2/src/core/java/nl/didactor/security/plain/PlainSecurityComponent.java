@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.10 2007-02-21 11:24:31 mmeeuwissen Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.11 2007-03-08 16:28:12 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -70,8 +70,8 @@ public class PlainSecurityComponent implements AuthenticationComponent {
 
 
 
-        String sLogin = request.getParameter("username");
-        String sPassword = request.getParameter("password");
+        String sLogin = request == null ? null : request.getParameter("username");
+        String sPassword = request == null ? null : request.getParameter("password");
 
         if (sLogin == null || sPassword == null) {
             log.debug("Did not find matching credentials");
