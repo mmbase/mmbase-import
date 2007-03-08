@@ -13,11 +13,12 @@ import java.util.*;
 
 import javax.servlet.ServletConfig;
 
+import net.sf.mmapps.commons.bridge.GenericNodeList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.remotepublishing.util.GenericNodeList;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 

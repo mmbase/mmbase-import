@@ -10,8 +10,6 @@ import javax.sql.DataSource;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.ContextProvider;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;

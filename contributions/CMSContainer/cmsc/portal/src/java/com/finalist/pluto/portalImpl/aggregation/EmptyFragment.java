@@ -15,7 +15,6 @@ import org.apache.pluto.om.window.PortletWindow;
 
 import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.beans.om.PortletDefinition;
-import com.finalist.cmsc.services.sitemanagement.SiteModelManager;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 
 /**

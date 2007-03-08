@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 import org.mmbase.remotepublishing.CloudInfo;
-import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.remotepublishing.PublishManager;
 
 import com.finalist.cmsc.mmbase.TypeUtil;

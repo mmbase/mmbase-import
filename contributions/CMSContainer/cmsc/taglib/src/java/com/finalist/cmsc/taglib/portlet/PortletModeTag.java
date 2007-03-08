@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.taglib.portlet;
 
-import javax.portlet.PortletMode;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
 

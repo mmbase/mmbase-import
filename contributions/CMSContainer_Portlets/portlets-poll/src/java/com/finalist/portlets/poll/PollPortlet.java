@@ -18,8 +18,6 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
 import org.mmbase.remotepublishing.PublishManager;
-import org.mmbase.remotepublishing.util.PublishUtil;
-
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;

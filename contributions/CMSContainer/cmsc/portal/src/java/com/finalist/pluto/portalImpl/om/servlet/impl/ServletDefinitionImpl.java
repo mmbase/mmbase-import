@@ -16,8 +16,6 @@ import org.apache.pluto.om.common.ParameterSet;
 import org.apache.pluto.om.servlet.ServletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinitionCtrl;
 import org.apache.pluto.om.servlet.WebApplicationDefinition;
-import org.apache.pluto.util.StringUtils;
-
 import com.finalist.pluto.portalImpl.om.common.Support;
 
 public class ServletDefinitionImpl implements ServletDefinition, ServletDefinitionCtrl, java.io.Serializable, Support {
