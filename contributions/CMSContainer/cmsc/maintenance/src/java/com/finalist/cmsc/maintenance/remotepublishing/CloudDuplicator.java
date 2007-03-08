@@ -18,7 +18,6 @@ package com.finalist.cmsc.maintenance.remotepublishing;
 import org.mmbase.bridge.*;
 
 import org.mmbase.remotepublishing.CloudInfo;
-import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.remotepublishing.PublishException;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.util.logging.*;

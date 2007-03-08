@@ -10,21 +10,9 @@
 package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
-
 import javax.portlet.*;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Relation;
-
-import com.finalist.pluto.portalImpl.core.CmscPortletMode;
-
 import net.sf.mmapps.commons.util.StringUtil;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 /**
  * Portlet to edit content elements
  * 

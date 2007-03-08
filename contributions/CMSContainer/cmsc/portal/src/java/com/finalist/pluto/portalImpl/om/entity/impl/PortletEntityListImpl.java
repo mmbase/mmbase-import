@@ -20,7 +20,6 @@
 package com.finalist.pluto.portalImpl.om.entity.impl;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.pluto.om.common.ObjectID;

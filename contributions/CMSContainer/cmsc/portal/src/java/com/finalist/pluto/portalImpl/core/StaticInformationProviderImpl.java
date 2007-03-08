@@ -24,7 +24,6 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.services.information.PortalContextProvider;
 import org.apache.pluto.services.information.StaticInformationProvider;
 
-import com.finalist.pluto.container.invoker.impl.PortletInvokerImpl;
 import com.finalist.pluto.portalImpl.services.portletdefinitionregistry.PortletDefinitionRegistry;
 
 public class StaticInformationProviderImpl implements StaticInformationProvider {

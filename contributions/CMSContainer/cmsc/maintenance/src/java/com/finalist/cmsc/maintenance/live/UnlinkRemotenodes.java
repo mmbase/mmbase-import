@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.mmbase.bridge.BridgeException;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.remotepublishing.CloudInfo;
 import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.remotepublishing.PublishManager;

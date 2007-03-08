@@ -24,7 +24,6 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import com.jsptags.navigation.pager.parser.*;
