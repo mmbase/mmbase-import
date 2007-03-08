@@ -100,6 +100,7 @@
     <copy todir="${build.dir}/webapp/WEB-INF/lib" preservelastmodified="true">
       <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
         <include name="**"/>
+        <exclude name="mmbase-rmmci.jar" />
       </fileset>
     </copy>
   </target>
@@ -170,7 +171,8 @@
     <if>
       <available file="src/${component}/lib" type="dir" />
       <then>
-        <copy todir="${build.dir}/webapp/WEB-INF/lib"  preservelastmodified="true">
+        <copy todir="${build.dir}/webapp/WEB-INF/lib"  
+              preservelastmodified="true">
           <fileset
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/lib">
@@ -193,8 +195,6 @@
           </fileset>
           <fileset dir="src/${component}/lib">
             <include name="*.jar" />
-          </fileset>
-          <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
           </fileset>
         </path>
         <mkdir dir="${build.dir}/classes/${component}" />
