@@ -61,4 +61,21 @@ public class ServerUtil {
          loaded = true;
       }
    }
+   
+   /*
+    * Returns the value of the context setting given as a string.
+    */
+   public static String getEnvironmentVariableValue(String contextSetting) {
+	   String result = "";
+	   try {
+		   InitialContext context = new InitialContext();
+		   Context env = (Context) context.lookup("java:comp/env");
+		   result = (String) env.lookup(contextSetting);
+	   }
+	   catch (NamingException ne) {
+		   log.debug("Error looking up context setting", ne);		   
+	   }
+	   
+	   return result;
+   }
 }
