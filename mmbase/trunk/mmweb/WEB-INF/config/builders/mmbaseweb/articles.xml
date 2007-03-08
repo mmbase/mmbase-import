@@ -125,12 +125,13 @@
             <!-- position in the input area of the editor -->
             <input>3</input>
             <!-- position in list area of the editor -->
-            <list>3</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>3</search>
             </positions>
          </editor>
          <!-- database related  -->
+	     <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field"/>
          <db>
             <!-- name of the field in the database -->
             <name>intro</name>
@@ -156,7 +157,7 @@
             <!-- position in the input area of the editor -->
             <input>4</input>
             <!-- position in list area of the editor -->
-            <list>4</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>4</search>
             </positions>
@@ -187,7 +188,7 @@
             <!-- position in the input area of the editor -->
             <input>5</input>
             <!-- position in list area of the editor -->
-            <list>5</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>5</search>
             </positions>
@@ -218,7 +219,7 @@
             <!-- position in the input area of the editor -->
             <input>6</input>
             <!-- position in list area of the editor -->
-            <list>6</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>6</search>
             </positions>
@@ -250,7 +251,7 @@
             <!-- position in the input area of the editor -->
             <input>7</input>
             <!-- position in list area of the editor -->
-            <list>7</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>7</search>
             </positions>
@@ -282,7 +283,7 @@
             <!-- position in the input area of the editor -->
             <input>8</input>
             <!-- position in list area of the editor -->
-            <list>8</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>8</search>
             </positions>
@@ -346,7 +347,7 @@
             <!-- position in the input area of the editor -->
             <input>10</input>
             <!-- position in list area of the editor -->
-            <list>10</list>
+            <list>-1</list>
             <!-- position in search area of the editor -->
             <search>10</search>
             </positions>
