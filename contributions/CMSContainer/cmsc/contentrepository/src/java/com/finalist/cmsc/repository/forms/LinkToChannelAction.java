@@ -19,6 +19,7 @@ import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 
 import java.util.Enumeration;
@@ -46,6 +47,10 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
                     RepositoryUtil.removeContentFromChannel(objectNode, channelNode);
                     RepositoryUtil.removeCreationRelForContent(objectNode);
                     RepositoryUtil.addContentToChannel(objectNode, RepositoryUtil.getTrash(cloud));
+                    
+                    // unpublish and remove from workflow
+                    Publish.remove(objectNode);
+                    Workflow.remove(objectNode);
                 }
                 else {
                     String destinationnumber = getParameter(request, "destionationchannel");
@@ -58,6 +63,10 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
                         if (RepositoryUtil.isTrash(newCreationNode)) {
                             RepositoryUtil.removeContentFromAllChannels(objectNode);
                             RepositoryUtil.addContentToChannel(objectNode, newCreationNode.getStringValue("number"));
+                            
+                            // unpublish and remove from workflow
+                            Publish.remove(objectNode);
+                            Workflow.remove(objectNode);    
                         }
                         else {
                             RepositoryUtil.addCreationChannel(objectNode, newCreationNode);
