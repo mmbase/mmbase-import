@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
@@ -34,12 +35,14 @@ public class RestoreAction extends MMBaseFormlessAction {
             if (contentchannels.size() == 1) {
                 Node channelNode = contentchannels.getNode(0);                
                 RepositoryUtil.addContentToChannel(objectNode, channelNode);
+                Workflow.create(objectNode, null);
             }
             else {
                 String channelnumber = getParameter(request, "channelnumber");
                 if (!StringUtil.isEmpty(channelnumber)) {
                     Node channelNode = cloud.getNode(channelnumber);
                     RepositoryUtil.addContentToChannel(objectNode, channelNode);
+                    Workflow.create(objectNode, null);
                 }
                 else {
                     addToRequest(request, "content", objectNode);
