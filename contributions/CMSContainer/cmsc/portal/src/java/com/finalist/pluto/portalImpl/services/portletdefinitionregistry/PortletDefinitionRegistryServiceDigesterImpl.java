@@ -128,8 +128,8 @@ public class PortletDefinitionRegistryServiceDigesterImpl extends PortletDefinit
                     PortletApplicationDefinitionImpl pd = (PortletApplicationDefinitionImpl) digester.parse(stream);
                     registry.add(pd);
 
-                    for (Iterator i = registry.iterator(); i.hasNext();) {
-                        PortletApplicationDefinition application = (PortletApplicationDefinition) i.next();
+                    for (Iterator<PortletApplicationDefinitionImpl> i = registry.iterator(); i.hasNext();) {
+                        PortletApplicationDefinition application = i.next();
                         for (Iterator j = application.getPortletDefinitionList().iterator(); j.hasNext();) {
                             PortletDefinition portlet = (PortletDefinition) j.next();
                             definitions.put(portlet.getId(), portlet);

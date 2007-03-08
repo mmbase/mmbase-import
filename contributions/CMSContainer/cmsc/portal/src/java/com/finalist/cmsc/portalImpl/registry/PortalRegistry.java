@@ -23,7 +23,7 @@ import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
  * Registry to keep track of things in the CMSC Portal
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PortalRegistry {
 	private static Log log = LogFactory.getLog(PortalRegistry.class);
@@ -61,9 +61,9 @@ public class PortalRegistry {
 		Fragment fragment = null;
 		ScreenFragment s = getScreen();
         if (s != null) {
-    		Iterator iterator = s.getChildFragments().iterator();
+    		Iterator<Fragment> iterator = s.getChildFragments().iterator();
     		while (iterator.hasNext()) {
-    			Fragment tmp = (Fragment) iterator.next();
+    			Fragment tmp = iterator.next();
     			if (tmp != null) {
     				if (tmp.getKey().equalsIgnoreCase(id)) {
     					fragment = tmp;

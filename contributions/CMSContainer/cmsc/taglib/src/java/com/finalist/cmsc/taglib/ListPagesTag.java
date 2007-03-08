@@ -42,16 +42,16 @@ public class ListPagesTag extends AbstractListTag {
 		}
         if (pages != null ) {
             if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
-                for (Iterator iter = pages.iterator(); iter.hasNext();) {
-                    Page page = (Page) iter.next();
+                for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
+                    Page page = iter.next();
                     if (!page.isInmenu()) {
                         iter.remove();
                     }
                 }
             }
             if (MODE_HIDDEN.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
-                for (Iterator iter = pages.iterator(); iter.hasNext();) {
-                    Page page = (Page) iter.next();
+                for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
+                    Page page = iter.next();
                     if (page.isInmenu()) {
                         iter.remove();
                     }

@@ -46,7 +46,7 @@ public abstract class AbstractFragmentSingle extends AbstractFragment {
 	public void postService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 
-	public Collection getChildFragments() {
+	public Collection<Fragment> getChildFragments() {
 		return Collections.EMPTY_LIST;
 	}
 

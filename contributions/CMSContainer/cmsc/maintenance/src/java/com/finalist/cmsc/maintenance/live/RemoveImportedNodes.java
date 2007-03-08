@@ -72,8 +72,8 @@ public class RemoveImportedNodes extends SqlAction {
                records++;
                
                RelationList relations = node.getRelations();
-               for (Iterator iter = relations.iterator(); iter.hasNext();) {
-                  Relation rel = (Relation) iter.next();
+               for (Iterator<Relation> iter = relations.iterator(); iter.hasNext();) {
+                  Relation rel = iter.next();
                   if (PublishManager.isImported(localCloudInfo, rel)) {
                       if ("remove".equals(action)) {
                           PublishManager.unLinkImportedNode(rel.getNumber());

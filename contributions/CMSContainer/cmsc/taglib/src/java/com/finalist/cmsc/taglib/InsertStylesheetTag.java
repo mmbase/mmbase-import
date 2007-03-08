@@ -11,16 +11,17 @@ package com.finalist.cmsc.taglib;
 
 import java.util.List;
 
+import com.finalist.cmsc.beans.om.Stylesheet;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
  * Tag to include stylesheets in Page
  */
-public class InsertStylesheetTag extends AbstractListTag {
+public class InsertStylesheetTag extends AbstractListTag<Stylesheet> {
         
    private boolean override = false;
    
-   protected List getList() {   
+   protected List<Stylesheet> getList() {   
       return SiteManagement.getStylesheetForPageByPath(getPath(), override);
    }
 	

@@ -33,7 +33,7 @@ public class FileSitemapModel implements SitemapModel {
         return startingDir;
     }
 
-    public List getChildren(Object root) {
+    public List<File> getChildren(Object root) {
         List<File> children = new ArrayList<File>();
         if (root instanceof File) {
             Collections.addAll(children, ((File) root).listFiles() );

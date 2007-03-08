@@ -130,7 +130,7 @@ public class CloudDuplicator implements Runnable {
       addMessage("2: step two");
       addMessage("2: number of node managers in common:" + nodeManagers.size());
 
-      Iterator iter = nodeManagers.iterator();
+      Iterator<String> iter = nodeManagers.iterator();
       String skipBuilders = "daymarks mmservers nodeversions reldef remotenodes syncnodes typedef typerel versions oalias icaches insrel";
 
       //wiabII
@@ -138,7 +138,7 @@ public class CloudDuplicator implements Runnable {
       skipBuilders += " cloud publishqueue";
 
       while (iter.hasNext()) {
-         String nodeManagerName = (String) iter.next();
+         String nodeManagerName = iter.next();
 
          if (skipBuilders.indexOf(nodeManagerName) == -1) {
             addMessage("2: publish node of type " + nodeManagerName);

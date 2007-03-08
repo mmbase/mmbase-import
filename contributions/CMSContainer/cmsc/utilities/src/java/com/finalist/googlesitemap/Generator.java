@@ -9,6 +9,7 @@
  */
 package com.finalist.googlesitemap;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -97,7 +98,7 @@ public class Generator {
             }
         }
         
-        List children = model.getChildren(root);
+        List<File> children = model.getChildren(root);
         if (children != null) {
             for (Object child : children) {
                 addUrls(model, urlsetNode, child);    

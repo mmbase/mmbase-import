@@ -86,9 +86,9 @@ public class PortletFragment extends AbstractFragmentSingle {
 			PreferenceSetImpl ps = (PreferenceSetImpl) portletEntity.getPreferenceSet(); 
             setDefaultPreferences(parent, portlet, ps);
             
-            List p = portlet.getPortletparameters();
+            List<Object> p = portlet.getPortletparameters();
 			if (p.size() > 0) {
-				Iterator pparams = p.iterator();
+				Iterator<Object> pparams = p.iterator();
 				while (pparams.hasNext()) {
                     Object objectParam = pparams.next();
                     if (objectParam instanceof PortletParameter) {

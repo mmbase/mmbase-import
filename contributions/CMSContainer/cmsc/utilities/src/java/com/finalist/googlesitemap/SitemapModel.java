@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.googlesitemap;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface SitemapModel {
 
     Object getRoot();
 
-    List getChildren(Object root);
+    List<File> getChildren(Object root);
 
     boolean isUrl(Object root);
 

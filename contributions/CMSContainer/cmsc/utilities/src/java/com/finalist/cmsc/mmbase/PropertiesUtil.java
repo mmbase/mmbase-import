@@ -116,8 +116,8 @@ public class PropertiesUtil {
 
    private static boolean isServerInEnv(String machineName, String servers) {
       String[] serversArray = servers.split(",");
-      for (int i = 0; i < serversArray.length; i++) {
-         if (serversArray[i] != null && machineName.equals(serversArray[i].trim())) {
+      for (String element : serversArray) {
+         if (element != null && machineName.equals(element.trim())) {
             return true;
          }
       }

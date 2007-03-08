@@ -18,7 +18,7 @@ import net.sf.mmapps.commons.beans.NodeBean;
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
-public class Layout extends NodeBean implements Comparable {
+public class Layout extends NodeBean implements Comparable<Layout> {
 
 	private String title;
 
@@ -78,7 +78,7 @@ public class Layout extends NodeBean implements Comparable {
         return new ArrayList<Integer>();
     }
     
-    public int compareTo(Object o) {
-        return title.compareTo(((Layout) o).title);
+    public int compareTo(Layout o) {
+        return title.compareTo(o.title);
     }
 }

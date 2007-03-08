@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.action.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.storage.search.SortOrder;
 
 @SuppressWarnings("serial")
@@ -22,7 +23,7 @@ public class PagerForm extends ActionForm {
     private int resultCount;
     private String order;
     private int direction = 1;
-    private List results = new ArrayList();
+    private List<Node> results = new ArrayList<Node>();
 
     public PagerForm() {
        this("title");
@@ -41,11 +42,11 @@ public class PagerForm extends ActionForm {
         return super.validate(actionMapping, httpServletRequest);
     }
 
-    public List getResults() {
+    public List<Node> getResults() {
         return results;
     }
 
-    public void setResults(List results) {
+    public void setResults(List<Node> results) {
         this.results = results;
     }
 

@@ -82,7 +82,7 @@ public class PortletDefinitionImpl implements PortletDefinition, PortletDefiniti
     private ServletDefinition servlet = new ServletDefinitionImpl();
 
     // contains Locale objects
-    private List supportedLocales = new ArrayList();
+    private List<Locale> supportedLocales = new ArrayList<Locale>();
 
 	public String getClassName() {
 		return className;
@@ -360,7 +360,7 @@ public class PortletDefinitionImpl implements PortletDefinition, PortletDefiniti
         return this.resourceBundle;
     }
 
-    public Collection getSupportedLocales() {
+    public Collection<Locale> getSupportedLocales() {
         return supportedLocales;
     }
 
@@ -384,8 +384,8 @@ public class PortletDefinitionImpl implements PortletDefinition, PortletDefiniti
         this.resources = resources;
     }
 
-    public void setSupportedLocales(Collection supportedLocales) {
-        this.supportedLocales = (ArrayList) supportedLocales;
+    public void setSupportedLocales(Collection<Locale> supportedLocales) {
+        this.supportedLocales = (ArrayList<Locale>) supportedLocales;
     }
 
 }

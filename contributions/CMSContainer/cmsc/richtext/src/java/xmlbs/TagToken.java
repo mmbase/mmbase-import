@@ -188,7 +188,7 @@ public class TagToken implements Token {
     /**
      * @return map of tag attributes
      */
-    public Map getAttributes () {
+    public Map<String, String> getAttributes () {
         return attrs;
     }
 
@@ -246,9 +246,9 @@ public class TagToken implements Token {
         if (attrs != null) {
             List<String> l = new ArrayList<String>(attrs.keySet());
             Collections.sort(l);
-            Iterator it = l.iterator();
+            Iterator<String> it = l.iterator();
             while (it.hasNext()) {
-                String attr = (String) it.next();
+                String attr = it.next();
                 String val = attrs.get(attr);
 
                 sb.append(' ');

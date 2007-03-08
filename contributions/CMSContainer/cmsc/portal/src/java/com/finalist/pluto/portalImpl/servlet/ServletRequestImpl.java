@@ -53,20 +53,20 @@ public class ServletRequestImpl extends HttpServletRequestWrapper {
 	// ServletRequestWrapper overlay
 
 	public String getParameter(String name) {
-		String[] values = (String[]) this.getParameterMap().get(name);
+		String[] values = this.getParameterMap().get(name);
 		if (values != null) {
 			return values[0];
 		}
 		return null;
 	}
 
-	public Map getParameterMap() {
+	public Map<String, String[]> getParameterMap() {
 		// get control params
-		Map portletParameters = new HashMap();
+		Map<String, String[]> portletParameters = new HashMap<String, String[]>();
 
-		Iterator iterator = control.getRenderParamNames(portletWindow);
+		Iterator<String> iterator = control.getRenderParamNames(portletWindow);
 		while (iterator.hasNext()) {
-			String name = (String) iterator.next();
+			String name = iterator.next();
 
 			String[] values = control.getRenderParamValues(portletWindow, name);
 
@@ -81,7 +81,7 @@ public class ServletRequestImpl extends HttpServletRequestWrapper {
 			for (Enumeration parameters = super.getParameterNames(); parameters.hasMoreElements();) {
 				String paramName = (String) parameters.nextElement();
 				String[] paramValues = super.getParameterValues(paramName);
-				String[] values = (String[]) portletParameters.get(paramName);
+				String[] values = portletParameters.get(paramName);
 
 				if (values != null) {
 					String[] temp = new String[paramValues.length + values.length];
@@ -96,12 +96,12 @@ public class ServletRequestImpl extends HttpServletRequestWrapper {
 		return Collections.unmodifiableMap(portletParameters);
 	}
 
-	public Enumeration getParameterNames() {
+	public Enumeration<String> getParameterNames() {
 		return Collections.enumeration(this.getParameterMap().keySet());
 	}
 
 	public String[] getParameterValues(String name) {
-		return (String[]) this.getParameterMap().get(name);
+		return this.getParameterMap().get(name);
 	}
 
 }

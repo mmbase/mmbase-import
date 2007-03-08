@@ -248,7 +248,7 @@ public class UserForm extends MMBaseForm {
       ranks = new ArrayList<Option>();
    }
 
-   public List getRanks() {
+   public List<Option> getRanks() {
       return ranks; 
    }
 
@@ -256,11 +256,11 @@ public class UserForm extends MMBaseForm {
        contexts.add(new Option(name, number));
    }
    
-   public List getContexts() {
+   public List<Option> getContexts() {
       return contexts; 
    }
 
-   public List getStatuses() {
+   public List<Option> getStatuses() {
        List<Option> statusList = new ArrayList<Option>();
        statusList.add(new Option("Actief", "1"));
        statusList.add(new Option("Geblokkeerd", "-1"));

@@ -18,7 +18,7 @@ import net.sf.mmapps.commons.beans.NodeBean;
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
-public class Page extends NodeBean implements Comparable {
+public class Page extends NodeBean implements Comparable<Page> {
 	
 	private String title;
     private String description;
@@ -182,8 +182,8 @@ public class Page extends NodeBean implements Comparable {
 		this.externalurl = externalurl;
 	}
 	
-    public int compareTo(Object o) {
-        return title.compareTo(((Page) o).title);
+    public int compareTo(Page o) {
+        return title.compareTo(o.title);
     }
 
 }
