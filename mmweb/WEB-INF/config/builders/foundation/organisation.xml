@@ -165,7 +165,7 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>4</input>
 				<!-- position in list area of the editor -->
-				<list>4</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
 				<search>4</search>
 			</positions>
@@ -194,7 +194,7 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>5</input>
 				<!-- position in list area of the editor -->
-				<list>5</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
 				<search>5</search>
 			</positions>
@@ -252,7 +252,7 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>7</input>
 				<!-- position in list area of the editor -->
-				<list>7</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
 				<search>-1</search>
 			</positions>
@@ -281,9 +281,9 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>8</input>
 				<!-- position in list area of the editor -->
-				<list>8</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>-1</search>
+				<search>8</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -310,9 +310,9 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>9</input>
 				<!-- position in list area of the editor -->
-				<list>9</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>-1</search>
+				<search>9</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -341,7 +341,7 @@ a key/value system. Its a optional tag.
 				<!-- position in list area of the editor -->
 				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>-1</search>
+				<search>10</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -370,7 +370,7 @@ a key/value system. Its a optional tag.
 				<!-- position in list area of the editor -->
 				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>-1</search>
+				<search>10</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -399,7 +399,7 @@ a key/value system. Its a optional tag.
 				<!-- position in list area of the editor -->
 				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>-1</search>
+				<search>12</search>
 			</positions>
 		</editor>
 		<!-- database related  -->

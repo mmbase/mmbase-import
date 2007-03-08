@@ -121,7 +121,7 @@
           <!-- position in the input area of the editor -->
           <input>2</input>
           <!-- position in list area of the editor -->
-          <list>3</list>
+          <list>-1</list>
           <!-- position in search area of the editor -->
           <search>2</search>
         </positions>
@@ -193,7 +193,7 @@
           <!-- position in the input area of the editor -->
           <input>-1</input>
           <!-- position in list area of the editor -->
-          <list>-1</list>
+          <list>3</list>
           <!-- position in search area of the editor -->
           <search>-1</search>
         </positions>
