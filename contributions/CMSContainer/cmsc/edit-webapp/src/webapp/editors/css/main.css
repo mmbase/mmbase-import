@@ -53,6 +53,12 @@ img
 	text-align: center;
 }
 
+#footer a
+{
+   color: #939993;
+   text-decoration: none;
+}
+
 /* header */
 #header
 {	
