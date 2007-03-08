@@ -971,23 +971,19 @@ AjaxTreeOption.prototype.toString = function (oItem) {
 		else if(stroptions.indexOf('paste') == 0){
 			alldragObject.pasteoption = stroptions;
 		}	
-		actionStr = "href=\"#\" onclick=\"methodWrapper('"+ oItem + "'," + stroptions + ")\"";
+		actionStr = "methodWrapper('"+ oItem + "'," + stroptions + ")";
 	}
 	else {
-		actionStr = "href=\"" + this.action + "\"";
+		actionStr = "window.parent."+this.target+".location = '"+this.action+"'";
 	}
 	var label = this.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	var str = 	
-      "<tr class=item onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\">"+ //onmousedown=\"this.style.display='none'\"  onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\"
+      "<tr class=item onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\" onclick=\""+actionStr+"\">"+ 
       "<td class=icon >"+
-      "<a " + actionStr + (this.target ? " target=\"" + this.target + "\"" : "")+">"+
       "<img src='" + this.icon +"'/>"+
-      "</a>"+
       "</td>"+
       "<td class=label nowrap>"+
-      "<a " + actionStr + (this.target ? " target=\"" + this.target + "\"" : "")+">"+
       label+
-      "</a>"+
       "</td>"+
       "</tr>";
 	return str;
