@@ -126,11 +126,11 @@ public class Controller {
             HashMap np = (HashMap)neededpackages.next();
 
             MMObjectNode virtual = builder.getNewNode("admin");
-            virtual.setValue("name",(String)np.get("name"));
-            virtual.setValue("id",(String)np.get("id"));
-            virtual.setValue("type",(String)np.get("type"));
-            virtual.setValue("maintainer",(String)np.get("maintainer"));
-            virtual.setValue("version",(String)np.get("version"));
+            virtual.setValue("name",np.get("name"));
+            virtual.setValue("id",np.get("id"));
+            virtual.setValue("type",np.get("type"));
+            virtual.setValue("maintainer",np.get("maintainer"));
+            virtual.setValue("version",np.get("version"));
             PackageInterface fp = PackageManager.getPackage((String)np.get("id"));
             if (fp != null) {
                 String state = fp.getState();

@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.52 2007-02-10 16:52:47 nklasens Exp $
+ * @version $Id: Contexts.java,v 1.53 2007-03-08 08:51:37 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -125,13 +125,13 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     public boolean init() {
-        String s = (String) getInitParameters().get("readall");
+        String s = getInitParameters().get("readall");
         readAll = "true".equals(s);
 
-        s = (String) getInitParameters().get("allcontextspossible");
+        s = getInitParameters().get("allcontextspossible");
         allContextsPossible = ! "false".equals(s);
 
-        s = (String) getInitParameters().get("maxcontextsinquery");
+        s = getInitParameters().get("maxcontextsinquery");
         if (! "".equals(s) && s != null) {
             maxContextsInQuery = Integer.parseInt(s);
         }
@@ -198,7 +198,7 @@ public class Contexts extends MMObjectBuilder {
                     Step step = query.addStep(users);
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
                     query.setConstraint(constraint);
-                    BasicAggregatedField baf = query.addAggregatedField((Step) query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
+                    BasicAggregatedField baf = query.addAggregatedField(query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
                     baf.setAlias("count");
 
                     AggregatedResultCache cache = AggregatedResultCache.getCache();

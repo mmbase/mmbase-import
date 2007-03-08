@@ -20,7 +20,7 @@ import org.mmbase.core.CoreField;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.6 2005-07-14 11:48:01 michiel Exp $
+ * @version $Id: PeopleContexts.java,v 1.7 2007-03-08 08:51:37 nklasens Exp $
  */
 public class PeopleContexts extends Contexts {
 
@@ -28,7 +28,7 @@ public class PeopleContexts extends Contexts {
 
     protected String peopleBuilder = "people";
     public boolean init() {
-        String s = (String) getInitParameters().get("peoplebuilder");
+        String s = getInitParameters().get("peoplebuilder");
         if (s != null) {
             peopleBuilder = s;
         }

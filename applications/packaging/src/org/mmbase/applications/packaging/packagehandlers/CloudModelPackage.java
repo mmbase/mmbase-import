@@ -7,7 +7,6 @@
 package org.mmbase.applications.packaging.packagehandlers;
 
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 

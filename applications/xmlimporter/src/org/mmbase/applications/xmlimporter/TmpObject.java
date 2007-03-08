@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
-import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.10 2006-11-11 13:57:53 michiel Exp $
+ * @version $Id: TmpObject.java,v 1.11 2007-03-08 08:51:37 nklasens Exp $
  */
 public class TmpObject {
 

@@ -14,7 +14,6 @@ import java.net.*;
 import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
-import org.mmbase.util.StringObject;
 import org.mmbase.module.core.*;
 import org.mmbase.module.SendMailInterface;
 
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.20 2007-02-10 16:52:47 nklasens Exp $
+ * @version $Id: EmailHandler.java,v 1.21 2007-03-08 08:51:38 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {

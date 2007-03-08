@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.*;
-import org.mmbase.util.*;
 import org.mmbase.tests.*;
 import org.mmbase.core.event.*;
 

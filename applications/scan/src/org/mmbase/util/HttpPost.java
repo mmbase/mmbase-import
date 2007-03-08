@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * HttpPost handles all the PostInformation
  *
  * @application SCAN. To port this, use of HttpPost by i.e. taglibs should be replaced with the jakarta FileUpload code.
- * @version $Id: HttpPost.java,v 1.28 2004-09-30 08:52:11 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.29 2007-03-08 08:51:37 nklasens Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -349,9 +349,9 @@ public class HttpPost {
 
         if (req.getHeader("Content-length") != null || req.getHeader("Content-Length") != null) {
             postbuffer = readContentLength(req);
-            String line = (String)req.getHeader("Content-type");
+            String line = req.getHeader("Content-type");
             if (line == null) {
-                line = (String)req.getHeader("Content-Type");
+                line = req.getHeader("Content-Type");
             }
 
             if (line != null) {
@@ -768,7 +768,7 @@ public class HttpPost {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
                 v = new Vector();
-                v.addElement((byte[])obj); // Add the first one
+                v.addElement(obj); // Add the first one
                 v.addElement(value); // Then the one given
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
@@ -793,7 +793,7 @@ public class HttpPost {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
                 v = new Vector();
-                v.addElement((byte[])obj); // Add the first one
+                v.addElement(obj); // Add the first one
                 v.addElement(value); // Then add the current one
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {

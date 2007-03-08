@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.5 2006-12-20 16:22:30 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.6 2007-03-08 08:51:38 nklasens Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -76,16 +76,16 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             converterCommand = tmp;
         }
 
-        tmp = (String) params.get("ImageConvert.Host");
+        tmp = params.get("ImageConvert.Host");
         if (tmp != null && ! tmp.equals("")) {
             host = tmp;
         }
-        tmp = (String) params.get("ImageConvert.Port");
+        tmp = params.get("ImageConvert.Port");
         if (tmp != null && ! tmp.equals("")) {
             port = Integer.parseInt(tmp);
         }
 
-        tmp = (String) params.get("ImageConvert.Method");
+        tmp = params.get("ImageConvert.Method");
         if (tmp != null && ! tmp.equals("")) {
             if (tmp.equals("launcher")) {
                 method = METHOD_LAUNCHER;
@@ -145,7 +145,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 log.debug("Starting convert");
                 List<String> cmd = new ArrayList<String>();
                 cmd.add("-version");
-                launcher.execute(converterPath, (String[]) cmd.toArray(EMPTY));
+                launcher.execute(converterPath, cmd.toArray(EMPTY));
                 launcher.waitAndRead(outputStream, errorStream);
             } catch (ProcessException e) {
                 log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
@@ -162,7 +162,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 List<String> cmd = new ArrayList<String>();
                 cmd.add(converterPath);
                 cmd.add("-version");
-                stream.writeObject(((String[]) cmd.toArray(EMPTY)));
+                stream.writeObject((cmd.toArray(EMPTY)));
                 stream.writeObject(EMPTY);
                 Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
@@ -203,7 +203,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         }
 
         // Cant do more checking then this, i think....
-        tmp = (String) params.get("ImageConvert.ColorizeHexScale");
+        tmp = params.get("ImageConvert.ColorizeHexScale");
         if (tmp != null) {
             try {
                 colorizeHexScale = Integer.parseInt(tmp);
@@ -213,7 +213,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         }
         // See if the modulate scale base is defined. If not defined, it will be ignored.
         log.debug("Searching for ModulateScaleBase property.");
-        tmp = (String) params.get("ImageConvert.ModulateScaleBase");
+        tmp = params.get("ImageConvert.ModulateScaleBase");
         if (tmp != null) {
             try {
                 modulateScaleBase = Integer.parseInt(tmp);
@@ -661,7 +661,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             final OutputStream os = socket.getOutputStream();
             os.write(0); // version
             final ObjectOutputStream stream = new ObjectOutputStream(os);
-            stream.writeObject(((String[]) cmd.toArray(EMPTY)));
+            stream.writeObject((cmd.toArray(EMPTY)));
             stream.writeObject(env);
 
             Copier copier = new Copier(originalStream, os, ".file -> socket");

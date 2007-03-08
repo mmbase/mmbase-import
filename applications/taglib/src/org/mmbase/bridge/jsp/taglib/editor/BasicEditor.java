@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.11 2006-10-19 11:24:19 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.12 2007-03-08 08:51:37 nklasens Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -65,7 +65,7 @@ public class BasicEditor extends Editor {
 
         String nodenr = "";
         if (!nodenrList.isEmpty()) {    // get the first node from this list to edit
-            nodenr = (String) nodenrList.get(0);
+            nodenr = nodenrList.get(0);
         }
 
         makeHTML(nodenr, context);

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.73 2005-10-26 07:35:36 michiel Exp $
+ * @version $Id: scanparser.java,v 1.74 2007-03-08 08:51:38 nklasens Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -2109,7 +2109,7 @@ public class scanparser extends ProcessorModule {
         while (einput.hasMoreElements()) {
             Vector row=new Vector();
             for (int i=0;i<numberofitems;i++) {
-                row.addElement((String)einput.nextElement());
+                row.addElement(einput.nextElement());
             }
             output.addSorted(row);
         }
