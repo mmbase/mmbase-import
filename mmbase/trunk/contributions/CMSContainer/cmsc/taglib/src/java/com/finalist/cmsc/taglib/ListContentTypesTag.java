@@ -11,6 +11,8 @@ package com.finalist.cmsc.taglib;
 
 import java.util.List;
 
+import net.sf.mmapps.commons.beans.NodetypeBean;
+
 import com.finalist.cmsc.services.contentrepository.ContentRepository;
 
 /**
@@ -18,9 +20,9 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  * 
  * @author Wouter Heijke
  */
-public class ListContentTypesTag extends AbstractListTag {
+public class ListContentTypesTag extends AbstractListTag<NodetypeBean> {
 
-	protected List getList() {
+	protected List<NodetypeBean> getList() {
 		return ContentRepository.getContentTypes();
 	}
 }

@@ -35,10 +35,10 @@ public class ContentTypeImpl implements ContentType, Serializable, Support {
 	
 	private String contentType;
 
-	private Collection portletModes;
+	private Collection<PortletMode> portletModes;
 
 	public ContentTypeImpl() {
-		portletModes = new HashSet();
+		portletModes = new HashSet<PortletMode>();
 	}
 
 	public String getContentType() {
@@ -49,7 +49,7 @@ public class ContentTypeImpl implements ContentType, Serializable, Support {
 		this.contentType = contentType;
 	}
 
-	public Iterator getPortletModes() {
+	public Iterator<PortletMode> getPortletModes() {
 		return portletModes.iterator();
 	}
 
@@ -87,7 +87,7 @@ public class ContentTypeImpl implements ContentType, Serializable, Support {
         buffer.append(contentType);
         buffer.append("'");
         int i = 0;
-        Iterator iterator = portletModes.iterator();
+        Iterator<PortletMode> iterator = portletModes.iterator();
         while (iterator.hasNext()) {
             StringUtils.newLine(buffer, indent);
             buffer.append("portletMode[");

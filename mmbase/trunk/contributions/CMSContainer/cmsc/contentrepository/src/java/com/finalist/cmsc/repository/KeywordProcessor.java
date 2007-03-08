@@ -32,8 +32,8 @@ public class KeywordProcessor implements CommitProcessor {
             List<String> textFields = new ArrayList<String>();
             
             FieldList fields = node.getNodeManager().getFields();
-            for (Iterator iter = fields.iterator(); iter.hasNext();) {
-                Field managerField = (Field) iter.next();
+            for (Iterator<Field> iter = fields.iterator(); iter.hasNext();) {
+                Field managerField = iter.next();
                 
                 if(managerField.getDataType() instanceof StringDataType
                     && !((StringDataType)managerField.getDataType()).isPassword() 

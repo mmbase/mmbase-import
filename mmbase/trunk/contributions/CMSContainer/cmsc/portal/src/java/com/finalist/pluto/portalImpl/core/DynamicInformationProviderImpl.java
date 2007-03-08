@@ -96,8 +96,8 @@ public class DynamicInformationProviderImpl implements DynamicInformationProvide
 	public boolean isPortletModeAllowed(PortletMode mode) {
 		// checks whether PortletMode is supported as example
 		String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
-		for (int i = 0; i < supportedModes.length; i++) {
-			if (supportedModes[i].equalsIgnoreCase(mode.toString())) {
+		for (String element : supportedModes) {
+			if (element.equalsIgnoreCase(mode.toString())) {
 				return true;
 			}
 		}
@@ -107,8 +107,8 @@ public class DynamicInformationProviderImpl implements DynamicInformationProvide
 	public boolean isWindowStateAllowed(WindowState state) {
 		// checks whether WindowState is supported as example
 		String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
-		for (int i = 0; i < supportedStates.length; i++) {
-			if (supportedStates[i].equalsIgnoreCase(state.toString())) {
+		for (String element : supportedStates) {
+			if (element.equalsIgnoreCase(state.toString())) {
 				return true;
 			}
 		}

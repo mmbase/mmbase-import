@@ -2,12 +2,7 @@ package com.finalist.cmsc.taglib;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -48,8 +43,8 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 			return nodeType;
 		}
 		public boolean meetsChildConstraints(Node node) {
-			for(Iterator<DumpingConstraint> i = childConstraints.iterator(); i.hasNext();) {
-				if(!i.next().meets(node)) {
+			for (DumpingConstraint dumpingConstraint : childConstraints) {
+				if(!dumpingConstraint.meets(node)) {
 					return false;
 				}
 			}
@@ -152,8 +147,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
         // Use manager for Object and Insrel field checking
         NodeManager inselManager = cloud.getNodeManager("insrel");
         
-		for(Iterator<String> i = backupMap.keySet().iterator(); i.hasNext();) {
-			String key = i.next();
+		for (String key : backupMap.keySet()) {
 			HashSet<Node> values = backupMap.get(key);
 			
 			report.append(key).append(" ").append(values.size()).append(" nodes. <br/>");
@@ -168,8 +162,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 			StringBuffer sb = new StringBuffer();
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 			sb.append("<").append(key).append(" exportsource=\"cmsc file dumper\" timestamp=\"").append(timestamp).append("\">\n");
-			for(Iterator<Node> ni = values.iterator(); ni.hasNext();) {
-				Node node = ni.next();
+			for (Node node : values) {
 				sb.append("\t<node number=\"").append(node.getNumber()).append("\" owner=\"").append(node.getContext());
 				if(node instanceof Relation) {
 					Relation relation = (Relation) node;
@@ -220,8 +213,8 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 
 	private HashMap<String,HashSet<Node>> buildBackupMap(List<DumpingNode> dumpingNodes, Cloud cloud) {
 		HashMap<String,HashSet<Node>> backupMap = new HashMap<String,HashSet<Node>>();
-		for(Iterator<DumpingNode> i = dumpingNodes.iterator(); i.hasNext();) {
-			buildBackupMapNode(cloud, backupMap, i.next());
+		for (DumpingNode dumpingNode : dumpingNodes) {
+			buildBackupMapNode(cloud, backupMap, dumpingNode);
 		}
 		
 		return backupMap;
@@ -250,9 +243,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 			
 		if(dumpingNode.meetsChildConstraints(node)) {
 			// add child nodes
-			for(Iterator<DumpingNode> i = dumpingNode.getChildNodes().iterator(); i.hasNext();) {
-				DumpingNode childDumpingNode = i.next();
-				
+			for (DumpingNode childDumpingNode : dumpingNode.getChildNodes()) {
 				RelationList relationList = node.getRelations(null, childDumpingNode.getNodeType());
 				for(RelationIterator ri = relationList.relationIterator(); ri.hasNext();) {
 					Relation relation = ri.nextRelation();

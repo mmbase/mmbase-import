@@ -27,9 +27,9 @@ public class ActionServlet extends org.apache.struts.action.ActionServlet {
 
         StringBuilder configpaths = new StringBuilder();
         
-        Set webInfResources = getServletContext().getResourcePaths("/WEB-INF/");
-        for (Iterator iter = webInfResources.iterator(); iter.hasNext();) {
-            String resource = (String) iter.next();
+        Set<String> webInfResources = getServletContext().getResourcePaths("/WEB-INF/");
+        for (Iterator<String> iter = webInfResources.iterator(); iter.hasNext();) {
+            String resource = iter.next();
             if (resource.startsWith("/WEB-INF/struts-")) {
                 if (configpaths.length() > 0) {
                     configpaths.append(",");

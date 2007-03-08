@@ -32,7 +32,7 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public abstract class AbstractFragmentContainer extends AbstractFragment {
 
-	private ArrayList children = new ArrayList();
+	private ArrayList<Fragment> children = new ArrayList<Fragment>();
 
 	public AbstractFragmentContainer(String id, ServletConfig config, Fragment parent) throws Exception {
 		super(id, config, parent);
@@ -44,7 +44,7 @@ public abstract class AbstractFragmentContainer extends AbstractFragment {
 	public void postService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 
-	public Collection getChildFragments() {
+	public Collection<Fragment> getChildFragments() {
 		return children;
 	}
 

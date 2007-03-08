@@ -14,8 +14,8 @@ import java.util.Iterator;
 public class LoggingMMBaseObserver implements MMBaseObserver{
    private final static Logger log = Logging.getLoggerInstance(MMBaseObserver.class);
 
-   private ArrayList logLocalConstraints = new ArrayList();
-   private ArrayList logRemoteConstraints = new ArrayList();
+   private ArrayList<LogConstraint> logLocalConstraints = new ArrayList<LogConstraint>();
+   private ArrayList<LogConstraint> logRemoteConstraints = new ArrayList<LogConstraint>();
    private static LoggingMMBaseObserver instance = null;
 
    private LoggingMMBaseObserver() {
@@ -30,9 +30,9 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
    }
 
    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-      Iterator logConstraintIter = logRemoteConstraints.iterator();
+      Iterator<LogConstraint> logConstraintIter = logRemoteConstraints.iterator();
       while (logConstraintIter.hasNext()) {
-         LogConstraint logConstraint = (LogConstraint) logConstraintIter.next();
+         LogConstraint logConstraint = logConstraintIter.next();
 
          if (logConstraint.matches(machine, number, builder, ctype)) {
             log.info("Remote! machine:" + machine + ", number:" + number + ",builder:" + ", ctype:" + ctype);
@@ -45,9 +45,9 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
    }
 
    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-      Iterator logConstraintIter = logLocalConstraints.iterator();
+      Iterator<LogConstraint> logConstraintIter = logLocalConstraints.iterator();
       while (logConstraintIter.hasNext()) {
-         LogConstraint logConstraint = (LogConstraint) logConstraintIter.next();
+         LogConstraint logConstraint = logConstraintIter.next();
 
          if (logConstraint.matches(machine, number, builder, ctype)) {
             log.info("Local! machine:" + machine + ", number:" + number + ",builder:" + builder + ", ctype:" + ctype);
@@ -93,11 +93,11 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       }
    }
 
-   public ArrayList getLogLocalConstraints() {
+   public ArrayList<LogConstraint> getLogLocalConstraints() {
       return logLocalConstraints;
    }
 
-   public ArrayList getLogRemoteConstraints() {
+   public ArrayList<LogConstraint> getLogRemoteConstraints() {
       return logRemoteConstraints;
    }
 

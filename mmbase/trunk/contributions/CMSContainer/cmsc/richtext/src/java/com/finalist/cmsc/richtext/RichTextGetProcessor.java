@@ -32,7 +32,7 @@ import com.finalist.cmsc.mmbase.ResourcesUtil;
 public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
+   static Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
    protected static final Parameter[] PARAMS = new Parameter[] {
        new Parameter("dynamicDescriptions", String.class, "false")
    };
@@ -76,6 +76,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
      *
      * @param node MMbase node
      * @param doc richtext field data
+     * @param dynamicDescriptions dynamic Descriptions 
      * @return transformed field data DOM object
      */
     public Document resolve(Node node, Document doc, boolean dynamicDescriptions) {
@@ -83,8 +84,8 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
         Map<String,String> inlineLinks = new HashMap<String,String>();
         RelationList links = node.getRelations(RichText.INLINEREL_NM, null, "DESTINATION");
-        for (Iterator iter = links.iterator(); iter.hasNext();) {
-            Relation inlineRel = (Relation) iter.next();
+        for (Iterator<Relation> iter = links.iterator(); iter.hasNext();) {
+            Relation inlineRel = iter.next();
             inlineLinks.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel.getStringValue("dnumber"));
         }
 
@@ -96,7 +97,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
         Map<String,Relation> inlineImages = new HashMap<String,Relation>();
         RelationList images = node.getRelations(RichText.IMAGEINLINEREL_NM, cloud.getNodeManager("images"), "DESTINATION");
-        for (Iterator iter = images.iterator(); iter.hasNext();) {
+        for (Iterator<Node> iter = images.iterator(); iter.hasNext();) {
             Relation inlineRel = (Relation) iter.next();
             inlineImages.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel);
         }

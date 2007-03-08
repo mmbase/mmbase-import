@@ -204,8 +204,7 @@ public class StatusCronJob implements CronJob {
 				currentStatus));
 
 		BasicCompositeConstraint statusConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-		for (int count = 0; count < statusValues.length; count++) {
-			String value = statusValues[count];
+		for (String value : statusValues) {
 			if (value == null) {
 				statusConstraint.addChild(nodeQuery.createConstraint(nodeQuery.getStepField(statusField)));
 			} else {

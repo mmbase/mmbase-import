@@ -92,9 +92,9 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
         else {
            // Link them all.
 
-           Enumeration parameters = request.getParameterNames();
+           Enumeration<String> parameters = request.getParameterNames();
            while (parameters.hasMoreElements()) {
-              String parameter = (String) parameters.nextElement();
+              String parameter = parameters.nextElement();
 
               if (parameter.startsWith("link_")) {
                  String link = request.getParameter(parameter);

@@ -44,7 +44,7 @@ public abstract class QuickSearchAction extends MMBaseAction {
             else {
                 Node node = getChannelFromPath(cloud, quicksearch);
                 String path = quicksearch;
-                int index = index = path.lastIndexOf(TreeUtil.PATH_SEPARATOR);
+                int index = path.lastIndexOf(TreeUtil.PATH_SEPARATOR);
                 while (node == null && index != -1) {
                     path = path.substring(0, index);
                     node = getChannelFromPath(cloud, path);

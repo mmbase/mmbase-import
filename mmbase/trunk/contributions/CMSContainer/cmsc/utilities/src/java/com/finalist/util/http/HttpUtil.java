@@ -32,21 +32,21 @@ public class HttpUtil {
     }
     
 	
-    public static String doGet(String url, Map parameterMap) throws PageNotFoundException {
+    public static String doGet(String url, Map<String,Object> parameterMap) throws PageNotFoundException {
     	return doRequest(url, new GetMethod(url), parameterMap);
     }
 
-    public static String doPost(String url, Map parameterMap) throws PageNotFoundException {
+    public static String doPost(String url, Map<String,Object> parameterMap) throws PageNotFoundException {
     	return doRequest(url, new PostMethod(url), parameterMap);
     }
     
-    public static String doRequest(String url, HttpMethod method, Map parameterMap) throws PageNotFoundException {
+    public static String doRequest(String url, HttpMethod method, Map<String,Object> parameterMap) throws PageNotFoundException {
     	String result;
         try {
         	if(parameterMap != null) {
         		StringBuffer queryString = new StringBuffer();
-        		for(Iterator i = parameterMap.keySet().iterator(); i.hasNext();) {
-        			String key = (String) i.next();
+        		for(Iterator<String> i = parameterMap.keySet().iterator(); i.hasNext();) {
+        			String key = i.next();
         			Object objectValue = parameterMap.get(key);
         			String value = null;
         			if(objectValue instanceof String) {

@@ -40,9 +40,9 @@ public class ScreenFragment extends AbstractFragmentContainer{
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        Iterator portlets = this.getChildFragments().iterator();
+        Iterator<Fragment> portlets = this.getChildFragments().iterator();
         while(portlets.hasNext()) {
-            Fragment portlet = (Fragment) portlets.next();
+            Fragment portlet = portlets.next();
             // let the Portlet do it's thing
             portlet.service(request, response);
         }

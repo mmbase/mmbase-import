@@ -44,8 +44,8 @@ public class ChannelDelete extends MMBaseFormlessAction {
         else {
             if ("unlinkall".equals(action)) {
                 NodeList createdElements = RepositoryUtil.getCreatedElements(channelNode);
-                for (Iterator iter = createdElements.iterator(); iter.hasNext();) {
-                    Node objectNode = (Node) iter.next();
+                for (Iterator<Node> iter = createdElements.iterator(); iter.hasNext();) {
+                    Node objectNode = iter.next();
                     RepositoryUtil.removeContentFromChannel(objectNode, channelNode);
                     RepositoryUtil.removeCreationRelForContent(objectNode);
                     

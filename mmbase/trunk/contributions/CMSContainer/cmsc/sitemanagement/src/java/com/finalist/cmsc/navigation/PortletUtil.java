@@ -205,8 +205,8 @@ public class PortletUtil {
 
     public static boolean hasPortlet(Node page, String id) {
         RelationList portletrels = getPortletRelations(page);
-        for (Iterator iter = portletrels.iterator(); iter.hasNext();) {
-            Relation portletrel = (Relation) iter.next();
+        for (Iterator<Relation> iter = portletrels.iterator(); iter.hasNext();) {
+            Relation portletrel = iter.next();
             String value = portletrel.getStringValue(LAYOUTID_FIELD);
             if (value.equals(id)) {
                 return true;
@@ -350,12 +350,12 @@ public class PortletUtil {
         return createPortlet(cloud, portletName, definitionNode, viewNode);
     }
 
-    public static Node createPortlet(Cloud cloud, String portletName, Node definitionNode, Node viewNode, Map parameters) {
+    public static Node createPortlet(Cloud cloud, String portletName, Node definitionNode, Node viewNode, Map<String,Object> parameters) {
         Node portlet = createPortlet(cloud, portletName, definitionNode, viewNode);
         if (parameters != null) {
-            for (Iterator iter = parameters.entrySet().iterator(); iter.hasNext();) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                String key = (String) entry.getKey();
+            for (Iterator<Map.Entry<String,Object>> iter = parameters.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry<String,Object> entry = iter.next();
+                String key = entry.getKey();
                 Object value = entry.getValue();
                 if (value instanceof String) {
                     Node parameter = createPortletParameter(cloud, key, (String) value);
@@ -518,8 +518,8 @@ public class PortletUtil {
     public static List<String> getAllowedTypes(Node node) {
         List<String> types = new ArrayList<String>();
         NodeList typedefs = node.getRelatedNodes(TYPEDEF, ALLOWREL, DESTINATION);
-        for (Iterator iter = typedefs.iterator(); iter.hasNext();) {
-            Node typedef = (Node) iter.next();
+        for (Iterator<Node> iter = typedefs.iterator(); iter.hasNext();) {
+            Node typedef = iter.next();
             types.add(typedef.getStringValue("name"));
         }
         return types;

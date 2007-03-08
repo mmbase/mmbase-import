@@ -79,9 +79,9 @@ public class ServiceManager {
 
 	private static volatile boolean cInitialized = false;
 
-	private static Map cServicesMap = new HashMap();
+	private static Map<Class<?>, Service> cServicesMap = new HashMap<Class<?>, Service>();
 
-	private static List cServicesList = new LinkedList();
+	private static List<Service> cServicesList = new LinkedList<Service>();
 
 	/**
 	 * * Initializes all services specified in <CODE>services.properties</CODE>. *
@@ -144,13 +144,13 @@ public class ServiceManager {
 		int numAll = 0;
 		int numSuccessful = 0;
 
-		for (Iterator iter = props.names(); iter.hasNext();) {
-			String serviceBaseName = (String) iter.next();
+		for (Iterator<String> iter = props.names(); iter.hasNext();) {
+			String serviceBaseName = iter.next();
 			numAll++;
 
 			// ty to get hold of the base service
 
-			Class serviceBase;
+			Class<?> serviceBase;
 
 			try {
 				serviceBase = Class.forName(serviceBaseName);
@@ -161,7 +161,7 @@ public class ServiceManager {
 			}
 
 			String serviceImplName = props.getString(serviceBaseName);
-			Class serviceImpl = null;
+			Class<?> serviceImpl = null;
 
 			Service service = null;
 
@@ -246,8 +246,8 @@ public class ServiceManager {
 		}
 
 		// post init all services
-		for (Iterator iterator = cServicesList.iterator(); iterator.hasNext();) {
-			Service service = (Service) iterator.next();
+		for (Iterator<Service> iterator = cServicesList.iterator(); iterator.hasNext();) {
+			Service service = iterator.next();
 
 			try {
 				service.postInit(aConfig);
@@ -281,8 +281,8 @@ public class ServiceManager {
 
 		// destroy the services in reverse order
 
-		for (Iterator iterator = cServicesList.iterator(); iterator.hasNext();) {
-			Service service = (Service) iterator.next();
+		for (Iterator<Service> iterator = cServicesList.iterator(); iterator.hasNext();) {
+			Service service = iterator.next();
 
 			try {
 				service.destroy(aConfig);
@@ -304,11 +304,11 @@ public class ServiceManager {
 	 * @return the service implementation
 	 */
 
-	public static Service getService(Class aClass) {
+	public static Service getService(Class<?> aClass) {
 		// at this state the services map is read-only,
 		// therefore we can go without synchronization
 
-		return ((Service) cServicesMap.get(aClass));
+		return cServicesMap.get(aClass);
 	}
 
 	// Start hot deploy patch
@@ -352,15 +352,15 @@ public class ServiceManager {
 		int numAll = 0;
 		int numSuccessful = 0;
 
-		for (Iterator iter = props.names(); iter.hasNext();) {
-			String serviceBaseName = (String) iter.next();
+		for (Iterator<String> iter = props.names(); iter.hasNext();) {
+			String serviceBaseName = iter.next();
 
 			if (serviceBaseName.equals(theService)) {
 				log.info("ServiceManager: Service " + theService + " FOUND!!");
 				numAll++;
 
 				// ty to get hold of the base service
-				Class serviceBase;
+				Class<?> serviceBase;
 				try {
 					serviceBase = Class.forName(serviceBaseName);
 				} catch (ClassNotFoundException exc) {
@@ -369,7 +369,7 @@ public class ServiceManager {
 				}
 
 				String serviceImplName = props.getString(serviceBaseName);
-				Class serviceImpl = null;
+				Class<?> serviceImpl = null;
 				Service service = null;
 				try {
 					serviceImpl = Class.forName(serviceImplName);
@@ -438,7 +438,7 @@ public class ServiceManager {
 
 		// post init all services
 		try {
-			Service service = (Service) cServicesMap.get(Class.forName(theService));
+			Service service = cServicesMap.get(Class.forName(theService));
 			service.postInit(aConfig);
 		} catch (Exception exc) {
 			log.error("ServiceManager:Service couldn't be started (postInit) after init..", exc);

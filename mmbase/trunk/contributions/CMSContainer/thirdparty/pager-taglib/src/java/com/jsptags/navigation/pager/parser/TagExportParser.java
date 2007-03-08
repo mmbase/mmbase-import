@@ -6,16 +6,16 @@ import java.io.StringReader;
 
 public class TagExportParser implements TagExportParserConstants {
 
-        private static Hashtable pagerTagExportCache = new Hashtable();
-        private static Hashtable indexTagExportCache = new Hashtable();
-        private static Hashtable pageTagExportCache = new Hashtable();
+        private static Hashtable<String, PagerTagExport> pagerTagExportCache = new Hashtable<String, PagerTagExport>();
+        private static Hashtable<String, IndexTagExport> indexTagExportCache = new Hashtable<String, IndexTagExport>();
+        private static Hashtable<String, PageTagExport> pageTagExportCache = new Hashtable<String, PageTagExport>();
 
         public static PagerTagExport parsePagerTagExport(String expression)
                 throws ParseException
         {
                 synchronized (pagerTagExportCache) {
                         PagerTagExport pagerTagExport =
-                                (PagerTagExport) pagerTagExportCache.get(expression);
+                                pagerTagExportCache.get(expression);
                         if (pagerTagExport == null) {
                                 StringReader reader = new StringReader(expression);
                                 TagExportParser parser = new TagExportParser(reader);
@@ -31,7 +31,7 @@ public class TagExportParser implements TagExportParserConstants {
         {
                 synchronized (indexTagExportCache) {
                         IndexTagExport indexTagExport =
-                                (IndexTagExport) indexTagExportCache.get(expression);
+                                indexTagExportCache.get(expression);
                         if (indexTagExport == null) {
                                 StringReader reader = new StringReader(expression);
                                 TagExportParser parser = new TagExportParser(reader);
@@ -47,7 +47,7 @@ public class TagExportParser implements TagExportParserConstants {
         {
                 synchronized (pageTagExportCache) {
                         PageTagExport pageTagExport =
-                                (PageTagExport) pageTagExportCache.get(expression);
+                                pageTagExportCache.get(expression);
                         if (pageTagExport == null) {
                                 StringReader reader = new StringReader(expression);
                                 TagExportParser parser = new TagExportParser(reader);
@@ -665,7 +665,7 @@ public class TagExportParser implements TagExportParserConstants {
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.Vector jj_expentries = new java.util.Vector();
+  private java.util.Vector<int[]> jj_expentries = new java.util.Vector<int[]>();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
@@ -697,7 +697,7 @@ public class TagExportParser implements TagExportParserConstants {
     }
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.elementAt(i);
+      exptokseq[i] = jj_expentries.elementAt(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }

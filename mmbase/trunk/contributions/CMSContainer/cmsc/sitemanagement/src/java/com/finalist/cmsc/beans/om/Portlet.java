@@ -9,13 +9,13 @@ import net.sf.mmapps.commons.beans.NodeBean;
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
-public class Portlet extends NodeBean implements Comparable {
+public class Portlet extends NodeBean implements Comparable<Portlet> {
 	
 	private String title;
 
 	private int definition;
 	
-	private List portletparameters = new ArrayList();
+	private List<Object> portletparameters = new ArrayList<Object>();
 
 	private List<Integer> views = new ArrayList<Integer>();
 
@@ -46,7 +46,7 @@ public class Portlet extends NodeBean implements Comparable {
 		this.views.add(new Integer(view));
 	}
 
-	public List getPortletparameters() {
+	public List<Object> getPortletparameters() {
 		return portletparameters;
 	}
 
@@ -59,7 +59,7 @@ public class Portlet extends NodeBean implements Comparable {
     }
 
     public String getParameterValue(String key) {
-        for (Iterator iter = portletparameters.iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = portletparameters.iterator(); iter.hasNext();) {
             Object param = iter.next();
             if (param instanceof NodeParameter) {
                 NodeParameter nodeparam = (NodeParameter) param;
@@ -77,7 +77,7 @@ public class Portlet extends NodeBean implements Comparable {
         return null;
     }
     
-    public int compareTo(Object o) {
-        return title.compareTo(((Portlet) o).title);
+    public int compareTo(Portlet o) {
+        return title.compareTo(o.title);
     }
 }

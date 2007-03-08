@@ -282,13 +282,13 @@ public class PagesUtil {
         RelationList namedRelations = PagesUtil.getAllowedNamedRelations(layoutNode);
         if (!namedRelations.isEmpty()) {
             Map<String,List<Node>> defpositions = new HashMap<String,List<Node>>();
-            for (Iterator iter = namedRelations.iterator(); iter.hasNext();) {
-                Relation relation = (Relation) iter.next();
+            for (Iterator<Relation> iter = namedRelations.iterator(); iter.hasNext();) {
+                Relation relation = iter.next();
                 String name = relation.getStringValue(PagesUtil.NAME_FIELD);
                 Node definition = relation.getDestination();
                 String[] names = name.split(",");
-                for (int i = 0; i < names.length; i++) {
-                    String position = names[i].trim();
+                for (String element : names) {
+                    String position = element.trim();
                     List<Node> definitions;
                     if (defpositions.containsKey(position)) {
                         definitions = defpositions.get(position);

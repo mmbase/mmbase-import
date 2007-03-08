@@ -186,11 +186,11 @@ public class LinkedContentTag extends NodeReferrerTag {
          }
 
          StringBuffer buffer = new StringBuffer();
-         Iterator iterator = list.iterator();
+         Iterator<Node> iterator = list.iterator();
          boolean first = true;
 
          while (iterator.hasNext()) {
-            Node content = (Node) iterator.next();
+            Node content = iterator.next();
 
             if (first) {
                buffer.append("<div class=\"");

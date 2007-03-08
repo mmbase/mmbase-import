@@ -133,8 +133,8 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                // Other option to filter on position is to add a constraint to the query
                // This is preferred, because the query will be the same for all positions.
                // This results in an optimal usage of the MMBase Query Cache 
-               for (Iterator iter = list.iterator(); iter.hasNext();) {
-                   Node imagerelNode = (Node) iter.next();
+               for (Iterator<Node> iter = list.iterator(); iter.hasNext();) {
+                   Node imagerelNode = iter.next();
                    if (!pos.equals(imagerelNode.getStringValue("pos"))) {
                        iter.remove();
                    }
@@ -148,8 +148,8 @@ public class LinkedImagesTag  extends NodeReferrerTag {
 
            String outputValue = "";
            
-           for (Iterator iter = list.iterator(); iter.hasNext();) {
-                Node imagerelNode = (Node) iter.next();
+           for (Iterator<Node> iter = list.iterator(); iter.hasNext();) {
+                Node imagerelNode = iter.next();
                 if (imagerelNode.isRelation()) {
                     Relation imagerel = imagerelNode.toRelation();
                     Node image = imagerel.getDestination();

@@ -27,7 +27,7 @@ import org.apache.pluto.util.StringUtils;
 /**
  * Set preferences for portlets
  */
-public class PreferenceSetImpl extends HashSet implements PreferenceSet, PreferenceSetCtrl, Serializable {
+public class PreferenceSetImpl extends HashSet<Preference> implements PreferenceSet, PreferenceSetCtrl, Serializable {
 	private static Log log = LogFactory.getLog(PreferenceSetImpl.class);
 
 	public Preference get(String name) {
@@ -55,7 +55,7 @@ public class PreferenceSetImpl extends HashSet implements PreferenceSet, Prefere
 	}
 
 	public Preference add(String name, Object value) {
-		ArrayList values = new ArrayList();
+		ArrayList<Object> values = new ArrayList<Object>();
 		values.add(value);
 		return this.add(name, values);
 	}

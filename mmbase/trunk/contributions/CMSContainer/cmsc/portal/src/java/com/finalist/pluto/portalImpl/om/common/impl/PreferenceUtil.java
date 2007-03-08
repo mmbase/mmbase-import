@@ -30,8 +30,8 @@ public class PreferenceUtil {
 	 * @param preferences the preferences to be converted
 	 * @return the preferences as map
 	 */
-	static public HashMap createPreferenceMap(Collection preferences) {
-		HashMap returnValue = new HashMap();
+	static public HashMap<String, Iterator<Object>> createPreferenceMap(Collection preferences) {
+		HashMap<String, Iterator<Object>> returnValue = new HashMap<String, Iterator<Object>>();
 		Iterator iterator = preferences.iterator();
 		while (iterator.hasNext()) {
 			Preference preference = (Preference) iterator.next();

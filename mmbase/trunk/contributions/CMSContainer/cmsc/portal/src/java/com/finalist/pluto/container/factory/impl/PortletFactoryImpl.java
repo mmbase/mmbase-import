@@ -8,8 +8,6 @@ import javax.portlet.PortletException;
 import javax.portlet.UnavailableException;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.om.ControllerObjectAccess;
 import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.portlet.PortletDefinitionCtrl;
@@ -22,12 +20,11 @@ import com.finalist.pluto.container.factory.PortletFactory;
  * @author Wouter Heijke
  */
 public class PortletFactoryImpl implements PortletFactory {
-	private static final Log log = LogFactory.getLog(PortletFactoryImpl.class);
 
-	private HashMap portletCache;
+	private HashMap<String, Portlet> portletCache;
 
 	public PortletFactoryImpl() {
-		this.portletCache = new HashMap();
+		this.portletCache = new HashMap<String, Portlet>();
 	}
 
 	public Portlet getPortletInstance(ServletContext servletContext, PortletDefinition pd) throws PortletException {
@@ -37,7 +34,7 @@ public class PortletFactoryImpl implements PortletFactory {
 			String portletName = pd.getId().toString();
 			try {
 				synchronized (portletCache) {
-					portlet = (Portlet) portletCache.get(portletName);
+					portlet = portletCache.get(portletName);
 					if (portlet != null) {
 						return portlet;
 					}
@@ -56,9 +53,9 @@ public class PortletFactoryImpl implements PortletFactory {
 	}
 
 	public void destroy() {
-		Iterator i = portletCache.keySet().iterator();
+		Iterator<Portlet> i = portletCache.values().iterator();
 		while (i.hasNext()) {
-			Portlet portletClass = (Portlet) i.next();
+			Portlet portletClass = i.next();
 			portletClass.destroy();
 		}	
 	}

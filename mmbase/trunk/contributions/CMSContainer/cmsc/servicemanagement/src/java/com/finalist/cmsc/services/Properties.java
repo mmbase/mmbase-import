@@ -89,8 +89,8 @@ public class Properties extends NameValuePairs {
 		int prefixLength = aNamePrefix.length();
 		String name;
 
-		for (Iterator iter = this.names(); iter.hasNext();) {
-			name = (String) iter.next();
+		for (Iterator<String> iter = this.names(); iter.hasNext();) {
+			name = iter.next();
 
 			if (name.startsWith(aNamePrefix)) {
 				subset.add(name.substring(prefixLength), getStrings(name));

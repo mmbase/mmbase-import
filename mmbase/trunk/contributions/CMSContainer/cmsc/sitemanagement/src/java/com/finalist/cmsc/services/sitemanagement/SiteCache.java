@@ -50,8 +50,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         Cloud cloud = getCloud();
 
         NodeList sites = SiteUtil.getSites(cloud);
-        for (Iterator iter = sites.iterator(); iter.hasNext();) {
-           Node siteNode = (Node) iter.next();
+        for (Iterator<Node> iter = sites.iterator(); iter.hasNext();) {
+           Node siteNode = iter.next();
             
            Site site = (Site) MMBaseNodeMapper.copyNode(siteNode, Site.class);
            int siteId = site.getId();
@@ -78,8 +78,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         q.setCachePolicy(CachePolicy.NEVER);
 
         NodeList navrels = cloud.getList(q);
-        for (Iterator iter = navrels.iterator(); iter.hasNext();) {
-            Node navrelNode = (Node) iter.next();
+        for (Iterator<Node> iter = navrels.iterator(); iter.hasNext();) {
+            Node navrelNode = iter.next();
             
             int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
             int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
@@ -102,8 +102,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         while (oldUnfinishedSize > unfinishedNodes.size()) {
             oldUnfinishedSize = unfinishedNodes.size();
 
-            for (Iterator iter = unfinishedNodes.iterator(); iter.hasNext();) {
-                Node navrelNode = (Node) iter.next();
+            for (Iterator<Node> iter = unfinishedNodes.iterator(); iter.hasNext();) {
+                Node navrelNode = iter.next();
     
                 int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
                 int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
@@ -120,8 +120,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
             }
         }
         
-        for (Iterator iter = unfinishedNodes.iterator(); iter.hasNext();) {
-            Node navrelNode = (Node) iter.next();
+        for (Iterator<Node> iter = unfinishedNodes.iterator(); iter.hasNext();) {
+            Node navrelNode = iter.next();
             log.warn("Page treenode not found for navrel: " + navrelNode);
         }
         

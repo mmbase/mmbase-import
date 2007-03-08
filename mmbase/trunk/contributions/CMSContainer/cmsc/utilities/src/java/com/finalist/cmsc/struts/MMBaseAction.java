@@ -158,7 +158,7 @@ public abstract class MMBaseAction extends Action {
         return CloudUtil.createCloud(req, sessionname);
     }
     
-    public static Map getUserCredentials(String username, String password) {
+    public static Map<String,String> getUserCredentials(String username, String password) {
         return CloudUtil.getUserCredentials(username, password);
      }
 
@@ -202,18 +202,18 @@ public abstract class MMBaseAction extends Action {
         request.setAttribute(name, value);
     }
 
-    public static void addToRequest(HttpServletRequest request, String name, Collection value) {
+    public static void addToRequest(HttpServletRequest request, String name, Collection<?> value) {
         request.setAttribute(name, value);
     }
 
-    public static void addToRequest(HttpServletRequest request, String name, Map value) {
+    public static void addToRequest(HttpServletRequest request, String name, Map<?,?> value) {
         request.setAttribute(name, value);
     }
     
     protected void removeFromSession(HttpServletRequest request, ActionForm form) {
         HttpSession session = request.getSession();
-        for (Enumeration iter = session.getAttributeNames(); iter.hasMoreElements();) {
-            String name = (String) iter.nextElement();
+        for (Enumeration<String> iter = session.getAttributeNames(); iter.hasMoreElements();) {
+            String name = iter.nextElement();
             Object value = session.getAttribute(name);
             if (form == value) { // same reference
                 session.removeAttribute(name);

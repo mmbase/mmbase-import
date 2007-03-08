@@ -73,15 +73,15 @@ public class PublishTag extends NodeReferrerTag {
             
             if (RepositoryUtil.isContentChannel(node)) {
                NodeList content = RepositoryUtil.getLinkedElements(node);
-               for (Iterator iter = content.iterator(); iter.hasNext();) {
-                   Node child = (Node) iter.next();
+               for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
+                   Node child = iter.next();
                    publishNumbers.add(child.getNumber());
                    toPublishNodes.add(child);
                }
 
                NodeList channels = RepositoryUtil.getChildren(node);
-               for (Iterator iter = channels.iterator(); iter.hasNext();) {
-                   Node child = (Node) iter.next();
+               for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+                   Node child = iter.next();
                    publishNumbers.add(child.getNumber());
                    toPublishNodes.add(child);
                }
@@ -116,27 +116,27 @@ public class PublishTag extends NodeReferrerTag {
         
         if (PagesUtil.isPageType(node)) {
             NodeList children = NavigationUtil.getChildren(node);
-            for (Iterator iter = children.iterator(); iter.hasNext();) {
-                Node child = (Node) iter.next();
+            for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+                Node child = iter.next();
                 findNodes(child, toPublishNodes);
             }
         }
         else if (RepositoryUtil.isContentChannel(node)) {
             NodeList content = RepositoryUtil.getLinkedElements(node);
-            for (Iterator iter = content.iterator(); iter.hasNext();) {
-                Node child = (Node) iter.next();
+            for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
+                Node child = iter.next();
                 toPublishNodes.add(child);
             }
 
             NodeList channels = RepositoryUtil.getChildren(node);
-            for (Iterator iter = channels.iterator(); iter.hasNext();) {
-                Node child = (Node) iter.next();
+            for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+                Node child = iter.next();
                 findNodes(child, toPublishNodes);
             }
             
             NodeList collectionChannels = RepositoryUtil.getCollectionChannels(node);
-            for (Iterator iter = collectionChannels.iterator(); iter.hasNext();) {
-                Node child = (Node) iter.next();
+            for (Iterator<Node> iter = collectionChannels.iterator(); iter.hasNext();) {
+                Node child = iter.next();
                 findNodes(child, toPublishNodes);
             }
         }

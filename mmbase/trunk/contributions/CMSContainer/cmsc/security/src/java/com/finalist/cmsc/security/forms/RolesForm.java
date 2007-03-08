@@ -44,7 +44,7 @@ public class RolesForm extends MMBaseForm {
       roles.put(new Integer(number), role);
    }
    
-   public Map getRoles() {
+   public Map<Integer, UserRole> getRoles() {
       return roles;
    }
    

@@ -25,7 +25,7 @@ import org.apache.pluto.Constants;
  * Tag to get a name/value from the PortletPreferences for the active portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class PortletPreferencesTag extends SimpleTagSupport {
 
@@ -62,9 +62,9 @@ public class PortletPreferencesTag extends SimpleTagSupport {
 				if (var != null) {
 					request.setAttribute(var, preferences.getMap());
 				} else {
-					Enumeration p = preferences.getNames();
+					Enumeration<String> p = preferences.getNames();
 					while (p.hasMoreElements()) {
-						String pref = (String) p.nextElement();
+						String pref = p.nextElement();
 						request.setAttribute(pref, preferences.getValue(pref, null));
 					}
 				}
