@@ -237,13 +237,15 @@ public class ResponseFormPortlet extends ContentPortlet {
 		boolean sent = false;		
     	String title = responseform.getStringValue("title");
         String emailText = responseform.getStringValue("emailbody"); 
+        String senderEmail = responseform.getStringValue("useremailsender");
+        String senderName = responseform.getStringValue("useremailsendername");
         emailText = emailText.replace("#TITEL#", title);
         emailText = emailText.replace("#FORMDATA#", responseformData);        
         String emailAddressesValue = responseform.getStringValue("emailaddresses");                                         
         String emailSubject = responseform.getStringValue("emailsubject");    
         List<String> emailList = Arrays.asList(emailAddressesValue.split(";"));
         try {
-			EmailSender.getInstance().sendEmail(null, null, emailList, emailSubject, emailText.toString(), attachment);
+			EmailSender.getInstance().sendEmail(senderEmail, senderName, emailList, emailSubject, emailText.toString(), attachment);
 			sent = true;
 		} catch (UnsupportedEncodingException e) {
 			getLogger().error("error sending email", e);
