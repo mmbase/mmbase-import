@@ -43,7 +43,7 @@ for(int i=0; i<fields.length; i++) {
    } else if(i==5 && !com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(answerValue)) {
      isValidAnswer = false;
      warningText += "<li>" + answerValue +  " is geen geldig email adres</li>";
-   } else if(i==3 && !memberId.equals("")) {
+   } else if(i==2 && !memberId.equals("")) {
      memberIDMessage = SubscribeForm.getMemberIdMessage(memberId,answerValue.toUpperCase().replaceAll(" ",""));
      if(!"".equals(memberIDMessage)) {
       isValidAnswer = false;
