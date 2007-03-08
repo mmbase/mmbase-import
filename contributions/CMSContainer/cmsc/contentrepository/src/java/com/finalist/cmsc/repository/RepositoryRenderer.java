@@ -142,8 +142,11 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
 
     private void addWebmasterOptions(Node parentNode, TreeElement element) {
         if(RepositoryUtil.isContentChannel(parentNode) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-            String labelPublish = JstlUtil.getMessage(request, "repository.channel.publish");
-            element.addOption(createOption("masspublish.png", labelPublish,
+           String labelPublish = JstlUtil.getMessage(request, "repository.channel.publish");
+           element.addOption(createOption("publish.png", labelPublish,
+               getUrl("../workflow/publish.jsp?number=" + parentNode.getNumber()), target));
+            String labelMassPublish = JstlUtil.getMessage(request, "repository.channel.masspublish");
+            element.addOption(createOption("masspublish.png", labelMassPublish,
                 getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
         }
         

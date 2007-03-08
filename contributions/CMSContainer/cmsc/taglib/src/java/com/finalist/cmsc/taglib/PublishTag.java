@@ -34,6 +34,8 @@ public class PublishTag extends NodeReferrerTag {
      */
     private int number;
     private boolean children;
+    private String var;
+    private boolean execute = true;
     
     public int doStartTag() throws JspException {
 
@@ -67,19 +69,45 @@ public class PublishTag extends NodeReferrerTag {
         else {
             toPublishNodes.add(node);
             List<Integer> publishNumbers = new ArrayList<Integer>();
+
             publishNumbers.add(node.getNumber());
+            
+            if (RepositoryUtil.isContentChannel(node)) {
+               NodeList content = RepositoryUtil.getLinkedElements(node);
+               for (Iterator iter = content.iterator(); iter.hasNext();) {
+                   Node child = (Node) iter.next();
+                   publishNumbers.add(child.getNumber());
+                   toPublishNodes.add(child);
+               }
+
+               NodeList channels = RepositoryUtil.getChildren(node);
+               for (Iterator iter = channels.iterator(); iter.hasNext();) {
+                   Node child = (Node) iter.next();
+                   publishNumbers.add(child.getNumber());
+                   toPublishNodes.add(child);
+               }
+            }
+
             List<Node> nodeErrors = Workflow.isReadyToPublish(node, publishNumbers);
             if(!nodeErrors.isEmpty()) {
                 errors.put(node, nodeErrors);
             }
         }
-        if (errors.isEmpty()) {
-            Thread runner = new MassPublishThread(toPublishNodes);
-            runner.start();
+        
+        if (var != null) {
+           HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+           request.setAttribute(var, toPublishNodes.size());
         }
-        else {
-            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            request.setAttribute("errors", errors);
+        
+        if(execute) {
+           if (errors.isEmpty()) {
+               Thread runner = new MassPublishThread(toPublishNodes);
+               runner.start();
+           }
+           else {
+               HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+               request.setAttribute("errors", errors);
+           }
         }
         return EVAL_BODY_BUFFERED;
     }
@@ -122,6 +150,8 @@ public class PublishTag extends NodeReferrerTag {
     public void setChildren(boolean children) {
         this.children = children;
     }
+    
+    
 
     static class MassPublishThread extends Thread {
         
@@ -165,5 +195,15 @@ public class PublishTag extends NodeReferrerTag {
             }
         }
     }
+
+
+
+   public void setExecute(boolean execute) {
+      this.execute = execute;
+   }
+
+   public void setVar(String var) {
+      this.var = var;
+   }
 
 }
