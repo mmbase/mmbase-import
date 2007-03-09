@@ -52,9 +52,9 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
         
         if (!StringUtil.isEmpty(actionValueStr)) {
             List<Node> nodes = new ArrayList<Node>();
-            Enumeration parameters = request.getParameterNames();
+            Enumeration<String> parameters = request.getParameterNames();
             while (parameters.hasMoreElements()) {
-                String name = (String) parameters.nextElement();
+                String name = parameters.nextElement();
                 if (name.startsWith("check_")) {
                     int lastUScore = name.lastIndexOf("_");
                     int number = Integer.parseInt(name.substring(lastUScore + 1));
@@ -64,7 +64,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                     }
                 }
             }
-            List workflowErrors = performWorkflowAction(actionValueStr, nodes, remark, cloud);
+            List<Node> workflowErrors = performWorkflowAction(actionValueStr, nodes, remark, cloud);
 
             if (workflowErrors != null && workflowErrors.size() > 0) {
                 String url = mapping.getPath() + "?status=" + request.getParameter("status");
@@ -118,25 +118,25 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
     }
 
     protected abstract String getWorkflowType();
-    protected abstract List performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud);
+    protected abstract List<Node> performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud);
     protected abstract NodeQuery createDetailQuery(Cloud cloud, String orderby);
 
     protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, WorkflowManager manager) {
         List<Node> errors = new ArrayList<Node>();
 
         if (ACTION_FINISH.equals(action)) {
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                manager.finishWriting((Node) i.next(), remark);
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                manager.finishWriting(i.next(), remark);
             }
         }
         if (ACTION_ACCEPT.equals(action)) {
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                manager.accept((Node) i.next(), remark);
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                manager.accept(i.next(), remark);
             }
         }
         if (ACTION_REJECT.equals(action)) {
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                Node node = (Node) i.next();
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                Node node = i.next();
                 // Node in status published might be completed already before
                 // request reaches this point.
                 if (node.getCloud().hasNode(node.getNumber())) {
@@ -145,22 +145,22 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
             }
         }
         if (ACTION_RENAME.equals(action)) {
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                manager.rename((Node) i.next(), remark);
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                manager.rename(i.next(), remark);
             }
         }
         if (ACTION_PUBLISH.equals(action)) {
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                manager.accept((Node) i.next(), remark);
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                manager.accept(i.next(), remark);
             }
             List<Integer> publishNumbers = new ArrayList<Integer>();
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                publishNumbers.add(((Node) i.next()).getNumber());
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+                publishNumbers.add(i.next().getNumber());
             }
             
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
                 try {
-                    manager.publish((Node) i.next(), publishNumbers);
+                    manager.publish(i.next(), publishNumbers);
                 }
                 catch (WorkflowException wfe) {
                     errors.addAll(wfe.getErrors());
@@ -184,9 +184,9 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
         
         BasicStep wfStep = (BasicStep) detailQuery.getStep(WorkflowManager.WORKFLOW_MANAGER_NAME);
         // Retrieve the data of the content element workflow items.
-        Iterator wfIterator = workflowNumbers.iterator();
+        Iterator<Node> wfIterator = workflowNumbers.iterator();
         while (wfIterator.hasNext()) {
-           Node node = ((Node) wfIterator.next());
+           Node node = wfIterator.next();
            int workflowNumber = node.getIntValue(WorkflowManager.WORKFLOW_MANAGER_NAME+".number");
            wfStep.addNode(workflowNumber);
         }

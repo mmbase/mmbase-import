@@ -43,7 +43,7 @@ public abstract class RepositoryWorkflow  extends WorkflowManager {
     }
 
     
-    public List getUsersWithRights(Node channel, Role role) {
+    public List<Node> getUsersWithRights(Node channel, Role role) {
         return RepositoryUtil.getUsersWithRights(channel, role);
     }
     

@@ -207,9 +207,9 @@ public class IndexUpdateTask implements Runnable {
 		Node node = fetchNode(nodeNumber);
 		if (node != null) {
 			NodeList ceList = node.getRelatedNodes(ContentElementUtil.CONTENTELEMENT, null, "SOURCE");
-			Iterator ceIter = ceList.iterator();
+			Iterator<Node> ceIter = ceList.iterator();
 			while (ceIter.hasNext()) {
-				Node ceNode = (Node) ceIter.next();
+				Node ceNode = ceIter.next();
 				executeUpdateContentIndex(ceNode.getNumber());
 			}
 		} else {
@@ -242,8 +242,7 @@ public class IndexUpdateTask implements Runnable {
 				log.debug(id + " Unable to find content element(s) for update of page: " + pageNumber);
 				delete("" + pageNumber, null);
 			}
-			for (Iterator<Node> pIter = elementen.iterator(); pIter.hasNext();) {
-				Node element = pIter.next();
+			for (Node element : elementen) {
 				update(pageNode, element);
 			}
 		} else {
@@ -301,16 +300,15 @@ public class IndexUpdateTask implements Runnable {
 		doc.add(EnvelopeFieldFactory.getStringField("contentelement.id", ceId));
 
 		// add path to page as metadata
-		List path = NavigationUtil.getPathToRoot(pageNode);
-		for (Iterator pathIter = path.iterator(); pathIter.hasNext();) {
-			Node pathNode = (Node) pathIter.next();
+		List<Node> path = NavigationUtil.getPathToRoot(pageNode);
+		for (Iterator<Node> pathIter = path.iterator(); pathIter.hasNext();) {
+			Node pathNode = pathIter.next();
 			doc.add(EnvelopeFieldFactory.getStringField(PagesUtil.FRAGMENT_FIELD, pathNode.getStringValue("number")));
 		}
 
 		if (module.isDoAttachments()) {
 			Set<Node> attachments = Search.findLinkedSecondaryContent(contentElement, "attachments");
-			for (Iterator<Node> aIter = attachments.iterator(); aIter.hasNext();) {
-				Node attachment = aIter.next();
+			for (Node attachment : attachments) {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(attachment, doc);
 				}
@@ -320,8 +318,7 @@ public class IndexUpdateTask implements Runnable {
 
 		if (module.isDoUrls()) {
 			Set<Node> urls = Search.findLinkedSecondaryContent(contentElement, "urls");
-			for (Iterator<Node> uIter = urls.iterator(); uIter.hasNext();) {
-				Node url = uIter.next();
+			for (Node url : urls) {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(url, doc);
 				}
@@ -331,8 +328,7 @@ public class IndexUpdateTask implements Runnable {
 
 		if (module.isDoImages()) {			
 			Set<Node> images = Search.findLinkedSecondaryContent(contentElement, "images", "imagerel");
-			for (Iterator<Node> iIter = images.iterator(); iIter.hasNext();) {
-				Node image = iIter.next();
+			for (Node image : images) {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(image, doc);
 				}
@@ -342,8 +338,7 @@ public class IndexUpdateTask implements Runnable {
 
 		if (cch != null) {
 			Set<Node> custom = cch.findLinkedContent(contentElement);
-			for (Iterator<Node> cIter = custom.iterator(); cIter.hasNext();) {
-				Node customNode = cIter.next();
+			for (Node customNode : custom) {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(customNode, doc);
 				}

@@ -1,7 +1,6 @@
 package com.finalist.cmsc.egemmail.forms;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +51,8 @@ public class EgemSearchAction extends MMBaseAction {
         if (!StringUtil.isEmpty(searchForm.getKeywords())) {
             List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
         	Field field = nodeManager.getField("keywords");
-            for (Iterator<String> i = keywords.iterator(); i.hasNext();) {
-                SearchUtil.addLikeConstraint(query, field, i.next());
+            for (String string : keywords) {
+                SearchUtil.addLikeConstraint(query, field, string);
             }
         }
         

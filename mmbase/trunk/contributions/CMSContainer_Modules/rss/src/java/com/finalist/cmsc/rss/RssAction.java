@@ -182,8 +182,8 @@ public class RssAction extends MMBaseAction {
 
 
     private void removeRssNodes(NodeList results2) {
-        for (Iterator iterator = results2.iterator(); iterator.hasNext();) {
-            Node node = (Node) iterator.next();
+        for (Iterator<Node> iterator = results2.iterator(); iterator.hasNext();) {
+            Node node = iterator.next();
             if (node.getNodeManager().hasField("use_in_rss")
                     && !node.getBooleanValue("use_in_rss")) {
                 iterator.remove();

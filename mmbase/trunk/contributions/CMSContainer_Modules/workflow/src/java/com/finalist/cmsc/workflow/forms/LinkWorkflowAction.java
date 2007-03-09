@@ -26,7 +26,7 @@ public class LinkWorkflowAction extends WorkflowAction {
     }
 
     @Override
-    protected List performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud) {
+    protected List<Node> performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud) {
        LinkWorkflow linkWorkflow = new LinkWorkflow(cloud);
        return performWorkflowAction(actionValueStr, nodes, remark, linkWorkflow);
     }

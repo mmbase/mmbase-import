@@ -1,7 +1,6 @@
 package com.finalist.cmsc.egemmail.forms;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,10 +42,9 @@ public class EgemExportAction extends MMBaseFormlessAction {
       int notOnLive = 0;
 
 		Map<String,String[]> params = request.getParameterMap();
-		for(Iterator<String> i = params.keySet().iterator();i.hasNext();) {
-			String key = i.next();
+		for (String key : params.keySet()) {
 			if(key.startsWith("export_")) {
-				HashMap postParams = new HashMap();
+				Map<String, Object> postParams = new HashMap<String, Object>();
 				
 				String number = key.substring(key.indexOf("_")+1);
 				Node node = cloud.getNode(number);

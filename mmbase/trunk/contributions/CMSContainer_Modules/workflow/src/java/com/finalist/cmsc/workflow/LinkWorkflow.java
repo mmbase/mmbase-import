@@ -50,7 +50,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
             RelationUtil.createRelation(wfItem, channel, WORKFLOWREL);
         }
 
-        List users = getUsersWithRights(channel, Role.EDITOR);
+        List<Node> users = getUsersWithRights(channel, Role.EDITOR);
         changeUserRelations(wfItem, users);
 
        log.debug("Link Workflow " + wfItem.getNumber() + " created for content " + (content != null ? content.getNumber() : ""));

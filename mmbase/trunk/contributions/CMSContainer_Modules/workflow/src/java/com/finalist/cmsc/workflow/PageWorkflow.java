@@ -129,7 +129,7 @@ public class PageWorkflow extends WorkflowManager {
     }
 
     @Override
-    protected List getUsersWithRights(Node node, Role role) {
+    protected List<Node> getUsersWithRights(Node node, Role role) {
         return NavigationUtil.getUsersWithRights(node, role);
     }
 
@@ -160,10 +160,10 @@ public class PageWorkflow extends WorkflowManager {
 
     @Override
     protected void checkNode(Node node, List<Node> errors, List<Integer> publishNumbers) {
-        List path = NavigationUtil.getPathToRoot(node);
+        List<Node> path = NavigationUtil.getPathToRoot(node);
         path.remove(path.size() - 1);
-        for (Iterator iter = path.iterator(); iter.hasNext();) {
-            Node pathElement = (Node) iter.next();
+        for (Iterator<Node> iter = path.iterator(); iter.hasNext();) {
+            Node pathElement = iter.next();
             if (!Publish.isPublished(pathElement)
                     && (publishNumbers == null || !publishNumbers.contains(pathElement.getNumber())) ) {
                 errors.add(pathElement);
@@ -176,8 +176,8 @@ public class PageWorkflow extends WorkflowManager {
         NodeManager pageManager = cloud.getNodeManager(PagesUtil.PAGE);
 
         Query query = cloud.createQuery();
-        Step pageStep = query.addStep(pageManager);
-        RelationStep step2 = query.addRelationStep(portletManager, PortletUtil.PORTLETREL, DESTINATION);
+        query.addStep(pageManager);
+        query.addRelationStep(portletManager, PortletUtil.PORTLETREL, DESTINATION);
         RelationStep step4 = query.addRelationStep(parameterManager, PortletUtil.PARAMETERREL, DESTINATION);
         Step parameterStep = step4.getNext();
 
@@ -185,8 +185,8 @@ public class PageWorkflow extends WorkflowManager {
         SearchUtil.addEqualConstraint(query, pageManager.getField("number"), Integer.valueOf(node.getNumber()));
         
         NodeList nodes = cloud.getList(query);
-        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-            Node queryNode = (Node) iter.next();
+        for (Iterator<Node> iter = nodes.iterator(); iter.hasNext();) {
+            Node queryNode = iter.next();
             int qNumber = queryNode.getIntValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.VALUE_FIELD);
             if (cloud.hasNode(qNumber)) {
                 Node qNode = cloud.getNode(qNumber);
