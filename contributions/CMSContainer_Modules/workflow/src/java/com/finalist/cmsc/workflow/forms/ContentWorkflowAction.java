@@ -26,7 +26,7 @@ public class ContentWorkflowAction extends WorkflowAction {
     }
 
     @Override
-    protected List performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
+    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
         ContentWorkflow contentWorkflow = new ContentWorkflow(cloud);
         return performWorkflowAction(action, nodes, remark, contentWorkflow);
     }

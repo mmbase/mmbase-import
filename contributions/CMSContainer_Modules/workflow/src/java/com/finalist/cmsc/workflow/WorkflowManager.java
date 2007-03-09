@@ -65,8 +65,8 @@ public abstract class WorkflowManager {
     */
    protected Node getWorkflowNode(Node node, String type) {
       NodeList list = getWorkflows(node);
-      for (Iterator iter = list.iterator(); iter.hasNext();) {
-        Node workflow = (Node) iter.next();
+      for (Iterator<Node> iter = list.iterator(); iter.hasNext();) {
+        Node workflow = iter.next();
         if (!workflow.getStringValue(TYPE_FIELD).equals(type)) {
             iter.remove();
         }
@@ -92,7 +92,7 @@ public abstract class WorkflowManager {
    }
 
    public abstract boolean isWorkflowElement(Node node);
-   protected abstract List getUsersWithRights(Node channel, Role role);
+   protected abstract List<Node> getUsersWithRights(Node channel, Role role);
    
    public abstract boolean isAllowedToPublish(Node node);
    public abstract boolean isAllowedToAccept(Node node) ;
@@ -110,8 +110,8 @@ public abstract class WorkflowManager {
    public void remove(Node node) {
        if (hasWorkflow(node, TYPE_ALL)) {
            NodeList list = getWorkflows(node);
-           for (Iterator iter = list.iterator(); iter.hasNext();) {
-             Node wf = (Node) iter.next();
+           for (Iterator<Node> iter = list.iterator(); iter.hasNext();) {
+             Node wf = iter.next();
              if (wf.getStringValue(STATUS_FIELD).equals(STATUS_PUBLISHED)) {
                  Publish.remove(node);
              }
@@ -127,8 +127,8 @@ public abstract class WorkflowManager {
    protected NodeList getWorkflows(Node node, String type) {
        NodeList list = getWorkflows(node);
        if (!TYPE_ALL.equals(type)) {
-           for (Iterator iter = list.iterator(); iter.hasNext();) {
-               Node workflow = (Node) iter.next();
+           for (Iterator<Node> iter = list.iterator(); iter.hasNext();) {
+               Node workflow = iter.next();
                if (!workflow.getStringValue(TYPE_FIELD).equals(type)) {
                    iter.remove();
                }
@@ -197,7 +197,7 @@ public abstract class WorkflowManager {
        */
        if (!isStatusFinished(wfItem)) {
           changeWorkflow(wfItem, STATUS_FINISHED, remark);
-          List users = getUsersWithRights(rightsNode, Role.EDITOR);
+          List<Node> users = getUsersWithRights(rightsNode, Role.EDITOR);
           changeUserRelations(wfItem, users);
        }
    }
@@ -215,7 +215,7 @@ public abstract class WorkflowManager {
        if (Workflow.isAcceptedStepEnabled()) {
           if (!isStatusApproved(wfItem)) {
               changeWorkflow(wfItem, STATUS_APPROVED, remark);
-              List users = getUsersWithRights(rightsNode, Role.CHIEFEDITOR);
+              List<Node> users = getUsersWithRights(rightsNode, Role.CHIEFEDITOR);
               changeUserRelations(wfItem, users);
           }
        }
@@ -242,7 +242,7 @@ public abstract class WorkflowManager {
         wfItem.commit();
     }
 
-    protected void changeUserRelations(Node wfItem, List users) {
+    protected void changeUserRelations(Node wfItem, List<Node> users) {
         removeRelationsToUsers(wfItem);
         relateToUsers(wfItem, users);
     }
@@ -317,8 +317,8 @@ public abstract class WorkflowManager {
     
     protected void complete(Node contentNode, String type) {
         NodeList workflows = getWorkflows(contentNode, type);
-        for (Iterator iter = workflows.iterator(); iter.hasNext();) {
-           Node workflow = (Node) iter.next();
+        for (Iterator<Node> iter = workflows.iterator(); iter.hasNext();) {
+           Node workflow = iter.next();
            deleteWorkflow(workflow);
         }
     }
@@ -333,11 +333,11 @@ public abstract class WorkflowManager {
       workflowItem.deleteRelations(ASSIGNEDREL);
    }
 
-   protected void relateToUsers(Node workflowItem, List users) {
+   protected void relateToUsers(Node workflowItem, List<Node> users) {
       RelationManager manager = cloud.getRelationManager(WORKFLOW_MANAGER_NAME, SecurityUtil.USER, ASSIGNEDREL);
 
-      for (Iterator iter = users.iterator(); iter.hasNext();) {
-         workflowItem.createRelation((Node) iter.next(), manager).commit();
+      for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
+         workflowItem.createRelation(iter.next(), manager).commit();
       }
    }
 

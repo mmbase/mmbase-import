@@ -24,7 +24,7 @@ public class PageWorkflowAction extends WorkflowAction {
     }
 
     @Override
-    protected List performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
+    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
         PageWorkflow pageWorkflow = new PageWorkflow(cloud);
         return performWorkflowAction(action, nodes, remark, pageWorkflow);
     }

@@ -35,8 +35,8 @@ public class LuceusUtil {
 		NodeManager nm = contentElement.getNodeManager();
 
 		FieldList fields = nm.getFields();
-		for (Iterator fIter = fields.iterator(); fIter.hasNext();) {
-			Field managerField = (Field) fIter.next();
+		for (Iterator<Field> fIter = fields.iterator(); fIter.hasNext();) {
+			Field managerField = fIter.next();
 			String fieldName = managerField.getName();
 			StringBuffer sb = new StringBuffer();
 			if (prefix != null && prefix.length() > 0) {

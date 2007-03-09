@@ -155,8 +155,8 @@ public class CleanerModule extends Module implements Runnable {
 
     private void deletePage(Node element) {
         NodeList pages = NavigationUtil.getChildren(element);
-        for (Iterator iter = pages.iterator(); iter.hasNext();) {
-            Node childPage = (Node) iter.next();
+        for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
+            Node childPage = iter.next();
             deletePage(childPage);
         }
 

@@ -73,8 +73,8 @@ public class PublishBuilderAction extends MMBaseFormlessAction {
                   if (portlet != null) {
                       PublishUtil.publishOrUpdateNode(portlet);
                       NodeList params = PortletUtil.getParameters(portlet);
-                      for (Iterator iter = params.iterator(); iter.hasNext();) {
-                        Node param = (Node) iter.next();
+                      for (Iterator<Node> iter = params.iterator(); iter.hasNext();) {
+                        Node param = iter.next();
                         PublishUtil.publishOrUpdateNode(param);
                      }
                   }

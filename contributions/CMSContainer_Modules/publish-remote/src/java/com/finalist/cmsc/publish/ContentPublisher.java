@@ -40,8 +40,8 @@ public class ContentPublisher extends Publisher {
         }
         else {
             NodeList channels = RepositoryUtil.getContentChannels(node);
-            for (Iterator iter = channels.iterator(); iter.hasNext();) {
-                Node channel = (Node) iter.next();
+            for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+                Node channel = iter.next();
                 if (PublishManager.isPublished(channel)) {
                     clouds.addAll(PublishManager.getPublishedClouds(channel));
                 }

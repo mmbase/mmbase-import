@@ -4,7 +4,9 @@ import net.sf.mmapps.commons.beans.NodeBean;
 
 public class WorkflowItem extends NodeBean {
 
-	private int type;
+    private static final long serialVersionUID = 3636369822534243850L;
+
+    private int type;
 
 	private String remark;
 
@@ -33,5 +35,6 @@ public class WorkflowItem extends NodeBean {
     public void setStatus(int status) {
         this.status = status;
     }
+
 
 }

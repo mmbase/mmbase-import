@@ -23,10 +23,10 @@ public class ExcelUtils {
     private static final int ROW_TITLE = 1;    
     private static final Logger log = Logging.getLoggerInstance(ExcelUtils.class.getName());    
     
-      /**
+    /**
     * Private constructor, prevents instantiation
     */
-    private ExcelUtils() { }
+    private ExcelUtils() { /* prevents instantiation */ }
     
     /**
      * Singleton access method
@@ -50,7 +50,7 @@ public class ExcelUtils {
     		HSSFCellStyle style = wb.createCellStyle();
     		HSSFFont font = wb.createFont();
     		font.setFontHeightInPoints((short) 10);
-    		font.setColor( (short)HSSFFont.COLOR_NORMAL );
+    		font.setColor( HSSFFont.COLOR_NORMAL );
     		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
     		style.setFont(font);
     		
@@ -64,7 +64,7 @@ public class ExcelUtils {
     		int offset = ROW_TITLE + 2;
     		for (int i = 0; i < linesCount; i++){ 
     			for (int j = 0; j < columns; j++){
-    				String cellValue = (String)cellValues.get(i * columns + j);
+    				String cellValue = cellValues.get(i * columns + j);
     				setCellValueFormat(sheet, offset + i, (short)j, cellValue, null);
     			}
     		}    		
