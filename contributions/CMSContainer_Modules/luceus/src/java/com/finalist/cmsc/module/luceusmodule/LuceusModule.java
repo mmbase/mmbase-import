@@ -36,7 +36,7 @@ import com.finalist.cmsc.repository.ContentElementUtil;
  * @author Wouter Heijke
  */
 public class LuceusModule extends Module {
-	private static Log log = LogFactory.getLog(LuceusModule.class);
+	static Log log = LogFactory.getLog(LuceusModule.class);
 
 	private Indexer indexer;
 

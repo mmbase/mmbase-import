@@ -19,6 +19,9 @@ public class EasyX509TrustManager implements X509TrustManager {
 
       /**
        * Constructor for EasyX509TrustManager.
+       * @param keystore 
+       * @throws NoSuchAlgorithmException 
+       * @throws KeyStoreException 
        */
       public EasyX509TrustManager(KeyStore keystore) throws NoSuchAlgorithmException, KeyStoreException {
          super();
@@ -32,14 +35,14 @@ public class EasyX509TrustManager implements X509TrustManager {
       }
 
       /**
-       * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String authType)
+       * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String)
        */
       public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
          standardTrustManager.checkClientTrusted(certificates, authType);
       }
 
       /**
-       * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String authType)
+       * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String)
        */
       public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
          if ((certificates != null) && LOG.isDebugEnabled()) {

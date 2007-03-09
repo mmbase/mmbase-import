@@ -52,8 +52,8 @@ public class TaskInitAction extends MMBaseAction {
 
         List<LabelValueBean> usersList = new ArrayList<LabelValueBean>();
         NodeList users = SecurityUtil.getUsers(cloud);
-        for (Iterator iter = users.iterator(); iter.hasNext();) {
-            Node user = (Node) iter.next();
+        for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
+            Node user = iter.next();
             String label = getLabel(user);
             LabelValueBean bean = new LabelValueBean(label, String.valueOf(user.getNumber()));
             usersList.add(bean);

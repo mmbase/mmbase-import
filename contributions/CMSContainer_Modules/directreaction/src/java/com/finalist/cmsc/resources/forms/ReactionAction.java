@@ -38,12 +38,12 @@ public class ReactionAction extends SearchAction {
         // TODO retrieve articles/newsitems in one query along with the reactions (I don't know how to do it)
         // search for the reactions
         super.execute(mapping, form, request, response, cloud);
-        Map titles = new HashMap();
+        Map<Integer, String> titles = new HashMap<Integer, String>();
         // get the reactions from the request
         NodeList results = (NodeList) request.getAttribute("results");
         // for every reaction search for the contentelement it belongs to
-        for (Iterator iter = results.iterator(); iter.hasNext();) {
-            Node node = (Node) iter.next();
+        for (Iterator<Node> iter = results.iterator(); iter.hasNext();) {
+            Node node = iter.next();
             String title = getArticleTitles(cloud, node);
             // store the title in a map
             titles.put(node.getNumber(), title);

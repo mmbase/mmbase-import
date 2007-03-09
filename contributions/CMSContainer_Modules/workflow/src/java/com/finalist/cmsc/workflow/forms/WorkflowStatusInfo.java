@@ -34,8 +34,8 @@ public class WorkflowStatusInfo {
     private int pagePublished;
     
     public WorkflowStatusInfo(NodeList statusList) {
-        for (Iterator iter = statusList.iterator(); iter.hasNext();) {
-            Node node = (Node) iter.next();
+        for (Iterator<Node> iter = statusList.iterator(); iter.hasNext();) {
+            Node node = iter.next();
             String type = node.getStringValue("type");
             String status = node.getStringValue("status");
             int count = node.getIntValue("number");
