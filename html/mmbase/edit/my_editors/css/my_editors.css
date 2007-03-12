@@ -87,6 +87,7 @@ a:active { color: #D6E44B; }
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 10px;
 	background-color: #fff;
+	overflow: auto;
 }
 
 .padcontent
