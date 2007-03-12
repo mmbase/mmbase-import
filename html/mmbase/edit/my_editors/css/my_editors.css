@@ -434,11 +434,15 @@ tr.even:hover { background-color: #d8e8d8; }
 #relationssource caption
 {
 	border-bottom: 0;
-	text-align: center;
+	text-align: left;
+	padding-left: 32px;
 }
-#relationsdestination caption {
+#relationsdestination caption
+{
 	border-top: 1px solid #c8cfd9;
 	border-bottom: 0;
+	text-align: left;
+	padding-left: 32px;
 }
 
 #relationssource td, #relationsdestination td
