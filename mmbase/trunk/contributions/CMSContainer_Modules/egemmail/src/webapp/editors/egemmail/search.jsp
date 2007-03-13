@@ -31,10 +31,11 @@
 				<label><fmt:message key="egemmail.field.author" />:</label>
  				<html:select property="author">
 					<html:option value=""><fmt:message key="egemmail.all_users" /></html:option>
- 					<mm:listnodes type="mmbaseusers" orderby="username">
+ 					<mm:listnodes type="user" orderby="username">
 						<c:set var="username"><mm:field name="username"/></c:set>
 						<c:if test="${username != 'anonymous'}">
-	 						<html:option value="${username}"/>
+                     <mm:field name="username" id="useraccount" write="false"/>
+                     <html:option value="${useraccount}"> <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /> </html:option>
 	 					</c:if>
 					</mm:listnodes>
 				</html:select><br/>
@@ -44,10 +45,11 @@
 			</html:form>
 
 			<mm:present referid="results">
-
+			
 				<c:set var="resultsPerPage" value="50"/>
 				<c:set var="offset" value="${param.offset}"/>
 				<c:set var="listSize">${fn:length(results)}</c:set>
+				<c:set var="extraparams" value="&title=${param.title}&keywords=${param.keywords}&author=${param.author}"/>
 
 				<mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 
@@ -78,7 +80,14 @@
 							${title}
 		            	</td>
 		            	<td><mm:nodeinfo type="guitype"/></td>
-		            	<td><mm:field name="creator"/></td>
+     	               <td width="50" style="white-space: nowrap;">
+			               <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
+		               	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
+		               		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
+		               		<c:if test="${lastmodifierFull != ''}"><c:set var="lastmodifier" value="${lastmodifierFull}"/></c:if>
+		               	</mm:listnodes>
+		               	${lastmodifier}
+		               </td>
 		            	<td>${number}</td>
 			    	</tr>
 			    	<mm:last>

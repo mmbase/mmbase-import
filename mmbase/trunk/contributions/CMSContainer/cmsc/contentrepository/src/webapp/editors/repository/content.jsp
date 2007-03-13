@@ -176,7 +176,14 @@
 			</c:if>
 			${title}
 		</td>
-		<td onMouseDown="objClick(this);"><mm:field name="lastmodifier" /></td>
+		<td onMouseDown="objClick(this);" nowrap>
+       	<mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
+      	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
+      		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
+      		<c:if test="${lastmodifierFull != ''}"><c:set var="lastmodifier" value="${lastmodifierFull}"/></c:if>
+      	</mm:listnodes>
+      	${lastmodifier}
+      </td>
         <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
         <td><mm:field name="number"/></td>
 		<td width="50" onMouseDown="objClick(this);">
