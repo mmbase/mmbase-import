@@ -175,25 +175,25 @@ public class SearchAction extends PagerAction {
             queryStringComposer.addParameter(OBJECTID, searchForm.getObjectid());
         }
 
-        // Add the personal constraint:
+        // Add the user personal:
         if (!StringUtil.isEmpty(searchForm.getPersonal())) {
-            String useraccount = searchForm.getUseraccount();
 
+            String useraccount = cloud.getUser().getIdentifier();
             if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
-                if (StringUtil.isEmpty(useraccount)) {
-                    useraccount = cloud.getUser().getIdentifier();
-                }
                 SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
             }
             if (AUTHOR.equals(searchForm.getPersonal())) {
-                if (StringUtil.isEmpty(useraccount)) {
-                    useraccount = cloud.getUser().getIdentifier();
-                }
                 SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
             }
             queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
         }
-        
+
+        // Add the user
+        if (!StringUtil.isEmpty(searchForm.getUseraccount())) {
+           String useraccount = searchForm.getUseraccount();
+           SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
+        }
+
         // Set the maximum result size.
         String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
         if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {

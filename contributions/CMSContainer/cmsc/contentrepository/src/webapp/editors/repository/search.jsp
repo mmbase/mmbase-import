@@ -442,7 +442,14 @@
 	                  ${channelName}
 	               </mm:compare>
                </td>
-               <td width="50"><mm:field name="lastmodifier" /></td>
+               <td width="50" style="white-space: nowrap;">
+	               <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
+               	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
+               		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
+               		<c:if test="${lastmodifierFull != ''}"><c:set var="lastmodifier" value="${lastmodifierFull}"/></c:if>
+               	</mm:listnodes>
+               	${lastmodifier}
+               </td>
 		         <td width="120" style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
 		         <td width="60"><mm:field name="number"/></td>
 		      </tr>

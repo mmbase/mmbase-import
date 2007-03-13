@@ -28,7 +28,7 @@ public class EgemSearchAction extends MMBaseAction {
 
     private static final String RESULTS = "results";
     private static final String RESULT_COUNT = "resultCount";
-	private static final int MAX_RESULTS = 200;
+	private static final int MAX_RESULTS = 5000;
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 		
@@ -45,7 +45,7 @@ public class EgemSearchAction extends MMBaseAction {
         }
         
         if(!StringUtil.isEmpty(searchForm.getAuthor())) {
-            SearchUtil.addEqualConstraint(query, nodeManager, "creator", searchForm.getAuthor());
+            SearchUtil.addEqualConstraint(query, nodeManager, "lastmodifier", searchForm.getAuthor());
         }
         
         if (!StringUtil.isEmpty(searchForm.getKeywords())) {
