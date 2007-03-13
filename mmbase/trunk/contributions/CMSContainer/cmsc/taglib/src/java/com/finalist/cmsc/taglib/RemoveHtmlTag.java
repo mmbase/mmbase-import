@@ -39,7 +39,7 @@ public class RemoveHtmlTag extends SimpleTagSupport {
 				endIndex = html.length();
 			}
 
-			result.append(html.substring(startIndex, endIndex));
+         result.append(html.substring(startIndex, endIndex));
 			startIndex = html.indexOf(">", endIndex)+1;
 			if(startIndex == 0) {
 				keepGoing = false;
