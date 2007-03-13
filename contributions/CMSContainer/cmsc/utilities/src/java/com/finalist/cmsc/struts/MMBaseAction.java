@@ -202,7 +202,7 @@ public abstract class MMBaseAction extends Action {
         request.setAttribute(name, value);
     }
 
-    public static void addToRequest(HttpServletRequest request, String name, Collection<?> value) {
+    public static void addToRequest(HttpServletRequest request, String name, Collection value) {
         request.setAttribute(name, value);
     }
 
