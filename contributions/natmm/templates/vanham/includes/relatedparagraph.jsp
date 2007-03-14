@@ -1,5 +1,5 @@
-<mm:node element="paragraaf">
-   <% 
+<mm:node element="paragraaf" jspvar="paragraph">
+   <%
    if(showdotline.equals("1")&&showNextDotLine) { 
       %><table class='dotline'><tr><td height="3"></td></tr></table><%      
    } else {
@@ -19,17 +19,22 @@
    <% if(!floatingText) { %></td><td style="vertical-align:top;"><% } %>
    <mm:field name="titel_zichtbaar">
       <mm:compare value="0" inverse="true">
-	      <mm:field name="titel">
-			   <mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
-		   </mm:field>
+         <%
+         text = LocaleUtil.getField(article,"titel",language, "");
+         if(!"".equals(text)) {
+            %><span class="colortitle"><%= text %></span><br/><%
+         }
+         %>
 	   </mm:compare>
-	</mm:field> 
-	<mm:field name="omschrijving" jspvar="tekst" vartype="String" write="false">
-      <% if(tekst!=null&&!HtmlCleaner.cleanText(tekst,"<",">","").trim().equals("")) { 
-            %><%= tekst %><% if(tekst.toUpperCase().indexOf("<P>")==-1) { %><br/><% }
-         } %>
 	</mm:field>
-   <mm:remove referid="firstfound" />
+   <%
+   text = LocaleUtil.getField(article,"omschrijving",language, "");
+   if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+      %><%= text %><% 
+      if(text.toUpperCase().indexOf("<P>")==-1) { %><br/><% }
+   } 
+   %>
+	<mm:remove referid="firstfound" />
    <mm:relatednodes type="attachments" orderby="title">
       <a href="<mm:attachment />" title="download <mm:field name="filename" />" class="attachment"><mm:field name="title" /></a><br/>
    </mm:relatednodes>
