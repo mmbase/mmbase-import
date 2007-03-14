@@ -25,7 +25,6 @@ import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.*;
-import net.sf.mmapps.modules.cloudprovider.*;
 import org.mozilla.javascript.*;
 
 

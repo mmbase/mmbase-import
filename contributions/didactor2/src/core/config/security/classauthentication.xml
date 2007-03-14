@@ -4,5 +4,13 @@
   <authenticate class="nl\.didactor\..*">
     <property name="rank" value="administrator" />
   </authenticate>
+  <authenticate class="nl\.redspider\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+  <authenticate class="uk\.ac\.reload.scormplayer\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
 </security>
  

@@ -111,10 +111,6 @@
              token="$${imageconvert.convertercommand}"
              value="${imageconvert.convertercommand}"/>
 
-    <replace file="${build.webapp.dir}/WEB-INF/classes/cloudprovider.properties"
-             token="$${cloudprovider.adminpassword}"
-             value="${cloudprovider.adminpassword}"/>
-
     <for list="${caches}" 
          param="param">
       <sequential>

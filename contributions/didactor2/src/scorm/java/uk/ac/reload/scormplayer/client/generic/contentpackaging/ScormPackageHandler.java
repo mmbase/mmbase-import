@@ -40,6 +40,8 @@
  *  e-mail:   p.sharples@bolton.ac.uk
  *
  *  Web:      http://www.reload.ac.uk
+
+ * @version $Id: ScormPackageHandler.java,v 1.6 2007-03-14 13:56:46 michiel Exp $
  *
  */
 
@@ -62,8 +64,6 @@ import uk.ac.reload.moonunit.contentpackaging.CP_Core;
 import uk.ac.reload.moonunit.contentpackaging.SCORM12_Core;
 
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.bridge.*;
 
 
@@ -85,7 +85,7 @@ import nl.didactor.component.scorm.metastandart.MetaDataImporter;
  * a sco cmi data model.
  *
  * @author Paul Sharples
- * @version $Id: ScormPackageHandler.java,v 1.5 2005-12-10 13:40:12 azemskov Exp $
+ * @version $Id: ScormPackageHandler.java,v 1.6 2007-03-14 13:56:46 michiel Exp $
  */
 public class ScormPackageHandler extends XMLDocument {
 
@@ -114,7 +114,6 @@ public class ScormPackageHandler extends XMLDocument {
      * Default Constructor
      */
 
-   private CloudProvider cloudProvider;
    private Cloud cloud;
    NodeManager nmMetaStandart;
    NodeManager nmMetaDefinition;
@@ -138,8 +137,7 @@ public class ScormPackageHandler extends XMLDocument {
       loadDocument(manifest);
       _projectName = manifest.getParentFile().getName();
       _scormCore = new SCORM12_Core(this);
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      cloud = cloudProvider.getAdminCloud();
+      cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
       nmMetaStandart   = cloud.getNodeManager("metastandard");
       nmMetaDefinition = cloud.getNodeManager("metadefinition");
       nmPosrel         = cloud.getNodeManager("posrel");
