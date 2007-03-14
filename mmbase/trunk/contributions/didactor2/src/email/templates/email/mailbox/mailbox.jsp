@@ -13,6 +13,7 @@
 <%-- mm:content postprocessor="reducespace"  expires="0" --%>
 <mm:cloud method="delegate">
 <jsp:directive.include file="/shared/setImports.jsp" />
+<mm:locale language="$language">
 <mm:import externid="mailbox">-1</mm:import>
 <mm:import externid="sf" />
 <mm:import externid="so" />
@@ -107,5 +108,6 @@
       }
  }
 </script>
+</mm:locale>
 </mm:cloud>
 <%-- </mm:content> --%>

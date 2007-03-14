@@ -5,11 +5,9 @@
 --%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%>
-<mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud method="delegate" >
-
-    <jsp:directive.include file="/shared/setImports.jsp" />
+%><mm:cloud method="delegate" >
+<jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:content postprocessor="reducespace" expires="0" language="$language">
     <mm:import externid="mailbox">-1</mm:import>
     <mm:import externid="sf" /> <!-- sort-order -->
     <mm:import externid="so" /> <!-- sort-field -->
@@ -100,8 +98,9 @@
         <div class="mainContent">
           <div class="contentHeader">
             <mm:present referid="mailboxname">
-	      <mm:import externid="mailboxtitle"><mm:write referid="mailboxname"/></mm:import>
-	      ${mailboxtitle}
+	      <mm:node referid="mailbox">
+		<jsp:include page="mailboxname.jspx" />
+	      </mm:node>
 	    </mm:present>
             <mm:notpresent referid="mailboxname">
               User ${user} has no mailbox.
@@ -126,5 +125,6 @@
       </form>
     </div>
     <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-  </mm:cloud>
-</mm:content>
+  </mm:content>
+</mm:cloud>
+
