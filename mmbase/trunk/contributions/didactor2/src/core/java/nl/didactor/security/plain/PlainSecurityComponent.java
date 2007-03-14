@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.11 2007-03-08 16:28:12 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.12 2007-03-14 12:50:59 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -136,8 +136,8 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
-        String sLogin    = request.getParameter("username");
-        String sPassword = request.getParameter("password");
+        String sLogin    = request == null ? null : request.getParameter("username");
+        String sPassword = request == null ? null : request.getParameter("password");
         if (sLogin != null && sPassword != null) {
             return getLoginPage(request) + "?reason=failed";
         } else {
