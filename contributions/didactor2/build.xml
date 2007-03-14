@@ -13,6 +13,7 @@
   <property name="defaultexcludes" value="no" />
 
   <property name="download.dir"           location="${basedir}" />
+  <property name="war.dir"                value="${build.dir}" />
 
   <property name="mmbase.version"         value="mmbase-1.8.4.20070224" />
   <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/2007-02-24/" />
@@ -467,7 +468,7 @@
    -->
    <target name="war" depends="info,webapp">
      <tstamp />
-     <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
+     <jar destfile="${war.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
           basedir="${build.dir}/webapp"
           defaultexcludes="${defaultexcludes}"
      />
