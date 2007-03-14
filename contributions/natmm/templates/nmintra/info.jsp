@@ -32,13 +32,14 @@ if(!articleId.equals("-1")) {
 
       int objectPerPage = 9;
       int thisOffset = 1;
+      
       try{
           if(!offsetId.equals("")){
               thisOffset = Integer.parseInt(offsetId);
               offsetId ="";
           }
       } catch(Exception e) {} 
-      
+        
       String thisPool = "-1";
       if(!poolId.equals("")){ 
           thisPool = poolId; 
@@ -116,7 +117,7 @@ if(!articleId.equals("-1")) {
               }
               if(listSize>0) {
                 for(int i= 0; i< listSize && i < (thisOffset-1)*objectPerPage; i++) {
-                  tmapArticles.remove(tmapArticles.firstKey());
+                  tmapArticles.remove(tmapArticles.lastKey());
                 }
                 listSize = tmapArticles.size(); 
                 for(int i= 0; i< listSize && i < objectPerPage; i++) {
