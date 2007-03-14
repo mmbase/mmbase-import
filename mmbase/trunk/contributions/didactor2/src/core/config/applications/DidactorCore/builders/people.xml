@@ -56,6 +56,7 @@
         <guiname xml:lang="en">Initials</guiname>
         <guiname xml:lang="nl">Initialen</guiname>
         <guiname xml:lang="fr">Initials</guiname>
+        <guiname xml:lang="ro">Initiale</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -183,6 +184,7 @@
         <guiname xml:lang="nl">Telefoonnummer</guiname>
         <guiname xml:lang="en">Telephone number</guiname>
         <guiname xml:lang="fr">Le numéro de téléphone</guiname>
+        <guiname xml:lang="ro">Telefon</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
       <db>
@@ -241,6 +243,7 @@
       <gui>
         <guiname xml:lang="en">Date of birth</guiname>
         <guiname xml:lang="nl">Geboortedatum</guiname>
+        <guiname xml:lang="ro">Ziua nasterii</guiname>
       </gui>
       <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
