@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.12 2007-03-14 12:50:59 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.13 2007-03-14 13:56:46 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -119,9 +119,9 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     protected String getLoginPage(HttpServletRequest request) {
-        String page = (String) properties.get(request.getServerName() + request.getContextPath() + ".plain.login_page");
+        String page = request == null ? null : (String) properties.get(request.getServerName() + request.getContextPath() + ".plain.login_page");
         if (page == null) {
-            page = (String) properties.get(request.getServerName() + ".plain.login_page");
+            page = request == null ? null : (String) properties.get(request.getServerName() + ".plain.login_page");
         }
         if (page == null) {
             page = (String) properties.get("plain.login_page");
@@ -134,6 +134,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         }
         return page == null ? "/login_plain.jsp" : page;
     }
+
 
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
         String sLogin    = request == null ? null : request.getParameter("username");
@@ -151,7 +152,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     
     public void logout(HttpServletRequest request, HttpServletResponse respose) {
         log.debug("logout() called");
-        HttpSession session = request.getSession(false);
+        HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             session.removeAttribute("didactor-plainlogin-userid");
         }
