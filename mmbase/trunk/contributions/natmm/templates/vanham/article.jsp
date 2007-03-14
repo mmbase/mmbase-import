@@ -14,7 +14,8 @@
       <% artikelID = artikel_number;%>
     </mm:field>
    </mm:list><%
-  } 
+  }
+  String text = "";
   %>
   <table cellpadding="0" cellspacing="0" border="0" style="width:780px;">
   <%@include file="includes/nav.jsp" %>
@@ -25,20 +26,17 @@
     <td colspan="21">
     <table cellpadding="3" cellspacing="0" border="1"  class="content">
       <tr class="doc"><td></td></tr>
-      <mm:node number="<%=artikelID%>" notfound="skipbody">
+      <mm:node number="<%=artikelID%>" jspvar="article" notfound="skipbody">
       <tr>
         <td class="def" style="width:690px;padding-top:26px;padding-bottom:14px;"><a name="0" id="0"></a>
           <mm:field name="titel_zichtbaar"
-               ><mm:compare value="0" inverse="true"
-                  ><mm:field name="titel" jspvar="titel" vartype="String" write="false"
-                     ><mm:isnotempty><span class="colortitle"><%= titel.toUpperCase() %></span><br></mm:isnotempty
-                  ></mm:field
-               ></mm:compare
+               ><mm:compare value="0" inverse="true"><% 
+                  text = LocaleUtil.getField(article,"titel",language, "");
+                  if(!"".equals(text)) {
+                     %><span class="colortitle"><%= text.toUpperCase() %></span><br/><%
+                  } 
+               %></mm:compare
             ></mm:field><%
-            if(showdateID.equals("true")) { 
-               %><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
-                  ><mm:time time="<%=artikel_begindatum%>" format="dd-MM-yyyy"/></br></mm:field><% 
-            }
             // ** todo: space in front of image when right aligning ***
             boolean floatingText = true;
             %><mm:related path="posrel,images" max="1"
@@ -50,20 +48,18 @@
             %><%@include file="includes/image_logic.jsp"
             %><% if(!floatingText) { %></td><td style="vertical-align:top;"><% 
             }
-            if(showintroID.equals("true")) { 
-               %><mm:field name="intro" jspvar="intro" vartype="String" write="false"
-                  ><% if(intro!=null&&!HtmlCleaner.cleanText(intro,"<",">","").trim().equals("")) { 
-                        %><strong><%= intro %></strong><% if(intro.toUpperCase().indexOf("<P>")==-1) { %><br/><% } 
-                        showNextDotLine = true;
-                  } 
-               %></mm:field><% 
+            text = LocaleUtil.getField(article,"intro",language, "");
+            if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+               %><strong><%= text %></strong><%
+               if(text.toUpperCase().indexOf("<P>")==-1) { %><br/><% } 
+               showNextDotLine = true;
             } 
-            %><mm:field name="tekst" jspvar="tekst" vartype="String" write="false"><%
-               if(tekst!=null&&!HtmlCleaner.cleanText(tekst,"<",">","").trim().equals("")) { 
-                  %><%= tekst %><% if(tekst.toUpperCase().indexOf("<P>")==-1) { %><br/><% }
-                  showNextDotLine = true;
-               } 
-            %></mm:field><%
+            text = LocaleUtil.getField(article,"tekst",language, "");
+            if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+               %><%= text %><% 
+               if(text.toUpperCase().indexOf("<P>")==-1) { %><br/><% }
+               showNextDotLine = true;
+            } 
             if(!floatingText) { %></td></tr></table><% } 
             %></p><mm:field name="reageer" jspvar="showdotline" vartype="String" write="false"
                ><mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos"

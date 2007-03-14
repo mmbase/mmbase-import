@@ -11,8 +11,6 @@
 <mm:import externid="projtype" jspvar="projectTypeID" vartype="String">0</mm:import> <!-- initial setting, will be replaced by default -->
 <mm:import externid="dur" jspvar="durationType" vartype="String">-1</mm:import>
 <mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
-<mm:import externid="showdate" jspvar="showdateID">false</mm:import>
-<mm:import externid="s" jspvar="showintroID">true</mm:import>
 <%
 String imageId = request.getParameter("i");
 String offsetId = request.getParameter("offset"); if(offsetId==null){ offsetId=""; }
