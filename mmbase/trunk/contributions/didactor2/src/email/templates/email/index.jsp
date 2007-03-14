@@ -100,8 +100,9 @@
         <div class="mainContent">
           <div class="contentHeader">
             <mm:present referid="mailboxname">
-              <mm:write referid="mailboxname"/>
-            </mm:present>
+	      <mm:import externid="mailboxtitle"><mm:write referid="mailboxname"/></mm:import>
+	      ${mailboxtitle}
+	    </mm:present>
             <mm:notpresent referid="mailboxname">
               User ${user} has no mailbox.
             </mm:notpresent>
