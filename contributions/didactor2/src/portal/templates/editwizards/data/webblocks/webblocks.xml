@@ -35,7 +35,7 @@
       <prompt>Y-positie van dit homepage-element</prompt>
       <description>Y-positie van dit homepage-element (hoe hoger het nummer hoe verder naar onder)</description>
     </field>
-    <field name="name" dttype="string" dtminlength="2">
+    <field name="name" dttype="string" dtminlength="0">
       <prompt>Naam</prompt>
       <description>Naam zoals die in het menu moet verschijnen</description>
     </field>

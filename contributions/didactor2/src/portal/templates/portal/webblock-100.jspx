@@ -10,7 +10,11 @@
   -->
   <jsp:output omit-xml-declaration="yes" />
   <div class="component">
-    <h1><mm:field name="name" /></h1>
+    <mm:field name="name">
+      <mm:isnotempty>
+	<h1><mm:write /></h1>
+      </mm:isnotempty>
+    </mm:field>
     <mm:haspage page="${_node.description}.div.jspx">
       <mm:include page="${component.description}.div.jspx" />
     </mm:haspage>
