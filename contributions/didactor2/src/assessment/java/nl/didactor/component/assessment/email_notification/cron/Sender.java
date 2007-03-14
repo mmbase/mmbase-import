@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-import net.sf.mmapps.modules.cloudprovider.*;
 import nl.didactor.component.assessment.email_notification.model.Email;
 
 
@@ -12,17 +11,15 @@ import nl.didactor.component.assessment.email_notification.model.Email;
 public class Sender extends Thread{
    private static Logger log = Logging.getLoggerInstance(Sender.class);
 
-   private CloudProvider cloudProvider;
-   private Cloud cloud;
    private String sNotificationFrom = null;
 
    public Sender() {
-      cloudProvider = CloudProviderFactory.getCloudProvider();
-      cloud = cloudProvider.getAdminCloud();
    }
 
    public void run() {
       log.debug("Assessment Email Notifications Sender has been started.");
+
+      Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
 
       NodeList nlAdmin = cloud.getList("",
                                        "people",
@@ -87,7 +84,7 @@ public class Sender extends Thread{
                //Send immediatly
                hsetUsers = collectUsers(nodeEmailNotification);
                ArrayList arliEmails = getEmails(hsetUsers, nodeEmailNotification);
-               sendEmails(arliEmails);
+               sendEmails(cloud, arliEmails);
                break;
             }
          }
@@ -145,7 +142,7 @@ public class Sender extends Thread{
          HashMap hmapSuspiciousFeedbacks = new HashMap();
 
 
-         NodeList nlVirtual = cloud.getList("component.assessment",
+         NodeList nlVirtual = nodeUser.getCloud().getList("component.assessment",
                                             "components,settingrel,educations,posrel,learnblocks,classrel,people",
                                             "learnblocks.number,classrel.number,educations.number",
                                             "people.number='" + nodeUser.getNumber() + "'",
@@ -277,13 +274,13 @@ public class Sender extends Thread{
          email.setSubject(nodeEmailNotification.getStringValue("subject"));
          email.setTo(nodeUser.getStringValue("email"));
          email.setBody(nodeEmailNotification.getStringValue("body"));
-         sendTheEmail(email);
+         sendTheEmail(nodeUser.getCloud(), email);
       }
    }
-   private void sendEmails(ArrayList arliEmails){
+   private void sendEmails(Cloud cloud, ArrayList arliEmails){
       for(Iterator it = arliEmails.iterator(); it.hasNext();){
          Email email = (Email) it.next();
-         sendTheEmail(email);
+         sendTheEmail(cloud, email);
       }
    }
 
@@ -294,7 +291,7 @@ public class Sender extends Thread{
     *
     * @param email Email
     */
-   private void sendTheEmail(Email email){
+   private void sendTheEmail(Cloud cloud, Email email){
       Node emailNode = cloud.getNodeManager("emails").createNode();
       emailNode.setValue("from", email.getFrom());
       emailNode.setValue("subject", email.getSubject());

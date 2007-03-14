@@ -11,8 +11,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.bridge.*;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 
 import nl.didactor.component.redspider.dataobjects.*;
@@ -26,12 +24,9 @@ public class DidactorBindingImpl implements nl.redspider.www.Didactor.definition
    private Processor processor;
 
 
-   public DidactorBindingImpl()
-   {
+   public DidactorBindingImpl() {
       super();
-
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getAdminCloud();
+      Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
       processor = new Processor(cloud);
 
    }
