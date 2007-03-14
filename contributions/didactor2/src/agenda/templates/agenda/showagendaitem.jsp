@@ -77,7 +77,9 @@
     <form name="showagendaitem" method="post" action="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids"/>">
     <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>">
       <mm:node referid="mycurrentitem">
-        <mm:field name="name"/><br/>
+	<!-- mm:field name="name" -->
+
+	<br/>
 
         <table class="Font">
         <mm:fieldlist nodetype="items" fields="title,body">
