@@ -3,30 +3,8 @@
 
 <mm:remove referid="activemailbox"/>
 <mm:remove referid="mboxdisplayname" />
-<mm:field name="type">
-  <mm:compare value="0">
-    <mm:import id="mboxdisplayname"><di:translate key="email.inbox" /></mm:import>
-  </mm:compare>
-  <mm:compare value="1">
-    <mm:import id="mboxdisplayname"><di:translate key="email.sent" /></mm:import>
-  </mm:compare>
-  <mm:compare value="11">
-    <mm:import id="mboxdisplayname"><di:translate key="email.drafts" /></mm:import>
-  </mm:compare>
-  <mm:compare value="2">
-    <mm:import id="mboxdisplayname"><di:translate key="email.trash" /></mm:import>
-  </mm:compare>
-  <mm:compare value="3">
-    <mm:field name="name">
-      <mm:compare value="Persoonlijke map">
-        <mm:import id="mboxdisplayname"><di:translate key="email.personal" /></mm:import>
-      </mm:compare>
-      <mm:compare value="Persoonlijke map" inverse="true">
-        <mm:import id="mboxdisplayname"><mm:field name="name" /></mm:import>
-      </mm:compare>
-    </mm:field>
-  </mm:compare>
-</mm:field>
+
+<mm:import id="mboxdisplayname"><jsp:include page="mailboxname.jspx" /></mm:import>
 
 <mm:compare referid="mailbox" referid2="mailboxnumber">
   <mm:import id="activemailbox"><b><mm:write referid="mboxdisplayname" /></b></mm:import>
