@@ -47,9 +47,9 @@
     database driver, based on the jdbc connection.
 
     -->
-
-    <property name="database">${mmbaseroot.database}</property>
     <!--
+    <property name="database">${mmbaseroot.database}</property>
+
     -->
 
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
