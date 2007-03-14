@@ -188,6 +188,11 @@
 			<param-name>lastmodifiedfield</param-name>
 			<param-value></param-value>
 		</init-param>
+		<init-param>
+			<!-- Whether to filter jpeg image for meta xml data -->
+			<param-name>IECompatibleJpeg</param-name>
+			<param-value>false</param-value>
+		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 
