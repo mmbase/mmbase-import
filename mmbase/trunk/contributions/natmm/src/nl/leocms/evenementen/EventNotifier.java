@@ -367,7 +367,9 @@ public class EventNotifier implements Runnable {
          logMessage += notifyParticipants(cloud);
          logMessage += lessThanMin(cloud);
          logMessage += isFullyBooked(cloud);
-         if(isFirstDayOfNewQuarter()) {
+         if(false && isFirstDayOfNewQuarter()) {
+            // this check does not work in practice (a) people only react first time they receive this email
+            // and (b) the backoffice application at Natuurmonumenten can only handle fixed format email
             logMessage += checkEmailAccounts(cloud);
          }
          logMessage += groupEventConfirmationPeriodExpired(cloud);
