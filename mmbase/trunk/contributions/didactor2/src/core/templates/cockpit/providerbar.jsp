@@ -78,9 +78,11 @@ keepalive();
   </mm:treeinclude>
 </mm:hasrank>
 <mm:hasrank value="didactor-anonymous">
-  <mm:node referid="provider">
-    <mm:nodeinfo type="gui" />
-  </mm:node>
+  <div class="provideranonymous">
+    <mm:node referid="provider">
+      <mm:nodeinfo type="gui" />
+    </mm:node>
+  </div>
 </mm:hasrank>
 </div>
 </mm:cloud>
