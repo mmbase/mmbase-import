@@ -39,7 +39,7 @@
     </mm:fieldlist>
     <mm:isnotempty referid="email">
       <% if (email != null && !email.matches("(.*)@(.*)\\.(.*)")) { %>
-        <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Emailadres is niet in de goede vorm!</li></mm:import>
+        <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li><di:translate key="register.email_not_well_formed" /></li></mm:import>
       <% } %>
     </mm:isnotempty>
 
