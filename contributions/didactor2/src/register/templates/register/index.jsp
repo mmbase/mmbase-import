@@ -1,9 +1,10 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><mm:content postprocessor="reducespace">
+%>
 <mm:cloud  authenticate="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:content postprocessor="reducespace" language="$language">
   <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
    <mm:param name="extraheader">
      <style>.columns {height: 100%;}</style>
@@ -24,27 +25,18 @@
   <mm:import id="error" />
 
   <mm:compare referid="formsubmit" value="true">
-    <mm:isempty referid="firstname">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Voornaam' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="lastname">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Achternaam' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="address">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Adres' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="zipcode">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Postcode' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="city">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Plaats' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="email">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Email adres' is niet gevuld!</li></mm:import>
-    </mm:isempty>
-    <mm:isempty referid="country">
-      <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Verplicht veld 'Land' is niet gevuld!</li></mm:import>
-    </mm:isempty>
+    <mm:fieldlist nodetype="people" fields="firstname,lastname,address,zipcode,city,email,country">
+      <mm:fieldinfo type="name" id="name">
+	<mm:isempty referid="${_}">
+	  <mm:import id="error" reset="true" escape="trimmer">
+	    <mm:write referid="error" escape="none"/>	    
+	    <mm:fieldinfo type="guiname">
+	      <li title="${name}"><di:translate key="register.mandatory_missing" arg0="${_}" /></li>
+	    </mm:fieldinfo>
+	  </mm:import>
+	</mm:isempty>
+      </mm:fieldinfo>
+    </mm:fieldlist>
     <mm:isnotempty referid="email">
       <% if (email != null && !email.matches("(.*)@(.*)\\.(.*)")) { %>
         <mm:import id="error" reset="true"><mm:write referid="error" escape="none"/><li>Emailadres is niet in de goede vorm!</li></mm:import>
@@ -139,5 +131,6 @@
       <mm:param name="error"><mm:write referid="error" escape="none" /></mm:param>
     </mm:treeinclude>
   </mm:compare>
-</mm:cloud>
 </mm:content>
+</mm:cloud>
+
