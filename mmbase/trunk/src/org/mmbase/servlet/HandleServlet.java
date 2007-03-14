@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.30 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: HandleServlet.java,v 1.31 2007-03-14 15:17:53 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -37,6 +37,8 @@ public class HandleServlet extends BridgeServlet {
     private static Logger log;
 
     private long expires; // expires so many milliseconds after serving
+
+    private boolean isIECompatibleJpeg = true;
 
     protected Map getAssociations() {
         Map a = super.getAssociations();
@@ -61,6 +63,11 @@ public class HandleServlet extends BridgeServlet {
             expires = 60 * 60 * 1000;
         } else {
             expires = Integer.valueOf(expiresParameter).intValue() * 1000;
+        }
+        
+        String ieCompat = getInitParameter("IECompatibleJpeg");
+        if (ieCompat != null) {
+            isIECompatibleJpeg = Boolean.valueOf(ieCompat).booleanValue();
         }
     }
 
@@ -225,10 +232,13 @@ public class HandleServlet extends BridgeServlet {
         //various versions of Internet Explorer on various platforms.
 
         boolean canSendLength = true;
-        if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-            bytes = new IECompatibleJpegInputStream(bytes);
-            canSendLength = false;
-            //res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+
+        if (isIECompatibleJpeg) {
+        	if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
+            	bytes = new IECompatibleJpegInputStream(bytes);
+            	canSendLength = false;
+            	//res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+            }
         }
 
         if (!setContent(query, node, mimeType)) {
