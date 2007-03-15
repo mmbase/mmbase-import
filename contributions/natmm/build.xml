@@ -216,6 +216,8 @@
 			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/LeoCMS/builders" />
 			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/NatMM/builders" />			
 			<fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/NMIntra/builders" />
+                        <fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/KBase/builders" />
+                        <fileset dir="${build.dir}/mmbase-webapp/WEB-INF/config/applications/MMBob/builders" />
 		</copy>
 
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config/builders/applications" overwrite="true">
