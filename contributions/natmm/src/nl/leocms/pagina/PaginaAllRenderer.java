@@ -87,8 +87,8 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
                out.println("<font class='notactive'>" + n.getStringValue("naam") + "</font>");
             }
             
-            if (role.getRol() >= Roles.SCHRIJVER && (new ApplicationHelper(cloud)).isInstalled("NatMM")) {
-               String url = "/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/rubriek/rubriek&nodepath=rubriek&referrer=/editors/empty.html&objectnumber=" + n.getNumber();
+            if (role.getRol() >= Roles.SCHRIJVER) {
+               String url = "../../mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/rubriek/rubriek&nodepath=rubriek&referrer=/editors/empty.html&objectnumber=" + n.getNumber();
                out.println("<a href='" + url + "' target='workpane'><img src='../img/edit_w.gif' border='0' align='top' title='Bewerk rubriek'/></a>");
                
             }
