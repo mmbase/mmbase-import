@@ -45,11 +45,20 @@ if(twoColumns) {
 </table>
 </div>
 </td>
+
+
+
 <% 
 if(twoColumns) { 
    // *********************************** right bar *******************************
-   %><td><img src="media/spacer.gif" width="10" height="1"></td><%
+   %><td><img src="media/spacer.gif" width="10" height="1">
+   <mm:node number="<%= paginaID %>">
+   <%@include file="includes/contentblocks.jsp" %>
+   </mm:node>
+   
+   </td><%
 } %>
+
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
