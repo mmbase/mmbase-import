@@ -60,9 +60,13 @@ div.column h1 {
 div.poll {
   padding-bottom: 2ex;
 }
+
+
 div.poll .results {
   overflow: visible;
   background-color: red;
+  margin-top: 0px;
+  color: white;
 }
 div.poll ul {
   padding-left: 1ex;
@@ -71,6 +75,7 @@ div.poll ul {
 div.poll ul li {
   white-space: nowrap;
   margin-bottom: 1ex;
+
 }
 
 .menuItemApplicationMenubar.login {

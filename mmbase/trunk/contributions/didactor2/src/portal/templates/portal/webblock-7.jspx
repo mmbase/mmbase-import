@@ -5,7 +5,7 @@
     >
   <jsp:output omit-xml-declaration="yes" />
   <!-- generic code to deplay a webblock -->
-  <div class="${_node.name} article selection">
+  <div class="article selection">
     <h1><mm:field name="name" /></h1>
     <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
     <mm:relatednodes type="news" role="posrel" orderby="posrel.pos">
@@ -16,6 +16,8 @@
         <a class="navigate" href="${_}">&gt;&gt;</a>
       </mm:link>
     </mm:relatednodes>
+    <!--
     <hr />
+    -->
   </div>
 </mm:node>
