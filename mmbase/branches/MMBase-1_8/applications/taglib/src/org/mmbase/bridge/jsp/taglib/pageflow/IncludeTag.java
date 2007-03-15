@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66.2.1 2006-11-15 19:49:59 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.2 2007-03-15 10:53:16 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -490,7 +490,7 @@ public class IncludeTag extends UrlTag {
         if (debugType == Attribute.NULL) return DEBUG_NONE;
 
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none")) {
+        if (dtype.equals("none") || dtype.equals("")) {
             return  DEBUG_NONE; // also implement the default, then people can use a variable
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
