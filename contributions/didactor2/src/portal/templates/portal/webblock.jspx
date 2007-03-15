@@ -15,7 +15,7 @@
       </mm:composite>
     </mm:hasfield>
     <mm:relatednodes>
-      <div class="${block.name} article">
+      <div class="article">
         <h1><mm:field name="title" /></h1>
         <mm:relatednodes type="images" role="posrel" max="1" orderby="posrel.pos">
           <mm:image mode="img" template="s(250)" />
@@ -41,8 +41,9 @@
           <mm:param name="col3" value="ignore" />
           <a href="${_}" class="navigate">&gt;&gt;</a>
         </mm:link>
-        
-        <hr />                                  
+	<mm:relatednodes type="images" role="posrel" max="1" orderby="posrel.pos">
+	  <hr />                                  
+	</mm:relatednodes>
       </div>
     </mm:relatednodes>
   </mm:relatednodescontainer>

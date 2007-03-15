@@ -26,7 +26,7 @@
         <mm:sortorder field="begin" direction="down" />
         <mm:listnodes id="poll">
           <h1><mm:field name="question" /></h1>
-          <mm:field name="description" escape="p" />
+          <mm:field name="description"><mm:isnotempty><mm:write escape="p" /></mm:isnotempty></mm:field>
           <mm:voidfunction name="total" id="total" />
           <ul>
             <mm-poll:poll poll="${poll}">
@@ -40,11 +40,17 @@
               <jsp:body>
                 <mm:node referid="_node">
                 <li title="${_node.description}">
-                  <mm:field name="total_answers"  vartype="integer" >
+		  <mm:field name="total_answers"  vartype="integer" >
+		    <!--
+			Placing the answer _in_ the result is a nice idea too.
+			But cannot be made working in IE.
+			http://www.positioniseverything.net/explorer/expandingboxbug.html
+			I hate IE.
+		    -->
+		    <jsp:text> ${_node.answer}</jsp:text>
                     <div class="results"
                          style="width: ${_ * 100 / total}px;">
                       <mm:write  />
-                      <jsp:text> ${_node.answer}</jsp:text>
                     </div>
                   </mm:field>
                 </li>
