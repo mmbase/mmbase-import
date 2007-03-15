@@ -44,6 +44,7 @@ div.column * {
 }
 div.column ul {
   margin-left: 0ex;
+  padding-left: 15px;
 }
 
 div.column h1 {
@@ -87,6 +88,7 @@ div.column div h1 {
   margin-bottom: 0px;
   padding-top: 3px;
   padding-bottom: 4px;
+
 }
 
 p.noaccount { 
