@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBaseContext;
  * TODO: Create a method to be called at initialization of webapp to fill the cache with links
  * 
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlConverter.java,v 1.3 2007-03-04 21:06:07 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.4 2007-03-15 23:02:17 andre Exp $
  */
 public class UrlConverter {
 
@@ -41,8 +41,8 @@ public class UrlConverter {
 	    return cache;
 	}
     
-    protected Map<String, FriendlyLink> getFlinks() {
-        Map<String, FriendlyLink> flinks = new HashMap<String, FriendlyLink>();
+    protected Map getFlinks() {
+        Map flinks = new HashMap();
         flinks = UrlFilter.getFriendlylinks();
         return flinks;
     }
@@ -75,13 +75,14 @@ public class UrlConverter {
 	    // params is to remove the found page parameter from the string
 	    if (log.isDebugEnabled()) log.debug("Converting friendlylink '" + flink + "' with params '" + params + "' and context: " + contextpath);
 
+        /*
         if (flink.indexOf("/") == 0) {
             flink = flink.substring(1, flink.length());
             if (log.isDebugEnabled()) log.debug("Stripped flink to '" + flink + "'");
         }
+	    */
 	    
 	    StringBuffer jspurl = new StringBuffer();
-	    // jspurl.append(contextpath).append(flink);
 	    jspurl.append(flink);
         if (params != null) jspurl.append("?").append(params);
 	    
@@ -91,22 +92,22 @@ public class UrlConverter {
 	        if (log.isDebugEnabled()) log.debug("URL was cached");
 
 	        jspurl = new StringBuffer( cache.getJSPEntry(flink) );  // get its jspUrl
-	        if (params != null) jspurl.append("?").append(params);
+	        if (params != null) jspurl.append("&").append(params);
     	    
 	    } else {    
 	        if (log.isDebugEnabled()) log.debug("URL not cached");
 	        
-	        Map<String, FriendlyLink> friendlylinks = UrlFilter.getFriendlylinks();
-	        Set<String> keys = friendlylinks.keySet();           // Get the set of keys held by the Map
-            Iterator<String> i = keys.iterator();
+	        Map friendlylinks = UrlFilter.getFriendlylinks();
+	        Set keys = friendlylinks.keySet();           // Get the set of keys held by the Map
+            Iterator i = keys.iterator();
             while(i.hasNext()) {
-                String name = i.next();
+                String name = (String) i.next();
     	        log.debug("FriendlyLink: " + name);
     	        
-    	        FriendlyLink friendlylink = friendlylinks.get(name);
+    	        FriendlyLink friendlylink = (FriendlyLink) friendlylinks.get(name);
 	            jspurl = new StringBuffer( friendlylink.convertToJsp(flink, params) );
+	            if ( !"".equals(jspurl.toString()) ) continue;
             }
-	        
 	    }
 
         if (log.isDebugEnabled()) log.debug("Returning '" + jspurl.toString() + "'");

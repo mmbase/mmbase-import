@@ -1,18 +1,11 @@
 <?xml version="1.0"?>
 <xs:schema
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.mmbase.org/xmlns/friendlylinks"
     xmlns="http://www.mmbase.org/xmlns/friendlylinks"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified"
     version="1.0">
-
-<!-- 
-  <xs:import
-      namespace="http://www.w3.org/XML/1998/namespace"
-      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
-      />
- -->
 
   <xs:element name="friendlylinks">
     <xs:complexType>

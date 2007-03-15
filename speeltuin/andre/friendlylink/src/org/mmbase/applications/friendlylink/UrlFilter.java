@@ -10,6 +10,7 @@ import javax.servlet.http.*;
 
 import org.w3c.dom.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.servlet.*;
 import org.mmbase.module.core.*;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlFilter.java,v 1.3 2007-03-04 21:06:07 andre Exp $
+ * @version $Id: UrlFilter.java,v 1.4 2007-03-15 23:02:17 andre Exp $
  */
 
 public class UrlFilter implements Filter, MMBaseStarter  {
@@ -56,7 +57,7 @@ public class UrlFilter implements Filter, MMBaseStarter  {
      */
     public static Element configElement;    // TODO: pass this element to the FriendlyLinks class
     
-    private static Map<String, FriendlyLink> flinks = new HashMap<String, FriendlyLink>();
+    private static Map flinks = new HashMap();
     
     protected static Map getFriendlylinks() {
         return flinks;
@@ -124,7 +125,7 @@ public class UrlFilter implements Filter, MMBaseStarter  {
                 String name = element.getAttribute("name");
 
                 Element classElement = (Element) element.getElementsByTagName("class").item(0);
-                String claz = org.mmbase.util.xml.DocumentReader.getNodeTextValue(classElement);
+                String claz = DocumentReader.getNodeTextValue(classElement);
                 
                 log.info("Friendlylink '" + name + "' class '" + claz + "'");
                 
@@ -148,7 +149,7 @@ public class UrlFilter implements Filter, MMBaseStarter  {
         FriendlyLink flink = null;
         
         Element classElement = (Element) element.getElementsByTagName("class").item(0);
-        String className = org.mmbase.util.xml.DocumentReader.getNodeTextValue(classElement);
+        String className = DocumentReader.getNodeTextValue(classElement);
         Class clazz = Class.forName(className);
         
         try {
@@ -205,7 +206,6 @@ public class UrlFilter implements Filter, MMBaseStarter  {
     		// URL is not excluded, pass it to UrlConverter to process and forward the request
     		String forwardUrl = UrlConverter.convertUrl(req);
    			if (log.isDebugEnabled()) log.debug("Recieved '" + forwardUrl + " from UrlConverter, forwarding.");
-   			forwardUrl = "/" + forwardUrl;
     		if (forwardUrl != null && !forwardUrl.equals("")) {
     		    
     		    // Ergo: this removes contextpath from the url
