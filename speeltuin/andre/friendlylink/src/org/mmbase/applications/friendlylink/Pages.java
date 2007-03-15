@@ -6,85 +6,95 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 
 /**
  * Converts ugly technical links to friendlier links and converts them back to the original
  * technical url.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: Pages.java,v 1.6 2007-03-04 21:06:07 andre Exp $
+ * @version $Id: Pages.java,v 1.7 2007-03-15 23:02:17 andre Exp $
  */
 public class Pages extends FriendlyLink {
 
     private static final Logger log = Logging.getLoggerInstance(Pages.class);
     
-    private final LocalizedString description = null;
+    /* Configurable parameters in '/utils/friendlylinks.xml' */
+    public final static Parameter[] PARAMS = new Parameter[] {
+        new Parameter("separator", String.class, "/"),
+        new Parameter("template", String.class, "anders.jsp"),
+        new Parameter("parameter", String.class, "nrs"),
+        new Parameter("extension", String.class)
+    };
 
+    protected Parameter[] getParameterDefinition() {
+        return PARAMS;
+    }
+
+    /* 
+      Statics for creating links 
+      (no way to configure this? except by function parameters?)
+    */
     public static String SEPARATOR = "/";
-    public final static String PAGE_EXTENSION = ".html";    // page ext that could be appended
     public static String PAGE_PARAM = "nr";
-    
+    public static String TEMPLATE = "index.jsp";    // default template
+            
     /**
      * Configure method parses a DOM element passed by UrlFilter with the configuration
      * that is specific for this type of friendlylink
      *
-     * @param  element  The DOM element friendlylink from 'friendlylinks.xml' 
-     *
+     * @param  element  DOM element friendlylink from 'friendlylinks.xml' 
      */
     protected void configure(Element element) {
         log.service("Configuring " + this);
         
         Element descrElement = (Element) element.getElementsByTagName("description").item(0);
-        String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(descrElement);
-        
+        String description = DocumentReader.getNodeTextValue(descrElement);
         log.debug("Found the description: " + description);
-
+        
+        Map params = new HashMap(); /* String -> String */
         org.w3c.dom.NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
                 Element childElement = (Element) childNodes.item(i);
-                if (childElement.getLocalName().equals("class")) {
-                    String className = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
-                    // c = Class.forName(className);
-                }  else if (childElement.getLocalName().equals("parameter")) {
-                    String name = childElement.getAttribute("name");
-                    String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
-                    log.debug("Found parameter name '" + name + "' and value '" + value + "'");
-                    //if (params.put(name, value) != null) {
-                    //    log.error("Parameter '" + name + "' is defined more than once in " + XMLWriter.write(element, true));
-                    //}
-
+                if (childElement.getLocalName().equals("parameter")) {
+                	String name = childElement.getAttribute("name");
+                	String value = DocumentReader.getNodeTextValue(childElement);
+                	log.debug("Found parameter name '" + name + "' and value '" + value + "'");
+                	if (params.put(name, value) != null) {
+                		log.error("Parameter '" + name + "' is defined more than once in " + org.mmbase.util.xml.XMLWriter.write(element, true));
+                	}
                 }
             }
         }
-
-
+        Parameters flinkParams = getParameters();
+        flinkParams.setAll(params);
+        //log.debug("parameters.getString() hier: " + parameters.getString("template"));
     }
-
+    
     /**
      * Creates the url to print in a page
      *
      * @param   cloud   An MMBase cloud
      * @param   request HTTP servlet request
-     * @param   pagenr  Nodenumber of the page
+     * @param   page  Nodenumber of the page
      * @param   convert To convert or not
      * @return  a 'userfriendly' link
      */
-    public String convertToFriendlyLink(Cloud cloud, HttpServletRequest request, String pagenr, Boolean convert) {
+    public String convertToFriendlyLink(Cloud cloud, HttpServletRequest request, String page, Boolean convert) {
+        org.mmbase.bridge.Node pageNode = cloud.getNode(page);    // get real nodenr for alias
+        page = pageNode.getStringValue("number");
+        
         StringBuffer url = new StringBuffer();
-        // get real nodenr for alias
-        org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
-        pagenr = pageNode.getStringValue("number");
+        url.append(getPageTemplate(cloud, TEMPLATE, page)).append("?").append(PAGE_PARAM).append("=").append(page);
         
-        //url.append(SEPARATOR);
-        url.append(getPageTemplate(cloud, pagenr)).append("?").append(PAGE_PARAM).append("=").append(pagenr);
-        
-        if (convert) {  // boolean to check if we really want to convert urls
+        if (convert.booleanValue() == true) {
             url = new StringBuffer();   // overwrite
-            url.append( makeFriendlyLink(cloud, request, pagenr) );
+            url.append( makeFriendlyLink(cloud, request, page) );
         }
         
         if (log.isDebugEnabled()) log.debug("returning link: " + url.toString());
@@ -101,33 +111,23 @@ public class Pages extends FriendlyLink {
      * @return  a friendlylink
      */
     public String makeFriendlyLink(Cloud cloud, HttpServletRequest request, String pagenr) {
-        UrlCache cache = UrlConverter.getCache();
+    	UrlCache cache = UrlConverter.getCache();
         StringBuffer flink = new StringBuffer();
-        // String contextpath = request.getContextPath();
         
-        flink.append(getPageTemplate(cloud, pagenr)).append("?").append(PAGE_PARAM).append("=").append(pagenr);
-        
+        flink.append(SEPARATOR).append(getPageTemplate(cloud, TEMPLATE, pagenr )).append("?");
+        flink.append(PAGE_PARAM).append("=").append(pagenr);
         
         String jspUrl = flink.toString();
         String friendlyUrl = "";
         if (cache.hasJSPEntry(jspUrl)) {
             friendlyUrl = cache.getURLEntry(jspUrl);    // Get from cache
+            flink = new StringBuffer(friendlyUrl);
             if (log.isDebugEnabled()) log.debug("Processed from url cache: " + friendlyUrl);
-            
-            flink = new StringBuffer(friendlyUrl);    // overwrite
         } else {    // create the friendlyUrl
             friendlyUrl = getRootPath(cloud, pagenr);
             
-            // remove homepage (= ROOT) from url
-            if (friendlyUrl.indexOf(SEPARATOR) > 0) {
-                friendlyUrl = friendlyUrl.substring(friendlyUrl.indexOf(SEPARATOR) + 1, friendlyUrl.length());
-                if (log.isDebugEnabled()) log.debug("Removed the homepage (rootpage) from: " + friendlyUrl);
-            }
-            
             flink = new StringBuffer();         // overwrite
-            // flink.append(contextpath).append(SEPARATOR).append(friendlyUrl);
-            flink.append(friendlyUrl);                        // NO CONTEXT !! leave that to <mm:url />
-            flink.append(PAGE_EXTENSION);       // appending .html at the end
+            flink.append(SEPARATOR).append(friendlyUrl);
             
             // TODO: check if this friendlylink already exists in cache and change it?
             if (cache.hasURLEntry(flink.toString())) {
@@ -135,61 +135,23 @@ public class Pages extends FriendlyLink {
                 
                 flink = new StringBuffer();			// overwrite again
             	flink.append(friendlyUrl).append("_").append(pagenr);
-            	if (!"".equals(PAGE_EXTENSION)) flink.append(PAGE_EXTENSION);       // appending .html at the end
+            	//if (!"".equals(".html")) flink.append(".html");       // appending .html at the end
             }
             
+            //flink.insert(0, "/");   // should append / at beginning !
             cache.putURLEntry(jspUrl, flink.toString());
             cache.putJSPEntry(flink.toString(), jspUrl);
             
             if (log.isDebugEnabled()) log.debug("Created 'userfriendly' link: " + flink.toString());
         }
         
-        // should append / to beginning !
-        flink.insert(0, "/");
-        // if (log.isDebugEnabled()) log.debug("Returning flink: " + flink.toString());
         return flink.toString();
     }
     
     /**
-     * Returns the (jsp) template, in this case the field 'template' of the page node or
-     * a related node of type 'templates' in which it looks for the 'url' field. 
-     * Visitors get send back to the homepage (index.jsp) if no template is found.
-     *
-     * @param   cloud   MMBase cloud
-     * @param   pagenr  nodenumber
-     * @return  template url
-     */
-    public String getPageTemplate(Cloud cloud, String pagenr) {
-        if (pagenr != null && !pagenr.equals("") && !pagenr.equals("-1")) {
-            
-            NodeManager pnm = cloud.getNodeManager("pages");
-            org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
-            if (pnm.hasField("template")) {
-                if (pageNode.getStringValue("template") != null 
-                  && !pageNode.getStringValue("template").equals("")) {
-                    return pageNode.getStringValue("template");
-                } else {
-                    log.error("Field 'template' is empty");
-                    return("index.jsp");    // send to homepage
-                }
-            } else {
-                org.mmbase.bridge.NodeList templateList = pageNode.getRelatedNodes("templates", "related", "DESTINATION");
-                if (templateList.size() == 1) {
-                    return templateList.getNode(0).getStringValue("url");
-                } else {
-            		return "index.jsp";
-                }
-            }
-        } else {
-            return "index.jsp";
-        }
-    }
-
-    /**
-     * path to root in sitemap based on field 'title', starting at pagenr
+     * Path to homepage in sitemap based on field 'title', starting at pagenr
      *
      * @param  cloud MMBase cloud
-     * @param  request
      * @param  pagenr
      * @return a path f.e. like /nieuws/artikelen/
      */
@@ -197,22 +159,25 @@ public class Pages extends FriendlyLink {
         StringBuffer path = new StringBuffer();
         Identifier transformer = new Identifier();
         org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
-        List pathList = listPagesToRoot(pageNode);
-        for (Iterator i = pathList.iterator(); i.hasNext();) {
-            org.mmbase.bridge.Node pn = (org.mmbase.bridge.Node)i.next();
+        
+        List pagesList = listPagesToRoot(pageNode);
+        for (Iterator i = pagesList.iterator(); i.hasNext();) {
+            org.mmbase.bridge.Node pn = (org.mmbase.bridge.Node) i.next();
             
             String pagetitle = pn.getStringValue("title");
-            pagetitle = transformer.transform(pagetitle);   // transform
+            pagetitle = transformer.transform(pagetitle);
             pagetitle = pagetitle.toLowerCase();
-            path.append(pagetitle);
             
-            if (i.hasNext()) path.append(SEPARATOR);
+            // don't put home in the url
+            if (!pagetitle.equals("home") && !pagetitle.equals("homepage")) {
+                path.append(pagetitle);
+                if (i.hasNext()) path.append(SEPARATOR);
+            }
         }
         
         if (log.isDebugEnabled()) log.debug("Path to /: " + path.toString());
         return path.toString();
     }
-
     
     /**
      * Finds a pages' parentpages in a site, presumes posrel relation between pages.
@@ -229,26 +194,59 @@ public class Pages extends FriendlyLink {
             pageList.add(parent);
             parentList = parent.getRelatedNodes("pages", "posrel", "SOURCE");
         }
-        pageList.add(0, page);  // add the page we started with at the beginning
+        pageList.add(0, page);  // add our page at the beginning
         Collections.reverse(pageList);
         return pageList;
     }
     
+    /**
+     * Returns the (jsp) template, in this case the field 'template' of the page node or
+     * a related node of type 'templates' in which it looks for the 'url' field. 
+     * Visitors get send to the default template if none is found.
+     *
+     * @param   cloud       MMBase cloud
+     * @param   template    default template if none is found
+     * @param   pagenr      nodenumber
+     * @return  template url
+     */
+    public String getPageTemplate(Cloud cloud, String template, String pagenr) {
+        if (pagenr != null && !pagenr.equals("") && !pagenr.equals("-1")) {
+            NodeManager pnm = cloud.getNodeManager("pages");
+            org.mmbase.bridge.Node pageNode = cloud.getNode(pagenr);
+            if (pnm.hasField("template")) {
+                if (pageNode.getStringValue("template") != null && !pageNode.getStringValue("template").equals("")) {
+                    return pageNode.getStringValue("template");
+                } else {
+                    log.error("Field 'template' is empty");
+                    return template;
+                }
+            } else {
+                org.mmbase.bridge.NodeList templateList = pageNode.getRelatedNodes("templates", "related", "DESTINATION");
+                if (templateList.size() == 1) {
+                    return templateList.getNode(0).getStringValue("url");
+                } else {
+            		return template;
+                }
+            }
+        } else {
+            return template;
+        }
+    }
     
     /**
      * Creates the url to a JSP page (or any other technical url) from a friendlylink.
      * This one presumes the path consists of pagetitles.
-     * Returns the original input when no match was found.
+     * Returns an empty string when no match is found.
      *
      * @param   flink   the friendlylink to convert
      * @param   params  parameters in request
      * @return  technical link
      */
     public String convertToJsp(String flink, String params) {
+        String template = parameters.getString("template");
         if (log.isDebugEnabled()) log.debug("Trying to find a technical url for '" + flink + "'");
         
         StringBuffer jspurl = new StringBuffer();
-        jspurl.append(flink);
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         UrlCache cache = UrlConverter.getCache();
         
@@ -257,19 +255,18 @@ public class Pages extends FriendlyLink {
         int tokens = st.countTokens();
         while (st.hasMoreTokens()) {
             title = st.nextToken();
-            log.debug("token '" + title + "' of " + tokens + " tokens");
+            // log.debug("token '" + title + "' of " + tokens + " tokens");
         }
+        log.debug("trying the last token '" + title + "'");
         
-        if (title.indexOf(PAGE_EXTENSION) > -1) title = title.substring(0, title.indexOf(PAGE_EXTENSION));
+        if (title.indexOf(".html") > -1) title = title.substring(0, title.indexOf(".html"));
+    
+        // make a title in which _ are replaced (back) with spaces
+        String alttitle = title.replace("_", " ");
         
-/*        
-        String title = "";
-        title = flink.substring(flink.lastIndexOf("/") + 1, flink.length() - 5);
-        title = title.toLowerCase();
-        if (log.isDebugEnabled()) log.debug("title: " + title);
-*/        
         NodeManager nm = cloud.getNodeManager("pages");
-        org.mmbase.bridge.NodeList nl = nm.getList("LOWER(title) = '" + title + "'", null, null);
+        org.mmbase.bridge.NodeList nl = nm.getList("LOWER(title) = '" + title + 
+                                                    "' OR LOWER(title) = '" + alttitle + "'", null, null);
         if (nl.size() > 0) {
             org.mmbase.bridge.Node n = nl.getNode(0);
             String number = n.getStringValue("number");
@@ -279,27 +276,28 @@ public class Pages extends FriendlyLink {
             }
             
             // TODO: checken met getRootPath(cloud, pagenr)
+            /*
             String rootpath = getRootPath(cloud, number);
             log.debug("rootpath '" + rootpath + "'");
             if (rootpath.indexOf(title) > -1) {
                 log.warn("!! rootpath '" + rootpath + "'");
-                
             }
+            */
             jspurl = new StringBuffer();
             
-            //jspurl.append(contextpath).append(SEPARATOR);
-            jspurl.append(getPageTemplate(cloud, number));
+            jspurl.append(SEPARATOR).append(getPageTemplate(cloud, template, number));
             jspurl.append("?").append(PAGE_PARAM).append("=").append(number);
             
             cache.putURLEntry(jspurl.toString(), flink);
             cache.putJSPEntry(flink, jspurl.toString());
-            
+
+            if (params != null) jspurl.append("&").append(params);
+            return jspurl.toString();
+
         } else {
             if (log.isDebugEnabled()) log.debug("No match found.");
+            return "";
         }
-        
-        if (params != null) jspurl.append("?").append(params);
-        return jspurl.toString();
     }
     
     
