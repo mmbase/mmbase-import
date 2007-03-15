@@ -3,11 +3,12 @@
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
   <classfile>org.mmbase.applications.email.SendMail</classfile>
-  <!--
-  <properties>
-    <property name="mailhost">vlex02</property>
-  </properties>
-  -->
+@natmm.comment.begin@
+    <properties>
+      <property name="mailhost">@mailhost.sendmail@</property>
+    </properties>
+@natmm.comment.end@
+
   <properties>
     <property name="context">java:comp/env</property>
     <property name="datasource">mail/Session</property>
