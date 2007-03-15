@@ -9,6 +9,7 @@ html, body {
 \*/
   line-height: 1.1;
 }
+
 div.column {
   vertical-align: top;
   margin-top: 0ex;
@@ -18,6 +19,12 @@ div.x1 {
   float: left;
   width: 200px;
   margin-left:10px;
+  /*
+     IE double margin bug:
+     http://www.gigadesign.be/?p=99
+     */
+  display: inline;
+
 }
 
 div.x2 {
@@ -29,6 +36,7 @@ div.x3 {
   float: right;
   width: 220px;    
   margin-right: 15px;
+  display: inline; /* double margin bug */
 }
 
 div.column * {
