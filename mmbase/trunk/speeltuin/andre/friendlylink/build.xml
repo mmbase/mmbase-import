@@ -4,7 +4,7 @@
   <property name="project.package"   value="org/mmbase/applications/friendlylink" />
   <!-- <property name="project.target.templates.dir"   value="../mmexamples" /> -->
 
-  <property name="project.jars.includes" value="oscache-cache/mmbase-oscache.jar" />
+  <property name="project.jars.includes" value="oscache-cache/build/mmbase-oscache.jar" />
   <import file="../buildbase-include.xml" />
 </project>
 
