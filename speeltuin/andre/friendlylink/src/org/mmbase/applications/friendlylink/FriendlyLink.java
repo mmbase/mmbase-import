@@ -14,15 +14,15 @@ import org.mmbase.util.logging.Logging;
  * Some class
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FriendlyLink.java,v 1.3 2007-03-15 23:02:17 andre Exp $
+ * @version $Id: FriendlyLink.java,v 1.4 2007-03-16 23:18:00 andre Exp $
  */
 abstract public class FriendlyLink {
     private static final Logger log = Logging.getLoggerInstance(FriendlyLink.class);
-
+    
     protected Parameters parameters = null;
     
     /**
-     * @return A List with the parameters of the FriendlyLink.
+     * @return A List with the parameters of the EditTag.
      */
     public final Parameters getParameters() {
         if (parameters == null) {
@@ -32,7 +32,7 @@ abstract public class FriendlyLink {
         return parameters;
     }
 
-    protected Parameter[] getParameterDefinition() {
+    protected  Parameter[] getParameterDefinition() {
         return Parameter.EMPTY;
     }
 
@@ -41,6 +41,7 @@ abstract public class FriendlyLink {
      * that is specific for this type of friendlylink.
      *
      * @param  element  The DOM element friendlylink from 'friendlylinks.xml' 
+     *
      */
     protected abstract void configure(Element el);
 
