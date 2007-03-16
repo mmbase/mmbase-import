@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/friendlylinks friendlylinks.xsd">
 
   <!--
-      version: $Id: friendlylinks.xml,v 1.2 2007-03-15 23:02:17 andre Exp $
+      version: $Id: friendlylinks.xml,v 1.3 2007-03-16 23:18:00 andre Exp $
   -->
   <!-- 
       In this file the names and classnames of the utility classes of the 
@@ -16,7 +16,7 @@
     <description>
       Simple example for use with the nodetype 'pages'.
     </description>
-		<parameter name="template">anders.jsp</parameter>
+		<parameter name="template">testing.jsp</parameter>
 		<parameter name="parameter">nr</parameter>
 		<parameter name="separator">/</parameter>
   </friendlylink>
