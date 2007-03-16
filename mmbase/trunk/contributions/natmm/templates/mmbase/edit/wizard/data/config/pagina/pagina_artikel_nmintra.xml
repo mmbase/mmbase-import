@@ -66,6 +66,6 @@
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <list include="config/artikel/zoek_pagina_contentrel_artikel_no_embargo.xml" />
-      <list include="config/contentblocks/add_contentblocks_readmore.xml" />
+      <list include="config/contentblocks/add_contentblocks_readmore_small.xml" />
    </form-schema> 
 </wizard-schema>
