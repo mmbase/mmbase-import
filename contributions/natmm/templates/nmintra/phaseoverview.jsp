@@ -17,10 +17,16 @@
          <div class="black" style="padding-left:10px;padding-bottom:10px;"><mm:write /></div>
       </mm:isnotempty>
    </mm:field>
+
    <mm:node element="artikel"
       ><div class="pageheader" style="padding-left:10px;">
          <mm:field name="titel"/>
       </div>
+      
+   <div align="right">
+       <mm:node number="<%= rbLogoID %>" notfound="skipbody"><img src="<mm:image template='s(120x80)'/>" border="0" alt=""></mm:node>
+   </div>
+   
       <div class="black" style="padding-left:10px;">
          <mm:field name="intro"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
       </div>
@@ -33,6 +39,7 @@
 		</mm:related
 	></mm:node
 ></mm:list>
+
 <mm:node number="<%= paginaID %>">
    <%@include file="includes/contentblocks.jsp" %>
 </mm:node>
@@ -40,6 +47,13 @@
 </td></tr>
 </table>
 </td>
+
 <%@include file="includes/footer.jsp" %>
+
+
+
+
+
+
 </cache:cache>
 </mm:cloud>
