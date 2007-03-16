@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBaseContext;
  * TODO: Create a method to be called at initialization of webapp to fill the cache with links
  * 
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlConverter.java,v 1.5 2007-03-16 23:18:00 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.6 2007-03-16 23:25:41 andre Exp $
  */
 public class UrlConverter {
 
@@ -86,7 +86,7 @@ public class UrlConverter {
 	        if (log.isDebugEnabled()) log.debug("URL was cached");
 
 	        jspurl = new StringBuffer( cache.getJSPEntry(flink) );  // get its jspUrl
-	        if (params != null) jspurl.append("?").append(params);
+	        if (params != null) jspurl.append("&").append(params);
     	    
 	    } else {    
 	        if (log.isDebugEnabled()) log.debug("URL not cached");
