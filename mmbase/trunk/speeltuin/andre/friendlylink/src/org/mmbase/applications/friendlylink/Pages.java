@@ -17,7 +17,7 @@ import org.mmbase.util.xml.DocumentReader;
  * technical url.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: Pages.java,v 1.7 2007-03-15 23:02:17 andre Exp $
+ * @version $Id: Pages.java,v 1.8 2007-03-16 23:18:00 andre Exp $
  */
 public class Pages extends FriendlyLink {
 
@@ -37,7 +37,7 @@ public class Pages extends FriendlyLink {
 
     /* 
       Statics for creating links 
-      (no way to configure this? except by function parameters?)
+      (no way to configure this? except by function parameters maybe?)
     */
     public static String SEPARATOR = "/";
     public static String PAGE_PARAM = "nr";
@@ -56,7 +56,7 @@ public class Pages extends FriendlyLink {
         String description = DocumentReader.getNodeTextValue(descrElement);
         log.debug("Found the description: " + description);
         
-        Map params = new HashMap(); /* String -> String */
+        Map<String, String> params = new HashMap<String, String>(); /* String -> String */
         org.w3c.dom.NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
@@ -73,7 +73,7 @@ public class Pages extends FriendlyLink {
         }
         Parameters flinkParams = getParameters();
         flinkParams.setAll(params);
-        //log.debug("parameters.getString() hier: " + parameters.getString("template"));
+        // log.debug("parameters.getString() hier: " + parameters.getString("template"));
     }
     
     /**
@@ -245,7 +245,7 @@ public class Pages extends FriendlyLink {
     public String convertToJsp(String flink, String params) {
         String template = parameters.getString("template");
         if (log.isDebugEnabled()) log.debug("Trying to find a technical url for '" + flink + "'");
-        
+
         StringBuffer jspurl = new StringBuffer();
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         UrlCache cache = UrlConverter.getCache();
