@@ -99,3 +99,14 @@ p.noaccount {
 .portal .login p { 
   padding-bottom: 0px;
 }
+
+.portal .banner { 
+  background-color: transparent;
+}
+.portal .banner a, 
+.portal .banner img { 
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  border: none;
+  background-color: transparent;
+}
