@@ -36,9 +36,8 @@ if(!action.equals("print")) {
             if(!nameId.equals("")) employeeConstraint += " ) ";
         }
         if(!descriptionId.equals("")) {
-            employeeConstraint += " AND ( UPPER(medewerkers.omschrijving) LIKE '%" + descriptionId.toUpperCase() + "%')";
+            employeeConstraint += " AND (UPPER(CAST(medewerkers.omschrijving AS CHAR)) LIKE '%" + descriptionId.toUpperCase() + "%')";
         }
-       
         // ****** start the search by including all employees, which fit the employeeConstraint ****** 
         TreeSet searchResultSet = new TreeSet();
         SearchUtil su = new SearchUtil();

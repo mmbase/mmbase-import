@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class SearchUtil {
 
@@ -35,7 +35,7 @@ public class SearchUtil {
    public SearchUtil() {
    }
 
-   public final static String sEmployeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' )";
+   public final static String sEmployeeConstraint = "(( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'extern' ))";
    public final static String sAfdelingenConstraints = "( afdelingen.importstatus != 'inactive' ) OR ( afdelingen.externid LIKE 'extern' )";
    public final static String sNatuurgebiedenConstraint = "natuurgebieden.bron!=''";
    public String articleConstraint(long nowSec, int quarterOfAnHour) {
