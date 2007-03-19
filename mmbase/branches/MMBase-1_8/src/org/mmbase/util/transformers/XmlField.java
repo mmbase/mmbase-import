@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46 2006-04-10 13:34:19 pierre Exp $
+ * @version $Id: XmlField.java,v 1.46.2.1 2007-03-19 13:50:47 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -708,11 +708,11 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
-    public static String wikiToXML(String data) {
+    public static String wikiToXML(String data, boolean placeListsInsideP) {
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
-        handleRich(obj, true, false, true);
+        handleRich(obj, true, false, true, placeListsInsideP);
         handleFormat(obj, false);
         String string = obj.toString();
         Matcher ps = wikiP.matcher(string);
@@ -722,7 +722,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         Matcher anchors = wikiAnchor.matcher(string);
         string = anchors.replaceAll("<a id=\"$1\" />");
         return string;
-
+    }
+    public static String wikiToXML(String data) {
+        return wikiToXML(data, false);
     }
 
     /**
@@ -752,12 +754,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @return the converted text
      */
 
-    public static String richToXML(String data, boolean format) {
+    public static String richToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, true, true);
+        handleRich(obj, true, true, true, placeListsInsideP);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
+    }
+
+    public static String richToXML(String data, boolean format) {
+        return richToXML(data, format, false);
+
     }
     public static String richToXML(String data) {
         return richToXML(data, false);
@@ -766,12 +773,15 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * As richToXML but a little less rich. Which means that only one new line is non significant.
      * @see #richToXML
      */
-
-    public static String poorToXML(String data, boolean format) {
+    public static String poorToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, false,true);
+        handleRich(obj, true, false, true, placeListsInsideP);
         handleFormat(obj, format);
         return obj.toString();
+    }
+
+    public static String poorToXML(String data, boolean format) {
+        return poorToXML(data, format, false);
     }
 
     public static String poorToXML(String data) {
