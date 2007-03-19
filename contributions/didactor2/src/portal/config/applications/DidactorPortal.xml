@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorPortal" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorPortal" maintainer="didactor.nl" version="5" auto-deploy="true">
   <requirements>
     <requires name="DidactorCore"      maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="Resources"         maintainer="didactor.nl" version="2" />
-    <requires name="ExtendedText"         maintainer="didactor.nl" version="3" />
+    <requires name="ExtendedText"      maintainer="didactor.nl" version="3" />
   </requirements>
 
   <neededbuilderlist>
@@ -26,6 +26,9 @@
     <relation from="webblocks"  to="news"      type="posrel" />
     <relation from="webblocks"  to="urls"      type="posrel" />
     <relation from="news"       to="paragraphs"      type="posrel" />
+
+    <!-- banner -->
+    <relation from="urls"       to="images"      type="related" />
   </allowedrelationlist>
   <datasourcelist>
     <datasource builder="components" path="DidactorPortal/components.xml" />
