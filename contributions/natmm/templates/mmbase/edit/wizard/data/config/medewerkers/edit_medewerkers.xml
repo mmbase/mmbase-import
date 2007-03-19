@@ -38,7 +38,10 @@
    <!-- <field name="job"><prompt>job</prompt></field> -->
    <!-- <field name="department"><prompt>department</prompt></field> -->
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-   <field name="importstatus"><prompt>importstatus (beaufort) ________________________________</prompt></field>
+   <field name="importstatus" ftype="enum">
+       <prompt>importstatus (beaufort) ________________________________</prompt>
+       <optionlist select="active_inactive"></optionlist>
+   </field>
    <list include="config/images/zoek_pagina_posrel_images.xml" />
    <list include="config/afdelingen/zoek_medewerkers_readmore_afdelingen.xml" />
    <!--   <list include="config/evenement/zoek_medewerkers_readmore_evenement.xml" /> -->
