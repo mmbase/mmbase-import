@@ -21,6 +21,8 @@ public class CSVReader implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
     private static final ServerUtil su = new ServerUtil();
     
+    private static final String IGNORE_BEAUFORT = "negeer beaufort";
+    
     public static int FULL_IMPORT = 1;
     public static int ONLY_MEMBERLOAD = 2;
     public static int ONLY_ZIPCODELOAD = 3;
@@ -157,7 +159,8 @@ public class CSVReader implements Runnable {
                     }
                 }
             }
-            if(!thisFields[1].equals(thisnode.getStringValue(thisFields[0]))) {
+            // set to value of [1] if not already but don't set if it is [2] - reserved for cases of ignoring csv overrides.
+            if( !thisFields[1].equals(thisnode.getStringValue(thisFields[0])) && !thisFields[2].equals(thisnode.getStringValue(thisFields[0]))      ) {
               thisnode.setValue(thisFields[0],thisFields[1]);
               thisnode.commit();
               nodesMarked++;
@@ -366,7 +369,9 @@ public class CSVReader implements Runnable {
             personsNode.setValue("lastname", thisPerson.get("E_NAAM"));
         }
         personsNode.setValue("gender",getGender((String) thisPerson.get("GENDER")));
-        personsNode.setValue("importstatus","active");
+        if (!personsNode.getValue("importstatus").equals(IGNORE_BEAUFORT)) {
+        	personsNode.setValue("importstatus","active");
+        }
         personsNode.commit();
         return personsNode;
     }
@@ -1073,10 +1078,11 @@ public class CSVReader implements Runnable {
                
                 // start with marking all relations as inactive
                 String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
-                String [] employeeFields = {"importstatus","inactive"};
+                  //setting to value of [1] unless it is equal to [2] when we don't change
+                String [] employeeFields = {"importstatus","inactive",IGNORE_BEAUFORT};
                 String [] departmentRelations = {"posrel","afdelingen"};
                 // the importstatus field of afdelingen can be 'inactive', 'active' or a comma seperated list of descendants
-                String [] departmentFields = {"importstatus","inactive"};
+                String [] departmentFields = {"importstatus","inactive",""};
                 nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                 nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
                 

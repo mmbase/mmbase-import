@@ -8,6 +8,7 @@
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/female_male.xml" />
+      <optionlist include="config/option_lists/active_inactive.xml" />
    </lists>
    <steps>
       <step form-schema="edit_medewerkers"/>
