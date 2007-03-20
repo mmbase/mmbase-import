@@ -54,7 +54,10 @@ if(!articleId.equals("-1")) {
       int toDay = (int) period[5]; int toMonth = (int) period[6]; int toYear = (int) period[7];
       int thisYear = (int) period[10];
       int startYear = (int) period[11];
-      boolean checkOnPeriod = (fromTime<toTime);
+      
+      if(toTime==0 || toTime > nowSec) { // do not show articles under embargo
+         toTime = nowSec;
+      }
       
       String rightBarTitle = "";
       %><mm:node number="<%= paginaID %>" jspvar="thisPage">
@@ -92,7 +95,7 @@ if(!articleId.equals("-1")) {
                 net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
                 hsetArticles = su.addPages(cloud,cf,qStr,0,"artikel,contentrel,pagina","",sPool,nowSec,fromTime,toTime,isArchive,hsetPages);
               } else {
-              	hsetArticles = su.addPages(cloud, "artikel,contentrel,pagina", "", sPool, nowSec, fromTime, toTime, isArchive, hsetPages);
+              	 hsetArticles = su.addPages(cloud, "artikel,contentrel,pagina", "", sPool, nowSec, fromTime, toTime, isArchive, hsetPages);
               }
               for (Iterator it = hsetArticles.iterator(); it.hasNext(); ) {
                 String article = (String) it.next();
