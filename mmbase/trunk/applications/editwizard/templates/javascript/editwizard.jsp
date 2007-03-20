@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.69 2007-01-05 15:57:54 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.70 2007-03-20 16:22:10 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -292,6 +292,13 @@ function doGotoForm(formid) {
     document.forms[0].submit();
 }
 
+/**
+ * The delaying of commands is here, because without the delay the browser wont have the cycles to hide the buttons
+ */
+function doSendDelayedCommand(command) {
+	setTimeout("doSendCommand(\""+command+"\")", 10);
+}
+
 function doSendCommand(cmd, value) {
     doCheckHtml();
     var fld = document.getElementById("hiddencmdfield");
@@ -330,7 +337,7 @@ function doMoveDown(cmd) {
 function doCancel() {
     clearScroll();
     setButtonsInactive();
-    doSendCommand("cmd/cancel////");
+    doSendDelayedCommand("cmd/cancel////");
 }
 
 function doSave() {
@@ -338,7 +345,7 @@ function doSave() {
     if (!isSaveInactive()) {
         clearScroll();
         setButtonsInactive();
-        doSendCommand("cmd/commit////");
+        doSendDelayedCommand("cmd/commit////");
     }
 }
 
@@ -347,23 +354,30 @@ function doSaveOnly() {
     if (!isSaveInactive()) {
         saveScroll();
         setButtonsInactive();
-        doSendCommand("cmd/save////");
+        doSendDelayedCommand("cmd/save////");
     }
 }
 
 function isSaveInactive() {
     var savebut = document.getElementById("bottombutton-save");
-    return (savebut.getAttribute("inactive") == 'true');
+    if(savebut != null) {
+    	return (savebut.getAttribute("inactive") == 'true');
+	}
+	else {
+		return false;
+	}
 }
 
 function setSaveInactive(inactive) {
     var savebut = document.getElementById("bottombutton-save");
-    savebut.setAttribute("inactive", inactive);
+    if(savebut != null) {
+    	savebut.setAttribute("inactive", inactive);
+	}
 }
 
 function doRefresh() {
     saveScroll();
-    doSendCommand("","");
+    doSendDelayedCommand("","");
 }
 
 function doStartUpload(el) {
@@ -381,8 +395,9 @@ function resizeEditTable() {
     var divButtonsHeight = document.getElementById("commandbuttonbar").offsetHeight;
     var divTop = findPosY(document.getElementById("editform"));
 
-    if ((navigator.appVersion.indexOf('MSIE')!=-1)
-        && (navigator.appVersion.indexOf('Mac')!=-1)) {
+    var isIE = (navigator.appVersion.indexOf('MSIE')!=-1);
+
+    if (isIE && (navigator.appVersion.indexOf('Mac')!=-1)) {
 
       // IE on the Mac has some overflow problems.
       // These statements will move the button div to the right position and
@@ -398,10 +413,28 @@ function resizeEditTable() {
        document.getElementById("editform").style.height = docHeight - (divTop + divButtonsHeight);
     }
     var docWidth = getDimensions().windowWidth;
-    document.getElementById("editform").style.width = docWidth
+    document.getElementById("editform").style.width = docWidth-((isIE)?5:0);
+
     var textareas = document.getElementsByTagName("textarea");
     for (var i = 0 ; i < textareas.length ; i++) {
-        textareas[i].style.width = docWidth -100;
+        if(isSubEditElement(textareas[i])) {
+	        textareas[i].style.width = docWidth - 355;
+	     }
+	     else {
+        	textareas[i].style.width = docWidth -100;
+	     }
+    }
+}
+
+function isSubEditElement(element) {
+	if(element.className == "itemcanvas") {
+		return true;
+	}
+	else if(element.parentNode == undefined) {
+		return false;
+	}
+	else {
+		return isSubEditElement(element.parentNode);
     }
 }
 
@@ -411,15 +444,11 @@ function setParam(name, value) {
 }
 
 function setButtonsInactive() {
-   var cancelbut = document.getElementById("bottombutton-cancel");
-   // cancelbut.className = "invalid";
-   cancelbut.style.visibility = "hidden";
-   var savebut = document.getElementById("bottombutton-save");
-   // savebut.className = "invalid";
-   savebut.style.visibility = "hidden";
-   var saveonlybut = document.getElementById("bottombutton-saveonly");
-   if (saveonlybut != null) {
-      saveonlybut.style.visibility = "hidden";
+   for (i = 0; i < document.links.length; i++) {
+      if (document.links[i].id.substr(0,"bottombutton-".length)=="bottombutton-") {
+         var button = document.links[i];
+         button.style.visibility = "hidden";
+      }
    }
 }
 
