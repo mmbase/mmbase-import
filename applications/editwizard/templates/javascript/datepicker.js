@@ -166,12 +166,14 @@
 	}
 
 	function hideCalendar()	{
-		crossobj.visibility="hidden"
-		if (crossMonthObj != null){crossMonthObj.visibility="hidden"}
-		if (crossYearObj !=	null){crossYearObj.visibility="hidden"}
+		if(crossobj != null) {
+			crossobj.visibility="hidden"
+			if (crossMonthObj != null){crossMonthObj.visibility="hidden"}
+			if (crossYearObj !=	null){crossYearObj.visibility="hidden"}
 
-	    showElement( 'SELECT' );
-		showElement( 'APPLET' );
+		    showElement( 'SELECT' );
+			showElement( 'APPLET' );
+		}
 	}
 
 	function padZero(num) {
@@ -496,7 +498,7 @@
 		document.getElementById("spanYear").innerHTML =	"&nbsp;" + yearSelected	+ "&nbsp;<IMG id='changeYear' SRC='"+imgDir+"drop1.gif' WIDTH='12' HEIGHT='10' BORDER=0 align=absmiddle>"
 	}
 
-	function popUpCalendar(ctl, format, frameOffSetLeft, frameOffSetTop, object, name) {
+	function popUpCalendar(ctl, format, frameOffSetLeft, frameOffSetTop, object, name,event) {
 		var	leftpos=0
 		var	toppos=0
 
@@ -580,12 +582,8 @@
 				omonthSelected=monthSelected
 				oyearSelected=yearSelected
 
-				aTag = ctl
-				do {
-					aTag = aTag.offsetParent;
-					leftpos	+= aTag.offsetLeft;
-					toppos += aTag.offsetTop;
-				} while(aTag.tagName!="BODY");
+				toppos = event.clientY;
+				leftpos = event.clientX;
 
 				crossobj.left =	fixedX==-1 ? ctl.offsetLeft + leftpos + frameOffSetLeft : fixedX
 				crossobj.top = fixedY==-1 ? ctl.offsetTop + toppos + frameOffSetTop + ctl.offsetHeight : fixedY

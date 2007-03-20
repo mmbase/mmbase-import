@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.170 2007-01-03 19:54:27 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.171 2007-03-20 16:22:10 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -70,7 +70,7 @@
     <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}">
+    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;amp;country={$country}&amp;amp;timezone={$timezone}&amp;amp;referrer={$referrer_encoded}">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
@@ -891,7 +891,7 @@
   </xsl:template>
 
   <xsl:template name="date-picker">
-    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}');return false;"/>
+    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}',event);return false;"/>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-date">
