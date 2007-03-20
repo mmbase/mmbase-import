@@ -15,7 +15,6 @@
 
 <div id="element_${elementId}">
 <c:if test="${edit}">
-[${editChannel}]
 <cmsc:renderURL var="renderUrl"/>
 <mm:url page="/editors/WizardInitAction.do" id="editurl" write="false" >
    <mm:param name="objectnumber" value="${elementId}"/>
