@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.406 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.407 2007-03-20 16:18:34 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -750,6 +750,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public MMObjectNode getNewNode(String owner) {
         MMObjectNode node = getEmptyNode(owner);
+        setDefaults(node);
         node.isNew = true;
         return node;
     }
@@ -764,7 +765,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         node.setValue(FIELD_NUMBER, -1);
         node.setValue(FIELD_OWNER, owner);
         node.setValue(FIELD_OBJECT_TYPE, oType);
-        setDefaults(node);
         return node;
     }
     /**
@@ -773,6 +773,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public void setDefaults(MMObjectNode node) {
         for (CoreField field : getFields()) {
+            if (field.isVirtual())                         continue;
             if (field.getName().equals(FIELD_NUMBER))      continue;
             if (field.getName().equals(FIELD_OWNER))       continue;
             if (field.getName().equals(FIELD_OBJECT_TYPE)) continue;
