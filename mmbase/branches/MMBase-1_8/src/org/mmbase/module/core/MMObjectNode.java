@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.3 2006-11-28 13:48:45 johannes Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.4 2007-03-20 16:13:24 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -479,6 +479,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' of node '" + getNumber() + "' existing fields of '" + getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
             } else {
                 log.warn("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName());
+                log.warn(Logging.applicationStacktrace());
                 return false;
             }
         }
@@ -746,6 +747,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public boolean isNull(String fieldName) {
         if (checkFieldExistance(fieldName)) {
             Field field = getBuilder().getField(fieldName);
+            if (field.isVirtual()) {
+                return false;
+            }
             if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
