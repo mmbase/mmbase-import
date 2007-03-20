@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class Javascript extends ConfigurableReaderTransformer implements CharTransformer {
     private final static String SINGLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
-    private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
+    private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_DOUBLE_QUOTES";
     public final static int ESCAPE_SINGLE_QUOTES    = 1;     
     public final static int ESCAPE_DOUBLE_QUOTES    = 2;     
 
@@ -47,6 +47,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 int c = r.read();
                 if (c == -1) break;
                 if(c == escapeChar) w.write('\\');
+                if(c == '\\') w.write('\\');
                 w.write(c);
             }
         } catch (java.io.IOException e) {
