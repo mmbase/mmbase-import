@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.39 2007-02-03 13:09:27 nklasens Exp $
+ * @version  $Id: validator.js,v 1.40 2007-03-20 16:22:10 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -263,7 +263,7 @@ Validator.prototype.validateElement = function (el, silent) {
         err += validateUnknown(el, form, v);
     }
 
-    updatePrompt(el, err, silent);
+    updateHtml(el, err, silent);
     return err.length == 0; // true == valid, false == invalid
 }
 
@@ -271,6 +271,9 @@ Validator.prototype.validateElement = function (el, silent) {
 // DTTYPE VALIDATIONS STUFF
 //********************************
 function requiresValidation(element) {
+    if(element == null) {
+        return false;
+    }
     var form = document.forms[0];
     var superId = element.getAttribute("super");
     if (superId != null) {
@@ -522,6 +525,10 @@ function validateUnknown(el, form, v) {
 // UPDATE ELEMENTS STUFF
 //********************************
 
+function updateHtml(el, err, silent) {
+    updatePrompt(el, err, silent);
+}
+
 function updatePrompt(el, err, silent) {
     var prompt = document.getElementById("prompt_" + el.name);
     if (prompt && !silent) {
@@ -571,30 +578,34 @@ function updateButtons(allvalid) {
     var saveonlybut = document.getElementById("bottombutton-saveonly");
     if (allvalid) {
         setSaveInactive("false");
-
-        savebut.className = "bottombutton";
-        var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes.");
-        savebut.title = usetext;
-        savebut.disabled = false;
-                if (saveonlybut != null) {
-          saveonlybut.className = "bottombutton";
-          var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
-          saveonlybut.title = usetext;
-          saveonlybut.disabled = false;
+        enableButton(savebut,"titlesave", "Stores all changes.");
+        if (saveonlybut != null) {
+           enableButton(saveonlybut,"titlesave", "Stores all changes.");
         }
     } else {
         setSaveInactive("true");
-
-        savebut.className = "bottombutton-disabled";
-        var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
-        savebut.title = usetext;
-        savebut.disabled = true;
-                if (saveonlybut != null) {
-           saveonlybut.className = "bottombutton-disabled";
-           var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
-           saveonlybut.title = usetext;
-           saveonlybut.disabled = true;
+        disableButton(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
+        if (saveonlybut != null) {
+           disableButton(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
         }
+    }
+}
+
+function enableButton(button, textAttr, textDefault) {
+   if (button != null) {
+        button.className = "bottombutton";
+        var usetext = getToolTipValue(button,textAttr, textDefault);
+        button.title = usetext;
+        button.disabled = false;
+   }
+}
+
+function disableButton(button, textAttr, textDefault) {
+   if (button != null) {
+        button.className = "bottombutton-disabled";
+        var usetext = getToolTipValue(button,textAttr, textDefault);
+        button.title = usetext;
+        button.disabled = true;
     }
 }
 
