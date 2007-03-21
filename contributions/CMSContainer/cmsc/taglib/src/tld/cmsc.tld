@@ -554,16 +554,6 @@
         <tag-class>com.finalist.cmsc.taglib.portlet.ActionURLTag</tag-class>
         <tei-class>com.finalist.cmsc.taglib.portlet.BasicURLTag$TEI</tei-class>
         <body-content>JSP</body-content>
-        <attribute>
-            <name>page</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>window</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
 		<attribute>
 			<name>elementId</name>
 			<required>false</required>
