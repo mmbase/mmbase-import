@@ -8,7 +8,7 @@
 <mm:import externid="material" jspvar="materialTypeID" vartype="String">-1</mm:import>
 <mm:import externid="orgtype" jspvar="organisationTypeID" vartype="String">-1</mm:import>
 <mm:import externid="locatie" jspvar="locatieID" vartype="String">-1</mm:import>
-<mm:import externid="projtype" jspvar="projectTypeID" vartype="String">0</mm:import> <!-- initial setting, will be replaced by default -->
+<mm:import externid="projtype" jspvar="projectTypeID" vartype="String">0</mm:import>
 <mm:import externid="dur" jspvar="durationType" vartype="String">-1</mm:import>
 <mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
 <%
@@ -18,20 +18,15 @@ String emailId = request.getParameter("e");
 String nameId = request.getParameter("n");
 String textId = request.getParameter("d");
 %>
+<mm:cloud>
 <html>
   <head>
-    <title>VAN HAM - Homepage</title>
+    <title>
+      <mm:node number="$paginaID" notfound="skipbody">
+         <mm:relatednodes type="rubriek" path="posrel,rubriek"><mm:field name="naam" /></mm:relatednodes> - <mm:field name="titel" />
+      </mm:node>
+    </title>
     <link rel="stylesheet" type="text/css" href="css/website.css">
-    <%--
-    <style>
-    td { 
-       width: 60px;
-       height: 60px;
-       font-size: 200%;
-       text-align: center;
-    } 
-    </style>
-    --%>
     <style>
     td { 
        width: 30px;
@@ -49,3 +44,4 @@ String textId = request.getParameter("d");
     </script>
   </head>
 <body>
+</mm:cloud>

@@ -28,12 +28,12 @@
       <tr class="doc"><td></td></tr>
       <mm:node number="<%=artikelID%>" jspvar="article" notfound="skipbody">
       <tr>
-        <td class="def" style="width:690px;padding-top:26px;padding-bottom:14px;"><a name="0" id="0"></a>
+        <td class="def" style="width:690px;padding-top:14px;padding-bottom:14px;"><a name="0" id="0"></a>
           <mm:field name="titel_zichtbaar"
                ><mm:compare value="0" inverse="true"><% 
                   text = LocaleUtil.getField(article,"titel",language, "");
                   if(!"".equals(text)) {
-                     %><span class="colortitle"><%= text.toUpperCase() %></span><br/><%
+                     %><span class="colortitle"><%= text.toUpperCase() %></span><br/><br/><%
                   } 
                %></mm:compare
             ></mm:field><%
