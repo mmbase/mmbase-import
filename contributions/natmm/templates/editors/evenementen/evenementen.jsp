@@ -686,7 +686,7 @@ while(events.size()>0&&iEventCtr<pageSize) {
 						 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle data met aanmeldingen voor deze activiteit'></a><% 
                }
                %>
-               <a href="javascript:void(0);" onClick="newwin = window.open('/editors/evenementen/findwriters.jsp?p=<%= parent_number %>&e=<%= event_number %>','writers','width=800,height=400,scrollbars=yes,toolbar=no,location=no');setTimeout('newwin.focus();',250);"><img src="../img/people.gif" border='0'  align='absmiddle' alt='Medewerkers die aan deze activiteit hebben gewerkt.' 
+               <a href="javascript:void(0);" onClick="newwin = window.open('findwriters.jsp?p=<%= parent_number %>&e=<%= event_number %>','writers','width=800,height=400,scrollbars=yes,toolbar=no,location=no');setTimeout('newwin.focus();',250);"><img src="../img/people.gif" border='0'  align='absmiddle' alt='Medewerkers die aan deze activiteit hebben gewerkt.' 
                   /></a>
                <%
             }
