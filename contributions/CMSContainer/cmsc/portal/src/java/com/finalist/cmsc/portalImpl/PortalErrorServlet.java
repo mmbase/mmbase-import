@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.bridge.CloudUtil;
 import net.sf.mmapps.commons.util.HttpUtil;
 
 import org.apache.commons.logging.Log;
@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 
@@ -61,7 +60,7 @@ public class PortalErrorServlet extends PortalServlet {
     };
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) {
         // do not start the portal
         this.config = config;
     }
@@ -77,67 +76,34 @@ public class PortalErrorServlet extends PortalServlet {
                 String path = extractPath(request, currentURL);
                 Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
                 log.debug("===>getErrorScreen:'" + path + "'");
-                ScreenFragment screen = null;
                 Site site = SiteManagement.getSiteFromPath(path);
-                if (site != null && SiteManagement.isNavigation(site.getUrlfragment() + PATH_SP + statusCode)) {
-                    screen = getScreen(site.getUrlfragment() + PATH_SP + statusCode);
-                    logError(request);
-                    
-                    // TODO: make this better!
-                    StringBuffer completePath = new StringBuffer(request.getContextPath());
-                    if(!ServerUtil.useServerName()) {
-                    	completePath.append("/");
-                    	completePath.append(site.getUrlfragment());
-                    }
-                    completePath.append("/");
-                    completePath.append(screen.getPage().getUrlfragment());
-                    completePath.append("?");
-                    completePath.append(statusCode);
-                    completePath.append("=");
-                    completePath.append(path);
-                    
-                    response.sendRedirect(completePath.toString());
-
-                    CloudUtil.removeCloudFromThread();
-
-                    // Site site = SiteManagement.getSiteFromPath(path);
-                    // if (site != null && SiteManagement.isNavigation(site.getUrlfragment() +
-                    // PATH_SP + statusCode)) {
-                    // screen = getScreen(site.getUrlfragment() + PATH_SP + statusCode);
-                    // }
-                    // if (screen == null) {
-                    // List<Site> sites = SiteManagement.getSites();
-                    // if (!sites.isEmpty() &&
-                    // SiteManagement.isNavigation(sites.get(0).getUrlfragment() + PATH_SP +
-                    // statusCode)) {
-                    // screen = getScreen(sites.get(0).getUrlfragment() + PATH_SP + statusCode);
-                    // }
-                    // }
-                    // if (screen != null) {
-                    // try {
-                    // logError(request);
-                    // Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-                    // CloudUtil.addCloudToThread(cloud);
-                    // response.setContentType(CONTENT_TYPE);
-                    // reg.setScreen(screen);
-                    // log.debug("===>SERVICE");
-                    // screen.service(request, response);
-                    // log.debug("===>SERVICE DONE");
-                    // }
-                    // finally {
-                    // CloudUtil.removeCloudFromThread();
-                    // }
-                    // }
-
-                }
-                else {
-                    RequestDispatcher rd = config.getServletContext().getRequestDispatcher("/error/" + statusCode + ".jsp");
-                    if (rd != null) {
-                        rd.forward(request, response);
+                if (site != null) {
+                    if (SiteManagement.isNavigation(site.getUrlfragment() + PATH_SP + statusCode)) {
+                        logError(request);
+                        String redirectUrl = getErrorUrl(request, path, statusCode, site);
+                        response.sendRedirect(redirectUrl);
                     }
                     else {
+                        defaultError(request, response, statusCode);
+                    }
+                }
+                else {
+                    Site errorPageSite = null;
+                    List<Site> sites = SiteManagement.getSites();
+                    for (Site site2 : sites) {
+                        if (SiteManagement.isNavigation(site2.getUrlfragment() + PATH_SP + statusCode)) {
+                            errorPageSite = site2;
+                            break;
+                        }
+                    }
+                    
+                    if(errorPageSite != null) {
                         logError(request);
-                        basicErrorPage(request, response);
+                        String redirectUrl = getErrorUrl(request, path, statusCode, errorPageSite);
+                        response.sendRedirect(redirectUrl);
+                    }
+                    else {
+                        defaultError(request, response, statusCode);
                     }
                 }
             } catch (Throwable t) {
@@ -150,16 +116,50 @@ public class PortalErrorServlet extends PortalServlet {
         log.debug("===>PortalErrorServlet.doGet EXIT!");
     }
 
+    private String getErrorUrl(HttpServletRequest request, String path, Integer statusCode, Site site) {
+        String host = null;
+        String link = null;
+        if(ServerUtil.useServerName()) {
+           host = site.getUrlfragment();
+           link = statusCode.toString();
+        }
+        else {
+            link = site.getUrlfragment() + PATH_SP + statusCode;
+        }
+        PortalURL u = new PortalURL(host, request, link);
+        
+        StringBuffer completePath = new StringBuffer(u.toString());
+        completePath.append("?");
+        completePath.append(statusCode);
+        completePath.append("=");
+        completePath.append(path);
+        
+        String redirectUrl = completePath.toString();
+        return redirectUrl;
+    }
+
+    private void defaultError(HttpServletRequest request, HttpServletResponse response,
+            Integer statusCode) throws ServletException, IOException {
+        RequestDispatcher rd = config.getServletContext().getRequestDispatcher("/error/" + statusCode + ".jsp");
+        if (rd != null) {
+            rd.forward(request, response);
+        }
+        else {
+            logError(request);
+            basicErrorPage(request, response);
+        }
+    }
+
     private void basicErrorPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType(CONTENT_TYPE);
         PrintWriter out = response.getWriter();
         out.println("<html><head><title>" + request.getAttribute(ERROR_STATUS_CODE)
                 + " " + request.getAttribute(ERROR_MESSAGE) + "</title></head><body><table>"); 
         // Print vars
-        for (String element : vars) {
+        for (int i = 0; i < vars.length; i++) {
             out.println(
-                "<tr><td>" + element + "</td><td>" +
-                request.getAttribute(element) + 
+                "<tr><td>" + vars[i] + "</td><td>" +
+                request.getAttribute(vars[i]) + 
                 "</td></tr>");
         }
         out.println("</table></body></html>");
