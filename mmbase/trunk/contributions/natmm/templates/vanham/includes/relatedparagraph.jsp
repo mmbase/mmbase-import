@@ -20,7 +20,7 @@
    <mm:field name="titel_zichtbaar">
       <mm:compare value="0" inverse="true">
          <%
-         text = LocaleUtil.getField(article,"titel",language, "");
+         text = LocaleUtil.getField(paragraph,"titel",language, "");
          if(!"".equals(text)) {
             %><span class="colortitle"><%= text %></span><br/><%
          }
@@ -28,13 +28,12 @@
 	   </mm:compare>
 	</mm:field>
    <%
-   text = LocaleUtil.getField(article,"omschrijving",language, "");
+   text = LocaleUtil.getField(paragraph,"omschrijving",language, "");
    if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
       %><%= text %><% 
       if(text.toUpperCase().indexOf("<P>")==-1) { %><br/><% }
    } 
    %>
-	<mm:remove referid="firstfound" />
    <mm:relatednodes type="attachments" orderby="title">
       <a href="<mm:attachment />" title="download <mm:field name="filename" />" class="attachment"><mm:field name="title" /></a><br/>
    </mm:relatednodes>

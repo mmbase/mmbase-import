@@ -19,6 +19,9 @@ td {
 select {
    font-size: 75%;
 }
+.caption {
+   font-size: 75%;
+}
 .def {
    font-size: 75%;
    text-align: left;
@@ -69,3 +72,10 @@ a:link {		color: #333333; text-decoration: none; }
 a:visited { color: #333333; text-decoration: none; }
 a:active {	color: #333333; text-decoration: none; }
 a:hover {	color: #333333; text-decoration: underline; }
+.dotline {
+   width: 100%;
+   margin-top: 4;
+   margin-bottom: 0;
+   background-image:  url(../media/dotline.gif);
+   background-repeat: repeat-x;
+}
