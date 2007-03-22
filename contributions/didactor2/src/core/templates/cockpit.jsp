@@ -4,7 +4,7 @@
 %><mm:content postprocessor="none"
               expires="0" type="text/html"
               escaper="entities">
-  <mm:cloud authenticate="name/password">
+  <mm:cloud authenticate="asis">
     <jsp:directive.include file="/shared/setImports.jsp" />
     <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
