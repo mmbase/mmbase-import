@@ -39,7 +39,7 @@ if(application.getAttribute("events_till")!=null
    }
 }
 parentEvents = new HashSet();
-%><mm:list nodes="<%= thisEvents %>" path="evenement" fields="evenement.number" constraints="<%= sParentConstraint %>"
+%><mm:list nodes="<%= thisEvents %>" path="evenement,related,evenement_type" fields="evenement.number" constraints="<%= sParentConstraint %>"
    ><mm:field name="evenement.number" jspvar="parent_number" vartype="String" write="false"><% 
       boolean parentBelongsToActivityType = true;
       if(!sActivityTypes.equals("")) { // *** only use constraint for events that do have an activity type
