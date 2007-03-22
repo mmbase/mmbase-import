@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.58 2007-03-02 21:03:05 nklasens Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.59 2007-03-22 13:57:45 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -90,7 +90,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
             sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
-            log.debug("sql: " + sqlString);
+            if (log.isDebugEnabled()) {
+                log.debug("sql: " + sqlString);
+            }
 
             // Execute the SQL... ARGH !!! Has to move!
             // get connection...
@@ -98,8 +100,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
             con = dataSource.getConnection();
             ResultSet rs = null;
             try {
-                rs = stmt.executeQuery();
                 stmt = con.prepareStatement(sqlString);
+                rs = stmt.executeQuery();
                 if (mustSkipResults) {
                     log.debug("skipping results, to provide weak support for offset");
                     for (int i = 0; i < query.getOffset(); i++) {
