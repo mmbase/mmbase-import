@@ -31,8 +31,16 @@
             </div>
         </c:when>
         <c:otherwise>
-            <h2><fmt:message key="dump.success" /></h2>
-            <cmsc:dumpdefaults path="${param.path}" />
+            <div class="side_block">
+                <div class="header">
+                    <div class="title"><fmt:message key="dump.success" /></div>
+                    <div class="header_end"></div>
+                </div>
+                <div>
+                    <p><cmsc:dumpdefaults path="${param.path}" /></p>
+                    <br/>
+                </div>
+            </div>
         </c:otherwise>
     </c:choose>
 
