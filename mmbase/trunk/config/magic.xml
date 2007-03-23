@@ -1987,16 +1987,26 @@
       <test offset="0" type="string" comparator="=">\333\245\000\000\000</test>
     </detector>
     <detector>
-      <mimetype>???</mimetype>
-      <extension>???</extension>
-      <designation>%s</designation>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
+      <designation>Microsoft Excel 5.0 Worksheet</designation>
       <test offset="2080" type="string" comparator="=">Microsoft Excel 5.0 Worksheet</test>
     </detector>
     <detector>
-      <mimetype>???</mimetype>
-      <extension>???</extension>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
       <designation>Microsoft Excel 5.0 Worksheet</designation>
       <test offset="2114" type="string" comparator="=">Biff5</test>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
+      <designation>Microsoft Excel Worksheet</designation>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-powerpoint</mimetype>
+      <extension>ppt</extension>
+      <designation>Microsoft Powerpoint Document</designation>
     </detector>
     <detector>
       <mimetype>???</mimetype>
