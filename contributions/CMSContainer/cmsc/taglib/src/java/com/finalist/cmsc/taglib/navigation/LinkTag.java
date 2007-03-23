@@ -50,7 +50,6 @@ public class LinkTag extends SimpleTagSupport {
 	 * Params added by nested param tag
 	 */
 	private Map<String, Object> params = new HashMap<String, Object>();
-
 	private Page page;
 
 	public void doTag() throws JspException, IOException {
@@ -58,54 +57,78 @@ public class LinkTag extends SimpleTagSupport {
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
 		if (page != null) {
-			String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
-         
-			if (link != null) {
-				// handle body, call any nested tags
-				JspFragment frag = getJspBody();
-				if (frag != null) {
-					StringWriter buffer = new StringWriter();
-					frag.invoke(buffer);
-				}
-
-                String host = null;
-                if(ServerUtil.useServerName()) {
-                   host = SiteManagement.getSite(page);
+            String newlink = null;
+            
+            String externalurl = page.getExternalurl();
+            if (!StringUtils.isBlank(externalurl)) {
+                if (externalurl.indexOf("://") > -1) {
+                    newlink = externalurl;
                 }
-                PortalURL u = new PortalURL(host, request, link);
-                
-                if (element != null) {
-                    int pageId = page.getId();
-                    String portletWindowName = Search.getPortletWindow(pageId, element);
-                    if (portletWindowName != null) {
-                        u.setRenderParameter(portletWindowName, "elementId", new String[] { element } );
+                else {
+                    Page internalPage = SiteManagement.getPageFromPath(externalurl);
+                    if (internalPage != null) {
+                        String link = SiteManagement.getPath(internalPage, !ServerUtil.useServerName());
+                        newlink = getPageUrl(request, link);
                     }
                 }
-                
-                String newlink = u.toString();
-                
-                if(newlink != null && newlink.length() == 0) {
-                	newlink = "/";
+            }
+            else {
+    			String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
+                if (link != null) {
+                    newlink = getPageUrl(request, link);
                 }
-
-				// handle result
-				if (var != null) {
-					// put in variable
-					if (newlink != null) {
-						request.setAttribute(var, newlink);
-					} else {
-						request.removeAttribute(var);
-					}
+            }
+			// handle result
+			if (var != null) {
+				// put in variable
+				if (newlink != null) {
+					request.setAttribute(var, newlink);
 				} else {
-					// write
-					ctx.getOut().print(newlink);
+					request.removeAttribute(var);
 				}
 			} else {
-				// log.warn("NO LINK");
+                if (newlink != null) {
+                    // write
+    				ctx.getOut().print(newlink);
+                }
 			}
 		} else {
-			// log.warn("NO CHANNEL");
+			// log.warn("NO PAGE");
 		}
+	}
+
+    private String getPageUrl(HttpServletRequest request, String link)
+            throws JspException, IOException {
+        String newlink = null;
+        if (link != null) {
+        	// handle body, call any nested tags
+        	JspFragment frag = getJspBody();
+        	if (frag != null) {
+        		StringWriter buffer = new StringWriter();
+        		frag.invoke(buffer);
+        	}
+   
+            String host = null;
+            if(ServerUtil.useServerName()) {
+               host = SiteManagement.getSite(page);
+            }
+            PortalURL u = new PortalURL(host, request, link);
+            
+            if (element != null) {
+                int pageId = page.getId();
+                String portletWindowName = Search.getPortletWindow(pageId, element);
+                if (portletWindowName != null) {
+                    u.setRenderParameter(portletWindowName, "elementId", new String[] { element } );
+				}
+            }
+
+            newlink = u.toString();
+            
+            if(newlink != null && newlink.length() == 0) {
+            	newlink = "/";
+            }
+        }
+        return newlink;
 	}
 
     /**
