@@ -1,7 +1,6 @@
 package com.finalist.cmsc.taglib;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import javax.servlet.jsp.PageContext;
@@ -9,13 +8,9 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.*;
 
 public class DumpDefaultsTag extends SimpleTagSupport {
-	
-	private static Log log = LogFactory.getLog(DumpDefaultsTag.class);
 	
 	private String path;
 
@@ -133,7 +128,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 	}
 
 
-	private String doBackup(List<DumpingNode> dumpingNodes) throws IOException {
+	private String doBackup(List<DumpingNode> dumpingNodes) {
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 		HashMap<String,HashSet<Node>> backupMap = buildBackupMap(dumpingNodes, cloud);
 		String report = exportBackupMap(backupMap, cloud);
@@ -141,7 +136,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 	}
 
 
-	private String exportBackupMap(HashMap<String,HashSet<Node>> backupMap, Cloud cloud) throws IOException {
+	private String exportBackupMap(HashMap<String,HashSet<Node>> backupMap, Cloud cloud) {
 		StringBuffer report = new StringBuffer();
 		
         // Use manager for Object and Insrel field checking
@@ -197,12 +192,25 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 			
 			FileOutputStream fos = null;
 			try {
-				fos = new FileOutputStream(path+"/"+key+".xml");
+				String fileName = path + System.getProperty("file.separator") + key + ".xml";
+				File fileObject = new File(fileName);
+				File folder = fileObject.getParentFile();
+				if (!folder.exists()) {
+					if (!folder.mkdirs()) {
+						report.append("Failed to create directory '" + fileName + "'<br/>");
+					}
+				}
+				fos = new FileOutputStream(fileName);
 				fos.write(sb.toString().getBytes());
-			}
-			finally {
-				if(fos != null) {
-					fos.close();
+			} catch (IOException e) {
+				report.append("Unable to create backup, " + e.getMessage() + "<br/>");
+			} finally {
+				if (fos != null) {
+					try {
+						fos.close();
+					} catch (IOException e) {
+						report.append("Unable to close backup, " + e.getMessage() + "<br/>");
+					}
 				}
 			}
 		}
@@ -251,7 +259,6 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 					Node childNode = relation.getDestination();
 					if(childNode.getNumber() == node.getNumber()) {
 						childNode = relation.getSource();
-						log.info("using source!!!");
 					}
 					addNodeToBackup(backupMap, childNode, childDumpingNode);
 				}
