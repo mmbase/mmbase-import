@@ -33,12 +33,15 @@ public class IsAllowedEditTag extends TagSupport {
    }
 
    public int doStartTag() throws JspException {
-		Cloud cloud = CloudUtil.getCloudFromSession((HttpServletRequest) pageContext.getRequest());
+        UserRole role = null;
+
+        Cloud cloud = CloudUtil.getCloudFromSession((HttpServletRequest) pageContext.getRequest());
+        if (cloud != null) {
+            role = RepositoryUtil.getRole(cloud, channelNumber);
+            log.debug(role.getRole().getName());
+        }
 		
-		UserRole role = RepositoryUtil.getRole(cloud, channelNumber);
-		log.debug(role.getRole().getName());
-		
-		if(role.getRole() != Role.NONE) {
+		if(role != null && role.getRole() != Role.NONE) {
 			return inverse ? SKIP_BODY : EVAL_BODY_INCLUDE;
 		}
 		else {
