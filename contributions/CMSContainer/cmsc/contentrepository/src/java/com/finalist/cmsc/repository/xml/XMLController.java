@@ -30,28 +30,59 @@ public class XMLController {
 
    static Logger log = Logging.getLoggerInstance(XMLController.class.getName());
 
-   private static List<String> disallowedTypes = new ArrayList<String>();
-   private static List<String> disallowedRelationTypes = new ArrayList<String>();
+   public final static List<String> defaultDisallowedTypes = new ArrayList<String>();
+   public final static List<String> defaultDisallowedRelationTypes = new ArrayList<String>();
    static {
-       disallowedTypes.add(RepositoryUtil.CONTENTCHANNEL);
-       disallowedTypes.add(RepositoryUtil.CONTENTELEMENT);
-       disallowedTypes.add(SecurityUtil.USER);
+       defaultDisallowedTypes.add(RepositoryUtil.CONTENTCHANNEL);
+       defaultDisallowedTypes.add(RepositoryUtil.CONTENTELEMENT);
+       defaultDisallowedTypes.add(SecurityUtil.USER);
 
-       disallowedTypes.add("layout");
-       disallowedTypes.add("portletdefinition");
-       disallowedTypes.add("view");
-       disallowedTypes.add("stylesheet");
-       disallowedTypes.add("portlet");
+       defaultDisallowedTypes.add("layout");
+       defaultDisallowedTypes.add("portletdefinition");
+       defaultDisallowedTypes.add("view");
+       defaultDisallowedTypes.add("stylesheet");
+       defaultDisallowedTypes.add("portlet");
        
-       
-       disallowedRelationTypes.add(RepositoryUtil.CREATIONREL);
-       disallowedRelationTypes.add(RepositoryUtil.DELETIONREL);
-       disallowedRelationTypes.add(SecurityUtil.ROLEREL);
-       disallowedRelationTypes.add("navrel");
-       disallowedRelationTypes.add("namedrel");
+       defaultDisallowedRelationTypes.add(RepositoryUtil.CREATIONREL);
+       defaultDisallowedRelationTypes.add(RepositoryUtil.DELETIONREL);
+       defaultDisallowedRelationTypes.add(SecurityUtil.ROLEREL);
+       defaultDisallowedRelationTypes.add("navrel");
+       defaultDisallowedRelationTypes.add("namedrel");
    }
    
-   public static String toXmlNumbersOnly(Node node, NodeList nodes, int contentSize) throws Exception {
+   private List<String> disallowedTypes;
+   private List<String> allowedTypes;
+
+   private List<String> disallowedRelationTypes;
+   private List<String> allowedRelationTypes;
+
+   private List<String> disallowedFields;
+   private List<String> allowedFields;
+
+   public XMLController(List<String> disallowedRelationTypes, List<String> allowedRelationTypes, 
+           List<String> disallowedTypes, List<String> allowedTypes,
+           List<String> disallowedFields, List<String> allowedFields) {
+       
+       this.disallowedRelationTypes = setypList(disallowedRelationTypes);
+       this.allowedRelationTypes = setypList(allowedRelationTypes);
+
+       this.disallowedTypes = setypList(disallowedTypes);
+       this.allowedTypes = setypList(allowedTypes);
+
+       this.disallowedFields = setypList(disallowedFields);
+       this.allowedFields = setypList(allowedFields);
+   }
+
+    private List<String> setypList(List<String> allowedRelationTypes) {
+       if (allowedRelationTypes != null) {
+           return allowedRelationTypes;
+       }
+       else {
+           return new ArrayList<String>();
+       }
+    }
+
+   public String toXmlNumbersOnly(Node node, NodeList nodes, int contentSize) throws Exception {
         try {
            Document document = getDocument();
            toXml(node, document, null, false);
@@ -82,7 +113,7 @@ public class XMLController {
        }
   }
 
-   public static String toXml(Node node) throws Exception {
+   public String toXml(Node node) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null);
@@ -93,7 +124,7 @@ public class XMLController {
       }
    }
 
-   public static String toXml(Node node, boolean addRelations) throws Exception {
+   public String toXml(Node node, boolean addRelations) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null, addRelations);
@@ -104,7 +135,7 @@ public class XMLController {
       }
    }
    
-   public static String toXml(Node node, NodeList nodes, int contentSize) throws Exception {
+   public String toXml(Node node, NodeList nodes, int contentSize) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null, false);
@@ -136,11 +167,11 @@ public class XMLController {
       }
    }
    
-   public static String toXml(Node node, String nodeName) throws Exception {
+   public String toXml(Node node, String nodeName) throws Exception {
       return toXml(node, nodeName, true);
    }
 
-   public static String toXml(Node node, String nodeName, boolean addReleations) throws Exception {
+   public String toXml(Node node, String nodeName, boolean addReleations) throws Exception {
    	try {
          Document document = getDocument();
          Element channelEl = document.createElement(nodeName);
@@ -154,23 +185,23 @@ public class XMLController {
    }
 
    
-   public static Element toXml(Node node, Document document, Element root) {
+   public Element toXml(Node node, Document document, Element root) {
       return toXml(node, document, root, true);
    }
 
-   public static Element toXml(Node node, Document document, Element root, boolean addRelations) {
+   public Element toXml(Node node, Document document, Element root, boolean addRelations) {
       return toXmlNode(node, document, root, addRelations, false, new HashMap<Integer, Node>());
    }
    
-   public static Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute) {
+   public Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute) {
       return toXmlNode(node, document, root, addRelations, fieldsAsAttribute, new HashMap<Integer, Node>());
    }
 
-   private static Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
       return toXmlNode(node, document, root, addRelations, fieldsAsAttribute, processedNodes, new ArrayList<Integer>());
    }
    
-   private static Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
+   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       NodeManager manager = node.getNodeManager();
       
       Element nodeElement = document.createElement(manager.getName());
@@ -185,8 +216,7 @@ public class XMLController {
          while (rmi.hasNext()) {
             RelationManager rm = rmi.nextRelationManager();
             
-            if (!disallowedRelationTypes.contains(rm.getReciprocalRole())
-                    && !disallowedTypes.contains(rm.getDestinationManager().getName())) {
+            if (isRelationAllowed(rm)) {
                toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, nodesSeenButNotProcessed);
             }
          }
@@ -201,8 +231,41 @@ public class XMLController {
       }
       return nodeElement;
    }
+
+    private boolean isRelationAllowed(RelationManager rm) {
+        if (!allowedRelationTypes.isEmpty()) {
+            if (allowedRelationTypes.contains(rm.getReciprocalRole())) {
+                if (!allowedTypes.isEmpty()) {
+                    return allowedTypes.contains(rm.getDestinationManager().getName());
+                }
+                return true;
+            }
+            return false;
+        }
+
+        if (!disallowedRelationTypes.isEmpty()) {
+            if (disallowedRelationTypes.contains(rm.getReciprocalRole())) {
+                return false;
+            }
+            else {
+                if (!disallowedTypes.isEmpty()) {
+                    return !disallowedTypes.contains(rm.getDestinationManager().getName());
+                }
+            }
+            return true;
+        }
+        
+        if (!allowedTypes.isEmpty()) {
+            return allowedTypes.contains(rm.getDestinationManager().getName());
+        }
+        
+        if (!disallowedTypes.isEmpty()) {
+            return !disallowedTypes.contains(rm.getDestinationManager().getName());
+        }
+        return true;
+   }
    
-   private static void addExternalUrl(Node node, Document document, Element nodeElement,
+   private void addExternalUrl(Node node, Document document, Element nodeElement,
         boolean fieldsAsAttribute) {
     
        String url = null;
@@ -243,11 +306,11 @@ public class XMLController {
        
    }
 
-   public static void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute) {
+   public void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute) {
       toXmlFields(node, document, nodeElement, fieldsAsAttribute, false);
    }
 
-   public static void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute, boolean relationFields) {
+   public void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute, boolean relationFields) {
 
       FieldList fieldList = node.getNodeManager().getFields();
       fieldList.sort();
@@ -256,7 +319,7 @@ public class XMLController {
          Field field = fieldIterator.nextField();
          String fieldName = field.getName();
          if ((field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_VIRTUAL)
-               && !isMMBaseField(fieldName)) {
+               && !isMMBaseField(fieldName) && isFieldAllowed(node.getNodeManager(),fieldName)) {
             
             int type = field.getType();
             
@@ -300,17 +363,59 @@ public class XMLController {
       }
    }
 
-   private static boolean isMMBaseField(String fieldName) {
+   private boolean isFieldAllowed(NodeManager nodeManager, String fieldName) {
+       if (!allowedFields.isEmpty()) {
+           if (!allowedFields.contains(fieldName)) {
+               NodeManager testManager = nodeManager;
+               while (testManager != null) {
+                   if (allowedFields.contains(testManager.getName() + "." + fieldName)) {
+                       return true;
+                   }
+                   try {
+                       testManager = testManager.getParent();
+                   }
+                   catch(NotFoundException nfe) {
+                       testManager = null;
+                   }
+               }
+               return false;
+           }
+           return true;
+       }
+       
+       if (!disallowedFields.isEmpty()) {
+           if (!disallowedFields.contains(fieldName)) {
+               NodeManager testManager = nodeManager;
+               while (testManager != null) {
+                   if (disallowedFields.contains(testManager.getName() + "." + fieldName)) {
+                       return false;
+                   }
+                   try {
+                       testManager = testManager.getParent();
+                   }
+                   catch(NotFoundException nfe) {
+                       testManager = null;
+                   }
+               }
+               return true;
+           }
+           return false;
+       }
+
+       return true;
+   }
+
+   private boolean isMMBaseField(String fieldName) {
       return "owner".equals(fieldName) || "snumber".equals(fieldName) 
             || "dnumber".equals(fieldName) || "rnumber".equals(fieldName)
             || "dir".equals(fieldName) || fieldName.startsWith("_");
    }
 
-   public static void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
        toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, new ArrayList<Integer>());
    }
     
-   public static void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
+   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       if (rm.hasField("pos")) {
          Comparator<Node> comparator = new NodeFieldComparator("pos");
          toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, comparator, processedNodes, nodesSeenButNotProcessed);
@@ -320,7 +425,7 @@ public class XMLController {
       }
    }
 
-   private static void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, Comparator<Node> comparator, HashMap<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
+   private void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, Comparator<Node> comparator, HashMap<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
       String relatedRole = rm.getForwardRole();
       NodeManager destination = rm.getDestinationManager();
       RelationList rl = node.getRelations(relatedRole, destination, "DESTINATION");
@@ -359,7 +464,7 @@ public class XMLController {
       }
    }
 
-   public static Document getDocument() throws Exception {
+   public Document getDocument() throws Exception {
        try {
          return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
       } catch (ParserConfigurationException e) {
@@ -371,7 +476,7 @@ public class XMLController {
       }
    }
    
-   public static String writeXml(Document document) throws Exception {
+   public String writeXml(Document document) throws Exception {
       StringWriter output;
       try {
          Transformer transformer = TransformerFactory.newInstance().newTransformer();

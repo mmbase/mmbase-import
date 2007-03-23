@@ -33,6 +33,14 @@ import java.text.ParseException;
  */
 public class VersioningServiceMMBaseImpl extends VersioningService {
 
+    private final XMLController xmlController;
+
+    public VersioningServiceMMBaseImpl() {
+        xmlController = new XMLController(XMLController.defaultDisallowedRelationTypes,
+                null, XMLController.defaultDisallowedTypes, null,
+                null, null);
+    }
+    
    /**
     * MMbase logging system
     */
@@ -49,7 +57,7 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
       Cloud cloud = node.getCloud();
       NodeManager nodeManager = cloud.getNodeManager(ARCHIVE);
       try {
-         String data = XMLController.toXml(node, false);
+         String data = xmlController.toXml(node, false);
          byte[] bytes = data.getBytes("UTF-8");
 
 
