@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.45.2.1 2006-11-06 17:27:24 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.45.2.2 2007-03-23 13:46:54 andre Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -245,6 +245,11 @@
         the effect is that a handle field which already is present in the database, cannot be saved.
       </description>
       <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ChecksumGetProcessorFactory">
+          <param name="field">handle</param>
+        </class>
+      </getprocessor>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
           <param name="field">handle</param>
