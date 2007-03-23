@@ -357,6 +357,37 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         return Collections.unmodifiableMap(h);
     }
 
-
+    public static void main(String [] argv) {
+        CharTransformer trans = new ChunkedTransformer(XMLTEXT) {
+                protected boolean replace(String string, Writer w, Status status) throws IOException {
+                    w.write(string);
+                    return false;
+                }
+                protected String base() {
+                    return "test";
+                }
+            };
+        CharTransformer trans2 = new BufferedReaderTransformer() {
+                protected void transform(PrintWriter bw, String line) {
+                    bw.println(line);
+                }
+            };
+        long startTime = System.currentTimeMillis();
+        if (argv.length > 0) {
+            if("buf1".equals(argv[0])) {
+                trans.transform(new BufferedReader(new InputStreamReader(System.in)), new BufferedWriter(new OutputStreamWriter(System.out)));
+            } else if ("buf2".equals(argv[0])) {
+                trans2.transform(new InputStreamReader(System.in), new BufferedWriter(new OutputStreamWriter(System.out)));
+            } else {
+                System.err.println("Don't understand '" + argv[0] + "'");
+            }
+        } else {
+            trans.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
+        }
+        long duration = System.currentTimeMillis() - startTime;
+        System.err.println("Converstion took " + duration + " ms");
+        
+        
+    }
 
 }
