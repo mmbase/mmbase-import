@@ -13,6 +13,10 @@ function i18n(str) {
   return (HTMLArea._lc(str, 'cmscrichtext'));
 }
 
+var IMAGE_WIDTH_LEFT = 176;
+var IMAGE_WIDTH_RIGHT = 176;
+var IMAGE_WIDTH_FULL = 353;
+
 function Init() {
   __dlg_translate('cmscrichtext');
   __dlg_init();
@@ -29,6 +33,11 @@ function Init() {
       document.getElementById("f_height").value = param["f_height"];
       document.getElementById("f_destination").value = param["f_destination"];
   }
+  if (document.getElementById("f_width").value == "") {
+  	document.getElementById("f_align").value = "left";
+  	document.getElementById("f_width").value = IMAGE_WIDTH_LEFT;
+  }
+  
   document.getElementById("f_url").focus();
 }
 
@@ -67,7 +76,7 @@ function onSelect() {
   return false;
 };
 
-function selectElement(element_id, title, url, width, height) {
+function selectElement(element_id, title, url, width, height, description) {
    document.getElementById("f_destination").value = element_id;
 
    if (url != undefined && url.length != 0 ) {
@@ -77,12 +86,56 @@ function selectElement(element_id, title, url, width, height) {
          || document.getElementById("f_alt").value.length == 0 ) {
       document.getElementById("f_alt").value = title;
    }
-   if (width) {
-     document.getElementById("f_width").value = width;
-   }
-   if (height) {
-     document.getElementById("f_height").value = height;
-   }
+  var imagePosition = document.getElementById("f_align").value
+  if ("left" == imagePosition) {
+    if (width && height) {
+      height = (IMAGE_WIDTH_LEFT / width) * height;
+      document.getElementById("f_width").value = IMAGE_WIDTH_LEFT;
+      document.getElementById("f_height").value = height;
+    }
+  }
+  if ("right" == imagePosition) {
+    if (width && height) {
+      height = (IMAGE_WIDTH_RIGHT / width) * height;
+      document.getElementById("f_width").value = IMAGE_WIDTH_RIGHT;
+      document.getElementById("f_height").value = height;
+    }
+  }
+  if ("" == imagePosition) {
+    if (width && height) {
+      height = (IMAGE_WIDTH_FULL / width) * height;
+      document.getElementById("f_width").value = IMAGE_WIDTH_FULL;
+      document.getElementById("f_height").value = height;
+    }
+  }
+
+}
+
+function onSelectPosition() {
+  var width = document.getElementById("f_width").value;
+  var height = document.getElementById("f_height").value;
+  var imagePosition = document.getElementById("f_align").value
+  if ("left" == imagePosition) {
+    document.getElementById("f_width").value = IMAGE_WIDTH_LEFT;
+    if (height) {
+      height = (IMAGE_WIDTH_LEFT / width) * height;
+      document.getElementById("f_height").value = height;
+    }
+  }
+  if ("right" == imagePosition) {
+    document.getElementById("f_width").value = IMAGE_WIDTH_RIGHT;  
+    if (height) {
+      height = (IMAGE_WIDTH_RIGHT / width) * height;
+      document.getElementById("f_height").value = height;
+    }
+  }
+  if ("" == imagePosition) {
+    document.getElementById("f_width").value = IMAGE_WIDTH_FULL;
+    if (height) {
+      height = (IMAGE_WIDTH_FULL / width) * height;
+      document.getElementById("f_height").value = height;
+    }
+  }
 }
 
 function openPopupWindow(url, windowName, width, height) {
@@ -155,7 +208,8 @@ function openPopupWindow(url, windowName, width, height) {
 
 <div class="fl">Alignment:</div>
 <select size="1" name="align" id="f_align"
-  title="Positioning of this image">
+    title="Positioning of this image"
+    onchange="onSelectPosition()">
   <option value=""                             >Not set</option>
   <option value="left"                         >Left</option>
   <option value="right"                        >Right</option>
