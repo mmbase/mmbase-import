@@ -55,12 +55,7 @@ See http://www.MMBase.org/license
 			<version>${mmbase.version}</version>
 			<type>jar</type>
 		</dependency>
-      <dependency>
-         <groupId>mmapps</groupId>
-         <artifactId>remotepublishing</artifactId>
-         <version>1.0.10</version>
-         <type>jar</type>
-      </dependency>
+
 	</dependencies>
 </project>
 
