@@ -82,7 +82,10 @@ public class MoveContentAction extends MMBaseAction {
          Node node = ni.nextNode();
          int nodeNumber = node.getIntValue("contentelement.number");
          if(nodeNumber == number) {
-            swap(ni.nextNode().getIntValue("contentrel.number"), node.getIntValue("contentrel.number"));
+            if (ni.hasNext()) { // it could already be the last item in the list
+            	Node nextNode = ni.nextNode();
+                swap(nextNode.getIntValue("contentrel.number"), node.getIntValue("contentrel.number"));
+            }
             break;  //(out of the for loop)
          }
       }
