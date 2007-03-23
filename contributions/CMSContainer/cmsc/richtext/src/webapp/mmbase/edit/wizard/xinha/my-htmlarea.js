@@ -99,6 +99,10 @@ function doCheckHtml() {
 }
 
 function updateValue(editor) {
+  // cancel on view only editor
+  if(editor._doc == null) {
+	  return;
+  }
   if(editor != null && editor.getHTML) {
 	  setWidthForTables(editor);
 	  value = editor.outwardHtml(editor.getHTML());
