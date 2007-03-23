@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.35 2007-02-10 15:39:14 michiel Exp $
+# $Id: build.properties.default,v 1.36 2007-03-23 15:34:27 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -37,7 +37,7 @@ jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 # --------------------------------------------------
 
 # ---- Default Sourceforge Mirror ----
-sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
+sourceforge.loc=http://kent.dl.sourceforge.net/sourceforge
 # ---- MMBase.org location ---
 mmbase.loc=http://www.mmbase.org/download/jars
 
