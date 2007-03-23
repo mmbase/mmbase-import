@@ -2,8 +2,7 @@ package com.finalist.cmsc.repository.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.*;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,10 +51,52 @@ public class XMLServlet extends HttpServlet {
    private static final String SORT_NAME = "sort";
    private static final String SORT_DIRECTION = "sortDirection";
    private static final String NUMBERS_ONLY = "numbersOnly";
+   
    /**
     * This is the channel separator.
     */
    public static final String CS = "/";
+
+   private final XMLController xmlController;
+   
+   public XMLServlet() {
+       List<String> disallowedTypes = getDisallowedTypes();
+       List<String> allowedTypes = getAllowedTypes();
+
+       List<String> disallowedRelationTypes = getDisallowedRelationTypes();
+       List<String> allowedRelationTypes = getAllowedRelationTypes();
+
+       List<String> disallowedFields = getDisallowedFields();
+       List<String> allowedFields = getAllowedFields();
+
+       xmlController = new XMLController(disallowedRelationTypes, allowedRelationTypes,
+               disallowedTypes, allowedTypes,
+               disallowedFields, allowedFields);
+   }
+
+    protected List<String> getAllowedFields() {
+        return null;
+    }
+
+    protected List<String> getDisallowedFields() {
+        return null;
+    }
+
+    protected List<String> getAllowedRelationTypes() {
+        return null;
+    }
+
+    protected List<String> getAllowedTypes() {
+        return null;
+    }
+
+    protected List<String> getDisallowedTypes() {
+        return XMLController.defaultDisallowedTypes;
+    }
+    
+    protected List<String> getDisallowedRelationTypes() {
+        return XMLController.defaultDisallowedRelationTypes;
+    }
 
    /**
     * This method handles all requests, checks the request to see what data is required
@@ -128,10 +169,10 @@ public class XMLServlet extends HttpServlet {
          try {
             Node node = cloud.getNode(pk);
             if (RepositoryUtil.isContentChannel(node)) {
-               xml = XMLController.toXml(node);
+               xml = xmlController.toXml(node);
             }
             else {
-               xml = XMLController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
+               xml = xmlController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
             }
             HttpUtil.sendXml(xml, response);
             xml = transformXml(xsl, xml);
@@ -248,10 +289,10 @@ public class XMLServlet extends HttpServlet {
        String xml = "";
        try {
          if (Boolean.valueOf(numbersOnly).booleanValue()) {
-             xml = XMLController.toXmlNumbersOnly(channelNode, contentlist, contentSize);
+             xml = xmlController.toXmlNumbersOnly(channelNode, contentlist, contentSize);
          }
          else {
-             xml = XMLController.toXml(channelNode, contentlist, contentSize);
+             xml = xmlController.toXml(channelNode, contentlist, contentSize);
          }
          
          xml = transformXml(xsl, xml);
@@ -291,8 +332,7 @@ public class XMLServlet extends HttpServlet {
        HttpUtil.sendXml(xml, response);
     }
 
-    private String transformXml(String xsl, String xml) throws IOException, TransformerException,
-            ParserConfigurationException, SAXException {
+    private String transformXml(String xsl, String xml) throws IOException, TransformerException {
          if (!StringUtil.isEmpty(xsl)) {
             // get xslt source and xml source
             InputStream xslSrc = getClass().getClassLoader().getResourceAsStream(xsl);
