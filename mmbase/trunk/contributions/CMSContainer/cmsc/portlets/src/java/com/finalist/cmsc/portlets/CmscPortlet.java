@@ -201,7 +201,10 @@ public abstract class CmscPortlet extends GenericPortlet {
     	if(username != null && !username.equals("anonymous")) {
     		Node userNode = SecurityUtil.getUserNode(cloud);
     		if(userNode != null) {
-                userLocale = new Locale(userNode.getStringValue("language"));
+                String userLanguage = userNode.getStringValue("language");
+                if (!StringUtil.isEmpty(userLanguage)) {
+                    userLocale = new Locale(userLanguage);
+                }
     		}
     	}
         return userLocale;
@@ -389,21 +392,17 @@ public abstract class CmscPortlet extends GenericPortlet {
     }
     
     protected void setPortletNodeParameter(String portletId, String key, String value) {
-        if (value != null) {
-            PortletParameter param = new PortletParameter();
-            param.setKey(key);
-            param.setValue(value);
-            SiteManagementAdmin.setPortletNodeParameter(portletId, param);
-        }
+        PortletParameter param = new PortletParameter();
+        param.setKey(key);
+        param.setValue(value);
+        SiteManagementAdmin.setPortletNodeParameter(portletId, param);
     }
 
     protected void setPortletParameter(String portletId, String key, String value) {
-        if (value != null) {
-            PortletParameter param = new PortletParameter();
-            param.setKey(key);
-            param.setValue(value);
-            SiteManagementAdmin.setPortletParameter(portletId, param);
-        }
+        PortletParameter param = new PortletParameter();
+        param.setKey(key);
+        param.setValue(value);
+        SiteManagementAdmin.setPortletParameter(portletId, param);
     }
 
     protected void setPortletView(String portletId, String viewId) {
