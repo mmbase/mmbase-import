@@ -40,9 +40,8 @@ public class TransformingReader extends PipedReader {
 
     private static final Logger log = Logging.getLoggerInstance(TransformingReader.class);
 
-    private Reader in;
-    private CharTransformerLink link;
-
+    private final Reader in;
+    private final CharTransformerLink link;
 
     public TransformingReader(Reader in, CharTransformer charTransformer)  {
         super();
@@ -50,17 +49,26 @@ public class TransformingReader extends PipedReader {
         PipedWriter w = new PipedWriter();
         try {            
             connect(w);
-            link = new CharTransformerLink(charTransformer, in, w, true);
-            org.mmbase.util.ThreadPools.filterExecutor.execute(link);          
         } catch (IOException ioe) {
-            log.error(ioe.getMessage() + Logging.stackTrace(ioe));
+            log.error(ioe.getMessage(), ioe);
         }
+        link = new CharTransformerLink(charTransformer, in, w, true);
+
+        // this works:
+        //Thread t = new Thread(link);
+        //t.start();
+        
+        // this too, but main does not finish immediately. I suppose that is ok though:
+        // Costed me some time to realise this....
+        org.mmbase.util.ThreadPools.filterExecutor.execute(link);          
+
     }
     
     public synchronized int read() throws IOException {
         int result =  super.read();
         if (result == -1) { // nothing to read any more, wait until transformation is ready.
             waitReady();
+            in.close();
         }
         return result;
     }
@@ -69,6 +77,7 @@ public class TransformingReader extends PipedReader {
         int result = super.read(cbuf, off, len);
         if (result == -1) {
             waitReady();
+            //   in.close();
         }
         return result;
     }
@@ -84,7 +93,7 @@ public class TransformingReader extends PipedReader {
                 }
             }
         } catch (InterruptedException ie) {
-            log.warn("" + ie);
+            log.warn("" + ie.getMessage(), ie);
         }
     }
 
@@ -95,7 +104,6 @@ public class TransformingReader extends PipedReader {
      * ALso closes the wrapped Reader.
      */   
     public void close() throws IOException {   
-        log.info("closing");
         super.close();
         in.close();
     }
@@ -104,6 +112,7 @@ public class TransformingReader extends PipedReader {
     // main for testing purposes
     public static void main(String[] args) {
 
+        /*
         String testString = "use argument to change this string";
         if (args.length > 0) {
             testString = args[0];
@@ -128,18 +137,23 @@ public class TransformingReader extends PipedReader {
         t.add(new UpperCaser());
         t.add(new SpaceReducer());
         t.add(new Trimmer());
-        
-        reader = new BufferedReader(new TransformingReader(new StringReader(testString), t));
-        
-        try {
-            while(true) {
-                String line = reader.readLine();
-                if (line == null) break;
-                System.out.println(line);
+        */
+        {
+            BufferedReader reader = new BufferedReader(new TransformingReader(new InputStreamReader(System.in), new UpperCaser()));
+            
+            try {
+                while(true) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    System.out.println(line);
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            log.error(e + Logging.stackTrace(e));
         }
+        org.mmbase.util.ThreadPools.filterExecutor.shutdown();
     }
 
 
