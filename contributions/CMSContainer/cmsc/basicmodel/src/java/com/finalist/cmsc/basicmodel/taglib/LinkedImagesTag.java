@@ -57,6 +57,9 @@ public class LinkedImagesTag  extends NodeReferrerTag {
     /** Holds value of property width. */
     private Attribute width = Attribute.NULL;
 
+    /** Holds value of property height. */
+    private Attribute height = Attribute.NULL;
+    
     /** Holds value of property popup. */
     private Attribute popup = Attribute.NULL;
 
@@ -94,6 +97,10 @@ public class LinkedImagesTag  extends NodeReferrerTag {
    
     public void setWidth(String width) throws JspTagException {
        this.width = getAttribute(width);
+    }
+
+    public void setHeight(String height) throws JspTagException {
+        this.height = getAttribute(height);
     }
 
     public void setMax(String max) throws JspTagException {
@@ -164,11 +171,26 @@ public class LinkedImagesTag  extends NodeReferrerTag {
                     String legendType = imagerel.getStringValue("legend");
                     boolean popup = imagerel.getBooleanValue("popup");
 
+                    if(this.width != Attribute.NULL && this.height != Attribute.NULL) {
+                        width = this.width.getInt(this, 0);
+                        height = this.height.getInt(this, 0);
+                    }
+                    else {
                     if(this.width != Attribute.NULL) {
                        int forcedWidth = this.width.getInt(this, 0);
                        if(width != forcedWidth) {
                           height = height*forcedWidth/width;
                           width = forcedWidth;
+                           }
+                        }
+                        else {
+                            if (this.height != Attribute.NULL) {
+                                int forcedHeight = this.height.getInt(this, 0);
+                                if(height != forcedHeight) {
+                                    width = width*forcedHeight/height;
+                                    height = forcedHeight;
+                                }
+                            }
                        }
                     }
 
