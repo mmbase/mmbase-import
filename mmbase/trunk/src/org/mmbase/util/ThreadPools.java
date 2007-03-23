@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.6 2006-08-30 21:01:23 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.7 2007-03-23 10:09:07 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -25,13 +25,13 @@ public abstract class ThreadPools {
     /**
      * Generic Thread Pools which can be used by 'filters'.
      */
-    public static final Executor filterExecutor = Executors.newCachedThreadPool();
+    public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
 
 
     /**
      * For jobs there are 'scheduled', and typically happen on larger time-scales.
      */
-    public static final Executor jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue(200), new ThreadFactory() {
+    public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue(200), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r, "JOBTHREAD") {
