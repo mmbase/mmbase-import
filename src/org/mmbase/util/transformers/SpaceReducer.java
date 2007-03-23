@@ -27,26 +27,15 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public class SpaceReducer extends ReaderTransformer implements CharTransformer {
+public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
-    public Writer transform(Reader r, Writer w) {
-        try {
-            BufferedReader br = new BufferedReader(r);
-            PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().equals("")) {
-                    bw.println(line);
-                }
-            }
-            bw.flush();
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
+    protected void transform(PrintWriter bw, String line) {
+        if (!line.trim().equals("")) {
+            bw.println(line);
         }
-        return w;
     }
 
     /**
