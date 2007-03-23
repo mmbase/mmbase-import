@@ -15,15 +15,19 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
+ * Can be used to strip tags and attributes from HTML.
+ *
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.3 2007-03-08 14:05:15 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.4 2007-03-23 14:05:45 michiel Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
     private static final Logger log = Logging.getLoggerInstance(TagStripperFactory.class);
 
+
+    private static final String NL_TOKEN = "XXXX_NL_XXXX";
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter<String>("tags", String.class, "NONE"),  // allowed tags, default no tags are permitted.
         new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE)
@@ -32,6 +36,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
+
 
 
     /**
@@ -45,11 +50,13 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         }
         
         final List<Tag> tagList;
-        String tags = parameters.getString("tags");
+        String tags = parameters.getString("tags").toUpperCase();
         if (tags.equals("XSS")) {
             tagList = XSS;
-        } else {
+        } else if (tags.equals("")) {
             tagList = NONE;
+        } else {
+            throw new RuntimeException("Unknonw value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
         }
         final Boolean addbrs = (Boolean) parameters.get("addbrs");
 
@@ -59,10 +66,21 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 public Writer transform(Reader r, Writer w) {
                     final TagStripper callback = new TagStripper(w, tagList);
                     callback.addBrs = addbrs;
+                    if (addbrs) {
+                        r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
+                                protected boolean replace(String string, Writer w, Status status) throws IOException {
+                                    w.write(string.replaceAll("\n", NL_TOKEN));
+                                    return false;
+                                }
+                                    
+                                protected String base() { return "nl"; }
+                                
+                            });
+                    }
                     try {
                         parser.parse(r, callback, true);
                     } catch (Exception e) {
-                        log.warn(e);
+                        log.warn(e.getMessage(), e);
                     }
                     return w;
                 }
@@ -204,6 +222,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         boolean addImplied = false;
         boolean addBrs     = false;
         List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
+        List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
+
         public TagStripper(Writer out, List<Tag> t) {
             this.out = out;
             tags = t;
@@ -225,13 +245,20 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
         public void handleText(char[] text, int position) {
             try {
+                //System.out.println("Handling " + new String(text));
                 if (addBrs) {
                     String t = new String(text);
-                    log.trace("handling " + t);
-                    out.write(t.replaceAll("\n", "<br />"));
+                    if (log.isTraceEnabled()) {
+                        log.trace("handling " + t);
+                    }
+                    
+                    if (stack.get(0).isPreformatted()) {
+                        out.write(t.replaceAll(NL_TOKEN, "\n"));
+                    } else {
+                        out.write(t.replaceAll(NL_TOKEN, "<br class='auto' />"));
+                    }
                 } else {
                     out.write(text);
-                    out.write("\n");
                 }
                 out.flush();
             }
@@ -243,6 +270,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         
         public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
             try {
+                stack.add(0, tag);
                 String tagName = tag.toString();
                 Tag t;
                 boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
@@ -252,12 +280,14 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 } else {
                     t = allowed(tagName);
                 }
+                
                 if (t != null) {
                     out.write('<');
                     out.write(tag.toString());
                     Enumeration en = attributes.getAttributeNames();
                     while (en.hasMoreElements()) {
                         Object attName =  en.nextElement();
+                        if (addBrs && attName.equals("nl_")) continue;
                         AttributeSet set = attributes;
                         Object value = attributes.getAttribute(attName);
                         while (value == null && set.getResolveParent() != null) {
@@ -287,6 +317,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             System.out.println("EMPTY " + tag);
         }
         public void handleEndTag(HTML.Tag tag, int position) {
+            stack.remove(0);
             try {
                 String tagName = tag.toString();
                 Tag t;
@@ -309,7 +340,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             }
         }
         public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
-            
+            //stack.remove(0);            
             //System.out.println("SIMPLE TAG " + tag);
             try {
                 String tagName = tag.toString();
@@ -328,8 +359,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         }
         
         public void flush() {
-            try {
-                
+            try {                
                 out.flush();
                 out.close();
             } catch (IOException e) {
@@ -376,16 +406,21 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     public static void main(String[] args) {
         ParameterizedTransformerFactory factory = new TagStripperFactory();
         Parameters params = factory.createParameters();
-        params.set("tags", "NONE");
+        params.set("tags", "XSS");
+        params.set("addbrs", Boolean.TRUE);
         CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
-
-//        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";
+        
+        //        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";
 //        String source = "<p style=nanana/>";
 //        String source = "<p style=\"nanana\">text</p>";
         String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
-        System.out.println("Source      = "+source);
-        String dest = transformer.transform(source);
-        System.out.println("Destination = "+dest);
+        //System.out.println("Source      = "+source);
+        transformer.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
+        //System.out.println("Destination = "+dest);
+
+        org.mmbase.util.ThreadPools.filterExecutor.shutdown();
+
+        
     }
 
 }
