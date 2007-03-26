@@ -204,12 +204,15 @@ function openUrlInFrame(name, url, win, parentcall) {
 }
 
 // addLoadEvent(functieNaam)
-function addLoadEvent(func) {
-  var oldonload = window.onload;
-  if (typeof window.onload != 'function') {
-    window.onload = func;
+function addLoadEvent(func, windowElement) {
+  if (!windowElement) {
+     windowElement = window;   
+  }
+  var oldonload = windowElement.onload;
+  if (typeof windowElement.onload != 'function') {
+    windowElement.onload = func;
   } else {
-    window.onload = function() {
+    windowElement.onload = function() {
       oldonload();
       func();
     }
