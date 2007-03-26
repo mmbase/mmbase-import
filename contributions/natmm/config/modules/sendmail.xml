@@ -14,5 +14,5 @@
     <property name="context">java:comp/env</property>
     <property name="datasource">mail/Session</property>
   </properties>
-</module>
 @nmintra.comment.end@
+</module>
