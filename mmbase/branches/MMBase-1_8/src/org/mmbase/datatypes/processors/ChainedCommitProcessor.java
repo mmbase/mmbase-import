@@ -9,18 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import org.mmbase.bridge.*;
 import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.2.2.1 2007-03-26 12:51:14 pierre Exp $
  * @since MMBase-1.7
  */
 
 public class ChainedCommitProcessor implements  CommitProcessor {
+    private static final Logger log = Logging.getLoggerInstance(ChainedCommitProcessor.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +38,7 @@ public class ChainedCommitProcessor implements  CommitProcessor {
         Iterator i = processors.iterator();
         while (i.hasNext()) {
             Object proc = i.next();
-            if (i instanceof CommitProcessor) {
+            if (proc instanceof CommitProcessor) {
                 CommitProcessor commitProc = (CommitProcessor) proc;
                 commitProc.commit(node, field);
             }
@@ -44,7 +47,7 @@ public class ChainedCommitProcessor implements  CommitProcessor {
     }
 
     public String toString() {
-        return "chained" + processors;
+        return "chained commit" + processors;
     }
 
 
