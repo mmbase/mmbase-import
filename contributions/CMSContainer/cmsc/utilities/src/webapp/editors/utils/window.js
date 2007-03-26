@@ -205,16 +205,25 @@ function openUrlInFrame(name, url, win, parentcall) {
 
 // addLoadEvent(functieNaam)
 function addLoadEvent(func, windowElement) {
-  if (!windowElement) {
-     windowElement = window;   
+  if (windowElement == undefined) {
+     windowElement = window; 
   }
-  var oldonload = windowElement.onload;
+
+  var newonload;
   if (typeof windowElement.onload != 'function') {
-    windowElement.onload = func;
+    newonload = func;
   } else {
-    windowElement.onload = function() {
+    var oldonload = windowElement.onload;
+    newonload = function() {
       oldonload();
       func();
     }
+  }
+  
+  if ( document.addEventListener ) {
+    windowElement.addEventListener("load", newonload, true);
+  }
+  else if ( document.attachEvent ) {
+      windowElement.attachEvent("onload", newonload);
   }
 }
