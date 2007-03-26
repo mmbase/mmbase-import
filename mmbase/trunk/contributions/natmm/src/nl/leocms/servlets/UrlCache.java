@@ -15,7 +15,7 @@ public class UrlCache {
 	 // at org.mmbase.cache.oscache.OSCacheImplementation.get(OSCacheImplementation.java:135)
 	 String tempdir = System.getProperty("java.io.tmpdir");
 	 if ( !(tempdir.endsWith("/") || tempdir.endsWith("\\")) ) {
-		 tempdir += tempdir + System.getProperty("file.separator");
+		 tempdir += System.getProperty("file.separator");
 	 }
     Map config = new HashMap(); 
     config.put("path", tempdir);
