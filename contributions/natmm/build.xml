@@ -184,7 +184,7 @@
 		</copy>		
 		
 		<!-- delete mysql connector from the lib directory -->
-		<delete file="${build.dir}/mmbase-webapp/WEB-INF/lib/mysql-connector-java-3.0.6-stable-bin.jar"/>
+		<delete file="${build.dir}/mmbase-webapp/WEB-INF/lib/mysql-connector-java-5.0.5-bin.jar"/>
 		
 		<mkdir dir="${build.dir}/dist" />
 		
@@ -228,7 +228,7 @@
 		</copy>		
 		
 		<!-- delete mysql connector from the lib directory -->
-		<delete file="${build.dir}/mmbase-webapp/WEB-INF/lib/mysql-connector-java-3.0.6-stable-bin.jar"/>
+		<!--<delete file="${build.dir}/mmbase-webapp/WEB-INF/lib/mysql-connector-java-5.0.5-bin.jar"/>-->
 		
 		<mkdir dir="${build.dir}/dist" />
 		
