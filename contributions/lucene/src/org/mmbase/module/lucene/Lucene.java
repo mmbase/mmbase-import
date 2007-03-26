@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.84 2007-02-27 13:38:34 michiel Exp $
+ * @version $Id: Lucene.java,v 1.85 2007-03-26 13:56:53 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -619,7 +619,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
                 log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
             } catch (Throwable t) {
-                log.info(t.getMessage());
+                log.error(t.getClass().getName() + " " + t.getMessage());
             }
             if (cloud == null) {
                 try {
@@ -832,7 +832,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (indexName == null || indexName.equals("")) indexName = defaultIndex;
         Searcher searcher = searcherMap.get(indexName);
         if (searcher == null) {
-            throw new IllegalArgumentException("Index with name "+indexName+" does not exist.");
+            throw new IllegalArgumentException("Index with name " +indexName + " does not exist. Existing are " + searcherMap.keySet());
         }
         return searcher;
     }
@@ -891,11 +891,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     // public because the constants need to be visible for the SortedBundle
     public class Scheduler extends Thread {
 
-        public static final int READONLY = -100;
-        public static final int IDLE = 0;
+        public static final int READONLY         = -100;
+        public static final int IDLE             = 0;
         public static final int IDLE_AFTER_ERROR = -1;
-        public static final int BUSY_INDEX = 1;
-        public static final int BUSY_FULL_INDEX = 2;
+        public static final int BUSY_INDEX       = 1;
+        public static final int BUSY_FULL_INDEX  = 2;
 
         // status of the scheduler
         private int status = IDLE;
