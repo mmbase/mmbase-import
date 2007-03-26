@@ -67,43 +67,54 @@ function realTopPosition(element) {
 	}
 }
 
-
 function fillIframe(div, left) {
-	var iframe = document.createElement("iframe");
-	var parent = div.parentNode;
-	var parentWidth = parent.offsetWidth
+  var iframe = document.createElement("iframe");
+  var parent = div.parentNode;
+  var parentWidth = parent.offsetWidth
 	
-	iframe.frameBorder = 0;
-	iframe.className = "portlet-config-iframe";
-	parent.appendChild(iframe);
-	parent.style.height="323px";
+  iframe.frameBorder = 0;
+  iframe.className = "portlet-config-iframe";
 
-    var parentdocument = document;
-    var ifrmaeload = function(e)
-    {
+  var agt = navigator.userAgent.toLowerCase();
+  var is_ie = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
+  if (is_ie)
+    iframe.src = '<cmsc:staticurl page='/editors/empty.html' />';
+
+  parent.appendChild(iframe);
+  parent.style.height="323px";
+
+  var parentdocument = document;
+  var ifrmaeload = function(e)
+  {
+    if (!iframe._iframeLoadDone) {
+      iframe._iframeLoadDone = true;
       var iframedoc;
-	  if ( iframe.contentDocument ) {
+      if ( iframe.contentDocument ) {
         iframedoc = iframe.contentDocument;        
       }
-	  else {
-	    iframedoc = iframe.contentWindow.document;
-	  }
-	  writeDocument(iframedoc, div, parentdocument);
-      return true;
+      else {
+       iframedoc = iframe.contentWindow.document;
+      }
+      writeDocument(iframedoc, div, parentdocument);
     }
-    addLoadEvent(ifrmaeload, iframe);
+    return true;
+  };
 
-   var difference = parentWidth - iframe.clientWidth;
-	if(difference < 0) {
-		var clientWidth = document.body.clientWidth;
+  iframe._iframeLoadDone = false
+
+  addLoadEvent(ifrmaeload, iframe);
+	
+  var difference = parentWidth - iframe.clientWidth;
+  if(difference < 0) {
+    var clientWidth = document.body.clientWidth;
 		
-		if(left < (clientWidth-100)/2) {
-	  		iframe.style.marginRight=difference+'px';
-	  	}
-	  	else {
-	  		iframe.style.marginLeft=difference+'px';
-	  	}
-	}
+    if(left < (clientWidth-100)/2) {
+      iframe.style.marginRight=difference+'px';
+    }
+    else {
+      iframe.style.marginLeft=difference+'px';
+    }
+  }
 }
 
 function writeDocument(doc, div, parentdocument) {
