@@ -78,13 +78,20 @@ function fillIframe(div, left) {
 	parent.appendChild(iframe);
 	parent.style.height="323px";
 
-	if ( iframe.contentDocument ) {
-		doc = iframe.contentDocument;        
-	}
-	else {
-		doc = iframe.contentWindow.document;
-	}  
-	writeDocument(doc, div);
+    var parentdocument = document;
+    var ifrmaeload = function(e)
+    {
+      var iframedoc;
+	  if ( iframe.contentDocument ) {
+        iframedoc = iframe.contentDocument;        
+      }
+	  else {
+	    iframedoc = iframe.contentWindow.document;
+	  }
+	  writeDocument(iframedoc, div, parentdocument);
+      return true;
+    }
+    addLoadEvent(ifrmaeload, iframe);
 
    var difference = parentWidth - iframe.clientWidth;
 	if(difference < 0) {
@@ -97,14 +104,9 @@ function fillIframe(div, left) {
 	  		iframe.style.marginLeft=difference+'px';
 	  	}
 	}
-
-	for(count = 0; count < document.styleSheets.length; count++) {
-		ss = document.styleSheets[count];
-		createStylesheet( doc, ss.href);
-	}
 }
 
-function writeDocument(doc, div) {
+function writeDocument(doc, div, parentdocument) {
 	var javascriptWindow = "<cmsc:staticurl page='/editors/utils/window.js' />";
 	var cssPortaledit = "<cmsc:staticurl page='/editors/site/portaledit.css' />";
     html = "<html>\n";
@@ -121,6 +123,11 @@ function writeDocument(doc, div) {
 	doc.open();
 	doc.write(html);
 	doc.close();
+	
+	for(count = 0; count < parentdocument.styleSheets.length; count++) {
+		ss = parentdocument.styleSheets[count];
+		createStylesheet( doc, ss.href);
+	}
 }
 
 function createStylesheet(doc, location) {
