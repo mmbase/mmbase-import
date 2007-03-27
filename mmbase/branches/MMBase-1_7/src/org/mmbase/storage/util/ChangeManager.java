@@ -18,7 +18,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * 
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
+ * @version $Id: ChangeManager.java,v 1.2.2.1 2007-03-27 09:29:04 michiel Exp $
  */
 public final class ChangeManager {
 
@@ -66,10 +66,10 @@ public final class ChangeManager {
                 // figure out tables to send the changed relations
                 MMObjectNode n1 = node.getNodeValue("snumber");
                 MMObjectNode n2 = node.getNodeValue("dnumber");
-                n1.delRelationsCache();
-                n2.delRelationsCache();
-                mmc.changedNode(n1.getNumber(), n1.getBuilder().getTableName(), "r");
-                mmc.changedNode(n2.getNumber(), n2.getBuilder().getTableName(), "r");
+                if (n1 != null) n1.delRelationsCache();
+                if (n2 != null) n2.delRelationsCache();
+                if (n1 != null) mmc.changedNode(n1.getNumber(), n1.getBuilder().getTableName(), "r");
+                if (n2 != null) mmc.changedNode(n2.getNumber(), n2.getBuilder().getTableName(), "r");
             }
         }
     }
