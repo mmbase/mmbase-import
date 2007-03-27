@@ -962,13 +962,14 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${javaactivation.jar}"/>
     </antcall>
 
+    <!--
     <echo message="docbook" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${docbook-xsl.loc}"/>
       <param name="destfile" value="${docbook-xsl.dest}"/>
       <param name="expandedfile" value="${docbook-xsl.exp}"/>
     </antcall>
-
+    -->
     <echo message="log4j" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${log4j.loc}"/>
