@@ -1,10 +1,16 @@
 #!/usr/bin/perl
 
 
+# ubuntu/debian:
+# sudo apt-get install libio-socket-ssl-perl
+# sudo apt-get install libdigest-hmac-per
+# sudo apt-get install libterm-readkey-perl
+
+
 # Added by Michiel
 # test smtp-server of didactor e.g. like this:
 # 
-# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=localhost --port=1025 --from=michiel@meeuw.org --to=ppuk@m.meeuw.org --data=simle.mail
+# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=localhost --port=1025 --from=michiel@meeuw.org --to=ppuk@m.meeuw.org --data=simple.mail
 #
 # compare it do other implementations like this (please replace with your own gmail account and smtp server).
 # 
