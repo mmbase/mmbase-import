@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.2 2007-03-01 08:57:01 pierre Exp $
+ * @version $Id: MMBase.java,v 1.200.2.3 2007-03-28 12:22:23 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -440,6 +440,7 @@ public class MMBase extends ProcessorModule {
         mmbaseCop = null;
         clusterBuilder = null;
         mmbaseroot = null;
+        org.mmbase.util.ThreadPools.shutdown();
     }
 
     /**

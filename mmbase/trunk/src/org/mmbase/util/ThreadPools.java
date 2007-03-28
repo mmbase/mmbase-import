@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.7 2007-03-23 10:09:07 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.8 2007-03-28 12:23:28 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -71,6 +71,14 @@ public abstract class ThreadPools {
             log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + core);
             ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(Integer.parseInt(core));
         }
+    }
+
+    /**
+     * @since MMBase-1.8.4
+     */
+    public static void shutdown() {
+        filterExecutor.shutdown();
+        jobsExecutor.shutdown();
     }
 
 }
