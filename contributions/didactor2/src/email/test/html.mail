@@ -11,3 +11,11 @@ www.mmbase.org
   style="background-color: red;">
 Test test
 </div>
+<a href='javascript:alert("hello")'>Click here</a>
+aa
+<div 
+onclick="alert('goodbye');">Click here too</div>
+aa
+bb
+
+
