@@ -291,6 +291,9 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                     w.write(line);
                 }
                 line = reader.readLine();
+                if (line != null) {
+                    w.write("\n");
+                }
             }
         } catch (java.io.IOException e) {
             log.error(e.toString());
