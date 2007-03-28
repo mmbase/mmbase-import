@@ -45,7 +45,7 @@
       <mm:present referid="reply">
         <mm:import id="to" reset="true"><mm:field name="from" escape="none"/></mm:import>
         <mm:import id="wrote" reset="true"><mm:field name="from" escape="none"/></mm:import>
-        <mm:import id="subject" reset="true">Re:<mm:field name="subject" escape="none"/></mm:import>
+        <mm:import id="subject" reset="true">Re:<mm:field name="subject" escape="substring(0, 240)"/></mm:import>
       </mm:present>
       <mm:present referid="replyAll">
         <mm:import id="to" reset="true"><mm:field name="from" escape="none"/></mm:import>
@@ -99,7 +99,7 @@
 	      </mm:present>
 	      <div class="quote">
 		<blockquote>
-		  <mm:field name="body" escape="tagstripper(XSS)" />
+		  <mm:field name="body" escape="tagstripper(XSS,true)" />
 		</blockquote>
 	      </div>
 	    </mm:import>
