@@ -74,7 +74,7 @@
 		<p>
 		  <mm:field name="date">
 		    <mm:time format=":FULL.SHORT">
-		      <!-- see [DIDACTOR-42] --->
+		      <!-- see [DIDACTOR-42] -->
 		      <di:translate key="email.wroteon" 
 				  arg0="${wrote}" arg1="${_}" />
 		    </mm:time>
@@ -98,7 +98,9 @@
 		</p>
 	      </mm:present>
 	      <div class="quote">
-		<mm:field name="body" escape="tagstripper(XSS)" />
+		<blockquote>
+		  <mm:field name="body" escape="tagstripper(XSS)" />
+		</blockquote>
 	      </div>
 	    </mm:import>
 	  </mm:compare>	  
@@ -299,6 +301,7 @@
 	    var config = new HTMLArea.Config();
 	    config.editorURL = "<mm:url page="/email/write/htmlarea/" />";
 	    config.toolbar = [['forecolor', 'bold', 'italic', 'underline' ] ];
+	    config.pageStyle= 'body { background-color: #fff; font-size: 12px; font-family: "Lucida Grande",Verdana,Arial,Helvetica,sans-serif; }  blockquote { border-left: solid 1px; margin-left: 2ex; padding-left: 1ex; background-color: #eee;}';
 	    HTMLArea.replace('body', config);
 	    //HTMLArea.replaceAll();
 	    return false;
