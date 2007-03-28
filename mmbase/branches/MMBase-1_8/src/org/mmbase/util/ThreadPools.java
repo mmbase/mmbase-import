@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5 2006-06-20 20:18:45 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.1 2007-03-28 12:20:43 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -49,5 +49,13 @@ public abstract class ThreadPools {
             }
         });
 
+
+    /**
+     * @since MMBase-1.8.4
+     */
+    public static final void shutdown() {
+        ((ExecutorService) filterExecutor).shutdown();
+        ((ExecutorService) jobsExecutor).shutdown();
+    }
 
 }
