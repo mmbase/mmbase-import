@@ -4,6 +4,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.module.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.*;
 import nl.didactor.mail.ExtendedJMSendMail;
 import java.util.*;
@@ -94,9 +95,12 @@ public class EmailBuilder extends MMObjectBuilder {
      * - removes <script tags and the like
      */
     protected String html(String body) {
-        body = body.replaceAll("\n","<br/>\n");
-        body = body.replaceAll("(?i)<[\\s]*/?script.*?>|<[\\s]*/?embed.*?>|<[\\s]*/?object.*?>|<[\\s]*a[\\s]*href[^>]*javascript[\\s]*:[^(^)^>]*[(][^)]*[)][^>]*>[^<]*(<[\\s]*/[\\s]*a[^>]*>)*", "");
-        return body;
+        ParameterizedTransformerFactory factory = new TagStripperFactory();
+        Parameters params = factory.createParameters();
+        params.set("tags", "XSS");
+        params.set("addbrs", Boolean.TRUE);
+        CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
+        return transformer.transform(body);
     }
 
     public String getGUIIndicator(MMObjectNode node, Parameters pars) {
