@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.40 2007-03-20 16:22:10 nklasens Exp $
+ * @version  $Id: validator.js,v 1.41 2007-03-29 13:10:52 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -99,9 +99,9 @@ Validator.prototype.validateIEPasteEvent = function (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
             var self=this;
-            // Internet Explorer seems to fire onpaste before the actual paste of 
-            // text occurs in some circumstances. The one millisecond delay is 
-            // enough to force Internet Explorer to run the function after the 
+            // Internet Explorer seems to fire onpaste before the actual paste of
+            // text occurs in some circumstances. The one millisecond delay is
+            // enough to force Internet Explorer to run the function after the
             // actual text has been pasted.
             setTimeout(function() { self.validate(elem) }, 1);
         }
@@ -206,16 +206,17 @@ Validator.prototype.validateElement = function (el, silent) {
     var dttype = el.getAttribute("dttype");
     var ftype = el.getAttribute("ftype");
 
+    minlength = el.getAttribute("dtminlength");
     required = el.getAttribute("dtrequired");
-    if (!isEmpty(required) && (required == "true")) {
+    if (!isEmpty(minlength) || (!isEmpty(required) && (required == "true"))) {
         if (ftype=="enum" || dttype=="enum") {
             if (el.options[el.selectedIndex].value == "-") {
                 err += getToolTipValue(form,'message_required',
                    "value is required; please select a value");
             }
-        
-	}
-	else {
+
+        }
+        else {
             if (isEmpty(v)) {
                 err += getToolTipValue(form,'message_required',
                    "value is required");
