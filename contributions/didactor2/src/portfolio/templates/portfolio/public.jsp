@@ -1,11 +1,16 @@
+<%-- WTF is the difference with index.jsp 
+  
+Can everybody _please_ stop duplicating code!
+
+--%
+
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud jspvar="cloud">
+<mm:cloud>
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
@@ -62,7 +67,7 @@
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="portfolio.folderclosed" />" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
 
-<a href="index.jsp">Portfolio cockpit</a><br/>
+<a href="index.jsp"><di:translate key="portfolio.folder_cockpit" /></a><br/>
 
 
 <mm:node referid="myuser" >
@@ -84,7 +89,9 @@
 <mm:compare referid="typeof" value="0" inverse="true">
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="portfolio.folderclosed" />" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
-<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">0</mm:param></mm:treefile>">Ontwikkelingsgericht portfolio</a><br/>
+<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">0</mm:param></mm:treefile>">
+<di:translate key="portfolio.folder_evolution" />
+</a><br/>
 
 </mm:compare>
 <mm:compare referid="currentportfoliotype" value="1">
@@ -98,7 +105,9 @@
 <mm:compare referid="typeof" value="1" inverse="true">
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="portfolio.folderclosed" />" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
-<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">Assessment portfolio</a><br/>
+<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">
+<di:translate key="portfolio.folder_assessment" />
+</a><br/>
 
 </mm:compare>
 <mm:compare referid="currentportfoliotype" value="2">
