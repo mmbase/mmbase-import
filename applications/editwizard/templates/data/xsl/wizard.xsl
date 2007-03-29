@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.171 2007-03-20 16:22:10 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.172 2007-03-29 12:31:56 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -41,30 +41,6 @@
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript" src="{$javascriptdir}date.js">
-      <xsl:comment>help IE</xsl:comment>
-    </script>
-    <script type="text/javascript">
-        var gotoString = '<xsl:value-of select="$datepicker_currentmonth"/>';
-        var todayString = '<xsl:value-of select="$datepicker_today"/>';
-        var weekString = 'Wk';
-        var scrollLeftMessage = '<xsl:value-of select="$datepicker_scrollleft"/>';
-        var scrollRightMessage = '<xsl:value-of select="$datepicker_scrollright"/>';
-        var selectMonthMessage = '<xsl:value-of select="$datepicker_selectmonth"/>';
-        var selectYearMessage = '<xsl:value-of select="$datepicker_selectyear"/>';
-        var selectDateMessage = '<xsl:value-of select="$datepicker_selectdate"/>'; // do not replace [date], it will be replaced by date.
-        var monthName =	new	Array(
-                  '<xsl:value-of select="$date_january"/>','<xsl:value-of select="$date_february"/>',
-                  '<xsl:value-of select="$date_march"/>','<xsl:value-of select="$date_april"/>',
-                  '<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
-                  '<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
-                  '<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
-                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>');
-    var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
-                '<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
-                '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
-                '<xsl:value-of select="$day_sat"/>');
-    </script>
-    <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript" src="{$javascriptdir}validator.js">
@@ -109,7 +85,35 @@
       </xsl:otherwise>
     </xsl:choose>
 
+    <xsl:call-template name="javascript-date-picker"/>
     <xsl:call-template name="javascript-html"/>
+  </xsl:template>
+
+  <xsl:template name="javascript-date-picker">
+    <script type="text/javascript">
+        var gotoString = '<xsl:value-of select="$datepicker_currentmonth"/>';
+        var todayString = '<xsl:value-of select="$datepicker_today"/>';
+        var weekString = 'Wk';
+        var scrollLeftMessage = '<xsl:value-of select="$datepicker_scrollleft"/>';
+        var scrollRightMessage = '<xsl:value-of select="$datepicker_scrollright"/>';
+        var selectMonthMessage = '<xsl:value-of select="$datepicker_selectmonth"/>';
+        var selectYearMessage = '<xsl:value-of select="$datepicker_selectyear"/>';
+        var selectDateMessage = '<xsl:value-of select="$datepicker_selectdate"/>'; // do not replace [date], it will be replaced by date.
+        var monthName =	new	Array(
+                  '<xsl:value-of select="$date_january"/>','<xsl:value-of select="$date_february"/>',
+                  '<xsl:value-of select="$date_march"/>','<xsl:value-of select="$date_april"/>',
+                  '<xsl:value-of select="$date_may"/>','<xsl:value-of select="$date_june"/>',
+                  '<xsl:value-of select="$date_july"/>','<xsl:value-of select="$date_august"/>',
+                  '<xsl:value-of select="$date_september"/>','<xsl:value-of select="$date_october"/>',
+                  '<xsl:value-of select="$date_november"/>','<xsl:value-of select="$date_december"/>');
+    var dayName = new Array	('<xsl:value-of select="$day_sun"/>','<xsl:value-of select="$day_mon"/>',
+                '<xsl:value-of select="$day_tue"/>','<xsl:value-of select="$day_wed"/>',
+                '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
+                '<xsl:value-of select="$day_sat"/>');
+    </script>
+    <script language="javascript" src="{$javascriptdir}datepicker.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
   </xsl:template>
 
   <xsl:template name="javascript-html">

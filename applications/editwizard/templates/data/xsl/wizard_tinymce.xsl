@@ -13,7 +13,7 @@
     If you have the source, you can use the editwizard build script to download and extract tinymce ('ant tinymce').
 
     @author Pierre van Rooden
-    @version $Id: wizard_tinymce.xsl,v 1.6 2006-10-12 12:06:02 pierre Exp $
+    @version $Id: wizard_tinymce.xsl,v 1.7 2007-03-29 12:31:56 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -66,6 +66,10 @@ tinyMCE.init({
   </xsl:template>
 
   <!-- turn off datepicker (doesn't work properly) -->
+
+  <xsl:template name="javascript-date-picker">
+  </xsl:template>
+
   <xsl:template name="date-picker">
   </xsl:template>
 
