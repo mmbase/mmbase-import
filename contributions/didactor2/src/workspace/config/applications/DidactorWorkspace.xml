@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorWorkspace" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorWorkspace" maintainer="didactor.nl" version="5" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -26,8 +26,19 @@
         <relation from="workgroups" to="workspaces" type="related" />
         <relation from="workspaces" to="folders" type="related" />
         <relation from="folders" to="attachments" type="related" />
-        
+	
+	<!--
+	Not sure that chatlogs are installed, to this is checked in DidactorPortfolio#init
+	A bit of a hack. But the alternatives are:
+	- introducing dependency on DidactorChat
+	- copying chatlogs builder to PortFolio
+
+        All not very nice.
+
+         See also DidactorPortfolio
+
         <relation from="folders" to="chatlogs" type="related" />
+	-->
         <relation from="folders" to="pages" type="related" />
         <relation from="folders" to="urls" type="related" />
         

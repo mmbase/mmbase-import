@@ -8,11 +8,12 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import org.mmbase.util.logging.*;
+
+import java.util.*;
 
 public class DidactorWorkspace extends Component {
+    private static final Logger log = Logging.getLoggerInstance(DidactorWorkspace.class);
     /**
      * Returns the version of the component
      */
@@ -41,6 +42,26 @@ public class DidactorWorkspace extends Component {
         DidactorBuilder workgroups = (DidactorBuilder)mmbase.getBuilder("workgroups");
         workgroups.registerPostInsertComponent(this, 10);
         workgroups.registerPreDeleteComponent(this, 10);
+        
+        // This is experimental code: 
+        // See also applications/DidactorWorkspace.xml
+        MMObjectBuilder chatlogs = mmbase.getBuilder("chatlogs");
+        if (chatlogs != null) {
+            //<relation from="folders"     to="chatlogs"    type="related" />
+            TypeRel typeRel = mmbase.getTypeRel();
+            RelDef  relDef = mmbase.getRelDef();
+            int related = relDef.getNumberByName("related");
+            MMObjectBuilder folders = mmbase.getBuilder("folders");
+            MMObjectBuilder portfoliopermissions = mmbase.getBuilder("portfoliopermissions");
+            if (!typeRel.contains(folders.getObjectType(), chatlogs.getObjectType(), related)) {
+                log.info("No relation folders-related->chatlogs. Creating now");
+                MMObjectNode n = typeRel.getNewNode("system");
+                n.setValue("snumber", folders.getObjectType());
+                n.setValue("dnumber", chatlogs.getObjectType());
+                n.setValue("rnumber", related);
+                n.commit();
+            }
+        }
     }
 
     public void install() {
