@@ -16,7 +16,7 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.5 2007-03-29 12:36:54 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -34,11 +34,8 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
     public void commit(Node node, Field field) {
         Iterator<CommitProcessor> i = processors.iterator();
         while (i.hasNext()) {
-            Object proc = i.next();
-            if (i instanceof CommitProcessor) {
-                CommitProcessor commitProc = (CommitProcessor) proc;
-                commitProc.commit(node, field);
-            }
+            CommitProcessor proc = i.next();
+            proc.commit(node, field);
         }
         return;
     }
