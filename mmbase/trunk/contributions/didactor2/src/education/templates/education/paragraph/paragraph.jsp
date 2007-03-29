@@ -22,9 +22,8 @@
                         </mm:field>
                      </mm:compare>
                   </mm:field>
-
-                  <!-- <image> -->
-                  <%@include file="relatedimage.jsp"%>
+		  <!-- <image> -->
+		  <%@include file="relatedimage.jsp"%>
                   <!-- </image> -->
 
                   <table border="0" cellpadding="0" cellspacing="0">
@@ -38,9 +37,9 @@
             </tr>
          </table>
 
+	 <!-- sigh -->
          <style type="text/css">
-            .urls{color:0000FF;
-                }
+            .urls{color:0000FF; }
          </style>
 
          <mm:import id="there_is_additional_information" reset="true">false</mm:import>
@@ -52,19 +51,19 @@
          </mm:related>
 
          <mm:compare referid="there_is_additional_information" value="true">
-            <table border="0" cellpadding="0" cellspacing="0" style="font-size:11px; color:#9C9C9C"><tr><th align="left">Meer informatie</th>
+            <table border="0" cellpadding="0" cellspacing="0" style="font-size:11px; color:#9C9C9C"><tr><th align="left"><di:translate key="education.more_information" /></th>
 
                <mm:related path="posrel,urls" orderby="posrel.pos">
                   <tr>
-                     <td>
-                        <%@include file="relatedurl.jsp" %>
-                     </td>
+                     <td><jsp:directive.include file="relatedurl.jsp" /></td>
                   </tr>
                </mm:related>
-
+   
                <mm:related path="posrel,attachments" orderby="posrel.pos">
                   <tr>
-                     <td><img src="<mm:write referid="path_segment"/>gfx/attachment.gif"/> download:
+                     <td>
+		       <img src="${path_segment}gfx/attachment.gif"/> 
+		       <di:translate key="education.download" />:
                         <mm:node element="attachments">
                            <a href="<mm:attachment />" target="_blank" class="urls"><mm:field name="filename" /></a><mm:last inverse="true"><span class="urls">, </span></mm:last>
                         </mm:node>
