@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="learnblocks" maintainer="didactor.nl" version="3" extends="learnobjects">
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="learnblocks" maintainer="didactor.nl" version="2" extends="learnobjects">
   <class>nl.didactor.builders.DidactorBuilder</class>
   <searchage>31</searchage>
   <names>
@@ -14,7 +17,7 @@
   </names>
 
   <descriptions>
-     <description xml:lang="nl">Een leerblok groupeert content in een leerboom. Leerblokken kunnen andere leerblokken bevatten.</description>
+    <description xml:lang="nl">Een leerblok groupeert content in een leerboom. Leerblokken kunnen andere leerblokken bevatten.</description>
     <description xml:lang="en">A learnblock groups content in the learntree. Learnblocks can include other learnblocks.</description>
   </descriptions>
 
