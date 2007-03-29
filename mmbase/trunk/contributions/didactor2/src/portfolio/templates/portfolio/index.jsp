@@ -143,7 +143,8 @@
 </mm:compare>
 </mm:compare>
 
-<a href="index.jsp?contact=<mm:write referid="contact"/>">Portfolio cockpit</a><br/>
+<a href="index.jsp?contact=<mm:write referid="contact"/>"><di:translate key="portfolio.folder_cockpit" />
+</a><br/>
 
 
 <mm:node referid="myuser" >
@@ -166,7 +167,9 @@
 <mm:compare referid="typeof" value="0" inverse="true">
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="portfolio.folderclosed" />" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
-<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">0</mm:param></mm:treefile>">Ontwikkelingsgericht portfolio</a><br/>
+<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">0</mm:param></mm:treefile>">
+<di:translate key="portfolio.folder_evolution" />
+</a><br/>
 
 </mm:compare>
 <mm:compare referid="currentportfoliotype" value="1">
@@ -180,7 +183,9 @@
 <mm:compare referid="typeof" value="1" inverse="true">
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="portfolio.folderclosed" />" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
-<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">Assessment portfolio</a><br/>
+<a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">
+<di:translate key="portfolio.folder_assessment" />
+</a><br/>
 
 </mm:compare>
 </mm:isgreaterthan>
