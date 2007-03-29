@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.8 2005-10-05 10:41:38 michiel Exp $
+ * @version $Id: Validator.java,v 1.9 2007-03-29 13:52:14 pierre Exp $
  */
 
 public class Validator {
@@ -90,8 +90,16 @@ public class Validator {
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
         int valueLength = value.length();
+        if ("binary".equals(dttype) && (valueLength == 0)) {
+            String valueSize = Utils.getAttribute(field, "size","0");
+            try {
+                valueLength = Integer.parseInt(valueSize);
+            } catch (NumberFormatException nfe) {
+                valueLength = 0;
+            }
+        }
         boolean required = Utils.getAttribute(field,"dtrequired", "false").equals("true");
-        if (required && valueLength==0) {
+        if (required && valueLength <= 0) {
             addValidationError(val, 1, "Value is required.");
         } else {
             if ("string".equals(dttype)) {
@@ -101,7 +109,7 @@ public class Validator {
                 } catch (Exception e) {
                     // don't mind that
                 }
-                if (valueLength<dtminlength) {
+                if (valueLength < dtminlength) {
                     addValidationError(val, 1, "Entered text is too short.");
                 } else {
                     int dtmaxlength = 640000;
@@ -110,12 +118,12 @@ public class Validator {
                     } catch (Exception e){
                         // don't mind that again
                     }
-                    if (valueLength>dtmaxlength) {
+                    if (valueLength > dtmaxlength) {
                         addValidationError(val, 1, "Entered text is too long.");
                     }
                 }
             }
-            if ("int".equals(dttype) && valueLength!=0) {
+            if ("int".equals(dttype) && valueLength > 0) {
                 // int
                 int nr=0;
                 boolean isint=false;
@@ -125,7 +133,7 @@ public class Validator {
                 } catch (Exception e) {
                     addValidationError(val, 1, "Entered value is not a valid integer number.");
                 }
-    
+
                 if (isint) {
                     // check min and max bounds
                     int dtmin = Integer.parseInt(Utils.getAttribute(field,"dtmin","0"));
