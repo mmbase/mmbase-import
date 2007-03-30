@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.152 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.153 2007-03-30 20:19:21 andre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -69,6 +69,7 @@ public class MMAdmin extends ProcessorModule {
     private static final Parameter PARAM_MODULE = new Parameter("module", String.class);
     private static final Parameter PARAM_FIELD = new Parameter("field", String.class);
     private static final Parameter PARAM_KEY = new Parameter("key", String.class);
+    private static final Parameter PARAM_CMD = new Parameter("cmd", String.class);
     private static final Parameter PARAM_PATH = new Parameter("path", String.class);
     private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, PARAM_PAGEINFO};
     private static final Parameter[] PARAMS_APPLICATION = new Parameter[] { PARAM_APPLICATION, PARAM_PAGEINFO};
@@ -116,6 +117,7 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ReplaceFunction("RELATIONCACHEPERFORMANCE", PARAMS_PAGEINFO));
 
         addFunction(new ProcessFunction("LOAD", new Parameter[] {PARAM_APPLICATION, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
+        addFunction(new ProcessFunction("SAVE", new Parameter[] {PARAM_APPLICATION, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
         addFunction(new ProcessFunction("BUILDERSAVE", new Parameter[] {PARAM_BUILDER, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
 
@@ -276,6 +278,7 @@ public class MMAdmin extends ProcessorModule {
         String cmdline, token;
         for (Enumeration<String> h = cmds.keys(); h.hasMoreElements();) {
             cmdline = h.nextElement();
+            log.debug("cmdline: " + cmdline);
             if (!checkAdmin(sp, cmdline)) {
                 log.warn("Could not find cloud for " + sp + " returning false for process " + cmds + "/" + vars);
                 return false;
@@ -312,6 +315,9 @@ public class MMAdmin extends ProcessorModule {
                     includeComments = "true".equals(tok.nextToken());
                 }
                 writeApplication(appname, savepath, goal, includeComments);
+                if (vars != null) {
+                    vars.put("RESULT", lastmsg);
+                }
             } else if (token.equals("BUILDER")) {
                 doBuilderPosts(tok.nextToken(), cmds, vars);
             } else if (token.equals("MODULE")) {
