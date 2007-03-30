@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
 public abstract class AbstractCollectionNodeList<E extends Node> extends AbstractBridgeList<E> {
 
     protected Cloud cloud;
-    protected NodeManager nodeManager = null;
+    protected final NodeManager nodeManager;
     protected final List wrappedCollection;
 
     public AbstractCollectionNodeList(Collection c, NodeManager nodeManager) {
@@ -29,6 +29,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
     }
 
     public AbstractCollectionNodeList(Collection c, Cloud cloud) {
+        this.nodeManager = null;
         this.cloud = cloud;
         this.wrappedCollection = convertedList(c, cloud);
     }
@@ -41,6 +42,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
     public int size() {
         return wrappedCollection.size();
     }
+
     @Override
     public E get(int index) {
         return (E) convert(wrappedCollection.get(index), index);
