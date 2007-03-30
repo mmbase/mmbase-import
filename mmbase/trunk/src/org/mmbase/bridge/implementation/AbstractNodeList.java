@@ -184,24 +184,16 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
     protected Node getNode(Cloud c, MMObjectNode coreNode) {
         Node node;
         int n = coreNode.getNumber();
-        try {
-            if (n == -1) {
-                String[] na  = coreNode.getStringValue("_number").split("_");
-                if (na.length == 2) {
-                    node = cloud.getNode(na[1]);
-                } else {
-                    log.error("Could not make a Node of " + coreNode);
-                    node = null;
-                }
+        if (n == -1) {
+            String[] na  = coreNode.getStringValue("_number").split("_");
+            if (na.length == 2) {
+                return cloud.getNode(na[1]);
             } else {
-                node = cloud.getNode(n);
+                throw new RuntimeException("Could not make a Node of " + coreNode);
             }
-        } catch (Exception e) {
-            log.error(e);
-            log.error(coreNode.getClass() + "" + coreNode.getValues());
-            node = null;
+        } else {
+            return cloud.getNode(n);
         }
-        return node;
     }
 
 }
