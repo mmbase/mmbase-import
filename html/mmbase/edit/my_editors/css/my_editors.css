@@ -48,10 +48,10 @@ a:active { color: #D6E44B; }
 
 #header
 {
-    border-bottom: 1px solid #c8cfd9;
-    font-size: 0.9em;
-    padding: 6px 0 12px 0;
-    min-height: 36px;
+	border-bottom: 1px solid #c8cfd9;
+	font-size: 0.9em;
+	padding: 6px 0 12px 0;
+	min-height: 36px;
 }
 
 #crumbpath
@@ -362,7 +362,11 @@ textarea
 }
 
 /* table with nodetypes */
-#nodetypes { width: 100%; }
+#nodetypes
+{
+	width: 100%;
+	background-color: #fff;
+}
 
 #nodetypes th, #nodetypes td
 {
@@ -386,6 +390,7 @@ textarea
 {
     width: 100%;
     border-bottom: 1px solid #c8cfd9;
+	background-color: #fff;
 }
 
 #results th { border-bottom: 1px solid #c8cfd9; }

@@ -80,10 +80,10 @@ function countRelations(input, response) {
     <tbody>
       
       <%-- all nodetypes --%>
-      <mm:import vartype="List" id="typelist" />
+      <mm:import vartype="List" jspvar="typelist" id="typelist" />
       <mm:listnodescontainer type="typedef">
         <mm:sortorder field="name" />
-        <mm:listnodes>
+        <mm:listnodes jspvar="n">
           <mm:import id="name" jspvar="name" reset="true"><mm:field name="name" /></mm:import>
           <mm:import id="dnumber" reset="true">no</mm:import>
           <mm:fieldlist type="create">
@@ -94,14 +94,10 @@ function countRelations(input, response) {
           </mm:fieldlist>
           <%-- import typedefs --%>
           <% if (cloud.hasNodeManager(name)) { // check if it is active %>
-          <mm:compare referid="list" value="all" inverse="true">            
-            <mm:compare referid="dnumber" value="no"><%-- import only without dnumber --%>
-              <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
-            </mm:compare>
-          </mm:compare>
-          <mm:compare referid="list" value="all"><%-- import all typedefs --%>
-              <mm:import vartype="List" id="typelist" reset="true"><mm:compare referid="typelist" value="" inverse="true">${typelist},</mm:compare>${_node}</mm:import>
-          </mm:compare>
+			<mm:compare referid="list" value="all" inverse="true"><%-- import only without dnumber --%>
+			  <mm:compare referid="dnumber" value="no"><% typelist.add(n); %></mm:compare>
+			</mm:compare>
+			<mm:compare referid="list" value="all"><% typelist.add(n); %></mm:compare>
           <% } %>
         </mm:listnodes>
       </mm:listnodescontainer>
