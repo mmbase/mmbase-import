@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.71 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: IncludeTag.java,v 1.72 2007-03-30 14:40:55 johannes Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -102,6 +103,36 @@ public class IncludeTag extends UrlTag {
         return super.getPage();
     }
 
+    
+
+    public int doStartTag() throws JspTagException {
+        log.debug("starttag " + getId());
+        extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        parameters = new UrlParameters(this);
+        helper.useEscaper(false);
+        if (referid != Attribute.NULL) {
+            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+
+            Object o = getObject(getReferid());
+            if (o instanceof Url) {
+                Url u = (Url) getObject(getReferid());
+                extraParameters.addAll(u.params);
+                url = new Url(this, u, parameters, true);
+            } else {
+                url = new Url(this, Casting.toString(o), getComponent(), parameters, true);
+            }
+        } else {
+            url = new Url(this, getPage(), getComponent(), parameters, true);
+        }
+
+        if (getId() != null) {
+            parameters.getWrapped(); // dereference this
+            getContextProvider().getContextContainer().register(getId(), url); 
+        }
+
+        return EVAL_BODY_BUFFERED;
+    }
+    
 
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
@@ -363,6 +394,7 @@ public class IncludeTag extends UrlTag {
             String gotUrl = url == null ? null : url.get(false);
             if (gotUrl == null) {
                 gotUrl = page.getString(this);
+                pageLog.service("No URL object found, using: " + gotUrl);
             }
 
             if (gotUrl == null || "".equals(gotUrl)) {

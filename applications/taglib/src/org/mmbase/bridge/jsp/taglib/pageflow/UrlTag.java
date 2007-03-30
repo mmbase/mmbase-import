@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.105 2007-03-30 14:17:36 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.106 2007-03-30 14:40:55 johannes Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -128,12 +128,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (o instanceof Url) {
                 Url u = (Url) getObject(getReferid());
                 extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters);
+                url = new Url(this, u, parameters, false);
             } else {
-                url = new Url(this, Casting.toString(o), getComponent(), parameters);
+                url = new Url(this, Casting.toString(o), getComponent(), parameters, false);
             }
         } else {
-            url = new Url(this, getPage(), getComponent(), parameters);
+            url = new Url(this, getPage(), getComponent(), parameters, false);
         }
 
         if (getId() != null) {
@@ -145,8 +145,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     /**
-     * Return the page. This is delegated to the underlying framework if it is available. 
-     * Otherwise, if the component is set, the returned value is 'component/page'.
+     * Return the page.
      */
     protected String getPage() throws JspTagException {
         return page.getString(this);
@@ -213,20 +212,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      */
     protected List<Map.Entry<String, Object>> getParameters() {
         return parameters;
-    }
-
-    /**
-     * Url-generation without use of the framework. Only used in tree/leaf extensions.
-     */
-    protected String getLegacyUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
-        Parameters p = new Parameters(getParameters());
-        StringBuilder show = BasicFramework.getUrl(getPage(), p.toMap(), (HttpServletRequest) pageContext.getRequest(), writeamp);
-        if (encodeUrl) {
-            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            return response.encodeURL(show.toString());
-        } else {
-            return show.toString();
-        }
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
