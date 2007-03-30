@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.52 2007-02-23 16:26:48 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.53 2007-03-30 13:08:37 michiel Exp $
  */
 public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
 
@@ -26,7 +26,7 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
         super();
     }
 
-    BasicNodeList(Collection c, Cloud cloud) {
+    public BasicNodeList(Collection c, Cloud cloud) {
         super(c, cloud);
     }
 
