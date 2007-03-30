@@ -9,10 +9,16 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.18 2006-10-31 16:05:34 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.19 2007-03-30 14:47:08 johannes Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -34,27 +40,36 @@ public class TreeIncludeTag extends IncludeTag {
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
-
-    protected String getPage() throws JspTagException {
-        String orgPage = super.getPage();
-        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving page '" + treePage + "'");
-        }
-
-        if (treePage == null || "".equals(treePage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-
-        return treePage;
-    }
-
-    public void doAfterBodySetValue() throws JspTagException {
-        // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+    public int doStartTag() throws JspTagException {
+        log.debug("starttag " + getId());
+        extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        parameters = new UrlParameters(this);
+        helper.useEscaper(false);
         th.setCloud(getCloudVar());
+        
+        if (referid != Attribute.NULL) {
+            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
 
-        // Let IncludeTag do the rest of the work
-        includePage();
+            Object o = getObject(getReferid());
+            if (o instanceof Url) {
+                Url u = (Url) getObject(getReferid());
+                extraParameters.addAll(u.params);
+                url = new Url(this, u, parameters, true);
+            } else {
+                url = new Url(this, th.findTreeFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
+            }
+        } else {
+            String leafPage = th.findTreeFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
+            url = new Url(this, leafPage , getComponent(), parameters, true);
+        }
+
+        if (getId() != null) {
+            parameters.getWrapped(); // dereference this
+            getContextProvider().getContextContainer().register(getId(), url); 
+        }
+
+        url.setLegacy();
+        return EVAL_BODY_BUFFERED;
     }
 
     public void doFinally() {
@@ -66,22 +81,9 @@ public class TreeIncludeTag extends IncludeTag {
         objectList = getAttribute(p);
     }
 
-    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        String url = "";
-        try {
-            url = super.getLegacyUrl(writeamp, encode);
-        } catch (JspTagException e) {
-            // TODO test this.
-            if (Notfound.get(notFound, this) == Notfound.SKIP) {
-                throw e;
-            }
-        }
-        return url;
-    }
-
     // override to cancel
     protected boolean doMakeRelative() {
-    	log.debug("doMakeRelative() overridden!");
+        log.debug("doMakeRelative() overridden!");
         return false;
     }
 }
