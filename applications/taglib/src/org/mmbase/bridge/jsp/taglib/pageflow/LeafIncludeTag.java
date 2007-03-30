@@ -29,20 +29,18 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.18 2007-03-30 14:40:55 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.19 2007-03-30 14:47:08 johannes Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
 
     private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class);
-    private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
-
+   
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
     public int doStartTag() throws JspTagException {
-        pageLog.info("leafinclude starttag:" + getPage());
-        pageLog.debug("starttag " + getId());
+        log.debug("starttag " + getId());
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
@@ -55,15 +53,12 @@ public class LeafIncludeTag extends IncludeTag {
             if (o instanceof Url) {
                 Url u = (Url) getObject(getReferid());
                 extraParameters.addAll(u.params);
-                pageLog.service("Creating url from referid");
                 url = new Url(this, u, parameters, true);
             } else {
-                pageLog.service("Creating url from referid: " + Casting.toString(o));
                 url = new Url(this, th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
             }
         } else {
             String leafPage = th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
-            pageLog.service("Creating url: [" + getPage() + "] = [" + leafPage + "]");
             url = new Url(this, leafPage , getComponent(), parameters, true);
         }
 
@@ -73,7 +68,6 @@ public class LeafIncludeTag extends IncludeTag {
         }
 
         url.setLegacy();
-        pageLog.info("leafinclude end of starttag:" + url.toString());
         return EVAL_BODY_BUFFERED;
     }
 
