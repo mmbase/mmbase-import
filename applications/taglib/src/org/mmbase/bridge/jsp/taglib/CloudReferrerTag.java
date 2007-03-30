@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.31 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.32 2007-03-30 14:17:36 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -127,7 +127,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     }
 
 
-    protected void fillStandardParameters(Parameters p) throws JspTagException {
+    public void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         CloudProvider prov = findCloudProvider(false);
         if (prov != null) {

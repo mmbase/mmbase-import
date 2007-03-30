@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.pageflow.Url;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -21,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: FormTag.java,v 1.9 2007-03-30 14:17:36 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -75,17 +76,17 @@ public class FormTag extends TransactionTag implements Writer {
 
     public int doStartTag() throws JspTagException {
         m = getMode();
+        String url = new Url(this, page.getString(this), Url.getComponent(this)).toString();
         switch(m) {
         case MODE_URL:
-            helper.setValue(page.getString(this));
+            helper.setValue(url);
             break;
         case MODE_HTML_FORM:
-            String url = page.getString(this);
             String id = getId();
             String c  = clazz.getString(this);
             try {
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
-                                           "action=\"#" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
+                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
                                            ("".equals(c) ? "" : " " + c) + 
                                            "\" >");
             } catch (java.io.IOException ioe) {
