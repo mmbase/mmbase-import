@@ -47,42 +47,62 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
     }
 
     protected E convert(Object o) {
+        if (o == null) {
+            log.debug("Null");
+            return null;
+        } 
+        if (log.isDebugEnabled()) {
+            log.debug("Converting " + o.getClass());
+        }
+
         Node node = convertWithBridgeToNode(cloud, nodeManager, o);
         if (node == null) {
+            log.debug("Could not convert with bridge");
             if (o instanceof MMObjectBuilder) { // a builder
                 node = cloud.getNodeManager(((MMObjectBuilder)o).getTableName());
             } else {
                 MMObjectNode coreNode = (MMObjectNode) o;
                 node = convertMMObjectNodetoBridgeNode(coreNode);
             }
+            //log.info("Found " + node.getClass() + " in " + getClass());
         }
+        if (node == null) {
+            throw new RuntimeException("Could not convert " + o.getClass() + " " + o);
+        }
+        
         return (E) node;
     }
 
+    /**
+     * Converts an object to a Node, using only bridge.
+     * @return a Node, or <code>null</code> if o is either <code>null</code> or could not be
+     * converted.
+     */
     public static Node convertWithBridgeToNode(Cloud cloud, NodeManager nodeManager, Object o) {
-        Node node = null;
         if (o == null) {
+            return null;
         } else if (o instanceof CharSequence) { // a string indicates a nodemanager by name, or, if numeric, a node number..
             String s = o.toString();
             if (org.mmbase.datatypes.StringDataType.NON_NEGATIVE_INTEGER_PATTERN.matcher(s).matches()) {
-                node = cloud.getNode(s);
+                return cloud.getNode(s);
             } else {
                 if (cloud.hasNodeManager(s)) {
-                    node = cloud.getNodeManager(s);
+                    return cloud.getNodeManager(s);
                 } else { // an alias?
-                    node = cloud.getNode(s);
+                    return cloud.getNode(s);
                 }
             }
         } else if (o instanceof Map) {
             if (nodeManager == null) {
-                node = new MapNode((Map) o, cloud);
+                return new MapNode((Map) o, cloud);
             } else {
-                node = new MapNode((Map) o, nodeManager);
+                return new MapNode((Map) o, nodeManager);
             }
         } else if (o instanceof Number) {
-            node = cloud.getNode(((Number) o).intValue());
+            return cloud.getNode(((Number) o).intValue());
+        } else {
+            return null;
         }
-        return node;
     }
 
     protected Node convertMMObjectNodetoBridgeNode(MMObjectNode coreNode) {
