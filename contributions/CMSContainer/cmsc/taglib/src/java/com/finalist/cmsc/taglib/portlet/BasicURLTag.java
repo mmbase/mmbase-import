@@ -138,11 +138,10 @@ public abstract class BasicURLTag extends TagSupport
                 else {
                     writer.print(url);
                 }
-                writer.flush();
             }
             catch (IOException ioe)
             {
-                throw new JspException("actionURL/renderURL Tag Exception: cannot write to the output writer.");
+                throw new JspException("actionURL/renderURL Tag Exception: cannot write to the output writer.", ioe);
             }
         } else {
             if (url == null) {
