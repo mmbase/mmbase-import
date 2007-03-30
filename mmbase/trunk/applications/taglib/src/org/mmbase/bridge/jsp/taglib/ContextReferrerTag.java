@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.94 2006-12-05 21:43:32 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.95 2007-03-30 14:17:36 michiel Exp $
  * @see ContextTag
  */
 
@@ -617,7 +617,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * @since MMBase-1.7.4
      */
-    protected void fillStandardParameters(Parameters p) throws JspTagException {
+    public void fillStandardParameters(Parameters p) throws JspTagException {
         log.debug("Filling standard parameters");
         p.setIfDefined(Parameter.RESPONSE, (HttpServletResponse) pageContext.getResponse());
         p.setIfDefined(Parameter.REQUEST,  (HttpServletRequest) pageContext.getRequest());

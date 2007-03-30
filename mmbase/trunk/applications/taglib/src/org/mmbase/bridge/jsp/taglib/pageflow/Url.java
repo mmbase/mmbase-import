@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.core.MMBase; // TODO
 import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
@@ -31,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.16 2007-02-10 16:49:27 nklasens Exp $;
+ * @version $Id: Url.java,v 1.17 2007-03-30 14:17:36 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static final Logger log = Logging.getLoggerInstance(Url.class);
-    private final UrlTag tag;
+    private final ContextReferrerTag tag;
     private final String page;
     private final Component component;
     protected final List<Map.Entry<String, Object>> params;
@@ -49,23 +50,43 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private String string = null;
 
 
+    public static Component getComponent(ContextReferrerTag tag) {
+        
+        HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
+        Renderer renderer = (Renderer) req.getAttribute(Renderer.KEY);
+        if (renderer != null) {
+            return renderer.getBlock().getComponent();
+        } else {
+            return null;
+        }
+    }
+
     public Url(UrlTag t, String p, Component comp, List<Map.Entry<String, Object>> pars) throws JspTagException {
         tag = t;
-        abs = tag.getAbsolute();
-        encodeUrl = tag.encode();
-        escapeAmps = tag.escapeAmps();
+        abs = t.getAbsolute();
+        encodeUrl = t.encode();
+        escapeAmps = t.escapeAmps();
         page = p;
         params = pars;
         component = comp;
     }
     public Url(UrlTag t, Url u, List<Map.Entry<String, Object>> pars) throws JspTagException {
         tag = t;
-        abs = tag.getAbsolute();
-        encodeUrl = tag.encode();
-        escapeAmps = tag.escapeAmps();
+        abs = t.getAbsolute();
+        encodeUrl = t.encode();
+        escapeAmps = t.escapeAmps();
         page = u.page;
         component = u.component;
         params = pars;
+    }
+    public Url(ContextReferrerTag t, String p, Component comp) throws JspTagException {
+        tag = t;
+        abs = "false";
+        encodeUrl = true;
+        escapeAmps = true;
+        page = p;
+        params = new ArrayList<Map.Entry<String, Object>>();
+        component = comp;
     }
 
     /**

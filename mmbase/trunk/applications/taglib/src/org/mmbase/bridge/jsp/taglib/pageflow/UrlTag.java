@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.104 2007-03-08 13:31:50 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.105 2007-03-30 14:17:36 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -200,13 +200,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      */
     protected Component getComponent() throws JspTagException {
         if (component == Attribute.NULL) {
-            HttpServletRequest req = (HttpServletRequest) getPageContext().getRequest();
-            Renderer renderer = (Renderer) req.getAttribute(Renderer.KEY);
-            if (renderer != null) {
-                return renderer.getBlock().getComponent();
-            } else {
-                return null;
-            }
+            return Url.getComponent(this);
         } else {
             ComponentRepository rep = ComponentRepository.getInstance();
             return rep.getComponent(component.getString(this));
@@ -267,9 +261,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return super.doEndTag();
     }
 
-    protected void fillStandardParameters(Parameters p) throws JspTagException { // makes it ]accessible to Url
-        super.fillStandardParameters(p);
-    }
+
     /**
      * Combines the parameters from the 'referids' attribute with the explicit mm:param's
      * subtags. This happens 'lazily'. So, the referids are evaluated only when used.
