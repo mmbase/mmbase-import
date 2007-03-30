@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.60 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: MMBaseServlet.java,v 1.61 2007-03-30 08:57:12 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -414,8 +414,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         pw.print(org.mmbase.Version.get());
         String q = req.getQueryString();
         if ("starttime".equals(q)) {
+            res.setHeader("Cache-Control", "no-cache");
             pw.print("\nUp since " + new Date((long) MMBase.startTime * 1000));
         } else if ("uptime".equals(q)) {
+            res.setHeader("Cache-Control", "no-cache");
             int seconds = (int) (System.currentTimeMillis() / 1000) - MMBase.startTime;
             int days = seconds / (60 * 60 * 24);
             seconds %=  60 * 60 * 24;
