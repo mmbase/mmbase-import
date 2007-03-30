@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.core.MMBase; // TODO
 import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
@@ -32,11 +31,13 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.17 2007-03-30 14:17:36 michiel Exp $;
+ * @version $Id: Url.java,v 1.18 2007-03-30 14:40:55 johannes Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static final Logger log = Logging.getLoggerInstance(Url.class);
+    private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
+
     private final ContextReferrerTag tag;
     private final String page;
     private final Component component;
@@ -48,20 +49,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private String cacheAmp = null;
     private String cacheNoAmp = null;
     private String string = null;
+    private final boolean internal;
 
+    private boolean legacy = false;
 
-    public static Component getComponent(ContextReferrerTag tag) {
-        
-        HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
-        Renderer renderer = (Renderer) req.getAttribute(Renderer.KEY);
-        if (renderer != null) {
-            return renderer.getBlock().getComponent();
-        } else {
-            return null;
-        }
-    }
-
-    public Url(UrlTag t, String p, Component comp, List<Map.Entry<String, Object>> pars) throws JspTagException {
+    public Url(UrlTag t, String p, Component comp, List<Map.Entry<String, Object>> pars, boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
         encodeUrl = t.encode();
@@ -69,8 +61,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         page = p;
         params = pars;
         component = comp;
+        internal = intern;
     }
-    public Url(UrlTag t, Url u, List<Map.Entry<String, Object>> pars) throws JspTagException {
+    
+    public Url(UrlTag t, Url u, List<Map.Entry<String, Object>> pars, boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
         encodeUrl = t.encode();
@@ -78,7 +72,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         page = u.page;
         component = u.component;
         params = pars;
+        internal = intern;
     }
+
     public Url(ContextReferrerTag t, String p, Component comp) throws JspTagException {
         tag = t;
         abs = "false";
@@ -87,14 +83,41 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         page = p;
         params = new ArrayList<Map.Entry<String, Object>>();
         component = comp;
+        internal = false; 
     }
 
+    public static Component getComponent(ContextReferrerTag tag) {
+        HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
+        Renderer renderer = (Renderer) req.getAttribute(Renderer.KEY);
+        if (renderer != null) {
+            return renderer.getBlock().getComponent();
+        } else {
+            return null;
+        }
+    }
+    
+    public void setLegacy() {
+        this.legacy = true;
+    }
+
+    public String getLegacy(boolean writeamp) throws JspTagException {
+        Map m = new HashMap();
+        for (Map.Entry<String, ?> entry : params) {
+            m.put(entry.getKey(), entry.getValue());
+        }
+        pageLog.service("getting legacy: " + page);
+        return BasicFramework.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+      }
+    
     /**
      * Returns the URL as a String, always without the application context.
      */
 
     public String get(boolean writeamp) throws JspTagException {
-
+        if (legacy) {
+            return getLegacy(writeamp);
+        }
+        
         String result = writeamp ? cacheAmp : cacheNoAmp;
         if (result != null) return result;
 
@@ -135,7 +158,13 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         } else {
             log.debug("not a block");
             // no component, this is a normal 'link'. no compoments, so no block can be guessed.
-            result = framework.getUrl(page, component, new Parameters(params), frameworkParams, writeamp).toString();
+            if (internal) {
+                log.warn("Creating internal url link to page: " + page);
+                result = framework.getInternalUrl(page, (Renderer)null, component, new Parameters(params), frameworkParams).toString();
+            } else {
+                log.warn("Creating normal url link to page: " + page);
+                result = framework.getUrl(page, component, new Parameters(params), frameworkParams, writeamp).toString();
+            }
         }
         if (writeamp) {
             cacheAmp = result;

@@ -12,10 +12,13 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -28,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.20 2007-02-09 15:57:55 johannes Exp $
+ * @version $Id: LeafFileTag.java,v 1.21 2007-03-30 14:40:55 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -43,31 +46,37 @@ public class LeafFileTag extends UrlTag {
         notFound = getAttribute(n);
     }
     
-
     public int doStartTag() throws JspTagException {
+        log.debug("starttag " + getId());
+        log.info("leaffile starttag: " + getPage());
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        parameters = new UrlParameters(this);
         helper.useEscaper(false);
-        return EVAL_BODY_BUFFERED;
-    }
-
-    protected String getPage() throws JspTagException {
-        String orgPage  = super.getPage();
-        String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving page '" + leafPage + "'");
-        }
-
-        if (leafPage == null || "".equals(leafPage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-        return leafPage;
-
-    }
-
-    public int doEndTag() throws JspTagException {
         th.setCloud(getCloudVar());
-        int retval = super.doEndTag();
-        return retval;
+        
+        if (referid != Attribute.NULL) {
+            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+
+            Object o = getObject(getReferid());
+            if (o instanceof Url) {
+                Url u = (Url) getObject(getReferid());
+                extraParameters.addAll(u.params);
+                url = new Url(this, u, parameters, false);
+            } else {
+                url = new Url(this,  th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
+            }
+        } else {
+            url = new Url(this, th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
+        }
+        
+        if (getId() != null) {
+            parameters.getWrapped(); // dereference this
+            getContextProvider().getContextContainer().register(getId(), url); 
+        }
+
+        url.setLegacy();
+        log.info("leaffile end of starttag: " + url.toString());
+        return EVAL_BODY_BUFFERED;
     }
 
     public void doFinally() {
@@ -77,19 +86,6 @@ public class LeafFileTag extends UrlTag {
 
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
-    }
-
-    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        String url = "";
-        try {
-            url = super.getLegacyUrl(writeamp, encode);
-        } catch (JspTagException e) {
-            // I think this does not happen
-            if (Notfound.get(notFound, this) == Notfound.SKIP) {
-                throw e;
-            }
-        }
-        return url;
     }
 
     // override to cancel
