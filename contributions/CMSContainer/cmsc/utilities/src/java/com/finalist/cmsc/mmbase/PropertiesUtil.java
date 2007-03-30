@@ -2,12 +2,15 @@ package com.finalist.cmsc.mmbase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Cloud;
@@ -184,6 +187,25 @@ public class PropertiesUtil {
 		}
 		return list;
 	}
+
+   public static Map getModuleProperties(String module) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+     TreeMap result = new TreeMap();
+      NodeManager propertiesManager = cloud.getNodeManager("properties");
+      NodeQuery query = propertiesManager.createQuery();
+      Field keyField = propertiesManager.getField("module");
+      FieldValueConstraint constraint = query.createConstraint((query.getStepField(keyField)),
+              FieldCompareConstraint.EQUAL, module);
+      query.setConstraint(constraint);
+
+      NodeList list = propertiesManager.getList(query);
+      for(NodeIterator ni = list.nodeIterator(); ni.hasNext(); ) {
+         Node node = ni.nextNode();
+         result.put(node.getStringValue("key"), node.getStringValue(environment));
+      }
+
+      return result;
+   }
 
    
 }

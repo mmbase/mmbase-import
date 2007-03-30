@@ -29,7 +29,7 @@ public class PropertyTag extends SimpleTagSupport {
     }
     public String getVar() {
         return var;
-    }
+    } 
 
 
 	public void doTag() throws IOException {
