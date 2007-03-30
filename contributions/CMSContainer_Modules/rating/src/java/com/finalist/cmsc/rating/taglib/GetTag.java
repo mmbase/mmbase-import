@@ -14,7 +14,7 @@ public class GetTag extends SimpleTagSupport {
    private String var;
    private String countVar;
    private String userVar;
-   private int user;
+   private String user;
 
    public void doTag() throws JspException, IOException {
       Rating rating = RatingUtil.getContentRating(number);
@@ -23,7 +23,7 @@ public class GetTag extends SimpleTagSupport {
          getJspContext().setAttribute(countVar, new Integer(rating.getCount()));
       }
       
-      if(userVar != null && user != -1) {
+      if(userVar != null && user != null) {
          int userRating = RatingUtil.getUserRating(number, user);
          getJspContext().setAttribute(userVar, new Integer(userRating));
       }
@@ -37,7 +37,7 @@ public class GetTag extends SimpleTagSupport {
       this.number = number;
    }
 
-   public void setUser(int user) {
+   public void setUser(String user) {
       this.user = user;
    }
 

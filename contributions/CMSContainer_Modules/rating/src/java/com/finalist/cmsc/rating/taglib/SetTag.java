@@ -11,19 +11,18 @@ public class SetTag extends SimpleTagSupport {
 
    private int number;
    private int value;
-   private int user;
+   private String user;
 
    public void doTag() throws JspException, IOException {
       
       RatingUtil.setUserRating(number, user, value);
-      
    }
 
    public void setNumber(int number) {
       this.number = number;
    }
 
-   public void setUser(int user) {
+   public void setUser(String user) {
       this.user = user;
    }
 
