@@ -1,81 +1,42 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@page import="org.mmbase.bridge.*"
-%><mm:content expires="0">
-<mm:cloud rank="administrator">
-<% String app = request.getParameter("application"); %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<html xmlns="http://www.w3.org/TR/xhtml">
-<head>
-<title>Administrate Application <%=app%></title>
-<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
-</head>
-<body class="basic" >
-<table summary="application actions">
-<%
-    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-%>
-<tr>
- <th class="header" colspan="4">Description of <%=app%></th>
-</tr>
-<tr>
- <td class="multidata" colspan="4">
-        <p><%=mmAdmin.getInfo("DESCRIPTION-"+app,request,response)%></p>
- </td>
-</tr>
+<%@ page import="org.mmbase.module.core.MMBase" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud rank="administrator" loginpage="login.jsp">
+<div
+  class="component mm_c_core mm_c_b_databases-connections ${requestScope.className}"
+  id="${requestScope.componentId}">
+<mm:import externid="application" />
+<mm:import externid="cmd" />
+<mm:import externid="path" />
 
-<tr><td>&nbsp;</td></tr>
+<h3>Applications results</h3>
 
-<tr>
-<th class="header" colspan="2">Action</th>
-  <th class="header" >&nbsp;</th>
-  <th class="navigate">Confirm</th>
-</tr>
-<tr>
- <td class="data" colspan="2">Install <%=app%></td>
- <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+app, request, response)%> </td>
- <td class="linkdata" >
-  <form action="<mm:url page="result.jsp" />" method="POST">
-   <input type="hidden" name="application" value="<%=app%>" />
-   <input type="hidden" name="cmd" value="LOAD" />
-   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
-  </form>
- </td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<form action="<mm:url page="result.jsp" />" method="POST">
-<tr>
-<th class="header">Action</th>
-  <th class="header">Path</th>
-  <!--
-  <th class="header">Goal</th>
-  -->
-  <th class="navigate">Confirm</th>
-</tr>
-<tr>
- <td class="data" >Save <%=app%></td>
- <td class="data" ><input type="text" name="path" value="/tmp" size="80" /></td>
- <input type="hidden" name="goal" value="backup" />
-<!--
- <td class="data" ><select name="goal">
-   <option selected="selected">backup</option>
- </select>
- </td>
- -->
- <td class="linkdata" >
-   <input type="hidden" name="application" value="<%=app%>" />
-   <input type="hidden" name="cmd" value="SAVE" />
-   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
- </td>
-</tr>
-</form>
-
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
-<td class="data" colspan="3">Return to Application Overview</td>
-</tr>
-</table>
-</body></html>
+<table summary="results" border="0" cellspacing="0" cellpadding="3">
+  <caption>
+    Results of your ${cmd} action on application <mm:write referid="application" />.
+  </caption>
+  <tr>
+    <th colspan="2">Results</th>
+  </tr><tr>
+    <td colspan="2">
+	  <mm:compare referid="cmd" value="LOAD">
+		<mm:nodefunction module="mmadmin" name="LOAD" referids="application">
+		  <mm:field name="RESULT" escape="p" />
+		</mm:nodefunction>      
+	  </mm:compare>
+	  <mm:compare referid="cmd" value="SAVE">
+		<mm:nodefunction module="mmadmin" name="SAVE" referids="application,path">
+		  <mm:field name="RESULT" escape="p" />
+		</mm:nodefunction>      
+	  </mm:compare>
+    </td>
+  </tr><tr>
+    <td>
+      <mm:link page="applications" component="core">
+        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+      </mm:link>
+    </td>
+    <td>Return to Applications Administration</td>
+  </tr>
+  </table>
+</div>
 </mm:cloud>
-</mm:content>

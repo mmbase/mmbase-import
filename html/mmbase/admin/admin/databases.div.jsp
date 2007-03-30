@@ -56,7 +56,7 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
     <td><mm:field name="item3" /></td>
     <td class="view">
       <mm:link page="databases-connections" referids="item1" component="core">
-        <a href="${_}" title="view connections"><img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" /></a>
+        <a href="${_}" title="view connections"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view" /></a>
       </mm:link>
     </td>
   </tr>
