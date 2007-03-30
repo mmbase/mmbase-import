@@ -722,6 +722,42 @@
 		</attribute>
 	</tag>
 	<tag>
+		<description>Saves property to the database, new properties will be created, old ones updated</description>
+		<name>setproperty</name>
+		<tag-class>com.finalist.cmsc.taglib.SetPropertyTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>the key of the property.</description>
+			<name>key</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The (new) value of the property.</description>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<description>Gets a list with all the properties for a certain module</description>
+		<name>moduleproperties</name>
+		<tag-class>com.finalist.cmsc.taglib.ModulePropertiesTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>the module</description>
+			<name>module</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>JSP variable name to put the result.</description>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<description>Removes all html tags from a tekst</description>
 		<name>removehtml</name>
 		<tag-class>com.finalist.cmsc.taglib.RemoveHtmlTag</tag-class>

@@ -54,5 +54,8 @@
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/cmsc-modules-publish-cleaner-1.1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/cmsc-modules-publish-remote-1.1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/mmcommons-1.3.6.1.jar"/>
+	<classpathentry kind="src" path="rating/src/java"/>
+	<classpathentry kind="src" path="knownvisitor/src/java"/>
+	<classpathentry kind="src" path="knownvisitor-ntlm/src/java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
