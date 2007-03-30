@@ -182,7 +182,9 @@ table
 	border-width: 1px 1px 0 1px;
 	border-style: solid solid none solid;
 	margin-bottom: 1em;
+	width: 100%;
 }
+
 caption
 {
     background: #ccc;
@@ -206,5 +208,5 @@ th, td
     vertical-align: top;
 }
 
-td.view { text-align: right; }
-td.center { text-align: center; }
+th.view, td.view { text-align: right; }
+th.center, td.center { text-align: center; }
