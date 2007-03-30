@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.19 2007-03-30 14:41:59 johannes Exp $;
+ * @version $Id: Url.java,v 1.20 2007-03-30 15:01:37 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -134,7 +134,20 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         Parameters blockParams;
         Block block;
         if (component != null) {
-            block = "".equals(page) ? component.getDefaultBlock() : component.getBlock(page);
+            if ("".equals(page) || page == null) {
+                HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
+                Renderer currentRenderer = (Renderer) req.getAttribute(Renderer.KEY);
+                if (currentRenderer != null) {
+                    block = currentRenderer.getBlock();
+                } else {
+                    block = component.getDefaultBlock();
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("No explicit page, guessing current block " + block + " using " + currentRenderer);
+                }
+            } else {
+                block = component.getBlock(page);
+            }
             if (block == null) {
                 log.debug("There is no block " + page + " in component " + component);
                 // could give error here if component was explicit?
