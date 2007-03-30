@@ -43,7 +43,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>user</name>
-            <type key="false" notnull="false" state="persistent">INTEGER</type>
+				<type key="false" notnull="true" size="512" state="persistent">STRING</type>
 			</db>
 		</field>
 		<field>
