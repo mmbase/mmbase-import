@@ -7,6 +7,7 @@
 		<wizard>config/properties/properties</wizard>
 		<nodepath>properties</nodepath>
 		<fields>key,value</fields>
+		<constraints>module is null or module = ''</constraints>
 	</node>
 
 	<node number="30002" owner="admin">

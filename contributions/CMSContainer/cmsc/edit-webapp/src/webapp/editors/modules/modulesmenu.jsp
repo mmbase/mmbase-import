@@ -59,6 +59,12 @@
 	                  <a href="${workflowUrl}" target="rightpane"><fmt:message key="modules.workflow" /></a>
 	               </li>
 	            </mm:haspage>
+	            <mm:haspage page="/editors/knownvisitor-ntlm">
+	               <li class="visitor">
+	                  <c:url var="visitorNtlmUrl" value="/editors/knownvisitor-ntlm/index.jsp"/>
+	                  <a href="${visitorNtlmUrl}" target="rightpane"><fmt:message key="modules.knowvisitor-html" /></a>
+	               </li>
+	            </mm:haspage>
 	         </mm:hasrank>
             <mm:haspage page="/editors/egemmail">
                <li class="egem">
