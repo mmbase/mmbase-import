@@ -111,7 +111,7 @@
     </body>
   </block>
 
-  <block name="sql tool" 
+  <block name="sqltool" 
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">A tool to directly edit your SQL database. 
