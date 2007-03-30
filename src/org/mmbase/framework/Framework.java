@@ -18,12 +18,18 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.21 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Framework.java,v 1.22 2007-03-30 20:46:16 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
 
+    /**
+     * CSS-id to be used on block
+     */
     public final static String COMPONENT_ID_KEY    = "componentId";
+    /**
+     * CSS-class to be used on block
+     */
     public final static String COMPONENT_CLASS_KEY = "componentClassName";
 
     /**
@@ -35,7 +41,7 @@ public interface Framework {
      * Returns a URL that can be presented to the user (to be put into HTML) to a specific block
      * for a component. The url might be different based on the WindowState of the block.
      *
-     * @param block The block to create an URL for, or a page (e.g. image/css) provided by the component
+     * @param block     The block to create an URL for, or a page (e.g. image/css) provided by the component
      * @param component The component to use to search the file for
      * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
      * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
@@ -45,6 +51,14 @@ public interface Framework {
      *                   for some reason called directly.     
      */
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean escapeAmps);
+
+
+    // YOu could argue that only the block itself may create a link to its action
+    //public StringBuilder getActionUrl(Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
+
+    // but we don't do that.
+    public StringBuilder getActionUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
+
 
     /** 
      * Return a (possibly modified) URL for a given path. 
@@ -65,6 +79,7 @@ public interface Framework {
      * @return An URL relative to the root of this web application (i.e. withouth a context path)
      */
     public StringBuilder getUrl(String path, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps);
+
 
     /**
      * Generates an URL to a resource to be called and included by a renderer.

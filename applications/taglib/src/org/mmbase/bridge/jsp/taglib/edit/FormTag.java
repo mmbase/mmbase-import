@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.9 2007-03-30 14:17:36 michiel Exp $
+ * @version $Id: FormTag.java,v 1.10 2007-03-30 20:46:32 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -76,7 +76,10 @@ public class FormTag extends TransactionTag implements Writer {
 
     public int doStartTag() throws JspTagException {
         m = getMode();
-        String url = new Url(this, page.getString(this), Url.getComponent(this)).toString();
+        Url u = new Url(this, page.getString(this), Url.getComponent(this));
+        u.setAction();
+        String url = u.toString();
+            
         switch(m) {
         case MODE_URL:
             helper.setValue(url);

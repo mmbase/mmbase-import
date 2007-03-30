@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.27 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: BasicFramework.java,v 1.28 2007-03-30 20:46:16 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -36,10 +36,12 @@ public class BasicFramework implements Framework {
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
     public final static String KEY = "org.mmbase.framework.state";
+    public final static String RENDER_ID = "org.mmbase.framework.render_id";
 
     public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
     public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
     public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
+    public static final Parameter<Integer> ACTION   = new Parameter<Integer>("action", Integer.class);
 
 
     public String getName() {
@@ -102,6 +104,8 @@ public class BasicFramework implements Framework {
         return getInternalUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
     }
 
+
+
     /**
      * 
      */
@@ -125,6 +129,9 @@ public class BasicFramework implements Framework {
     }
 
 
+    /**
+     * @todo state not used.
+     */
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters,
                                      Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
 
@@ -145,18 +152,30 @@ public class BasicFramework implements Framework {
         }
     }
 
+    public StringBuilder getActionUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
+        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+        State state = getState(req);
+        Renderer renderer = state.getRenderer();
+        frameworkParameters.set(ACTION, state.getId());
+        return getBlockUrl(block, component, blockParameters, frameworkParameters, state.getWindowState(), writeamp);
+    }
+
+
     public Block getBlock(Component component, String blockName) {
         return component.getBlock(blockName);
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK);
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION);
     }
 
     public boolean makeRelativeUrl() {
         return false;
     }
 
+    /**
+     * Returns the state object for the request.
+     */
     protected State getState(HttpServletRequest request) {
         State state = (State) request.getAttribute(KEY);
         if (state == null) {
@@ -178,7 +197,19 @@ public class BasicFramework implements Framework {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         Object previousRenderer = request.getAttribute(Renderer.KEY);
         request.setAttribute(Renderer.KEY, renderer);
+        if (log.isDebugEnabled()) {
+            log.info("Rendering " + renderer);
+        }
         State state = getState(request);
+
+        Integer action = frameworkParameters.get(ACTION);
+        log.info("Current action " + action + " stated id " + state.getId());
+        if (action != null && action == state.getId()) {
+            log.info("Processing " + renderer.getBlock());
+            renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
+            frameworkParameters.set(ACTION, null);
+        }
+
         request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
         state.render(renderer);
         request.setAttribute(COMPONENT_ID_KEY, "mm" + state.getPrefix());
@@ -211,6 +242,9 @@ public class BasicFramework implements Framework {
         return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
     }
 
+    /**
+     * 
+     */
     protected static class State {
         private Map<Renderer, Integer> renderers = new HashMap<Renderer, Integer>();
         private int count;
@@ -219,6 +253,11 @@ public class BasicFramework implements Framework {
 
         State(HttpServletRequest r) {
             request = r;
+        }
+
+
+        public Renderer.WindowState getWindowState() {
+            return Renderer.WindowState.NORMAL;
         }
 
         public HttpServletRequest getRequest() {
@@ -231,8 +270,23 @@ public class BasicFramework implements Framework {
             renderers.put(rend, ++count);
         }
         public String getPrefix() {
-            return "_" + renderer.getBlock().getComponent().getName() + "_" + renderer.getBlock().getName() + "_" + count + "_";
+            //return "_" + renderer.getBlock().getComponent().getName() + "_" +
+            //renderer.getBlock().getName() + "_" + count + "_";
+            return "_bfw_" + count + "_";
         }
+        public Renderer getRenderer() {
+            return renderer;
+        }
+        /**
+         * Returns the id of the current renderer
+         */
+        public int getId() {
+            return count;
+        }
+
+        /**
+         * 
+         */
         public Map<String, Object> getMap(final Map<String, Object> params) {
             return new AbstractMap() {
                 public Set<Map.Entry<String, Object>> entrySet() {
