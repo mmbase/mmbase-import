@@ -14,16 +14,16 @@ public class RatingUtil {
     * Gets the rating of a certain content element for a certain user
     * 
     * @param contentNumber The number (identifier) of the content
-    * @param userNumber The number (identifier) of the user
+    * @param userNumber The identifier of the user
     * @return The rating of this element given by the given user
     *          set in a Rating object.
     *          returns -1 when it has not been rated.
     *          
     * @todo implement
     */
-   public static int getUserRating(int contentNumber, int userNumber) {
+   public static int getUserRating(int contentNumber, String user) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList ratingList = cloud.getList(null, "contentelement,rating", "rating.rating", "contentelement.number = "+contentNumber+" AND rating.user = "+userNumber, null, null, null, false);
+      NodeList ratingList = cloud.getList(null, "contentelement,rating", "rating.rating", "contentelement.number = "+contentNumber+" AND rating.user = '"+user+"'", null, null, null, false);
       if(ratingList.size() == 0) {
          return -1;
       }
@@ -63,18 +63,18 @@ public class RatingUtil {
     * Rating can only be done once!
     * 
     * @param contentNumber The number (identifier) of the content
-    * @param userNumber The number (identifier) of the user
+    * @param user The identifier of the user
     * @param rating The rating given by the user
     * @todo implement
     */
-   public synchronized static void setUserRating(int contentNumber, int userNumber, int rating) {
-      int oldUserRating = getUserRating(contentNumber, userNumber);
+   public synchronized static void setUserRating(int contentNumber, String user, int rating) {
+      int oldUserRating = getUserRating(contentNumber, user);
       if(oldUserRating == -1) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node contentNode = cloud.getNode(contentNumber);
          
          Node newNode = cloud.getNodeManager("rating").createNode();
-         newNode.setIntValue("user", userNumber);
+         newNode.setStringValue("user", user);
          newNode.setIntValue("rating", rating);
          newNode.commit();
          
