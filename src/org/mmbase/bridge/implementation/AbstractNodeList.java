@@ -187,12 +187,20 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
         if (n == -1) {
             String[] na  = coreNode.getStringValue("_number").split("_");
             if (na.length == 2) {
-                return cloud.getNode(na[1]);
+                if (cloud.hasNode(na[1])) {
+                    return cloud.getNode(na[1]);
+                } else {
+                    return new BasicNode(coreNode, (BasicCloud) c);
+                }    
             } else {
                 throw new RuntimeException("Could not make a Node of " + coreNode);
             }
         } else {
-            return cloud.getNode(n);
+            if (cloud.hasNode(n)) {
+                return cloud.getNode(n);
+            } else {
+                return new BasicNode(coreNode, (BasicCloud) c);
+            }
         }
     }
 
