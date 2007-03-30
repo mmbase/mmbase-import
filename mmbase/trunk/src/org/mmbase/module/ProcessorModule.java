@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.util.CollectionNodeList;
+import org.mmbase.bridge.implementation.BasicNodeList;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -81,7 +81,10 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             super(name, params, ReturnType.NODELIST);
         }
         public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-            return new CollectionNodeList(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()));
+            Cloud cloud = arguments.get(Parameter.CLOUD);
+            return new BasicNodeList(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()),
+                                     cloud
+                                     );
         }
     }
 
