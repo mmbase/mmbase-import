@@ -10,16 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search;
 
 import java.util.List;
+
+import org.mmbase.cache.Cacheable;
 /**
  * Encapsulates a request for a search of the object cloud.
  * <p>
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.4 2006-09-08 14:34:08 michiel Exp $
+ * @version $Id: SearchQuery.java,v 1.5 2007-03-31 17:12:58 nklasens Exp $
  * @since MMBase-1.7
  */
-public interface SearchQuery {
+public interface SearchQuery extends Cacheable {
     /**
      * Default maxNumber value, corresponds to no maximum.
      * @see SearchQuery#getMaxNumber

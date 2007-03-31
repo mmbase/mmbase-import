@@ -19,11 +19,11 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.42 2007-02-16 20:49:28 michiel Exp $
+ * @version $Id: Query.java,v 1.43 2007-03-31 17:12:58 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, Cacheable, Cloneable {
+public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Returns the Cloud for which this Query was defined.
