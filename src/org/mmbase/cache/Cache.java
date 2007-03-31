@@ -14,13 +14,12 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Cacheable;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.44 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: Cache.java,v 1.45 2007-03-31 17:12:58 nklasens Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 

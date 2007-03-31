@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.66 2007-02-16 20:49:28 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.67 2007-03-31 17:12:58 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -47,11 +47,6 @@ public class BasicQuery implements Query  {
      * @todo this member is in BasicSearchQuery too (but private).
      */
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
-
-    /**
-     * Whether this Query is cacheable.
-     */
-    protected CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
     /**
      * The QueryCheck object associated with this Query, or null if no such object was determined yet.
@@ -161,11 +156,11 @@ public class BasicQuery implements Query  {
     }
 
     public CachePolicy getCachePolicy() {
-        return cachePolicy;
+        return query.getCachePolicy();
     }
 
     public void setCachePolicy(CachePolicy policy) {
-        this.cachePolicy = policy;
+        query.setCachePolicy(policy);
     }
 
     /**
