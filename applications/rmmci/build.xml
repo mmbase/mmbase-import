@@ -15,6 +15,7 @@
   <property name="build.dir" value="${source.dir}/build"/>
   <target name="init">
     <mkdir dir="build/classes"/>
+  	<mkdir dir="build/generator/classes"/>
     <available property="dummy" classname="dummy">
       <classpath id="classpath">
         <fileset dir="${build.dir}/lib">
@@ -54,33 +55,25 @@
 <!-- (Step 1 for remote) Compile the remote generator classes            -->
 <!-- =================================================================== -->
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
-    <javac srcdir="src"
-           destdir="build/classes"
+    <javac srcdir="generator/src"
+           destdir="build/generator/classes"
            classpathref="classpath"
            debug="yes"
            source="1.5"
            optimize="yes">
-      <include name="org/mmbase/bridge/remote/generator/*.java"/>
-      <include name="org/mmbase/servlet/rmi/*.java"/>
     </javac>
-  </target>
-<!-- =================================================================== -->
-<!-- check if MMCI.xml is present                                        -->
-<!-- =================================================================== -->
-  <target name="check.mmci.xml.present" description="check if MMCI.xml is present" depends="init">
-    <available property="mmci.xml.present" file="build/src/MMCI.xml"/>
   </target>
 <!-- =================================================================== -->
 <!-- (Step 2 for remote) Generate the source for the remote classes      -->
 <!-- =================================================================== -->
-  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator,check.mmci.xml.present" unless="mmci.xml.present">
+  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator">
     <mkdir dir="build/src/org/mmbase/bridge/remote"/>
 <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.RMMCI" fork="true" classpathref="classpath">
       <arg value="build/src"/>
       <classpath>
-        <pathelement location="build/classes"/>
+        <pathelement location="build/generator/classes"/>
       </classpath>
     </java>
   </target>
@@ -97,7 +90,7 @@
       <src path="src"/>
       <include name="org/mmbase/bridge/remote/*.java"/>
       <include name="org/mmbase/bridge/remote/rmi/*.java"/>
-      <include name="org/mmbase/bridge/remote/implementation/*.java"/>
+      <include name="org/mmbase/bridge/remote/proxy/*.java"/>
     </javac>
     <!-- rmic base="build/classes" sourcebase="build/classes" classpathref="classpath">
       <include name="org/mmbase/bridge/remote/rmi/*.class"/>
@@ -151,7 +144,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/remote/*"/>
         <include name="org/mmbase/bridge/remote/rmi/*"/>
         <include name="org/mmbase/bridge/remote/util/*"/>
-        <include name="org/mmbase/bridge/remote/implementation/*"/>
+        <include name="org/mmbase/bridge/remote/proxy/*"/>
       </fileset>
       <fileset dir="build/rmmcitmp">
         <include name="org/mmbase/bridge/*"/>                           <!-- of course -->
