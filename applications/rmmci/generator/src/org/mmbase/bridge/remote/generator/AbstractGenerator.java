@@ -9,9 +9,9 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.remote.generator;
+
 import java.io.*;
 import java.lang.reflect.*;
-import java.util.*;
 
 
 /**
@@ -19,11 +19,11 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractGenerator.java,v 1.2 2006-10-16 15:04:23 pierre Exp $
+ * @version $Id: AbstractGenerator.java,v 1.1 2007-03-31 17:14:57 nklasens Exp $
  */
 abstract public class AbstractGenerator {
 
-    protected Class currentClass = null;
+    protected Class<?> currentClass = null;
     protected StringBuilder buffer = new StringBuilder();
 
     public AbstractGenerator() {
@@ -60,12 +60,12 @@ abstract public class AbstractGenerator {
 
     public boolean needsRemote(Type t) {
         return t instanceof Class &&
-               ((Class)t).getName().startsWith("org.mmbase") &&
-               ((Class)t).isInterface() &&
-               (!java.io.Serializable.class.isAssignableFrom(((Class)t)) || org.mmbase.bridge.Cloud.class.equals(t));
+               ((Class<?>)t).getName().startsWith("org.mmbase") &&
+               ((Class<?>)t).isInterface() &&
+               (!java.io.Serializable.class.isAssignableFrom(((Class<?>)t)) || org.mmbase.bridge.Cloud.class.equals(t));
     }
 
-    public String getShortName(Class c) {
+    public String getShortName(Class<?> c) {
         String className = c.getName();
         int shortIndex = className.lastIndexOf(".");
         if (c.getDeclaringClass() != null) {
