@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.bridge.remote.generator;
+
 import java.io.*;
-import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -18,15 +18,15 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.1 2006-09-29 08:59:07 pierre Exp $
+ * @version $Id: RMMCI.java,v 1.1 2007-03-31 17:14:57 nklasens Exp $
  */
 public class RMMCI {
 
     protected String targetDir = null;
     protected String remoteDir = null;
     protected String rmiDir = null;
-    protected String implementationDir = null;
-    protected List<Class> objectsToWrap = new ArrayList<Class>();
+    protected String proxyDir = null;
+    protected List<Class<?>> objectsToWrap = new ArrayList<Class<?>>();
 
     public RMMCI(String targetDir) {
         //check if the org/mmbase/bridge/remote dir exists
@@ -42,36 +42,36 @@ public class RMMCI {
             file.mkdirs();
         }
 
-        implementationDir =  remoteDir + "/implementation/";
-        file = new File(implementationDir);
+        proxyDir =  remoteDir + "/proxy/";
+        file = new File(proxyDir);
         if (!file.exists()) {
             file.mkdirs();
         }
     }
 
-    public boolean needsRemote(Class c) {
+    public boolean needsRemote(Class<?> c) {
         return c.getName().startsWith("org.mmbase") &&
                c.isInterface() &&
                (!java.io.Serializable.class.isAssignableFrom(c) || org.mmbase.bridge.Cloud.class.equals(c));
     }
 
-    public void generate(Class c) {
+    public void generate(Class<?> c) {
         if (needsRemote(c)) {
            objectsToWrap.add(c);
            new InterfaceGenerator(c).generate(remoteDir);
            new RmiGenerator(c).generate(rmiDir);
-           new ImplementationGenerator(c).generate(implementationDir);
+           new ProxyGenerator(c).generate(proxyDir);
         }
     }
 
     public void generateObjectWrapper() {
-        new ObjectWrapperGenerator(objectsToWrap).generate(implementationDir);
+        new ObjectWrapperGenerator(objectsToWrap).generate(remoteDir);
     }
 
     public void generateBridgeClasses() throws Exception {
         // Bridge interfaces
-        generate(org.mmbase.bridge.BridgeList.class);
-        generate(org.mmbase.bridge.Cacheable.class);
+        generate(org.mmbase.cache.Cacheable.class);
+//        generate(org.mmbase.bridge.BridgeList.class);
         generate(org.mmbase.bridge.Cloud.class);
         generate(org.mmbase.bridge.CloudContext.class);
         generate(org.mmbase.bridge.Descriptor.class);
@@ -159,6 +159,7 @@ public class RMMCI {
 /*
         generate(org.mmbase.util.LocalizedString.class);
 */
+        objectsToWrap.add(org.mmbase.bridge.BridgeList.class);
         generateObjectWrapper();
     }
 

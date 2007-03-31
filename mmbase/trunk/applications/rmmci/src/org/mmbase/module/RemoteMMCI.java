@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.17 2006-11-24 14:18:48 pierre Exp $
+ * @version $Id: RemoteMMCI.java,v 1.18 2007-03-31 17:15:00 nklasens Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -52,6 +52,7 @@ public class RemoteMMCI extends ProcessorModule {
      * Method called by MMBase at startup
      * it calls the createRemoteMMCI based on the rmmci.xml configuration
      */
+    @Override
     public void init() {
         super.init(); // is this required?
         log.debug("Module RemoteMMCI starting");
@@ -219,6 +220,7 @@ public class RemoteMMCI extends ProcessorModule {
      * unbinds the object bound to the registry in order to try to stop the registry
      * this usualy fails(the regsitry keeps running and prevents the webapp to shutdown)
      */
+    @Override
     protected void shutdown() {
         if (registry != null) {
             stopRegistry();
@@ -230,10 +232,10 @@ public class RemoteMMCI extends ProcessorModule {
         log.info("Stopping the RMI registry");
         try {
             String[] names = registry.list();
-            for (int x = 0; x < names.length; x++) {
+            for (String element : names) {
                 try {
-                    log.service("Unbind " + names[x]);
-                    registry.unbind(names[x]);
+                    log.service("Unbind " + element);
+                    registry.unbind(element);
                 } catch (NotBoundException e1) {
                     log.warn(Logging.stackTrace(e1));
                 }
@@ -261,8 +263,8 @@ public class RemoteMMCI extends ProcessorModule {
            if (remoteCloudContext != null) {
               log.debug("RMI lookup ok");
               try {
-                    Class clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
-                    Constructor constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
+                    Class<?> clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
+                    Constructor<?> constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
                     CloudContext cloudContext = (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
 
                     cloudContext.getCloud("mmbase");
