@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
+
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
 /**
@@ -29,7 +31,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.7 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: ModifiableQuery.java,v 1.8 2007-03-31 17:12:58 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
@@ -84,6 +86,12 @@ public class ModifiableQuery implements SearchQuery {
      */
     private Boolean aggregating = null;
 
+    /**
+     * Whether this Query is cacheable.
+     */
+    private CachePolicy cachePolicy = null;
+
+    
     /** Creates a new instance of ModifiedQuery */
     public ModifiableQuery(SearchQuery query) {
         this.query = query;
@@ -255,6 +263,19 @@ public class ModifiableQuery implements SearchQuery {
         } else {
             return query.isAggregating();
         }
+    }
+
+    public CachePolicy getCachePolicy() {
+        if (cachePolicy != null) {
+            return cachePolicy;
+        }
+        else {
+            return query.getCachePolicy();
+        }
+    }
+
+    public void setCachePolicy(CachePolicy policy) {
+        this.cachePolicy = policy;
     }
 
 
