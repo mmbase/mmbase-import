@@ -455,7 +455,6 @@ tr.even:hover { background-color: #d8e8d8; }
     margin: 0;
     border-top: 1px solid #c8cfd9;
     text-align: left;
-    white-space: nowrap;
 }
 
 #relationssource th, #relationsdestination th { display: none; }
