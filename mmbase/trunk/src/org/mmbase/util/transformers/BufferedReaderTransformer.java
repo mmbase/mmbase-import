@@ -35,7 +35,6 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
             while ((line = br.readLine()) != null) {
                 transform(bw, line);
             }
-            System.out.println("Ready");
             br.close();
             bw.flush();
         } catch (java.io.IOException e) {
