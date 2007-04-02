@@ -6,10 +6,10 @@
 <mm:import externid="days"><mm:write referid="maxdays" /></mm:import>
 <%-- other variables --%>
 <mm:import externid="offset">0</mm:import>
-  <link rel="stylesheet" href="css/my_editors.css" type="text/css" />
-  <link href="img/favicon.ico" rel="icon" type="image/x-icon" />
-  <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+  <link href="<mm:url absolute="server" page="css/my_editors.css" />" rel="stylesheet" type="text/css" />
+  <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="icon" type="image/x-icon" />
+  <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="shortcut icon" type="image/x-icon" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>my_editors - <mm:write referid="pagetitle" /></title>
-  <script src="scripts/tables.js" type="text/javascript" ><!-- for MSIE --></script>
-  <script src="scripts/showdiv.js" type="text/javascript" ><!-- for MSIE --></script>
+  <script src="<mm:url absolute="server" page="scripts/tables.js" />" type="text/javascript" ><!-- for MSIE --></script>
+  <script src="<mm:url absolute="server" page="scripts/showdiv.js" /> type="text/javascript" ><!-- for MSIE --></script>

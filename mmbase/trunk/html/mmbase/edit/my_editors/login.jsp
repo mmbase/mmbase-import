@@ -4,7 +4,7 @@
 <head>
 <mm:import id="pagetitle">Login</mm:import>
 <%@ include file="inc/head.jsp" %>
-  <link rel="stylesheet" href="css/login.css" type="text/css" />
+  <link rel="stylesheet" href="<mm:url absolute="server" page="css/login.css" />" type="text/css" />
 </head>
 <body class="login">
 
