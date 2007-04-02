@@ -169,8 +169,13 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
     @Override
     public String getPath(int pageId, boolean includeRoot) {
-        Page page = siteModelManager.getPage(pageId);
-        return siteModelManager.getPath(page, includeRoot);
+       Page page = siteModelManager.getPage(pageId);
+       if(page == null) {
+          return null;
+       }
+       else {
+          return siteModelManager.getPath(page, includeRoot);
+       }
     }
 
     @Override
