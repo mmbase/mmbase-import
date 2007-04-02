@@ -488,7 +488,11 @@ tr.even:hover { background-color: #d8e8d8; }
     float: none;
 }
 
-#relationssource .buttons, #relationsdestination .buttons { text-align: right; }
+#relationssource .buttons, #relationsdestination .buttons
+{
+	text-align: right;
+	white-space: nowrap;
+}
 
 .editrelation
 {
