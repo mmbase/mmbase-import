@@ -12,7 +12,8 @@
 <body>
 <h1>Tools</h1>
 <ul>
- <li><a href="delete_morenodes.jsp">Delete more nodes</a></li>
+ <li><a href="tools/delete_morenodes.jsp">Delete more nodes</a></li>
+ <li><a href="tools/changecontext.jsp">Change security context of a lot of nodes</a></li>
 </ul>
 </body>
 </html>
