@@ -185,12 +185,15 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
         if (!StringUtil.isEmpty(pageid)) {
             
             String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
-            setAttribute(req, "pagepath", pagepath);
             
-            Set<String> positions = SiteManagement.getPagePositions(pageid);
-            ArrayList<String> orderedPositions = new ArrayList<String>(positions);
-            Collections.sort(orderedPositions);
-            setAttribute(req, "pagepositions", new ArrayList<String>(orderedPositions));
+            if(pagepath != null) {
+               setAttribute(req, "pagepath", pagepath);
+               
+               Set<String> positions = SiteManagement.getPagePositions(pageid);
+               ArrayList<String> orderedPositions = new ArrayList<String>(positions);
+               Collections.sort(orderedPositions);
+               setAttribute(req, "pagepositions", new ArrayList<String>(orderedPositions));
+            }
         }
         super.doEditDefaults(req, res);
     }
