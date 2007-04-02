@@ -7,7 +7,7 @@
 
     <date>2005-12-24</date>
 
-    <edition>$Id: lucene.xml,v 1.7 2007-02-22 15:22:42 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.8 2007-04-02 14:30:34 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -151,7 +151,55 @@
     <section>
       <title>Subindices</title>
 
-      <para>It is also possible to add 'related' subtags to 'list'.</para>
+      <para>It is also possible to add 'related' or 'relatednodes' subtags to
+      'list'.</para>
+
+      <programlisting>
+&lt;?xml version="1.0"?&gt;
+&lt;luceneindex
+  xmlns="http://www.mmbase.org/xmlns/luceneindex"
+  xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance"
+  xsd:schemaLocation="http://www.mmbase.org/xmlns/luceneindex
+               http://www.mmbase.org/xsd/luceneindex.xsd"&gt;
+  &lt;index&gt;
+    &lt;extractor class="org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor" /&gt;
+    &lt;extractor class="org.mmbase.module.lucene.extraction.impl.SwingRTFExtractor" /&gt;
+    &lt;extractor class="org.mmbase.module.lucene.extraction.impl.POIWordExtractor" /&gt;
+    &lt;extractor class="org.mmbase.module.lucene.extraction.impl.POIExcelExtractor" /&gt;
+    &lt;list type="news"&gt;
+      &lt;mmsq:field name="date" alias="date" keyword="true" /&gt;
+      &lt;mmsq:field name="title" /&gt;   
+      &lt;mmsq:field name="subtitle" /&gt;
+      &lt;mmsq:field name="intro" /&gt;   
+      &lt;mmsq:field name="body" /&gt;
+      &lt;mmsq:relatednodes type="attachments" searchdirs="destination"&gt;
+        &lt;mmsq:field name="title" /&gt;
+        &lt;mmsq:field name="description" /&gt;
+        &lt;mmsq:field name="handle" /&gt;
+      &lt;/mmsq:relatednodes&gt;
+    &lt;/list&gt;
+  &lt;/index&gt;
+&lt;/luceneindex&gt;
+</programlisting>
+
+      <para>The use of these tags is very simular to those in de MMBase
+      taglib. Below an example with 'related'. </para>
+
+<programlisting>
+  &lt;list type="documents"&gt;
+    &lt;mmsq:field name="title" /&gt;
+    &lt;mmsq:field name="subtitle" /&gt;
+    &lt;mmsq:field name="intro" /&gt;
+    &lt;mmsq:field name="body" /&gt;
+    &lt;mmsq:field name="kindofdocument"  alias="kindofdocument" keyword="true" /&gt;
+    &lt;mmsq:related path="items,meetings,kindofmeetings" element="kindofmeetings"&gt;
+      &lt;mmsq:field name="meetings.date" alias="date" keyword="true" /&gt;
+      &lt;mmsq:field name="kindofmeetings.number" alias="kindofmeeting" 
+               keyword="true" /&gt;
+    &lt;/mmsq:related&gt;
+  &lt;/list&gt;
+</programlisting>
     </section>
 
     <section>
