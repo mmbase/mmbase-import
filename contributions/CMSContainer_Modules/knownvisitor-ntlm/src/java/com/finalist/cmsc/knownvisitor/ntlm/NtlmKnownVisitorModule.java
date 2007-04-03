@@ -17,7 +17,7 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 public class NtlmKnownVisitorModule extends KnownVisitorModule {
    static Log log = LogFactory.getLog(NtlmKnownVisitorModule.class);
 
-   private static final String SESSION_ATTRIBUTE = "NtlmVisitor";
+   private static final String SESSION_ATTRIBUTE = "NtlmVisitor"; 
 
    public static final String PROPERTY_DOMAIN_CONTROLLER = "knownvisitor-ntlm.domaincontroller";
    public static final String PROPERTY_ENABLED = "knownvisitor-ntlm.enabled";
@@ -58,7 +58,7 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
       // Assemble a hash with data to use when connecting...
       Hashtable<String, String> env = new Hashtable<String, String>();
       env.put(Context.SECURITY_AUTHENTICATION, "simple");
-      env.put(Context.SECURITY_PRINCIPAL, "cn="+getProperty(PROPERTY_LOGONNAME)+","+searchDN);
+      env.put(Context.SECURITY_PRINCIPAL, getProperty(PROPERTY_FIELD_REALNAME)+"="+getProperty(PROPERTY_LOGONNAME)+","+searchDN);
       env.put(Context.SECURITY_CREDENTIALS, getProperty(PROPERTY_LOGONPASSWORD));
       
 
