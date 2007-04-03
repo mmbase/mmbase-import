@@ -1,4 +1,4 @@
-package com.finalist.cmsc.knownvisitor.ntlm.taglib;
+package com.finalist.cmsc.knownvisitor.taglib;
 
 import java.io.IOException;
 
@@ -7,7 +7,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import jcifs.smb.NtlmPasswordAuthentication;
+import com.finalist.cmsc.knownvisitor.KnownVisitorModule;
+import com.finalist.cmsc.knownvisitor.Visitor;
 
 public class GetVisitorTag extends SimpleTagSupport {
 
@@ -17,9 +18,9 @@ public class GetVisitorTag extends SimpleTagSupport {
 
       PageContext ctx = (PageContext) getJspContext();
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-      NtlmPasswordAuthentication ntlm = (NtlmPasswordAuthentication) request.getSession().getAttribute("NtlmHttpAuth");
-      if(ntlm != null) {
-         request.setAttribute(var, ntlm.getName());
+      Visitor visitor = KnownVisitorModule.getInstance().getVisitor(request);
+      if(visitor != null) {
+         request.setAttribute(var, visitor);
       }
    }
    

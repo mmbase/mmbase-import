@@ -39,7 +39,7 @@
 						<form method="post">
 							<cmsc:moduleproperties module="knownvisitor-ntlm" var="properties"/>
 							<c:forEach var="property" items="${properties}">
-								<label style="width:150px"><fmt:message key="${property.key}" /></label>
+								<label style="width:200px"><fmt:message key="${property.key}" /></label>
 								
 								<c:choose>
 									<c:when test="${fn:contains(property.key,'password')}">
