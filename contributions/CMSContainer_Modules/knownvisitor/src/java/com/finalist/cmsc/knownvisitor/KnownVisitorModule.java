@@ -1,6 +1,20 @@
 package com.finalist.cmsc.knownvisitor;
 
-public abstract class KnownVisitorModule {
+import javax.servlet.http.HttpServletRequest;
 
-   public abstract Visitor getVisitor();
+import org.mmbase.module.Module;
+
+public abstract class KnownVisitorModule extends Module{
+
+   private static KnownVisitorModule instance;
+
+   public abstract Visitor getVisitor(HttpServletRequest request);
+   
+   public static KnownVisitorModule getInstance() {
+      return instance;
+   }
+   
+   public static void setInstance(KnownVisitorModule module) {
+      instance = module;
+   }
 }

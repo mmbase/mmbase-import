@@ -3,7 +3,6 @@ package com.finalist.cmsc.knownvisitor.ntlm;
 import jcifs.http.NtlmSsp;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbSession;
-import jcifs.smb.NtlmChallenge;
 import jcifs.smb.SmbAuthException;
 import jcifs.UniAddress;
 import jcifs.Config;
@@ -17,17 +16,16 @@ import javax.servlet.FilterChain;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 import javax.naming.NamingException;
 import java.util.Map;
 import java.io.IOException;
-import java.security.Principal;
 
 import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.knownvisitor.KnownVisitorModule;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.portalImpl.PortalServlet;
 
@@ -36,9 +34,6 @@ import com.finalist.cmsc.portalImpl.PortalServlet;
  * @author Jeoffrey Bakker, Finalist IT Group
  */
 public class NtlmVisitorFilter implements Filter {
-   private static final String PROPERTY_ENABLED = "knownvisitor-ntlm.enabled";
-   private static final String PROPERTY_DOMAIN_CONTROLLER = "knownvisitor-ntlm.domaincontroller";
-
    private static final String realm = "jCIFS";
 
 
@@ -78,31 +73,12 @@ public class NtlmVisitorFilter implements Filter {
                         FilterChain chain) throws IOException, ServletException {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
-      final NtlmPasswordAuthentication ntlm;
-
       
       if (isEnabled() && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
          return;
       }
-
-      ntlm = (NtlmPasswordAuthentication) req.getSession().getAttribute("NtlmHttpAuth");
       
       chain.doFilter(req, resp);
-      // LOGGED IN
-/*      chain.doFilter(new HttpServletRequestWrapper(req) {
-
-         public String getRemoteUser() {
-            return (ntlm == null) ? null : ntlm.getName();
-         }
-
-         public Principal getUserPrincipal() {
-            return ntlm;
-         }
-
-         public String getAuthType() {
-            return ntlm == null ? req.getAuthType() : "NTLM";
-         }
-      }, resp);*/
    }
 
    /**
@@ -179,6 +155,7 @@ public class NtlmVisitorFilter implements Filter {
             return true;
          }
          req.getSession().setAttribute("NtlmHttpAuth", ntlm);
+         ((NtlmKnownVisitorModule)KnownVisitorModule.getInstance()).justLoggedIn(req,ntlm);
       } else {
          if (!skipAuthentication) {
             HttpSession ssn = req.getSession(false);
@@ -202,11 +179,11 @@ public class NtlmVisitorFilter implements Filter {
 
 
    private boolean isEnabled() {
-      return PropertiesUtil.getProperty(PROPERTY_ENABLED).equals("true");
+      return PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_ENABLED).equals("true");
    }
    
    private String getDomainController() {
-      return PropertiesUtil.getProperty(PROPERTY_DOMAIN_CONTROLLER);
+      return PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_DOMAIN_CONTROLLER);
    }
 
 }
