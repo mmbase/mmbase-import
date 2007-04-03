@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.153 2007-03-30 20:19:21 andre Exp $
+ * @version $Id: MMAdmin.java,v 1.154 2007-04-03 10:35:32 andre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -308,12 +308,12 @@ public class MMAdmin extends ProcessorModule {
                 }
             } else if (token.equals("SAVE")) {
                 String appname = (String)cmds.get(cmdline);
-                String savepath = (String)vars.get("PATH");
-                String goal = (String)vars.get("GOAL");
-                boolean includeComments = false;
-                if (tok.hasMoreTokens()) {
+                String savepath = (String)vars.get("path");
+                String goal = (String)vars.get("goal");
+                boolean includeComments = true;
+                /* if (tok.hasMoreTokens()) {
                     includeComments = "true".equals(tok.nextToken());
-                }
+                } */
                 writeApplication(appname, savepath, goal, includeComments);
                 if (vars != null) {
                     vars.put("RESULT", lastmsg);
