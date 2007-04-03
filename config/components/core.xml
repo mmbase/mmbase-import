@@ -30,7 +30,7 @@
          mimetype="text/html">
     <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
     <body jsp="/mmbase/admin/admin/servers.div.jsp">
-      <param name="server" type="string" />
+      <param name="server" type="String" />
     </body>
   </block>
   
@@ -60,8 +60,18 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all MMBase apps 1 applications</description>
-    <body jsp="/mmbase/admin/admin/applications.jsp">
-
+    <body jsp="/mmbase/admin/admin/applications.div.jsp">
+      <param name="application" type="String" />
+    </body>
+  </block>
+  
+  <block name="applications-action" 
+         mimetype="text/html">
+    <description xml:lang="en">Shows the application installation page and actions that can be taken</description>
+    <body jsp="/mmbase/admin/admin/application/actions.jsp">
+      <param name="application" type="String" />
+      <param name="cmd" type="String" />
+      <param name="path" type="String" />
     </body>
   </block>
   
@@ -79,7 +89,7 @@
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
     <body jsp="/mmbase/admin/transactions.jspx">
-      <param name="transaction" type="string" />
+      <param name="transaction" type="String" />
     </body>
   </block>
 
@@ -142,8 +152,8 @@
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
     <body jsp="/mmbase/admin/components.jspx">
-      <param name="component" type="string" />
-      <param name="view" type="string" /> <!-- hmm, should not be done like this -->
+      <param name="component" type="String" />
+      <param name="view" type="String" /> <!-- hmm, should not be done like this -->
     </body>
   </block>
 
