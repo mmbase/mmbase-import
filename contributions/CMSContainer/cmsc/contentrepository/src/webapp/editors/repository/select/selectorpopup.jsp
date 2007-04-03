@@ -24,7 +24,7 @@
 		ajaxTreeConfig.role = '${param.role}';
 
 		function selectItem(channel, path) {
-			opener.selectChannel(channel, path);
+         opener.selectChannel(channel, path, '${param.fieldName}', '${param.fieldPathName}');
 			close();
 		}
       function loadFunction() {
