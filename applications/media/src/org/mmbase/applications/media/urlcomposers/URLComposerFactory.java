@@ -170,7 +170,7 @@ public class URLComposerFactory  {
         if (cache.size() > 0) {
             log.service("Clearing Media URL-cache");
         }
-        org.mmbase.applications.media.cache.URLCache.getCache().clear();
+        cache.clear();
     }
 
 
