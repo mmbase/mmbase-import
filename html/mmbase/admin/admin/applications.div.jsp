@@ -3,7 +3,7 @@
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="application" />
 <div
-  class="mm_c mm_c_core mm_c_b_databases ${requestScope.componentClassName}"
+  class="component ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 <mm:notpresent referid="application">
   <h3>Administrate Applications</h3>
@@ -50,7 +50,6 @@
   <h3>Application <mm:write referid="application" /></h3>
   <p><mm:function module="mmadmin" name="DESCRIPTION" referids="application" /></p>
   
-  <form action="<mm:url page="result.jsp" />" method="post">
   <table border="0" cellspacing="0" cellpadding="3">
     <caption>Install the application <mm:write referid="application" />.</caption>
     <tr>
@@ -69,7 +68,7 @@
      </td>
      <td class="center">
        <mm:islessthan referid="installedversion" value="$version">
-         <mm:link page="applications-action" referids="application" component="core">
+         <mm:link page="applications-action" referids="application">
            <mm:param name="cmd" value="LOAD" />
            <a href="${_}"><img src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" /></a>
          </mm:link>
@@ -77,13 +76,11 @@
      </td>
     </tr>
   </table>
-  </form>
 
-  <mm:link page="applications-action" referids="application">
+  <mm:link page="applications-action" referids="application" component="core">
     <form action="${_}" method="post">
   </mm:link>
     <input name="cmd" type="hidden" value="SAVE" />
-    <input name="application" type="hidden" value="${application}" />
     <table border="0" cellspacing="0" cellpadding="3">
       <caption>
         Backup or save the application <mm:write referid="application" />.
