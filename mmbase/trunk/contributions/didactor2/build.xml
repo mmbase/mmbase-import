@@ -21,6 +21,8 @@
   <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.zip}" />
 
   <property name="mmbase.dest"             value="${download.dir}/${mmbase.version}.zip" />
+  <property name="mmbaseroot.language"    value="en" />
+
 
 
   <target name="create.dirs">
