@@ -3,5 +3,6 @@
 <action type="create">
   	<object type="responseform">
    		<field name="name">N/A</field>
-   	</object>
+   		<field name="includedata">0</field>
+   	</object>   	
 </action>
