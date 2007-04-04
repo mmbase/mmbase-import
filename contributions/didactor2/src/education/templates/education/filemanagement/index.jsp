@@ -4,11 +4,13 @@
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator"%>
 <%
 
-    String directory = getServletContext().getRealPath("/education/files");
+// IMHO this jsp is stupid. See also: http://www.mmbase.org/jira/browse/DIDACTOR-46
 
-    //String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
-    //String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
-    String baseUrl = "http://localhost/education/files";
+//    String directory = getServletContext().getRealPath("/education/files");
+//    String baseUrl = "http://localhost/education/files";
+
+    String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
 
     if (directory == null || baseUrl == null)
     {
