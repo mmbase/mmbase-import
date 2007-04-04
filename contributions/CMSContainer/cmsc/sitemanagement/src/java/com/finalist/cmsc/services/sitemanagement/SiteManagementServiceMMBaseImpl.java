@@ -130,18 +130,28 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	public List<Stylesheet> getStylesheetForPageByPath (String path, boolean override) {
         List<Page> pagesToRoot = getListFromPath(path);//get all pages to root
         List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
-
-        // if override only take the sheets of the first page we find
-        for(int count = 0; count < pagesToRoot.size() && (!override || stylesheets.size() == 0); count++){
-           
-           // reverse looping
-            Page page = pagesToRoot.get(pagesToRoot.size() - count - 1);
+        Page page = null;        
+        
+        // loop through pages
+        for(int count = 0; count < pagesToRoot.size(); count++){
+                     
+            // if override only take the sheets of the last page
+            if (override) {
+               page = pagesToRoot.get(pagesToRoot.size() - count - 1); 
+            } 
+            else {
+               page = pagesToRoot.get(count);  
+            }
 
             List<Integer> stylesheetNumbers = page.getStylesheet();
             for (int j =0; j <stylesheetNumbers.size(); j++) {
                 Integer stylesheetNumber = stylesheetNumbers.get(j);
                 Stylesheet stylesheet = siteModelManager.getStylesheet(stylesheetNumber.intValue());
                 stylesheets.add(stylesheet);
+            }
+            
+            if (override) {
+               return stylesheets;
             }
         }
         return stylesheets;
