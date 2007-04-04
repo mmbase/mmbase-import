@@ -172,7 +172,7 @@ public class ResponseFormPortlet extends ContentPortlet {
     	 data.append(label);
          data.append(": ");
          data.append(textValue);
-         data.append("\n");		
+         data.append(System.getProperty("line.separator"));		
 	}	
 
 	private void saveResponseForm(Cloud cloud, Map<String, String> formfields, Node responseForm) {		
@@ -210,21 +210,35 @@ public class ResponseFormPortlet extends ContentPortlet {
     	}		
 	}
 
-	private void sendUserEmail(Node responseform, String userEmailAddress,String responseformData) {    	
+	private void sendUserEmail(Node responseform, String userEmailAddress,String responseformData) { 			
     	String userEmailSubject = responseform.getStringValue("useremailsubject");
         String userEmailSender = responseform.getStringValue("useremailsender");
         String userEmailSenderName = responseform.getStringValue("useremailsendername");
-        String userEmailText = responseform.getStringValue("useremailbody");        
-    	userEmailText = userEmailText.replace("#FORMDATA#",responseformData);
-        userEmailText = userEmailText.trim();       
+        String userEmailTextBefore = responseform.getStringValue("useremailbody");
+        String userEmailTextAfter = responseform.getStringValue("useremailbodyafter");
+        boolean includedata = responseform.getBooleanValue("includedata");
+        StringBuffer userEmailText = new StringBuffer();	
+        
+    	userEmailTextBefore = userEmailTextBefore.trim();    
+    	userEmailText.append(userEmailTextBefore);
+    	if (includedata) {
+    		userEmailText.append(System.getProperty("line.separator"));	
+    		userEmailText.append(responseformData);    		
+    	}
+    	if (userEmailTextAfter != null) {
+    		userEmailTextAfter = userEmailTextAfter.trim();
+    		userEmailText.append(System.getProperty("line.separator"));	
+    		userEmailText.append(userEmailTextAfter);
+    	}
+    	
         String emailRegex = getEmailRegex();
         if (!StringUtil.isEmptyOrWhitespace(userEmailSender) 
-        		&& !StringUtil.isEmptyOrWhitespace(userEmailText) 
+        		&& !StringUtil.isEmptyOrWhitespace(userEmailText.toString()) 
         		&& !StringUtil.isEmptyOrWhitespace(userEmailSenderName) 
         		&& !StringUtil.isEmptyOrWhitespace(userEmailAddress)        		
         		&& userEmailAddress.matches(emailRegex)) {
 	        try {
-	        	EmailSender.getInstance().sendEmail(userEmailSender, userEmailSenderName, userEmailAddress, userEmailSubject, userEmailText);	        	
+	        	EmailSender.getInstance().sendEmail(userEmailSender, userEmailSenderName, userEmailAddress, userEmailSubject, userEmailText.toString());	        	
 			} catch (UnsupportedEncodingException e) {
 				getLogger().error("error sending email", e);
 			} catch (MessagingException e) {
@@ -235,12 +249,23 @@ public class ResponseFormPortlet extends ContentPortlet {
 
 	private boolean sendResponseFormEmail(Node responseform, String responseformData, DataSource attachment) {
 		boolean sent = false;		
-    	String title = responseform.getStringValue("title");
-        String emailText = responseform.getStringValue("emailbody"); 
+		StringBuffer emailText = new StringBuffer();
+		
+        String emailTextBefore = responseform.getStringValue("emailbody"); 
+        String emailTextAfter = responseform.getStringValue("emailbodyafter"); 
         String senderEmail = responseform.getStringValue("useremailsender");
-        String senderName = responseform.getStringValue("useremailsendername");
-        emailText = emailText.replace("#TITEL#", title);
-        emailText = emailText.replace("#FORMDATA#", responseformData);        
+        String senderName = responseform.getStringValue("useremailsendername");     
+        	             
+        emailTextBefore = emailTextBefore.trim();    
+    	emailText.append(emailTextBefore);
+    	emailText.append(System.getProperty("line.separator"));	
+    	emailText.append(responseformData);
+    	if (emailTextAfter != null) {
+    		emailTextAfter = emailTextAfter.trim();
+    		emailText.append(System.getProperty("line.separator"));	
+    		emailText.append(emailTextAfter);
+    	}
+      
         String emailAddressesValue = responseform.getStringValue("emailaddresses");                                         
         String emailSubject = responseform.getStringValue("emailsubject");    
         List<String> emailList = Arrays.asList(emailAddressesValue.split(";"));

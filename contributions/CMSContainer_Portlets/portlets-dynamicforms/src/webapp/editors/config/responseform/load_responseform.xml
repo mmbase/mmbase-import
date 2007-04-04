@@ -8,10 +8,13 @@
    <field name="emailaddresses"/>
    <field name="emailsubject"/>
    <field name="emailbody"/>
+   <field name="emailbodyafter"/>
    <field name="useremailsender"/>
    <field name="useremailsendername"/>
    <field name="useremailsubject"/>
    <field name="useremailbody"/>
+   <field name="useremailbodyafter"/>
+   <field name="includedata"/>
    <field name="confirmation" />
    
    <relation destination="contentchannel" role="creationrel" />
