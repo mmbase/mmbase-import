@@ -7,12 +7,10 @@
 %>
 
 <mm:node number="<%= requestPublishPackageID %>">
-   <mm:related path="educations">
-      <mm:node element="educations" jspvar="nodeEducation">
-         <%
-            Publisher publisher = new Publisher(cloud);
-            publisher.savePackage(nodeEducation);
-         %>
-      </mm:node>
-   </mm:related>
+   <mm:relatednodes path="educations" jspvar="nodeEducation">
+     <%
+     Publisher publisher = new Publisher(cloud);
+     publisher.savePackage(nodeEducation);
+     %>
+   </mm:relatednodes>
 </mm:node>

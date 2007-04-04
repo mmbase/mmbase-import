@@ -4,25 +4,18 @@
 
 <%@page import="java.io.File"%>
 <%@page import="java.io.RandomAccessFile"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Collections"%>
-<%@page import="java.util.Date"%>
-<%@page import="java.util.Iterator"%>
-<%@page import="java.util.List"%>
+<%@page import="java.util.*"%>
 <%@page import="java.text.SimpleDateFormat"%>
-
 
 <%@page import="org.apache.commons.fileupload.*"%>
 
-<%@page import="org.mmbase.bridge.Node"%>
-<%@page import="org.mmbase.bridge.NodeManager"%>
-<%@page import="org.mmbase.bridge.NodeIterator"%>
+<%@page import="org.mmbase.bridge.*"%>
 
 <%@page import="nl.didactor.utils.zip.Unpack"%>
 <%@page import="nl.didactor.utils.files.FileCopier"%>
 <%@page import="nl.didactor.utils.files.CommonUtils"%>
-<%@page import="nl.didactor.component.scorm.player.MenuCreator"%>
 
+<%@page import="nl.didactor.component.scorm.player.MenuCreator"%>
 
 <%@page import="uk.ac.reload.jdom.XMLDocument"%>
 <%@page import="uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
@@ -31,24 +24,22 @@
 
 
 <mm:cloud method="delegate" jspvar="cloud">
-<mm:import id="import_package"  jspvar="requestImportPackageID"  vartype="String"><%= request.getParameter("import_package") %></mm:import>
-<mm:import id="delete_package"  jspvar="requestDeletePackageID"  vartype="String"><%= request.getParameter("delete_package") %></mm:import>
-<mm:import id="publish_package" jspvar="requestPublishPackageID" vartype="String"><%= request.getParameter("publish_package") %></mm:import>
 
-<%--
-<mm:import externid="import_package" jspvar="test" vartype="String">null</mm:import>
-<mm:import externid="delete_package">null</mm:import>
---%>
+
+<mm:import externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
+<mm:import externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
+<mm:import externid="publish_package"  vartype="String" jspvar="requestPublishPackageID" />
+
+
 
 <%
 //   System.out.println("a=" + request.);
 // String directory = getServletContext().getRealPath("/education/files");
 
-   String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+   String directory = "/tmp"; //getServletContext().getInitParameter("filemanagementBaseDirectory");
    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
 
-   if (directory == null || baseUrl == null)
-   {
+   if (directory == null || baseUrl == null) {
        throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
    }
 
@@ -70,23 +61,23 @@
 
 
 %>
-   <mm:compare referid="import_package" value="null" inverse="true">
-      <mm:node number="<%= requestImportPackageID %>" notfound="skip">
-         <%@include file="import.jsp"%>
+   <mm:present referid="import_package">
+      <mm:node number="$import_package">
+	<%@include file="import.jsp"%>
       </mm:node>
-   </mm:compare>
+   </mm:present>
 
-   <mm:compare referid="delete_package" value="null" inverse="true">
-      <mm:node number="<%= requestDeletePackageID %>" notfound="skip">
-         <%@include file="delete.jsp"%>
-      </mm:node>
-   </mm:compare>
+   <mm:present referid="delete_package">
+     <mm:node number="$delete_package">
+       <%@include file="delete.jsp"%>
+     </mm:node>
+   </mm:present>
 
-   <mm:compare referid="publish_package" value="null" inverse="true">
-      <mm:node number="<%= requestPublishPackageID %>" notfound="skip">
-         <%@include file="publish.jsp"%>
+   <mm:present referid="publish_package">
+      <mm:node number="$publish_package">
+	<%@include file="publish.jsp"%>
       </mm:node>
-   </mm:compare>
+   </mm:present>
 <%
 
 
@@ -266,15 +257,6 @@
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
 </head>
 <body>
-<%--
-<script>
-if (top == self) {
-    var loc = document.location.href;
-    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
-    document.location.href = loc;
-}
-</script>
---%>
 <%
     File dir = new File(directory);
     File[] farray = dir.listFiles();
@@ -360,13 +342,15 @@ if (top == self) {
                         <a
                            href='index.jsp?delete_package=<mm:field name="number"/>'
                            onclick="return confirm('<di:translate key="scorm.filemanagementdeleteprompt" />');">
-                             <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
+			   <mm:link page="/mmbase/edit/wizard/media/remove.gif">
+			     <img border="0" src="${_}" />
+			   </mm:link>
                         </a>
                      </td>
                   </mm:islessthan>
 
                   <td class="field"><mm:field name="name"/></td>
-                  <td class="field"><mm:field name="filename"/></td>
+                  <td class="field"><!-- mm:field name="filename"/ --></td>
                   <td class="field"><mm:field name="version"/></td>
                   <td>
                      <mm:compare referid="imported" value="-1" inverse="true">
