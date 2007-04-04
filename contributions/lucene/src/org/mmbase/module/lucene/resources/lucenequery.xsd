@@ -16,6 +16,7 @@
         <xsd:extension base="SearchQuery">
           <xsd:sequence>
             <xsd:element ref="related" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element ref="relatednodes" minOccurs="0" maxOccurs="unbounded" />
           </xsd:sequence>
           <xsd:attribute name="optimize" type="xsd:string"/>
         </xsd:extension>
@@ -50,6 +51,7 @@
   </xsd:redefine>
 
   <xsd:element name="related" type="SearchQuery" />
+  <xsd:element name="relatednodes" type="SearchQuery" />
 
   <xsd:simpleType name="type_multiple">
     <xsd:restriction base="xsd:string">
