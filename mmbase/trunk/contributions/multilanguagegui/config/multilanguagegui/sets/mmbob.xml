@@ -174,8 +174,8 @@
         <translation language="df" value="Post reply" />
     </keyword>
     <keyword name="ProfileUpdated">
-        <translation language="nl" value="profiel gewijzigd" />
-        <translation language="df" value="profile updated" />
+        <translation language="nl" value="Uw profiel is gewijzigd" />
+        <translation language="df" value="Your profile has been updated" />
     </keyword>
     <keyword name="open_topic_popular_unread">
         <translation language="nl" value="Open populair onderwerp met ongelezen reacties" />
@@ -737,6 +737,10 @@
         <translation language="nl" value="Avatar uploaden" />
         <translation language="df" value="Upload avatar" />
     </keyword>
+    <keyword name="Upload_avatar_error_tolarge">
+        <translation language="nl" value="Helaas, het plaatje dat u wilt uploaden is te groot. Maximaal formaat is 1Mb." />
+        <translation language="df" value="Unfortunately the image you want to upload is to large. Maximum size is 1Mb." />
+    </keyword>
     <keyword name="Last_visit">
         <translation language="nl" value="Laatste bezoek" />
         <translation language="df" value="Last visit" />
@@ -928,6 +932,10 @@
     <keyword name="Profile_management">
         <translation language="nl" value="Profiel beheren" />
         <translation language="df" value="Profile management" />
+    </keyword>
+    <keyword name="Profile_returnto">
+        <translation language="nl" value="Klik om naar uw profiel terug te keren" />
+        <translation language="df" value="Click to return to your profile" />
     </keyword>
     <keyword name="ERROR">
         <translation language="nl" value="FOUT" />
