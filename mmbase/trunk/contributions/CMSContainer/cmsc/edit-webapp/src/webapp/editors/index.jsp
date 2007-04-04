@@ -22,6 +22,8 @@
 <mm:cloud loginpage="login.jsp" rank="basic user">
 <html:html xhtml="true">
 	<head><title><fmt:message key="editors.title" /></title>
+		<link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
+      	<link rel="shortcut icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
 		<script type="text/javascript" src="editors.js"></script>
 	</head>
 	<mm:url page="topmenu.jsp" id="toppane" write="false">
