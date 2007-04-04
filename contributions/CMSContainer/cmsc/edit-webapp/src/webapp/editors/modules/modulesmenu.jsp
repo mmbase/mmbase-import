@@ -65,6 +65,12 @@
 	                  <a href="${visitorNtlmUrl}" target="rightpane"><fmt:message key="modules.knowvisitor-html" /></a>
 	               </li>
 	            </mm:haspage>
+	            <mm:haspage page="/editors/messageoftheday">
+	               <li class="messageoftheday">
+	                  <c:url var="messageofthedayUrl" value="/editors/messageoftheday/index.jsp"/>
+	                  <a href="${messageofthedayUrl}" target="rightpane"><fmt:message key="modules.messageoftheday" /></a>
+	               </li>
+	            </mm:haspage>
 	         </mm:hasrank>
             <mm:haspage page="/editors/egemmail">
                <li class="egem">
