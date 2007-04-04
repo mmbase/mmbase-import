@@ -2,7 +2,6 @@ package nl.didactor.component.reports;
 
 import nl.didactor.component.Component;
 import nl.didactor.component.core.DidactorCore;
-import nl.didactor.component.email.DidactorEmail;
 import nl.didactor.events.*;
 import nl.didactor.reports.util.EventManager;
 
