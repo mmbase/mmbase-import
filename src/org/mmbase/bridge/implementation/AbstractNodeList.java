@@ -50,7 +50,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
         if (o == null) {
             log.debug("Null");
             return null;
-        } 
+        }
         if (log.isDebugEnabled()) {
             log.debug("Converting " + o.getClass());
         }
@@ -69,7 +69,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
         if (node == null) {
             throw new RuntimeException("Could not convert " + o.getClass() + " " + o);
         }
-        
+
         return (E) node;
     }
 
@@ -81,6 +81,8 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
     public static Node convertWithBridgeToNode(Cloud cloud, NodeManager nodeManager, Object o) {
         if (o == null) {
             return null;
+        } else if (o instanceof Node) {
+            return (Node)o;
         } else if (o instanceof CharSequence) { // a string indicates a nodemanager by name, or, if numeric, a node number..
             String s = o.toString();
             if (org.mmbase.datatypes.StringDataType.NON_NEGATIVE_INTEGER_PATTERN.matcher(s).matches()) {
@@ -191,7 +193,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
                     return cloud.getNode(na[1]);
                 } else {
                     return new BasicNode(coreNode, (BasicCloud) c);
-                }    
+                }
             } else {
                 throw new RuntimeException("Could not make a Node of " + coreNode);
             }
