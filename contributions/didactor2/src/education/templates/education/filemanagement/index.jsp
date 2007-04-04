@@ -4,10 +4,11 @@
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator"%>
 <%
 
-//    String directory = getServletContext().getRealPath("/education/files");
+    String directory = getServletContext().getRealPath("/education/files");
 
-    String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
-    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
+    //String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+    //String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
+    String baseUrl = "http://localhost/education/files";
 
     if (directory == null || baseUrl == null)
     {
@@ -224,7 +225,9 @@ if (top == self) {
                            <a
                               href='index.jsp?deletefile=<mm:write referid="filename"/>'
                               onclick="return confirm('<di:translate key="education.filemanagementdeleteprompt" />');">
-                                <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
+			      <mm:link page="/mmbase/edit/wizard/media/remove.gif">
+                                <img border="0" src="${_}" />
+			      </mm:link>
                            </a>
                         </td>
                      </mm:islessthan>
