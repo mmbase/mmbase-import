@@ -30,6 +30,20 @@
          <maxLength value="1024" enforce="never"/>
        </datatype>
      </field>
+     <field name="filename">
+       <gui>
+         <guiname xml:lang="nl">File-naam</guiname>
+         <guiname xml:lang="en">File Name</guiname>
+       </gui>
+       <editor>
+         <positions>
+           <list>1</list>
+         </positions>
+       </editor>
+       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+         <maxLength value="1024" enforce="never"/>
+       </datatype>
+     </field>
 
      <field name="type">
        <gui>
