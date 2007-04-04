@@ -31,7 +31,7 @@
          </div>
       </div>
    </div>
-   <div class="editor">
+   <div class="editor"> 
       <div class="body">
          <mm:node number="${param.nodenumber}" notfound="skipbody">
             <p>
@@ -42,7 +42,7 @@
                <mm:hasrank minvalue="administrator">
 		           <a href="<mm:url page="DeleteSavedForm.do" >
 		                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-		                          <mm:param name="returnurl" value="/editors/savedform/ShowSavedForm.do?nodenumber=${param.nodenumber}" />
+		                          <mm:param name="returnurl" value="/editors/savedform/ShowSavedForm.do?nodenumber=${param.nodenumber}" />		                          
 		                       </mm:url>">
 		           <img src="../gfx/icons/delete.png" title="<fmt:message key="savedform.icon.deleteform" />"/></a>
 		       </mm:hasrank>
@@ -53,6 +53,12 @@
 		           </mm:url>">   
 		       <img src="../gfx/icons/excel.png" title="<fmt:message key="savedform.icon.downloadform" />"/></a>
 		        		       
+            </p>
+            <p>
+            	<mm:import externid="initreturnurl" from="parameters,request"/>         	
+            	<mm:present referid="initreturnurl">
+               		<a href="<mm:url page="${initreturnurl}"/>" title="<fmt:message key="locate.back" />" class="button"><fmt:message key="locate.back" /></a>
+                </mm:present>
             </p>
          </mm:node>
          
@@ -121,9 +127,10 @@
 	           	<td>
 		            <mm:hasrank minvalue="administrator">
 			           <a href="<mm:url page="DeleteSavedAnswer.do" >
-			                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-			                          <mm:param name="returnurl" value="/editors/savedform/ShowSavedForm.do?nodenumber=${param.nodenumber}" />
-			                       </mm:url>">
+                         <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                         <mm:param name="returnurl" value="/editors/savedform/ShowSavedForm.do?nodenumber=${param.nodenumber}" />
+                         <mm:param name="initreturnurl" value="${initreturnurl}"/>
+                      </mm:url>">
 			           <img src="../gfx/icons/delete.png" title="<fmt:message key="savedform.icon.deleteanswer" />"/></a>
 			       	</mm:hasrank>
 	            </td>	
