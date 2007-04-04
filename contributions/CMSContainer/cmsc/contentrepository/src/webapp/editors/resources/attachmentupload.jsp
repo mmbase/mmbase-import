@@ -22,8 +22,8 @@
 	    }
 	
 	    function sayWait() {
-	        document.getElementById("form").style.visibility="hidden";
 	        document.getElementById("busy").style.visibility="visible";
+           document.getElementById("notbusy").style.visibility="hidden";
 	    }
 				
 		function showInfo(objectnumber) {
@@ -70,7 +70,7 @@
       </div>
       <div class="ruler_green"><div><fmt:message key="attachments.upload.results" /></div></div>
       <div class="body">
-        <div id="busy" style="visibility:hidden;position:absolute;width:100%;text-alignment:center;">
+        <div id="busy">
             <fmt:message key="uploading.message.wait"/><br />
         </div>
 <%
@@ -97,7 +97,7 @@
 <% if (numberOfUploadedNodes == 0) { %>
     <p><fmt:message key="attachments.upload.error"/></p>
 <% } else if (numberOfUploadedNodes > 0) { %>
-    <p><fmt:message key="attachments.upload.result">
+    <p id="notbusy"><fmt:message key="attachments.upload.result">
            <fmt:param value="<%= numberOfUploadedNodes %>"/>
        </fmt:message>
     </p>

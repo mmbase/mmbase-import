@@ -23,6 +23,7 @@
 
     function sayWait() {
         document.getElementById("busy").style.visibility="visible";
+        document.getElementById("notbusy").style.visibility="hidden";
     }
     
 			
@@ -72,7 +73,7 @@
           </div>
           <div class="ruler_green"><div><fmt:message key="images.upload.results" /></div></div>
           <div class="body">
-            <div id="busy" style="visibility:hidden;position:absolute;width:100%;text-alignment:center;">
+            <div id="busy">
                 <fmt:message key="uploading.message.wait"/><br />
             </div>
 <%
@@ -99,7 +100,7 @@
 <% if (numberOfUploadedNodes == 0) { %>
     <p><fmt:message key="images.upload.error"/></p>
 <% } else if (numberOfUploadedNodes > 0) { %>
-    <p><fmt:message key="images.upload.result">
+    <p id="notbusy"><fmt:message key="images.upload.result">
            <fmt:param value="<%= numberOfUploadedNodes %>"/>
        </fmt:message>
     </p>
