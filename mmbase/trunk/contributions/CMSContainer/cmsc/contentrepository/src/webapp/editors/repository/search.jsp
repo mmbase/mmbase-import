@@ -375,9 +375,9 @@
 		         	<mm:write referid="action" jspvar="action" write="false"/>
 		         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
 		                <a href="<mm:url page="../WizardInitAction.do">
-		                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-		                                          <mm:param name="returnurl" value="<%="../editors/repository/SearchAction.do" + request.getAttribute("geturl")%>" />
-		                                       </mm:url>">
+		                    <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+		                 	<mm:param name="returnurl" value="/editors/repository/SearchAction.do${geturl}" />
+		                </mm:url>">
 		                   <img src="../gfx/icons/page_edit.png" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
 					</c:if>
 		            <mm:compare referid="action" value="link">
@@ -415,10 +415,11 @@
 				          			<mm:nodeinfo type="type" />          	
 				          		</c:set> 
 				          		<c:if test="${typeval == 'responseform'}">         
-					          		<c:url value="/editors/savedform/ShowSavedForm.do" var="showSavedForms">
-					               	<c:param name="nodenumber"><mm:field name="number" /></c:param>
-					          		</c:url>                   
-				           		<a href="#" onclick="openPopupWindow('showsavedforms', 850, 650, '${showSavedForms}')"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+					          		<mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+						            	<mm:param name="nodenumber"><mm:field name="number" /></mm:param>
+                                        <mm:param name="initreturnurl" value="/editors/repository/SearchAction.do${geturl}" />
+						       		</mm:url>                   
+						       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
 				           		</c:if>
 							</cmsc:hasfeature>
 						</mm:compare>

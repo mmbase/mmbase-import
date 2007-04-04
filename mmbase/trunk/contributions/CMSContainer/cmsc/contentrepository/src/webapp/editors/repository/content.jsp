@@ -159,10 +159,11 @@
       			<mm:nodeinfo type="type" />          	
       		</c:set> 
       		<c:if test="${typeval == 'responseform'}">         
-	       		<c:url value="/editors/savedform/ShowSavedForm.do" var="showSavedForms">
-	            	<c:param name="nodenumber"><mm:field name="number" /></c:param>
-	       		</c:url>                   
-	       		<a href="#" onclick="openPopupWindow('showsavedforms', 850, 650, '${showSavedForms}')"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+	       		<mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+	            	<mm:param name="nodenumber"><mm:field name="number" /></mm:param>
+	            	<mm:param name="initreturnurl" value="${returnurl}" />
+	       		</mm:url>                   
+	       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
 	       	</c:if>
 	 	</cmsc:hasfeature>          	
       </td>
