@@ -34,10 +34,12 @@
 
 <%
 //   System.out.println("a=" + request.);
-// String directory = getServletContext().getRealPath("/education/files");
 
-   String directory = "/tmp"; //getServletContext().getInitParameter("filemanagementBaseDirectory");
-   String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
+//String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+//  String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
+
+    String directory = getServletContext().getRealPath("/education/files");
+    String baseUrl = "http://localhost/education/files";
 
    if (directory == null || baseUrl == null) {
        throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
@@ -79,8 +81,6 @@
       </mm:node>
    </mm:present>
 <%
-
-
 
    boolean uploadOK = false;
    String fileName = null;
@@ -183,19 +183,11 @@
 
 
                   //Copying player with own package ID config
-                  try
-                  {
+		  filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
+		  ServletContext sc = getServletConfig().getServletContext();
+		  
+		  FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
 
-                     filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
-                     ServletContext sc = getServletConfig().getServletContext();
-
-                     FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
-
-                  }
-                  catch(Exception e)
-                  {
-                     //An error during coping server
-                  }
 
 
                   //Get structure of menu and write it to our instance of player
@@ -269,22 +261,11 @@
 <table class="head">
    <tr class="headsubtitle">
       <td>
-         <%
-            String sResults = "";
-            String sTotalItems = "0";
-         %>
-         <mm:import jspvar="sTemplate" vartype="String" reset="true"><di:translate key="scorm.scormpackagelisttotalamount" /></mm:import>
-         <mm:listnodes type="packages">
-            <mm:size jspvar="sItems" vartype="String">
-               <%
-                  sTotalItems = sItems;
-               %>
-            </mm:size>
-         </mm:listnodes>
-         <%
-            sResults = sTemplate.replaceAll("\\{\\$\\$\\$\\}", sTotalItems);
-         %>
-         <div><%= sResults %></div>
+	<mm:listnodescontainer type="packages">
+	  <mm:size>
+	    <div><di:translate key="scorm.scormpackagelisttotalamount" arg0="${_}" /></div>
+	  </mm:size>
+	</mm:listnodescontainer>
       </td>
    </tr>
 </table>
