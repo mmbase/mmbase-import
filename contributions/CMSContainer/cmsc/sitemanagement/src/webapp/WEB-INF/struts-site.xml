@@ -23,7 +23,7 @@
 			unknown="false" validate="false">
 			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
 			<forward name="returnurl" path="/editors/site/SiteCreate.do" redirect="false" />
-			<forward name="cancel" path="/editors/empty.html" redirect="false" />
+			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 		<action path="/editors/site/SiteEdit" type="com.finalist.cmsc.navigation.forms.SiteEdit" unknown="false"
@@ -42,7 +42,7 @@
 			unknown="false" validate="false">
 			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
 			<forward name="returnurl" path="/editors/site/PageCreate.do" redirect="false" />
-			<forward name="cancel" path="/editors/empty.html" redirect="false" />
+			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 		<action path="/editors/site/PageEdit" type="com.finalist.cmsc.navigation.forms.PageEdit" unknown="false"
