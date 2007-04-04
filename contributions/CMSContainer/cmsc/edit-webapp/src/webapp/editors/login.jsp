@@ -8,6 +8,8 @@
 <head>
    <title><fmt:message key="login.title" /></title>
    <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/editors/css/main.css'/>" />
+   <link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
+   <link rel="shortcut icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
    <style type="text/css">
       body {
          behavior: url(./css/hover.htc);
