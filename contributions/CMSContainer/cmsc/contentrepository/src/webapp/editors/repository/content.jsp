@@ -20,8 +20,7 @@
 			}
 		</script>
 	</head>
-	<body onload="refreshChannels();"
-	>
+	<body onload="refreshChannels();alphaImages();"	>
 		<c:if test="${not empty param.message}">      
 			<script type="text/javascript">
 				addLoadEvent(alert('${param.message}'));
@@ -116,6 +115,7 @@
          <th><fmt:message key="content.lastmodifiedcolumn" /></th>
          <th><fmt:message key="content.numbercolumn" /></th>
          <th><fmt:message key="content.creationchannelcolumn" /></th>
+         <th></th>
       </tr>
    </thead>
    <tbody class="hover">
@@ -187,15 +187,39 @@
       </td>
         <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
         <td><mm:field name="number"/></td>
-		<td width="50" onMouseDown="objClick(this);">
+		<td width="50" onMouseDown="objClick(this);" nowrap>
 			<c:choose>
 				<c:when test="${not empty createdNumbers[number]}">
 					<fmt:message key="content.yes" />
 				</c:when>
 				<c:otherwise>
-					<fmt:message key="content.no" />
-				</c:otherwise>
+			      <mm:relatednodes role="creationrel" type="contentchannel">
+			          <mm:field name="number" jspvar="channelNumber" write="false"/>
+			          <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+
+			          <mm:field name="name" jspvar="channelName" write="false"/>
+						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
+						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
+						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
+						 
+						 <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
+                 	<a href="${channelUrl}">${channelName}</a>
+               </td>
+			      </mm:relatednodes>
+			   </c:otherwise>
 			</c:choose>
+		</td>
+		<td width="10" onMouseDown="objClick(this);" nowrap>
+			<c:set var="status" value="waiting"/>
+			<mm:relatednodes type="workflowitem">
+				<c:set var="status"><mm:field name="status"/></c:set>
+			</mm:relatednodes>
+			<c:if test="${status == 'waiting'}">
+				<mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
+					<c:set var="status" value="onlive"/>
+				</mm:listnodes>
+			</c:if>
+			<img src="../gfx/icons/status_${status}.png" alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" />
 		</td>
 
          </tr>
