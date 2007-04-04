@@ -10,6 +10,7 @@
 	<classpathentry kind="src" path="portlets-mailfriend/src/java"/>
 	<classpathentry kind="src" path="portlets-reactform/src/java"/>
 	<classpathentry kind="src" path="portlets-emailalert/src/java"/>
+	<classpathentry kind="src" path="portlets-dynamicforms/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/activation/jars/activation-1.0.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar"/>
@@ -25,7 +26,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/cmsc-utilities-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/portlets-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-	<classpathentry sourcepath="/MAVEN_REPO" kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.2-20061205.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.2-20061205.jar" sourcepath="/MAVEN_REPO"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.2-20061205.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.2-20061205.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.2-20061205.jar"/>
