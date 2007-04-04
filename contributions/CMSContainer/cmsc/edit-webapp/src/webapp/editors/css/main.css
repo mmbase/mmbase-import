@@ -1472,3 +1472,10 @@ label {
 	width: 100px; 
 	float: left;
 }
+
+#busy {
+	visibility: hidden;
+	position: absolute;
+	width: 100%;
+	text-alignment: center;
+}
