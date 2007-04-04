@@ -8,7 +8,7 @@ import nl.didactor.component.assessment.email_notification.model.Email;
 
 
 
-public class Sender extends Thread{
+public class Sender extends Thread {
    private static Logger log = Logging.getLoggerInstance(Sender.class);
 
    private String sNotificationFrom = null;
@@ -31,7 +31,7 @@ public class Sender extends Thread{
          String sNotificationFrom = cloud.getNode(nlAdmin.getNode(0).getStringValue("people.number")).getStringValue("email");
          if("".equals(sNotificationFrom)){
             log.error("Admin's email is empty. Assessment Email Notifications Sender will be stopped.");
-            this.destroy();
+            return;
          }
          else{
             log.debug("Admin's email=\"" + sNotificationFrom + "\" for using in Email Feedback");
@@ -39,7 +39,7 @@ public class Sender extends Thread{
       }
       else{
          log.error("Can't find admin node to send a Email Notification. Assessment Email Notifications Sender will be stopped.");
-         this.destroy();
+         return;
       }
 
 
