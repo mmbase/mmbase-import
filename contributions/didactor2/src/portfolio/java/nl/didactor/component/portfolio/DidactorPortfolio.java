@@ -57,7 +57,7 @@ public class DidactorPortfolio extends Component {
                 n.setValue("snumber", folders.getObjectType());
                 n.setValue("dnumber", chatlogs.getObjectType());
                 n.setValue("rnumber", related);
-                n.commit();
+                int id = typeRel.insert("system", n);
             }
             if (!typeRel.contains(chatlogs.getObjectType(), portfoliopermissions.getObjectType(), related)) {
                 log.info("No relation chatlogs-related->portfoliopermissions. Creating now");
@@ -65,7 +65,7 @@ public class DidactorPortfolio extends Component {
                 n.setValue("snumber", chatlogs.getObjectType());
                 n.setValue("dnumber", portfoliopermissions.getObjectType());
                 n.setValue("rnumber", related);
-                n.commit();
+                int id = typeRel.insert("system", n);
             }
             
         }
