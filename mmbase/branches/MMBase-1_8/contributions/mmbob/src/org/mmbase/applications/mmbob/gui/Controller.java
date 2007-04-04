@@ -2775,6 +2775,8 @@ public class Controller {
                                 }
                             } else {
                                 map.put("synced", "not set");
+                                //value must be there or there will be an exception in the template
+                                map.put("value", "");
                             }
                             list.add(map);
                         }
