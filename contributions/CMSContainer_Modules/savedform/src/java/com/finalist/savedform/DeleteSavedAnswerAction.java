@@ -41,7 +41,9 @@ public class DeleteSavedAnswerAction extends DeleteSecondaryContentAction {
             log.warn("did not delete secondary content because user was not administrator: " + number + " (" + cloud.getUser()
                     + ":" + cloud.getUser().getRank() + ")");
         }
-
+        String initreturnurl = request.getParameter("initreturnurl");
+        request.setAttribute("initreturnurl", initreturnurl);
+        
         String returnurl = deleteForm.getReturnurl();
         return new ActionForward(returnurl);
 
