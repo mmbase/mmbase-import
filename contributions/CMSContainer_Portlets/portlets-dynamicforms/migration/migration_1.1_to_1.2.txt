@@ -1,0 +1,43 @@
+Migration document:
+
+Intro:
+The module portlets-responseform has been renamed to portlets-dynamicforms. 
+The module savedforms has been removed from the CMSContainer_Modules project and is now part of portlets-responseform.
+Not all references to responseform have been renamed as this could mean changing existing configurations, for example a template might refer to "responseform/basic.jsp". 
+See CMSC-316.
+
+Part: portlets-dynamicforms
+From versie: 1.1
+To versie: 1.2
+
+
+Execute the following steps below in the given order:
+
+Name: Update project.xml
+Goal: Update project dependencies in project
+Type:  manual action
+
+In the file $YOUR_PROJECT/maven-base/project.xml do the following:
+
+Remove dependency on cmsc-savedform:
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-savedform</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>	
+		
+Change dependency on cmsc-portlets-responseform to cmsc-portlets-dynamicforms
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-responseform</artifactId>
+			<version>${cmscportlets.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-dynamicforms</artifactId>
+			<version>${cmscportlets.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
