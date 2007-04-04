@@ -47,6 +47,8 @@ public class SiteCreate extends MMBaseFormlessAction {
                     NavigationUtil.addRole(cloud, ewnodelastedited, administrators, Role.WEBMASTER);
                 }
                 
+                NavigationUtil.getNavigationInfo(cloud).expand(new Integer(ewnodelastedited));
+                
                 addToRequest(request, "showpage", ewnodelastedited);
 
                 ActionForward ret = mapping.findForward(SUCCESS);
