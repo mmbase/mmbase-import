@@ -371,7 +371,7 @@
 
 
 		      <tr <mm:even inverse="true">class="swap"</mm:even>>
-		         <td style="white-space: nowrap;" width="80">
+		         <td style="white-space: nowrap;">
 			        <%-- also show the edit icon when we return from an edit wizard! --%>
 		         	<mm:write referid="action" jspvar="action" write="false"/>
 		         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
@@ -435,7 +435,7 @@
 						</c:if>
 						${title}
             	</td>
-               <td width="50" nowrap>
+               <td style="white-space: nowrap;">
 				  <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
 		            <mm:compare referid="action" value="search">
 	                  <a href="${channelUrl}">${channelName}</a>
@@ -444,7 +444,7 @@
 	                  ${channelName}
 	               </mm:compare>
                </td>
-               <td width="50" style="white-space: nowrap;">
+               <td style="white-space: nowrap;">
 	               <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
                	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
                		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
@@ -452,9 +452,9 @@
                	</mm:listnodes>
                	${lastmodifier}
                </td>
-		         <td width="120" style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+		         <td style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
 		         <td width="60"><mm:field name="number"/></td>
-					<td width="10" onMouseDown="objClick(this);" nowrap>
+					<td width="10" style="white-space: nowrap;">
 						<c:set var="status" value="waiting"/>
 						<mm:relatednodes type="workflowitem">
 							<c:set var="status"><mm:field name="status"/></c:set>
