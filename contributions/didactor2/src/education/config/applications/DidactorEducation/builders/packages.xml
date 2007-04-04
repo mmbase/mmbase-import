@@ -7,16 +7,13 @@
 
    <searchage>9999</searchage>
    <names>
-      <singular xml:lang="nl">Scorm Package</singular>
+      <singular xml:lang="nl">Scorm-package</singular>
       <singular xml:lang="en">Scorm Package</singular>
 
-      <plural xml:lang="nl">Scorm Packages</plural>
+      <plural xml:lang="nl">Scorm-packages</plural>
       <plural xml:lang="en">Scorm Packages</plural>
    </names>
 
-   <properties>
-      <property name="max-nodes-from-query">99999</property>
-   </properties>
 
    <fieldlist>
      <field name="name">
@@ -51,7 +48,7 @@
 
      <field name="uploaddate">
        <gui>
-         <guiname xml:lang="nl">Geimporteerd</guiname>
+         <guiname xml:lang="nl">Geïmporteerd</guiname>
          <guiname xml:lang="en">Imported</guiname>
        </gui>
        <editor>
@@ -85,7 +82,9 @@
             <list>5</list>
           </positions>
         </editor>
-        <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+        <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+	  <maxLength value="1024" enforce="never"/>
+	</datatype>
       </field>
 
    </fieldlist>
