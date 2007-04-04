@@ -218,21 +218,30 @@
                                                                 </div>
 
                                                                 <%--  now show the profileEntryDef fields--%>
+                                                                <%--
+                                                                    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
+                                                                    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
+                                                                    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
+                                                                --%>
                                                                 <mm:import id="guipos" reset="true">0</mm:import>
-                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
+                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
                                                                     <div class="row">
                                                                         <span class="label"><mm:field name="guiname" /></span>
                                                                         <span class="formw">
-                                                                            <mm:field name="edit"><mm:compare value="true">
-                                                                                <mm:field name="type">
-                                                                                    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
-                                                                                    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
-                                                                                    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
-                                                                                </mm:field>
-                                                                            </mm:compare>
-                                                                                <mm:compare value="false">
-                                                                                    <mm:field name="value" />
+                                                                            <mm:field name="edit">
+                                                                                <mm:compare value="true">
+                                                                                    <c:choose>
+                                                                                        <c:when test="${field.type == 'string'}"> <input name="${field.name}" type="text" size="25" value="${field.value}"/></c:when>
+                                                                                        <c:when test="${field.type == 'field'}"><textarea rows="7" cols="25" name="${field.name}">${field.value}</textarea></c:when>
+                                                                                        <c:when test="${field.type == 'date'}">
+                                                                                            <mm:include page="bdate.jsp">
+                                                                                                <mm:param name="bname" value="${field.name}"  />
+                                                                                                <mm:param name="bvalue" value="${field.value}" />
+                                                                                            </mm:include>
+                                                                                        </c:when>
+                                                                                    </c:choose>
                                                                                 </mm:compare>
+                                                                                <mm:compare value="false">${field.value}</mm:compare>
                                                                             </mm:field>
                                                                         </span>
                                                                     </div>
@@ -286,6 +295,7 @@
                                                                         <span class="formw">
                                                                             <mm:field name="edit">
                                                                                 <mm:compare value="true">
+                                                                                <%--
                                                                                     <mm:field name="type">
                                                                                         <mm:compare value="string"><input name="${pvalues.name}" type="text" size="25" value="${pvalues.value}"/></mm:compare>
                                                                                         <mm:compare value="field"><textarea rows="7" cols="25" name="${pvalues.name}"><mm:field name="value" /></textarea></mm:compare>
@@ -295,10 +305,19 @@
                                                                                             <mm:include page="bdate.jsp" referids="bname,bvalue" />
                                                                                         </mm:compare>
                                                                                     </mm:field>
+                                                                                    --%>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${pvalues.type == 'string'}"> <input name="${pvalues.name}" type="text" size="25" value="${pvalues.value}"/></c:when>
+                                                                                        <c:when test="${pvalues.type == 'field'}"><textarea rows="7" cols="25" name="${pvalues.name}">${pvalues.value}</textarea></c:when>
+                                                                                        <c:when test="${pvalues.type == 'date'}">
+                                                                                            <mm:include page="bdate.jsp">
+                                                                                                <mm:param name="bname" value="${pvalues.name}"  />
+                                                                                                <mm:param name="bvalue" value="${pvalues.value}" />
+                                                                                            </mm:include>
+                                                                                        </c:when>
+                                                                                    </c:choose>
                                                                                 </mm:compare>
-                                                                                <mm:compare value="false">
-                                                                                    <mm:field name="value" />
-                                                                                </mm:compare>
+                                                                                <mm:compare value="false">${pvalues.value}</mm:compare>
                                                                             </mm:field>
                                                                         </span>
                                                                     </div>
