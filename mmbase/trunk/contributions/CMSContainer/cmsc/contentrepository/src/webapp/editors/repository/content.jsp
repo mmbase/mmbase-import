@@ -128,7 +128,7 @@
 		   <mm:param name="returnurl" value="$returnurl" />
 		</mm:url>
       <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
-		<td nowrap>
+		<td style="white-space: nowrap;">
         	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" title="<fmt:message key="content.info" />" alt="<fmt:message key="content.info" />"/></a>
             <a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="content.preview.title" />" title="<fmt:message key="content.preview.title" />" /></a>
 			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
@@ -177,7 +177,7 @@
 			</c:if>
 			${title}
 		</td>
-		<td onMouseDown="objClick(this);" nowrap>
+		<td onMouseDown="objClick(this);" style="white-space: nowrap;">
        	<mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
       	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
       		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
@@ -185,9 +185,9 @@
       	</mm:listnodes>
       	${lastmodifier}
       </td>
-        <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+        <td style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
         <td><mm:field name="number"/></td>
-		<td width="50" onMouseDown="objClick(this);" nowrap>
+		<td width="50" onMouseDown="objClick(this);" style="white-space: nowrap;">
 			<c:choose>
 				<c:when test="${not empty createdNumbers[number]}">
 					<fmt:message key="content.yes" />
@@ -209,7 +209,7 @@
 			   </c:otherwise>
 			</c:choose>
 		</td>
-		<td width="10" onMouseDown="objClick(this);" nowrap>
+		<td width="10" onMouseDown="objClick(this);">
 			<c:set var="status" value="waiting"/>
 			<mm:relatednodes type="workflowitem">
 				<c:set var="status"><mm:field name="status"/></c:set>
