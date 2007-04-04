@@ -59,7 +59,8 @@ public class DidactorWorkspace extends Component {
                 n.setValue("snumber", folders.getObjectType());
                 n.setValue("dnumber", chatlogs.getObjectType());
                 n.setValue("rnumber", related);
-                n.commit();
+                n.setValue("max", -1);
+                int id = typeRel.insert("system", n);
             }
         }
     }
