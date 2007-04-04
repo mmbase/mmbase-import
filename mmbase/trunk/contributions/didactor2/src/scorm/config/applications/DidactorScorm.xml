@@ -8,15 +8,19 @@
     </requirements>
 
     <neededbuilderlist>
+      <builder maintainer="didactor.nl" version="1">packages</builder>
    </neededbuilderlist>
 
-    <neededreldeflist />
+    <neededreldeflist>
+      <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    </neededreldeflist>
 
     <allowedrelationlist>
+      <relation from="packages" to="educations" type="related" />
     </allowedrelationlist>
 
     <datasourcelist>
-        <datasource builder="components" path="DidactorScorm/components.xml" />
+      <datasource builder="components" path="DidactorScorm/components.xml" />
     </datasourcelist>
 
     <relationsourcelist />
