@@ -60,7 +60,6 @@
         <builder maintainer="didactor.nl" version="2">givenanswers</builder>
         <builder maintainer="didactor.nl" version="2">madetests</builder>
 
-        <builder maintainer="didactor.nl" version="1">packages</builder>
         <builder maintainer="didactor.nl" version="1">htmlpages</builder>
 
     </neededbuilderlist>
@@ -206,7 +205,6 @@
         <relation from="givenanswers" to="questions" type="related" />
 
 
-        <relation from="packages" to="educations" type="related" />
         <relation from="learnblocks" to="htmlpages" type="posrel" />
 
         <!-- Structure from linking forom a learnbobject to a specific component -->
