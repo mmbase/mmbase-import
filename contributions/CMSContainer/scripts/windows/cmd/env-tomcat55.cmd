@@ -1,1 +1,1 @@
-set JAVA_HOME=c:\java\1.5.0_03
+set JAVA_HOME=%1
