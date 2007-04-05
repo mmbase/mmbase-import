@@ -35,6 +35,16 @@
 			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency>
+				
+		<dependency>
+			<groupId>simplecaptcha</groupId>
+			<artifactId>simplecaptcha</artifactId>			
+			<type>jar</type>
+			<version>20070403</version>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
 
 		<dependency>
 			<groupId>mmbase</groupId>
