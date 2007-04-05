@@ -47,10 +47,26 @@ public class JstlUtil {
     }
 
     public static void setResourceBundle(HttpServletRequest request, String name) {
-        Locale locale = getLocale(request);
-        ResourceBundle bundle = ResourceBundle.getBundle(name, locale);
-        setResourceBundle(request, bundle);
-    }
+       Locale locale = getLocale(request);
+       ResourceBundle bundle = ResourceBundle.getBundle(name, locale);
+       setResourceBundle(request, bundle);
+   }
+
+    public static void setResourceBundles(HttpServletRequest request, String[] names) {
+       Locale locale = getLocale(request);
+       CombinedResourceBundle cbundle = null;
+       
+       for(String name:names) {
+          ResourceBundle bundle = ResourceBundle.getBundle(name, locale);
+          if(cbundle == null) {
+             cbundle = new CombinedResourceBundle(bundle);
+          }
+          else {
+             cbundle.addBundles(bundle);
+          }
+       }
+       setResourceBundle(request, cbundle);
+   }
 
     public static void setResourceBundle(ServletRequest request, ResourceBundle bundle) {
         LocalizationContext ctx = new LocalizationContext(bundle);
