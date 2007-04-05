@@ -20,43 +20,38 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
 
-    private static final Logger log = Logging.getLoggerInstance(DeleteGuestMessageAction.class.getName());
-    
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response,
-            Cloud cloud) throws Exception {
+	private static final Logger log = Logging.getLoggerInstance(DeleteGuestMessageAction.class.getName());
 
-        DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response,
+			Cloud cloud) throws Exception {
 
-        String number = deleteForm.getObjectnumber();
-        if (MMBaseAction.ADMINISTRATOR.equals(cloud.getUser().getRank().toString())) {
-            log.debug("deleting secondary content: " + number);
-            boolean isRemote = Boolean.parseBoolean(request.getParameter("isRemote"));
-            Cloud remoteCloud = getCloud(isRemote);
-            remoteCloud.getNode(number).delete(true);
-        } else {
-            log.warn("did not delete secondary content because user was not administrator: " + number + " (" + cloud.getUser()
-                    + ":" + cloud.getUser().getRank() + ")");
-        }
+		DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 
-        String returnurl = deleteForm.getReturnurl();
-        log.debug("Returnurl: " + returnurl);
-        return new ActionForward(returnurl);
+		String number = deleteForm.getObjectnumber();
+		log.debug("deleting secondary content: " + number);
+		boolean isRemote = Boolean.parseBoolean(request.getParameter("isRemote"));
+		Cloud remoteCloud = getCloud(isRemote);
+		remoteCloud.getNode(number).delete(true);
 
-    }
+		String returnurl = deleteForm.getReturnurl();
+		log.debug("Returnurl: " + returnurl);
+		return new ActionForward(returnurl);
 
-    private Cloud getCloud(boolean isRemote) {
-        CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-        Cloud cloud = cloudProvider.getCloud();
-        log.debug("Using remote cloud?: " + isRemote);
-        if (isRemote) {
-            return CloudManager.getCloud(cloud, "live.server");
-        }
-        return cloud;
-    }
+	}
 
-    public String getRequiredRankStr() {
-        return ADMINISTRATOR;
-    }
-    
+	private Cloud getCloud(boolean isRemote) {
+		CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+		Cloud cloud = cloudProvider.getCloud();
+		log.debug("Using remote cloud?: " + isRemote);
+		if (isRemote) {
+			return CloudManager.getCloud(cloud, "live.server");
+		}
+		return cloud;
+	}
+
+	public String getRequiredRankStr() {
+		return BASIC_USER;
+	}
+
 }
