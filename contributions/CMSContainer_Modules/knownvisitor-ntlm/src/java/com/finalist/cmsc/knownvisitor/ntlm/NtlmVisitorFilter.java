@@ -74,11 +74,17 @@ public class NtlmVisitorFilter implements Filter {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
       
-      if (isEnabled() && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
+      if (isEnabled() && isInternetExplorer(req) && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
          return;
       }
       
       chain.doFilter(req, resp);
+   }
+
+   private boolean isInternetExplorer(HttpServletRequest req) {
+      String ua = req.getHeader( "User-Agent" );
+      boolean isIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
+      return isIE;
    }
 
    /**
