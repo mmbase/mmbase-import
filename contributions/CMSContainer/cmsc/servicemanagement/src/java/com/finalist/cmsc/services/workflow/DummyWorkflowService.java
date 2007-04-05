@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.security.UserRole;
 
-
+@SuppressWarnings("unused")
 public class DummyWorkflowService extends WorkflowService {
 
     @Override
