@@ -70,6 +70,9 @@ public class LuceusModule extends Module {
 
 	private CustomContentHandler customContentHandler;
     
+    private Set<String> secondaryCache = 
+        Collections.synchronizedSet(new HashSet<String>());
+    
 	public void init() {
 		loadInitParameters("com/luceus");
 
@@ -382,6 +385,18 @@ public class LuceusModule extends Module {
 
 	public CustomContentHandler getCustomContentHandler() {
 		return customContentHandler;
+	}
+
+    public boolean hasProcessedSecondary(String scId) {
+        return secondaryCache.contains(scId);
+    }
+
+    public void processSecondary(String scId) {
+        secondaryCache.add(scId);
+    }
+
+    public void clearProcessedSecondary() {
+        secondaryCache.clear();
 	}
 
 }
