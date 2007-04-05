@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.22 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: OAlias.java,v 1.23 2007-04-05 14:04:18 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -116,6 +116,29 @@ public class OAlias extends MMObjectBuilder {
 
         }
     }
+
+    /**
+     * Obtain the aliases of a node. If a node has more aliases, it returns only one.
+     * Which one is not specified.
+     * @param number the number of the node
+     * @return a List of the aliases of the node, or an emoty list if none exist
+     * @see #getAlias
+     */
+    public List<String> getAliasList(int number) {
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), number);
+        query.setConstraint(constraint);
+        List<String> aliasList = new ArrayList<String>();
+        try {
+            for (MMObjectNode node : getNodes(query)) {
+                aliasList.add(node.getStringValue("name"));
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.toString());
+        }
+        return aliasList;
+    }
+
 
     /**
      * Obtain a node from the cloud through its alias
