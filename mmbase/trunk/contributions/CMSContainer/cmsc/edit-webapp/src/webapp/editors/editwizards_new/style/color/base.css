@@ -20,17 +20,17 @@ a:active  { color: #3844AC; }
 }
 
 table.head {
-	background-color: #999999;
+	background-color: #97b7c8;
 }
 
 tr.headtitle {
 	color: #FFFFFF;
-	background-color: #CCCCCC;
+	background-color: #97b7c8;
 }
 
 tr.headsubtitle {
 	color: #FFFFFF;
-	background-color: #9999999;
+	background-color: #97b7c8;
 }
 
 table.body {
