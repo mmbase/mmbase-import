@@ -13,7 +13,13 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.portlet.*;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
@@ -22,8 +28,12 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Relation;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
@@ -37,6 +47,7 @@ public class GuestBookPortlet extends ContentPortlet {
     private static final String NAME_FIELD = "name";
     private static final String EMAIL_FIELD = "email";
     private static final String BODY_FIELD = "body";
+    private static final String VALIDATION_FIELD = "validationfield";
     private static final int MAX_BODY_LENGTH = 1024;
 
     /** name of the parameter that defines the mode the view is displayed in */
@@ -44,6 +55,7 @@ public class GuestBookPortlet extends ContentPortlet {
     public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
         Map<String, String> errorMessages = new Hashtable<String, String>();
         String action = request.getParameter(ACTION_PARAM);
+        
         log.debug("Action: " + action);
         if (action == null) {
             response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
@@ -53,6 +65,18 @@ public class GuestBookPortlet extends ContentPortlet {
             log.debug("contentelement: " + contentelement);
 
             if (contentelement != null) {
+            	boolean usevalidation = Boolean.valueOf(PropertiesUtil.getProperty("guestbook.usevalidation"));
+            	if (usevalidation) {
+	            	if (StringUtils.isBlank(request.getParameter(VALIDATION_FIELD))){
+	            		errorMessages.put(VALIDATION_FIELD, "guestbook.field.validation.error.empty");            		
+	            	}
+	            	else {
+	            		String generatedText = (String)request.getPortletSession().getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY);
+	            		if (!generatedText.equals(request.getParameter(VALIDATION_FIELD))){
+	            			errorMessages.put(VALIDATION_FIELD, "guestbook.field.validation.error.invalid");   
+	            		}
+	            	}
+            	}
                 if (StringUtils.isBlank(request.getParameter(TITLE_FIELD))) {
                     errorMessages.put(TITLE_FIELD, "guestbook.field.title.error.empty");
                 }
@@ -69,7 +93,7 @@ public class GuestBookPortlet extends ContentPortlet {
                     originalValues.put(TITLE_FIELD, request.getParameter(TITLE_FIELD));
                     originalValues.put(NAME_FIELD, request.getParameter(NAME_FIELD));
                     originalValues.put(EMAIL_FIELD, request.getParameter(EMAIL_FIELD));
-                    originalValues.put(BODY_FIELD, request.getParameter(BODY_FIELD));
+                    originalValues.put(BODY_FIELD, request.getParameter(BODY_FIELD));                    
                     request.getPortletSession().setAttribute(ORIGINAL_VALUES, originalValues);
                     request.getPortletSession().setAttribute(ELEMENT_ID, contentelement);
                 } else {
@@ -120,5 +144,16 @@ public class GuestBookPortlet extends ContentPortlet {
             element.delete(true);
         }
     }
+
+	@Override
+	protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+		boolean usevalidation = Boolean.valueOf(PropertiesUtil.getProperty("guestbook.usevalidation"));
+		if (usevalidation) {
+        	request.setAttribute("usevalidation", "true");
+        }
+		super.doView(request, response);
+	}
+    
+    
 
 }

@@ -3,12 +3,10 @@
 	<classpathentry kind="src" path="portlets-banner/src/java"/>
 	<classpathentry kind="src" path="portlets-playlist/src/java"/>
 	<classpathentry kind="src" path="portlets-search/src/java"/>
-	<classpathentry kind="src" path="portlets-responseform/src/java"/>
 	<classpathentry kind="src" path="portlets-poll/src/java"/>
 	<classpathentry kind="src" path="portlets-guestbook/src/java"/>
 	<classpathentry kind="src" path="portlets-print/src/java"/>
 	<classpathentry kind="src" path="portlets-mailfriend/src/java"/>
-	<classpathentry kind="src" path="portlets-reactform/src/java"/>
 	<classpathentry kind="src" path="portlets-emailalert/src/java"/>
 	<classpathentry kind="src" path="portlets-dynamicforms/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -26,7 +24,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/cmsc-utilities-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/portlets-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.2-20061205.jar" sourcepath="/MAVEN_REPO"/>
+	<classpathentry sourcepath="/MAVEN_REPO" kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.2-20061205.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.2-20061205.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.2-20061205.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.2-20061205.jar"/>
@@ -45,5 +43,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.2-20061208.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/simplecaptcha/jars/simplecaptcha-20070403.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
