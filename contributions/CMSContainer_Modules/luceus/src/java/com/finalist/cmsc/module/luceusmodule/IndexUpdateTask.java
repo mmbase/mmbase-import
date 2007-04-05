@@ -9,7 +9,6 @@
  */
 package com.finalist.cmsc.module.luceusmodule;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -47,8 +46,6 @@ public class IndexUpdateTask implements Runnable {
 
 	private LuceusModule module;
 
-	private HashSet<String> secondaryCache;
-
 	private int id;
 
 	private CustomContentHandler cch;
@@ -62,8 +59,6 @@ public class IndexUpdateTask implements Runnable {
 
 	public void run() {
 		log.debug(id + " IndexUpdateTask running..");
-
-		secondaryCache = new HashSet<String>();
 
 		try {
 			while (in.size() > 0) {
@@ -112,8 +107,6 @@ public class IndexUpdateTask implements Runnable {
 		} catch (InterruptedException ex) {
 			log.warn("IndexUpdateTask " + id + " interrupted");
 		}
-
-		secondaryCache = null;
 
 		log.debug(id + " IndexUpdateTask exits.");
 	}
@@ -357,8 +350,8 @@ public class IndexUpdateTask implements Runnable {
                     && !module.excludeType(secondaryContent.getNodeManager().getName())) {
 				String scId = secondaryContent.getStringValue(ContentElementUtil.NUMBER_FIELD);
 
-				if (secondaryCache != null) {
-					if (secondaryCache.contains(scId)) {
+				if (doc.isCreatingEnvelope()) {
+					if (module.hasProcessedSecondary(scId)) {
 						log.debug("secondary content '" + scId + "' already done.");
 						return;
 					}
@@ -376,8 +369,8 @@ public class IndexUpdateTask implements Runnable {
 
 				Indexer idx = module.getIndexer();
 				if (idx != null) {
-					if (secondaryCache != null) {
-						secondaryCache.add(scId);
+                    if (doc.isCreatingEnvelope()) {
+                        module.processSecondary(scId);
 					}
 					idx.write(doc);
 				}
@@ -399,6 +392,7 @@ public class IndexUpdateTask implements Runnable {
 		Envelope doc = EnvelopeFactory.erasingEnvelope();
 		Indexer idx = module.getIndexer();
 		if (idx != null) {
+            module.clearProcessedSecondary();
 			idx.write(doc);
 		}
 	}
