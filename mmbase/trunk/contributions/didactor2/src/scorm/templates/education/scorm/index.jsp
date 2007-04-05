@@ -23,14 +23,12 @@
 <%@page import="uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
 
 
-
-
 <mm:cloud method="delegate" jspvar="cloud">
 
 
-<mm:import externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
-<mm:import externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
-<mm:import externid="publish_package"  vartype="String" jspvar="requestPublishPackageID" />
+<mm:import from="request" externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
+<mm:import from="request" externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
+<mm:import from="request" externid="publish_package"  vartype="String" jspvar="requestPublishPackageID" />
 
 
 
@@ -82,158 +80,151 @@
 	<%@include file="publish.jsp"%>
       </mm:node>
    </mm:present>
-<%
-
+   <%
    boolean uploadOK = false;
+%>
+<mm:log jspvar="log">
+<%
+   log.info("UPloading");
+       
+
+
    String fileName = null;
 
-   if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload")))
-   {
-      if (FileUpload.isMultipartContent(request))
-      {
+   if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {
+       log.info("UPloading2");
+      if (FileUpload.isMultipartContent(request)) {
+          log.info("UPloading4");
          DiskFileUpload upload = new DiskFileUpload();
          upload.setSizeMax(-1); // allow for unlimited file sizes
          upload.setSizeThreshold(4096);
          upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
          List items = upload.parseRequest(request);
          Iterator itr = items.iterator();
-         while(itr.hasNext())
-         {
-            FileItem item = (FileItem) itr.next();
-            if (item.isFormField())
-            {
-               if (item.getFieldName().equals("manager"))
-               {
-                   mtype = item.getString();
-               }
-            }
-            else
-            {
-               String fieldName = item.getFieldName();
-               File fileSrc = null;
-               if(fieldName.equals("filename"))
-               {
-                  //------------- Uploading of new package ----------------
+         log.info("items .." + items);
+         while(itr.hasNext()) {
+             FileItem item = (FileItem) itr.next();
+             log.info("UPloading2 .." + item);
+             
+             if (item.isFormField()) {
+                 if (item.getFieldName().equals("manager")) {
+                     mtype = item.getString();
+                 }
+             } else {
+                 String fieldName = item.getFieldName();
+                 File fileSrc = null;
+                 if(fieldName.equals("filename")) {
+                     //------------- Uploading of new package ----------------
+                     
+                     //Create a new node which describes this package
+                     nodePackage = cloud.getNodeManager("packages").createNode();
+                     nodePackage.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
+                     nodePackage.setValue("type", "SCORM");
+                     nodePackage.commit();
+                     
+                     fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
 
-                  //Create a new node which describes this package
-                  nodePackage = cloud.getNodeManager("packages").createNode();
-                  nodePackage.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
-                  nodePackage.setValue("type", "SCORM");
-                  nodePackage.commit();
-
-                  fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
-
-                  try
-                  {//Internal server error
-                     newDir = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber()));
-                     newDir.mkdirs();
-                     newDir_ = new File(newDir.getAbsolutePath() + "_");
-                     newDir_.mkdirs();
-
-                     File savedFile = new File(CommonUtils.fixPath(directory) + File.separator + nodePackage.getNumber(), fileName);
-                     item.write(savedFile);
-                     fileSrc = new File(CommonUtils.fixPath(directory + File.separator + fileName));
-
-                     uploadOK = true;
-                     savedFile = null;
-                  }
-                  catch(Exception e)
-                  {
-                     msg = "Internal server error: " + e.toString();
-                     uploadOK = false;
-                  }
-
-                  try
-                  {// A error during unpacking .zip
-                     if(uploadOK)
-                     {
-                        Unpack.unzipFileToFolder(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + File.separator + fileName), CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_"));
+                     try {
+                         //Internal server error
+                         newDir = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber()));
+                         newDir.mkdirs();
+                         newDir_ = new File(newDir.getAbsolutePath() + "_");
+                         newDir_.mkdirs();
+                         
+                         File savedFile = new File(CommonUtils.fixPath(directory) + File.separator + nodePackage.getNumber(), fileName);
+                         item.write(savedFile);
+                         fileSrc = new File(CommonUtils.fixPath(directory + File.separator + fileName));
+                         
+                         uploadOK = true;
+                         savedFile = null;
+                     } catch(Exception e) {
+                         msg = "Internal server error: " + e.toString();
+                         uploadOK = false;
                      }
-                  }
-                  catch(Exception e)
-                  {
-                     msg = "UNZIP Error: " + e.toString();
-                     nodePackage.delete(true);
-                     Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
-                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
-                     uploadOK = false;
-                  }
-
-
-                  //check manifest file here
-                  if(uploadOK)
-                  {
-                     try
-                     {
-                        File file = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME));
-                        XMLDocument xmlDocument = new XMLDocument();
-                        xmlDocument.loadDocument(file);
-                        CP_Core cp_core = new CP_Core(xmlDocument);
-                        nodePackage.setValue("version", "" + cp_core.getRootManifestElement().getAttributeValue("version"));
-                        nodePackage.setValue("name", fileName);
-                        nodePackage.commit();
+                     
+                     try {// A error during unpacking .zip
+                         if(uploadOK) {
+                             Unpack.unzipFileToFolder(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + File.separator + fileName), CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_"));
+                         }
+                     } catch(Exception e) {
+                         msg = "UNZIP Error: " + e.toString();
+                         nodePackage.delete(true);
+                         Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
+                         Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
+                         uploadOK = false;
                      }
-                     catch(Exception e)
-                     {
-                        msg = "Error parsing manifest file: " + e.toString();
-                        nodePackage.delete(true);
-                        Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
-                        Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
-                        uploadOK = false;
+
+
+                     //check manifest file here
+                     if(uploadOK) {
+                         try {
+                             File file = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME));
+                             XMLDocument xmlDocument = new XMLDocument();
+                             xmlDocument.loadDocument(file);
+                             CP_Core cp_core = new CP_Core(xmlDocument);
+                             nodePackage.setValue("version", "" + cp_core.getRootManifestElement().getAttributeValue("version"));
+                             nodePackage.setValue("name", fileName);
+                             nodePackage.commit();
+                         } catch(Exception e) {
+                             msg = "Error parsing manifest file: " + e.toString();
+                             nodePackage.delete(true);
+                             Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
+                             Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
+                             uploadOK = false;
+                         }
                      }
-                  }
+                     
 
-
-                  //Copying player with own package ID config
-		  filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
-		  ServletContext sc = getServletConfig().getServletContext();
-		  
-		  FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
-
-
-
-                  //Get structure of menu and write it to our instance of player
-                  try
-                  {
-                     MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", baseUrl + "/scorm/" + nodePackage.getNumber() + "_" + "/");
-                     String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber(), "");
-/*
-                     DidactorSettings didactorSetings = new DidactorSettings();
-                     didactorSetings.setPackageName("" + nodePackage.getNumber());
-                     didactorSetings.setSettingsFilePath("Z:/SCORM/sequence/reload-settings.xml");
-                     didactorSetings.setPackageManifestPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME);
-
-                     ScormManager scormManager = new ScormManager(didactorSetings);
-*/
-                     File fileMenuConfig = new File(directory + File.separator + nodePackage.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
-                     RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileMenuConfig, "rw");
-                     for(int f = 0; f < arrstrJSMenu.length; f++)
-                     {
-                        rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
-                        rafileMenuConfig.writeByte(13);
-                        rafileMenuConfig.writeByte(10);
+                     //Copying player with own package ID config
+                     filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
+                     ServletContext sc = getServletConfig().getServletContext();
+                     
+                     FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
+                     
+                     
+                     
+                     //Get structure of menu and write it to our instance of player
+                     try {
+                         MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", baseUrl + "/scorm/" + nodePackage.getNumber() + "_" + "/");
+                         String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber(), "");
+                         /*
+                           DidactorSettings didactorSetings = new DidactorSettings();
+                           didactorSetings.setPackageName("" + nodePackage.getNumber());
+                           didactorSetings.setSettingsFilePath("Z:/SCORM/sequence/reload-settings.xml");
+                           didactorSetings.setPackageManifestPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME);
+                           
+                           ScormManager scormManager = new ScormManager(didactorSetings);
+                         */
+                         File fileMenuConfig = new File(directory + File.separator + nodePackage.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
+                         RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileMenuConfig, "rw");
+                         for(int f = 0; f < arrstrJSMenu.length; f++) {
+                             rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
+                             rafileMenuConfig.writeByte(13);
+                             rafileMenuConfig.writeByte(10);
+                         }
+                         rafileMenuConfig.close();
+                         
+                     } catch (Exception e) {
+                         // wtf
                      }
-                     rafileMenuConfig.close();
-
-                  }
-                  catch (Exception e)
-                  {
-                  }
 
 
 
-                  if(uploadOK)
-                  {
-                     //Clean up the folder
-//                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
-                  }
-               }
-            }
-         }
-      }
+                     if(uploadOK) {
+                         // wtf
+                         //Clean up the folder
+                         //                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
+                     }
+                 } // item = filename
+             }// item is form field
+         } // while
+      } // is multipart
+   } else {
+       msg = "YOU MAY NOT UPLOAD";
+       uploadOK = false;
    }
 %>
-
+       </mm:log>
 <%@include file="/shared/setImports.jsp"%>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
@@ -278,7 +269,7 @@
          <table class="searchcontent">
             <tr>
                <td>
-                  <form action="index.jsp" method="POST" enctype="multipart/form-data">
+                  <form  method="POST" enctype="multipart/form-data">
                      <input type="file" name="filename"  style="width:200px; height:20px">
                      <input type="submit" value="Upload" style="width:60px; text-align:center">
                   </form>
