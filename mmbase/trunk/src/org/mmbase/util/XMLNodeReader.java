@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.46 2007-02-11 20:05:50 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.47 2007-04-05 14:04:18 pierre Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -119,8 +119,14 @@ public class XMLNodeReader extends DocumentReader {
                             }
                             n4 = nm.getNamedItem("alias");
                             if (n4 != null) {
-                                log.info("Setting alias to " + n4.getNodeValue());
-                                newNode.setAlias(n4.getNodeValue());
+                                // tokenize here!
+                                String n4value = n4.getNodeValue();
+                                String[] aliases = n4value.split(",");
+                                for(int i = 0; i < aliases.length; i++) {
+                                    String alias = aliases[i];
+                                    log.info("Setting alias to " + alias);
+                                    newNode.setAlias(alias);
+                                }
                             }
                             n4 = nm.getNamedItem("number");
                             try {
@@ -197,16 +203,16 @@ public class XMLNodeReader extends DocumentReader {
                     log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
                     newNode.setValue(key, -1);
                 }
-            } else if (type == Field.TYPE_DATETIME) {                                            
+            } else if (type == Field.TYPE_DATETIME) {
                 newNode.setValue(key, Casting.toDate(value));
-            } else if (type == Field.TYPE_BOOLEAN) {                                            
+            } else if (type == Field.TYPE_BOOLEAN) {
                 newNode.setValue(key, Casting.toBoolean(value));
             } else if (type == Field.TYPE_BINARY) {
                 NamedNodeMap nm2 = n5.getAttributes();
                 Node n7 = nm2.getNamedItem("file");
                 try {
                     if(loadBinaries){
-                    	newNode.setValue(key, readBytesStream(n7.getNodeValue()));
+                        newNode.setValue(key, readBytesStream(n7.getNodeValue()));
                     }
                     else{
                         newNode.setValue(key, n7.getNodeValue());
@@ -216,7 +222,7 @@ public class XMLNodeReader extends DocumentReader {
                 }
             } else {
                 log.error("CoreField not found for #" + type + " was not known for field with name: '"
-                		  + key + "' and with value: '" + value + "'");
+                          + key + "' and with value: '" + value + "'");
             }
         }
     }
