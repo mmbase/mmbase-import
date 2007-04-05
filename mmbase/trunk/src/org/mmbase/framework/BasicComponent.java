@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.24 2006-12-15 14:43:27 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.25 2007-04-05 10:09:43 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -75,7 +75,7 @@ public class BasicComponent implements Component {
         NodeList blockElements = el.getElementsByTagName("block");
         if (log.isDebugEnabled()) {
             log.debug("Found description: " + description);
-            log.debug("Found number of blocks: " + blocks);
+            log.debug("Found number of blocks: " + blocks.size());
         }
         for (int i = 0 ; i < blockElements.getLength(); i++) {
             Element element = (Element) blockElements.item(i);
