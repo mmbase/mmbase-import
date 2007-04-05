@@ -15,6 +15,9 @@
       <mm:cloud loginpage="login.jsp" rank="basic user">
 
          <div id="header">
+	         <div class="title_image">
+	            <img src="gfx/logo_editors.png"/>
+            </div>
             <div class="title">
                <fmt:message key="editors.title" />
             </div>
