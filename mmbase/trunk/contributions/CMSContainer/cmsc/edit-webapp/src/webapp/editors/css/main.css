@@ -86,6 +86,16 @@ img
 	padding: 9px;
 }
 
+#header div.title_image
+{
+	float: left;
+	position: relative;
+	width: auto;
+	float: left;
+	color: #dee104;
+	padding: 4px 4px 0px 6px;
+}
+
 #header div.userinfo
 {
 	background-image: url('../gfx/background_header_end.gif');
