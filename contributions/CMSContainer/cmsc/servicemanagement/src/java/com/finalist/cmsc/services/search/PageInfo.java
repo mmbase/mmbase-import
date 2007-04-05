@@ -13,11 +13,13 @@ public class PageInfo {
     private int pageNumber;
     private String path;
     private String windowName;
+    private String layout;
     
-    public PageInfo(int pageNumber, String path, String windowName) {
+    public PageInfo(int pageNumber, String path, String windowName, String layout) {
         this.pageNumber = pageNumber;
         this.path = path;
         this.windowName = windowName;
+        this.layout = layout;
     }
 
     public int getPageNumber() {
@@ -32,6 +34,10 @@ public class PageInfo {
         return windowName;
     }
 
+    public String getLayout() {
+        return layout;
+    }
+    
     @Override
     public int hashCode() {
         final int PRIME = 31;
