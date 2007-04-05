@@ -11,7 +11,7 @@ package com.finalist.cmsc.services.publish;
 
 import org.mmbase.bridge.Node;
 
-
+@SuppressWarnings("unused")
 public class DummyPublishService extends PublishService {
 
     @Override
