@@ -40,6 +40,17 @@
 					<textarea name="body"></textarea>
 				</td>
 			</tr>
+			<c:if test="${!empty usevalidation}">
+			<tr>
+				<td>
+					<fmt:message key="view.validation"/>
+				</td>
+				<td>
+					<img src="<cmsc:staticurl page='/Captcha.jpg'/>"> <br/>
+					<input type="text" name="validationfield">
+				</td>
+			</tr>
+			</c:if>
 			<tr>
 				<td colspan="2">
 					<input type="submit" name="nieuw" value="<fmt:message key="view.submit" />"/>
