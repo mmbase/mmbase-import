@@ -34,9 +34,38 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
     private static Log log = LogFactory.getLog(SearchServiceMMBaseImpl.class);
 
+    private Map<String,Integer> priorities = new HashMap<String, Integer>();
+
     @Override
     protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {      
         log.info("SearchServiceMMBaseImpl STARTED");
+        
+        String[] priorityHigh = aProperties.getStrings("priority.high");
+        if (priorityHigh != null) {
+            for (String high : priorityHigh) {
+                priorities.put(high, 4);
+            }
+        }
+        String[] priorityMedium = aProperties.getStrings("priority.medium");
+        if (priorityMedium != null) {
+            for (String medium : priorityMedium) {
+                priorities.put(medium, 3);
+            }
+        }
+        String[] priorityLow = aProperties.getStrings("priority.low");
+        if (priorityLow != null) {
+            for (String low : priorityLow) {
+                priorities.put(low, 2);
+            }
+        }
+    }
+    
+    private int getPriority(String name) {
+        Integer prio = priorities.get(name);
+        if (prio != null) {
+            return prio;
+        }
+        return 1;
     }
     
     @Override
@@ -73,26 +102,42 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 }
                 if (pageNodes.isEmpty()) {
                     // all matches are sites
-                    filterPageQueryNodes(pages, content);
-                    if (!pages.isEmpty()) {
-                        pageQueryNode = pages.getNode(0);
-                    }
-                    
-                    return getPageInfo(pageQueryNode, true);
+                    return findBestOfDetailPages(content, pages);
                 }
                 else {
                     // find page which is most suitable to use as detail page
-                    filterPageQueryNodes(pageNodes, content);
-                    if (!pageNodes.isEmpty()) {
-                        pageQueryNode = pageNodes.get(0);
-                    }
-                    return getPageInfo(pageQueryNode, true);
+                    return findBestOfDetailPages(content, pageNodes);
                 }
             }
         }
         return null;
     }
 
+    private PageInfo findBestOfDetailPages(Node content, List<Node> pages) {
+        filterPageQueryNodes(pages, content);
+        if (!pages.isEmpty()) {
+            List<PageInfo> pageInfos = new ArrayList<PageInfo>(); 
+            for (Node pageNode : pages) {
+                PageInfo info = getPageInfo(pageNode, true);
+                if (info != null && !pageInfos.contains(info)) {
+                    pageInfos.add(info);
+                }
+            }
+            PageInfo result = null;
+            int prio = 0;
+            for (PageInfo pageInfo : pageInfos) {
+                String prioKey = pageInfo.getLayout() + "." + pageInfo.getWindowName();
+                int infoPrio = getPriority(prioKey);
+                if (infoPrio > prio) {
+                    result = pageInfo;
+                }
+            }
+            return result;
+        }
+        
+        return null;
+    }
+    
     private void filterPageQueryNodes(List<Node> pages, Node content) {
         for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
             Node pageQueryNode = iter.next();
@@ -210,7 +255,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
             }
 
             String pagePath = SiteManagement.getPath(page, !ServerUtil.useServerName());
-            PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName);
+            Layout layout = SiteManagement.getLayout(page.getLayout());
+            PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName, layout.getResource());
             return pageInfo;
         }
         return null;
@@ -271,7 +317,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
         Query query = cloud.createQuery();
         Step parameterStep = query.addStep(parameterManager);
-        RelationStep step2 = query.addRelationStep(portletManager, PortletUtil.PARAMETERREL, "SOURCE");
+        query.addRelationStep(portletManager, PortletUtil.PARAMETERREL, "SOURCE");
         RelationStep step4 = query.addRelationStep(pageManager, PortletUtil.PORTLETREL, "SOURCE");
         Step pageStep = step4.getNext();
 
@@ -300,6 +346,9 @@ public class SearchServiceMMBaseImpl extends SearchService {
             Cloud cloud = page.getCloud();
 
             Page pageObject = SiteManagement.getPage(page.getNumber());
+            if (pageObject == null) {
+                return result;
+            }
             Collection<Integer> portlets = pageObject.getPortlets();
             for (Integer portletId : portlets) {
                 Portlet portlet = SiteManagement.getPortlet(portletId);
