@@ -131,5 +131,27 @@
 				<type key="false" notnull="true" size="1024" state="persistent">STRING</type>
 			</db>
 		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Link</guiname>
+				<guiname xml:lang="en">Link</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>7</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>link</name>
+				<type key="false" notnull="true" size="512" state="persistent">STRING</type>
+			</db>
+		</field>
 	</fieldlist>
 </builder>
