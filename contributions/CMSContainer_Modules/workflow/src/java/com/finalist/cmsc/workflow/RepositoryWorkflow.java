@@ -13,11 +13,8 @@ import java.util.List;
 
 import org.mmbase.bridge.*;
 
-import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.Role;
-import com.finalist.cmsc.security.SecurityUtil;
-
 
 public abstract class RepositoryWorkflow  extends WorkflowManager {
     
@@ -45,30 +42,6 @@ public abstract class RepositoryWorkflow  extends WorkflowManager {
     
     public List<Node> getUsersWithRights(Node channel, Role role) {
         return RepositoryUtil.getUsersWithRights(channel, role);
-    }
-    
-    
-    public boolean isWorkflowElement(Node node) {
-        return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node) ||
-            (ContentElementUtil.isContentElement(node) && RepositoryUtil.hasContentChannel(node));
-    }
-    
-    /**
-     * Is the user allowed to publish the content element
-     */
-    public boolean isAllowedToPublish(Node content) {
-       Node creationChannel = RepositoryUtil.getCreationChannel(content);
-       Node user = SecurityUtil.getUserNode(cloud);
-       return RepositoryUtil.getRole(user, creationChannel).getRole().getId() >= Role.CHIEFEDITOR.getId();
-    }
-
-    /**
-     * Is the user allowed to approve the content element
-     */
-    public boolean isAllowedToAccept(Node content) {
-       Node creationChannel = RepositoryUtil.getCreationChannel(content);
-       Node user = SecurityUtil.getUserNode(cloud);
-       return RepositoryUtil.getRole(user, creationChannel).getRole().getId() >= Role.EDITOR.getId();
     }
 
 }

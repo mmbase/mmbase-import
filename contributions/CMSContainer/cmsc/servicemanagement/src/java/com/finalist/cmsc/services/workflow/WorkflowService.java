@@ -11,6 +11,7 @@ package com.finalist.cmsc.services.workflow;
 
 import java.util.List;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.apache.commons.logging.Log;
 
@@ -55,6 +56,12 @@ public abstract class WorkflowService extends Service {
 
     public abstract void remove(Node node);
     
+    public abstract void remark(Node node, String remark);
+
+    public abstract WorkflowStatusInfo getStatusInfo(Cloud cloud);
+    
+    public abstract boolean isAllowedToPublish(Node node);
+
    @Override
    protected void init(Properties properties) throws Exception {
 

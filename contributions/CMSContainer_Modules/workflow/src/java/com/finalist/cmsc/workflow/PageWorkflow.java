@@ -134,20 +134,11 @@ public class PageWorkflow extends WorkflowManager {
     }
 
     @Override
-    public boolean isWorkflowElement(Node node) {
+    public boolean isWorkflowElement(Node node, boolean isWorkflowItem) {
+        if (isWorkflowItem) {
+            return TYPE_PAGE.equals(node.getStringValue(TYPE_FIELD));
+        }
         return PagesUtil.isPageType(node);
-    }
-
-    @Override
-    public boolean isAllowedToAccept(Node node) {
-        Node user = SecurityUtil.getUserNode(cloud);
-        return NavigationUtil.getRole(user, node).getRole().getId() >= Role.EDITOR.getId();
-    }
-
-    @Override
-    public boolean isAllowedToPublish(Node node) {
-        Node user = SecurityUtil.getUserNode(cloud);
-        return NavigationUtil.getRole(user, node).getRole().getId() >= Role.CHIEFEDITOR.getId();
     }
 
     public boolean isWorkflowType(String type) {
@@ -203,7 +194,14 @@ public class PageWorkflow extends WorkflowManager {
 
     @Override
     public UserRole getUserRole(Node node) {
-        return NavigationUtil.getRole(node.getCloud(), node, false);
+        Node page;
+        if (PagesUtil.isPageType(node)) {
+            page = node;
+        }
+        else {
+            page = getPageNode(node);
+        }
+        return NavigationUtil.getRole(node.getCloud(), page, false);
     }
 
 }

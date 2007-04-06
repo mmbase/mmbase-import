@@ -7,14 +7,13 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package com.finalist.cmsc.workflow.forms;
+package com.finalist.cmsc.services.workflow;
 
 import java.util.Iterator;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
-import com.finalist.cmsc.services.workflow.Workflow;
 
 public class WorkflowStatusInfo {
 

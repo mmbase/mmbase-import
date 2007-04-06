@@ -11,18 +11,16 @@ package com.finalist.cmsc.services.workflow;
 
 import java.util.List;
 
-import com.finalist.cmsc.security.Role;
-import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.workflow.ContentWorkflow;
-import com.finalist.cmsc.workflow.LinkWorkflow;
-import com.finalist.cmsc.workflow.PageWorkflow;
-import com.finalist.cmsc.workflow.WorkflowManager;
 import net.sf.mmapps.commons.bridge.CloudUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+
+import com.finalist.cmsc.security.Role;
+import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.workflow.*;
 
 
 public class WorkflowServiceMMBaseImpl extends WorkflowService {
@@ -64,18 +62,25 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
     public void remove(Node node) {
         getManager(node).remove(node);
     }
+
+    @Override
+    public void remark(Node node, String remark) {
+        getManager(node).remark(node, remark);
+    }
     
     private WorkflowManager getManager(Node node) {
-        WorkflowManager manager = getLinkWorkflow(node.getCloud());
-        if (manager.isWorkflowElement(node)) {
-            return manager;
-        }
-        manager = getContentWorkflow(node.getCloud());
-        if (manager.isWorkflowElement(node)) {
+        boolean isWorkflowItem = WorkflowManager.isWorkflowItem(node);
+
+        WorkflowManager manager = getContentWorkflow(node.getCloud());
+        if (manager.isWorkflowElement(node, isWorkflowItem)) {
             return manager;
         }
         manager = getPageWorkflow(node.getCloud());
-        if (manager.isWorkflowElement(node)) {
+        if (manager.isWorkflowElement(node, isWorkflowItem)) {
+            return manager;
+        }
+        manager = getLinkWorkflow(node.getCloud());
+        if (manager.isWorkflowElement(node, isWorkflowItem)) {
             return manager;
         }
         throw new IllegalArgumentException("Node was not a workflow element " + node);
@@ -114,8 +119,8 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
 
     public boolean isWorkflowElement(Node node) {
         Cloud cloud = node.getCloud();
-        return getContentWorkflow(cloud).isWorkflowElement(node) 
-            || getPageWorkflow(cloud).isWorkflowElement(node);
+        return getContentWorkflow(cloud).isWorkflowElement(node, false) 
+            || getPageWorkflow(cloud).isWorkflowElement(node, false);
     }
     
     private Cloud getUserCloud() {
@@ -166,8 +171,22 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
         return getManager(node).isReadyToPublish(node, publishNumbers);
     }
 
+    @Override
+    public boolean isAllowedToPublish(Node node) {
+        return getManager(node).isAllowedToPublish(node);
+    }
+
    protected Log getLogger() {
       return LogFactory.getLog(WorkflowServiceMMBaseImpl.class);
+   }
+
+
+   public WorkflowStatusInfo getStatusInfo(Cloud cloud) {
+       Query statusQuery = WorkflowManager.createStatusQuery(cloud);
+       NodeList statusList = cloud.getList(statusQuery);
+
+       WorkflowStatusInfo ststusInfo = new WorkflowStatusInfo(statusList);
+       return ststusInfo;
    }
 
 }

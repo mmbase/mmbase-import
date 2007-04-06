@@ -83,7 +83,7 @@ public abstract class WorkflowManager {
     * @return true if the node has a related workflowitem
     */
    protected boolean hasWorkflow(Node node, String type) {
-      if (!isWorkflowElement(node)) {
+      if (!isWorkflowElement(node, false)) {
          return false;
       }
       NodeList list = getWorkflows(node, type);
@@ -91,11 +91,27 @@ public abstract class WorkflowManager {
       return !list.isEmpty();
    }
 
-   public abstract boolean isWorkflowElement(Node node);
+   public abstract boolean isWorkflowElement(Node node, boolean isWorkflowItem);
    protected abstract List<Node> getUsersWithRights(Node channel, Role role);
    
-   public abstract boolean isAllowedToPublish(Node node);
-   public abstract boolean isAllowedToAccept(Node node) ;
+   /**
+    * Is the user allowed to approve the node
+    * @param node Node to check for 
+    * @return <code>true</code> when allowed
+    */
+   public boolean isAllowedToAccept(Node node) {
+      return getUserRole(node).getRole().getId() >= Role.EDITOR.getId();
+   }
+
+   
+   /**
+    * Is the user allowed to publish the node
+    * @param node Node to check for 
+    * @return <code>true</code> when allowed
+    */
+   public boolean isAllowedToPublish(Node node) {
+      return getUserRole(node).getRole().getId() >= Role.CHIEFEDITOR.getId();
+   }
    
    public abstract Node createFor(Node node, String remark);
    public abstract void finishWriting(Node node, String remark);
@@ -158,8 +174,11 @@ public abstract class WorkflowManager {
    }
 
    private boolean isStatusApproved(Node wfItem) {
-       String status = wfItem.getStringValue(STATUS_FIELD);
-       return STATUS_APPROVED.equals(status) || STATUS_PUBLISHED.equals(status);
+       if (Workflow.isAcceptedStepEnabled()) {
+           String status = wfItem.getStringValue(STATUS_FIELD);
+           return STATUS_APPROVED.equals(status) || STATUS_PUBLISHED.equals(status);
+       }
+       return isStatusFinished(wfItem);
    }
    
    protected boolean isStatusPublished(Node wfItem) {
@@ -214,9 +233,11 @@ public abstract class WorkflowManager {
        // accept nodes first to avoid publish errors
        if (Workflow.isAcceptedStepEnabled()) {
           if (!isStatusApproved(wfItem)) {
-              changeWorkflow(wfItem, STATUS_APPROVED, remark);
-              List<Node> users = getUsersWithRights(rightsNode, Role.CHIEFEDITOR);
-              changeUserRelations(wfItem, users);
+              if (isAllowedToAccept(rightsNode)) {
+              	changeWorkflow(wfItem, STATUS_APPROVED, remark);
+              	List<Node> users = getUsersWithRights(rightsNode, Role.CHIEFEDITOR);
+              	changeUserRelations(wfItem, users);
+          	 }
           }
        }
        else {
@@ -237,7 +258,7 @@ public abstract class WorkflowManager {
      * @param wfItem
      * @param remark
      */
-    public void rename(Node wfItem, String remark) {
+    public void remark(Node wfItem, String remark) {
     	wfItem.setStringValue(REMARK_FIELD, remark);
         wfItem.commit();
     }
@@ -260,23 +281,26 @@ public abstract class WorkflowManager {
     }
 
     protected void publish(Node node, boolean skiptest, String type, List<Integer> publishNumbers) throws WorkflowException {
-        if (isWorkflowElement(node) && hasWorkflow(node, type)) {
+        if (isWorkflowElement(node, false) && hasWorkflow(node, type)) {
             Node wf = getWorkflowNode(node, type);
             if (wf != null) {
                 if (!isStatusApproved(wf)) {
                     accept(node, null);
                 }
-                List<Node> errors = new ArrayList<Node>();
-                log.debug("Got valid workflowtype: " + wf.getNodeManager().getName()
-                        + ", checking relations");
-                if (skiptest || isReadyToPublish(node, errors, publishNumbers)) {
-                    changeWorkflow(wf, STATUS_PUBLISHED, "");
-                    Publish.publish(node);
-                }
-                else {
-                    throw new WorkflowException(
+                
+                if (isStatusApproved(wf) && isAllowedToPublish(node)) {
+	                List<Node> errors = new ArrayList<Node>();
+                	log.debug("Got valid workflowtype: " + wf.getNodeManager().getName()
+                    	    + ", checking relations");
+                	if (skiptest || isReadyToPublish(node, errors, publishNumbers)) {
+                	    changeWorkflow(wf, STATUS_PUBLISHED, "");
+                	    Publish.publish(node);
+                	}
+                	else {
+                    	throw new WorkflowException(
                             "Could not publish, because its relations still have a workflow",
                             errors);
+                    }
                 }
             }
             else {
@@ -311,6 +335,7 @@ public abstract class WorkflowManager {
         }
     }
 
+    @SuppressWarnings("unused")
     protected void checkNode(Node node, List<Node> errors, List<Integer> publishNumbers) {
         // no errors
     }
@@ -339,6 +364,10 @@ public abstract class WorkflowManager {
       for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
          workflowItem.createRelation(iter.next(), manager).commit();
       }
+   }
+
+   public static boolean isWorkflowItem(Node node) {
+       return WORKFLOW_MANAGER_NAME.equals(node.getNodeManager().getName());
    }
 
    public static NodeQuery createListQuery(Cloud cloud) {
@@ -370,7 +399,7 @@ public abstract class WorkflowManager {
    }
 
    public static Constraint getTypeConstraint(NodeQuery query, String type) {
-       Field field = getManager(query.getCloud()).getField("type");
+       Field field = getManager(query.getCloud()).getField(TYPE_FIELD);
        FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
              FieldCompareConstraint.EQUAL, type);
        return constraint;
