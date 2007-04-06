@@ -162,7 +162,15 @@ public class NMIntraConfig {
    public static String sCorporateWebsite = "http://www.acc.natuurmm.asp4all.nl/";
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
    */
-   public NMIntraConfig() {
-
+   public NMIntraConfig() { 
+   }
+   
+   static {
+	   Logger log = Logging.getLoggerInstance(NMIntraConfig.class);
+	   log.info("fromEmailAddress: " + fromEmailAddress);
+	   log.info("defaultPZAddress: " + defaultPZAddress);
+	   log.info("defaultFZAddress: " + defaultFZAddress);
+	   log.info("toEmailAddress: " + toEmailAddress);
+	   log.info("newsEmailAddress: " + newsEmailAddress);	 
    }
 }
