@@ -43,6 +43,11 @@ To compile MMBase richtext from sources.
 The richtext of MMBase HEAD is developed a bit further, and does compmile agains MMBase 1.8. So you
 may want to do this because of that.
 
+Do place config/xslt/2xhtml-mmbase18.xslt in WEB-INF/config/xslt/2xhtml.xslt though.
+The MMBase 1.8 DOM generator cannot generate id-attribute (not supported in java 1.4), but the id()
+function _is_ used in the default 2xhtml.xslt to speed up performance. (You can also use the
+Generator.class in WEB-INF/classes/org/mmbase/bridge/util/xml if you run java 1.5).
+
 To build the complete rich text package, you also need to check out kupu and build it. This happens
 automaticly by the ant script in this directory.
 
