@@ -70,17 +70,11 @@
                                         <mm:compare value="true">
                                             <mm:link page="newentreengposter.jsp" referids="forumid" >
                                                 <form action="${_}" method="post">
+                                                    <input type="hidden" name="newaccount" value="${entree}">
+                                                    <input type="hidden" name="newpassword" value="${np}">
+                                                    <input type="hidden" name="newconfirmpassword" value="${np}">
+
                                                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-                                                        <tr>
-                                                            <th width="150" ><mm:write referid="mlg.Account"/></th>
-                                                            <td>
-                                                                <input type="hidden" name="newaccount" value="${entree}">
-                                                                <mm:write referid="entree" />
-                                                                <mm:import id="np"><%=(new org.mmbase.util.PasswordGenerator()).getPassword()%></mm:import>
-                                                                <input type="hidden" name="newpassword" value="${np}">
-                                                                <input type="hidden" name="newconfirmpassword" value="${np}">
-                                                            </td>
-                                                        </tr>
 
                                                         <mm:compare referid="hasnick" value="true">
                                                             <tr>
@@ -106,7 +100,7 @@
                                                                 </mm:compare>
 
                                                                 <mm:compare referid="lastname" value="null">
-                                                                    <input type="hidden" name="newlastname" value="   ">
+                                                                    <input type="hidden" name="newlastname" value="">
                                                                     missing
                                                                 </mm:compare>
                                                             </td>
