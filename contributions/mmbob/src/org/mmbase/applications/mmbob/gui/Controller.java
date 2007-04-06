@@ -1158,7 +1158,10 @@ public class Controller {
     }
 
     /**
-     * Change values of a Poster
+     * Change values of a Poster.
+     * When the login system is 'entree-ng' the fields 'firstname', 'lastname'
+     * and 'email' are not changed. they come from the entree system when you create your
+     * mmbob account, and are non-editable with this login system
      * 
      * @param forumid MMBase node number of the forum
      * @param posterid MMBase node number of the poster
@@ -1171,47 +1174,42 @@ public class Controller {
      */
     public String editPoster(String forumid, int posterid, String firstname, String lastname, String email, String gender, String location,
             String newpassword, String newconfirmpassword) {
-        if (newpassword.equals("")) {
-            log.info("newpassword is empty");
-            Forum forum = ForumManager.getForum(forumid);
-            if (forum != null) {
-                Poster poster = forum.getPoster(posterid);
-                if (poster != null) {
+        Forum forum = ForumManager.getForum(forumid);
+        if (forum != null) {
+            Poster poster = forum.getPoster(posterid);
+            if (poster != null) {
+
+                // handle password stuff
+                if (newpassword.equals("")) {
+                    log.info("newpassword is empty");
+                } else if (newpassword.equals(newconfirmpassword)) {
+                    poster.setPassword(newpassword);
+                } else {
+                    log.info("newpassword and confirmpassword are not equal");
+                    return "newpasswordnotequal";
+                }
+
+                // check for the login system. if it is entree-gs we dont set some fields
+                //TODO: This is a bit of a hack. But i don't really know how to do it better now
+                //the whole login type implementation based on little hacks.
+                String loginsystemtype = forum.getLoginSystemType();
+                if (!"entree-ng".equals(loginsystemtype)) {
+                    log.debug("** type is not entree-ng, set the firstname, lastname and email fields");
                     poster.setFirstName(firstname);
                     poster.setLastName(lastname);
                     poster.setEmail(email);
-                    poster.setGender(gender);
-                    poster.setLocation(location);
-                    poster.savePoster();
-                } else {
-                    return "false";
                 }
-            }
-            return "true";
-        } else {
-            if (newpassword.equals(newconfirmpassword)) {
-                log.info("newpassword equals newconfirmpassword");
-                Forum forum = ForumManager.getForum(forumid);
-                if (forum != null) {
-                    Poster poster = forum.getPoster(posterid);
-                    if (poster != null) {
-                        poster.setFirstName(firstname);
-                        poster.setLastName(lastname);
-                        poster.setEmail(email);
-                        poster.setGender(gender);
-                        poster.setLocation(location);
-                        poster.setPassword(newpassword);
-                        poster.savePoster();
-                    } else {
-                        return "false";
-                    }
-                }
+
+                // set the rest of the fields
+                poster.setGender(gender);
+                poster.setLocation(location);
+                poster.savePoster();
                 return "profilechanged";
-            } else {
-                log.info("newpassword and confirmpassword are not equal");
-                return "newpasswordnotequal";
             }
         }
+        //something went wrong
+        return "false";
+
     }
 
     /**
