@@ -28,6 +28,8 @@ import org.mmbase.util.logging.Logger;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+import sun.awt.color.ProfileDeferralInfo;
+
 /**
  * this class represents extra profile information attached to a poster.
  * It contains a ProfielEntry instance for every profiel entry line in the xml
@@ -67,6 +69,7 @@ public class ProfileInfo {
     }
 
     /**
+     * this method is called for each poster when the forum starts up
      * @param parent the poster this profileinfo object belongs to
      * @param id the id of the corresponding node in the cloud
      * @param xml the profile info from the mmbase node encoded as xml
@@ -82,6 +85,7 @@ public class ProfileInfo {
         this.parent = parent;
         decodeXML();
         this.forum = parent.getParent();
+        createEntriesForDefs();
         // syncExternals();
     }
 
@@ -198,6 +202,7 @@ public class ProfileInfo {
         if (oldvalue == null || !oldvalue.equals(value)) {
             profileEntry.setValue(value);
             profileEntry.setSynced(false);
+            log.info("setting 'synched' false for profileentry "+profileEntry.getName());
             setSynced(false);
             save();
             ProfileEntryDef profileEntryDef = forum.getProfileDef(name);
@@ -226,6 +231,41 @@ public class ProfileInfo {
         body += "</profileinfo>\n";
         return body;
     }
+    
+    /**
+     * this method creates profile entry instances for each profiledef in the current forum
+     * that has to be synced with an external profile.
+     * if there is no profile entry for it yet. The status will be 'unsynced' and if any
+     * are added, the status of this profileInfo instance will be 'unsynced' as well.
+     */
+    public void createEntriesForDefs(){
+        log.info("checking for missing profile entries");
+        boolean added = false;
+        if (forum.getProfileDefs() != null) {
+            for (Iterator i = forum.getProfileDefs(); i.hasNext();) {
+                ProfileEntryDef profileDef = (ProfileEntryDef) i.next();
+                if (profileDef.getExternal() != null && !"".equals(profileDef.getExternal())) {
+                    String name = profileDef.getName();
+                    if (entries.get(name) == null) {
+                        log.info("adding empty profile entry for (externally synched) entry def " + name);
+                        //do the buisiness
+                        added = true;
+                        ProfileEntry profileEntry = new ProfileEntry();
+                        entries.put(name, profileEntry);
+                        profileEntry.setName(name);
+                        profileEntry.setValue("");
+                        profileEntry.setSynced(false);
+                    }
+                }
+            }
+        }        
+        if(added){
+            setSynced(false);
+            save();
+        }
+    }
+    
+    
 
     /**
      * This private method is never used!
@@ -282,6 +322,10 @@ public class ProfileInfo {
         } else {
             synced = -1;
         }
+    }
+    
+    public String toString(){
+        return entries.toString();
     }
 
 }
