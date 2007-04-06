@@ -7,15 +7,18 @@
 
 <%-- imports when request is multipart post --%>
 <mm:notpresent referid="selectedavatar">
-  <mm:import externid="_handle_size" from="multipart"/>
-  <mm:compare referid="_handle_size" value="0" inverse="true">
-    <mm:import externid="addavatar" from="multipart"/>
-    <mm:import externid="selectavatar" from="multipart"/>
-    <mm:import externid="otheravatarset" from="multipart"/>
-    <mm:import externid="avatarsets" from="multipart"/>
-    <mm:import externid="_handle_name" from="multipart"/>
-  </mm:compare>
+    <mm:import externid="_handle" from="multipart"/>
+    <mm:import externid="_handle_size" from="multipart"/>
+    <mm:compare referid="_handle_size" value="0" inverse="true">
+        <mm:import externid="addavatar" from="multipart"/>
+        <mm:import externid="selectavatar" from="multipart"/>
+        <mm:import externid="otheravatarset" from="multipart"/>
+        <mm:import externid="avatarsets" from="multipart"/>
+        <mm:import externid="_handle_name" from="multipart"/>
+    </mm:compare>
 </mm:notpresent>
+
+
 
 <%-- imports when request is not multipart post --%>
 <mm:present referid="selectedavatar">
@@ -40,93 +43,104 @@
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
-  <mm:present referid="addavatar">
-    <mm:transaction name="avatartrans">
-      <mm:node id="posternode" number="$posterid">
-      <mm:relatednodes type="avatarsets">
-        <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
-      </mm:relatednodes>
-      <mm:related path="rolerel,images"
-                  fields="rolerel.role,rolerel.number"
-                  constraints="rolerel.role='avatar'">
-        <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
-      </mm:related>
+    <%--handle the upload of a new avatar--%>
+    <mm:present referid="addavatar">
+        <c:choose>
+            <c:when test="${_handle.size < (1024 * 1024)}">
+                <mm:transaction name="avatartrans">
+                    <mm:node id="posternode" number="$posterid">
+                    <mm:relatednodes type="avatarsets"  role="related" searchdir="destination">
+                            <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
+                        </mm:relatednodes>
+                        <mm:related path="rolerel,images" fields="rolerel.role,rolerel.number" constraints="rolerel.role='avatar'">
+                            <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
+                        </mm:related>
+                    </mm:node>
 
-      </mm:node>
-      <mm:createnode id="avatarnode" type="images">
-        <mm:setfield name="title">Uploaded avatar (<mm:write referid="_handle_name"/>)</mm:setfield>
-        <mm:fieldlist fields="handle">
-          <mm:fieldinfo type="useinput" />
-        </mm:fieldlist>
-      </mm:createnode>
+                    <%--create the image--%>
+                    <mm:createnode id="avatarnode" type="images">
+                        <mm:setfield name="title">Uploaded avatar(${_handle.name})</mm:setfield>
+                        <mm:fieldlist fields="handle">
+                        <mm:fieldinfo type="useinput" />
+                        </mm:fieldlist>
+                    </mm:createnode>
+                    <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
+                        <mm:setfield name="role">avatar</mm:setfield>
+                    </mm:createrelation>
 
-      <mm:present referid="presentavatar">
-        <mm:node referid="presentavatar">
-          <mm:deletenode/>
-        </mm:node>
-      </mm:present>
+                    <%--delete the current avatar--%>
+                    <mm:present referid="presentavatar">
+                        <mm:node referid="presentavatar">
+                            <mm:deletenode/>
+                        </mm:node>
+                    </mm:present>
 
-      <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
-        <mm:setfield name="role">avatar</mm:setfield>
-      </mm:createrelation>
+                    <%--create an avatar set for this user if it is not there yet--%>
+                    <mm:notpresent referid="userset">
+                        <mm:createnode id="userset" type="avatarsets">
+                            <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
+                        </mm:createnode>
+                        <mm:createrelation source="posternode" destination="userset" role="related" />
+                    </mm:notpresent>
 
-      <mm:notpresent referid="userset">
-        <mm:createnode id="userset" type="avatarsets">
-          <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
-        </mm:createnode>
-        <mm:createrelation source="posternode" destination="userset" role="related" />
-      </mm:notpresent>
+                    <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+                </mm:transaction>
+            </c:when>
+            <c:otherwise>
+                <c:set var="error"><mm:write referid="mlg.Upload_avatar_error_tolarge"/></c:set>
+            </c:otherwise>
+        </c:choose>
 
-      <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+    </mm:present>
 
-    </mm:transaction>
-  </mm:present>
+    <%--coose a new avatar from your avatar set--%>
+    <mm:present referid="selectedavatarnumber">
+        <mm:transaction name="avatartrans">
+            <mm:node id="posternode" number="$posterid">
+                <mm:relatednodes type="avatarsets">
+                    <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
+                </mm:relatednodes>
+                <mm:related path="rolerel,images" fields="rolerel.role,rolerel.number" constraints="rolerel.role='avatar'">
+                    <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
+                </mm:related>
+            </mm:node>
 
-  <mm:present referid="selectedavatarnumber">
-    <mm:transaction name="avatartrans">
-      <mm:node id="posternode" number="$posterid">
-      <mm:relatednodes type="avatarsets">
-        <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
-      </mm:relatednodes>
-      <mm:related path="rolerel,images"
-                  fields="rolerel.role,rolerel.number"
-                  constraints="rolerel.role='avatar'">
-        <mm:first><mm:import id="presentavatar"><mm:field name="rolerel.number"/></mm:import></mm:first>
-      </mm:related>
+            <%-- remove the relation to the current avatar--%>
+            <mm:present referid="presentavatar">
+                <mm:node referid="presentavatar">
+                    <mm:deletenode/>
+                </mm:node>
+            </mm:present>
 
-      </mm:node>
-      <mm:present referid="presentavatar">
-        <mm:node referid="presentavatar">
-          <mm:deletenode/>
-        </mm:node>
-      </mm:present>
+            <mm:node id="avatarnode" referid="selectedavatarnumber"/>
+            <%--check if the selected node exists as part of the avatar set--%>
+            <mm:present referid="userset">
+                <mm:node referid="userset">
+                    <mm:related path="images" fields="images.number" constraints="images.number = ${avatarnode.number}" >
+                        <mm:import id="avatarExists">true</mm:import>
+                    </mm:related>
+                </mm:node>
+            </mm:present>
 
-      <mm:node id="avatarnode" referid="selectedavatarnumber"/>
-      <mm:present referid="userset">
-        <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import>
-        <mm:node referid="userset">
-          <mm:related path="images" fields="images.number" constraints="$constraint" >
-            <mm:import id="avatarExists">true</mm:import>
-          </mm:related>
-        </mm:node>
-      </mm:present>
+            <%--create an avatar set if not there yet--%>
+            <mm:notpresent referid="userset">
+                <mm:createnode id="userset" type="avatarsets">
+                    <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
+                </mm:createnode>
+                <mm:createrelation source="posternode" destination="userset" role="related" />
+            </mm:notpresent>
 
-      <mm:notpresent referid="userset">
-        <mm:createnode id="userset" type="avatarsets">
-          <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
-        </mm:createnode>
-        <mm:createrelation source="posternode" destination="userset" role="related" />
-      </mm:notpresent>
+            <%--create a relation to the (new) avatar set--%>
+            <mm:notpresent referid="avatarExists">
+                <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+            </mm:notpresent>
 
-      <mm:notpresent referid="avatarExists">
-        <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
-      </mm:notpresent>
-
-      <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
-        <mm:setfield name="role">avatar</mm:setfield>
-      </mm:createrelation>
-    </mm:transaction>
-  </mm:present>
+            <%-- set the selected image as avatar--%>
+            <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
+                <mm:setfield name="role">avatar</mm:setfield>
+            </mm:createrelation>
+        </mm:transaction>
+    </mm:present>
 
   <mm:present referid="deleteavatarnumber">
       <mm:node id="posternode" number="$posterid">
