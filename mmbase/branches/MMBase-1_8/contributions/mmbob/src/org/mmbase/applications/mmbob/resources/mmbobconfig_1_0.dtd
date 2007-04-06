@@ -163,10 +163,10 @@
 <!ATTLIST urls externalroot CDATA #IMPLIED>
 
 <!ELEMENT profileentry (#PCDATA)>
+<!ATTLIST profileentry name CDATA #REQUIRED>
 <!ATTLIST profileentry guipos CDATA #IMPLIED>
 <!ATTLIST profileentry guiname CDATA #IMPLIED>
-<!ATTLIST profileentry edit CDATA #IMPLIED>
-<!ATTLIST profileentry name CDATA #IMPLIED>
+<!ATTLIST profileentry edit (true|false) #IMPLIED>
 <!ATTLIST profileentry external CDATA #IMPLIED>
 <!ATTLIST profileentry externalname CDATA #IMPLIED>
 <!ATTLIST profileentry type CDATA #IMPLIED>
