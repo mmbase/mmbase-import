@@ -106,10 +106,11 @@ public class ProfileEntryDef {
     }
 
     /**
-     * a fully qualified name of a class that implements ExternalProfileInterface
-     * @return
+     * 
+     * @return a fully qualified name of a class that implements ExternalProfileInterface or null
      */
     public String getExternal() {
+        if("".equals(external))return null;
         return external;
     }
 
@@ -132,6 +133,7 @@ public class ProfileEntryDef {
 
     /**
      * the identifier of the field in the external profile
+     * for entree it is something like [dienstid]:[type]:[fieldid] example: 187388721:GS:5
      * @return
      */
     public String getExternalName() {

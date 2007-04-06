@@ -1318,6 +1318,7 @@ public class Controller {
     }
 
     /**
+     * a horrible copy of createPoster() that dous a little extra: it creates one profile entry: 'nick'
      * @param forumid
      * @param account
      * @param password
@@ -2489,7 +2490,10 @@ public class Controller {
     }
 
     /**
-     * get login information for this poster
+     * check the credentials of the poster that is trying to login.
+     * When the login is validated, we will sync the profileInfo with the external
+     * profile. 
+     * 
      */
     public Map forumLogin(String forumid, String account, String password) {
         // log.info("going to login with account: " + account + " and password " + password);
@@ -2502,6 +2506,10 @@ public class Controller {
                 String md5passwd = md5.transform(password);
                 if (!password.equals("blocked") && (poster.getPassword().equals(password) || poster.getPassword().equals(md5passwd))
                         && !poster.isBlocked()) {
+                    log.debug("user has logged in. let's sync those profiledefs to the external profile");
+                    //to make shure the profilinfo will be synched:
+                    poster.signalLoggedin();
+                    
                     map.put("state", "passed");
                     map.put("posterid", new Integer(poster.getId()));
                 } else {

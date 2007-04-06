@@ -59,7 +59,7 @@ public class Poster {
     private static final int STATE_DISABLED = 1;
 
     /**
-     * Contructor
+     * Constructor
      * the ProfileInfo field remains null
      * 
      * @param node poster Node
@@ -442,6 +442,8 @@ public class Poster {
      * update "lastseen" for the poster, and add the posternode to the syncQueue
      */
     public void signalSeen() {
+        log.info("*** "+account+" signal seen. Seen: "+new Boolean(seen).toString()+" ***");
+        log.info("profile info: "+profileinfo);
         int oldtime = lastseen;
         int onlinetime = ((int) (System.currentTimeMillis() / 1000)) - (parent.getPosterExpireTime());
 
@@ -453,12 +455,22 @@ public class Poster {
         node.setIntValue("lastseen", lastseen);
         ForumManager.syncNode(node, ForumManager.SLOWSYNC);
         if (!seen) {
+            log.info("put the profilesinfo to the sync cue for user "+ account);
             seen = true;
             if (profileinfo == null) {
                 profileinfo = new ProfileInfo(this);
             }
             profileinfo.loginTrigger();
         }
+    }
+    
+    /**
+     * Call this when the user logs in. The 'seen' flag will go to 'false'
+     * so the profileInfo instance will be synched to the external profile
+     */
+    public void signalLoggedin(){
+        log.info("seen is set to false ");
+        seen = false;
     }
 
     /**
