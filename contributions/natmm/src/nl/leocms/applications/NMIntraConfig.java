@@ -1,7 +1,5 @@
 package nl.leocms.applications;
 
-import nl.leocms.applications.NMIntraConfig;
-
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -175,5 +173,4 @@ public class NMIntraConfig {
 	   log.info("toEmailAddress: " + toEmailAddress);
 	   log.info("newsEmailAddress: " + newsEmailAddress);	 
    }
-   
 }
