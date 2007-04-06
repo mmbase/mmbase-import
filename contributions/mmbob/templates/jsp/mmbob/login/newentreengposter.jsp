@@ -8,6 +8,24 @@
 <mm:import externid="postareaid" />
 <mm:import externid="feedback">none</mm:import>
 
+
+<%--
+    find out if there are forum rules. if so, the user must accept them, expressed by
+    field 'rulesaccepted'. No user node is created while this field is set to 'no'.
+    if there are no rules, we set rulesaccepted to 'yes'. it amounts to the same thing.
+--%>
+<mm:import externid="rulesaccepted">no</mm:import>
+<mm:compare referid="rulesaccepted" value="no">
+    <mm:node referid="forumid">
+        <mm:relatednodes type="forumrules" searchdirs="destination" role="related">
+            <mm:import id="rulesid"><mm:field name="number" /></mm:import>
+        </mm:relatednodes>
+    </mm:node>
+</mm:compare>
+<mm:notpresent referid="rulesid">
+    <mm:import id="rulesaccepted" reset="true">yes</mm:import>
+</mm:notpresent>
+
 <%-- login part --%>
 <%@ include file="../getposterid.jsp" %>
 <%@ include file="../thememanager/loadvars.jsp" %>
@@ -16,32 +34,37 @@
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
     <mm:import id="hasnick"><mm:field name="hasnick" /></mm:import>
 </mm:nodefunction>
-<!-- action check -->
+
+
+<%--  action check--%>
 <mm:import externid="action" />
 <mm:present referid="action">
 
-    <%--  create a new poster based on an entee-ng account --%>
+    <%--  create a new poster based on an entee-ng account. only when the rules are accepted! --%>
     <mm:compare value="createposter" referid="action">
-        <mm:import reset="true" id="account" externid="newaccount" /><%--entree account id--%>
-        <mm:import reset="true" id="password" externid="newpassword" />
-        <mm:import reset="true" id="confirmpassword" externid="newconfirmpassword" />
-        <mm:import id="firstname" externid="newfirstname" />
-        <mm:import id="lastname" externid="newlastname" />
-        <mm:import id="email" externid="newemail" />
-        <mm:import id="location" externid="newlocation" />
-        <mm:import id="gender" externid="newgender" />
-        <!-- this function can return:  [createerror|inuse|ok|passwordnotequal|firstnameerror|lastnameerror|emailerror]-->
-        <mm:compare referid="hasnick" value="false">
-            <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,confirmpassword,firstname,lastname,email,gender,location" /></mm:import>
-        </mm:compare>
-        <!-- this function can return: [ok|createerror|inuse|passwordnotequal|nickinuse|firstnameerror|lastnameerror|emailerror] -->
-        <mm:compare referid="hasnick" value="true">
-            <mm:import id="nick" externid="newnick" />
-            <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPosterNick" referids="forumid,account,password,confirmpassword,nick,firstname,lastname,email,gender,location" /></mm:import>
+        <mm:compare referid="rulesaccepted" value="yes">
+            <mm:import reset="true" id="account" externid="newaccount" /><%--entree account id--%>
+            <mm:import reset="true" id="password" externid="newpassword" />
+            <mm:import reset="true" id="confirmpassword" externid="newconfirmpassword" />
+            <mm:import id="firstname" externid="newfirstname" />
+            <mm:import id="lastname" externid="newlastname" />
+            <mm:import id="email" externid="newemail" />
+            <mm:import id="location" externid="newlocation" />
+            <mm:import id="gender" externid="newgender" />
+
+            <%-- this function can return:  [createerror|inuse|ok|passwordnotequal|firstnameerror|lastnameerror|emailerror]--%>
+            <mm:compare referid="hasnick" value="false">
+                <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,confirmpassword,firstname,lastname,email,gender,location" /></mm:import>
+            </mm:compare>
+            <%-- this function can return: [ok|createerror|inuse|passwordnotequal|nickinuse|firstnameerror|lastnameerror|emailerror] --%>
+            <mm:compare referid="hasnick" value="true">
+                <mm:import id="nick" externid="newnick" />
+                <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPosterNick" referids="forumid,account,password,confirmpassword,nick,firstname,lastname,email,gender,location" /></mm:import>
+            </mm:compare>
         </mm:compare>
     </mm:compare>
 </mm:present>
-<!-- end action check -->
+<%-- end action check --%>
 
     <mm:locale language="$lang">
     <%@ include file="../loadtranslations.jsp" %>
@@ -60,19 +83,10 @@
 
         <div class="bodypart">
 
-            <mm:import externid="rulesaccepted">no</mm:import>
-
-            <mm:compare referid="rulesaccepted" value="no">
-                <mm:node referid="forumid">
-                    <mm:relatednodes type="forumrules">
-                        <mm:import id="rulesid"><mm:field name="number" /></mm:import>
-                    </mm:relatednodes>
-                </mm:node>
-            </mm:compare>
 
             <mm:include page="../path.jsp?type=$pathtype" />
 
-            <%--  there are rules, so you have to accept (but hey! the poster is already created...)--%>
+            <%--  there are rules, so you have to accept --%>
             <mm:present referid="rulesid">
                 <mm:node referid="rulesid">
                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="80%">
@@ -83,7 +97,15 @@
                             <td colspan="2"><br /><br /><mm:field name="body" escape="p" /><br /><br /></td>
                         </tr>
                         <tr>
-                            <mm:link page="newentreengposter.jsp" referids="forumid" >
+                            <mm:link page="newentreengposter.jsp" referids="forumid,postareaid,action" >
+                                <mm:param name="newaccount" value="${param.newaccount}" />
+                                <mm:param name="newpassword" value="${param.newpassword}" />
+                                <mm:param name="newconfirmpassword" value="${param.newconfirmpassword}" />
+                                <mm:param name="newfirstname" value="${param.newfirstname}" />
+                                <mm:param name="newlastname" value="${param.newlastname}" />
+                                <mm:param name="newemail" value="${param.newemail}" />
+                                <mm:param name="newlocation" value="${param.newlocation}" />
+                                <mm:param name="newgender" value="${param.newgender}" />
                                 <form action="${_}" method="post">
                                     <td align="middle" width="50%">
                                         <center>
@@ -106,11 +128,12 @@
                 </mm:node>
             </mm:present>
 
-            <%--  there are no forum ruls--%>
+            <%--  there are no forum ruls.--%>
             <mm:notpresent referid="rulesid">
 
                 <%--  The poster is not created yet--%>
                 <mm:compare referid="feedback" value="none">
+                    <%-- <p>debug: no forumrules, no feedback</p> --%>
                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
                         <mm:link page="newentreengposter.jsp" referids="forumid,rulesaccepted">
                             <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
@@ -246,6 +269,7 @@
             <%--  poster creation did result into:  [createerror|inuse|ok|passwordnotequal]. this is always true! --%>
             <mm:compare referid="feedback" value="none" inverse="true">
                 <mm:compare referid="feedback" value="ok" inverse="true">
+                    <%-- <p>debug: no there is feedback, but it is not 'ok'</p> --%>
                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
                         <tr>
                             <th colspan="2">
@@ -454,6 +478,7 @@
             </mm:compare>
 
             <mm:compare referid="feedback" value="ok">
+                <%-- <p>debug: there is feedback and it is 'ok'</p> --%>
                 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="60%">
                     <tr>
                         <th><mm:write referid="mlg.Account_created"/></th>
