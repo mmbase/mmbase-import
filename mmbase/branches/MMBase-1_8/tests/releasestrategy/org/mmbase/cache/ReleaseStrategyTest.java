@@ -19,8 +19,8 @@ import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEventHelper;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.AggregatedField;
-import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.*;
+
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicLegacyConstraint;
 import org.mmbase.tests.BridgeTest;
@@ -236,6 +236,20 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q4 = Queries.createQuery(cloud, null, "news,urls", "news.title,urls.name",null, null, null, null, false);
         Query q5 = Queries.createQuery(cloud, null, "object,object2", "object.otype,object2.otype",null, null, null, null, false);
 
+        NodeQuery nq1 = cloud.createNodeQuery();
+        {
+            Step step = nq1.addStep(newsManager);
+            nq1.setNodeStep(step);
+            RelationStep relationStep = nq1.addRelationStep(urlsManager, "posrel", "destination");
+            nq1.setNodeStep(relationStep.getNext());
+        }
+        NodeQuery nq2 = cloud.createNodeQuery();
+        {
+            Step step = nq2.addStep(newsManager);
+            nq2.setNodeStep(step);
+            RelationStep relationStep = nq1.addRelationStep(urlsManager, "posrel", "destination");
+        }
+
         //a new relation node should not flush cache the cache
         NodeEvent event = NodeEventHelper.createNodeEventInstance(posrelNode, Event.TYPE_NEW, null);
         assertFalse("node event of new relation node on multi step query should not release the query", strategy.evaluate(event, q1, null).shouldRelease());
@@ -244,6 +258,9 @@ public class ReleaseStrategyTest extends BridgeTest {
         assertFalse("node event of new relation node on multi step query should not release the query", strategy.evaluate(event, q4, null).shouldRelease());
         assertFalse("node event of new relation node on multi step query should not release the query", strategy.evaluate(event, q5, null).shouldRelease());
 
+        assertFalse("node event of new relation node on multi step nodequery should not release the query", strategy.evaluate(event, nq1, null).shouldRelease());
+        assertFalse("node event of new relation node on multi step nodequery should not release the query", strategy.evaluate(event, nq2, null).shouldRelease());
+
         //but the subsequent relation event should
         RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, Event.TYPE_NEW, null);
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache", strategy.evaluate(relEvent, q1, null).shouldRelease());
@@ -251,6 +268,9 @@ public class ReleaseStrategyTest extends BridgeTest {
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache", strategy.evaluate(relEvent, q3, null).shouldRelease());
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache", strategy.evaluate(relEvent, q4, null).shouldRelease());
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache", strategy.evaluate(relEvent, q5, null).shouldRelease());
+
+        assertTrue("relation event of new relation between nodes in multi step nodequery should flush the cache", strategy.evaluate(relEvent, nq1, null).shouldRelease());
+        assertTrue("relation event of new relation between nodes in multi step nodequery should flush the cache", strategy.evaluate(relEvent, nq2, null).shouldRelease());
 
     }
 
