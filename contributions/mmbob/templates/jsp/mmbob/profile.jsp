@@ -327,21 +327,21 @@
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Firstname"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="firstname" /> (entree)
+                                                                        <mm:field name="firstname" />
                                                                     </span>
                                                                 </div>
 
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Lastname"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="lastname" /> (entree)
+                                                                        <mm:field name="lastname" />
                                                                     </span>
                                                                 </div>
 
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Email"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="email" /> (entree)
+                                                                        <mm:field name="email" />
                                                                 </span>
                                                                 </div>
 
