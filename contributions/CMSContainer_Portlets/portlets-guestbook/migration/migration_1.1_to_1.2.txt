@@ -1,7 +1,7 @@
 Migration document:
 
 Intro:
-The module portlets-guestbook includes an optional validaton using simplecaptcha: http://simplecaptcha.sourceforge.net/
+The module portlets-guestbook includes an optional validaton using jcaptcha: http://jcaptcha.sourceforge.net/
 See LCM-94.
 
 Part: portlets-guestbook
@@ -10,8 +10,8 @@ To versie: 1.2
 
 Execute the following steps below in the given order:
 
-Name: make simplecaptcha work on unix
-Goal: allow the AWT to run in a headless (without a display) environment, this is needed for simplecaptcha.
+Name: make jcaptcha work on unix
+Goal: allow the AWT to run in a headless (without a display) environment, this is needed for jcaptcha.
 Type: manual action
 
 Stop tomcat
@@ -29,16 +29,16 @@ value: "true" (or "false" to disable it.)
 Publish the system properties to actualize them also on the live environment.
 	
 Name: configuration for using the guestbook validation
-Goal: configuration for using the guestbook validation with simplecaptcha
+Goal: configuration for using the guestbook validation with jcaptcha
 Type: manual action  
 
 Add the following in the maven-base/project.xml
 
 <dependency>
-	<groupId>simplecaptcha</groupId>
-	<artifactId>simplecaptcha</artifactId>			
+	<groupId>jcaptcha</groupId>
+	<artifactId>jcaptcha-all</artifactId>			
 	<type>jar</type>
-	<version>20070403</version>
+	<version>1.0-RC3</version>
 	<properties>
 		<war.bundle>${war.bundle}</war.bundle>
 	</properties>
@@ -47,27 +47,16 @@ Add the following in the maven-base/project.xml
 Add the following in the web.xml files from both war-live and war-staging:
 
 	<servlet>
-		<servlet-name>Captcha</servlet-name>
-		<display-name>Captcha</display-name>
-		<servlet-class>nl.captcha.servlet.CaptchaServlet</servlet-class>
-		<init-param>
-			<param-name>cap.char.arr</param-name>
-			<param-value>0,1,2,3,4,5,6,7,8,9</param-value>
-		</init-param>
-		<init-param>
-			<param-name>cap.char.arr.l</param-name>
-			<param-value>6</param-value>
-		</init-param>
-	</servlet>
+        <servlet-name>jcaptcha</servlet-name>
+        <servlet-class>com.finalist.captcha.CaptchaServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
 	
 	<servlet-mapping>
-		<servlet-name>Captcha</servlet-name>
-		<url-pattern>/Captcha.jpg</url-pattern>
-	</servlet-mapping>
+        <servlet-name>jcaptcha</servlet-name>
+        <url-pattern>/jcaptcha</url-pattern>
+    </servlet-mapping>
 	
-Exceptions/errors/other problems and what to do:
 
-For more information about configuration in web.xml check http://simplecaptcha.sourceforge.net/
 
-If a different version of simplecaptcha.jar needs to be used, and if problems appear on unix with the new version, check the
-article http://javaboutique.internet.com/tutorials/captcha/index-2.html.
+

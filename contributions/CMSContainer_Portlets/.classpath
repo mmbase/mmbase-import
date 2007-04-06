@@ -43,6 +43,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.2-20061208.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/simplecaptcha/jars/simplecaptcha-20070403.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jcaptcha/jars/jcaptcha-all-1.0-RC3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

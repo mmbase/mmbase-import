@@ -33,9 +33,11 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Relation;
 
+import com.finalist.captcha.CaptchaServiceSingleton;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
+import com.octo.captcha.service.CaptchaServiceException;
 
 public class GuestBookPortlet extends ContentPortlet {
     
@@ -47,7 +49,7 @@ public class GuestBookPortlet extends ContentPortlet {
     private static final String NAME_FIELD = "name";
     private static final String EMAIL_FIELD = "email";
     private static final String BODY_FIELD = "body";
-    private static final String VALIDATION_FIELD = "validationfield";
+    private static final String VALIDATION_FIELD = "j_captcha_response";
     private static final int MAX_BODY_LENGTH = 1024;
 
     /** name of the parameter that defines the mode the view is displayed in */
@@ -67,12 +69,20 @@ public class GuestBookPortlet extends ContentPortlet {
             if (contentelement != null) {
             	boolean usevalidation = Boolean.valueOf(PropertiesUtil.getProperty("guestbook.usevalidation"));
             	if (usevalidation) {
-	            	if (StringUtils.isBlank(request.getParameter(VALIDATION_FIELD))){
+            		String j_captcha_response = request.getParameter(VALIDATION_FIELD);	
+	            	if (StringUtils.isBlank(j_captcha_response)){
 	            		errorMessages.put(VALIDATION_FIELD, "guestbook.field.validation.error.empty");            		
 	            	}
 	            	else {
-	            		String generatedText = (String)request.getPortletSession().getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY);
-	            		if (!generatedText.equals(request.getParameter(VALIDATION_FIELD))){
+	            		Boolean isResponseCorrect = Boolean.FALSE;	    
+	            	    String captchaId = request.getPortletSession().getId();	
+	            	    try {
+	            	    	isResponseCorrect = CaptchaServiceSingleton.getInstance().validateResponseForID(captchaId, j_captcha_response);	            	    	
+	            	    } catch (CaptchaServiceException e) {
+	            	        //should not happen, may be thrown if the id is not valid 
+	            	    	log.error("sessionId not valid", e);
+	            	    }	            		
+	            		if ( !isResponseCorrect ){
 	            			errorMessages.put(VALIDATION_FIELD, "guestbook.field.validation.error.invalid");   
 	            		}
 	            	}
