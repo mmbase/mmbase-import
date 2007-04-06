@@ -2528,6 +2528,14 @@ public class Controller {
         return map;
     }
 
+    /**
+     * this function is called when a user is logging in though entree-ng.
+     * so to be shere we signal the poster he just logged in here, so it's profile
+     * is synched to the external profile
+     * @param forumid
+     * @param account
+     * @return
+     */
     public Map getPosterPassword(String forumid, String account) {
         Map map = new HashMap();
         Forum forum = ForumManager.getForum(forumid);
@@ -2536,6 +2544,7 @@ public class Controller {
             if (poster != null) {
                 map.put("password", poster.getPassword());
                 map.put("failed", "false");
+                poster.signalLoggedin();
             } else {
                 map.put("failed", "true");
                 map.put("reason", "noaccount");
