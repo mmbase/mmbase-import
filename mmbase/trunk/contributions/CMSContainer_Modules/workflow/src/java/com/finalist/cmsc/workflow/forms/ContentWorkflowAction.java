@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.workflow.forms;
 
-import java.util.*;
-
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
@@ -23,12 +21,6 @@ public class ContentWorkflowAction extends WorkflowAction {
     @Override
     protected String getWorkflowType() {
         return ContentWorkflow.TYPE_CONTENT;
-    }
-
-    @Override
-    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
-        ContentWorkflow contentWorkflow = new ContentWorkflow(cloud);
-        return performWorkflowAction(action, nodes, remark, contentWorkflow);
     }
     
     @Override

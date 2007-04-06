@@ -60,7 +60,8 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
       private Date estimatedTime;
 
 
-      private AddWorkflowTask() {
+      AddWorkflowTask() {
+          // nothing
       }
 
       public void start() {
@@ -72,7 +73,7 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
       public void run() {
          status = STATUS_RUNNING;
          try {
-            startTime = startTime = new Date();
+            startTime = new Date();
             Cloud adminCloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
 
             NodeManager manager = adminCloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
