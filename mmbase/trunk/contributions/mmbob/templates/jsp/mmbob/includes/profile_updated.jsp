@@ -1,6 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="refresh" content="5; url=<mm:url page="profile.jsp">
+    <mm:link page="profile.jsp" id="link">
         <mm:param name="forumid" value="$forumid" />
         <mm:param name="postareaid" value="$postareaid" />
         <mm:param name="posterid" value="$posterid" />
