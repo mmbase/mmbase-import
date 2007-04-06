@@ -469,7 +469,7 @@ public class Poster {
      * so the profileInfo instance will be synched to the external profile
      */
     public void signalLoggedin(){
-        log.info("seen is set to false ");
+        log.info("'seen' is set to false for account " + getAccount());
         seen = false;
     }
 
