@@ -131,7 +131,7 @@ public class ExternalProfilesManager implements Runnable {
      * this method dous the actual syncing work
      */
     void syncQueues() {
-        //copy the values of these profileInfo objects into the external profile
+        //copy the values of these profileInfo objects into the external profile (set)
         List fields = new ArrayList();
         while (!queue.isEmpty()) {
             ProfileInfo profileInfo = (ProfileInfo) queue.get(0);
@@ -140,33 +140,35 @@ public class ExternalProfilesManager implements Runnable {
             Iterator i = profileInfo.getValues();
             while (i.hasNext()) {
                 ProfileEntry profileEntry = (ProfileEntry) i.next();
-                fields.add(profileEntry.getName());
                 ProfileEntryDef profileEntryDef = profileInfo.getProfileDef(profileEntry.getName());
                 String external = profileEntryDef.getExternal();
                 String externalname = profileEntryDef.getExternalName();
                 ExternalProfileInterface profileInterface = ExternalProfilesManager.getHandler(external);
                 
-                //syncing is only done for profileEntrieDefs with an externalName
-                if (externalname != null && !externalname.equals("") && !profileEntry.getSynced()) {
-                    // String account = parent.getAccount();
-
+                log.debug("name: "+profileEntry.getName()+",external: "+external+", externalname: "+externalname+", profile entry synched:"+profileEntry.getSynced());
+                
+                //syncing is only done for profileEntrieDefs with an external, that is out of synch and is editable
+                if (external != null && !external.equals("") && !profileEntry.getSynced() && profileEntryDef.getEdit()) {
+                    fields.add(profileEntry.getName());
                     String account = profileInfo.getAccount();
+                    
                     if (externalname != null && !externalname.equals("")) {
                         profileInterface.setValue(account, externalname, profileEntry.getValue());
                     } else {
                         profileInterface.setValue(account, profileEntry.getName(), profileEntry.getValue());
                     }
                     profileEntry.setSynced(true);
-                    profileInfo.setSynced(true);
-                    //TODO: this is called for every synced field. it should be called only once.
-                    profileInfo.save();
                 }
             }
+            profileInfo.setSynced(true);
             log.debug("fields that were synched: "+fields.toString());
+            if(fields.size() > 0){
+                profileInfo.save();
+            }
             queue.remove(profileInfo);
         }
         
-        //copy the values from the external profiles into these ProfileInfo's
+        //copy the values from the external profiles into these ProfileInfo's (get)
         fields.clear();
         while (!checkqueue.isEmpty()) {
             ProfileInfo profileInfo = (ProfileInfo) checkqueue.get(0);
@@ -174,40 +176,37 @@ public class ExternalProfilesManager implements Runnable {
             Iterator i = profileInfo.getValues();
             while (i.hasNext()) {
                 ProfileEntry profileEntry = (ProfileEntry) i.next();
-                log.debug("handling profile entry: "+profileEntry.getName());
                 ProfileEntryDef profileEntryDef = profileInfo.getProfileDef(profileEntry.getName());
-                fields.add(profileEntry.getName());
-                if (profileEntryDef != null) {
+                //we only synch the profile entry defs that actually have an external (class)
+                if (profileEntryDef != null && profileEntryDef.getExternal() != null) {
+                    
                     String external = profileEntryDef.getExternal();
                     String externalname = profileEntryDef.getExternalName();
                     ExternalProfileInterface handler = ExternalProfilesManager.getHandler(external);
-                    if (externalname != null && !externalname.equals("") && !profileEntry.getSynced()) {
+                    log.debug("name: "+profileEntry.getName()+",external: "+external+", externalname: "+externalname+", profile entry synched:"+profileEntry.getSynced() );
 
+                    //we ALWAYS want to sync the profile to the external profile. if there is an
+                    //'external' for an profileentry we MUST assume it is leading, and if it has chaned sinds
+                    //the last time the user logged into the forum we want to update the profile with those changes
+                    //if this is not always the case then profileentrydef must be extended with a swicht external leading/not leading.
+                    //if (!profileEntry.getSynced()) {
                         //sync the field
                         String account = profileInfo.getAccount();
-                        if (externalname != null && !externalname.equals("")) {
-                            //sync the field with the external name
-                            String value = handler.getValue(account, externalname);
-                            if (value != null && !value.equals(profileEntry.getValue())) {
-                                profileEntry.setValue(value);
-                                profileEntry.setSynced(true);
-                                profileInfo.setSynced(true);
-                                //TODO: this is called for every synced field. it should be called only once.
-                                profileInfo.save();
-                            }
-                        } else {
-                            //no external name: sync the field with the (local) name
-                            String value = handler.getValue(account, profileEntry.getName());
-                            if (value != null && !value.equals(profileEntry.getValue())) {
-                                profileEntry.setValue(value);
-                                profileEntry.setSynced(true);
-                                profileInfo.setSynced(true);
-                                //TODO: this is called for every synced field. it should be called only once.
-                                profileInfo.save();
-                            }
+                        String fieldName = ((externalname != null && !externalname.equals("")) ? externalname : profileEntry.getName());
+                        
+                        //no external name: sync the field with the (local) name
+                        String value = handler.getValue(account,fieldName);
+                        if (value != null && !value.equals(profileEntry.getValue())) {
+                            fields.add(profileEntry.getName());
+                            profileEntry.setValue(value);
+                            profileEntry.setSynced(true);
                         }
-                    }
+                    //}
                 }
+            }
+            profileInfo.setSynced(true);
+            if(fields.size() > 0 ){
+                profileInfo.save();
             }
             log.debug("fields that were synched: "+fields.toString());
             checkqueue.remove(profileInfo);
