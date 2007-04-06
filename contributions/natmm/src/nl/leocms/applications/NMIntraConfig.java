@@ -1,5 +1,7 @@
 package nl.leocms.applications;
 
+import nl.leocms.applications.NMIntraConfig;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -163,6 +165,15 @@ public class NMIntraConfig {
    public static String sCorporateEditors = "http://www.acc.natuurmm.asp4all.nl/editors/";
    */
    public NMIntraConfig() {
-
    }
+   
+   static {
+	   Logger log = Logging.getLoggerInstance(NMIntraConfig.class);
+	   log.info("fromEmailAddress: " + fromEmailAddress);
+	   log.info("defaultPZAddress: " + defaultPZAddress);
+	   log.info("defaultFZAddress: " + defaultFZAddress);
+	   log.info("toEmailAddress: " + toEmailAddress);
+	   log.info("newsEmailAddress: " + newsEmailAddress);	 
+   }
+   
 }
