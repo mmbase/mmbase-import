@@ -106,7 +106,8 @@ public class ForumManager {
                     log.error("Can't load forums nodemanager from mmbase");
                 }
 
-                externalprofilesmanager = new ExternalProfilesManager(1 * 60 * 1000);
+                externalprofilesmanager = new ExternalProfilesManager(1 * 30 * 1000);
+                 
 
                 readForums();
 
