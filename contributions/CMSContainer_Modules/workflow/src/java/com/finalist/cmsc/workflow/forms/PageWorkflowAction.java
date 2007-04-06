@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.workflow.forms;
 
-import java.util.*;
-
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.navigation.PagesUtil;
@@ -21,12 +19,6 @@ public class PageWorkflowAction extends WorkflowAction {
     @Override
     protected String getWorkflowType() {
         return PageWorkflow.TYPE_PAGE;
-    }
-
-    @Override
-    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, Cloud cloud) {
-        PageWorkflow pageWorkflow = new PageWorkflow(cloud);
-        return performWorkflowAction(action, nodes, remark, pageWorkflow);
     }
     
     @Override

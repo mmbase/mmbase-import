@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.WorkflowException;
 
@@ -127,6 +127,16 @@ public class ContentWorkflow extends RepositoryWorkflow {
     public boolean isWorkflowType(String type) {
         return ContentElementUtil.isContentType(cloud.getNodeManager(type));
     }
+    
+    public boolean isWorkflowElement(Node node, boolean isWorkflowItem) {
+        if (isWorkflowItem) {
+            return TYPE_CONTENT.equals(node.getStringValue(TYPE_FIELD));
+        }
+
+        return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node) ||
+            (ContentElementUtil.isContentElement(node) && RepositoryUtil.hasContentChannel(node));
+    }
+    
 
     public boolean hasWorkflow(Node node) {
         return hasWorkflow(node, TYPE_CONTENT);
@@ -134,7 +144,20 @@ public class ContentWorkflow extends RepositoryWorkflow {
 
     @Override
     public UserRole getUserRole(Node node) {
-        Node creationNode = RepositoryUtil.getCreationChannel(node);
+        Node content;
+        Node creationNode;
+        if (RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node)) {
+            creationNode = node;
+        }
+        else {
+            if (ContentElementUtil.isContentElement(node)) {
+                content = node;
+            }
+            else {
+                content = getContentNode(node);
+            }
+            creationNode = RepositoryUtil.getCreationChannel(content);
+        }
         return RepositoryUtil.getRole(node.getCloud(), creationNode, false);
     }
 

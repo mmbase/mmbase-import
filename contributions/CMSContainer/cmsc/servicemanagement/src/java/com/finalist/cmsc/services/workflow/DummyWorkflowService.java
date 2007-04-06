@@ -12,6 +12,7 @@ package com.finalist.cmsc.services.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,6 +64,11 @@ public class DummyWorkflowService extends WorkflowService {
     }
 
     @Override
+    public void remark(Node node, String remark) {
+        // nothing
+    }
+
+    @Override
     public String getStatus(Node node) {
         // nothing
         return null;
@@ -108,12 +114,22 @@ public class DummyWorkflowService extends WorkflowService {
     
     @Override
     public List<Node> isReadyToPublish(Node node, List<Integer> publishNumbers) {
-        // TODO Auto-generated method stub
         return new ArrayList<Node>();
+    }
+
+    @Override
+    public boolean isAllowedToPublish(Node node) {
+        return true;
     }
 
    protected Log getLogger() {
       return LogFactory.getLog(DummyWorkflowService.class);
    }
+
+    @Override
+    public WorkflowStatusInfo getStatusInfo(Cloud cloud) {
+        return null;
+    }
+
 
 }

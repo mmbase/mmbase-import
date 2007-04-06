@@ -24,11 +24,9 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicStep;
 
-import com.finalist.cmsc.services.workflow.WorkflowException;
-import com.finalist.cmsc.services.workflow.Workflow;
+import com.finalist.cmsc.services.workflow.*;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.cmsc.workflow.*;
-
+import com.finalist.cmsc.workflow.WorkflowManager;
 
 public abstract class WorkflowAction extends MMBaseFormlessAction {
 
@@ -64,7 +62,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                     }
                 }
             }
-            List<Node> workflowErrors = performWorkflowAction(actionValueStr, nodes, remark, cloud);
+            List<Node> workflowErrors = performWorkflowAction(actionValueStr, nodes, remark);
 
             if (workflowErrors != null && workflowErrors.size() > 0) {
                 String url = mapping.getPath() + "?status=" + request.getParameter("status");
@@ -81,17 +79,14 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
         }
         request.setAttribute("orderby", orderby);
 
-        String status = WorkflowManager.STATUS_DRAFT;
+        String status = Workflow.STATUS_DRAFT;
 
         String statusStr = request.getParameter("status");
         if (!StringUtil.isEmpty(statusStr)) {
             status = statusStr;
         }
         
-        Query statusQuery = WorkflowManager.createStatusQuery(cloud);
-        NodeList statusList = cloud.getList(statusQuery);
-
-        WorkflowStatusInfo ststusInfo = new WorkflowStatusInfo(statusList);
+        WorkflowStatusInfo ststusInfo = Workflow.getStatusInfo(cloud);
         
         request.setAttribute("statusInfo", ststusInfo);
 
@@ -100,8 +95,8 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
         
         NodeQuery listQuery = WorkflowManager.createListQuery(cloud);
         Queries.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, status));
-        if (!Workflow.isAcceptedStepEnabled() && WorkflowManager.STATUS_FINISHED.equals(status)) {
-           SearchUtil.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, WorkflowManager.STATUS_APPROVED), CompositeConstraint.LOGICAL_OR);
+        if (!Workflow.isAcceptedStepEnabled() && Workflow.STATUS_FINISHED.equals(status)) {
+           SearchUtil.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, Workflow.STATUS_APPROVED), CompositeConstraint.LOGICAL_OR);
         }
         Queries.addConstraint(listQuery, WorkflowManager.getTypeConstraint(listQuery, type));
 
@@ -118,20 +113,19 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
     }
 
     protected abstract String getWorkflowType();
-    protected abstract List<Node> performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud);
     protected abstract NodeQuery createDetailQuery(Cloud cloud, String orderby);
 
-    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark, WorkflowManager manager) {
+    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark) {
         List<Node> errors = new ArrayList<Node>();
 
         if (ACTION_FINISH.equals(action)) {
             for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-                manager.finishWriting(i.next(), remark);
+                Workflow.finish(i.next(), remark);
             }
         }
         if (ACTION_ACCEPT.equals(action)) {
             for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-                manager.accept(i.next(), remark);
+                Workflow.accept(i.next(), remark);
             }
         }
         if (ACTION_REJECT.equals(action)) {
@@ -140,27 +134,33 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                 // Node in status published might be completed already before
                 // request reaches this point.
                 if (node.getCloud().hasNode(node.getNumber())) {
-                    manager.reject(node, remark);
+                    Workflow.reject(node, remark);
                 }
             }
         }
         if (ACTION_RENAME.equals(action)) {
             for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-                manager.rename(i.next(), remark);
+                Workflow.remark(i.next(), remark);
             }
         }
         if (ACTION_PUBLISH.equals(action)) {
-            for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-                manager.accept(i.next(), remark);
-            }
             List<Integer> publishNumbers = new ArrayList<Integer>();
             for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-                publishNumbers.add(i.next().getNumber());
+                Node publishNode = i.next();
+                if (Workflow.isAllowedToPublish(publishNode)) {
+                    publishNumbers.add((publishNode).getNumber());
+            	}
             }
             
             for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
                 try {
-                    manager.publish(i.next(), publishNumbers);
+                    Node publishNode = i.next();
+                    if (publishNumbers.contains(publishNode.getNumber())) {
+                        Workflow.publish(publishNode, publishNumbers);
+                    }
+                    else {
+                        Workflow.accept(publishNode, "");
+                    }
                 }
                 catch (WorkflowException wfe) {
                     errors.addAll(wfe.getErrors());

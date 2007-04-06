@@ -11,6 +11,7 @@ package com.finalist.cmsc.services.workflow;
 
 import java.util.List;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.UserRole;
@@ -99,4 +100,15 @@ public class Workflow {
         cService.remove(node);
     }
 
+    public static void remark(Node node, String remark) {
+        cService.remark(node, remark);
+    }
+
+    public static WorkflowStatusInfo getStatusInfo(Cloud cloud) {
+        return cService.getStatusInfo(cloud);
+    }
+
+    public static boolean isAllowedToPublish(Node node) {
+        return cService.isAllowedToPublish(node);
+    }
 }

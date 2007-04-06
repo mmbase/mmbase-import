@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.workflow.forms;
 
-import java.util.List;
-
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.workflow.LinkWorkflow;
@@ -23,12 +21,6 @@ public class LinkWorkflowAction extends WorkflowAction {
     @Override
     protected String getWorkflowType() {
         return LinkWorkflow.TYPE_LINK;
-    }
-
-    @Override
-    protected List<Node> performWorkflowAction(String actionValueStr, List<Node> nodes, String remark, Cloud cloud) {
-       LinkWorkflow linkWorkflow = new LinkWorkflow(cloud);
-       return performWorkflowAction(actionValueStr, nodes, remark, linkWorkflow);
     }
 
     @Override

@@ -19,8 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.security.Role;
-import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.services.workflow.WorkflowException;
 import com.finalist.cmsc.services.workflow.Workflow;
 
@@ -57,6 +56,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
         return wfItem;
      }
 
+    @SuppressWarnings("unused")
     public void finishWriting(Node content, String remark) {
         throw new UnsupportedOperationException("Linked workflows are always finished after linking");
     }
@@ -129,12 +129,31 @@ public class LinkWorkflow extends RepositoryWorkflow {
     }
 
    @Override
-   public boolean isWorkflowElement(Node node) {
+   public boolean isWorkflowElement(Node node, boolean isWorkflowItem) {
+       if (isWorkflowItem) {
+           return TYPE_LINK.equals(node.getStringValue(TYPE_FIELD));
+       }
       return RepositoryUtil.isContentChannel(node);
    }
 
     @Override
     public UserRole getUserRole(Node node) {
-        return RepositoryUtil.getRole(node.getCloud(), node, false);
+        Node channel;
+        if (RepositoryUtil.isContentChannel(node)) {
+            channel = node;
+        }
+        else {
+            channel = getLinkChannel(node);
+        }
+        return RepositoryUtil.getRole(node.getCloud(), channel, false);
+    }
+
+
+    /**
+     * Is the user allowed to publish the channel
+     */
+    public boolean isAllowedToPublish(Node channel) {
+       Node user = SecurityUtil.getUserNode(cloud);
+       return RepositoryUtil.getRole(user, channel).getRole().getId() >= Role.CHIEFEDITOR.getId();
     }
 }
