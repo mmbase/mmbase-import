@@ -173,27 +173,24 @@
                 </mm:compare>
 
                 <mm:import id="guipos" reset="true">0</mm:import>
-                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
-                    <mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
-                    <mm:field name="type">
-                        <mm:compare value="string">
-                            <mm:import externid="$pname" id="pvalue" reset="true" />
-                            <mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
-                        </mm:compare>
-
-                        <mm:compare value="field">
-                            <mm:import externid="$pname" id="pvalue" reset="true" />
-                            <mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
-                        </mm:compare>
-
-                        <mm:compare value="date">
-                            <mm:import externid="birthday_day" />
-                            <mm:import externid="birthday_month" />
-                            <mm:import externid="birthday_year" />
-                            <mm:import id="pvalue" reset="true"><mm:write referid="birthday_day" />-<mm:write referid="birthday_month" />-<mm:write referid="birthday_year" /></mm:import>
-                            <mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
-                        </mm:compare>
-                    </mm:field>
+                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
+                <mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
+                    <c:if test="${field.edit == true}">
+                        <c:choose>
+                            <c:when test="${field.type == 'date'}">
+                                <c:set var="day">${pname}_day</c:set>
+                                <c:set var="month">${pname}_month</c:set>
+                                <c:set var="year">${pname}_year</c:set>
+                                <mm:import id="pvalue" reset="true">${param[day]}-${param[month]}-${param[year]}</mm:import>
+                            </c:when>
+                            <c:otherwise>
+                                <mm:import id="pvalue" reset="true">${param[pname]}</mm:import>
+                            </c:otherwise>
+                        </c:choose>
+                        <mm:import id="fb2" reset="true">
+                            <mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/>
+                        </mm:import>
+                    </c:if>
                  </mm:nodelistfunction>
              </mm:compare>
 
