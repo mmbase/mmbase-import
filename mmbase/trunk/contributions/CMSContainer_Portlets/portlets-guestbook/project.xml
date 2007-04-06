@@ -37,10 +37,10 @@
 		</dependency>
 				
 		<dependency>
-			<groupId>simplecaptcha</groupId>
-			<artifactId>simplecaptcha</artifactId>			
+			<groupId>jcaptcha</groupId>
+			<artifactId>jcaptcha-all</artifactId>			
 			<type>jar</type>
-			<version>20070403</version>
+			<version>1.0-RC3</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>

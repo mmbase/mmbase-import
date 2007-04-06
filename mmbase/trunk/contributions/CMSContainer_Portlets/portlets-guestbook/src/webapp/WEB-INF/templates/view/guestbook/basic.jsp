@@ -46,8 +46,8 @@
 					<fmt:message key="view.validation"/>
 				</td>
 				<td>
-					<img src="<cmsc:staticurl page='/Captcha.jpg'/>"> <br/>
-					<input type="text" name="validationfield">
+					<img src="<cmsc:staticurl page='/jcaptcha'/>"> <br/>
+					<input type="text" name="j_captcha_response">
 				</td>
 			</tr>
 			</c:if>
