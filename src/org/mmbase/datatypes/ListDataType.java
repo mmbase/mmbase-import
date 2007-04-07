@@ -12,16 +12,17 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.LocalizedString;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.20 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: ListDataType.java,v 1.21 2007-04-07 17:11:56 nklasens Exp $
  * @since MMBase-1.8
  */
-public class ListDataType extends AbstractLengthDataType {
+public class ListDataType extends AbstractLengthDataType<List> {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected ItemRestriction itemRestriction = new ItemRestriction(Constants.DATATYPE_UNKNOWN);
@@ -77,7 +78,7 @@ public class ListDataType extends AbstractLengthDataType {
         itemRestriction.setValue(value);
     }
 
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = itemRestriction.validate(errors, castValue, node, field);
         return errors;
@@ -126,7 +127,7 @@ public class ListDataType extends AbstractLengthDataType {
                 Collection col = itemDataType.validate(i.next());
                 try {
                     if (col != VALID) {
-                        if (errors == VALID) errors = new ArrayList();
+                        if (errors == VALID) errors = new ArrayList<LocalizedString>();
                         errors.addAll(col);
                     }
                 } catch (ClassCastException cce) {

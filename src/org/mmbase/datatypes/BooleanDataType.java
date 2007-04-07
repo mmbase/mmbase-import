@@ -13,10 +13,10 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.11 2007-01-30 19:50:04 michiel Exp $
+ * @version $Id: BooleanDataType.java,v 1.12 2007-04-07 17:11:56 nklasens Exp $
  * @since MMBase-1.8
  */
-public class BooleanDataType extends BasicDataType {
+public class BooleanDataType extends BasicDataType<Boolean> {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
@@ -46,10 +46,10 @@ public class BooleanDataType extends BasicDataType {
      * Cast a bit more conservatively, because Casting aggressively casts everything to boolean,
      * which would make nearly every value valid.
      */
-    protected final Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+    protected final Boolean cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
-        if (value instanceof Boolean) return value;
+        if (value instanceof Boolean) return (Boolean) value;
         if (value instanceof String) {
             String s = ((String)value).toLowerCase();
             if ("".equals(value)) return null;
