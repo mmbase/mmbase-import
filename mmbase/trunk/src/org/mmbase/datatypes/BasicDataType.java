@@ -38,10 +38,10 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.70 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.71 2007-04-07 17:11:56 nklasens Exp $
  */
 
-public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable, Descriptor {
+public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
     /**
      * The bundle used by datatype to determine default prompts for error messages when a
      * validation fails.
@@ -52,12 +52,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
     protected TypeRestriction     typeRestriction            = new TypeRestriction();
-    protected EnumerationRestriction enumerationRestriction  = new EnumerationRestriction((LocalizedEntryListFactory) null);
+    protected EnumerationRestriction enumerationRestriction  = new EnumerationRestriction((LocalizedEntryListFactory<C>) null);
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
      */
-    protected DataType origin = null;
+    protected BasicDataType<?> origin = null;
 
     private Object owner;
     private Class<C> classType;
@@ -74,7 +74,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * @param name the name of the data type
 s     */
     public BasicDataType(String name) {
-        this(name, Object.class);
+        this(name, (Class<C>) Object.class);
     }
 
     /**
@@ -82,7 +82,7 @@ s     */
      * @param name the name of the data type
      * @param classType the class of the data type's possible value
      */
-    protected BasicDataType(String name, Class classType) {
+    protected BasicDataType(String name, Class<C> classType) {
         super(name);
         this.classType = classType;
         owner = null;
@@ -121,11 +121,11 @@ s     */
         guiName                = (LocalizedString) in.readObject();
         requiredRestriction    = (RequiredRestriction) in.readObject();
         uniqueRestriction      = (UniqueRestriction) in.readObject();
-        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
+        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory<C>) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                  = in.readObject();
         try {
-            classType          =  (Class) in.readObject();
+            classType          =  (Class<C>) in.readObject();
         } catch (Throwable t) {
             // if some unknown class, simply fall back
             classType         = (Class<C>) Object.class;
@@ -191,7 +191,7 @@ s     */
         if (! origin.getEnumerationFactory().isEmpty()) {
             enumerationRestriction.inherit(origin.enumerationRestriction);
             if (enumerationRestriction.value != null) {
-                LocalizedEntryListFactory fact = enumerationRestriction.getEnumerationFactory();
+                LocalizedEntryListFactory<C> fact = enumerationRestriction.getEnumerationFactory();
                 if (! origin.getTypeAsClass().equals(getTypeAsClass())) {
                     // Reevaluate XML configuration, because it was done with a 'wrong' suggestion for the wrapper class.
                     Element elm = fact.toXml();
@@ -200,7 +200,7 @@ s     */
                     } else {
                         // need to clone the actual factory,
                         // since it will otherwise change the original restrictions.
-                        fact = new LocalizedEntryListFactory();
+                        fact = new LocalizedEntryListFactory<C>();
                         fact.fillFromXml(elm, getTypeAsClass());
                         enumerationRestriction.setValue(fact);
                     }
@@ -215,14 +215,14 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public DataType getOrigin() {
+    public BasicDataType<?> getOrigin() {
         return origin;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Class getTypeAsClass() {
+    public Class<C> getTypeAsClass() {
         return classType;
     }
 
@@ -416,7 +416,7 @@ s     */
     /**
      * @javadoc
      */
-    public DataType rewrite(Object owner) {
+    public DataType<C> rewrite(Object owner) {
         if (this.owner != null) {
             if (this.owner != owner) {
                 throw new IllegalArgumentException("Cannot rewrite this datatype - specified owner is not correct");
@@ -441,19 +441,19 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public final Collection<LocalizedString> validate(Object value) {
+    public final Collection<LocalizedString> validate(C value) {
         return validate(value, null, null);
     }
 
 
-    public final Collection<LocalizedString>  validate(final Object value, final Node node, final Field field) {
+    public final Collection<LocalizedString>  validate(final C value, final Node node, final Field field) {
         return validate(value, node, field, true);
     }
     /**
      * {@inheritDoc}
      */
     private final Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
-        Collection errors = VALID;
+        Collection<LocalizedString> errors = VALID;
         Object castValue;
         try {
             castValue = castToValidate(value, node, field);
@@ -538,7 +538,7 @@ s     */
      */
     public DataType clone(String name) {
         try {
-            BasicDataType clone = (BasicDataType) super.clone(name);
+            BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             // properly inherit from this datatype (this also clones properties and processor arrays)
@@ -582,15 +582,10 @@ s     */
         }
     }
 
-    public int compareTo(Object o) {
-        if (o instanceof DataType) {
-            DataType a = (DataType) o;
-            int compared = getName().compareTo(a.getName());
-            if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
-            return compared;
-        } else {
-            throw new ClassCastException("Object is not of type DataType");
-        }
+    public int compareTo(DataType<C> a) {
+        int compared = getName().compareTo(a.getName());
+        if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
+        return compared;
     }
 
     /**
@@ -600,7 +595,7 @@ s     */
      */
     public boolean equals(Object o) {
         if (o instanceof DataType) {
-            DataType a = (DataType) o;
+            DataType<?> a = (DataType<?>) o;
             return getName().equals(a.getName()) && getTypeAsClass().equals(a.getTypeAsClass());
         }
         return false;
@@ -620,7 +615,7 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getRequiredRestriction() {
+    public DataType.Restriction<Boolean> getRequiredRestriction() {
         return requiredRestriction;
     }
 
@@ -641,7 +636,7 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getUniqueRestriction() {
+    public DataType.Restriction<Boolean> getUniqueRestriction() {
         return uniqueRestriction;
     }
 
@@ -655,16 +650,16 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
-        Object value = null;
+    public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
+        String value = null;
         if (key != null) {
             // cast to the appropriate datatype value.
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
             C keyValue = cast(key, node, field);
             if (keyValue != null) {
-                for (Iterator<Map.Entry<C, Object>> i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
-                    Map.Entry<C, Object> entry = i.next();
+                for (Iterator<Map.Entry<C, String>> i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
+                    Map.Entry<C, String> entry = i.next();
                     if (keyValue.equals(entry.getKey()) ) {
                         value = entry.getValue();
                     }
@@ -677,22 +672,22 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public Iterator<Map.Entry<C, Object>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        Iterator<Map.Entry<C, Object>> i = new RestrictedEnumerationIterator(locale, cloud, node, field);
+    public Iterator<Map.Entry<C, String>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+        Iterator<Map.Entry<C, String>> i = new RestrictedEnumerationIterator(locale, cloud, node, field);
         return i.hasNext() ? i : null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public LocalizedEntryListFactory getEnumerationFactory() {
+    public LocalizedEntryListFactory<C> getEnumerationFactory() {
         return enumerationRestriction.getEnumerationFactory();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction getEnumerationRestriction() {
+    public DataType.Restriction<LocalizedEntryListFactory<C>> getEnumerationRestriction() {
         return enumerationRestriction;
     }
 
@@ -1072,7 +1067,7 @@ s     */
 
     // TYPE
 
-    protected class TypeRestriction extends AbstractRestriction<Class> {
+    protected class TypeRestriction extends AbstractRestriction<Class<?>> {
         private static final long serialVersionUID = 1L;
         TypeRestriction(TypeRestriction source) {
             super(source);
@@ -1102,13 +1097,13 @@ s     */
             value = value != null ? (LocalizedEntryListFactory<C>) value.clone() : null;
         }
 
-        EnumerationRestriction(LocalizedEntryListFactory entries) {
+        EnumerationRestriction(LocalizedEntryListFactory<C> entries) {
             super("enumeration", entries);
         }
 
-        final LocalizedEntryListFactory getEnumerationFactory() {
+        final LocalizedEntryListFactory<C> getEnumerationFactory() {
             if(value == null) {
-                value = new LocalizedEntryListFactory();
+                value = new LocalizedEntryListFactory<C>();
             }
             return value;
         }
@@ -1141,7 +1136,7 @@ s     */
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (value == null || ((LocalizedEntryListFactory) value).isEmpty()) {
+            if (value == null || value.isEmpty()) {
                 return true;
             }
             Cloud cloud = BasicDataType.this.getCloud(node, field);
@@ -1172,7 +1167,7 @@ s     */
             Iterator<Map.Entry<C, String>> it = col.iterator();
             int i = 0;
             while (it.hasNext() && ++i < 10) {
-                Map.Entry ent = it.next();
+                Map.Entry<C, String> ent = it.next();
                 buf.append(Casting.toString(ent));
                 if (it.hasNext()) buf.append(", ");
             }
@@ -1190,14 +1185,14 @@ s     */
      */
     //Also, it 'preCasts' the * keys to the right type.
 
-    protected class RestrictedEnumerationIterator implements Iterator<Map.Entry<C, Object>> {
-        private final Iterator<Map.Entry<C, Object>> baseIterator;
+    protected class RestrictedEnumerationIterator implements Iterator<Map.Entry<C, String>> {
+        private final Iterator<Map.Entry<C, String>> baseIterator;
         private final Node node;
         private final Field field;
-        private Map.Entry<C, Object> next = null;
+        private Map.Entry<C, String> next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
-            Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
+            Collection<Map.Entry<C, String>> col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
             if (log.isDebugEnabled()) {
                 log.debug("Restricted iterator on " + col);
             }
@@ -1210,7 +1205,7 @@ s     */
         protected void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
-                final Map.Entry<C, Object> entry = baseIterator.next();
+                final Map.Entry<C, String> entry = baseIterator.next();
                 C value = entry.getKey();
                 Collection<LocalizedString> validationResult = BasicDataType.this.validate(value, node, field, false);
                 if (validationResult == VALID) {
@@ -1243,11 +1238,11 @@ s     */
             return next != null;
         }
 
-        public Map.Entry<C, Object> next() {
+        public Map.Entry<C, String> next() {
             if (next == null) {
                 throw new NoSuchElementException();
             }
-            Map.Entry<C, Object> n = next;
+            Map.Entry<C, String> n = next;
             determineNext();
             return n;
         }

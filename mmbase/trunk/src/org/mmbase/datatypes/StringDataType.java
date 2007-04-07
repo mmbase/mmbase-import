@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.38 2007-01-05 19:59:57 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.39 2007-04-07 17:11:56 nklasens Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -44,7 +44,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         super(name, String.class);
     }
 
-    protected void inheritProperties(BasicDataType origin) {
+    protected void inheritProperties(BasicDataType<String> origin) {
         super.inheritProperties(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
@@ -145,8 +145,8 @@ public class StringDataType extends ComparableDataType<String> implements Length
         }
     }
 
-    public long getLength(String value) {
-        return value.length();
+    public long getLength(Object value) {
+        return ((String) value).length();
     }
     /**
      * {@inheritDoc}

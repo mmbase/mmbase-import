@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.57 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.58 2007-04-07 17:11:56 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -88,7 +88,7 @@ public class DataTypeDefinition {
                             Class claz = Class.forName(className);
                             log.debug("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (BasicDataType) constructor.newInstance(new Object[] { id });
+                            dt = (BasicDataType<?>) constructor.newInstance(new Object[] { id });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
                                 dt.inherit(baseDataType);
@@ -119,7 +119,7 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    DataTypeDefinition configure(Element dataTypeElement, BasicDataType requestBaseDataType) {
+    DataTypeDefinition configure(Element dataTypeElement, BasicDataType<?> requestBaseDataType) {
 
         String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
@@ -130,7 +130,7 @@ public class DataTypeDefinition {
         }
         if (! base.equals("")) { // also specified, let's see if it is correct
 
-            BasicDataType definedBaseDataType = collector.getDataType(base, true);
+            BasicDataType<?> definedBaseDataType = collector.getDataType(base, true);
             if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
                     if ("".equals(id)) {
@@ -251,13 +251,13 @@ public class DataTypeDefinition {
                 addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
             } else if (type.equals("*")) {
                 for (int i = Fields.TYPE_MINVALUE; i <= Fields.TYPE_MAXVALUE; i++) {
-                    BasicDataType basicDataType = DataTypes.getDataType(i);
+                    DataType<?> basicDataType = DataTypes.getDataType(i);
                     int processingType = Fields.classToType(basicDataType.getTypeAsClass());
                     addProcessor(action, processingType, newProcessor);
                 }
             } else {
                 int processingType = Field.TYPE_UNKNOWN;
-                BasicDataType basicDataType = DataTypes.getDataType(type);
+                DataType<?> basicDataType = DataTypes.getDataType(type);
                 // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
                 if (basicDataType != null) {
                     processingType = Fields.classToType(basicDataType.getTypeAsClass());

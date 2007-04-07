@@ -32,10 +32,10 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.59 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: DataType.java,v 1.60 2007-04-07 17:11:56 nklasens Exp $
  */
 
-public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializable {
+public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -81,14 +81,9 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     public static final Collection<LocalizedString> VALID = Collections.emptyList();
 
     /**
-     * Inherit properties and processors from the passed datatype.
-     */
-    public void inherit(BasicDataType<C> origin);
-
-    /**
      * Return the DataType from which this one inherited, or <code>null</code>
      */
-    public DataType getOrigin();
+    public DataType<?> getOrigin();
 
     /**
      * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
@@ -155,7 +150,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * @javadoc
      */
-    public DataType rewrite(Object owner);
+    public DataType<C> rewrite(Object owner);
 
     /**
      * @javadoc
@@ -200,7 +195,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Returns the 'required' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction getRequiredRestriction();
+    public DataType.Restriction<Boolean> getRequiredRestriction();
 
     /**
      * Sets whether the data type requires a value, which means that it may not remain unfilled.
@@ -224,7 +219,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * Returns the 'unique' restriction, containing the value, error messages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction getUniqueRestriction();
+    public DataType.Restriction<Boolean> getUniqueRestriction();
 
     /**
      * Sets whether the data type requires a value.
@@ -247,7 +242,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *
      */
-    public Iterator<Map.Entry<C, Object>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+    public Iterator<Map.Entry<C, String>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
     /**
      * Returns a (gui) value from a list of retsricted enumerated values, or
@@ -259,7 +254,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
      */
-    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
@@ -270,7 +265,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable, Serializ
     /**
      * The enumeration for this datatype as a {@link Restriction}.
      */
-    public DataType.Restriction getEnumerationRestriction();
+    public DataType.Restriction<LocalizedEntryListFactory<C>> getEnumerationRestriction();
 
     /**
      * @javadoc
