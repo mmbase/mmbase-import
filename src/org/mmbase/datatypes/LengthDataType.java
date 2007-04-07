@@ -16,7 +16,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.6 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: LengthDataType.java,v 1.7 2007-04-07 17:11:56 nklasens Exp $
  * @since MMBase-1.8
  */
 public interface LengthDataType<E> extends DataType<E> {
@@ -27,7 +27,7 @@ public interface LengthDataType<E> extends DataType<E> {
      * this datatype. There does not exist a generic interface for this, so the implementation
      * will cast to the expected type (String, byte[]..)
      */
-    public long getLength(E value);
+    public long getLength(Object value);
 
     /**
      * Returns the minimum length of binary values for this datatype.
