@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.41 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: Jumpers.java,v 1.42 2007-04-07 17:12:54 nklasens Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -285,6 +285,6 @@ class JumpersCache extends Cache<String,String> {
 
     JumpersCache(int size) {
         super(size);
-        putCache(this);
+        this.putCache();
     }
 }
