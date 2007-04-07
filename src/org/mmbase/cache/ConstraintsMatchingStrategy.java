@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.34 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.35 2007-04-07 17:12:53 nklasens Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -64,7 +64,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 public String getName(){      return "ConstraintMatcherCache";}
                 public String getDescription() {return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
         };
-        Cache.putCache(constraintWrapperCache);
+        CacheManager.putCache(constraintWrapperCache);
     }
 
     private static final Map<String, Constructor> constraintMatcherConstructors = new HashMap<String, Constructor>();

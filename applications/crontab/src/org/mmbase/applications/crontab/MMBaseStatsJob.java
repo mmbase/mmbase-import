@@ -9,6 +9,7 @@ package org.mmbase.applications.crontab;
 
 import org.mmbase.util.ThreadPools;
 import org.mmbase.cache.Cache;
+import org.mmbase.cache.CacheManager;
 import org.mmbase.util.logging.*;
 
 /**
@@ -38,7 +39,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.5 2006-08-31 08:23:29 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.6 2007-04-07 17:12:54 nklasens Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -105,7 +106,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
      */
     private Cache getCache() {
         String cacheName = cronEntry.getConfiguration().substring(6);
-        return Cache.getCache(cacheName);
+        return CacheManager.getCache(cacheName);
     }
 
     public final void run() {

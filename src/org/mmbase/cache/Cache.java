@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.45 2007-03-31 17:12:58 nklasens Exp $
+ * @version $Id: Cache.java,v 1.46 2007-04-07 17:12:53 nklasens Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -395,34 +395,6 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
     public Cache putCache() {
         return CacheManager.putCache(this);
-    }
-
-    /**
-     * @see CacheManager#getCache(String)
-     */
-    protected static Cache putCache(Cache cache) {
-        return CacheManager.putCache(cache);
-    }
-
-    /**
-     * @see CacheManager#getCache(String)
-     */
-    public static Cache getCache(String name) {
-        return CacheManager.getCache(name);
-    }
-
-    /**
-     * @see CacheManager#getCaches
-     */
-    public static Set<String> getCaches() {
-        return CacheManager.getCaches();
-    }
-
-    /**
-     * @see CacheManager#getTotalByteSize
-     */
-    public static int getTotalByteSize() {
-        return CacheManager.getTotalByteSize();
     }
 
 }
