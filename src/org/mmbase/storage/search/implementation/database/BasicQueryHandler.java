@@ -12,8 +12,7 @@ import java.sql.*;
 import java.util.*;
 import javax.sql.DataSource;
 
-import org.mmbase.cache.NodeCache;
-import org.mmbase.cache.Cache;
+import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
@@ -34,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.59 2007-03-22 13:57:45 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.60 2007-04-07 17:12:54 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -341,7 +340,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         // Truncate results to provide weak support for maxnumber.
         try {
             NodeCache nodeCache = NodeCache.getCache();
-            Cache<Integer, Integer> typeCache = Cache.getCache("TypeCache");
+            Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
             int builderType = builder.getObjectType();
             Integer oTypeInteger = Integer.valueOf(builderType);
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {

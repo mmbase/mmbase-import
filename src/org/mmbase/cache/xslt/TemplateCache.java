@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.18 2007-02-24 21:57:52 nklasens Exp $
+ * @version $Id: TemplateCache.java,v 1.19 2007-04-07 17:12:54 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache<Object, Templates> {
@@ -72,7 +72,7 @@ public class TemplateCache extends Cache<Object, Templates> {
 
     static {
         cache = new TemplateCache(cacheSize);
-        putCache(cache);
+        cache.putCache();
         templateWatcher.setDelay(10 * 1000); // check every 10 secs if one of the stream source templates was change
         templateWatcher.start();
 

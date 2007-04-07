@@ -23,7 +23,7 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.9 2006-10-11 18:45:57 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.10 2007-04-07 17:12:54 nklasens Exp $
  */
 public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
@@ -37,7 +37,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
     static {
         cache = new FactoryCache(cacheSize);
-        putCache(cache);
+        cache.putCache();
     }
 
     public String getName() {
