@@ -19,7 +19,7 @@ import org.w3c.dom.traversal.NodeIterator;
 
 import org.xml.sax.InputSource;
 
-import org.apache.xpath.XPathAPI;
+import javax.xml.xpath.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.24 2007-02-11 19:45:04 nklasens Exp $
+ * @version $Id: ContextAuthentication.java,v 1.25 2007-04-09 19:09:51 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -78,14 +78,17 @@ public class ContextAuthentication extends Authentication {
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
         if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath );
-        NodeIterator found;
+
+        XPathFactory xf = XPathFactory.newInstance();
+        NodeList found;
         try {
-            found = XPathAPI.selectNodeIterator(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            throw new SecurityException("error executing query: '"+xpath+"' ", te);
+            found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
+        } catch(XPathExpressionException xe) {
+            throw new SecurityException("error executing query: '"+xpath+"' ", xe);
         }
         // we now have a list of login modules.. process them all, and load them...
-        for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
+        for(int i = 0; i < found.getLength(); i++) {
+            Node contains = found.item(i);
             NamedNodeMap nnm = contains.getAttributes();
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();

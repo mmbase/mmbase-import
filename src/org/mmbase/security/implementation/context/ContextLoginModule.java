@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.w3c.dom.*;
 
-import org.apache.xpath.XPathAPI;
+import javax.xml.xpath.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.20 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: ContextLoginModule.java,v 1.21 2007-04-09 19:09:51 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -72,12 +72,10 @@ public abstract class ContextLoginModule {
         }
         Node found;
         try {
-            found = XPathAPI.selectSingleNode(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '" + xpath + "'";
-            log.error(msg);
-            log.error( Logging.stackTrace(te));
-            throw new java.lang.SecurityException(msg);
+            XPath xp = XPathFactory.newInstance().newXPath();
+            found = (Node) xp.evaluate(xpath, document, XPathConstants.NODE);
+        } catch(XPathExpressionException xe) {
+            throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
         }
         if(found == null) {
             log.warn("user '" + username + "' was not found for module: " + name);
@@ -139,14 +137,13 @@ public abstract class ContextLoginModule {
         }
         
         final Element found;
+        XPath xp = XPathFactory.newInstance().newXPath();      
         try {
-            found = (Element) XPathAPI.selectSingleNode(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '" + xpath + "'";
-            log.error(msg);
-            log.error(Logging.stackTrace(te));
-            throw new java.lang.SecurityException(msg);
+            found = (Element) xp.evaluate(xpath, document, XPathConstants.NODE);
+        } catch(XPathExpressionException xe) {
+            throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
         }
+
         if(found == null) {
             if (rank != null) {
                 log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + "was not found for identify type: '" + identifyType  + "'");
