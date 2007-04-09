@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.148 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.149 2007-04-09 19:12:25 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -91,7 +91,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     //private int method = CloudContext.METHOD_UNSET; // how to log on, method can eg be 'http'.
     private Attribute method = Attribute.NULL;
     private Attribute logonatt = Attribute.NULL;
-    private List logon;
+    private List<String> logon;
     private Attribute pwd = Attribute.NULL;
     private Attribute rank = Attribute.NULL;
     private Attribute sessionName = Attribute.NULL;
