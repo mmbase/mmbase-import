@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.13 2006-09-13 15:26:49 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.14 2007-04-09 19:18:41 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -171,7 +171,15 @@ public final class GenericDataSource implements DataSource {
         }
         return newUrl;
     }
-
+    
+    //untested
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface.isAssignableFrom(JDBC.class);
+    }
+    //untested
+    public <T> T unwrap(Class<T> iface) {
+        return (T) jdbc;
+    }
 
 
 }

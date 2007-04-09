@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.53 2007-02-25 18:18:24 nklasens Exp $
+ * @version $Id: JDBC.java,v 1.54 2007-04-09 19:20:44 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -370,7 +370,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
-            for (Iterator f=pool.getPool();f.hasNext();) {
+            for (Iterator f = pool.getPool();f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());

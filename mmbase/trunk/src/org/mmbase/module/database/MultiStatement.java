@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.18 2005-07-15 10:53:22 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.19 2007-04-09 19:20:44 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -46,7 +46,7 @@ public class MultiStatement implements Statement {
      */
     MultiStatement(MultiConnection parent,Statement s) {
       this.parent = parent;
-      this.s=s;
+      this.s = s;
     }
 
     /**
@@ -464,5 +464,26 @@ public class MultiStatement implements Statement {
         return s.getResultSetHoldability();
     }
 
+    public boolean isClosed() throws SQLException {
+        return s == null;// || s.isClosed(); // java 6
+    }
+    public void setPoolable(boolean p) throws SQLException {
+        if (s == null) throw new SQLException("Statement is closed");
+        //s.setPoolable(p);
+    }
+
+    public boolean isPoolable() throws SQLException {
+        if (s == null) throw new SQLException("Statement is closed");
+        //return s.isPoolable(); // java 6
+        return false;
+    }
+
+    public <T> T unwrap(Class<T> iface) {
+        return (T) s;
+    }
+
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface.isAssignableFrom(s.getClass());
+    }
 }
 
