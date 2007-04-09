@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.220 2007-03-28 12:24:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.221 2007-04-09 19:22:38 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1028,7 +1028,15 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName());
+                    log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), cnfe);
+                } catch (NoClassDefFoundError ncdfe) {
+                    MMObjectBuilder p = parser.getParentBuilder();
+                    if(p != null) {
+                        newclass = p.getClass();
+                    } else {
+                        newclass = MMObjectBuilder.class;
+                    }
+                    log.error(ncdfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), ncdfe);
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
@@ -1076,7 +1084,7 @@ public class MMBase extends ProcessorModule {
             }
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
-            log.error(Logging.stackTrace(e));
+            log.error(e.getClass() + " " + e.getMessage(), e);
             return null;
         }
         loading.remove(builderName);
