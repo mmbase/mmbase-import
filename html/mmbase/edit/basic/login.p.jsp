@@ -47,7 +47,7 @@
          if (type.isAssignableFrom(String.class) && param.isRequired()) {         
     %>       
     <tr>
-      <td><%=param.getDescription(locale)%>:</td>
+      <td><%=param.getLocalizedGUIName().get(locale)%>:</td>
       <td>
         <%-- hack for password fields Would need some method using DataType --%>
         <input type="<%= param.getName().equals("password") ? "password" : "text" %>" name="<%=param.getName()%>">
