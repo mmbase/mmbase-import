@@ -18,8 +18,8 @@ import javax.xml.transform.stream.*;
 import javax.xml.transform.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.*;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
+
+import javax.xml.xpath.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.43 2007-03-08 08:51:36 nklasens Exp $
+ * @version $Id: Utils.java,v 1.44 2007-04-09 19:13:31 michiel Exp $
  */
 
 public class Utils {
@@ -301,26 +301,26 @@ public class Utils {
      */
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue, Cloud cloud) {
         try {
-            XObject x = null;
+            XPathFactory xf = XPathFactory.newInstance();
+            String xs = "";
             // select based on cloud locale setting
             if (cloud != null) {
-                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
+                XPath xp = xf.newXPath();
+                xs = xp.evaluate(xpath + "[lang('" + cloud.getLocale().getLanguage() + "')]", node);
             }
-            String xs = (x == null ? "" : x.str());
-            // mm: according to javadoc of xalan 2.5.2,  x cannot be null, so I don't know if it was possible in older xalans, so just to be on the safe side
 
             // if not found or n.a., just grab the first you can find
             if (xs.equals("")) {
-                x = XPathAPI.eval(node, xpath);
+                XPath xp = xf.newXPath();
+                xs = xp.evaluate(xpath, node);
             }
-            xs = (x == null ? "" : x.str());
             if (xs.equals("")) {
                 xs =  defaultvalue;
             }
             return xs;
 
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e) + ", evaluating xpath:" + xpath);
+            log.error(e.getMessage() + ", evaluating xpath:" + xpath, e);
         }
         return defaultvalue;
     }
@@ -474,6 +474,7 @@ public class Utils {
      */
     public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
+        if (xslFile == null) throw new RuntimeException("No xslFile given");
         Source xsl;
         try {
             xsl = new StreamSource(xslFile.openStream());
@@ -641,13 +642,13 @@ public class Utils {
      * @param xpath
      * @return    The found node.
      */
-    public static Node selectSingleNode(Node contextnode, String xpath) {
-        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
+    public static Node selectSingleNode(Node contextNode, String xpath) {
+        if (contextNode == null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
         try {
-            return XPathAPI.selectSingleNode(contextnode, xpath);
+            XPath xp = XPathFactory.newInstance().newXPath();
+            return (Node) xp.evaluate(xpath, contextNode, XPathConstants.NODE);
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            throw new RuntimeException(Logging.stackTrace(e));
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -657,13 +658,13 @@ public class Utils {
      * @param xpath
      * @return    The found nodes in a NodeList.
      */
-    public static NodeList selectNodeList(Node contextnode, String xpath) {
-        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
+    public static NodeList selectNodeList(Node contextNode, String xpath) {
+        if (contextNode == null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
         try {
-            return XPathAPI.selectNodeList(contextnode, xpath);
+            XPath xp = XPathFactory.newInstance().newXPath();
+            return (NodeList) xp.evaluate(xpath, contextNode, XPathConstants.NODESET);
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            throw new RuntimeException(Logging.stackTrace(e));
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -682,7 +683,7 @@ public class Utils {
      * @return    The resulting string
      */
     public static String fillInParams(String text, Map params) {
-        if (params==null) return text;
+        if (params == null) return text;
         Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();

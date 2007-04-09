@@ -17,7 +17,8 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
-import org.apache.xpath.XPathAPI;
+
+import javax.xml.xpath.*;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.*;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.44 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ContextAuthorization.java,v 1.45 2007-04-09 19:09:51 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -85,9 +86,10 @@ public class ContextAuthorization extends Authorization {
             Node found;
             try {
                 log.debug("going to execute the query:" + xpath + " on file : " + configResource);
-                found = XPathAPI.selectSingleNode(document, xpath);
-            } catch(javax.xml.transform.TransformerException te) {
-                throw new SecurityException("error executing query: '" + xpath + "' on file: '" + configResource + "'", te);
+                XPath xp = XPathFactory.newInstance().newXPath();
+                found = (Node) xp.evaluate(xpath, document, XPathConstants.NODE);
+            } catch(XPathExpressionException xe) {
+                throw new SecurityException("error executing query: '" + xpath + "' on file: '" + configResource + "'", xe);
             }
             if (found == null) {
                 throw new SecurityException("Could not find user " + user.getIdentifier() + " in context security config file (" + configResource + ")") ;
@@ -136,8 +138,7 @@ public class ContextAuthorization extends Authorization {
         // check if is a valid context for us..
         Set<String> possible = getPossibleContexts(user, nodeNumber);
         if(!possible.contains(context)) {
-            String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user;
-            throw new SecurityException(msg);
+            throw new SecurityException("could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user);
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
@@ -168,14 +169,15 @@ public class ContextAuthorization extends Authorization {
         allContexts = new TreeSet<String>();
         String xpath = "/contextconfig/contexts/context";
         log.trace("going to execute the query:" + xpath );
-        NodeIterator found;
+        NodeList found;
         try {
-            found = XPathAPI.selectNodeIterator(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            throw new SecurityException("error executing query: '" + xpath  +"' ", te);
+            XPath xp = XPathFactory.newInstance().newXPath();
+            found = (NodeList) xp.evaluate(xpath, document, XPathConstants.NODESET);
+        } catch(XPathExpressionException xe) {
+            throw new SecurityException("error executing query: '" + xpath  +"' ", xe);
         }
-        Node context;
-        for(context = found.nextNode(); context != null; context = found.nextNode()) {
+        for (int i = 0; i < found.getLength(); i++) {
+            Node context = found.item(i);
             NamedNodeMap nnm = context.getAttributes();
             Node contextNameNode = nnm.getNamedItem("name");
             allContexts.add(contextNameNode.getNodeValue());
@@ -212,19 +214,22 @@ public class ContextAuthorization extends Authorization {
         // possible contextes are dependeding of the context they're in...
         String xpath = "/contextconfig/contexts/context[@name='"+currentContext+"']/possible";
         log.debug("going to execute the query:" + xpath );
-        NodeIterator found;
+        NodeList found;
         try {
-            found = XPathAPI.selectNodeIterator(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            throw new SecurityException("error executing query: '"+xpath+"' ", te);
+            XPath xp = XPathFactory.newInstance().newXPath();
+            found = (NodeList) xp.evaluate(xpath, document, XPathConstants.NODESET);
+        } catch(XPathExpressionException xe) {
+            throw new SecurityException("error executing query: '" + xpath + "' ", xe);
         }
-        Node context;
-        for(context = found.nextNode(); context != null; context = found.nextNode()) {
+
+        for(int i = 0; i < found.getLength(); i++) {
+            Node context = found.item(i);
             NamedNodeMap nnm = context.getAttributes();
             Node contextNameNode = nnm.getNamedItem("context");
             list.add(contextNameNode.getNodeValue());
             if (log.isDebugEnabled()) {
-                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+                log.debug("the context: " + contextNameNode.getNodeValue() + " is possible context for node #" + 
+                          nodeNumber + " by user: "  + user);
             }
         }
         synchronized(cache) {
@@ -287,7 +292,8 @@ public class ContextAuthorization extends Authorization {
             if (log.isDebugEnabled()) {
                 log.trace("going to execute the query:" + xpath );
             }
-            found = XPathAPI.selectSingleNode(document, xpath);
+            XPathFactory xf = XPathFactory.newInstance();
+            found = (Node) xf.newXPath().evaluate(xpath, document, XPathConstants.NODE);
 
             if (found == null) { // fall back to default
                 log.warn("context with name :'" + context + "' was not found in the configuration " + configResource );
@@ -298,8 +304,8 @@ public class ContextAuthorization extends Authorization {
                 if (log.isDebugEnabled()) {
                     log.trace("going to execute the query:" + xpath + " on file : " + configResource);
                 }
-
-                found  = XPathAPI.selectSingleNode(document, xpath);
+                
+                found = (Node) xf.newXPath().evaluate(xpath, document, XPathConstants.NODE);
 
                 if (found == null) {
                     throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configResource + ")");
@@ -323,7 +329,7 @@ public class ContextAuthorization extends Authorization {
             if (log.isDebugEnabled()) {
                 log.debug("going to execute the query:" + xpath + " On " + found.toString());
             }
-            NodeList grants = XPathAPI.selectNodeList(found, xpath);
+            NodeList grants =  (NodeList) xf.newXPath().evaluate(xpath, found, XPathConstants.NODESET);
 
             if (log.isDebugEnabled()) {
                 log.debug("Found " + grants.getLength() + " grants on " + operation + " for context " + context) ;
@@ -359,8 +365,8 @@ public class ContextAuthorization extends Authorization {
 
             return allowed;
 
-        } catch(javax.xml.transform.TransformerException te) {
-            throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
+        } catch(XPathExpressionException xe) {
+            throw new java.lang.SecurityException("error executing query: '"+ xpath + "' ", xe);
         }
 
     }
@@ -373,9 +379,10 @@ public class ContextAuthorization extends Authorization {
             log.debug("entering userInGroups(recursive) with username: '"+user+"' without any groups, so user was not found..");
             return false;
         }
-        log.debug("entering userInGroups(recursive) with username: '"+user+"' and look if the user is in the following groups:");
 
         if (log.isDebugEnabled()) {
+            log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");        
+
             Iterator<String> di = groups.iterator();
             while (di.hasNext()) {
                 log.debug("\t -> group : " + di.next());
@@ -387,23 +394,30 @@ public class ContextAuthorization extends Authorization {
             // get the group we are researching....
             // well, since we are already exploring ourselve, no need to do it again....
             done.add(groupname);
-            log.debug("\tresearching group with name : " + groupname);
-
             // do the xpath query...
-            String xpath = "/contextconfig/groups/group[@name='"+groupname+"']/contains";
-            log.debug("\tgoing to execute the query:" + xpath );
-            NodeIterator found;
+            String xpath = "/contextconfig/groups/group[@name='" + groupname + "']/contains";
+
+            if (log.isDebugEnabled()) {
+                log.debug("\tresearching group with name : " + groupname);
+                log.debug("\tgoing to execute the query:" + xpath );
+            }
+
+            NodeList found;
+            XPathFactory xf = XPathFactory.newInstance();
             try {
-                found = XPathAPI.selectNodeIterator(document, xpath);
-            } catch(javax.xml.transform.TransformerException te) {
-                throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
+                found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
+            } catch(XPathExpressionException xe) {
+                throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
             }
             // research the result...
-            for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
+            for(int i = 0; i < found.getLength(); i++) {
+                Node contains = found.item(i);
                 NamedNodeMap nnm = contains.getAttributes();
                 String type = nnm.getNamedItem("type").getNodeValue();
                 String named = nnm.getNamedItem("named").getNodeValue();
-                log.debug("\t<contains type=\""+type+"\" named=\""+named+"\" />");
+                if (log.isDebugEnabled()) {
+                    log.debug("\t<contains type=\"" + type + "\" named=\"" + named + "\" />");
+                }
                 if(type.equals("group")) {
                     // this is a group...
                     // when not already known, add it to our to fetch-list
@@ -483,19 +497,21 @@ public class ContextAuthorization extends Authorization {
         // get all the Operations and add them to the globalAllowedOperations set..
         String xpath = "/contextconfig/global/allowed";
         log.debug("going to execute the query:" + xpath );
-        NodeIterator found;
+        NodeList found;
+        XPathFactory xf = XPathFactory.newInstance();
         try {
-            found = XPathAPI.selectNodeIterator(document, xpath);
-        } catch(javax.xml.transform.TransformerException te) {
-            throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
+            found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
+        } catch(XPathExpressionException xe) {
+            throw new SecurityException("error executing query: '" + xpath + "' ", xe);
         }
-        Node allowed;
-        for(allowed = found.nextNode(); allowed != null; allowed = found.nextNode()) {
+
+        for (int i = 0 ; i < found.getLength(); i++) {
+            Node allowed = found.item(i);
             NamedNodeMap nnm = allowed.getAttributes();
             Node contextNameNode = nnm.getNamedItem("operation");
             Operation operation = Operation.getOperation(contextNameNode.getNodeValue());
             log.info("Everyone may do operation:" + operation);
-            if(globalAllowedOperations.contains(operation)) throw new java.lang.SecurityException("operation:" + operation + " already in allowed list");
+            if(globalAllowedOperations.contains(operation)) throw new SecurityException("operation:" + operation + " already in allowed list");
             globalAllowedOperations.add(operation);
         }
     }
