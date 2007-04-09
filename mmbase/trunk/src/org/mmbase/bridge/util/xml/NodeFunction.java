@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.xpath.XPathAPI;
+import javax.xml.xpath.*;
 
 /**
  * Nodes of the bridge can have `virtual fields', which are in fact
@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.20 2007-01-17 15:02:43 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.21 2007-04-09 19:10:27 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -144,11 +144,12 @@ public  class NodeFunction {
      * @param  node  The number (or alias) of the Node
      * @param  function The function (with arguments).
      * @return The result of the function (as a String)
-     * @throws javax.xml.transform.TransformerException if xpath fails
+     * @throws XPathExpressionException if xpath fails
      */
-    public static String function(org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
+    public static String function(org.w3c.dom.Node node, String function) throws XPathExpressionException {
         log.debug("calling with dom node");
-        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        String number = xpath.evaluate("./field[@name='number']", node);
         return function(number, function);
     }
 
@@ -195,9 +196,10 @@ public  class NodeFunction {
      * @return The result of the function (as a String)
      * @throws javax.xml.transform.TransformerException if xpath fails
      */
-    public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
+    public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws XPathExpressionException {
         log.debug("calling with dom node");
-        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        String number = xpath.evaluate("./field[@name='number']", node);
         return function(cloud, number, function);
     }
 

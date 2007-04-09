@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.160 2007-01-08 12:04:28 michiel Exp $
+$Id: build.xml,v 1.161 2007-04-09 19:14:48 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -292,8 +292,10 @@ builddate=${builddate}
 
 
   <target name="lib.release.renametojar" unless="norenametojar">
+    <!--
     <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
     <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
+    -->
   </target>
 
   <!-- =================================================================== -->
@@ -305,8 +307,10 @@ builddate=${builddate}
     depends="init,init.get,jar,applications">
 
     <mkdir dir="${release.lib.dir}" />
+    <!--
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${serializer.jar}"     todir="${release.lib.dir}" />
+    -->
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
@@ -320,7 +324,9 @@ builddate=${builddate}
 
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
 
+    <!--
     <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
+    -->
 
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
@@ -339,8 +345,11 @@ builddate=${builddate}
     <copy file="${xml-apis.jar}"              todir="${compile.lib.dir}" />
 
     <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
+    <!--
     <copy file="${xalan.jar}"                 todir="${compile.lib.dir}" />
-    <copy file="${serializer.jar}"            todir="${compile.lib.dir}" /> <!-- used when making tld's in taglib -->
+    <copy file="${serializer.jar}"            todir="${compile.lib.dir}" /> 
+    -->
+    <!-- used when making tld's in taglib -->
 
     <copy file="${servlet.jar}"               todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}"            tofile="${compile.lib.dir}/commons-fileupload.jar" />
@@ -677,9 +686,9 @@ Build-compiler: ${build.compiler}
             <!-- Xalan is used only by context security 
                  Would be nice to drop that dependency.
                  In real life always editwizard depend too
-                 -->
             <filename name="xalan.jar" />
             <filename name="serializer.jar" />
+	    -->
           </or>
         </selector>
       </lib>
@@ -990,12 +999,14 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${log4j.jar}"/>
     </antcall>
 
+    <!--
     <echo message="xalan and xerces" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${xalan.loc}"/>
       <param name="destfile" value="${xalan.dest}"/>
       <param name="expandedfile" value="${xalan.jar}"/>
     </antcall>
+    -->
 
     <echo message="fileupload" />
     <antcall target="downloadgz">

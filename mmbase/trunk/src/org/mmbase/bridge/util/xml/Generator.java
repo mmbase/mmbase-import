@@ -24,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.47 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: Generator.java,v 1.48 2007-04-09 19:10:27 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -305,9 +305,9 @@ public class Generator {
         // why do we find it out now, and not before?
         Element object = getDocument().getElementById("" + node.getNumber());
 
-
-        if (object != null)
+        if (object != null) {
             return object;
+        }
 
         // if it is a realtion... first add source and destination attributes..
         // can only happen after the node = node.getCloud().getNode(node.getNumber()); thing!
