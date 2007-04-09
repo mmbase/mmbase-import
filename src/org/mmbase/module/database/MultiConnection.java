@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.45 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: MultiConnection.java,v 1.46 2007-04-09 19:20:44 michiel Exp $
  */
 public class MultiConnection extends ConnectionWrapper {
     // states
@@ -60,7 +60,7 @@ public class MultiConnection extends ConnectionWrapper {
      * @todo in 1.7 this method was made public,document why?
      * @since MMBase-1.7
      */
-    public MultiConnection(MultiPool parent,Connection con) {
+    public MultiConnection(MultiPool parent, Connection con) {
         super(con);
         this.parent = parent;
         state = CON_UNUSED;
