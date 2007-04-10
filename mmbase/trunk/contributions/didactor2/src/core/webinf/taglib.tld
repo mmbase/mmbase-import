@@ -302,6 +302,10 @@
     <name>person</name>
     <path>/WEB-INF/tags/di/core/person.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>component</name>
+    <path>/WEB-INF/tags/di/core/component.tagx</path>
+  </tag-file>
 
 
   <!--
