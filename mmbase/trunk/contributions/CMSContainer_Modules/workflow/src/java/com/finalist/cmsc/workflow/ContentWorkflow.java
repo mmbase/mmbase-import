@@ -37,10 +37,17 @@ public class ContentWorkflow extends RepositoryWorkflow {
     }
     
     public Node createFor(Node content, String remark) {
-        Node wfItem = createFor(TYPE_CONTENT, remark);
-        RelationUtil.createRelation(wfItem, content, WORKFLOWREL);
-        log.debug("Workflow " + wfItem.getNumber() + " created for content " + content.getNumber());
-        return wfItem;
+       synchronized (content) {
+          if(hasWorkflow(content)) {
+             return (Node) getWorkflows(content).get(0);
+          }
+          else {
+              Node wfItem = createFor(TYPE_CONTENT, remark);
+              RelationUtil.createRelation(wfItem, content, WORKFLOWREL);
+              log.debug("Workflow " + wfItem.getNumber() + " created for content " + content.getNumber());
+              return wfItem;
+          }
+       }
     }
 
     public void finishWriting(Node node, String remark) {
