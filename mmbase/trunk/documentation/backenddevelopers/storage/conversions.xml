@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Storage Conversions</title>
 
-    <date>2005-05-24</date>
+    <date>2007-04-10</date>
 
     <edition>$Id: conversions.xml,v 1.2 2005/06/10 11:32:43 michiel Exp
     $</edition>
@@ -43,8 +43,20 @@
   <section id="blobstofile">
     <title>Converting blobs to files</title>
 
-    <para>Use the tool in mmbase/admin/tools. TODO: more info, details,
-    how-to..</para>
+    <para>In the MMBase admin pages is a tool to start the conversion. You
+    will need to configure your database first. Change the option
+    'database-supports-blob' to true:</para>
+
+    <programlisting>  &lt;!-- Use Blobs  --&gt;
+  &lt;option name="database-supports-blob" value="true" /&gt;
+</programlisting>
+
+    <para>Followed by these two lines of which the last line states the
+    absolute path to which the blobs will be written.</para>
+
+    <programlisting>  &lt;option name="database-stores-binary-as-file" value="true" /&gt;
+  &lt;attribute name="database-binary-file-path"&gt;/home/http/default/blob&lt;/attribute&gt;
+</programlisting>
   </section>
 
   <section id="filestoblobs">
