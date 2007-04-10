@@ -1,4 +1,4 @@
-package com.finalist.cmsc.basicmodel.taglib;
+package com.finalist.cmsc.taglib.image;
 
 import java.util.ArrayList;
 
