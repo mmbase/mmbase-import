@@ -10,7 +10,7 @@
 	<uri>http://finalist.com/csmc-basicmodel</uri>
 	<tag>
 		<name>image</name>
-		<tag-class>com.finalist.cmsc.basicmodel.taglib.ImageTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.image.ImageTag</tag-class>
 		<tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
 		<body-content>scriptless</body-content>
 		<attribute>
@@ -118,7 +118,7 @@
 	<tag>
 		<description>This tag creates a list of related images with an imagerel relation.</description>
 		<name>linkedimages</name>
-		<tag-class>com.finalist.cmsc.basicmodel.taglib.LinkedImagesTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.image.LinkedImagesTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>Images have to match this position in the imagerel</description>
@@ -180,7 +180,7 @@
 	<tag>
 		<description>This tag creates a list of related content elements.</description>
 		<name>linkedcontent</name>
-		<tag-class>com.finalist.cmsc.basicmodel.taglib.LinkedContentTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.LinkedContentTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>A specific formatter implementation</description>
@@ -219,7 +219,7 @@
 	<tag>
 		<description>Tag that puts text into an image according to the given parameters.</description>
 		<name>fontimage</name>
-		<tag-class>com.finalist.cmsc.basicmodel.taglib.FontImageTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.image.FontImageTag</tag-class>
 		<tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
 		<body-content>scriptless</body-content>	
 		<attribute>
@@ -239,7 +239,7 @@
 	<tag>
 		<description>The text subtags for the tag above.</description>
 		<name>imagetext</name>
-		<tag-class>com.finalist.cmsc.basicmodel.taglib.ImageTextTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.image.ImageTextTag</tag-class>
 		<body-content>empty</body-content>	
 		<attribute>
 			<description>The font that is parsed in the image.</description>

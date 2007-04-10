@@ -1,4 +1,4 @@
-package com.finalist.cmsc.basicmodel.taglib;
+package com.finalist.cmsc.taglib;
 
 import net.sf.mmapps.commons.bridge.NodeFieldComparator;
 import net.sf.mmapps.commons.util.StringUtil;
