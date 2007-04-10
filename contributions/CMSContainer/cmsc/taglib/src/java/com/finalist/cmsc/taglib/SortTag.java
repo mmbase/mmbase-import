@@ -51,7 +51,7 @@ public class SortTag extends SimpleTagSupport {
                     comparator = new NodeFieldComparator(orderby, acending);
                 }
                 else {
-                    comparator = new PropetryComparator(orderby, acending);
+                    comparator = new PropertyComparator(orderby, acending);
                 }
                 Collections.sort(list, comparator);
             }
@@ -81,12 +81,12 @@ public class SortTag extends SimpleTagSupport {
         this.direction = direction;
     }
     
-    class PropetryComparator implements Comparator<Object>{
+    class PropertyComparator implements Comparator<Object>{
         
         private String propertyName;
         protected boolean ascending = true;
 
-        public PropetryComparator(String property, boolean ascending) {
+        public PropertyComparator(String property, boolean ascending) {
             this.propertyName = property;
             this.ascending = ascending;
         }
