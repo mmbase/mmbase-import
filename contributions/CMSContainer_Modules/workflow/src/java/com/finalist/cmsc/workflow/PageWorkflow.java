@@ -49,10 +49,17 @@ public class PageWorkflow extends WorkflowManager {
 
     
     public Node createFor(Node page, String remark) {
-        Node wfItem = createFor(TYPE_PAGE, remark);
-        RelationUtil.createRelation(wfItem, page, WORKFLOWREL);
-        log.debug("Workflow " + wfItem.getNumber() + " created for page " + page.getNumber());
-        return wfItem;
+       synchronized (page) {
+          if(hasWorkflow(page)) {
+             return (Node) getWorkflows(page).get(0);
+          }
+          else {
+             Node wfItem = createFor(TYPE_PAGE, remark);
+             RelationUtil.createRelation(wfItem, page, WORKFLOWREL);
+             log.debug("Workflow " + wfItem.getNumber() + " created for page " + page.getNumber());
+             return wfItem;
+          }
+       }
     }
 
 
