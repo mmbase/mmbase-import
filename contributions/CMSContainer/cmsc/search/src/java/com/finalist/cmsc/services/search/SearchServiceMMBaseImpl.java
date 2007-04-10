@@ -129,6 +129,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 String prioKey = pageInfo.getLayout() + "." + pageInfo.getWindowName();
                 int infoPrio = getPriority(prioKey);
                 if (infoPrio > prio) {
+                    prio = infoPrio;
                     result = pageInfo;
                 }
             }
