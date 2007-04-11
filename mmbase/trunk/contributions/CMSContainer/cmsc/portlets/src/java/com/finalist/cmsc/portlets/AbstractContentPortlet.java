@@ -228,84 +228,14 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
 		}
 	}
 
-    /** Processes reactions submitted by reactionform
-     * TODO move this logic to a better place. 
-     * */
     @Override
     public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-        final String titleField = "title";
-        final String nameField = "name";
-        final String emailField = "email";
-        final String bodyField = "body";
-        Map<String, String> errorMessages = new Hashtable<String, String>();
-        String action = request.getParameter(ACTION_PARAM);
-        getLogger().debug("processView for action: " + action);
-
-        if (action == null) {
-            response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
-        } else if (action.equals("react")) {
-            PortletPreferences preferences = request.getPreferences();
-            String contentelement = preferences.getValue(CONTENTELEMENT, null);
-            if (contentelement == null) {
-                contentelement = request.getParameter("elementId");
-            }
-            getLogger().debug("contentelement: " + contentelement);
-            
-            if (contentelement != null) {
-                if (StringUtils.isBlank(request.getParameter(titleField))) {
-                    errorMessages.put(titleField, "reactionform.field.title.error.empty");
-                }
-                if (StringUtils.isBlank(request.getParameter(nameField))) {
-                    errorMessages.put(nameField, "reactionform.field.name.error.empty");
-                }
-                if (StringUtils.isBlank(request.getParameter(bodyField))) {
-                    errorMessages.put(bodyField, "reactionform.field.body.error.empty");
-                }
-                
-                if (errorMessages.size() > 0) {            
-                    getLogger().debug("has errors: " + errorMessages);
-                    request.getPortletSession().setAttribute(ERROR_MESSSAGES, errorMessages);
-                    Map<String, String> originalValues = new Hashtable<String, String>();
-                    originalValues.put(titleField, request.getParameter(titleField));
-                    originalValues.put(nameField, request.getParameter(nameField));
-                    originalValues.put(emailField, request.getParameter(emailField));
-                    originalValues.put(bodyField, request.getParameter(bodyField));
-                    request.getPortletSession().setAttribute(ORIGINAL_VALUES, originalValues);
-                    request.getPortletSession().setAttribute(ELEMENT_ID, request.getParameter(ELEMENT_ID));
-                } else {
-                    getLogger().debug("storing message...");
-
-                    CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-                    Cloud cloud = cloudProvider.getCloud();
-                    Node element = cloud.getNode(contentelement);
-                    
-                    NodeManager messageMgr = cloud.getNodeManager("reaction");
-                    Node message = messageMgr.createNode();
-                    message.setStringValue(titleField, request.getParameter(titleField));
-                    message.setStringValue(nameField, request.getParameter(nameField));
-                    if (!StringUtil.isEmpty(request.getParameter(emailField))) {
-                        message.setStringValue(emailField, request.getParameter(emailField));
-                    }
-                    String body = request.getParameter(bodyField);
-                    if (body.length() > MAX_BODY_LENGTH) {
-                        body = body.substring(0, MAX_BODY_LENGTH);
-                    }
-                    message.setStringValue(bodyField, body);
-                    getLogger().debug("storing message: " + message);
-                    message.commit();
-                    
-                    Relation posrel = element.createRelation(message, cloud.getRelationManager("posrel"));
-                    getLogger().debug("storing posrel: " + posrel);
-                    posrel.commit();
-                }
-            } else {
-                getLogger().error("No contentelement");
-            }
-            // switch to View mode
-            response.setPortletMode(PortletMode.VIEW);
-        } else {
-            getLogger().error("Unknown action: '" + action + "'");
-        }
+       /*
+        * Freek: I moved all the reaction stuff to the tags in the reaciton module. (see there)
+        * 
+        * I am not entirely sure if the line below is still required... but think so.
+        */
+         response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
     }
 
     @Override
