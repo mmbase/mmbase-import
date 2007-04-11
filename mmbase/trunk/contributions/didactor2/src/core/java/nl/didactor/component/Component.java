@@ -11,6 +11,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.ResourceLoader;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import org.apache.xpath.XPathAPI; //slow but useful
@@ -69,7 +70,9 @@ public abstract class Component {
             comps[cnt] = (Component)e.next();
             cnt++;
         }
-        log.debug("Returning " + comps.length + " components");
+        if (log.isDebugEnabled()) {
+            log.debug("Returning " + comps.length + " components");
+        }
         return comps;
     }
 
@@ -93,15 +96,12 @@ public abstract class Component {
      * installation is restarted.
      */
     public void init() {
-        String configfile = org.mmbase.module.core.MMBaseContext.getConfigPath() +
-                            File.separator + "components" +
-                            File.separator + getName() + ".xml";
-        log.debug("Reading component configuration from file '" + configfile + "'");
-        if ((new File(configfile)).exists()) {
+        String configFile = "components/" + getName() + ".xml";
+        log.debug("Reading component configuration from file '" + configFile + "'");
+        try {
+        if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
             try {
-                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-                Document doc = docBuilder.parse(configfile);
+                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile);
                 Node rootNode = doc.getDocumentElement();
                 Node componentNode = XPathAPI.selectSingleNode(rootNode, "/component");
                 this.templatepath = getAttribute(componentNode, "templatepath");
@@ -184,6 +184,9 @@ public abstract class Component {
             } catch (Exception e) {
                 log.error(e);
             }
+        } 
+        } catch (IOException ioe) {
+            log.error(ioe);
         }
     }
 
@@ -286,7 +289,7 @@ public abstract class Component {
         }
         List scope = setting.getScope();
         Object retval = null;
-
+        
         for (int i = 0; i < scope.size(); i++) { // 
             String scopeName    = (String)scope.get(i);
             String scopeReferId = (String)scopesReferid.get(scopeName);
@@ -323,7 +326,7 @@ public abstract class Component {
      * default value is not returned for objects other than the component itself, because it would be
      * impossible to distinguish between a 'real' value and a default value later on.
      * @param settingname The name of the setting in MMBase.
-     * @param objectid The number of the node representing this object to get the component setting value for
+     * @param id The number of the node representing this object to get the component setting value for
      */
     public Object getObjectSetting(String settingName, int id, Cloud cloud) {
         org.mmbase.bridge.NodeList settingNodes = null;
@@ -344,7 +347,7 @@ public abstract class Component {
                 return null;
             }
             if (settingrel.size() > 1) {
-                log.warn("Too many relations from " + id + " to " + node.getNumber() +". Picking first one!");
+                log.warn("Too many relations from " + id + " to " + node.getNumber() +" (" + settingrel.size() + "). Picking first one!");
             }
             org.mmbase.bridge.Node settingRelNode = settingrel.getNode(0);
             settingNodes = settingRelNode.getRelatedNodes("settings");
@@ -386,6 +389,7 @@ public abstract class Component {
                 throw new RuntimeException("Value '" + newValue + "' is invalid for setting '" + settingName + "' of type Integer");
             }
         } else if (setting.getType() == Setting.TYPE_BOOLEAN || setting.getType() == Setting.TYPE_DOMAIN) {
+            newValue = "" + setting.cast(newValue);
             String[] domain = setting.getDomain();
             boolean valid = false;
             for (int i=0; i<domain.length; i++) {
@@ -395,7 +399,7 @@ public abstract class Component {
                 }
             }
             if (!valid) {
-                throw new RuntimeException("Value '" + newValue + "' is invalid for setting '" + settingName + ", not inside domain");
+                throw new RuntimeException("Value '" + newValue + "' is invalid for setting '" + settingName + "', not inside domain");
             }
         }
 
@@ -419,7 +423,7 @@ public abstract class Component {
 
         org.mmbase.bridge.NodeList settingNodes = baseNode.getRelatedNodes("settings");
 
-        for (int i=0; i<settingNodes.size(); i++) {
+        for (int i =0; i < settingNodes.size(); i++) {
             org.mmbase.bridge.Node settingNode = settingNodes.getNode(i);
             if (settingNode.getStringValue("name").equals(settingName)) {
                 settingNode.setValue("value", newValue);
@@ -504,7 +508,7 @@ public abstract class Component {
      * @todo should return List
      */
     public List getSettings(String scope) {
-        List result = new Vector();
+        List result = new ArrayList();
         Iterator i = settings.values().iterator();
         while (i.hasNext()) {
             Setting s = (Setting)i.next();
@@ -516,24 +520,27 @@ public abstract class Component {
     }
 
     /**
-     * @todo should return List
+     * @javadoc
      */
     public List getScopes() {
         return scopes;
     }
 
+    /**
+     * @javadoc
+     */
     public class Setting {
         public static final int TYPE_INTEGER = 1;
         public static final int TYPE_BOOLEAN = 2;
         public static final int TYPE_DOMAIN = 3;
         public static final int TYPE_STRING = 4;
 
-        private String name;
-        private int type;
+        private final String name;
+        private final int type;
         private String[] domain;
-        private Object defaultvalue;
-        private List scope;
-        private String prompt;
+        private Object defaultValue;
+        private final List scope = new ArrayList();
+        private final String prompt;
 
         public Setting(String name, String type, String prompt) {
             this.name = name;
@@ -547,30 +554,29 @@ public abstract class Component {
             } else {
                 this.type = TYPE_STRING;
             }
-            this.scope = new Vector();
             this.prompt = prompt;
         }
 
-        public void setDefault(String defaultvalue) {
-            this.defaultvalue = cast(defaultvalue);
+        public void setDefault(String defaultValue) {
+            this.defaultValue = cast(defaultValue);
         }
 
         public Object cast(String value) {
             switch (this.type) {
-                case TYPE_BOOLEAN:
-                    if ("true".equals(value)) {
-                        return Boolean.TRUE;
-                    } else if ("false".equals(value)) {
-                        return Boolean.FALSE;
-                    } else {
-                        log.warn("Warning: boolean value '" + value + "' is not one of {true,false}, defaulting to false");
-                        return Boolean.FALSE;
-                    }
-                case TYPE_INTEGER:
-                    return new Integer(value);
-                case TYPE_STRING:
-                case TYPE_DOMAIN:
-                    return value;
+            case TYPE_BOOLEAN:
+                if ("true".equals(value) || "on".equals(value)) {
+                    return Boolean.TRUE;
+                } else if ("false".equals(value)) {
+                    return Boolean.FALSE;
+                } else {
+                    log.warn("Warning: boolean value '" + value + "' is not one of {true,false}, defaulting to false");
+                    return Boolean.FALSE;
+                }
+            case TYPE_INTEGER:
+                return new Integer(value);
+            case TYPE_STRING:
+            case TYPE_DOMAIN:
+                return value;
             }
             return null;
         }
@@ -588,7 +594,7 @@ public abstract class Component {
         }
 
         public Object getDefault() {
-            return defaultvalue;
+            return defaultValue;
         }
 
         public int getType() {
@@ -605,6 +611,10 @@ public abstract class Component {
 
         public String[] getDomain() {
             return domain;
+        }
+
+        public String toString() {
+            return name + "  :" + defaultValue;
         }
     }
 }
