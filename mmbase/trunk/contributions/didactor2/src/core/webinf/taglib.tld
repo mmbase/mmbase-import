@@ -306,6 +306,22 @@
     <name>component</name>
     <path>/WEB-INF/tags/di/core/component.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>settings</name>
+    <path>/WEB-INF/tags/di/core/settings.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>settingvalue</name>
+    <path>/WEB-INF/tags/di/core/settingvalue.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>setsettingvalue</name>
+    <path>/WEB-INF/tags/di/core/setsettingvalue.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>hascomponent</name>
+    <path>/WEB-INF/tags/di/core/hascomponent.tagx</path>
+  </tag-file>
 
 
   <!--
