@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.36 2007-01-17 19:58:15 michiel Exp $
+ * @version $Id: Authentication.java,v 1.37 2007-04-11 09:01:30 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -33,6 +33,7 @@ public abstract class Authentication extends Configurable implements Authenticat
         try {
             PARAMETER_USERNAME.getLocalizedDescription().setBundle(STRINGS);
             PARAMETER_PASSWORD.getLocalizedDescription().setBundle(STRINGS);
+            ((org.mmbase.datatypes.StringDataType) PARAMETER_PASSWORD.getDataType()).setPassword(true);
             PARAMETER_USERNAMES.getLocalizedDescription().setBundle(STRINGS);
             PARAMETER_RANK.getLocalizedDescription().setBundle(STRINGS);
             PARAMETER_SESSIONNAME.getLocalizedDescription().setBundle(STRINGS);
