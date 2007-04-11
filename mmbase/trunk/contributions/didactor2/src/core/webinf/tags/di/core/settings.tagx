@@ -38,13 +38,14 @@
 		<mm:size write="false">
 		  <c:if test="${_ eq 0}">
 		    <mm:createrelation role="settingrel" source="_node" destination="_component.number" />
-		    <mm:import id="HASSETTINGS">yes</mm:import>
 		    <mm:import id="JUSTCHECKED" />
-		  </c:if>
+		  </c:if>		  
+		  <mm:import id="HASSETTINGS">yes</mm:import>
 		</mm:size>
 	      </mm:present>
 	      <mm:notpresent referid="chk">	    
 		<mm:listrelations>
+		  <mm:log>Deleting relations</mm:log>
 		  <mm:deletenode deleterelations="true" />
 		</mm:listrelations>
 	      </mm:notpresent>
@@ -66,21 +67,23 @@
     
       <jsp:doBody />
     </span>	    
-    
-    <c:if test="${HASSETTINGS eq 'yes' or scope eq 'component'}">
+    <c:if test="${(HASSETTINGS eq 'yes') or (scope eq 'component')}">
       <c:forEach items="${_component.settings}" var="setting">
 	<mm:context>
 	  <c:if test="${mm:contains(setting.value.scope, scope)}">
 	    <p class="setting ${scope}" id="setting_${scope}_${number}">
 	      ${setting.value.name}: 
-	      <mm:notpresent referid="JUSTCHECKED">
-		<mm:import id="post" externid="i_${_component.number}_${number}_${setting.value.name}" />
-		<di:settingvalue  number="${empty number ? _component.number : number}" name="${setting.value.name}" write="false">
-		  <c:if test="${_ ne post}">
-		    <di:setsettingvalue number="${empty number ? _component.number : number}" name="${setting.value.name}" value="${post}" />
-		  </c:if>
-		</di:settingvalue>
-	      </mm:notpresent>
+	      <mm:present referid="posted">
+		<mm:notpresent referid="JUSTCHECKED">
+		  <mm:import id="post" externid="i_${_component.number}_${number}_${setting.value.name}" />
+		  <di:settingvalue  number="${empty number ? _component.number : number}" name="${setting.value.name}" write="false">
+		    <c:if test="${_ ne post}">
+		      <di:setsettingvalue number="${empty number ? _component.number : number}" name="${setting.value.name}" value="${post}" />
+		    </c:if>
+		  </di:settingvalue>
+		</mm:notpresent>
+	      </mm:present>
+	      
 	      <di:settingvalue  number="${empty number ? _component.number : number}" name="${setting.value.name}">
 		<c:choose>
 		  <c:when test="${setting.value.type eq 1}">
