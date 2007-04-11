@@ -6,16 +6,22 @@ import java.text.*;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
+
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.module.core.*;
+
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import nl.didactor.component.Component;
 import nl.didactor.security.*;
 import nl.didactor.util.ClassRoom;
+
 /**
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: HasroleTag.java,v 1.6 2007-04-11 14:56:57 michiel Exp $
  */
 public class HasroleTag extends CloudReferrerTag {
     private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
@@ -108,18 +114,25 @@ public class HasroleTag extends CloudReferrerTag {
             throw new JspTagException( "No role defined");
         }
 
-
-        try {
-
-            if (ClassRoom.hasRole( usernode, role, educationno, getCloudVar())) {
-                return inv?SKIP_BODY:EVAL_BODY;
-            } else {
-                return inv?EVAL_BODY:SKIP_BODY;
+        Iterator roles = StringSplitter.split(role).iterator();
+        Cloud cloud = getCloudVar();
+        boolean hasRole = false;
+        while (roles.hasNext()) {
+            String r = (String) roles.next();
+            try {
+                if (ClassRoom.hasRole( usernode, r, educationno, getCloudVar())) {
+                    hasRole = true; 
+                    break;
+                } 
+            } catch (JspTagException e) {
+                log.error("hasrole: " + e.getMessage(), e);
             }
-        } catch (JspTagException e) {
-            //             throw new JspTagException(e.getMessage());
-            log.error("hasrole: " + e.getMessage());
-            return SKIP_BODY;
+        }
+
+        if (hasRole) {
+            return inv ? SKIP_BODY : EVAL_BODY;
+        } else {
+            return inv ? EVAL_BODY : SKIP_BODY;
         }
     }
 
