@@ -148,12 +148,4 @@ public class LinkWorkflow extends RepositoryWorkflow {
         return RepositoryUtil.getRole(node.getCloud(), channel, false);
     }
 
-
-    /**
-     * Is the user allowed to publish the channel
-     */
-    public boolean isAllowedToPublish(Node channel) {
-       Node user = SecurityUtil.getUserNode(cloud);
-       return RepositoryUtil.getRole(user, channel).getRole().getId() >= Role.CHIEFEDITOR.getId();
-    }
 }
