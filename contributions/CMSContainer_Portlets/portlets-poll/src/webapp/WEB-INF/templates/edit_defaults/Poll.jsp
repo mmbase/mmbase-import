@@ -18,7 +18,7 @@ function selectPage(page, path, positions) {
 	}
 }
 </script>
-<form name="<portlet:namespace />form" method="post"
+<form name="<portlet:namespace />form" method="post" target="_parent"
    action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 <table class="editcontent">
    <tr>
