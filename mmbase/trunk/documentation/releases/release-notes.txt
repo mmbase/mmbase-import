@@ -125,7 +125,10 @@ Java versions
 Java compilers
 -------------
 
-- Sun's javac 1.5
+- Sun's javac 1.5.0_08
+  Note that MMBase 1.9 does not properly compile under prior versions of javac, due to
+  an error in the compiler regarding the casting of generic types.
+  See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
   
 ------------------
 Servlet engines /
