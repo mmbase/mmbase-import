@@ -123,15 +123,20 @@ String attachmentID = request.getParameter("at");
 	</td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
 
+
+
 <!-- link to weblog (pagina relation) -->
 <p>
 <mm:related path="readmore,pagina" fields="pagina.number,pagina.titel">
 					<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">  
-					<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>"><img src="media/arrowright_fun.gif" alt="" border="0" /></a>
+					<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><img src="media/arrowright_fun.gif" alt="" border="0" /></a>
 					&nbsp;<b><mm:field name="pagina.titel" /></b>
 					</mm:field>
 </mm:related>
-</p>					
+</p>				
+<!-- -->	
+
+
          <jsp:include page="../includes/navright.jsp">
             <jsp:param name="s" value="<%= paginaID %>" />
             <jsp:param name="r" value="<%= rubriekID %>" />

@@ -9,7 +9,6 @@ String paginaID = request.getParameter("s");
 if(!lnRubriekID.equals(rubriekID)) { 
    PaginaHelper pHelper = new PaginaHelper(cloud);
    %>
-   <br/>
    <mm:list nodes="<%= rubriekID %>" path="rubriek,posrel,pagina" fields="pagina.number" orderby="posrel.pos">
       <mm:size jspvar="size" vartype="Integer">
       <% 
@@ -18,19 +17,25 @@ if(!lnRubriekID.equals(rubriekID)) {
          <mm:node element="pagina">
             <mm:field name="number" jspvar="pagina_number" vartype="String" write="false">      
                <mm:first>
+                  <mm:field name="titel" />
                   <ul>
                </mm:first>
                <mm:first inverse="true">
-               <mm:last inverse="true">
                <% 
-      		  if(!paginaID.equals(pagina_number)) { 
+      			if(!paginaID.equals(pagina_number)) { 
       	         %><li><a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>"><mm:field name="titel" /></a></li><%
       	      } else {
-      	         %><mm:field name="titel" /><%
+      	         %><li style="list-style-type:none;"><mm:field name="titel" /></li><%
       	      }
       	      %>
-      			</mm:last>
-               </mm:first> 
+      	      <%-- 
+       		   <mm:related path="posrel,panno,posrel,images" fields="images.alt_tekst" max="1">
+      			   <mm:node element="images">
+      		   	   <a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>"><img src="<mm:image template="s(170!x45!)"/>" alt="<mm:field name="alt_tekst" />" border="0"></a>
+      			   </mm:node>
+      			</mm:related>
+      			--%>
+               </mm:first>
                <mm:last></ul></mm:last>
             </mm:field>
       	</mm:node>
