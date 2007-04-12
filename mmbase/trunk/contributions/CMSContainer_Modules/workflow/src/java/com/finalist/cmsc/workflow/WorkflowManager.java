@@ -109,7 +109,7 @@ public abstract class WorkflowManager {
     * @param node Node to check for 
     * @return <code>true</code> when allowed
     */
-   public boolean isAllowedToPublish(Node node) {
+   public final boolean isAllowedToPublish(Node node) {
       return getUserRole(node).getRole().getId() >= Role.CHIEFEDITOR.getId();
    }
    
