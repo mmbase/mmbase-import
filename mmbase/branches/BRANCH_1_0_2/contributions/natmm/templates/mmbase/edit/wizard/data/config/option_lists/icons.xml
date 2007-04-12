@@ -9,7 +9,9 @@
    <option id="horeca">horeca</option>
    <option id="infocen">infocentrum</option>
    <option id="kaart">kaart</option>
+   <option id="ligging">ligging</option>      
    <option id="opplig">opplig</option>
+   <option id="oppervlakte">oppervlakte</option>
    <option id="parkeren">parkeren</option>
    <option id="parkhan">parkeren gehandicapten</option>
    <option id="ruiter">ruiter</option>
