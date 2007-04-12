@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.19 2007-02-01 15:40:27 mmeeuwissen Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.20 2007-04-12 13:23:06 michiel Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -486,8 +486,11 @@ public class ExtendedJMSendMail extends SendMail {
                 Node errorNode = n.getNodeManager().createNode();
                 errorNode.setStringValue("to", n.getStringValue("from"));
                 errorNode.setStringValue("from", n.getStringValue("from"));
-                errorNode.setStringValue("subject", "****");
+                errorNode.setStringValue("subject", "**** -> " +  n.getStringValue("to") + " (" + n.getStringValue("subject") + ")");
                 errorNode.setIntValue("type", 1);
+                if (n.getNodeManager().hasField("mimetype")) {
+                    errorNode.setValue("mimetype", "text/plain");
+                }
                 errorNode.setStringValue("body", errors.toString());
                 errorNode.commit();
                 log.service("Sent node " + errorNode.getNumber());
