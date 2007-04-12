@@ -187,7 +187,7 @@
   </mm:present>
   
   <%-- no node yet, if input, create one --%>
-  <mm:present referid="emailNode" inverse="true">
+  <mm:notpresent referid="emailNode">
     <mm:import id="testforinput"><mm:write referid="to"/><mm:write referid="cc"/><mm:write referid="body"/><mm:write referid="subject"/></mm:import>
     <mm:isnotempty referid="testforinput">
       <mm:createnode type="emails" id="emailNode"/>
@@ -196,7 +196,7 @@
       </mm:node>
       <mm:createrelation role="related" source="draftMailboxNode" destination="emailNode"/>
     </mm:isnotempty>
-  </mm:present>
+  </mm:notpresent>
   
   <mm:node number="$user">
     <mm:import id="from">"<mm:field name="firstname"/> <mm:field name="lastname"/>" <<mm:field name="username"/><mm:write referid="emaildomain" />></mm:import>
@@ -241,17 +241,15 @@
       </c:if>
     </mm:compare> 
     
-    <mm:present referid="emailNode">
-      <mm:import externid="delete_attachments" vartype="List"/>
-      <mm:present referid="delete_attachments">
-	<mm:node number="$emailNode">
-	  <mm:relatednodes type="attachments" constraints="attachments.number IN ( $delete_attachments )">
-	    <mm:deletenode deleterelations="true"/>
-	  </mm:relatednodes>
-	</mm:node>
-      </mm:present>
+    <mm:import externid="delete_attachments" vartype="List"/>
+    <mm:present referid="delete_attachments">
+      <mm:node number="$emailNode">
+	<mm:relatednodes type="attachments" constraints="attachments.number IN ( $delete_attachments )">
+	  <mm:deletenode deleterelations="true"/>
+	</mm:relatednodes>
+      </mm:node>
     </mm:present>
-    
+  
     <mm:import externid="send_action"/> <%-- send button pressed --%>
     <mm:present referid="send_action">
       <mm:compare referid="emailok" value="1">
@@ -263,18 +261,18 @@
 	    <mm:deletenode deleterelations="false"/>
 	  </mm:node>
 	</mm:list>
-	<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" max="1">
-	  <mm:remove referid="mailbox"/>
-	  <mm:field id="mailbox" name="mailboxes.number" write="false"/>
-	</mm:list>
-	
-	<mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
-	
-	<mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no">
-	  <mm:param name="provider" value="$provider"/>
-	  <mm:param name="mailbox" value="$mailbox"/>
-	</mm:treefile>
-	<% response.sendRedirect(forward); %>
+      <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" max="1">
+	<mm:remove referid="mailbox"/>
+	<mm:field id="mailbox" name="mailboxes.number" write="false"/>
+      </mm:list>
+      
+      <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
+      
+      <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no">
+	<mm:param name="provider" value="$provider"/>
+	<mm:param name="mailbox" value="$mailbox"/>
+      </mm:treefile>
+      <% response.sendRedirect(forward); %>
       </mm:compare>
     </mm:present>
     
@@ -290,13 +288,15 @@
       <%    response.sendRedirect(redirect_url); %>
     </mm:present>
     
-    <mm:import externid="nooutput"/>
-    <mm:notpresent referid="nooutput">
-      <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-	<mm:param name="extraheader">
-	  <title>Send mail</title>
-	  <script type="text/javascript">
-	    var editor = null;
+  </mm:present>
+  
+  <mm:import externid="nooutput"/>
+  <mm:notpresent referid="nooutput">
+    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader">
+	<title>Send mail</title>
+	<script type="text/javascript">
+	  var editor = null;
 	    function initEditor() {
 	    var config = new HTMLArea.Config();
 	    config.editorURL = "<mm:url page="/email/write/htmlarea/" />";
@@ -490,7 +490,6 @@
           
         </mm:notpresent>
 
-      </mm:present>
     </mm:cloud>
   </mm:content>
   
