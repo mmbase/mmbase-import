@@ -115,7 +115,9 @@
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
+    <!--
     <unjar src="${xml-apis.jar}" dest="build/rmmcitmp"/>
+    -->
     <echo file="build/rmmcitmp/manifest.mf">
 Name: org/mmbase
 Vendor: MMBase Community
