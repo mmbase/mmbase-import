@@ -30,6 +30,17 @@
       </jsp:include>
 	</td>
 	<td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;text-align:right;">
+	
+	<%
+		String callingPageID =request.getParameter("cp");
+		PaginaHelper pHelper = new PaginaHelper(cloud);
+	    	if (callingPageID != null) {
+	    	%>
+	         <a href="<%= pHelper.createPaginaUrl(callingPageID,request.getContextPath()) %>"<img src="media/arrowright_fun.gif" alt="" border="0" /></a>
+					&nbsp;<b>back to webcam></b>
+					<%
+	      	}
+	%>
 	   <jsp:include page="includes/artikel_12_column.jsp">
          <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
