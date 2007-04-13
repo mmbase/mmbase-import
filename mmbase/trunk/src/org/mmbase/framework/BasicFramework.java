@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.29 2007-04-13 10:00:53 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.30 2007-04-13 11:46:24 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -93,23 +93,14 @@ public class BasicFramework implements Framework {
     }
 
     public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getInternalUrl(page, component, blockParameters, frameworkParameters, false);
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
     public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getInternalUrl(page, component, blockParameters, frameworkParameters, false);
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
     }
 
     public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
-        return getInternalUrl(page, component, urlParameters, frameworkParameters, escapeAmps);
-    }
-
-
-
-    /**
-     * 
-     */
-    protected StringBuilder getInternalUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {       // just generate the URL
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
             StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
@@ -128,7 +119,6 @@ public class BasicFramework implements Framework {
         }
     }
 
-
     /**
      * @todo state not used.
      */
@@ -142,12 +132,10 @@ public class BasicFramework implements Framework {
         frameworkParameters.set(BLOCK,     block.getName());
         if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
             frameworkParameters.set(N, blockParameters.get(Parameter.NODE));
-            StringBuilder sb = getInternalUrl(page,
-                                              component, blockParameters, frameworkParameters, writeamp);
+            StringBuilder sb = getUrl(page, component, blockParameters, frameworkParameters, writeamp);
             return sb;
         } else {
-            StringBuilder sb = getInternalUrl(page,
-                                              component, blockParameters, frameworkParameters, writeamp);
+            StringBuilder sb = getUrl(page, component, blockParameters, frameworkParameters, writeamp);
             return sb;
         }
     }
