@@ -114,6 +114,7 @@
       <arg value="${project.source.dir}/src/${source-taglib.xml}"/>
       <arg value="${project.metainf.dir}/taglib-2.0.tld"/>
       <arg value="uri=http://www.mmbase.org/mmbase-taglib-2.0" />
+      <arg value="version=2.0" />
     </java>
   </target>
 
