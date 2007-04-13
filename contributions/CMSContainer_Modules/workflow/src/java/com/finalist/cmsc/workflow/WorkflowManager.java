@@ -286,6 +286,7 @@ public abstract class WorkflowManager {
             if (wf != null) {
                 if (!isStatusApproved(wf)) {
                     accept(node, null);
+                    wf = getWorkflowNode(node, type);
                 }
                 
                 if (isStatusApproved(wf) && isAllowedToPublish(node)) {
