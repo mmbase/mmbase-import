@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.10 2007-04-13 09:09:51 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.11 2007-04-13 13:21:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
@@ -38,7 +38,7 @@ public class JspProcessor extends AbstractProcessor {
     }
 
     public String getPath() {
-        return path;
+        return path.charAt(0) == '/' ? path : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
     public Parameter[] getParameters() {
@@ -53,7 +53,7 @@ public class JspProcessor extends AbstractProcessor {
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
             HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
             Framework framework = MMBase.getMMBase().getFramework();
-            String url = framework.getInternalUrl(path, this, parent.getComponent(), blockParameters, frameworkParameters).toString();
+            String url = framework.getInternalUrl(getPath(), this, parent.getComponent(), blockParameters, frameworkParameters).toString();
             if (log.isDebugEnabled()) {
                 log.debug("Block parameters      : [" + blockParameters + "]");
                 log.debug("Framework parameters  : [" + frameworkParameters + "]");
@@ -69,6 +69,6 @@ public class JspProcessor extends AbstractProcessor {
     }
 
     public String toString() {
-        return path + '?' + Arrays.asList(getParameters());
+        return getPath() + '?' + Arrays.asList(getParameters());
     }
 }
