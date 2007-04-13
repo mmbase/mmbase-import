@@ -21,7 +21,7 @@ public class CSVReader implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
     private static final ServerUtil su = new ServerUtil();
     
-    private static final String IGNORE_BEAUFORT = "negeer beaufort";
+    private static final String IGNORE_BEAUFORT = "inactive (en negeer Beaufort)";
     
     public static int FULL_IMPORT = 1;
     public static int ONLY_MEMBERLOAD = 2;

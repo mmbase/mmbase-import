@@ -3,5 +3,5 @@
 <optionlist name="active_inactive">
    <option id="active">active</option>
    <option id="inactive">inactive</option>
-   <option id="negeer beaufort">negeer beaufort</option>
+   <option id="inactive (en negeer Beaufort)">inactive (en negeer Beaufort)</option>
 </optionlist>
