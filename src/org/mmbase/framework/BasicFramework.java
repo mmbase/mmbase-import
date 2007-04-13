@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.28 2007-03-30 20:46:16 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.29 2007-04-13 10:00:53 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -202,16 +202,11 @@ public class BasicFramework implements Framework {
         }
         State state = getState(request);
 
-        Integer action = frameworkParameters.get(ACTION);
-        log.info("Current action " + action + " stated id " + state.getId());
-        if (action != null && action == state.getId()) {
-            log.info("Processing " + renderer.getBlock());
-            renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
-            frameworkParameters.set(ACTION, null);
-        }
-
         request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
-        state.render(renderer);
+        if (state.render(renderer)) {
+            log.info("Processing " + renderer.getBlock() + " " + renderer.getBlock().getProcessor());
+            renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
+        }
         request.setAttribute(COMPONENT_ID_KEY, "mm" + state.getPrefix());
         setBlockParameters(state, blockParameters);
         request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", 
@@ -246,8 +241,7 @@ public class BasicFramework implements Framework {
      * 
      */
     protected static class State {
-        private Map<Renderer, Integer> renderers = new HashMap<Renderer, Integer>();
-        private int count;
+        private int count = 0;
         private Renderer renderer;
         private final HttpServletRequest request;
 
@@ -264,10 +258,15 @@ public class BasicFramework implements Framework {
             return request;
         }
 
-        public void render(Renderer rend) {
+        /**
+         * @Returns whether action must be performed
+         */
+        public boolean render(Renderer rend) {
             renderer = rend;
-            count = renderers.containsKey(rend) ? renderers.get(rend) : 0;
-            renderers.put(rend, ++count);
+            count++;
+            String a = request.getParameter(ACTION.getName());
+            int action = a == null ? -1 : Integer.parseInt(a);
+            return action == count;
         }
         public String getPrefix() {
             //return "_" + renderer.getBlock().getComponent().getName() + "_" +
