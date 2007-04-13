@@ -1,1 +1,1 @@
-build cleanbuild tools cmsc
+build cleanbuild cmsc
