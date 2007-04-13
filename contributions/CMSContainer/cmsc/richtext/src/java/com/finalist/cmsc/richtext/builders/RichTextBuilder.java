@@ -53,12 +53,12 @@ public class RichTextBuilder extends MMObjectBuilder {
     public boolean init() {
         if (!super.init()) { return false; }
 
-        Map map = getInitParameters("cmsc/richtext");
-        String download = (String) map.get("downloadImages");
+        Map<String, String> map = getInitParameters("cmsc/richtext");
+        String download = map.get("downloadImages");
         if (!StringUtil.isEmpty(download)) {
             downloadImages = Boolean.valueOf(download);
         }
-        String resolve = (String) map.get("resolveIds");
+        String resolve = map.get("resolveIds");
         if (!StringUtil.isEmpty(resolve)) {
             resolveIds = Boolean.valueOf(resolve);
         }
@@ -104,7 +104,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         if (!resolveIds) {
             return number;
         }
-        List<Field> fields = getFields(NodeManager.ORDER_EDIT);
+        List<CoreField> fields = getFields(NodeManager.ORDER_EDIT);
         List<String> idsList = new ArrayList<String>();
         resolve(node, idsList, fields, true);
         if (!idsList.isEmpty()) {
@@ -123,11 +123,11 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
         
         // Resolve images
-        List<Field> fields = getFields(NodeManager.ORDER_EDIT);
+        List<CoreField> fields = getFields(NodeManager.ORDER_EDIT);
 
         boolean htmlFieldChanged = false;
         
-        Iterator<Field> checkFields = fields.iterator();
+        Iterator<CoreField> checkFields = fields.iterator();
         while (checkFields.hasNext()) {
             Field field = checkFields.next();
             if (field != null) {
@@ -175,8 +175,8 @@ public class RichTextBuilder extends MMObjectBuilder {
         return committed;
     }
 
-    private void resolve(MMObjectNode node, List<String> idsList, List<Field> fields, boolean isSnsert) {
-        Iterator<Field> iFields = fields.iterator();
+    private void resolve(MMObjectNode node, List<String> idsList, List<CoreField> fields, boolean isSnsert) {
+        Iterator<CoreField> iFields = fields.iterator();
         while (iFields.hasNext()) {
             Field field = iFields.next();
    

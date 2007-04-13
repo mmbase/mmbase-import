@@ -275,8 +275,8 @@ public class SecurityUtil {
 
 
     public static void clearUserRoles(Cloud cloud) {
-        for (Iterator<String> iter = cloud.getProperties().keySet().iterator(); iter.hasNext();) {
-            String property = iter.next();
+        for (Iterator<Object> iter = cloud.getProperties().keySet().iterator(); iter.hasNext();) {
+            String property = iter.next().toString();
             if (property.startsWith(CMSC_USERROLES)) {
                 cloud.setProperty(property, null);
             }
