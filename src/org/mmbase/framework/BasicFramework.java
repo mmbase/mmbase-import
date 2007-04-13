@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.32 2007-04-13 12:38:12 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.33 2007-04-13 15:01:33 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -92,10 +92,10 @@ public class BasicFramework implements Framework {
         return show;
     }
 
-    public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
+    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
-            StringBuilder sb = getUrl(page, urlParameters.toMap(), req, escapeAmps);
+            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, escapeAmps);
             return sb;
         } else {
             State state = getState(req);
@@ -104,7 +104,7 @@ public class BasicFramework implements Framework {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
-            map.putAll(state.getMap(urlParameters.toMap()));
+            map.putAll(state.getMap(blockParameters.toMap()));
             map.putAll(frameworkParameters.toMap());
             StringBuilder sb = getUrl(page, map, req, escapeAmps);
             return sb;
@@ -229,8 +229,9 @@ public class BasicFramework implements Framework {
      * 
      */
     protected static class State {
-        private int count = 0;
-        private Renderer renderer;
+        private int count = 1;
+        private int id = 0;
+        private Renderer renderer = null;
         private final HttpServletRequest request;
 
         State(HttpServletRequest r) {
@@ -251,10 +252,11 @@ public class BasicFramework implements Framework {
          */
         public boolean render(Renderer rend) {
             renderer = rend;
+            id = count;
             count++;
             String a = request.getParameter(ACTION.getName());
             int action = a == null ? -1 : Integer.parseInt(a);
-            return action == count;
+            return action == id;
         }
         public String getPrefix() {
             //return "_" + renderer.getBlock().getComponent().getName() + "_" +
@@ -268,7 +270,7 @@ public class BasicFramework implements Framework {
          * Returns the id of the current renderer
          */
         public int getId() {
-            return count;
+            return id;
         }
 
         /**
