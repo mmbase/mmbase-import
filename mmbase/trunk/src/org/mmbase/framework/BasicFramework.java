@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.31 2007-04-13 12:03:53 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.32 2007-04-13 12:38:12 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -92,24 +92,14 @@ public class BasicFramework implements Framework {
         return show;
     }
 
-    public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
-    }
-
-    public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
-    }
-
     public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
-        Map<String, Object> map = new HashMap<String, Object>();
         if (component == null) {
-        	map.putAll(urlParameters.toMap());
-        	map.putAll(frameworkParameters.toMap());
-            StringBuilder sb = getUrl(page, map, req, escapeAmps);
+            StringBuilder sb = getUrl(page, urlParameters.toMap(), req, escapeAmps);
             return sb;
         } else {
             State state = getState(req);
+            Map<String, Object> map = new HashMap<String, Object>();
             for (Object e : req.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 map.put(entry.getKey(), entry.getValue()[0]);
@@ -121,6 +111,14 @@ public class BasicFramework implements Framework {
         }
     }
 
+    public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    }
+
+    public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
+        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    }
+    
     /**
      * @todo state not used.
      */
