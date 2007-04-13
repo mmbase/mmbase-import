@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.30 2007-04-13 11:46:24 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.31 2007-04-13 12:03:53 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -102,19 +102,21 @@ public class BasicFramework implements Framework {
 
     public StringBuilder getUrl(String page, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+        Map<String, Object> map = new HashMap<String, Object>();
         if (component == null) {
-            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, writeamp);
+        	map.putAll(urlParameters.toMap());
+        	map.putAll(frameworkParameters.toMap());
+            StringBuilder sb = getUrl(page, map, req, escapeAmps);
             return sb;
         } else {
             State state = getState(req);
-            Map<String, Object> map = new HashMap<String, Object>();
             for (Object e : req.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
-            map.putAll(state.getMap(blockParameters.toMap()));
+            map.putAll(state.getMap(urlParameters.toMap()));
             map.putAll(frameworkParameters.toMap());
-            StringBuilder sb = getUrl(page, map, req, writeamp);
+            StringBuilder sb = getUrl(page, map, req, escapeAmps);
             return sb;
         }
     }
