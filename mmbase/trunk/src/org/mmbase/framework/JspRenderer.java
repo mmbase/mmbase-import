@@ -23,11 +23,13 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.19 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: JspRenderer.java,v 1.20 2007-04-13 13:21:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
     private static final Logger log = Logging.getLoggerInstance(JspRenderer.class);
+
+    public static String JSP_ROOT = "/mmbase/components/";
 
     protected final String path;
 
@@ -37,7 +39,7 @@ public class JspRenderer extends AbstractRenderer {
     }
 
     public String getPath() {
-        return path;
+        return path.charAt(0) == '/' ? path : JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
     public  Parameter[] getParameters() {
@@ -49,7 +51,7 @@ public class JspRenderer extends AbstractRenderer {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
-            String url = getFramework().getInternalUrl(path, this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
+            String url = getFramework().getInternalUrl(getPath(), this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
