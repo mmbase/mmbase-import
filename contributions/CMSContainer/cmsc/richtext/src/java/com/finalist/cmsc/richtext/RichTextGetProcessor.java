@@ -97,8 +97,8 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
         Map<String,Relation> inlineImages = new HashMap<String,Relation>();
         RelationList images = node.getRelations(RichText.IMAGEINLINEREL_NM, cloud.getNodeManager("images"), "DESTINATION");
-        for (Iterator<Node> iter = images.iterator(); iter.hasNext();) {
-            Relation inlineRel = (Relation) iter.next();
+        for (Iterator<Relation> iter = images.iterator(); iter.hasNext();) {
+            Relation inlineRel = iter.next();
             inlineImages.put(inlineRel.getStringValue(RichText.REFERID_FIELD), inlineRel);
         }
 
