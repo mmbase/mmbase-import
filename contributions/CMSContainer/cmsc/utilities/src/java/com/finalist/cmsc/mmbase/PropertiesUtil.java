@@ -37,7 +37,7 @@ public class PropertiesUtil {
    private final static String DEFAULT = "value";
    private final static String DEV = "dev";
    private final static String TEST = "test";
-   private final static String SIT = "sit";
+   private final static String SIT = "preprod";
    private final static String PROD = "prod";
    
    /** Environment server is running in (dev,test,sit,prod) */
