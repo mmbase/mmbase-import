@@ -26,5 +26,11 @@ When editing from the modules/NTLM edit screen:
 * knownvisitor-ntlm.logonname          --> the real name of an account in the same searchDN
 * knownvisitor-ntlm.logonpassword      --> the login password of this user
 
+! Do not forget to publish the properties when done editing these settings
+
+Information about how to configure NTLM authentication in FireFox:
+http://adam.theficus.com/archives/2004/09/firefox_tutoria.html
+
+
 TODO:
 
