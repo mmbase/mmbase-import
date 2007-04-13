@@ -1,0 +1,70 @@
+Migration document:
+
+Intro:
+The module portlets-responseform has been renamed to portlets-dynamicforms. 
+The module savedforms has been removed from the CMSContainer_Modules project and is now part of portlets-responseform.
+Not all references to responseform have been renamed as this could mean changing existing configurations, for example a template might refer to "responseform/basic.jsp". 
+See CMSC-316.
+
+Part: portlets-dynamicforms
+From versie: 1.1
+To versie: 1.2
+
+
+Execute the following steps below in the given order:
+
+Name: Update project.xml
+Goal: Update project dependencies in project
+Type:  manual action
+
+In the file $YOUR_PROJECT/maven-base/project.xml do the following:
+
+Remove dependency on cmsc-savedform:
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-savedform</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>	
+		
+Change dependency on cmsc-portlets-responseform to cmsc-portlets-dynamicforms
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-responseform</artifactId>
+			<version>${cmscportlets.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-dynamicforms</artifactId>
+			<version>${cmscportlets.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		
+Name: execute sql-script
+Goal: add 3 extra columns for the tables mm_responseform and live_responseform (on staging and live databases)
+Type: sql-script 
+
+--- Start script ---
+
+alter table mm_responseform add column emailbodyafter text;
+alter table mm_responseform add column useremailbodyafter text;
+alter table mm_responseform add column includedata int default 0;
+
+alter table live_responseform add column emailbodyafter text;
+alter table live_responseform add column useremailbodyafter text;
+alter table live_responseform add column includedata int default 0;
+
+--- End script ---
+
+Name: check and change existing dynamic forms (responseforms)
+Goal: check and change in the editors existing emailbody texts for the dynamic forms
+Type: manual action in the editors
+
+When migrating from version 1.1 to 1.2 to existing dynamic forms (responseforms) should be checked and changed in the editors.
+The text for emailbody and for the useremailbody should be separated in the "before" and "after" parts. 
+The #FORMDATA# and #TITEL# texts are not used anymore and should be removed from the emailbody and useremailbody. 
+The 'includedata' field should be set to true if the reply email sent to the user needs to include the entered data. 
+For the other type of emails (sent to the address specified in "emailaddress" field) the entered data will be included by default.
+	
