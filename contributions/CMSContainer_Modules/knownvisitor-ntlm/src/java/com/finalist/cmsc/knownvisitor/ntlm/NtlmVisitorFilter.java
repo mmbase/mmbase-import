@@ -74,17 +74,11 @@ public class NtlmVisitorFilter implements Filter {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
       
-      if (isEnabled() && isInternetExplorer(req) && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
+      if (isEnabled() && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
          return;
       }
       
       chain.doFilter(req, resp);
-   }
-
-   private boolean isInternetExplorer(HttpServletRequest req) {
-      String ua = req.getHeader( "User-Agent" );
-      boolean isIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
-      return isIE;
    }
 
    /**
@@ -106,9 +100,11 @@ public class NtlmVisitorFilter implements Filter {
       msg = req.getHeader("Authorization");
       boolean offerBasic = req.isSecure();
 
+      log.debug("Message: "+msg);
       if (msg != null && (msg.startsWith("NTLM ") ||
               (offerBasic && msg.startsWith("Basic ")))) {
          if (msg.startsWith("NTLM ")) {
+            log.debug("Message starts with NTLM.");
             HttpSession ssn = req.getSession();
             byte[] challenge;
 
@@ -119,8 +115,10 @@ public class NtlmVisitorFilter implements Filter {
                return false;
             }
             /* negotiation complete, remove the challenge object */
+            log.debug("negotiation complete, remove the challenge object.");
             ssn.removeAttribute("NtlmHttpChal");
          } else {
+            log.debug("Message starts with Basic.");
             String auth = new String(Base64.decode(msg.substring(6)),
                     "US-ASCII");
             int index = auth.indexOf(':');
@@ -167,6 +165,7 @@ public class NtlmVisitorFilter implements Filter {
             HttpSession ssn = req.getSession(false);
             if (ssn == null || (ntlm = (NtlmPasswordAuthentication)
                     ssn.getAttribute("NtlmHttpAuth")) == null) {
+               log.debug("Not NTLM authenticated, starting authentication.");
                resp.setHeader("WWW-Authenticate", "NTLM");
                if (offerBasic) {
                   resp.addHeader("WWW-Authenticate", "Basic realm=\"" +
