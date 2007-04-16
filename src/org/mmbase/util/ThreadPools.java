@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.8 2007-03-28 12:23:28 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.9 2007-04-16 08:39:53 nklasens Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -31,7 +31,7 @@ public abstract class ThreadPools {
     /**
      * For jobs there are 'scheduled', and typically happen on larger time-scales.
      */
-    public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue(200), new ThreadFactory() {
+    public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r, "JOBTHREAD") {
@@ -60,7 +60,7 @@ public abstract class ThreadPools {
      */
     public static void configure() {
 
-        Map props = properties.getProperties();
+        Map<String,Object> props = properties.getProperties();
         String max = (String) props.get("jobs.maxsize");
         if (max != null) {
             log.info("Setting max pool size from " + ((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() + " to " + max);

@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.23 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.24 2007-04-16 08:37:18 nklasens Exp $
  */
 
 public class DataTypes {
@@ -82,13 +82,13 @@ public class DataTypes {
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
     private static void readDataTypes(ResourceLoader loader, String resource) {
-        List resources = loader.getResourceList(resource);
+        List<URL> resources = loader.getResourceList(resource);
         if (log.isDebugEnabled()) log.debug("Using " + resources);
-        ListIterator i = resources.listIterator();
+        ListIterator<URL> i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = (URL) i.previous();
+                URL u = i.previous();
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());

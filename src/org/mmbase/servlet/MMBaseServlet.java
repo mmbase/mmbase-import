@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.61 2007-03-30 08:57:12 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.62 2007-04-16 08:35:51 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -79,15 +79,15 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     private static int servletInstanceCount = 0;
     // servletname -> servletmapping
     // obtained from web.xml
-    private static Map<String, List<String>> servletMappings    = new HashMap();
+    private static Map<String, List<String>> servletMappings    = new HashMap<String, List<String>>();
     // topic -> servletname
     // set by isntantiated servlets
-    private static Map<String, ServletEntry> associatedServlets = new HashMap();
+    private static Map<String, ServletEntry> associatedServlets = new HashMap<String, ServletEntry>();
     // topic -> servletmapping
     // set by instantiated servlets
-    private static Map<String, ServletEntry> associatedServletMappings = new HashMap();
+    private static Map<String, ServletEntry> associatedServletMappings = new HashMap<String, ServletEntry>();
     // mapping to servlet instance
-    private static Map<String, HttpServlet> mapToServlet = new HashMap();
+    private static Map<String, HttpServlet> mapToServlet = new HashMap<String, HttpServlet>();
 
     private long start = System.currentTimeMillis();
 
@@ -121,7 +121,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected Map<String, Integer> getAssociations() {
-        return new HashMap();
+        return new HashMap<String, Integer>();
     }
 
     /**
@@ -243,7 +243,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                             if (!(pattern.equals(""))) {
                                 List<String> ls = servletMappings.get(name);
                                 if (ls == null) {
-                                    ls = new ArrayList();
+                                    ls = new ArrayList<String>();
                                     servletMappings.put(name, ls);
                                 }
                                 ls.add(pattern);
@@ -574,9 +574,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             log.debug(" " + getServletName() + " was not initialized");
         }
         log.debug("Disassociating this servlet with mappings");
-        Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
+        Iterator<String> i = getServletMappings(getServletConfig().getServletName()).iterator();
         while (i.hasNext()) {
-            String mapping=(String)i.next();
+            String mapping = i.next();
             mapToServlet.remove(mapping);
         }
         super.destroy();
