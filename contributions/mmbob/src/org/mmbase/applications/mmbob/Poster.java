@@ -182,6 +182,9 @@ public class Poster {
         return account;
     }
 
+    /**
+     * @return the mickname or the account if there is no nick
+     */
     public String getNick() {
         ProfileEntry pe = getProfileValue("nick");
         if (pe != null && !pe.getValue().equals("")) {
