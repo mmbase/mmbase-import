@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.44 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.45 2007-04-16 08:39:04 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -443,7 +443,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             while (i.hasNext()) {
                 Bundle b = i.next();
                 Class wrapper = b.wrapper;
-                HashMap constants = b.constantsProvider;
+                Map<String,Object> constants = b.constantsProvider;
                 Object nk = SortedBundle.castKey(string, null, constants, wrapper);
                 if (string != nk) {
                     if (log.isDebugEnabled()) {
@@ -599,7 +599,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
         private String      resource;
         private ClassLoader classLoader;
-        private HashMap     constantsProvider;
+        private HashMap<String,Object>     constantsProvider;
         private Class       wrapper;
         private Comparator  comparator;
 
@@ -626,7 +626,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
 
-        Bundle(String r, ClassLoader cl, HashMap cp, Class w, Comparator comp) {
+        Bundle(String r, ClassLoader cl, HashMap<String,Object> cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
         /**
@@ -673,7 +673,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             log.debug("Cloning bundle " + this);
             try {
                 Bundle clone = (Bundle) super.clone();
-                clone.constantsProvider = constantsProvider != null ? (HashMap) constantsProvider.clone() : null;
+                clone.constantsProvider = constantsProvider != null ? (HashMap<String,Object>) constantsProvider.clone() : null;
                 return clone;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
