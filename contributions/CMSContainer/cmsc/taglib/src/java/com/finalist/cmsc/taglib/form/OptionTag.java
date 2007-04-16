@@ -12,7 +12,6 @@ package com.finalist.cmsc.taglib.form;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -27,7 +26,7 @@ public class OptionTag extends SimpleTagSupport {
     private String message;
     
     @Override
-    public void doTag() throws JspException, IOException {
+    public void doTag() throws IOException {
         PageContext ctx = (PageContext) getJspContext();
         
         SelectTag container = (SelectTag) findAncestorWithClass(this, SelectTag.class);

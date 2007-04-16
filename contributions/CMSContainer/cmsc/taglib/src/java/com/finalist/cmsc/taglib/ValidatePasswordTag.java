@@ -1,9 +1,6 @@
 
 package com.finalist.cmsc.taglib;
 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -23,7 +20,7 @@ public class ValidatePasswordTag extends CmscTag {
 	protected String givenPassword;
 	protected String result;
 	
-	public void doTag() throws JspException, IOException {
+	public void doTag() {
 		PageContext ctx = (PageContext) getJspContext();
 		Encode encoder = new org.mmbase.util.Encode("MD5");
 		String encodedPassword = encoder.encode(getGivenPassword());		

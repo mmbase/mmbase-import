@@ -18,8 +18,7 @@ public class FontImageTag extends ImageTag {
 	private int width;
 	private int height;	
 			
-	public int doStartTag() throws JspTagException {		
-        
+	public int doStartTag() {		
         return EVAL_BODY;
     }
 
@@ -92,11 +91,11 @@ public class FontImageTag extends ImageTag {
       return super.doEndTag();
    }
 
-   public void setHeight(int height) throws JspTagException {
+   public void setHeight(int height) {
 		this.height = height;
 	}
 
-	public void setWidth(int width) throws JspTagException {
+	public void setWidth(int width) {
 		this.width = width;
 	}
 }
