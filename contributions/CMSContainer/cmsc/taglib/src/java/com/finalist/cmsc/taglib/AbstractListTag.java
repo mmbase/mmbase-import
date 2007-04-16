@@ -19,6 +19,7 @@ import net.sf.mmapps.commons.util.StringUtil;
 
 /**
  * Register a list as attribute in the request.
+ * @param <E> Type of the list which is registered on the request
  */
 public abstract class AbstractListTag<E> extends CmscTag {
 

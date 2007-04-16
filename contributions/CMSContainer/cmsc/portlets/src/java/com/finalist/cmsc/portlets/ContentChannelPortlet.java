@@ -79,8 +79,9 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
         setPortletParameter(portletId, START_INDEX, request.getParameter(START_INDEX));        
     }
 
+    @Override
     protected void setEditResponse(ActionRequest request, ActionResponse response,
-            HashMap<String, Node> nodesMap) throws PortletModeException {
+            Map<String, Node> nodesMap) throws PortletModeException {
         if (nodesMap.size() == 1) {
             String displayType  = request.getParameter(DISPLAYTYPE_PARAM);
             if (displayType == null || "detail".equals(displayType)) {
