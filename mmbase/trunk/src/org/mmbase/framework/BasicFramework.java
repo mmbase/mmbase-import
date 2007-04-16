@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.33 2007-04-13 15:01:33 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.34 2007-04-16 08:33:09 nklasens Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -76,7 +76,7 @@ public class BasicFramework implements Framework {
                 Object value = entry.getValue();
                 if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
                     if (value instanceof Iterable) {
-                        for (Object v : (Iterable) value) {
+                        for (Object v : (Iterable<?>) value) {
                             show.append(connector).append(entry.getKey()).append("=");
                             paramEscaper.transform(new StringReader(Casting.toString(v)), w);
                             connector = amp;
@@ -273,16 +273,13 @@ public class BasicFramework implements Framework {
             return id;
         }
 
-        /**
-         * 
-         */
         public Map<String, Object> getMap(final Map<String, Object> params) {
-            return new AbstractMap() {
+            return new AbstractMap<String, Object>() {
                 public Set<Map.Entry<String, Object>> entrySet() {
-                    return new AbstractSet() {
+                    return new AbstractSet<Map.Entry<String, Object>>() {
                         public int size() { return params.size(); }
                         public Iterator<Map.Entry<String, Object>> iterator() {
-                            return new Iterator() {
+                            return new Iterator<Map.Entry<String, Object>>() {
                                 private Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
                                 public boolean hasNext() { return i.hasNext(); };
                                 public Map.Entry<String, Object> next() {
