@@ -94,7 +94,9 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
         }
     }
 
+    @SuppressWarnings("unused")
     protected void saveParameters(ActionRequest request, String portletId) {
+        // convenience method
     }
 
     /**
@@ -112,14 +114,14 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
             
             if (portletId != null) {
                 // get the values submitted with the form
-                Enumeration parameterNames = request.getParameterNames();
+                Enumeration<String> parameterNames = request.getParameterNames();
 
                 //currently supperting one Node
-                HashMap<String,Node> nodesMap = new HashMap<String,Node>();
+                Map<String,Node> nodesMap = new HashMap<String,Node>();
                 while(parameterNames.hasMoreElements()){
                     // the parameterformat is "content_NUMBER_FIELD"
                     // for example "content_123_title"
-                    String name  = (String) parameterNames.nextElement();
+                    String name  = parameterNames.nextElement();
                     int index = name.indexOf("_");
                     int secondIndex = -1;
                     if(index > 0){
@@ -171,8 +173,9 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
         }
     }
 
+    @SuppressWarnings("unused")
     protected void setEditResponse(ActionRequest request, ActionResponse response,
-            HashMap<String, Node> nodesMap) throws PortletModeException {
+            Map<String, Node> nodesMap) throws PortletModeException {
         response.setPortletMode(PortletMode.VIEW);
     }
     

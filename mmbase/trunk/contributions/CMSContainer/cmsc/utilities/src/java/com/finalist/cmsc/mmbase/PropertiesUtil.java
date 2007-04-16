@@ -188,9 +188,9 @@ public class PropertiesUtil {
 		return list;
 	}
 
-   public static Map getModuleProperties(String module) {
+   public static Map<String,String> getModuleProperties(String module) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-     TreeMap result = new TreeMap();
+      Map<String,String> result = new TreeMap<String,String>();
       NodeManager propertiesManager = cloud.getNodeManager("properties");
       NodeQuery query = propertiesManager.createQuery();
       Field keyField = propertiesManager.getField("module");

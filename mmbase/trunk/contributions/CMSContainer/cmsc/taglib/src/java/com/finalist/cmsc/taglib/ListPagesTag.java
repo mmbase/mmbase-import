@@ -9,8 +9,7 @@
  */
 package com.finalist.cmsc.taglib;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Site;
@@ -21,7 +20,7 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
  * 
  * @author Wouter Heijke
  */
-public class ListPagesTag extends AbstractListTag {
+public class ListPagesTag extends AbstractListTag<Page> {
 
     private static final String MODE_ALL = "all";
     private static final String MODE_HIDDEN = "hidden";
@@ -29,8 +28,8 @@ public class ListPagesTag extends AbstractListTag {
     
     private String mode = MODE_MENU;
     
-	protected List<? extends Page> getList() {
-        List<? extends Page> pages = null;
+	protected List<Page> getList() {
+        List<Page> pages = null;
 		if (origin != null) {
 			if (origin instanceof Site) {
                 pages = SiteManagement.getPages((Site)origin);
@@ -38,7 +37,7 @@ public class ListPagesTag extends AbstractListTag {
                 pages =  SiteManagement.getPages((Page)origin);
 	        }
 		} else {
-            pages = SiteManagement.getSites();
+            pages = new ArrayList<Page>(SiteManagement.getSites());
 		}
         if (pages != null ) {
             if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {

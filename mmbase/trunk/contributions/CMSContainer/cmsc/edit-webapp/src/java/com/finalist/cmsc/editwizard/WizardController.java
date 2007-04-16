@@ -48,7 +48,7 @@ public class WizardController {
      * @param cloud - cloud
      * @return Paramters to pass to the wizard transformation
      */
-    public Map openWizard(HttpServletRequest request, Config ewconfig,
+    public Map<String, String> openWizard(HttpServletRequest request, Config ewconfig,
             Config.WizardConfig config, Cloud cloud) {
 
         HttpSession session = request.getSession();
@@ -137,8 +137,10 @@ public class WizardController {
         return params;
     }
 
+    @SuppressWarnings("unused")
     public void openWizard(HttpServletRequest request, Config ewconfig,
             Config.WizardConfig config, Cloud cloud, Map<String, String> params, UserRole userrole, String contenttype) {
+        // nothing to do
     }
 
 
@@ -232,8 +234,10 @@ public class WizardController {
             closeWizard(request, ewconfig, wizardConfig, cloud, editNode, contenttype);
         }
     }
-
+    
+    @SuppressWarnings("unused")
     public void closeWizard(HttpServletRequest request, Config ewconfig, WizardConfig wizardConfig, Cloud cloud, Node editNode, String contenttype) {
+        // nothing to do
     }
 
     /**
