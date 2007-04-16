@@ -125,10 +125,14 @@ Java versions
 Java compilers
 -------------
 
-- Sun's javac 1.5.0_08
-  Note that MMBase 1.9 does not properly compile under prior versions of javac, due to
-  an error in the compiler regarding the casting of generic types.
-  See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
+- Sun's javac 1.5
+  
+  When altering line 115 in org.mmbase.cache.CacheManager from 
+    Cache cache = getCache(cacheName);
+  to
+    Cache<?,?> cache = getCache(cacheName);
+  the compiler will run into a bug in Sun's javac regarding the casting of 
+  generic types. See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
   
 ------------------
 Servlet engines /
@@ -137,7 +141,7 @@ Application servers
 
 These are the applications servers on which MMBase was tested.
 
-- Tomcat 5.5.20, 6.0
+- Tomcat 5.5.17, 5.5.20, 6.0
 - ..
 
 ---------
