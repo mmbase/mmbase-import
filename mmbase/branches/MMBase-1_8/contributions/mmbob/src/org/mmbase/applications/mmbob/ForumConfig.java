@@ -64,6 +64,18 @@ public class ForumConfig {
 
     public ForumConfig(DocumentReader forumConfigReader, Element n) {
         decodeConfig(forumConfigReader, n);
+        //now let's check if we have to add a 'nick' field
+        log.info("login type: "+getLoginSystemType());
+        if(profiledefs.get("nick") == null && 
+                (getLoginSystemType().equals("entree") || getLoginSystemType().equals("entree-ng")) ){
+            log.debug("no nick profile entry def found for forum " + getId()+". it will be added");
+            ProfileEntryDef nickProfileEntryDef = new ProfileEntryDef();
+            nickProfileEntryDef.setEdit(false);
+            nickProfileEntryDef.setName("nick");
+            nickProfileEntryDef.setGuiName("Nick");
+            nickProfileEntryDef.setType("string");
+            profiledefs.put("nick", nickProfileEntryDef);
+        }
     }
 
     public ForumConfig(String id) {

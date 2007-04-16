@@ -58,7 +58,7 @@
 <!ATTLIST accountremoval type CDATA #IMPLIED>
 
 <!ELEMENT loginsystem (#PCDATA)>
-<!ATTLIST loginsystem type CDATA #IMPLIED>
+<!ATTLIST loginsystem type (http|entree|entree-ng) #IMPLIED>
 <!ATTLIST loginsystem guiedit (true|false) #IMPLIED>
 
 <!ELEMENT loginmode (#PCDATA)>
