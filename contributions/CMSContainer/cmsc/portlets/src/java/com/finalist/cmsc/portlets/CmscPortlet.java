@@ -419,9 +419,9 @@ public abstract class CmscPortlet extends GenericPortlet {
 
     protected void logInitParameters() {
         if (getLogger().isDebugEnabled()) {
-            Enumeration enumeration = getInitParameterNames();
+            Enumeration<String> enumeration = getInitParameterNames();
             while (enumeration.hasMoreElements()) {
-                String name = (String) enumeration.nextElement();
+                String name = enumeration.nextElement();
                 getLogger().debug("Init-param " + name + " " + getInitParameter(name));
             }
         }
@@ -429,7 +429,7 @@ public abstract class CmscPortlet extends GenericPortlet {
     
     protected void logParameters(ActionRequest request) {
         if (getLogger().isDebugEnabled()) {
-            Map map = request.getParameterMap();
+            Map<String,?> map = request.getParameterMap();
             logMap(map);
         }
     }
@@ -437,7 +437,7 @@ public abstract class CmscPortlet extends GenericPortlet {
     protected void logPreference(ActionRequest req) {
         if (getLogger().isDebugEnabled()) {
             PortletPreferences preferences = req.getPreferences();
-            Map map = preferences.getMap();
+            Map<String,?> map = preferences.getMap();
             logMap(map);
         }
     }
@@ -445,19 +445,19 @@ public abstract class CmscPortlet extends GenericPortlet {
     protected void logPreference(RenderRequest req) {
         if (getLogger().isDebugEnabled()) {
             PortletPreferences preferences = req.getPreferences();
-            Map map = preferences.getMap();
+            Map<String,?> map = preferences.getMap();
             logMap(map);
         }
     }
     
-    protected void logMap(Map map) {
-        for (Object entry : map.entrySet()) {
-            String key = (String) ((Map.Entry)entry).getKey();
-            Object value = ((Map.Entry)entry).getValue();
+    protected void logMap(Map<String,?> map) {
+        for (Map.Entry<String,?> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (key != null && value != null) {
                 if (value instanceof List) {
-                    for (Iterator iterator = ((List)value).iterator(); iterator.hasNext();) {
-                        String val = (String) iterator.next();
+                    for (Iterator<String> iterator = ((List<String>) value).iterator(); iterator.hasNext();) {
+                        String val = iterator.next();
                         if (val != null) {
                             getLogger().debug("key: " + key + " value: " + val);               
                         }

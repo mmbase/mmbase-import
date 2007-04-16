@@ -19,7 +19,7 @@ import com.finalist.cmsc.taglib.AbstractListTag;
 /**
  * path of pages
  */
-public class PathTag extends AbstractListTag {
+public class PathTag extends AbstractListTag<Page> {
 
     private static final String MODE_ALL = "all";
     private static final String MODE_HIDDEN = "hidden";
@@ -27,10 +27,10 @@ public class PathTag extends AbstractListTag {
     
     private String mode = MODE_MENU;
 
-	protected List<? extends Page> getList() {
+	protected List<Page> getList() {
 		String path = getPath();
         
-        List<? extends Page> pages = SiteManagement.getListFromPath(path);
+        List<Page> pages = SiteManagement.getListFromPath(path);
         
         if (pages != null ) {
             if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
