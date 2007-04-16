@@ -81,8 +81,8 @@ public class BannerPortlet extends ContentChannelPortlet {
         List<ContentElement> elements = (List<ContentElement>) request.getAttribute(ELEMENTS);
         if (elements != null) {
             Date now = new Date();
-            for (ListIterator iter = elements.listIterator(); iter.hasNext();) {
-                ContentElement element = (ContentElement) iter.next();
+            for (ListIterator<ContentElement> iter = elements.listIterator(); iter.hasNext();) {
+                ContentElement element = iter.next();
                 Node banner = cloud.getNode(element.getId());
                 if (banner != null) {
                     log.debug("Checking banner for maxclicks: " + banner.getNumber());
