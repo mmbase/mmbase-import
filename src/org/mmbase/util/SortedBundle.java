@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.25 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: SortedBundle.java,v 1.26 2007-04-16 08:39:04 nklasens Exp $
  */
 public class SortedBundle {
 
@@ -38,18 +38,18 @@ public class SortedBundle {
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final Class NO_WRAPPER    = null;
+    public static final Class<?> NO_WRAPPER    = null;
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final Comparator NO_COMPARATOR = null;
+    public static final Comparator<? super Object> NO_COMPARATOR = null;
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final Map NO_CONSTANTSPROVIDER = null;
+    public static final HashMap<String,Object> NO_CONSTANTSPROVIDER = null;
 
     // cache of maps.
-    private static Cache knownResources = new Cache(100) {
+    private static Cache<String,SortedMap<Object,Object>> knownResources = new Cache<String,SortedMap<Object,Object>>(100) {
             public String getName() {
                 return "ConstantBundles";
             }
@@ -66,28 +66,22 @@ public class SortedBundle {
      * You can specify ValueWrapper.class as a value for the wrapper argument. The keys will be objects with natural order of the values.
      */
 
-    public static class ValueWrapper implements Comparable {
+    public static class ValueWrapper implements Comparable<ValueWrapper> {
         private final Object key;
-        private final Object value;
-        private final Comparator com;
-        public ValueWrapper(Object k, Comparable v) {
+        private final Comparable<Object> value;
+        private final Comparator<Object> com;
+        public ValueWrapper(Object k, Comparable<Object> v) {
             key   = k;
             value = v;
             com   = null;
         }
-        public ValueWrapper(Object k, Object v, Comparator c) {
-            key   = k;
-            value = v;
-            com   = c;
-        }
-        public  int compareTo(Object o) {
-            ValueWrapper other = (ValueWrapper) o;
+        public  int compareTo(ValueWrapper other) {
             int result =
                 com != null ? com.compare(value, other.value) :
-                ((Comparable) value).compareTo(other.value);
+                value.compareTo(other.value);
             if (result != 0) return result;
             if (key instanceof Comparable) {
-                return ((Comparable) key).compareTo(other.key);
+                return ((Comparable<Object>) key).compareTo(other.key);
             } else {
                 return 0;
             }
@@ -136,9 +130,9 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map constantsProvider, final Class wrapper, Comparator comparator) {
+    public static SortedMap<Object,Object> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String,Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
-        SortedMap m = (SortedMap) knownResources.get(resourceKey);
+        SortedMap<Object,Object> m = knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
 
         if (m == null) { // find and make the resource
@@ -151,7 +145,7 @@ public class SortedBundle {
             if (comparator == null && wrapper != null && ! Comparable.class.isAssignableFrom(wrapper)) {
                 if (wrapper.equals(Boolean.class)) { 
                     // happens in Java < 1.5, because Boolean is no Comparable then.
-                    comparator = new Comparator() {
+                    comparator = new Comparator<Object>() {
                             public int compare(Object o1, Object o2) {
                                 if (o1 instanceof Boolean && o2 instanceof Boolean) {
                                     return 
@@ -167,11 +161,11 @@ public class SortedBundle {
                 }
             }
 
-            m = new TreeMap(comparator);
+            m = new TreeMap<Object,Object>(comparator);
 
-            Enumeration keys = bundle.getKeys();
+            Enumeration<String> keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
-                String bundleKey = (String) keys.nextElement();
+                String bundleKey = keys.nextElement();
                 Object value = bundle.getObject(bundleKey);
                 Object key = castKey(bundleKey, value, constantsProvider, wrapper, locale);
                 if (key == null) continue;
@@ -184,23 +178,23 @@ public class SortedBundle {
     }
 
 
-    public static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper) {
+    public static Object castKey(final String bundleKey, final Object value, final Map<String,Object> constantsProvider, final Class<?> wrapper) {
         return castKey(bundleKey, value, constantsProvider, wrapper, null);
     }
     /**
      * Casts a key of the bundle to the specified key-type. This type is defined by
      * the combination of the arguments. See {@link #getResource}.
      */
-    protected static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper, final Locale locale) {
+    protected static Object castKey(final String bundleKey, final Object value, final Map<String,Object> constantsProvider, final Class<?> wrapper, final Locale locale) {
         if (bundleKey == null) return null;
         Object key;
         // if the key is numeric then it will be sorted by number
         //key Double
 
-        Map provider = constantsProvider; // default class (may be null)
+        Map<String,Object> provider = constantsProvider; // default class (may be null)
         int lastDot = bundleKey.lastIndexOf('.');
         if (lastDot > 0) {
-            Class providerClass;
+            Class<?> providerClass;
             String className = bundleKey.substring(0, lastDot);
             try {
                 providerClass = Class.forName(className);
@@ -224,10 +218,10 @@ public class SortedBundle {
                 if (ValueWrapper.class.isAssignableFrom(wrapper)) {
                     log.debug("wrapper is a valueWrapper");
                     if (locale == null) {
-                        Constructor c = wrapper.getConstructor(new Class[] { Object.class, Comparable.class });
-                        key = c.newInstance(new Object[] {  key, (Comparable) value});
+                        Constructor<?> c = wrapper.getConstructor(new Class[] { Object.class, Comparable.class });
+                        key = c.newInstance(new Object[] {  key, (Comparable<?>) value});
                     } else {
-                        Constructor c = wrapper.getConstructor(new Class[] { Object.class, Object.class, Comparator.class });
+                        Constructor<?> c = wrapper.getConstructor(new Class[] { Object.class, Object.class, Comparator.class });
                         Collator comp = Collator.getInstance(locale);
                         comp.setStrength(Collator.PRIMARY);
                         key = c.newInstance(new Object[] { key, value, comp});
@@ -253,7 +247,7 @@ public class SortedBundle {
 
                 } else {
                     log.debug("wrapper is unrecognized, suppose constructor " + key.getClass());
-                    Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
+                    Constructor<?> c = wrapper.getConstructor(new Class[] {key.getClass()});
                     key = c.newInstance(new Object[] { key });
                 }
             } catch (NoSuchMethodException nsme) {
@@ -275,13 +269,13 @@ public class SortedBundle {
      * Returns a (serializable) Map representing all accessible static public members of given class (so, all constants).
      * @since MMBase-1.8
      */
-    public static HashMap getConstantsProvider(Class clazz) {
+    public static HashMap<String,Object> getConstantsProvider(Class<?> clazz) {
         if (clazz == null) return null;
-        HashMap map  = new HashMap();
+        HashMap<String,Object> map  = new HashMap<String,Object>();
         fillConstantsProvider(clazz, map);
         return map;
     }
-    private static void fillConstantsProvider(Class clazz, HashMap map) {
+    private static void fillConstantsProvider(Class<?> clazz, Map<String,Object> map) {
         while(clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field constant : fields) {
@@ -297,8 +291,8 @@ public class SortedBundle {
                     }
                 }
             }
-            Class[] interfaces = clazz.getInterfaces();
-            for (Class element : interfaces) {
+            Class<?>[] interfaces = clazz.getInterfaces();
+            for (Class<?> element : interfaces) {
                 fillConstantsProvider(element, map);
             }
             clazz = clazz.getSuperclass();
