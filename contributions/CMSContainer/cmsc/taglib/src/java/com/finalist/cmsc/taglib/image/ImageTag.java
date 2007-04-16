@@ -121,7 +121,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
       return legend.toString();
    }
 
-   public String getAltAttribute(Node node) throws JspTagException {
+   public String getAltAttribute(Node node) {
 	   // Issue NIJ-149: description cannot use multiple lines when used for alt tag
 	   String alt = findAltAttribute(node);
 	   if (alt == null || "".equals(alt)) {
@@ -132,7 +132,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
    }
 
    /** Finds the alt attribute to use */
-   private String findAltAttribute(Node node) throws JspTagException {
+   private String findAltAttribute(Node node) {
 	   // only use description if this option is selected
 	   // this an ugly quick fix for nijmegen because of the upcoming deathline
 	   // make a better to pick which field to use in the alt

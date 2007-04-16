@@ -1,9 +1,6 @@
 package com.finalist.cmsc.taglib;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -24,7 +21,7 @@ public class RightsTag extends SimpleTagSupport {
 
 	
 	
-	public void doTag() throws JspException, IOException {
+	public void doTag() {
 		Cloud cloud = CloudUtil.getCloudFromThread();
         
 		Node node = cloud.getNode(nodeNumber);

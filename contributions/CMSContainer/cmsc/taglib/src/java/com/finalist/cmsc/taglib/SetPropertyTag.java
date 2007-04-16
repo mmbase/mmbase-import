@@ -1,7 +1,5 @@
 package com.finalist.cmsc.taglib;
 
-import java.io.IOException;
-
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
@@ -20,7 +18,7 @@ public class SetPropertyTag extends SimpleTagSupport {
       this.value = value;
    }
 
-   public void doTag() throws IOException {
+   public void doTag() {
        PropertiesUtil.setProperty(key, value);
    }
 
