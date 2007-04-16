@@ -11,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.25 2006-10-11 19:41:31 michiel Exp $
+    @version $Id: searchlist.xsl,v 1.26 2007-04-16 15:29:39 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -130,7 +130,7 @@
                       title="{field[@name='description']}" />
                     <br />
                     <a
-                      href="{node:saxonFunction($cloud, string(@number), concat(';servletpath(', $cloudkey,')'))}"
+                      href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
                       target="_new">
                       <xsl:call-template name="prompt_image_full" />
                     </a>
