@@ -40,7 +40,7 @@ if(application.getAttribute("events_till")!=null
 }
 parentEvents = new HashSet();
 %>
-<%-- added evenement_type enforcement by a path change. from "evenement" to "evenement,related,evenement_type" --%> 
+<%-- added evenement_type enforcement by a path change. from "evenement" to "evenement,related,evenement_type" --%>
 <mm:list nodes="<%= thisEvents %>" path="evenement,related,evenement_type" fields="evenement.number" constraints="<%= sParentConstraint %>"
    ><mm:field name="evenement.number" jspvar="parent_number" vartype="String" write="false"><% 
       boolean parentBelongsToActivityType = true;
