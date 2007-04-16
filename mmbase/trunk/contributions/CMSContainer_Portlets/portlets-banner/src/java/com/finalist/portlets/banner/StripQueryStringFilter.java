@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 public class StripQueryStringFilter implements Filter {
     
-    static Set parameters = new HashSet();
+    static Set<String> parameters = new HashSet<String>();
     
     public void destroy() {
         // empty
@@ -38,9 +38,9 @@ public class StripQueryStringFilter implements Filter {
 
 class EmptyQueryStringRequestWrapper extends HttpServletRequestWrapper {
     
-    private Set parameters;
+    private Set<String> parameters;
 
-    public EmptyQueryStringRequestWrapper(HttpServletRequest request, Set parameters) {
+    public EmptyQueryStringRequestWrapper(HttpServletRequest request, Set<String> parameters) {
         super(request);
         this.parameters = parameters;
     }
