@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.131 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.132 2007-04-16 08:33:43 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -294,7 +294,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    public Map getProperties() {
+    public Map<String, String> getProperties() {
         if (builder != null) {
             return Collections.unmodifiableMap(builder.getInitParameters());
         } else {
