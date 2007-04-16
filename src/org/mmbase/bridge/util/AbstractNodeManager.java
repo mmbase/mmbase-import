@@ -23,7 +23,7 @@ import org.mmbase.bridge.implementation.BasicFieldList;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.8 2007-04-16 08:33:43 nklasens Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -154,7 +154,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public String getProperty(String name) {
         return null;
     }
-    public Map getProperties() {
+    public Map<String, String> getProperties() {
         return Collections.emptyMap();
     }
 
