@@ -234,33 +234,33 @@ public class ProfileInfo {
     
     /**
      * this method creates profile entry instances for each profiledef in the current forum
-     * that has to be synced with an external profile.
-     * if there is no profile entry for it yet. The status will be 'unsynced' and if any
-     * are added, the status of this profileInfo instance will be 'unsynced' as well.
+     * if there is no profile entry for it yet. If the profile entrydef has an 'external' value,
+     * this profileinfo will be set to 'unsyched' and the relevant profile entry as well.
      */
-    public void createEntriesForDefs(){
+    public void createEntriesForDefs() {
         log.info("checking for missing profile entries");
         boolean added = false;
         if (forum.getProfileDefs() != null) {
             for (Iterator i = forum.getProfileDefs(); i.hasNext();) {
                 ProfileEntryDef profileDef = (ProfileEntryDef) i.next();
-                if (profileDef.getExternal() != null && !"".equals(profileDef.getExternal())) {
-                    String name = profileDef.getName();
-                    if (entries.get(name) == null) {
-                        log.info("adding empty profile entry for (externally synched) entry def " + name);
-                        //do the buisiness
-                        added = true;
-                        ProfileEntry profileEntry = new ProfileEntry();
-                        entries.put(name, profileEntry);
-                        profileEntry.setName(name);
-                        profileEntry.setValue("");
+                String name = profileDef.getName();
+                if (entries.get(name) == null) {
+                    log.info("adding empty profile entry for (externally synched) entry def " + name);
+                    // do the buisiness
+                    
+                    added = true;
+                    ProfileEntry profileEntry = new ProfileEntry();
+                    entries.put(name, profileEntry);
+                    profileEntry.setName(name);
+                    profileEntry.setValue("");
+                    if(profileDef.getExternal() != null && "".equals(profileDef.getExternal())){
                         profileEntry.setSynced(false);
+                        setSynced(false);
                     }
                 }
             }
-        }        
-        if(added){
-            setSynced(false);
+        }
+        if (added) {
             save();
         }
     }
