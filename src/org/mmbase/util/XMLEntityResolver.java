@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.64 2007-01-02 12:20:07 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.65 2007-04-16 08:41:06 nklasens Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -74,9 +74,9 @@ public class XMLEntityResolver implements EntityResolver {
         }
     }
     static class FileResource extends Resource {
-        private final Class clazz;
+        private final Class<?> clazz;
         private final String file;
-        FileResource(Class c, String f) {
+        FileResource(Class<?> c, String f) {
             clazz = c; 
             file = f;
         }
@@ -138,7 +138,7 @@ public class XMLEntityResolver implements EntityResolver {
      *          resource is to be found in the 'resources' package under the package of the class.
      * @since MMBase-1.7
      */
-    public static void registerPublicID(String publicID, String dtd, Class c) {
+    public static void registerPublicID(String publicID, String dtd, Class<?> c) {
         publicIDtoResource.put(publicID, new FileResource(c, dtd));
         if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
     }
@@ -148,7 +148,7 @@ public class XMLEntityResolver implements EntityResolver {
      * @todo EXPERIMENTAL
      * @since MMBase-1.8
      */
-    public static void registerSystemID(String systemID, String xsd, Class c) {
+    public static void registerSystemID(String systemID, String xsd, Class<?> c) {
         systemIDtoResource.put(systemID, new FileResource(c, xsd));
     }
 
@@ -157,7 +157,7 @@ public class XMLEntityResolver implements EntityResolver {
     private boolean hasDefinition; // tells whether or not a DTD/XSD is set - if not, no validition can take place
 
     private boolean  validate;
-    private Class    resolveBase;
+    private Class<?>    resolveBase;
 
 
 
@@ -172,7 +172,7 @@ public class XMLEntityResolver implements EntityResolver {
         this(v, null);
     }
 
-    public XMLEntityResolver(boolean v, Class base) {
+    public XMLEntityResolver(boolean v, Class<?> base) {
         hasDefinition      = false;
         definitionPath     = null;
         validate    = v;
@@ -193,8 +193,8 @@ public class XMLEntityResolver implements EntityResolver {
     protected static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
         os.add(o);
         if (o instanceof Map) {
-            Set<Map.Entry> map = ((Map) o).entrySet();
-            for (Map.Entry entry : map) {
+            Set<Map.Entry<?,?>> map = ((Map) o).entrySet();
+            for (Map.Entry<?,?> entry : map) {
                 Object value = entry.getValue();
                 if (value != null && Casting.isStringRepresentable(value.getClass()) && entry.getKey() instanceof String) {
                     sb.append("<!ENTITY ");
@@ -216,7 +216,7 @@ public class XMLEntityResolver implements EntityResolver {
                     ! name.equals("getNodes") &&
                     name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
                     try {
-                        Class rt = m.getReturnType();
+                        Class<?> rt = m.getReturnType();
                         boolean invoked = false;
                         Object value = null;
                         if (Casting.isStringRepresentable(rt)) {
@@ -319,7 +319,7 @@ public class XMLEntityResolver implements EntityResolver {
                 // first, try MMBase config directory (if initialized)
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
                 if (definitionStream == null) {
-                    Class base = resolveBase; // if resolveBase was specified, use that.
+                    Class<?> base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
                     if (base != null) {
                         if (mmResource.startsWith("xmlns/")) {

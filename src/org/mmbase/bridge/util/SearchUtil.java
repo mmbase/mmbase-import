@@ -458,9 +458,9 @@ public class SearchUtil {
     
     public static StepField findField(Query query, Field field) {
         StepField equalsField = null;
-        Iterator fields = query.getFields().iterator();
+        Iterator<StepField> fields = query.getFields().iterator();
         while(fields.hasNext()) {
-            StepField stepField = (StepField) fields.next();
+            StepField stepField = fields.next();
             if (stepField.getStep().getTableName().equals(field.getNodeManager().getName())) {
                 if (stepField.getFieldName().equals(field.getName())) {
                     equalsField = stepField;
@@ -541,16 +541,16 @@ public class SearchUtil {
         }
     }
 
-    public static void addTypeConstraints(NodeQuery query, List types) {
+    public static void addTypeConstraints(NodeQuery query, List<String> types) {
         FieldValueInConstraint constraint = createTypeConstraints(query, types);
         addConstraint(query, constraint);
     }
 
-    public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List types) {
+    public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List<String> types) {
         Cloud cloud = query.getCloud();
-        SortedSet set = new TreeSet();
-        for (Iterator iter = types.iterator(); iter.hasNext();) {
-            String type = (String) iter.next();
+        SortedSet<Integer> set = new TreeSet<Integer>();
+        for (Iterator<String> iter = types.iterator(); iter.hasNext();) {
+            String type = iter.next();
             NodeManager manager = cloud.getNodeManager(type);
             set.add(manager.getNumber());
         }
@@ -559,12 +559,12 @@ public class SearchUtil {
     }
 
     public static void addNodesConstraints(Query query, Field field, NodeList nodes) {
-        SortedSet set = createNodesConstraints(nodes);
+        SortedSet<Integer> set = createNodesConstraints(nodes);
         addInConstraint(query, field, set);
     }
 
-    public static SortedSet createNodesConstraints(NodeList nodes) {
-        SortedSet set = new TreeSet();
+    public static SortedSet<Integer> createNodesConstraints(NodeList nodes) {
+        SortedSet<Integer> set = new TreeSet<Integer>();
         for (Object element : nodes) {
             Node node = (Node) element;
             set.add(node.getNumber());
@@ -572,12 +572,12 @@ public class SearchUtil {
         return set;
     }
     
-    public static void addInConstraint(Query query, Field field, SortedSet set) {
+    public static void addInConstraint(Query query, Field field, SortedSet<? extends Object> set) {
         FieldValueInConstraint constraint = createInConstraint(query, field, set);
         addConstraint(query, constraint);
     }
 
-    public static FieldValueInConstraint createInConstraint(Query query, Field field, SortedSet set) {
+    public static FieldValueInConstraint createInConstraint(Query query, Field field, SortedSet<? extends Object> set) {
         query.getStep(field.getNodeManager().getName());
         StepField stepfield = getStepField(query, field);        
         FieldValueInConstraint constraint = query.createConstraint(stepfield, set);
@@ -586,9 +586,9 @@ public class SearchUtil {
 
     public static StepField getStepField(Query query, Field field) {
         StepField stepfield = null;
-        Iterator fields = query.getFields().iterator();
+        Iterator<StepField> fields = query.getFields().iterator();
         while(fields.hasNext()) {
-            StepField tempStepField = (StepField) fields.next();
+            StepField tempStepField = fields.next();
             if (tempStepField.getFieldName().equals(field.getName())) {
                 if (tempStepField.getStep().getAlias().equals(field.getNodeManager().getName())) {
                     stepfield = tempStepField;

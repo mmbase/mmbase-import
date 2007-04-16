@@ -166,7 +166,7 @@ public class EmailBuilder extends MMObjectBuilder {
             log.debug("function: " + function);
         }
         if (function.equals("info")) {
-            List empty = new ArrayList();
+            List<?> empty = new ArrayList<Object>();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("gui", "(mailtype or mailstatus) Gui representation of this object.");
             if (args == null || args.size() == 0) {
@@ -238,8 +238,8 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param node	Email node on which to set the type
      * @param args	List with arguments
      */
-    private static void setType(MMObjectNode node, List args) {
-        String type = (String) args.get(0);
+    private static void setType(MMObjectNode node, List<String> args) {
+        String type = args.get(0);
         if ("oneshot".equals(type)) {
             node.setValue("mailtype", TYPE_ONESHOT);
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
@@ -276,7 +276,7 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param expireAge The minimum age of the desired nodes in seconds
      * @return a unmodifiable List of MMObjectNodes
      */
-    List getDeliveredMailOlderThan(long expireAge) {
+    List<MMObjectNode> getDeliveredMailOlderThan(long expireAge) {
         // calc search time based on expire time
         long age = (System.currentTimeMillis() / 1000) - expireAge;
         // query database for the nodes
@@ -293,7 +293,7 @@ public class EmailBuilder extends MMObjectBuilder {
             return storageConnector.getNodes(query, false);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage());
-            return new ArrayList();
+            return new ArrayList<MMObjectNode>();
         }
 
     }
