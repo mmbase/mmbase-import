@@ -1,6 +1,5 @@
 package com.finalist.cmsc.taglib;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +27,8 @@ public class ModulePropertiesTag extends SimpleTagSupport {
     }
 
 
-   public void doTag() throws IOException {
-       Map properties = PropertiesUtil.getModuleProperties(module);
+   public void doTag() {
+      Map<String,String> properties = PropertiesUtil.getModuleProperties(module);
 
       PageContext ctx = (PageContext) getJspContext();
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();

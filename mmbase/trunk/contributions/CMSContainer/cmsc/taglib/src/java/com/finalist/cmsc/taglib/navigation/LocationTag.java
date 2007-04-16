@@ -9,10 +9,7 @@
  */
 package com.finalist.cmsc.taglib.navigation;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import com.finalist.cmsc.beans.om.Page;
@@ -48,7 +45,7 @@ public class LocationTag extends CmscTag {
 	/**
 	 * Find and put location in variable.
 	 */
-	public void doTag() throws JspException, IOException {
+	public void doTag() {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 

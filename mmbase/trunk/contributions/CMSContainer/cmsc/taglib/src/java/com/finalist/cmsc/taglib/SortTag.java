@@ -9,12 +9,10 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.taglib;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -36,7 +34,7 @@ public class SortTag extends SimpleTagSupport {
     
     private String direction;
     
-    public void doTag() throws JspException, IOException {
+    public void doTag() {
         PageContext ctx = (PageContext) getJspContext();
         HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 

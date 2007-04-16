@@ -1,7 +1,6 @@
 package com.finalist.cmsc.taglib.portlet;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.mmbase.bridge.*;
@@ -32,7 +31,7 @@ public class IsAllowedEditTag extends TagSupport {
       this.inverse = inverse;
    }
 
-   public int doStartTag() throws JspException {
+   public int doStartTag() {
         UserRole role = null;
 
         Cloud cloud = CloudUtil.getCloudFromSession((HttpServletRequest) pageContext.getRequest());
