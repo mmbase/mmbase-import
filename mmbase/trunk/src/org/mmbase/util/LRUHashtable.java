@@ -20,7 +20,7 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.26 2006-09-11 11:09:27 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.27 2007-04-16 08:37:36 nklasens Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
@@ -301,7 +301,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * Returns an <code>Enumeration</code> on the table's element values.
      */
-    public synchronized Enumeration elements() {
+    public synchronized Enumeration<V> elements() {
         return new LRUHashtableEnumeration();
     }
 
@@ -310,15 +310,15 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * @deprecated use getOrderedEntries
      */
-    public Enumeration getOrderedElements() {
+    public Enumeration<V> getOrderedElements() {
         return getOrderedElements(-1);
     }
 
     /**
      * @deprecated use getOrderedEntries
      */
-    public Enumeration getOrderedElements(int maxnumber) {
-        List results = new ArrayList();
+    public Enumeration<V> getOrderedElements(int maxnumber) {
+        List<V> results = new ArrayList<V>();
         LRUEntry current = root.next;
         if (maxnumber != -1) {
             int i = 0;
@@ -366,7 +366,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     }
 
 
-    public void config(Map map) {
+    public void config(Map<String,String> map) {
         // lru needs no configuration.
     }
 
@@ -387,8 +387,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * Enumerator for the LRUHashtable.
      */
-    private class LRUHashtableEnumeration implements Enumeration {
-        private Enumeration superior;
+    private class LRUHashtableEnumeration implements Enumeration<V> {
+        private Enumeration<V> superior;
 
         LRUHashtableEnumeration() {
             superior = LRUHashtable.this.elements();
@@ -398,7 +398,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             return superior.hasMoreElements();
         }
 
-        public Object nextElement() {
+        public V nextElement() {
             LRUEntry entry = (LRUEntry) superior.nextElement();
             return entry.value;
         }
@@ -570,7 +570,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         final int OPERS = opers;
         final int THREADS = thrds;
 
-        final LRUHashtable treap = new LRUHashtable(TREESIZ);
+        final LRUHashtable<String,String> treap = new LRUHashtable<String,String>(TREESIZ);
         long ll1 = System.currentTimeMillis();
 
         // fill the map
@@ -600,20 +600,19 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
                             // Put and get mixed
                             int j = Math.abs(rnd.nextInt())%(TREESIZ/2)+(TREESIZ/4);
                             int k = Math.abs(rnd.nextInt())%2;
-                            Object rtn;
                             switch (k) {
                             case 0:
-                                rtn=treap.put(""+j,""+j);
+                                treap.put(""+j,""+j);
                                 score[j][threadnr]++;
                                 break;
                             case 1:
-                                rtn=treap.get(""+j);
+                                treap.get(""+j);
                                 score[j][threadnr]++;
                                 break;
                             }
                             // Only a get
                             j = Math.abs(rnd.nextInt())%(TREESIZ);
-                            rtn = treap.get(""+j);
+                            treap.get(""+j);
                             score[j][threadnr]++;
                         }
                         if (THREADS > 1) {

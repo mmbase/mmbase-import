@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.37 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: XSLTransformer.java,v 1.38 2007-04-16 08:41:06 nklasens Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -190,7 +190,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public static void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public static void transform(File xmlFile, File xslFile, Result result, Map<String,Object> params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -223,7 +223,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public static void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public static void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map<String,Object> params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
             throw  new TransformerException("" + xmlDir + " is not a directory");
         }
@@ -233,9 +233,9 @@ public class XSLTransformer {
         if (! resultDir.isDirectory()) {
             throw  new TransformerException("" + resultDir + " is not a directory");
         }
-        if (params == null) params = new HashMap();
+        if (params == null) params = new HashMap<String,Object>();
 
-        List exclude = (List) params.get("exclude");
+        List<String> exclude = (List<String>) params.get("exclude");
 
         File[] files = xmlDir.listFiles();
         for (File element : files) {
@@ -244,11 +244,11 @@ public class XSLTransformer {
             if (recurse && element.isDirectory()) {
                 if ("CVS".equals(element.getName())) continue;
                 File resultSubDir = new File(resultDir, element.getName());
-                Map myParams;
+                Map<String,Object> myParams;
                 if (params == null) {
-                    myParams = new HashMap();
+                    myParams = new HashMap<String,Object>();
                 } else {
-                    myParams = new HashMap(params);
+                    myParams = new HashMap<String,Object>(params);
                 }
 
                 if (myParams.get("root") == null) {
@@ -339,9 +339,9 @@ public class XSLTransformer {
                         TemplateCache.getCache().setActive(value.equals("true"));
                     } else if (key.equals("exclude")) {
                         if (params.get("exclude") == null) {
-                            params.put("exclude", new ArrayList());
+                            params.put("exclude", new ArrayList<String>());
                         }
-                        List excludes = (List) params.get("exclude");
+                        List<String> excludes = (List<String>) params.get("exclude");
                         excludes.add(value);
                     } else {
                         params.put(key, value);
