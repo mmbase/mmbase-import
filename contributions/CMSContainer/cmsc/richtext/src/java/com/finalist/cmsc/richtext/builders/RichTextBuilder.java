@@ -70,7 +70,8 @@ public class RichTextBuilder extends MMObjectBuilder {
             while(StringUtil.isEmpty(dataType.getName())) {
                 dataType = dataType.getOrigin();
             }
-            if (RichText.RICHTEXT_TYPE.equals(dataType.getName())) {
+            
+            if (isHtmlField(dataType.getName())) {
                  String fieldname = field.getName();
                  log.debug("richtext field: " + fieldname.trim());
                  htmlFields.add(fieldname);
@@ -78,6 +79,16 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
         return true;
     }
+
+    /**
+     * override this method if you have your own rich text fields!
+     * 
+     * @param name
+     * @return
+     */
+    public boolean isHtmlField(String name) {
+      return RichText.RICHTEXT_TYPE.equals(name);
+   }
 
     private void initInlineBuilders() {
         if (inlinerelBuilder == null) {
