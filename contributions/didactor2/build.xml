@@ -103,7 +103,7 @@
     <copy todir="${build.dir}/webapp/WEB-INF/lib" preservelastmodified="true">
       <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
         <include name="**"/>
-        <exclude name="mmbase-rmmci.jar" />
+        <exclude name="mmbase-rmmci-server.jar" />
       </fileset>
     </copy>
   </target>
