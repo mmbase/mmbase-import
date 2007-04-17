@@ -1,0 +1,6 @@
+  <!-- Log controller init -->
+  <listener>
+    <listener-class>nl.didactor.utils.debug.InitLogController</listener-class>
+  </listener>
+  <!-- Log controller init -->
+
