@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editwizards exportsource="cmsc file dumper" timestamp="20060704104617">
+	<node number="202230" owner="default">
+		<name>Event</name>
+		<description>Event</description>
+		<wizard>config/event/event</wizard>
+		<nodepath>event</nodepath>
+		<fields>title</fields>
+	</node>
+</editwizards>

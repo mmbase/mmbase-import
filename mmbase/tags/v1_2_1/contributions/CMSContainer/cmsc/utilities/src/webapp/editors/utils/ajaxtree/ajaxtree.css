@@ -1,0 +1,116 @@
+.ajax-tree-container {
+	margin: 0px;
+	padding: 0px;
+	font: icon;
+	white-space: nowrap;
+}
+
+.ajax-tree-item {
+	padding: 0px;
+	margin: 0px;
+	font: icon;
+	color: black;
+	white-space: nowrap;
+}
+
+.ajax-tree-item a, .ajax-tree-item a:active, .ajax-tree-item a:hover {
+	margin-left: 3px;
+	padding: 1px 2px 1px 2px;
+}
+
+.ajax-tree-item a {
+	color: black;
+	text-decoration: none;
+}
+
+.ajax-tree-item a:hover {
+	color: blue;
+	text-decoration: underline;
+}
+
+.ajax-tree-item a:active {
+	background: highlight;
+	color: highlighttext;
+	text-decoration: none;
+}
+
+.ajax-tree-item img {
+	vertical-align: middle;
+	border: 0px;
+}
+
+.ajax-tree-icon {
+	width: 16px;
+	height: 16px;
+}
+.ajax-tree-item a.selected {
+	color: selectedtext;
+	background: selected;
+}
+
+.ajax-tree-item a.selected-inactive {
+	color: windowtext;
+	background: buttonface;
+}
+
+
+.marked {
+	color: windowtext;
+	background: buttonface;
+	text-decoration: none;
+}
+
+.ajax-tree-item a.ajax-tree-option {
+	margin-left: 0px;
+	padding: 1px 0px 1px 0px;
+}
+
+
+/* styles for the ContextMenu /HTMLArea */
+/* The ContextMenu plugin is (c) dynarch.com 2003. */
+/* Distributed under the same terms as HTMLArea itself */
+
+div.htmlarea-context-menu {
+  position: absolute;
+  border: 1px solid #aca899;
+  padding: 2px 2px;
+  background-color: #ffffff;
+  color: #000;
+  cursor: default;
+  z-index: 1000;
+}
+
+div.htmlarea-context-menu table {
+  font: 11px tahoma,verdana,sans-serif;
+  border-collapse: collapse;
+}
+
+div.htmlarea-context-menu td.icon
+ {
+  width: 18px;
+  height: 18px;
+  background-color: #cdf;
+}
+
+div.htmlarea-context-menu tr.item td.label {
+    
+}
+
+div.htmlarea-context-menu td.label a {
+  text-decoration: none;
+}
+
+
+div.htmlarea-context-menu tr.separator td.label div {
+  margin-right: 3px;
+}
+
+div.htmlarea-context-menu tr.item_hover {
+  background-color: #316ac5;
+  cursor: pointer; cursor: hand;
+  color: #fff;
+}
+
+div.htmlarea-context-menu tr.item_hover td.icon {
+  background-color: #619af5;
+}

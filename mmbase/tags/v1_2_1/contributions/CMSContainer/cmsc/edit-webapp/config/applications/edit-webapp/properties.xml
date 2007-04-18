@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/contentrepository" timestamp="20050101000000">
+
+	<node number="104974" owner="default">
+		<key>dashboard.welcome.message</key>
+		<description>The welcome message shown on the dashboard</description>
+		<value><b>Welcome to the CMS Container editors!</b><br/>The CMS Container team hopes you will enjoy working with our software.<br/>you can edit this message in admin/System properties (dashboard.welcome.message)</value>
+	</node>
+
+</properties>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contentchannel exportsource="mmbase://127.0.0.1/contentrepository" timestamp="20050101000000">
+	<node number="200" owner="admin" alias="repository.root">
+		<name>Repository</name>
+		<pathfragment>Repository</pathfragment>
+	</node>
+	
+	<node number="201" owner="admin" alias="repository.trash">
+		<name>Trash</name>
+		<pathfragment>Trash</pathfragment>
+	</node>
+</contentchannel>
