@@ -120,7 +120,13 @@
 					><mm:first><table border="0" cellpadding="0" cellspacing="0" width="100%"></mm:first>
 						<tr>
 							<td>
-					<mm:node element="contentblocks"><%@include file="../includes/contentblockdetails.jsp" %></mm:node>
+					<mm:node element="contentblocks">
+                                           <%
+                                           String styleClass = "black";
+                                           String styleClassDark = "dark";
+                                           %>
+                                           <%@include file="../includes/contentblockdetails.jsp" %>
+                                        </mm:node>
 							</td>
 						</tr>
 					<mm:last></table></mm:last
