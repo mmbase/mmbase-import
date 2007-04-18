@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.20 2007-04-12 13:23:06 michiel Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.21 2007-04-18 09:11:11 michiel Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -384,7 +384,11 @@ public class ExtendedJMSendMail extends SendMail {
 
                 if (body != null && ! "".equals("body")  && ! mimeType.startsWith("multipart/")) {
                     MimeBodyPart bodyPart = new MimeBodyPart();
-                    bodyPart.setContent(body, mimeType);
+                    if (mimeType.startsWith("text")) {
+                        bodyPart.setContent(body, mimeType + "; charset=UTF-8");
+                    } else {
+                        bodyPart.setContent(body, mimeType);
+                    }
                     mmp.addBodyPart(bodyPart);
                 }
 
