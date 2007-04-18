@@ -58,7 +58,7 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
       // Assemble a hash with data to use when connecting...
       Hashtable<String, String> env = new Hashtable<String, String>();
       env.put(Context.SECURITY_AUTHENTICATION, "simple");
-      env.put(Context.SECURITY_PRINCIPAL, getProperty(PROPERTY_FIELD_REALNAME)+"="+getProperty(PROPERTY_LOGONNAME)+","+searchDN);
+      env.put(Context.SECURITY_PRINCIPAL, "cn="+getProperty(PROPERTY_LOGONNAME)+","+searchDN);
       env.put(Context.SECURITY_CREDENTIALS, getProperty(PROPERTY_LOGONPASSWORD));
       
 
