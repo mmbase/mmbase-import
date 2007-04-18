@@ -38,13 +38,21 @@ String attachmentID = request.getParameter("at");
 	<br/>
 	<img src="media/logo_nm.gif"><img src="media/logo_nuon.gif">
 	<br/>
-	<span class="colortitle">Highlight video's</span>
-	<br>
-		<mm:related path="contentrel,attachments" fields="attachments.titel">
-		<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>?at=<mm:field name="attachments.number" />">
-		<img src="media/link_fun.gif" alt="" border="0" />
-		<mm:field name="attachments.titel" />
-		</a><br/>
+	<mm:related path="contentrel,attachments" fields="attachments.titel">
+	    <mm:field name="attachments.number" jspvar="pagina_number" vartype="String" write="false">  
+	    <mm:first>
+	       <span class="colortitle">Highlight video's</span>
+		   <br/>
+		  </mm:first>
+	    <img src="media/link_fun.gif" alt="" border="0" />
+	    <% 
+      			if(!pagina_number.equals(attachmentID)) { 
+      	         %><a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>?at=<mm:field name="attachments.number" />"><mm:field name="attachments.titel" /></a><%
+      	      } else {
+      	         %><mm:field name="attachments.titel" /><%
+      	      }
+      	      %><br/>
+      	      </mm:field>
 	</mm:related>
 	<br/>
 	</p>
@@ -55,7 +63,7 @@ String attachmentID = request.getParameter("at");
 	<mm:node number="<%= attachmentID %>">
 	
 	<p class="colortitle"><mm:field name="title" /></p>
-	<%--<p><mm:field name="description" /></p>--%>
+	<p><mm:field name="omschrijving" /></p><br/>
       
       <mm:field name="filename" jspvar="attachments_filename" vartype="String" write="false"><%
 					if(attachments_filename.indexOf(".mp3")>-1
@@ -103,14 +111,22 @@ String attachmentID = request.getParameter("at");
 	<br/>
 	<img src="media/logo_nm.gif"><img src="media/logo_nuon.gif">
 	<br/>
-	<span class="colortitle">Highlight video's</span>
-	<br/>
 	
-	<mm:related path="contentrel,attachments" fields="attachments.titel">
-		<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>?at=<mm:field name="attachments.number" />">
-		<img src="media/link_fun.gif" alt="" border="0" />
-		<mm:field name="attachments.titel" />
-		</a><br/>
+	<mm:related path="contentrel,attachments" fields="attachments.titel,attachments.number">
+	    <mm:field name="attachments.number" jspvar="pagina_number" vartype="String" write="false">  
+	       <mm:first>
+	       <span class="colortitle">Highlight video's</span>
+		   <br/>
+		  </mm:first>
+	    <img src="media/link_fun.gif" alt="" border="0" />
+	    <% 
+      			if(!pagina_number.equals(attachmentID)) { 
+      	         %><a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>?at=<mm:field name="attachments.number" />"><mm:field name="attachments.titel" /></a><%
+      	      } else {
+      	         %><mm:field name="attachments.titel" /><%
+      	      }
+      	      %><br/>
+      	</mm:field>
 	</mm:related>
 	
 	<br/>
@@ -133,7 +149,7 @@ String attachmentID = request.getParameter("at");
 					&nbsp;<b><mm:field name="pagina.titel" /></b>
 					</mm:field>
 </mm:related>
-</p>				
+</p><br/>				
 <!-- -->	
 
 

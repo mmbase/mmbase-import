@@ -8,6 +8,8 @@ String rnImageID = request.getParameter("rnimageid");
 
 String shortyRol = ""; 
 
+String callingPageID =request.getParameter("cp"); //for back to webcam functionality
+
 %>
 <mm:import externid="showdate" jspvar="showdateID">false</mm:import>
 <mm:import externid="showpageintro">false</mm:import>
@@ -93,6 +95,12 @@ if(hasRightCell) {
       	<% } %>
       </td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+	<% // back to weblog link according to existence of a passed callingPageID parameter
+	  if (callingPageID !=null) { %>
+	         <jsp:include page="../includes/fun/webcam_backlink.jsp">
+            	<jsp:param name="cp" value="<%= callingPageID %>" />
+   	      </jsp:include>
+	<% } %>
 			<mm:compare referid="shownav" value="true">
 				<jsp:include page="../actie/includes/nav.jsp">
             	<jsp:param name="a" value="<%= artikelID %>" />
