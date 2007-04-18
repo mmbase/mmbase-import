@@ -13,9 +13,19 @@
 		<mm:param name="channel" value="${channel}"/>
 	</mm:url>
 	<mm:compare referid="channel" value="notfound" inverse="true">
-		<mm:url page="/editors/repository/Content.do" id="contenturl" write="false" >
-			<mm:param name="parentchannel" value="${channel}"/>
-		</mm:url>
+		<mm:node referid="channel">
+			<mm:nodeinfo type="type" jspvar="nodetype" write="false"/>
+			<c:if test="${nodetype == 'contentchannel'}">
+				<mm:url page="/editors/repository/Content.do" id="contenturl" write="false" >
+					<mm:param name="parentchannel" value="${channel}"/>
+				</mm:url>
+			</c:if>
+			<c:if test="${nodetype == 'collectionchannel'}">
+				<mm:url page="/editors/repository/ChannelEdit.do" id="contenturl" write="false" >
+					<mm:param name="number" value="${channel}"/>
+				</mm:url>
+			</c:if>
+		</mm:node>
 	</mm:compare>
 </mm:present>
 
