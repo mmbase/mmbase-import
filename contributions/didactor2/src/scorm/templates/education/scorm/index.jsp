@@ -26,9 +26,9 @@
 <mm:cloud method="delegate" jspvar="cloud">
 
 
-<mm:import from="request" externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
-<mm:import from="request" externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
-<mm:import from="request" externid="publish_package"  vartype="String" jspvar="requestPublishPackageID" />
+<mm:import from="parameters" externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
+<mm:import from="parameters" externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
+<mm:import from="parameters" externid="publish_package"  vartype="String" jspvar="requestPublishPackageID" />
 
 
 
@@ -63,10 +63,12 @@
 
 
 %>
+<mm:log>checking ${import_package}</mm:log>
    <mm:present referid="import_package">
-      <mm:node number="$import_package">
-	<%@include file="import.jsp"%>
-      </mm:node>
+     <mm:node number="$import_package">
+       <mm:log>Importing package ${_node}</mm:log>
+       <%@include file="import.jsp"%>
+     </mm:node>
    </mm:present>
 
    <mm:present referid="delete_package">
@@ -85,44 +87,42 @@
 %>
 <mm:log jspvar="log">
 <%
-   log.info("UPloading");
+   log.info("Uploading SCORM package");
        
 
 
-   String fileName = null;
+String fileName = null;
 
-   if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {
-       log.info("UPloading2");
-      if (FileUpload.isMultipartContent(request)) {
-          log.info("UPloading4");
-         DiskFileUpload upload = new DiskFileUpload();
-         upload.setSizeMax(-1); // allow for unlimited file sizes
-         upload.setSizeThreshold(4096);
-         upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
-         List items = upload.parseRequest(request);
-         Iterator itr = items.iterator();
-         log.info("items .." + items);
-         while(itr.hasNext()) {
-             FileItem item = (FileItem) itr.next();
-             log.info("UPloading2 .." + item);
-             
-             if (item.isFormField()) {
-                 if (item.getFieldName().equals("manager")) {
-                     mtype = item.getString();
-                 }
-             } else {
-                 String fieldName = item.getFieldName();
-                 File fileSrc = null;
-                 if(fieldName.equals("filename")) {
-                     //------------- Uploading of new package ----------------
-                     
-                     //Create a new node which describes this package
-                     nodePackage = cloud.getNodeManager("packages").createNode();
-                     nodePackage.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
-                     nodePackage.setValue("type", "SCORM");
-                     nodePackage.commit();
-                     
-                     fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
+if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {
+    if (FileUpload.isMultipartContent(request)) {
+        DiskFileUpload upload = new DiskFileUpload();
+        upload.setSizeMax(-1); // allow for unlimited file sizes
+        upload.setSizeThreshold(4096);
+        upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
+        List items = upload.parseRequest(request);
+        Iterator itr = items.iterator();
+        while(itr.hasNext()) {
+            FileItem item = (FileItem) itr.next();
+            log.debug("Considering .." + item);
+            
+            if (item.isFormField()) {
+                if (item.getFieldName().equals("manager")) {
+                    mtype = item.getString();
+                }
+            } else {
+                String fieldName = item.getFieldName();
+                File fileSrc = null;
+                if(fieldName.equals("filename")) {
+                    log.info("Creating node of type packages");
+                    //------------- Uploading of new package ----------------
+                    
+                    //Create a new node which describes this package
+                    nodePackage = cloud.getNodeManager("packages").createNode();
+                    nodePackage.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
+                    nodePackage.setValue("type", "SCORM");
+                    nodePackage.commit();
+                    
+                    fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
 
                      try {
                          //Internal server error
@@ -269,14 +269,15 @@
          <table class="searchcontent">
             <tr>
                <td>
-                  <form  method="POST" enctype="multipart/form-data">
-                     <input type="file" name="filename"  style="width:200px; height:20px">
-                     <input type="submit" value="Upload" style="width:60px; text-align:center">
-                  </form>
+		 <mm:link>
+		   <form  action="${_}" method="POST" enctype="multipart/form-data">
+		     <input type="file" name="filename"  style="width:200px; height:20px" />
+		     <input type="submit" value="Upload" style="width:60px; text-align:center" />
+		   </form>
+		 </mm:link>
                   <%
-                     if (uploadOK)
-                     {
-                        %><b><di:translate key="scorm.scormpackagelistuploadok" /></b><%
+                     if (uploadOK) {
+                         %><b><di:translate key="scorm.scormpackagelistuploadok" /></b><%
                      }
                   %>
                   <b><%= msg %></b>

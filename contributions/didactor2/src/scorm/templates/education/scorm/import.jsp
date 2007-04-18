@@ -11,7 +11,7 @@
 <%@page import="uk.ac.reload.scormplayer.client.generic.contentpackaging.ScormPackageHandler"%>
 
 
-
+    <mm:log jspvar="log">
 <%
    fileStoreDir = new File(CommonUtils.fixPath(directory + File.separator + requestImportPackageID));
    fileTempDir  = new File(CommonUtils.fixPath(directory + File.separator + requestImportPackageID + "_"));
@@ -34,39 +34,35 @@
 */
 
 
-   try
-   {//Importing the package
-      File fileManifest = new File(CommonUtils.fixPath(fileTempDir.getAbsolutePath()  + File.separator + CP_Core.MANIFEST_NAME));
-      XMLDocument xmlDocument = new XMLDocument();
-      xmlDocument.loadDocument(fileManifest);
-
-      ScormPackageHandler test = new ScormPackageHandler(fileManifest, requestImportPackageID);
-      test.buildSettings();
-
-
-
-      nodePackage = cloud.getNode(requestImportPackageID);
-      nodePackage.setValue("importdate", "" + ((new Date()).getTime() / 1000));
-      nodePackage.commit();
+   try {//Importing the package
+       log.info("Importing");
+       File fileManifest = new File(CommonUtils.fixPath(fileTempDir.getAbsolutePath()  + File.separator + CP_Core.MANIFEST_NAME));
+       XMLDocument xmlDocument = new XMLDocument();
+       xmlDocument.loadDocument(fileManifest);
+       
+       ScormPackageHandler test = new ScormPackageHandler(fileManifest, requestImportPackageID);
+       test.buildSettings();
+       
 
 
-      msg = "Import successful";
+       nodePackage = cloud.getNode(requestImportPackageID);
+       nodePackage.setValue("importdate", "" + ((new Date()).getTime() / 1000));
+       nodePackage.commit();
+       
+       
+       msg = "Import successful";
 
-   }
-   catch(Exception e)
-   {
+   } catch(Exception e) {
       msg = "An Error during import: <br/>" + e.toString();
    }
 
 
 
-   try
-   {//removing all temporal files
-//      Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), false);
-//      Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), true);
-   }
-   catch(Exception e)
-   {//internal server error
+   try {//removing all temporal files
+       //  Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), false);
+       //      Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), true);
+   } catch(Exception e)     {//internal server error
    }
 
 %>
+       </mm:log>
