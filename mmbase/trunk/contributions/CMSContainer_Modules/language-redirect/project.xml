@@ -11,12 +11,4 @@ See http://www.MMBase.org/license
     <artifactId>cmsc-modules-languageredirect</artifactId>
     <name>CMS Container language redirector</name>
     <shortDescription>Redirects the user to a page in a different language.</shortDescription>	
-    <dependencies>
-		<dependency>
-			<groupId>mmapps</groupId>
-			<artifactId>remotepublishing</artifactId>
-			<version>1.0.10</version>
-			<type>jar</type>
-		</dependency>
-	</dependencies>
 </project>
