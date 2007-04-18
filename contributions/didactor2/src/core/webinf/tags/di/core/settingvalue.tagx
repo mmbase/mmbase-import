@@ -12,7 +12,7 @@
   <jsp:directive.attribute name="name"        required="true" /> 
   <jsp:directive.attribute name="write"  /> 
   <jsp:directive.variable name-given="_" variable-class="java.lang.String"  />
-  
+  <mm:cloud>
   <mm:node number="${empty component ? requestScope._component.number : component}" jspvar="node">
     <mm:field name="name" jspvar="compName" vartype="string" write="false">
       <jsp:scriptlet>
@@ -35,5 +35,5 @@
     <mm:isempty><mm:write referid="_v" write="${write}" /></mm:isempty>
     <mm:write escape="none" write="${write}" />
   </mm:write>
-
+  </mm:cloud>
 </jsp:root>
