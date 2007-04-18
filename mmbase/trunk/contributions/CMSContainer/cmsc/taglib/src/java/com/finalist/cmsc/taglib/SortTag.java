@@ -100,10 +100,13 @@ public class SortTag extends SimpleTagSupport {
             try {
                 Object value1 = PropertyUtils.getProperty(o1, propertyName);
                 Object value2 = PropertyUtils.getProperty(o2, propertyName);
-                if (value1 != null && value2 != null 
-                        && value1 instanceof Comparable
-                        && value2 instanceof Comparable) {
-                    result = ((Comparable) value1).compareTo(value2);
+                if (value1 != null && value2 != null) {
+                   if(value1 instanceof String && value2 instanceof String) {
+                      result = ((String) value1).compareToIgnoreCase((String)value2);
+                   }
+                   else if(value1 instanceof Comparable && value2 instanceof Comparable) {
+                      result = ((Comparable) value1).compareTo(value2);
+                   }
                 }
             }
             catch (IllegalAccessException e) {
