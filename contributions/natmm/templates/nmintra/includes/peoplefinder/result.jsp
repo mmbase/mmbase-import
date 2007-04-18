@@ -19,7 +19,7 @@ if(!action.equals("print")) {
           employeeConstraint = su.sEmployeeConstraint;
         } else { 
           // if onlyProgramSelect all employees are selected, use a dummy clause to create a correct SQL statement
-          employeeConstraint = "( medewerkers.importstatus == 'active')";
+          employeeConstraint = "( medewerkers.importstatus = 'active')";
         }
         if(!firstnameId.equals("")) {
             employeeConstraint += " AND ";
