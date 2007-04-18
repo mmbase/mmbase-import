@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/guestbook" timestamp="20050919142139">
+	<node number="44001" owner="default">
+		<title>GuestBookPortlet</title>
+		<description>GuestBookPortlet</description>
+		<definition>guestbookportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>
