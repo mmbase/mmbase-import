@@ -3,8 +3,9 @@ package org.mmbase.applications.friendlylink;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
-import org.mmbase.cache.oscache.OSCacheImplementation;
 
+import org.mmbase.core.event.*;
+import org.mmbase.cache.oscache.OSCacheImplementation;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -12,23 +13,27 @@ import org.mmbase.util.logging.Logging;
  * Originally copied from LeoCMS. The cache contains two Maps: one maps JSP urls
  * to 'userfriendly' urls and the other the other way around.
  * Added methods to check if a certain cache entry exists.
- * It depends on the MMBase OSCache application.
+ * It depends on the MMBase OSCache application and listens to NodeEvents.
  *
  * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlCache.java,v 1.3 2007-03-04 21:06:07 andre Exp $
+ * @version $Id: UrlCache.java,v 1.4 2007-04-18 12:46:50 andre Exp $
  */
 
-public class UrlCache {
+public class UrlCache implements NodeEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(UrlCache.class);
 
     private final Map cacheJSPToURL;
     private final Map cacheURLToJSP;
+    private final Map cacheNodeToJSP;
   
     public UrlCache() {
-        cacheJSPToURL = new OSCacheImplementation();
-        cacheURLToJSP = new OSCacheImplementation();
+        cacheJSPToURL  = new OSCacheImplementation();
+        cacheURLToJSP  = new OSCacheImplementation();
+        cacheNodeToJSP = new OSCacheImplementation();
+        // register with mmbase
+        EventManager.getInstance().addEventListener(this);
         // set path explicitly, otherwise java.lang.NullPointerException
         // at org.mmbase.cache.oscache.OSCacheImplementation.get(OSCacheImplementation.java:135)
         String tempdir = System.getProperty("java.io.tmpdir");
@@ -39,14 +44,38 @@ public class UrlCache {
         config.put("path", tempdir);
         ((OSCacheImplementation)cacheJSPToURL).config(config);
         ((OSCacheImplementation)cacheURLToJSP).config(config);
+        ((OSCacheImplementation)cacheNodeToJSP).config(config);
         
     }
-  
+    
+    public void notify(NodeEvent event) {
+        int type = event.getType();
+        log.debug("Something should be done...");
+        if (type == Event.TYPE_DELETE || type == Event.TYPE_CHANGE) {
+            // remove(event.getNodeNumber());
+            int nodenr = event.getNodeNumber();
+            log.debug("Node: " + nodenr + " should (maybe) be removed");
+            
+            String jsp = getJspEntryFromNode(nodenr); // cacheNodeToJSP
+            String url = getURLEntry(jsp);
+            cacheNodeToJSP.remove(nodenr);
+            cacheJSPToURL.remove(jsp);
+            cacheURLToJSP.remove(url);
+        }
+    }
+        
     public void flushAll() {
         cacheJSPToURL.clear();
         cacheURLToJSP.clear();
+        cacheNodeToJSP.clear();
     }
-  
+    
+    public void putEntries(String nodenr, String jsp, String url) {
+        putJSPEntry(url, jsp);
+        putURLEntry(jsp, url);
+        putNodeEntry(nodenr, jsp);
+    }
+    
     /** 
      * Checks for the technical URL (jsp) in cache. 
      * The processed URL (friendlylink) is the key of the Map cacheURLToJSP,
@@ -93,7 +122,27 @@ public class UrlCache {
     public String getURLEntry(String jsp) {
         return (String)cacheJSPToURL.get(jsp);
     }
-
+    
+    /**
+     * Saves nodenumbers and their jsp urls, to enable flushing links
+     * 
+     * @param nodenr  number of a node
+     * @param jsp     technical url
+     */    
+    public void putNodeEntry(String nodenr, String jsp) {
+        cacheNodeToJSP.put(nodenr, jsp);
+    }
+    
+    /**
+     * Get jsp url
+     *
+     * @param  
+     * @return 
+     */
+    public String getJspEntryFromNode(int nodenr) {
+        return (String) cacheNodeToJSP.get(nodenr);
+    }
+    
     /** 
      * Common toString() method to return all cache entries
      *
@@ -111,6 +160,12 @@ public class UrlCache {
         for (Iterator it=cacheURLToJSP.keySet().iterator();it.hasNext();) {
           String key = (String)it.next();
           String value = (String)cacheURLToJSP.get(key);
+          sb.append(key).append(" - ").append(value).append("<br />");
+        }
+        sb.append("<h4>Node to JSP Cache</h4>");
+        for (Iterator it=cacheNodeToJSP.keySet().iterator();it.hasNext();) {
+          String key = (String) it.next();
+          String value = (String) cacheNodeToJSP.get(key);
           sb.append(key).append(" - ").append(value).append("<br />");
         }
         return sb.toString();
