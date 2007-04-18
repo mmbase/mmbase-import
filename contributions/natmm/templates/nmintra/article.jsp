@@ -56,10 +56,15 @@ if(twoColumns) {
 <% 
 if(twoColumns) { 
    // *********************************** right bar *******************************
+   String styleClass = "white";
+   String styleClassDark = "white";
+         
    %><td style="padding-left:10px;">
    <div class="rightcolumn" id="rightcolumn">
    <mm:list nodes="<%= paginaID %>" path="pagina,readmore,contentblocks" orderby="readmore.pos">
-      <mm:node element="contentblocks"><%@include file="includes/contentblockdetails.jsp" %></mm:node>
+      <mm:node element="contentblocks">
+         <%@include file="includes/contentblockdetails.jsp" %>
+      </mm:node>
       <br/>
    </mm:list>
    </div>
