@@ -7,11 +7,14 @@
   </scope>
   <scope name="educations" referid="education">
     <setting ref="showlocation" />
+    <setting name="students"     type="boolean" default="true" />
+    <setting name="coaches"      type="boolean" default="false" />
   </scope>
+  <!--
   <scope name="classes" referid="class">
     <setting ref="showlocation" />
   </scope>
-  <!--
+
   <scope name="people" referid="user">
   </scope>
   -->
