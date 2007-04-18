@@ -69,6 +69,7 @@
 	</head>
 	<body style="overflow: auto" onload="loadFunction();">
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
+		<mm:import externid="channel" from="request" />
 
 	<div id="left">
  		<div class="side_block" style="width: 241px;">
@@ -111,7 +112,18 @@
 				<div class="header_end"></div>
 			</div>
 			<div class="search_form">
- 				<mm:node number="${param.channel}">
+			
+				<c:if test="${!empty param.channel}">
+	 				<mm:node number="${param.channel}">
+						<mm:field name="path" jspvar="channelPath" write="false" />
+					</mm:node>
+				</c:if>
+				<html:form action="/editors/repository/QuickSearchAction" target="bottompane" styleId="addressBarForm">
+					<html:text property="path" value="${channelPath}" styleId="addressbar"/>
+				</html:form>
+
+			
+				<mm:node referid="channel" jspvar="channel">
 					<mm:field name="path" id="channelPath" write="false" />
 					<html:form action="/editors/repository/QuickSearchAction" target="bottompane" styleId="addressBarForm">
 							<html:text property="path" value="${channelPath}" styleId="addressbar"/>
