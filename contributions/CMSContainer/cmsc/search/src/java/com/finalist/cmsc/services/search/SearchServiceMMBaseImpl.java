@@ -70,75 +70,26 @@ public class SearchServiceMMBaseImpl extends SearchService {
     
     @Override
     public PageInfo findDetailPageForContent(Node content) {
-        NodeList pages = findPagesForContent(content, null);
+        List<Node> pages = findPagesForContent(content, null);
         if (!pages.isEmpty()) {
-            Node pageQueryNode = null;
-            if (pages.size() == 1) {
-                pageQueryNode = pages.getNode(0);
-            }
-            else {
-                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = iter.next();
-                    String key = pageNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
-                    if ("contentelement".equals(key)) {
-                        pageQueryNode = pageNode;
-                        break;
+            filterPageQueryNodes(pages, content);
+            if (!pages.isEmpty()) {
+                List<PageInfo> pageInfos = new ArrayList<PageInfo>(); 
+                for (Node pageNode : pages) {
+                    PageInfo info = getPageInfo(pageNode, true);
+                    if (info != null && !pageInfos.contains(info)) {
+                        pageInfos.add(info);
                     }
                 }
-            }
-            if (pageQueryNode != null) {
-                // It was one page match or the content is placed in a detail portlet
-                return getPageInfo(pageQueryNode, true);
-            }
-            else {
-                // The homepage (Site object) has a lower preference than a page deeper in the tree 
-                List<Node> pageNodes = new ArrayList<Node>();
-                for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
-                    Node pageNode = iter.next();
-                    Page page = SiteManagement.getPage(pageNode.getIntValue(PagesUtil.PAGE + ".number"));
-                    if (page != null && !(page instanceof Site)) {
-                        pageNodes.add(pageNode);
-                    }
-                }
-                if (pageNodes.isEmpty()) {
-                    // all matches are sites
-                    return findBestOfDetailPages(content, pages);
-                }
-                else {
-                    // find page which is most suitable to use as detail page
-                    return findBestOfDetailPages(content, pageNodes);
+                if (!pageInfos.isEmpty()) {
+                    Collections.sort(pageInfos, new PageInfoComparator());
+                    return pageInfos.get(0);
                 }
             }
         }
         return null;
     }
 
-    private PageInfo findBestOfDetailPages(Node content, List<Node> pages) {
-        filterPageQueryNodes(pages, content);
-        if (!pages.isEmpty()) {
-            List<PageInfo> pageInfos = new ArrayList<PageInfo>(); 
-            for (Node pageNode : pages) {
-                PageInfo info = getPageInfo(pageNode, true);
-                if (info != null && !pageInfos.contains(info)) {
-                    pageInfos.add(info);
-                }
-            }
-            PageInfo result = null;
-            int prio = 0;
-            for (PageInfo pageInfo : pageInfos) {
-                String prioKey = pageInfo.getLayout() + "." + pageInfo.getWindowName();
-                int infoPrio = getPriority(prioKey);
-                if (infoPrio > prio) {
-                    prio = infoPrio;
-                    result = pageInfo;
-                }
-            }
-            return result;
-        }
-        
-        return null;
-    }
-    
     private void filterPageQueryNodes(List<Node> pages, Node content) {
         for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
             Node pageQueryNode = iter.next();
@@ -233,10 +184,10 @@ public class SearchServiceMMBaseImpl extends SearchService {
         Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
         if (page != null) {
             String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
-            
+            String parameterName = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
+
             if (clicktopage) {
-                String key = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
-                if ("contentchannel".equals(key)) {
+                if ("contentchannel".equals(parameterName)) {
                     Integer portletId = page.getPortlet(portletWindowName);
                     Portlet portlet = SiteManagement.getPortlet(portletId);
                     
@@ -257,7 +208,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
             String pagePath = SiteManagement.getPath(page, !ServerUtil.useServerName());
             Layout layout = SiteManagement.getLayout(page.getLayout());
-            PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName, layout.getResource());
+            String prioKey = layout.getResource() + "." + portletWindowName;
+            int infoPrio = getPriority(prioKey);
+            boolean isSite = (page instanceof Site);
+            
+            PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName,
+                    layout.getResource(), infoPrio, parameterName, isSite);
             return pageInfo;
         }
         return null;
