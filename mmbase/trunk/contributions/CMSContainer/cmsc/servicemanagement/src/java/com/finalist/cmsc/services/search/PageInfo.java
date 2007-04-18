@@ -10,18 +10,27 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.search;
 
 public class PageInfo {
+    
     private int pageNumber;
     private String path;
     private String windowName;
     private String layout;
-    
-    public PageInfo(int pageNumber, String path, String windowName, String layout) {
+
+    private int priority = -1;
+    private String parametername;
+    private boolean isSite;
+
+    public PageInfo(int pageNumber, String path, String windowName, String layout, 
+            int priority, String parametername, boolean isSite) {
         this.pageNumber = pageNumber;
         this.path = path;
         this.windowName = windowName;
         this.layout = layout;
+        this.priority = priority;
+        this.parametername = parametername;
+        this.isSite = isSite;
     }
-
+    
     public int getPageNumber() {
         return pageNumber;
     }
@@ -36,6 +45,30 @@ public class PageInfo {
 
     public String getLayout() {
         return layout;
+    }
+    
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getParametername() {
+        return parametername;
+    }
+
+    public void setParametername(String parametername) {
+        this.parametername = parametername;
+    }
+    
+    public boolean isSite() {
+        return isSite;
+    }
+
+    public void setSite(boolean isSite) {
+        this.isSite = isSite;
     }
     
     @Override
@@ -60,4 +93,5 @@ public class PageInfo {
             if (!windowName.equals(other.windowName)) return false;
         return true;
     }
+
 }
