@@ -1,0 +1,115 @@
+==============
+Introduction
+==============
+
+Maven is a Java project management and project comprehension tool.
+Maven is based on the concept of a project object model (POM) in that
+all the artifacts produced by Maven are a result of consulting a well
+defined model for your project. Builds, documentation, source metrics,
+and source cross-references are all controlled by your POM
+
+
+==============
+Property files
+==============
+
+Maven supports a hierarchy of different properties to allow specifying defaults
+and overriding them at the appropriate level.
+
+The properties files in Maven are processed in the following order:
+ 1. Built-in properties are processed
+ 2. ${basedir}/project.properties (basedir is replaced by the directory where 
+    the project.xml file in use resides)
+ 3. ${basedir}/build.properties
+ 4. ${user.home}/build.properties
+ 5. System properties
+
+The built-in properties are specified in the plugin.properties file of a plugin,
+or in defaults.properties within Maven itself.
+
+Both the project.properties and build.properties files in the project directory
+are also inherited along with the related project.xml file.
+
+The last definition takes precedence, so ${user.home}/build.properties will 
+override anything specified in a project, and properties given on the command
+line using -D will override everything. 
+
+${basedir}/project.properties
+    These are properties specific to the project and can be used to set the values
+    for plugin and Maven properties that are appropriate for that project. This
+    file should be checked into your source repository and distributed.
+${basedir}/build.properties
+    These are properties specific to the project, but also the user running it.
+    It is for overriding values in the project.properties for this user only.
+    It should not be checked into the source repository. If a user is required
+    to set any of these properties for a build to run properly, a 
+    build.properties.sample file should be created and checked into the source
+    repository as a courtesy.
+${user.home}/build.properties
+    These are properties specific to the user but shared among all projects. 
+    This typically specifies remote repositories to download from and upload to,
+    proxy settings, file system locations, and so on.
+
+    
+=====================
+Artifact Repositories
+=====================
+
+A repository in Maven is used to hold build artifacts and dependencies of varying types.
+There are strictly only two types of repositories: local and remote. The local
+repository refers to a copy on your own installation that is a cache of the remote
+downloads, and also contains the temporary build artifacts that you have not yet
+released.
+
+Remote repositories refer to any other type of repository, accessed by a variety
+of protocols such as file:// and http://. These repositories might be a truely
+remote repository set up by a third party to provide their artifacts for downloading
+(for example, Ibiblio houses Maven's central repository). Other "remote" repositories
+may be internal repositories set up on a file or HTTP server within your company,
+used to share private artifacts between development teams and for releases.
+
+The local and remote repositories are structured the same way so that scripts can
+easily be run on either side, or they can be synced for offline used.
+
+Building Offline
+----------------
+If you find you need to build your projects offline you can either use the offline
+switch on the CLI:
+    maven -o jar:jar
+This is equivalent to:
+    maven -Dmaven.mode.online=false jar:jar
+Or you can set maven.mode.online to false in your build.properties file to ensure
+you always work offline.
+
+Note that many plugins will honour the offline setting and not perform any operations
+that would connect to the internet. Some examples are resolving Javadoc links and
+link checking the site.
+
+If you would like normal operations to succeed, but for no dependency downloading
+to occur, set the maven.repo.remote.enabled property to false.
+Unresolvable artifacts
+----------------------
+Due to license restrictions some libraries can't be redistribitued by others 
+than Sun, so you'll have to get it yourself.
+
+You'll have to download each one and place it in your local Maven repository
+(on UNIX systems, this defaults to ~/.maven/repository/; on Windows, it's in the
+equivalent "home" directory)
+
+In the "repository" folder, make one directory for each "groupId" -- in cases 
+where there is no "groupId" but only an "id", make a directory with that name.
+Then in each of those directories, make a jars directory. A UNIX example:
+
+cd ~/.maven/repository
+mkdir -p ejb/jars
+mkdir -p jdo/jars
+mkdir -p jta/jars
+mkdir -p jai/jars
+and so on
+
+Then, copy each of the downloaded jars into the corresponding directory. You may
+also need to rename the JAR in the form {artifactId}-{version}.jar, except in 
+the case of "ejb" where the dependency overrides the naming convention.
+
+This part is a little tricky the first time, but you only have to do it once,
+and it becomes pretty natural.
