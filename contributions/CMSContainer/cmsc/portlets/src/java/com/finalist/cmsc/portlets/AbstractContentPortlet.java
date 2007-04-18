@@ -212,14 +212,24 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
     }
     
     protected void setMetaData(RenderRequest req, String elementId) {
-        ContentElement element = ContentRepository.getContentElement(elementId);
-        
-        PortletFragment portletFragment = getPortletFragment(req);
-        portletFragment.addHeaderResource(new MetaHeaderResource(true, "title", element.getTitle()));
-        portletFragment.addHeaderResource(new MetaHeaderResource(true, "subject", element.getKeywords()));
-        portletFragment.addHeaderResource(new MetaHeaderResource(true, "date", formatDate(element.getCreationdate())));
-        portletFragment.addHeaderResource(new MetaHeaderResource(true, "identifier", elementId));
-        portletFragment.addHeaderResource(new MetaHeaderResource(true, "coverage", formatDate(element.getPublishdate())+" - "+formatDate(element.getExpirydate())));
+       try {
+           ContentElement element = ContentRepository.getContentElement(elementId);
+           
+           PortletFragment portletFragment = getPortletFragment(req);
+           portletFragment.addHeaderResource(new MetaHeaderResource(true, "title", element.getTitle()));
+           portletFragment.addHeaderResource(new MetaHeaderResource(true, "subject", element.getKeywords()));
+           portletFragment.addHeaderResource(new MetaHeaderResource(true, "date", formatDate(element.getCreationdate())));
+           portletFragment.addHeaderResource(new MetaHeaderResource(true, "identifier", elementId));
+           portletFragment.addHeaderResource(new MetaHeaderResource(true, "coverage", formatDate(element.getPublishdate())+" - "+formatDate(element.getExpirydate())));
+       }
+       catch(RuntimeException re) {
+          if(re.getMessage().startsWith("Node not found")) {
+             getLogger().debug("Node not found", re);
+          }
+          else {
+             getLogger().error(re);
+          }
+       }
     }
 
 	private String formatDate(Date date) {
