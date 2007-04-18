@@ -318,21 +318,21 @@
              <input type='hidden' id="remark" name="remark" value="[unchanged-item]" />
              <br/>
           <c:if test="${status == 'draft' }">
-             <input name="action" value="<fmt:message key="workflow.action.finish" />" onclick="setActionValue('finish')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.finish" />" onclick="return setActionValue('finish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'finished' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="return setActionValue('reject','','${remark}')" type="submit"/>
              <c:if test="${acceptedEnabled}">
-             <input name="action" value="<fmt:message key="workflow.action.accept" />" onclick="setActionValue('accept')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.accept" />" onclick="return setActionValue('accept')" type="submit"/>
              </c:if>
-             <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="setActionValue('publish')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="return setActionValue('publish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'approved' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
-             <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="setActionValue('publish')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="return setActionValue('reject','','${remark}')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.publish" />" onclick="return setActionValue('publish')" type="submit"/>
           </c:if>
           <c:if test="${status == 'published' }">
-             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="setActionValue('reject','','${remark}')" type="submit"/>
+             <input name="action" value="<fmt:message key="workflow.action.reject" />" onclick="return setActionValue('reject','','${remark}')" type="submit"/>
           </c:if>
        </form>
 
