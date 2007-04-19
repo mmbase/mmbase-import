@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.54 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: MMBaseContext.java,v 1.55 2007-04-19 13:29:36 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -215,9 +215,7 @@ public class MMBaseContext {
      */
     public synchronized static void initHtmlRoot() throws ServletException {
         if (!initialized || sx == null) {
-            String message = "The init(ServletContext) method should be called first.";
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new RuntimeException("The init(ServletContext) method should be called first.");
         }
         if (!htmlRootInitialized) {
             // Init htmlroot.
@@ -292,9 +290,7 @@ public class MMBaseContext {
      */
     public synchronized static String getHtmlRoot() {
         if (!htmlRootInitialized) {
-            String message = "The initHtmlRoot method should be called first.";
-            log.error(message);
-            throw new RuntimeException();
+            throw new RuntimeException("The initHtmlRoot method should be called first.");
         }
        return htmlRoot;
     }
@@ -310,9 +306,7 @@ public class MMBaseContext {
      */
     public synchronized static String getOutputFile() {
         if (!initialized) {
-            String message = "The init method should be called first.";
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new RuntimeException("The init method should be called first.");
         }
         return outputFile;
     }
@@ -328,9 +322,7 @@ public class MMBaseContext {
         if (! htmlRootUrlPathInitialized) {
             log.info("Finding root url");
             if (! initialized) {
-                String message = "The init method should be called first.";
-                log.error(message);
-                throw new RuntimeException(message);
+                throw new RuntimeException("The init method should be called first.");
             }
             if (sx == null) { // no serlvetContext -> no htmlRootUrlPath
                 htmlRootUrlPathInitialized = true;
