@@ -10,9 +10,8 @@
 
   <div class="progressMeter">
     <di:hasrole role="student">
-      <mm:timer>
-        <mm:import jspvar="progress" id="progress"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"/></mm:import>
-      </mm:timer>
+      <mm:import id="progress"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"/></mm:import>
+
       <img src="<mm:treefile write="true" page="/gfx/bar_left.gif" objectlist="$includePath" />" width="4" height="13" alt="" /><img src="<mm:treefile write="true" page="/gfx/bar_center.gif" objectlist="$includePath" />" width="${progress * 92}" height="13" alt="" /><img src="<mm:treefile write="true" page="/gfx/bar_right.gif" objectlist="$includePath" />" width="4" height="13" alt="" />
       </di:hasrole>
   </div>
