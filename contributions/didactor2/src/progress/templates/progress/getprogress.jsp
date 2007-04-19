@@ -1,12 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
+<mm:cloud method="delegate">
 
-
-<mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
-
-<%@include file="/shared/setImports.jsp" %>
-<%@include file="/education/tests/definitions.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="/education/tests/definitions.jsp" />
 
 
 <%-- report either the current user's progress, or the one given by "student" argument --%>
@@ -29,6 +27,7 @@
       <mm:relatednodescontainer type="learnobjects" role="posrel">
          <mm:sortorder field="posrel.pos" direction="up"/>
 
+         <mm:timer>
          <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
            <mm:nodeinfo type="type">
              <mm:compare value="tests">
@@ -36,7 +35,7 @@
                   nof_tests++;
                %>
                <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
-
+               
                <%@include file="teststatus.jsp"%>
 
                <mm:compare referid="teststatus" value="passed">
@@ -45,6 +44,7 @@
             </mm:compare>
            </mm:nodeinfo>
          </mm:tree>
+         </mm:timer>
       </mm:relatednodescontainer>
 
       <%
@@ -56,5 +56,5 @@
 </mm:node>
 
 </mm:cloud>
-</mm:content>
+
 
