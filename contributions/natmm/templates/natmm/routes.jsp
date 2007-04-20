@@ -99,7 +99,15 @@
                   fields="artikel.titel,artikel.number,artikel.type"
                   constraints="<%= searchConVar %>"
                   orderby="artikel.status">
-                  <tr><td style="vertical-align:top;"><mm:field name="artikel.status"/>&nbsp;|</td> 
+                  <tr>
+                     <td style="vertical-align:top;white-space: nowrap;">
+                        <mm:field name="artikel.status"/>&nbsp;|
+                        <mm:field name="artikel.titel_eng" jspvar="weidegang" vartype="String">
+                           <% if (weidegang != null && weidegang.equals("1")) { %>
+                              <img src="media/logos/weidemelk.jpg" width="40px" style="vertical-align:top;"/>
+                           <% }  %>
+                        </mm:field>
+                      </td> 
                       <td style="vertical-align:top;">
                         <a class="maincolor_link" href="javascript:void(0);" onclick="javascript:launchCenter('/natmm-internet/natmm/route_pop.jsp?a=<mm:field name="artikel.number"
                            />&rs=<%=styleSheet%>', 'route', 600, 800,'location=no,directories=no,status=no,toolbars=no,scrollbars=yes,resizable=yes');setTimeout('newwin.focus();',250);">
