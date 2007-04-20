@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.3 - Release Notes
+                     MMBase 1.8.4 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.3, relative to the previous release of MMBase (1.7.x).
+release of MMBase 1.8.4, relative to the previous release of MMBase (1.7.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -24,6 +24,13 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
 --------------------
 General New Features:
 --------------------
+[1.8.4]
+  Added capabilities to sort queries on parts of a date (such as date-of-year, which can be used to
+  sort, for instance, on birthdays).
+  The mmbase taglib sortorder tag now ahs a 'part' atribute to facilitate this.
+  The values for part work similar as those of the constraint tag, buta ffect what part
+  of a date is used to sort on.
+
 [1.8.3]
 
 [1.8.2]
