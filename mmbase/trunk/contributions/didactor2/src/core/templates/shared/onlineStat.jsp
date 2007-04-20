@@ -10,7 +10,7 @@
   <mm:setfield name="onlinetime"><mm:write referid="newOnlineTime"/></mm:setfield>    
     
   <mm:import from="session" externid="educationId" />
-  <mm:notpresent referid="educationId">
+  <mm:compare referid="educationId" value="${education}-${username}-${pageContext.session.id}" inverse="true">
     <mm:remove referid="educationId" />
     <mm:write session="educationId" value="${education}-${username}-${pageContext.session.id}" />
     <mm:import from="session" externid="educationId" />
@@ -20,6 +20,6 @@
       <mm:setfield name="logincount">${_ + 1}</mm:setfield>
     </mm:field>
     <di:event eventtype="reading_education" educationId="${education}" eventvalue="now" note="read education" />
-  </mm:notpresent>
+  </mm:compare>
 
 </mm:node>
