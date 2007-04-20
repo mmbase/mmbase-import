@@ -36,7 +36,7 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.31 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.32 2007-04-20 12:18:37 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -130,8 +130,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             if (sortOrder.isCaseSensitive()) {
                 log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");
             }
-            StepField sf = sortOrder.getField();
-            appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
+            appendField(sb, sortOrder, multipleSteps);
             return sb;
         } else {
             if (query.isDistinct() && ! sortOrder.isCaseSensitive()) {
@@ -139,7 +138,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 if (sf.getType() == org.mmbase.bridge.Field.TYPE_STRING ) {
                     log.warn("With a case sensitive locale, it is impossible to sort a distinct query case insensitively. Will sort it case sensitively in stead: " + sortOrder);
                 }
-                appendField(sb, sf.getStep(), sf.getFieldName(), multipleSteps);
+                appendField(sb, sortOrder, multipleSteps);
                 return sb;
             } else {
                 return super.appendSortOrderField(sb, sortOrder, multipleSteps);
