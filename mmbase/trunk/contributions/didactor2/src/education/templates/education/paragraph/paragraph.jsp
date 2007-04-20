@@ -4,8 +4,12 @@
 <mm:import externid="path_segment"/>
 <mm:node referid="node_id">
 
-   <!-- image -->
-   <%@include file="relatedimage.jsp"%>
+   <mm:nodeinfo type="type">
+     <%-- to avoid warning in the log, because learnblocks,pos2rel,images does not exist --%>
+     <mm:compare value="learnblocks" inverse="true"> 
+       <jsp:directive.include file="relatedimage.jsp" />
+     </mm:compare>
+   </mm:nodeinfo>
 
    <mm:related path="posrel,paragraphs" orderby="posrel.pos" directions="UP">
       <mm:first inverse="true">
@@ -17,14 +21,11 @@
                <td style="padding-bottom:10px;">
                   <mm:field name="showtitle">
                      <mm:compare value="1">
-                        <mm:field name="title" jspvar="paragraphs_title" vartype="String" write="false">
-                           <h4><%= paragraphs_title %></h4>
-                        </mm:field>
+                       <h4><mm:field name="title" /></h4>jspvar="paragraphs_title" vartype="String" write="false">
                      </mm:compare>
                   </mm:field>
-		  <!-- <image> -->
-		  <%@include file="relatedimage.jsp"%>
-                  <!-- </image> -->
+
+                  <jsp:directive.include file="relatedimage.jsp" />
 
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
