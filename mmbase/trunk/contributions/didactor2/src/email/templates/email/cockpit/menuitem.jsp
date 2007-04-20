@@ -16,6 +16,7 @@
     <di:translate key="email.emailtitle" />
     <mm:node number="$user">
       <mm:relatednodescontainer type="mailboxes">
+        <mm:constraint field="type" value="2" inverse="true" /> <!-- don't count removed items -->
         <mm:relatednodes>
           <mm:relatednodescontainer type="emails">
             <mm:constraint field="type" value="2" operator="=" /> <%-- find new mails --%>
