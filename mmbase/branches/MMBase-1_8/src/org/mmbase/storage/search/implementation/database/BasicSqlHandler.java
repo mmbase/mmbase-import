@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.2 2006-12-20 14:51:27 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.3 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -120,7 +120,7 @@ public class BasicSqlHandler implements SqlHandler {
         int timeZoneOffset = MMBase.getMMBase().getStorageManagerFactory().getTimeZoneOffset(value.getTime());
         Date date = new Date(value.getTime() - timeZoneOffset);
         //Date date = new Date(value.getTime());
-        //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date); 
+        //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date);
         dateFormat.format(date, sb, dontcareFieldPosition);
     }
 
@@ -611,14 +611,13 @@ public class BasicSqlHandler implements SqlHandler {
              uppered = true;
          }
          // Fieldname.
-         Step step = sortOrder.getField().getStep();
-         appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         appendField(sb, sortOrder, multipleSteps);
          if (uppered) {
              sb.append(")");
              appendSortOrderDirection(sb, sortOrder);
              sb.append(",");
              // also order by field itself, so ensure uniqueness.
-             appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+             appendField(sb, sortOrder, multipleSteps);
          }
          return sb;
     }
@@ -1042,6 +1041,26 @@ public class BasicSqlHandler implements SqlHandler {
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {
             sb.append(")");
+        }
+    }
+
+    /**
+     * Creates an identifier for a field absed on adate from a sortorder, and appends it to a stringbuffer.
+     * The identifier is constructed from the fieldname, optionally prefixed
+     * by the tablename or the tablealias - when available.
+     *
+     * @param sb The stringbuffer to append to.
+     * @param sortOrder The sortOrder object containing the field data.
+     * @param includeTablePrefix <code>true</code> when the fieldname must be
+     *        prefixed with the tablename or tablealias (e.g. like in "images.number"),
+     *        <code>false</code> otherwise.
+     */
+    protected void appendField(StringBuffer sb, SortOrder sortOrder, boolean includeTablePrefix) {
+        StepField field = sortOrder.getField();
+        if (sortOrder instanceof DateSortOrder) {
+            appendDateField(sb, field.getStep(), field.getFieldName(), includeTablePrefix, ((DateSortOrder)sortOrder).getPart());
+        } else {
+            appendField(sb, field.getStep(), field.getFieldName(), includeTablePrefix);
         }
     }
 

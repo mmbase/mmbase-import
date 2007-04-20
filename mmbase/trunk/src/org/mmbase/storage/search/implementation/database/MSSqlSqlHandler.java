@@ -15,14 +15,14 @@ import org.mmbase.storage.search.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.3 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: MSSqlSqlHandler.java,v 1.4 2007-04-20 12:18:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     /**
      * Don't add UPPER'ed field also unuppered, because MSSql seems to choke in that.
-     * 
+     *
      * We can also consider removing that odd behaviour from super.
      */
     @Override
@@ -33,8 +33,7 @@ public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
              uppered = true;
          }
          // Fieldname.
-         Step step = sortOrder.getField().getStep();
-         appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         appendField(sb, sortOrder, multipleSteps);
          if (uppered) {
              sb.append("),");
          }

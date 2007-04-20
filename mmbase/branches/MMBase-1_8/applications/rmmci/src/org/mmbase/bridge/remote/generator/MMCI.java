@@ -111,6 +111,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.RelationStep",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.StepField",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.AggregatedField",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.DateSortOrder",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SortOrder",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldNullConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompareFieldsConstraint",doc));

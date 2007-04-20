@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
@@ -23,15 +24,16 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.6 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.7 2007-04-20 12:18:37 pierre Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
     //private static final Logger log = Logging.getLoggerInstance(QuerySortOrderTag.class);
 
-    protected Attribute container  = Attribute.NULL;
-    protected Attribute direction  = Attribute.NULL;
-    protected Attribute field      = Attribute.NULL;
+    protected Attribute container = Attribute.NULL;
+    protected Attribute direction = Attribute.NULL;
+    protected Attribute field = Attribute.NULL;
+    protected Attribute part  = Attribute.NULL;
     protected Attribute casesensitive = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
@@ -41,22 +43,29 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     public void setDirection(String d) throws JspTagException {
         direction = getAttribute(d);
     }
+
+    public void setPart(String p) throws JspTagException {
+        part = getAttribute(p);
+    }
+
     public void setCasesensitive(String s) throws JspTagException {
         casesensitive = getAttribute(s);
     }
+
     public void setField(String f) throws JspTagException {
         field = getAttribute(f);
     }
 
-
-    public int doStartTag() throws JspTagException { 
+    public int doStartTag() throws JspTagException {
         QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        
-        Query query = c.getQuery();        
+
+        Query query = c.getQuery();
         int order = Queries.getSortOrder(direction.getString(this));
+        int orderPart = Queries.getDateTimePart(part.getString(this));
         StepField stepField = query.createStepField(field.getString(this));
-                   
-        query.addSortOrder(stepField, order, casesensitive.getBoolean(this, false));
+
+        SortOrder newSortOrder = query.addSortOrder(stepField, order, casesensitive.getBoolean(this, false), orderPart);
+
         return SKIP_BODY;
     }
 

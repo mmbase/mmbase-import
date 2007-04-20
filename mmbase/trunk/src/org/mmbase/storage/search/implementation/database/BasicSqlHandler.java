@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.67 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.68 2007-04-20 12:18:37 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -606,14 +606,13 @@ public class BasicSqlHandler implements SqlHandler {
              uppered = true;
          }
          // Fieldname.
-         Step step = sortOrder.getField().getStep();
-         appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         appendField(sb, sortOrder, multipleSteps);
          if (uppered) {
              sb.append(")");
              appendSortOrderDirection(sb, sortOrder);
              sb.append(",");
              // also order by field itself, so ensure uniqueness.
-             appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+             appendField(sb, sortOrder, multipleSteps);
          }
          return sb;
     }
@@ -1026,6 +1025,27 @@ public class BasicSqlHandler implements SqlHandler {
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {
             sb.append(")");
+        }
+    }
+
+
+    /**
+     * Creates an identifier for a field absed on adate from a sortorder, and appends it to a stringbuffer.
+     * The identifier is constructed from the fieldname, optionally prefixed
+     * by the tablename or the tablealias - when available.
+     *
+     * @param sb The stringbuffer to append to.
+     * @param sortOrder The sortOrder object containing the field data.
+     * @param includeTablePrefix <code>true</code> when the fieldname must be
+     *        prefixed with the tablename or tablealias (e.g. like in "images.number"),
+     *        <code>false</code> otherwise.
+     */
+    protected void appendField(StringBuffer sb, SortOrder sortOrder, boolean includeTablePrefix) {
+        StepField field = sortOrder.getField();
+        if (sortOrder instanceof DateSortOrder) {
+            appendDateField(sb, field.getStep(), field.getFieldName(), includeTablePrefix, ((DateSortOrder)sortOrder).getPart());
+        } else {
+            appendField(sb, field.getStep(), field.getFieldName(), includeTablePrefix);
         }
     }
 

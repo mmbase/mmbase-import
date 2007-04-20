@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.1 2005-12-28 16:09:05 michiel Exp $
+ * @version $Id: MSSqlSqlHandler.java,v 1.1.2.1 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -26,7 +26,7 @@ public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     /**
      * Don't add UPPER'ed field also unuppered, because MSSql seems to choke in that.
-     * 
+     *
      * We can also consider removing that odd behaviour from super.
      */
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
@@ -36,8 +36,7 @@ public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
              uppered = true;
          }
          // Fieldname.
-         Step step = sortOrder.getField().getStep();
-         appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         appendField(sb, sortOrder, multipleSteps);
          if (uppered) {
              sb.append("),");
          }

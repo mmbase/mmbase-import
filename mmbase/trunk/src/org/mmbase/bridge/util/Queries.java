@@ -16,6 +16,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicSortOrder;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.86 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: Queries.java,v 1.87 2007-04-20 12:18:37 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -634,7 +635,14 @@ abstract public class Queries {
             SortOrder sortOrder = (SortOrder) i.next();
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
-            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());
+            if (sortOrder instanceof DateSortOrder) {
+                query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
+                                   sortOrder.isCaseSensitive(),
+                                   ((DateSortOrder)sortOrder).getPart());
+            } else {
+                query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
+                                   sortOrder.isCaseSensitive());
+            }
         }
     }
 
