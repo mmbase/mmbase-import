@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.391 2007-04-10 22:09:22 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.392 2007-04-20 12:18:37 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5961,7 +5961,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </p>
       <pre>
 <![CDATA[
-   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                    xmlns:mm="org.mmbase.bridge.jsp.taglib.functions.Functions"
                    xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
                    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
@@ -6545,7 +6545,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-	Turns the escaper arround (so, will call the 'transformBack' methods).
+  Turns the escaper arround (so, will call the 'transformBack' methods).
       </info>
     </attribute>
     <example><![CDATA[
@@ -7397,6 +7397,51 @@ The 0 is just counter, which starts at 0 on every page.
       </possiblevalue>
       <possiblevalue>
         <value>DOWN</value>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>part</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Designates a part of a date field to sort on.
+      </info>
+      <since>MMBase-1.8</since>
+      <possiblevalue>
+        <value>CENTURY</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>YEAR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>MONTH</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>QUARTER</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>WEEK</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAY</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAYOFYEAR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAYOFMONTH</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAYOFWEEK</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>HOUR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>MINUTE</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>SECOND</value>
       </possiblevalue>
     </attribute>
     <attribute>

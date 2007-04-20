@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.CachePolicy;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.39 2007-03-31 17:12:58 nklasens Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.40 2007-04-20 12:18:37 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -57,7 +58,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      */
     private CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
-    
+
     /**
      * Constructor.
      *
@@ -486,7 +487,12 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSortOrder addSortOrder(StepField field) {
-        BasicSortOrder sortOrder =  new BasicSortOrder(field);
+        BasicSortOrder sortOrder;
+        if (field.getType() ==  Field.TYPE_DATETIME) {
+            sortOrder = new BasicDateSortOrder(field);
+        } else {
+            sortOrder = new BasicSortOrder(field);
+        }
         sortOrders.add(sortOrder);
         hasChangedHashcode = true;
         return sortOrder;
@@ -554,7 +560,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void setCachePolicy(CachePolicy policy) {
         this.cachePolicy = policy;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
