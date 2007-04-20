@@ -149,16 +149,20 @@
                     <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
                   </tr>
                   <mm:time id="now" time="now" write="false" precision="hours" />
+                  <mm:time id="lastweek" time="now - 1 week" write="false" precision="hours" />
                   <os:cache time="600" key="progress-${education}-people">
                     <mm:timer name="people">
                       <mm:relatednodes role="classrel" type="people" orderby="$sort" >
                         <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
-                        <di:hasrole role="student" referid="list_student_number">
-                          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
-                            <mm:param name="student"><mm:field name="number"/></mm:param>
-                            <mm:param name="direct_connection">true</mm:param>
-                          </mm:treeinclude>
-                        </di:hasrole>
+                        <mm:field name="lastactivity" id="lastactivity" write="false" />
+                        <os:cache time="${lastactivity lt lastweek ? 15000 : 300}" key="student-${education}-people-${list_student_number}">
+                          <di:hasrole role="student" referid="list_student_number">
+                            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
+                              <mm:param name="student"><mm:field name="number"/></mm:param>
+                              <mm:param name="direct_connection">true</mm:param>
+                            </mm:treeinclude>
+                          </di:hasrole>
+                        </os:cache>
                       </mm:relatednodes>
                     </mm:timer>
                   </os:cache>
