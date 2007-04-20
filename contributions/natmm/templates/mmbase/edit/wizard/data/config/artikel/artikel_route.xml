@@ -36,6 +36,7 @@
       <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
       <field name="titel_fra" ftype="enum"><prompt>lengte in kilometers</prompt><optionlist select="route_length"/></field>
       <field name="type" ftype="enum"><prompt>route type</prompt><optionlist select="route_type"/></field>
+      <field name="titel_eng" ftype="enum"><prompt>weidegangroute</prompt><optionlist select="ja_nee"/></field>
       <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
       <!-- field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field -->
       <!-- field name="bron" ftype="line" ><prompt>bron</prompt></field -->
