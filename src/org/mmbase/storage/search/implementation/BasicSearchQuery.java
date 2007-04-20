@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.32 2006-07-25 20:49:56 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.32.2.1 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -54,7 +55,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Two variables to speed up hashCode() by caching the result */
     private boolean hasChangedHashcode = true;
     private int savedHashcode = -1;
-    
+
     /**
      * Constructor.
      *
@@ -486,11 +487,17 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSortOrder addSortOrder(StepField field) {
-        BasicSortOrder sortOrder =  new BasicSortOrder(field);
+        BasicSortOrder sortOrder;
+        if (field.getType() ==  Field.TYPE_DATETIME) {
+            sortOrder = new BasicDateSortOrder(field);
+        } else {
+            sortOrder = new BasicSortOrder(field);
+        }
         sortOrders.add(sortOrder);
         hasChangedHashcode = true;
         return sortOrder;
     }
+
 
     /**
      * Sets constraint.

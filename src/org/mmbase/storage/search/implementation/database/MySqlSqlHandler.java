@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.15.2.1 2006-12-20 14:51:27 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.15.2.2 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -140,8 +140,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             sb.append("BINARY ");
         }
         // Fieldname.
-        Step step = sortOrder.getField().getStep();
-        appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+        appendField(sb, sortOrder, multipleSteps);
         return sb;
     }
 

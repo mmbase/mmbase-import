@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.61 2006-07-27 13:12:40 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.61.2.1 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -336,7 +336,7 @@ public class BasicQuery implements Query  {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
             if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, relationDir)) {
-                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
+                if (relationDir != RelationStep.DIRECTIONS_SOURCE &&
                     relationDir != RelationStep.DIRECTIONS_DESTINATION &&
                     warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
@@ -358,7 +358,7 @@ public class BasicQuery implements Query  {
                 step.setAlias(createAlias(role));
             }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, relationDir)) {
-                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
+                if (relationDir != RelationStep.DIRECTIONS_SOURCE &&
                     relationDir != RelationStep.DIRECTIONS_DESTINATION &&
                     warnOnImpossibleStep) {
                     // not fully specified, and nothing found, warn about that.
@@ -420,7 +420,7 @@ public class BasicQuery implements Query  {
         }
     }
 
-    public StepField createStepField(Step step, Field field) {        
+    public StepField createStepField(Step step, Field field) {
         if (field == null) throw new BridgeException("Field is null");
         return
             new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
@@ -578,13 +578,21 @@ public class BasicQuery implements Query  {
     public SortOrder addSortOrder(StepField f, int direction) {
         return addSortOrder(f, direction, false);
     }
+
     public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive) {
+        return addSortOrder(f, direction, caseSensitive, -1);
+    }
+
+    public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive, int part) {
         if (used) throw new BridgeException("Query was used already");
         if (f == null) throw new BridgeException("Cannot add sortorder on 'null' step field");
-        BasicSortOrder s = query.addSortOrder(f);
-        s.setDirection(direction);
-        s.setCaseSensitive(caseSensitive);
-        return s;
+        BasicSortOrder o = query.addSortOrder(f);
+        o.setDirection(direction);
+        o.setCaseSensitive(caseSensitive);
+        if (o instanceof BasicDateSortOrder) {
+            ((BasicDateSortOrder)o).setPart(part);
+        }
+        return o;
     }
 
     /**
