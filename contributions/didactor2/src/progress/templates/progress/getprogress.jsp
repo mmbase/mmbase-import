@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
 %>
 <mm:cloud method="delegate">
 
@@ -16,17 +17,22 @@
    <%-- find user's copybook --%>
    <jsp:directive.include file="find_copybook.jsp" />
 
-   <%
-      int nof_tests= 0;
-      int nof_tests_passed= 0;
-   %>
-
-   <mm:node number="$education" notfound="skip">
-      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
-
-      <mm:relatednodescontainer type="learnobjects" role="posrel">
+   
+   <os:cache time="${empty copybookNo ? 600 : 0}" key="progress-${education}-${student}-${copybookNo}">
+     <%-- performance of this is very bad if no copybook DIDACTOR-50 
+          So caching it some time, to increase responsiveness.
+     --%>
+     <%
+     int nof_tests= 0;
+     int nof_tests_passed= 0;
+     %>
+     
+     <mm:node number="$education" notfound="skip">
+       <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+       
+       <mm:relatednodescontainer type="learnobjects" role="posrel">
          <mm:sortorder field="posrel.pos" direction="up"/>
-
+         
          <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
            <mm:nodeinfo type="type">
              <mm:compare value="tests">
@@ -42,10 +48,12 @@
            </mm:nodeinfo>
          </mm:tree>
       </mm:relatednodescontainer>
-
+      
       <%=(double)nof_tests_passed / (double)nof_tests%>
 
-   </mm:node>
+     </mm:node>
+   </os:cache>
+
 </mm:node>
 
 </mm:cloud>
