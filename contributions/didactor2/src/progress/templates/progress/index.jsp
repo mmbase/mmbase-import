@@ -1,8 +1,9 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
 %><%@page import="java.util.*" 
 %>
-<mm:content postprocessor="reducespace" expires="0">
+<mm:content postprocessor="none">
 
 <mm:cloud method="delegate">
 
@@ -19,31 +20,31 @@
   </mm:islessthan>
 
   <di:getsetting id="sort" component="core" setting="personorderfield" write="false" />
-<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="extraheader">
-      <title><di:translate key="progress.progresstitle"/></title>
-    </mm:param>
-  </mm:treeinclude>
+  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader">
+        <title><di:translate key="progress.progresstitle"/></title>
+      </mm:param>
+    </mm:treeinclude>
 
 
 
-  <div class="rows">
-    <div class="navigationbar">
-      <div class="titlebar"><di:translate key="progress.progresstitle"/></div>
-    </div>
-
-    <div class="folders">
-      <div class="folderHeader">&nbsp;</div>
-      <div class="folderBody">&nbsp;</div>
-    </div>
-
-    <div class="mainContent">
-      <div class="contentHeader">
-        <%--    Some buttons working on this folder--%>
+    <div class="rows">
+      <div class="navigationbar">
+        <div class="titlebar"><di:translate key="progress.progresstitle"/></div>
       </div>
-
-      <div class="contentBodywit"><%-- wit is neither english, nor symbolical. It means 'white', which it probably isn't. --%>
+      
+      <div class="folders">
+        <div class="folderHeader">&nbsp;</div>
+        <div class="folderBody">&nbsp;</div>
+      </div>
+      
+      <div class="mainContent">
+        <div class="contentHeader">
+          <%--    Some buttons working on this folder--%>
+        </div>
+        
+        <div class="contentBodywit"><%-- wit is neither english, nor symbolical. It means 'white', which it probably isn't. --%>
         <mm:node number="$education">
           <b><mm:field name="name" write="true"/></b>
           <table class="font" border="1" cellspacing="0" style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
@@ -147,16 +148,29 @@
                   <tr>
                     <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
                   </tr>
-                  <mm:relatednodes role="classrel" type="people" orderby="$sort">
-                    <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
-                      <di:hasrole role="student" referid="list_student_number">
-                        <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
-                          <mm:param name="student"><mm:field name="number"/></mm:param>
-                          <mm:param name="direct_connection">true</mm:param>
-                        </mm:treeinclude>
-                      </di:hasrole>
-                  </mm:relatednodes>
+                  <mm:time id="now" time="now" write="false" precision="hours" />
+                  <os:cache time="600" key="progress-${education}-people">
+                    <mm:timer name="people">
+                      <mm:relatednodes role="classrel" type="people" orderby="$sort" >
+                        <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
+                        <di:hasrole role="student" referid="list_student_number">
+                          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
+                            <mm:param name="student"><mm:field name="number"/></mm:param>
+                            <mm:param name="direct_connection">true</mm:param>
+                          </mm:treeinclude>
+                        </di:hasrole>
+                      </mm:relatednodes>
+                    </mm:timer>
+                  </os:cache>
+
                   <mm:relatednodes role="classrel" type="classes" orderby="name" id="classNode">
+                    <mm:relatednodescontainer type="mmevents">
+                      <mm:constraint field="stop" operator="greater" value="$now" />
+                      <mm:size id="current" write="false" />
+                    </mm:relatednodescontainer>
+                    <%-- if this is an 'old' class, then cache very long, otherwise, not so long --%>
+                    <os:cache time="${current gt 0 ? 300 : 15000}" key="progress-${education}-class-${classNode}">
+                      
                     <tr>
                       <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
                     </tr>
@@ -168,6 +182,8 @@
                         </mm:treeinclude>
                       </di:hasrole>
                     </mm:relatednodes>
+                  </os:cache>
+
                   </mm:relatednodes>
                 </mm:node>
               </mm:compare>
@@ -178,7 +194,8 @@
               <di:hasrole role="teacher">
                 <mm:compare referid="class" regexp="|null" inverse="true">
                   <mm:node referid="class">
-                    <mm:relatednodes type="people" orderby="$sort">
+                    <mm:timer name="teacher_people">
+                      <mm:relatednodes type="people" orderby="$sort" >
                       <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
                       <di:hasrole role="student" referid="studentnumber">
                         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
@@ -187,6 +204,7 @@
                         </mm:treeinclude>
                       </di:hasrole>
                    </mm:relatednodes>
+                    </mm:timer>
                  </mm:node>
                 </mm:compare>
               </di:hasrole>
@@ -197,6 +215,7 @@
               <di:hasrole role="coach">
                 <mm:compare referid="class" valueset=",null" inverse="true">
                   <mm:node referid="class">
+                    <mm:timer name="work">
                     <mm:related path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
                       <mm:node element="workgroups">
                         <!-- oddddd -->
@@ -211,6 +230,7 @@
                         </mm:relatednodes>
                       </mm:node>
                     </mm:related>
+                    </mm:timer>
                   </mm:node>  
                 </mm:compare>
               </di:hasrole>
