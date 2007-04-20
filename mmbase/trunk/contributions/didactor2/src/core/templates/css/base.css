@@ -855,3 +855,7 @@ a.forumlist:active {
 .email .headers.show .values { 
   display: block;
 }
+
+blockquote { 
+  border-left: 1px;
+}
