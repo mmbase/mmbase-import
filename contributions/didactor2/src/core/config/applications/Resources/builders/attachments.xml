@@ -159,6 +159,7 @@
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
         <!-- cannot use 'created', because it is read-only -->
         <getprocessor type="*">
           <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
