@@ -23,20 +23,20 @@
         </a>
       </td>
       <td style="border-color:#000000; border-top:0px; border-left:0px">
-        <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"><mm:param name="student"><mm:write referid="student"/></mm:param></mm:treeinclude></mm:import>
-        <%= (int)(progress.doubleValue()*100.0)%>%
+        <mm:import id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"><mm:param name="student"><mm:write referid="student"/></mm:param></mm:treeinclude></mm:import>
+        ${progress * 100}
       </td>
       
       <% //direct relation people-classrel-educations %>
       <mm:compare referid="direct_connection" value="true">
         <mm:list fields="classrel.number" path="people,classrel,educations" constraints="people.number=$student and educations.number=$education">
-          <mm:field name="classrel.number" id="classrel" write="false"/>
+          <mm:node element="classrel" id="classrel" />
       </mm:list>
     </mm:compare>
     <% //people-classrel-class-related-educations %>
     <mm:compare referid="direct_connection" value="true" inverse="true">
       <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
-        <mm:field name="classrel.number" id="classrel" write="false"/>
+        <mm:node element="classrel" id="classrel" />
       </mm:list>
     </mm:compare>
 
