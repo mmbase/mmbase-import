@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><%@page buffer="100kb" %>
+%><%@page buffer="200kb" %>
 <mm:cloud method="delegate" authenticate="asis">  
   <%-- get the $username --%>
   <mm:import id="username" jspvar="username"><mm:cloudinfo type="user" /></mm:import>
@@ -25,12 +25,14 @@
   </mm:present>
 </mm:cloud>
 
+<mm:remove from="session" referid="educationId" />
+
 <mm:cloud method="delegate"  authenticate="didactor-logout">
   <mm:cloudinfo type="user" />
 </mm:cloud>
 
 <mm:cloud method="delegate" rank="basic user">
-   <mm:cloudinfo type="user" />
+  <mm:cloudinfo type="user" />
 </mm:cloud>
 
 
