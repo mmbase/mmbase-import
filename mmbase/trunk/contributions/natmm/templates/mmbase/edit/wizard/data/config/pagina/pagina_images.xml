@@ -12,12 +12,18 @@
    <action include="config/pagina/delete_pagina.xml"/>
    <action type="load">
      <field name="titel"/>
-     <field name="kortetitel"/>
      <field name="titel_fra"/>
      <field name="titel_eng"/>
      <field name="titel_de"/>
      <field name="titel_zichtbaar"/>
      <field name="omschrijving"/>
+     <field name="omschrijving_eng"/>
+     <field name="omschrijving_de"/>
+     <field name="omschrijving_fr"/>
+     <field name="kortetitel"/>
+     <field name="kortetitel_eng"/>
+     <field name="kortetitel_de"/>
+     <field name="kortetitel_fr"/>
      <field name="bron"/>
      <field name="metatags"/>
      <field name="creatiedatum"/>
@@ -38,7 +44,14 @@
       <field name="titel" ftype="data"><prompt>titel</prompt></field>
       <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
       <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-      <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
+      <field name="omschrijving" rows="10"><prompt>description (nl)</prompt></field>
+      <field name="omschrijving_eng" rows="10"><prompt>description (en)</prompt></field>
+      <field name="omschrijving_fr" rows="10"><prompt>description (fr)</prompt></field>
+      <field name="omschrijving_de" rows="10"><prompt>description (de)</prompt></field>
+      <field name="kortetitel" rows="10"><prompt>keywords (nl)</prompt></field>
+      <field name="kortetitel_eng" rows="10"><prompt>keywords (en)</prompt></field>
+      <field name="kortetitel_fr" rows="10"><prompt>keywords (fr)</prompt></field>
+      <field name="kortetitel_de" rows="10"><prompt>keywords (de)</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <list include="config/images/zoek_posrel_images_ml.xml" />
