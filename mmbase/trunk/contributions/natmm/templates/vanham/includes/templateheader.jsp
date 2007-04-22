@@ -12,13 +12,37 @@
 <mm:import externid="dur" jspvar="durationType" vartype="String">-1</mm:import>
 <mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
 <%
+
 String imageId = request.getParameter("i");
 String offsetId = request.getParameter("offset"); if(offsetId==null){ offsetId=""; }
 String emailId = request.getParameter("e");
 String nameId = request.getParameter("n");
 String textId = request.getParameter("d");
+
+String thisLanguage = "?language=nl";
+String otherLanguage = "?language=eng";
+String otherLanguageName = "en";
+if("eng".equals(language)) {
+  thisLanguage = "?language=eng";
+  otherLanguage = "?language=nl";
+  otherLanguageName = "nl";
+}
+String queryString = request.getQueryString();
+if(queryString!=null&&!queryString.equals("")) {
+  int ls = queryString.indexOf("language=");
+  if(ls!=-1) {
+    int le = queryString.indexOf("&",ls);
+    if(le!=-1){
+      queryString = queryString.substring(0,ls) + queryString.substring(le+1);
+    } else {
+      queryString = queryString.substring(0,ls);
+    }
+  }
+}
+
 %>
 <mm:cloud>
+<base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 <html>
   <head>
     <title>
@@ -35,6 +59,11 @@ String textId = request.getParameter("d");
        text-align: center;
     } 
     </style>
+    <meta http-equiv="imagetoolbar" content="no" />
+    <mm:node number="home" jspvar="dummy">
+      <meta name="description" content="<%= LocaleUtil.getField(dummy,"omschrijving",language, "") %>" />
+      <meta name="keywords" content="<%= LocaleUtil.getField(dummy,"kortetitel",language, "") %>" />
+    </mm:node>
     <script language="javascript" src="scripts/launchcenter.js"></script>
     <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
     </script>
