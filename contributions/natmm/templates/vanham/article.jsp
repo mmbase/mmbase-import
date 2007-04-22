@@ -1,7 +1,7 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/functions.jsp" %>
 <%@include file="includes/image_vars.jsp" %>
-<mm:cloud method="http" jspvar="cloud">
+<mm:cloud jspvar="cloud">
 <mm:log jspvar="log">
   <%
   imgFormat = ""; 
