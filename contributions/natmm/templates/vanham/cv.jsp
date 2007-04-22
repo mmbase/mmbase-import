@@ -1,5 +1,5 @@
 <%@include file="includes/templateheader.jsp" %>
-<mm:cloud method="http" jspvar="cloud">
+<mm:cloud jspvar="cloud">
 <mm:log jspvar="log">
   <%@include file="includes/functions.jsp" %>
   <script language="JavaScript" type="text/javascript">
@@ -18,13 +18,16 @@
       if (restore) selObj.selectedIndex=0;
     }
     
-    function clearForm() {
-      document.location = "cv.jsp?p=<%= paginaID %>"; 
-      return false; 
-    }
   </script>
   <table cellpadding="0" cellspacing="0" border="0" style="width:780px;">
   <%@include file="includes/nav.jsp" %>
+  <% String pageUrl = ph.createPaginaUrl(paginaID,request.getContextPath()); %>
+  <script language="JavaScript" type="text/javascript">
+    function clearForm() {
+      document.location = "<%= pageUrl %>"; 
+      return false; 
+    }
+  </script>
   <mm:node number="$paginaID" notfound="skip">
     <% 
      boolean debug = false;
@@ -41,9 +44,8 @@
      
      ListUtil lu = new ListUtil(cloud);
      
-     String localPath = "";
-     String searchUrl = localPath + "cv.jsp?p=" + paginaID
-                     + "&material=" + materialTypeID
+     String searchUrl = pageUrl
+                     + "?material=" + materialTypeID
                      + "&orgtype=" + organisationTypeID
                      + "&locatie=" + locatieID
                      + "&projtype=" + projectTypeID
@@ -234,7 +236,8 @@
                                 }
                              }
                           %>
-                          <td class="def" style="width:14%;"><%=yearString %></td>
+                          <td class="def" style="width:14%;">
+                            <%= (hasToggle?"<span onClick='toggle("+projectID+");'>":"") + yearString + (hasToggle?"</span>":"") %></td>
                        </mm:field>
                     </mm:field>
                     <td class="def" style="width:1%;">
@@ -244,9 +247,15 @@
                           &nbsp;
                        <% } %>
                     </td>
-                    <td class="def" style="width:55%;" colspan="2"><%= LocaleUtil.getField(thisProject,"titel",language) %></td>
+                    <td class="def" style="width:55%;" colspan="2">
+                       <%= (hasToggle?"<span onClick='toggle("+projectID+");'>":"") 
+                        + LocaleUtil.getField(thisProject,"titel",language)
+                        + (hasToggle?"</span>":"") %>
+                    </td>
                     <mm:relatednodes type="organisatie" path="readmore,organisatie">
-                       <td class="def" style="width:30%;"><mm:field name="titel" /></td>
+                       <td class="def" style="width:30%;">
+                         <%=(hasToggle?"<span onClick='toggle("+projectID+");'>":"")%><mm:field name="titel" /><%=(hasToggle?"</span>":"")%>
+                       </td>
                     </mm:relatednodes>
                  </tr>
                  <% if (hasToggle) {  %>
@@ -272,7 +281,7 @@
                           <mm:related path="posrel,items,posrel,images" max="1"
                     ><mm:node element="images" jspvar="dummy"
                       ><mm:field name="number" jspvar="imageID" vartype="String"><% 
-                        String jsString = "javascript:launchCenter('slideshow.jsp?i="
+                        String jsString = "javascript:launchCenter('/vanham/slideshow.jsp?i="
                                    + imageID + "&language=" + language
                                    + "', 'center', 550, 740);"; 
                                    %><div style="position:relative;left:185px;top:7px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><% 

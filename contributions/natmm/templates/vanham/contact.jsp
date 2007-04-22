@@ -1,7 +1,7 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/functions.jsp" %>
 <%@include file="includes/image_vars.jsp" %>
-<mm:cloud method="http" jspvar="cloud">
+<mm:cloud jspvar="cloud">
 <mm:log jspvar="log">
   <table cellpadding="0" cellspacing="0" border="0" style="width:780px;">
   <%@include file="includes/nav.jsp" %>
