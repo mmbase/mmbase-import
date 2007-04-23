@@ -9,14 +9,6 @@
   <link href="../css/main.css" type="text/css" rel="stylesheet" />
   <script src="recyclebin.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../utils/window.js"></script>
-	<script type="text/javascript">
-		function refreshChannels() {
-			refreshFrame('channels');
-			if (window.opener) {
-				window.close();
-			}
-		}
-	</script>
 </head>
 <body onload="refreshChannels();">
     <div class="tabs">

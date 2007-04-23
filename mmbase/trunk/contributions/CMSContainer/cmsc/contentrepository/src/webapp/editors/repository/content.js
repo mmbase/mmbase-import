@@ -8,7 +8,7 @@
        var url = "LinkToChannelAction.do";
        url += "?channelnumber=" + channelnumber;
        url += "&action=unlink";
-       url += "&returnurl=" + escape(document.location);
+       url += "&returnurl=" + escape(document.location + "&refreshchannel=true");
        url += "&objectnumber=" + objectnumber;
 
        document.location.href = url;
@@ -49,5 +49,12 @@
    
 	function selectChannel(channel, path) {
 		document.location="../MoveContentToChannel.do?parentchannel="+moveParentChannel+"&newparentchannel="+channel+"&objectnumber="+moveContentNumber;
+	}
+	
+	function refreshChannels() {
+		refreshFrame('channels');
+		if (window.opener) {
+			window.close();
+		}
 	}
    

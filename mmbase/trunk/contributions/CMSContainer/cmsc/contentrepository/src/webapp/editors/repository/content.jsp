@@ -11,21 +11,17 @@
 		<script src="../utils/window.js" type="text/javascript"></script>
 		<script src="../utils/rowhover.js" type="text/javascript"></script>
 	    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-	    <script type="text/javascript">
-			function refreshChannels() {
-				refreshFrame('channels');
-				if (window.opener) {
-					window.close();
-				}
-			}
-		</script>
 	</head>
-	<body onload="refreshChannels();alphaImages();"	>
-		<c:if test="${not empty param.message}">      
-			<script type="text/javascript">
+	<body>
+		<script type="text/javascript">
+			<c:if test="${not empty param.message}">      
 				addLoadEvent(alert('${param.message}'));
-			</script>
-		</c:if>
+			</c:if>
+			<c:if test="${not empty param.refreshchannel}">      
+				addLoadEvent(refreshChannels);
+			</c:if>
+			addLoadEvent(alphaImages);
+		</script>
 	
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>

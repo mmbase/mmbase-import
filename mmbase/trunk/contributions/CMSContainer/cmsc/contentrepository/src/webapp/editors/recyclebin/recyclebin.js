@@ -31,4 +31,10 @@
        if(confirm(message)) {
        		document.forms["deleteForm"].submit();
        }
-    }
+    }    
+	function refreshChannels() {
+		refreshFrame('channels');
+		if (window.opener) {
+			window.close();
+		}
+	}
