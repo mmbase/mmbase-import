@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.45 2007-04-23 14:08:32 michiel Exp $
+    @version $Id: list.xsl,v 1.46 2007-04-23 14:56:02 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -197,18 +197,17 @@
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
                     <xsl:if test="$newfromlist = '-1'">
-		      <a href="javascript:document.forms[0].submit();">
-			<xsl:call-template name="prompt_search" />
-		      </a>
+                      <a href="javascript:document.forms[0].submit();">
+                        <xsl:call-template name="prompt_search" />
+                      </a>
                     </xsl:if>
                     <xsl:if test="$newfromlist != '-1'">
-                       <a href="javascript:document.forms[0].submit();">
-                         <xsl:call-template name="prompt_search_page" />
-                       </a>
-                       <span title="{$tooltip_search}" onClick="doMySearch(this);">
-			 
-                         <img src="{$mediadir}search_all.gif" class="imgbutton" alt="Zoek in de website"/>
-                       </span>
+                      <a href="javascript:document.forms[0].submit();">
+                        <xsl:call-template name="prompt_search" />
+                      </a>
+                      <a href="javascript:doMySearch(this);">
+                        <xsl:call-template name="prompt_search_all" />
+                      </a>
                     </xsl:if>
                     <br />
                   <span class="subscript">

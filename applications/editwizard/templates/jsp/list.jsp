@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.67 2007-04-23 14:08:32 michiel Exp $
+     * @version  $Id: list.jsp,v 1.68 2007-04-23 14:51:56 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -96,6 +96,7 @@ boolean deletable = false;
 boolean unlinkable = false;
 boolean creatable = false;
 String deletedescription = "";
+String unlinkdescription = "";
 String deleteprompt = "";
 String unlinkprompt = "";
 String createprompt = "";
@@ -109,6 +110,7 @@ if (listConfig.wizard != null) {
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
 
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
+    unlinkdescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='unlink']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
     unlinkprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='unlink']/prompt", null, cloud);
     createprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='create']/prompt", null, cloud);
@@ -351,7 +353,9 @@ if (originNodeNr != null) params.put("relationOriginNode",  originNodeNr);
 if (createDir != null) params.put("relationCreateDir",  createDir);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
+if (unlinkdescription!=null) params.put("unlinkdescription", unlinkdescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
+if (unlinkprompt!=null) params.put("unlinkprompt", unlinkprompt);
 if (createprompt!=null) params.put("createprompt", createprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
