@@ -51,7 +51,7 @@ function doAddSubmit(newfromlist) {
     selected = buildSelectedList();
     var url = "linklistitem.jsp?"+"newfromlist="+newfromlist+"&selected="+selected;
     window.document.location.replace(url);
-    window.opener.forms[0].submit();
+    window.opener.document.forms[0].submit();
     closeSearch();
 
 }
