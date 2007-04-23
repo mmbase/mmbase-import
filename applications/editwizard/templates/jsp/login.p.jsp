@@ -2,7 +2,7 @@
  ************* COPIED FROM /mmbase/edit/basic/login.p.jsp *********************************
    TODO NEED GENERAL PLACE
 --%>
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*" 
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" 
 %><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%!
    String getPrompt(String key, Locale locale) {
@@ -49,10 +49,9 @@
          if (type.isAssignableFrom(String.class) && param.isRequired()) {         
     %>       
     <tr>
-      <td><%=param.getDescription(locale)%>:</td>
+      <td><%=param.getLocalizedGUIName().get(locale)%> <mm:write value="<%=param.getLocalizedDescription().get(locale)%>"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>:</td>
       <td>
-        <%-- hack for password fields Would need some method using DataType --%>
-        <input type="<%= param.getName().equals("password") ? "password" : "text" %>" name="<%=param.getName()%>">
+        <input type="<%= ((StringDataType) param.getDataType()).isPassword() ? "password" : "text" %>" name="<%=param.getName()%>">
        </td>
      </tr>
      <%  }
