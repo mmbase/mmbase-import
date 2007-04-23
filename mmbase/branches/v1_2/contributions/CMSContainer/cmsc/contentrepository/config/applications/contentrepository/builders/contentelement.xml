@@ -367,7 +367,7 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>18</input>
+					<input>-1</input>
 					<list>-1</list>
 					<search>-1</search>
 				</positions>

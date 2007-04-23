@@ -12,10 +12,6 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="status" ftype="data">
-		<prompt xml:lang="en">Current status</prompt>
-		<prompt xml:lang="nl">Huidige status</prompt>
-	</field>
 	<field name="publishdate">
 		<prompt xml:lang="en">Publishdate</prompt>
 		<prompt xml:lang="nl">Publicatie datum</prompt>
