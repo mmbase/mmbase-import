@@ -3,7 +3,7 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id: tools.js,v 1.7 2006-08-30 10:41:00 nklasens Exp $
+ * @version  $Id: tools.js,v 1.8 2007-04-23 17:34:32 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -186,4 +186,43 @@ function checkDimensions (windowOrFrame) {
    else {
      alert('Unable to determine window dimensions.');
    }
+}
+
+
+function loadXMLDoc(url, async) {
+    var req = false;
+    // branch for native XMLHttpRequest object
+    if(window.XMLHttpRequest && !(window.ActiveXObject)) {
+        try {
+            req = new XMLHttpRequest();
+        } catch(e) {
+            req = false;
+        }
+    // branch for IE/Windows ActiveX version
+    } else if(window.ActiveXObject) {
+        try {
+            req = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch(e) {
+            try {
+                req = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch(e) {
+                req = false;
+            }
+        }
+    }
+    if(req) {
+        var as;
+	if (async == undefined) {
+	    as = true;
+	} else {
+            as = async;
+        }		
+        req.open("GET", url, as);
+        req.send("");
+    }
+}
+
+function heartbeat() {
+    loadXMLDoc("heartbeat.jsp");
+    setTimeout('heartbeat()',60*1000);
 }

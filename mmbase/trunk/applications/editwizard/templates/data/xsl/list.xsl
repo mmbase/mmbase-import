@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.47 2007-04-23 15:22:09 michiel Exp $
+    @version $Id: list.xsl,v 1.48 2007-04-23 17:34:32 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -49,6 +49,9 @@
   <xsl:variable name="BodyOnLoad">window.focus();</xsl:variable>
 
   <xsl:template name="javascript">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script> 
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
@@ -57,6 +60,9 @@
 	<xsl:comment>help IE</xsl:comment>
       </script>
     </xsl:if>
+    <script type="text/javascript">
+      setTimeout('heartbeat()',60*1000);
+    </script>
   </xsl:template>
 
   <xsl:template name="htmltitle">

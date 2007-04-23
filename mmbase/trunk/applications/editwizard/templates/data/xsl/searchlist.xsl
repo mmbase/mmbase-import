@@ -11,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.26 2007-04-16 15:29:39 michiel Exp $
+    @version $Id: searchlist.xsl,v 1.27 2007-04-23 17:34:32 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -21,10 +21,10 @@
   <xsl:variable name="BodyOnLoad">window.focus(); preselect(selected); doOnloadSearch(); resizeSelectTable();</xsl:variable>
 
   <xsl:template name="javascript">
-    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}tools.js">
+    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
