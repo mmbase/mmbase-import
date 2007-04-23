@@ -110,8 +110,9 @@ public class SqlExecutor {
                     }
                 }
             }
-            
-            throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
+            if (connection == null) {    
+                throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
+            }
         }
         return connection;
    }
