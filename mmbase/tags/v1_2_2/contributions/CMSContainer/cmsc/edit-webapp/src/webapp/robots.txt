@@ -1,0 +1,7 @@
+# Allow all user agents
+User-agent: *
+Disallow:
+
+# Disallow all user agents
+# User-agent: *
+# Disallow: /

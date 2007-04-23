@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+	<node number="257" owner="default">
+		<title>basic</title>
+		<resource>basic.jsp</resource>
+	</node>
+</layout>

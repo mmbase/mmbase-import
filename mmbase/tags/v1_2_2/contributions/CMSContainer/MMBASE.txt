@@ -1,0 +1,52 @@
+(See the MAVEN.txt when you have maven related issues)
+
+prerequisitions
+---------------
+
+- java >= 1.4 
+- maven 1.0.2
+
+To install maven, expand it into a directory and set the environment and
+path variable to this directory:
+
+@> cd tmp
+@> tar zxvf ~/maven-1.0-rc1.tar.gz
+@> MAVEN_HOME=$HOME/tmp/maven-1.0-rc1
+@> export MAVEN_HOME
+@> PATH=$PATH:$MAVEN_HOME/bin
+
+Maven documentation
+-------------------
+
+A nice small overview of what maven is, how to configure it and how to
+use it, can be downloaded from the following location:
+
+ http://www.sandcastsoftware.com/downloads/maven/ProJavaToolsChap26_Maven.pdf
+
+import external libraries
+-------------------------
+
+Due to license restrictions some libraries can't be redistribitued by others
+than Sun, so you'll have to get it yourself. You'll have to download each one 
+and place it in your local Maven repository (on UNIX systems, this defaults 
+to ~/.maven/repository/; on Windows, it's in the equivalent "home" directory)
+
+The jai-core and jai-codec can be downloaded from the following website:
+
+ - http://java.sun.com/products/java-media/jai/index.jsp
+
+If you already have a mmbase-checkout, those jai-file can be readily copied 
+from that installation into the maven-repository.
+
+@> cp ${mmbasepath}/build/lib/jai_codec.jar ~/.maven/repository/jai/jars/jai_codec-1.1.2_01.jar   
+@> cp ${mmbasepath}/build/lib/jai_core.jar ~/.maven/repository/jai/jars/jai_core-1.1.2_01.jar 
+
+Working with maven
+------------------
+
+After you have made changes to the code, you may want to compile it. This can be accomplished 
+by typing 'maven all:install' everytime. But with maven, you can speed this up a little bit. 
+
+Type 'maven console'. This will give a command-line menu of your targets. Type 'all:install'
+to compile and install the code. After this, simply use 'enter' to recompile the code.
+Use 'quit' to exit and go back. 
