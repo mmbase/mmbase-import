@@ -44,6 +44,18 @@ function dosubmit() {
     closeSearch();
 }
 
+//alert("defining doAddSubmit");
+
+function doAddSubmit(newfromlist) {
+
+    selected = buildSelectedList();
+    var url = "linklistitem.jsp?"+"newfromlist="+newfromlist+"&selected="+selected;
+    window.document.location.replace(url);
+    window.opener.forms[0].submit();
+    closeSearch();
+
+}
+
 function buildSelectedList() {
     var s = selected + "|";
     var f = document.forms[0];
