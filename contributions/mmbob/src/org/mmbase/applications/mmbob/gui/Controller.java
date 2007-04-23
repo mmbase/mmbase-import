@@ -1327,7 +1327,7 @@ public class Controller {
      * @param email
      * @param gender
      * @param location
-     * @return possible feedback: [ok|createerror|inuse|passwordnotequal|nickinuse|firstnameerror|lastnameerror|emailerror]
+     * @return possible feedback: [ok|createerror|inuse|passwordnotequal|nickempty|nickinuse|firstnameerror|lastnameerror|emailerror]
      */
     public String createPosterNick(String forumid, String account, String password, String confirmpassword, String nick, String firstname,
             String lastname, String email, String gender, String location) {
@@ -1337,12 +1337,22 @@ public class Controller {
                 Poster poster = forum.getPoster(account);
                 Poster n = forum.getPosterNick(nick);
                 if (poster == null) {
-                    // weird hack since entree demands the use of a nick
-                    if (forum.getLoginSystemType().equals("entree")) {
-                        if (n != null || nick.equals("")) return "nickinuse";
-                    } else {
-                        if (n != null && !nick.equals("")) return "nickinuse";
+                    
+                    //now check if the nick is valid.
+                    boolean nickRequired = ("entree".equals(forum.getLoginSystemType()) || "entree-ng".equals(forum.getLoginSystemType()));
+                    boolean nickInUse = (n != null);
+                    boolean nickEmpty = (nick == null || "".equals(nick)); 
+                    if(nickRequired && nickEmpty){
+                        //error: no nick, but required
+                        return "nickempty";
                     }
+                    
+                    if(! nickEmpty && nickInUse){
+                        //when we get here the nick should not be empty when it is required.
+                        return "nickinuse";
+                    }
+                    
+                    
                     if (firstname.equals("") || firstname.length() < 2) return "firstnameerror";
                     if (lastname.equals("") || lastname.length() < 1) return "lastnameerror";
                     if (email.equals("") || email.indexOf("@") == -1 || email.indexOf(".") == -1) return "emailerror";
