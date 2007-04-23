@@ -23,12 +23,6 @@
 		<prompt xml:lang="en">Lastmodifier</prompt>
 		<prompt xml:lang="nl">Gewijzigd door</prompt>
 	</field>
-	<!-- 
-	<field name="status">
-		<prompt xml:lang="en">Status</prompt>
-		<prompt xml:lang="nl">Status</prompt>
-	</field>
-	-->
 	<list role="creationrel" destination="contentchannel" minoccurs="0" maxoccurs="1" hidecommand="delete-item">
 		<title xml:lang="nl">Aangemaakt in</title>
 		<title xml:lang="en">Created in</title>
