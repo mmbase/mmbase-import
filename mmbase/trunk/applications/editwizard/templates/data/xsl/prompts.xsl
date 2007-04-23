@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.34 2007-04-23 14:56:02 michiel Exp $
+    @version $Id: prompts.xsl,v 1.35 2007-04-23 15:22:09 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -232,7 +232,7 @@
       </xsl:choose>
     </img>
   </xsl:template>
-  <xsl:variable name="tooltip_search">Search and add an item</xsl:variable>
+  <xsl:variable name="tooltip_search">Search</xsl:variable>
   <xsl:variable name="tooltip_search_all">Search and add an item</xsl:variable>
   <xsl:template name="prompt_search_title">Contains</xsl:template>
   <xsl:template name="prompt_search_number">Number is</xsl:template>
