@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.22 2007-03-20 16:21:19 nklasens Exp $
+  @version $Id: prompts.xsl,v 1.23 2007-04-23 14:08:32 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -74,6 +74,7 @@
 <xsl:template name="prompt_delete"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder"/></xsl:template>
 <xsl:variable name="tooltip_delete">Verwijder dit item</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Weet u zeker dat u dit item wilt verwijderen?</xsl:template>
+<xsl:template name="prompt_unlink_confirmation" >Weet u zeker dat u dit item wilt ontkoppelen?</xsl:template>
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Opslaan &amp; beëindigen</xsl:template>
 <xsl:template name="prompt_save_only">Opslaan</xsl:template>
