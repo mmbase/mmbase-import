@@ -42,7 +42,12 @@
    	</mm:list>
    	<%
    }
-   if(vacatureID.equals("-1")) { // show all vacatures
+   
+   // When only one vacature, we can either directly display it 
+   // or still display vacature page and let user go to the single vacature from following its link
+   
+   final boolean displayFullList = true;
+   if(vacatureID.equals("-1") || displayFullList) { // show all vacatures if more then one or if one but we still want the list to be displayed
 	   %><td style="width:559px;vertical-align:top;padding:10px;padding-top:0px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
 			<table width="539px;" cellspacing="0" cellpadding="0">
    			<tr>
