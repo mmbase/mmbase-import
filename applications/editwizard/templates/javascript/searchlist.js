@@ -47,12 +47,11 @@ function dosubmit() {
 //alert("defining doAddSubmit");
 
 function doAddSubmit(newfromlist) {
-
     selected = buildSelectedList();
     var url = "linklistitem.jsp?"+"newfromlist="+newfromlist+"&selected="+selected;
     window.document.location.replace(url);
     window.opener.document.forms[0].submit();
-    closeSearch();
+    window.close();
 
 }
 

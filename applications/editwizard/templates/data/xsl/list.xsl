@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.46 2007-04-23 14:56:02 michiel Exp $
+    @version $Id: list.xsl,v 1.47 2007-04-23 15:22:09 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -171,7 +171,7 @@
                 </td>
               </xsl:if>
               <td>
-                <form>
+                <form id="searchform">
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
