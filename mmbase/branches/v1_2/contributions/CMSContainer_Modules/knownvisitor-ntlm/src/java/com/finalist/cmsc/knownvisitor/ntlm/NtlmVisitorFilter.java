@@ -27,7 +27,6 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.knownvisitor.KnownVisitorModule;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.portalImpl.PortalServlet;
 
 /**
  * @author Freek Punt, Finalist IT Group
@@ -47,18 +46,6 @@ public class NtlmVisitorFilter implements Filter {
       */
       Config.setProperty("jcifs.smb.client.soTimeout", "300000");
       Config.setProperty("jcifs.netbios.cachePolicy", "1200");
-
-      try {
-         Map<String, String> contextMap;
-         contextMap = ApplicationContextReader.getProperties("cmsc/security");
-         for (String name : contextMap.keySet()) {
-            if (name.startsWith("jcifs.")) {
-               Config.setProperty(name, contextMap.get(name));
-            }
-         }
-      } catch (NamingException e) {
-         log.warn("Can't obtain properties from application context: ", e);
-      }
    }
 
    public void destroy() {
@@ -74,7 +61,7 @@ public class NtlmVisitorFilter implements Filter {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
       
-      if (isEnabled() && PortalServlet.isNavigation(req, resp) && !negotiate(req, resp, false)) {
+      if (isEnabled() && !negotiate(req, resp, false)) {
          return;
       }
       
