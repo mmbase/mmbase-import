@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.70 2007-03-20 16:22:10 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.71 2007-04-23 17:34:32 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -77,39 +77,6 @@ function doOnLoad_ew() {
     restoreScroll();
 }
 
-var req;
-
-function loadXMLDoc(url) {
-    req = false;
-    // branch for native XMLHttpRequest object
-    if(window.XMLHttpRequest && !(window.ActiveXObject)) {
-        try {
-            req = new XMLHttpRequest();
-        } catch(e) {
-            req = false;
-        }
-    // branch for IE/Windows ActiveX version
-    } else if(window.ActiveXObject) {
-        try {
-            req = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch(e) {
-            try {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch(e) {
-                req = false;
-            }
-        }
-    }
-    if(req) {
-        req.open("GET", url, true);
-        req.send("");
-    }
-}
-
-function heartbeat() {
-    loadXMLDoc("heartbeat.jsp");
-    setTimeout('heartbeat()',60*1000);
-}
 
 // function to initialize a custom element
 function initializeElement(elem, dttype, ftype) {

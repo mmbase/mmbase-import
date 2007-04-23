@@ -1,7 +1,7 @@
 // Mozilla does not like this.
 var hist = window.history;
 if (hist) {
-//    hist.go(1);
+    hist.go(1);
 }
 
 var cancelClick = false;

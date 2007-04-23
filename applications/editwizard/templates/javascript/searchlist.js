@@ -49,7 +49,8 @@ function dosubmit() {
 function doAddSubmit(newfromlist) {
     selected = buildSelectedList();
     var url = "linklistitem.jsp?"+"newfromlist="+newfromlist+"&selected="+selected;
-    window.document.location.replace(url);
+    loadXMLDoc(url, false);
+
     window.opener.document.forms[0].submit();
     window.close();
 
@@ -78,13 +79,13 @@ function browseTo(start) {
     selected = buildSelectedList();
     var href = listpage;
     href += "&popupid=search&listtype=search&start="+start+"&selected="+selected+"&cmd="+cmd;
-    if (relationRole != "") {
+    if (relationRole != undefined && relationRole != "") {
       href += "&relationRole=" + relationRole;
     }
-    if (relationOriginNode != "") {
+    if (relationOriginNode != undefined && relationOriginNode != "") {
       href += "&relationOriginNode=" + relationOriginNode;
     }
-    if (relationCreateDir != "") {
+    if (relationCreateDir != undefined && relationCreateDir != "") {
       href += "&relationCreateDir=" + relationCreateDir;
     }
     document.location.replace(href);
