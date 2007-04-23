@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.1 2007-04-23 14:08:32 michiel Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.2 2007-04-23 15:22:09 michiel Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -32,7 +32,7 @@
         RelationList l = SearchUtil.findRelations(n, origin, newFromList[1], null);
         log.info("" + l);
         RelationIterator i = l.relationIterator();
-        while (i.hasNext()) {
+        if (i.hasNext()) {
           Relation r = i.nextRelation();
           //log.info("deleting " + r);
           r.delete();
