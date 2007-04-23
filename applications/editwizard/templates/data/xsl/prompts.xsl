@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.33 2007-04-23 14:08:32 michiel Exp $
+    @version $Id: prompts.xsl,v 1.34 2007-04-23 14:56:02 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -195,16 +195,45 @@
           <xsl:attribute name="alt">
             <xsl:value-of select="prompt" />
           </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
           <xsl:attribute name="alt">
+            <xsl:value-of select="$tooltip_search" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
             <xsl:value-of select="$tooltip_search" />
           </xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
     </img>
   </xsl:template>
+  <xsl:template name="prompt_search_all">
+    <img src="{$mediadir}search_all.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt!=''">
+          <xsl:attribute name="alt">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt">
+            <xsl:value-of select="$tooltip_search_all" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="$tooltip_search_all" />
+          </xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img>
+  </xsl:template>
   <xsl:variable name="tooltip_search">Search and add an item</xsl:variable>
+  <xsl:variable name="tooltip_search_all">Search and add an item</xsl:variable>
   <xsl:template name="prompt_search_title">Contains</xsl:template>
   <xsl:template name="prompt_search_number">Number is</xsl:template>
   <xsl:template name="prompt_search_owner">Owner is</xsl:template>
