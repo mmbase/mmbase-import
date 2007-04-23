@@ -55,9 +55,5 @@
 		<prompt xml:lang="en">Notificationdate</prompt>
 		<prompt xml:lang="nl">Notificatie datum</prompt>
 	</field>
-	<field name="status">
-		<prompt xml:lang="en">Status</prompt>
-		<prompt xml:lang="nl">Status</prompt>
-	</field>
 	<list include="config/contentchannel/search_contentelement_creationrel_contentchannel.xml" />
 </form-schema>
