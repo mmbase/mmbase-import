@@ -28,7 +28,6 @@ import org.mmbase.util.logging.Logger;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
-import sun.awt.color.ProfileDeferralInfo;
 
 /**
  * this class represents extra profile information attached to a poster.
