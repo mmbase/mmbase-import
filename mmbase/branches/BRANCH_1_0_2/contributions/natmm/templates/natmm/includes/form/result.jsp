@@ -38,6 +38,17 @@ if(referer!=null) {
    Vector formResponse = new Vector();
 
    boolean isValidAnswer = true;
+
+	// Fix for Dutch chars in Email
+	// If browser sends a default encoding different than UTF-8, we reformat the bytes and convert to UTF-8
+	String encoding = "";
+	String headerValues = request.getHeader("Accept-Charset");
+	if (headerValues != null) {
+		// there is an encoding in header. So first entry is the default
+  		encoding = (headerValues.split(",")) [0];
+  		postingStr = new String( postingStr.getBytes(encoding), "UTF-8");
+	}
+
 %>
 <mm:node number="<%= paginaID %>" id="this_page">
    <mm:field name="titel" jspvar="dummy" vartype="String" write="false">
