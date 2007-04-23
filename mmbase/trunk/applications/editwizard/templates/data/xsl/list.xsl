@@ -7,17 +7,21 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.44 2007-04-16 15:31:45 michiel Exp $
+    @version $Id: list.xsl,v 1.45 2007-04-23 14:08:32 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
 
   <xsl:param name="deletable">false</xsl:param>
+  <xsl:param name="unlinkable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
   <xsl:param name="newfromlist">-1</xsl:param>
 
   <xsl:param name="deleteprompt">
     <xsl:call-template name="prompt_delete_confirmation" />
+  </xsl:param>
+  <xsl:param name="unlinkprompt">
+    <xsl:call-template name="prompt_unlink_confirmation" />
   </xsl:param>
   <xsl:param name="deletedescription">
     <xsl:value-of select="$tooltip_delete" />
@@ -278,6 +282,9 @@
           <xsl:if test="$deletable='true'">
             <th/>
           </xsl:if>
+          <xsl:if test="$unlinkable='true'">
+            <th/>
+          </xsl:if>
           <th>#</th>
           <xsl:for-each select="object[1]/field">
             <th>
@@ -363,6 +370,21 @@
           </xsl:if>
         </td>
       </xsl:if>
+
+      <xsl:if test="$unlinkable='true'">
+        <td class="deletebutton">
+          <xsl:if test="@maylink='true'">
+            <a
+              href="{$unlinkpage}&amp;wizard={$wizard}&amp;objectnumber={@number}&amp;newfromlist={$newfromlist}&amp;origin={$origin}"
+              title="{$deletedescription}"
+              onmousedown="cancelClick=true;"
+              onclick="return doUnlink('{$unlinkprompt}');">
+              <xsl:call-template name="prompt_unlink" />
+            </a>
+          </xsl:if>
+        </td>
+      </xsl:if>
+
       <td class="number">
         <xsl:value-of select="@index" />
         <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>

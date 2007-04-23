@@ -209,6 +209,48 @@ public class SearchUtil {
         return new CollectionRelationList(nm.getList(query), parent.getCloud());
     }
 
+
+    /**
+     * Finds the relation-nodes between two speficied nodes
+     * @param source 
+     * @param destination
+     * @param role
+     * @since MMBase-1.8.4
+     */
+    public static RelationList findRelations(Node source, Node destination, String role, String searchDir) {
+        
+        Cloud cloud = source.getCloud();
+        RelationManager relationManager = 
+            role == null ?
+            cloud.getNodeManager("insrel").toRelationManager() :
+            cloud.getRelationManager(source.getNodeManager(), destination.getNodeManager(), role);
+        
+        NodeQuery q = relationManager.createQuery();
+        if ("destination".equals(searchDir)) {
+            Queries.addConstraint(q, Queries.createConstraint(q, "snumber", FieldCompareConstraint.EQUAL, source));
+            Queries.addConstraint(q, Queries.createConstraint(q, "dnumber", FieldCompareConstraint.EQUAL, destination));
+        } else if ("source".equals(searchDir)) {
+            Queries.addConstraint(q, Queries.createConstraint(q, "dnumber", FieldCompareConstraint.EQUAL, source));
+            Queries.addConstraint(q, Queries.createConstraint(q, "snumber", FieldCompareConstraint.EQUAL, destination));
+        } else {
+            Queries.addConstraint(q, Queries.createConstraint(q, "snumber", FieldCompareConstraint.EQUAL, source));
+            Queries.addConstraint(q, Queries.createConstraint(q, "dnumber", FieldCompareConstraint.EQUAL, destination));
+            if (Queries.count(q) == 0) { 
+                RelationManager relationManager2 = 
+                    role == null ?
+                    cloud.getNodeManager("insrel").toRelationManager() :
+                    cloud.getRelationManager(destination.getNodeManager(), source.getNodeManager(), role);
+                NodeQuery q2 = relationManager2.createQuery();
+                Queries.addConstraint(q2, Queries.createConstraint(q2, "dnumber", FieldCompareConstraint.EQUAL, source));
+                Queries.addConstraint(q2, Queries.createConstraint(q2, "snumber", FieldCompareConstraint.EQUAL, destination));
+                if (Queries.count(q2) > 0) {
+                    q = q2;
+                    relationManager = relationManager2;
+                }
+            }
+        }
+        return new CollectionRelationList(relationManager.getList(q), cloud);
+    }
    
     public static void addFeatures(NodeQuery query, Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
         addFeatures(query, parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
