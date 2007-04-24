@@ -56,11 +56,16 @@
           </mm:compare>
         </mm:field>
           
-        <mm:import id="link">
-          <a href="<mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?">
-                     <mm:param name="email"><mm:field name="number" /></mm:param>
-                   </mm:treefile>">
-        </mm:import>
+        <mm:compare referid="mailboxtype" value="11" inverse="true">
+          <mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?" id="link"  write="false">
+            <mm:param name="email"><mm:field name="number" /></mm:param>
+          </mm:treefile>
+        </mm:compare>
+        <mm:compare referid="mailboxtype" value="11" >
+          <mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?" id="link" write="false">
+            <mm:param name="id"><mm:field name="number" /></mm:param>
+          </mm:treefile>
+        </mm:compare>
         <di:row>
           <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
           <di:cell>
@@ -69,27 +74,29 @@
             </mm:relatednodes>
           </di:cell>
 
+          <%-- very ugly code, code duplication, only because of the <b's>. CSS class should have been used on the rows!! --%>
           <mm:present referid="isnew">
-            <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="subject" /></b></a></di:cell>
+            <di:cell><a href="${link}"><b><mm:field name="subject" /></b></a></di:cell>
             <mm:compare referid="mailboxtype" value="1">
-              <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="to" /></b></a></di:cell>
+              <di:cell><a href="${link}"><b><mm:field name="to" /></b></a></di:cell>
             </mm:compare>
             <mm:compare referid="mailboxtype" value="1" inverse="true">
-              <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="from" /></b></a></di:cell>
+              <di:cell><a href="${link}"><b><mm:field name="from" /></b></a></di:cell>
             </mm:compare>
-            <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="gui(date)" /></b></a></di:cell>
+            <di:cell><a href="${link}"><b><mm:field name="gui(date)" /></b></a></di:cell>
           </mm:present>
 
           <mm:notpresent referid="isnew">
-            <di:cell><mm:write escape="none" referid="link"/><mm:field name="subject" /></a></di:cell>
+            <di:cell><a href="${link}"><mm:field name="subject" /></a></di:cell>
             <mm:compare referid="mailboxtype" value="1">
-              <di:cell><mm:write escape="none" referid="link"/><mm:field name="to" /></a></di:cell>
+              <di:cell><a href="${link}"><mm:field name="to" /></a></di:cell>
             </mm:compare>
             <mm:compare referid="mailboxtype" value="1" inverse="true">
-              <di:cell><mm:write escape="none" referid="link"/><mm:field name="from" /></a></di:cell>
+              <di:cell><a href="${link}"><mm:field name="from" /></a></di:cell>
             </mm:compare>
-            <di:cell><mm:write escape="none" referid="link"/><mm:field name="gui(date)" /></a></di:cell>
+            <di:cell><a href="${link}"><mm:field name="gui(date)" /></a></di:cell>
           </mm:notpresent>
+
         </di:row>
         <mm:remove referid="link" />
       </mm:relatednodes>
