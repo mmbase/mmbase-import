@@ -10,7 +10,7 @@
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field ftype="startwizard" wizardname="config/vacature/vacature" />
    </item>
-   <command name="search" nodepath="vacature" age="-1" fields="titel" orderby="titel">
+   <command name="search" nodepath="vacature" age="-1" fields="titel" orderby="titel" constraints="[metatags] is null or [metatags] not like '%vrijwilliger%'">
       <prompt>zoek vacature</prompt>
       <search-filter>
          <name>titel bevat</name>
