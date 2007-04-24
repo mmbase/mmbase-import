@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @version $Id: FileServlet.java,v 1.1 2007-04-24 15:29:53 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.2 2007-04-24 15:37:44 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -53,10 +53,10 @@ public class FileServlet extends BridgeServlet {
             files = new File(dataDir);
 
             if (! files.exists()) {
-                if (files.createDirs()) {
-                    log.info("Directory " + files + " was created"):
+                if (files.mkdirs()) {
+                    log.info("Directory " + files + " was created");
                 } else {
-                    log.warn("Directory " + files + " could not be created"):
+                    log.warn("Directory " + files + " could not be created");
                 }
             }
             
@@ -83,7 +83,11 @@ public class FileServlet extends BridgeServlet {
     
 
     public static File getFile(String pathInfo) {
-        return new File(files, pathInfo);
+        if (pathInfo == null) {
+            return files;
+        } else {
+            return new File(files, pathInfo);
+        }
     }
 
 
