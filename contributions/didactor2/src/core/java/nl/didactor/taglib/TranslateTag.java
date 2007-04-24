@@ -204,6 +204,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
             pageContext.setAttribute("t_debug", debug);
             translateDebug = debug;
         }
+        helper.useEscaper(false);
         helper.setValue(getTranslation());
         return EVAL_BODY; // lets try _not_ buffering the body.
     }
