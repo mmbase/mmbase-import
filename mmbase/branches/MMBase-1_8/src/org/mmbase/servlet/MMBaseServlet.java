@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.53 2006-07-18 12:45:02 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.53.2.1 2007-04-24 14:52:03 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -47,7 +47,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * MMBase reference. While null, servlet does not accept request.
      */
-    protected MMBase mmbase = null;
+    protected static MMBase mmbase = null;
     // private   static String context;
 
 
@@ -158,7 +158,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     public void setMMBase(MMBase mmb) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new java.util.Date(System.currentTimeMillis()-start));
+        cal.setTime(new java.util.Date(System.currentTimeMillis() - start));
         if (! mmbaseInited) {
             log.info("MMBase servlets are ready to receive requests, started in " +cal.get(Calendar.MINUTE)+" min "+cal.get(Calendar.SECOND)+" sec.");
         }
