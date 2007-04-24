@@ -17,11 +17,15 @@ import nl.didactor.component.Component;
 import nl.didactor.security.*;
 import nl.didactor.util.ClassRoom;
 /**
- * entityTag: retrieve entity data
+ * entityTag: retrieve entity data. 
+ * 
+ *
  * @author UNKNOWN
+ * @javadoc What kind of 'entities'?
+ * @version $Id: EntityTag.java,v 1.4 2007-04-24 12:12:11 michiel Exp $
  */
 public class EntityTag extends CloudReferrerTag { 
-    private static Logger log = Logging.getLoggerInstance(EntityTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(EntityTag.class);
 
     private String name;
     private String user;
