@@ -42,26 +42,8 @@
   <lists>
     <optionlist include="config/option_list/boolean.xml" />
     <optionlist include="config/option_list/boolean_inverse.xml" /> 
-    <optionlist name="questionsperpage">
-      <option id="0">
-        <prompt xml:lang="nl">Alle vragen op 1 pagina</prompt>
-        <prompt xml:lang="en">All question on 1 page</prompt>
-      </option>
-      <option id="1">
-        <prompt xml:lang="nl">1 vraag per pagina</prompt>
-        <prompt xml:lang="en">1 question per page</prompt>
-      </option>
-    </optionlist>
-    <optionlist name="feedbackpage">
-      <option id="0">
-        <prompt xml:lang="nl">geslaagd/gezakt</prompt>
-        <prompt xml:lang="en">passed/failed</prompt>
-      </option>
-      <option id="1">
-        <prompt xml:lang="nl">overzicht van antwoorden</prompt>
-        <prompt xml:lang="en">answers overview</prompt>
-      </option>
-    </optionlist>
+    <optionlist include="config/tests/questionsperpage.xml" />
+    <optionlist include="config/tests/feedbackpage.xml" />
   </lists>
 
   <form-schema id="step1">
