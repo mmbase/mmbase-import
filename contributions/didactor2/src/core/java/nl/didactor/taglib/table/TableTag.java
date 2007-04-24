@@ -218,15 +218,17 @@ public class TableTag extends CloudReferrerTag {
                     }
                     pagingContent += "</span>";
                 }
-                if (!"".equals(pagingContent))
+                if (!"".equals(pagingContent)) {
                     getPreviousOut().print(getLabel("paging.top.start") + pagingContent + getLabel("paging.top.end"));
+                }
 
                 getPreviousOut().print(getLabel("table.start"));
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
                 getPreviousOut().print(getLabel("table.end"));
 
-                if (!"".equals(pagingContent))
+                if (!"".equals(pagingContent)) {
                     getPreviousOut().print(getLabel("paging.bottom.start") + pagingContent + getLabel("paging.bottom.end"));
+                }
 
                 getPreviousOut().print(getLabel("surrounding.end"));
             }
