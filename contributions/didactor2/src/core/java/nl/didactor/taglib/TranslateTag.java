@@ -1,5 +1,8 @@
 package nl.didactor.taglib;
 
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
+import org.mmbase.bridge.jsp.taglib.Writer;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import java.io.IOException;
 import java.util.*;
 import java.text.*;
@@ -8,14 +11,21 @@ import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Casting;
 
 /**
  * Translate tag: it will figure out a translation for a given
  * abstract locale.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class TranslateTag extends BodyTagSupport {
+public class TranslateTag extends ContextReferrerTag implements Writer  { //, ParamHandler
     private static final Logger log = Logging.getLoggerInstance(TranslateTag.class);
+
+    private Map<String, Object> parameters = new HashMap<String, Object>();
+
+    public void addParameter(String key, Object value) throws JspTagException {
+        parameters.put(key, value);
+    }
 
     // These parameters are set with the different setXyz() methods
     // they may not be manipulated by this class, because that will
@@ -32,12 +42,16 @@ public class TranslateTag extends BodyTagSupport {
     private String sArg4;
 
     public void setKey(String key) {
-        log.debug("set key to [" + key + "]");
+        if (log.isDebugEnabled()) {
+            log.debug("set key to [" + key + "]");
+        }
         this.key = key;
     }
 
-    public void setLocale(String locale) {
-        log.debug("set locale to [" + locale + "]");
+    public void setSetlocale(String locale) {
+        if (log.isDebugEnabled()) {
+            log.debug("set locale to [" + locale + "]");
+        }
         this.locale = locale;
     }
 
@@ -66,14 +80,98 @@ public class TranslateTag extends BodyTagSupport {
        this.sArg4 = value;
     }
 
+    private String translateLocale = "";
+    private String translateDebug  = "";
 
-    public int doEndTag() throws JspTagException {
-        String translateLocale = "";
-        String translateDebug = "";
 
-        String translationpath = ((Servlet)pageContext.getPage()).getServletConfig().getServletContext().getRealPath("/WEB-INF/config/translations");
-        TranslateTable.init(translationpath);
+    protected CharSequence getTranslation() {
+        return new CharSequence() {
+                protected String get() {
+                    
+                    String translationpath = ((Servlet)pageContext.getPage()).getServletConfig().getServletContext().getRealPath("/WEB-INF/config/translations");
+                    TranslateTable.init(translationpath);
+                    
 
+
+                    log.debug("Getting translation table for locale '" + translateLocale + "'");
+                    TranslateTable tt = new TranslateTable(translateLocale);
+                    String translation = "";
+                    
+                    if (key != null) {
+                        translation = tt.translate(key);
+                        log.debug("Translating '" + key + "' to '" + translation + "'");
+                    } else {
+                        return "";
+                    }
+                    
+                    if (translation == null || "".equals(translation)) {
+                        if ("true".equals(translateDebug)) {
+                            translation = "???[" + key + "]???";
+                        }
+                    }
+                    
+                    // Save some debugging information about the translation id's that are
+                    // used on this page.
+                    if ("true".equals(translateDebug)) {
+                        List usedTranslations = (List)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
+                        if (usedTranslations == null) {
+                            usedTranslations = new ArrayList();
+                        }
+                        if (!usedTranslations.contains(key)) {
+                            usedTranslations.add(key);
+                            pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
+                        }
+                    }
+                    
+                    //Arguments like arg0="John" arg1="eats" arg2="an apple"
+
+                    // How now can you change the order??? It is not garanteed that in every language you must 
+                    // express such things in the same order.
+                    if(sArg0 != null){
+                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg0);
+                    }
+                    if(sArg1 != null){
+                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg1);
+                    }
+                    if(sArg2 != null){
+                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg2);
+                    }
+                    if(sArg3 != null){
+                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg3);
+                    }
+                    if(sArg4 != null){
+                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg4);
+                    }
+                    return translation;
+                }
+                public char charAt(int index) {
+                    return get().charAt(index);
+                }
+                public int length() {
+                    return get().length();
+                }
+                public CharSequence subSequence(int start, int end) {
+                    return get().subSequence(start, end);
+                }
+                
+                public String toString() {
+                    // this means that it is written to page by ${_} and that consequently there _must_ be a body.
+                    // this is needed when body is not buffered.
+                    TranslateTag.this.haveBody();
+                    return get();
+                }
+                public int compareTo(Object o) {
+                    return toString().compareTo(Casting.toString(o));
+                }
+
+            };
+    }
+
+
+    public int doStartTag() throws JspTagException {
+        translateLocale = "";
+        translateDebug  = "";
+        
         if (locale == null) {
             // If no locale is given in the tag, then we look it up in the page context
             translateLocale = (String)pageContext.getAttribute("t_locale");
@@ -106,61 +204,18 @@ public class TranslateTag extends BodyTagSupport {
             pageContext.setAttribute("t_debug", debug);
             translateDebug = debug;
         }
-
-        log.debug("Getting translation table for locale '" + translateLocale + "'");
-        TranslateTable tt = new TranslateTable(translateLocale);
-        String translation = "";
-
-        if (key != null) {
-            translation = tt.translate(key);
-            log.debug("Translating '" + key + "' to '" + translation + "'");
-        } else {
-            return EVAL_PAGE;
-        }
-
-        if (translation == null || "".equals(translation)) {
-            if ("true".equals(translateDebug)) {
-                translation = "???[" + key + "]???";
-            }
-        }
-
-        // Save some debugging information about the translation id's that are
-        // used on this page.
-        if ("true".equals(translateDebug)) {
-            Vector usedTranslations = (Vector)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
-            if (usedTranslations == null) {
-                usedTranslations = new Vector();
-            }
-            if (!usedTranslations.contains(key)) {
-                usedTranslations.add(key);
-                pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
-            }
-        }
-
-        //Arguments like arg0="John" arg1="eats" arg2="an apple"
-        if(sArg0 != null){
-           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg0);
-        }
-        if(sArg1 != null){
-           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg1);
-        }
-        if(sArg2 != null){
-           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg2);
-        }
-        if(sArg3 != null){
-           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg3);
-        }
-        if(sArg4 != null){
-           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg4);
-        }
-
-        try {
-            pageContext.getOut().print(translation);
-        } catch (java.io.IOException e) {
-        }
-        return EVAL_PAGE;
+        helper.setValue(getTranslation());
+        return EVAL_BODY; // lets try _not_ buffering the body.
     }
 
+    public int doEndTag() throws JspTagException {
+        helper.doEndTag();
+        return super.doEndTag();
+    }
+
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
+    }
     public void release() {
         locale = null;
         key = null;
