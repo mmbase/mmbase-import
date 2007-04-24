@@ -6,6 +6,7 @@
   <property name="project.jars.dir"        location="build" />
   <property name="project.jars.includes"   value="jai_codec.jar,jai_core.jar" />
 
+  <property name="java.source.version"     value="1.5" />
   <import file="../buildbase-include.xml" />
 
   <property file="build.properties.default" />
