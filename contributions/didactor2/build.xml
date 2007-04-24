@@ -21,7 +21,7 @@
   <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.zip}" />
 
   <property name="mmbase.dest"             value="${download.dir}/${mmbase.version}.zip" />
-  <property name="mmbaseroot.language"    value="en" />
+  <property name="mmbaseroot.language"     value="en" />
 
 
 
@@ -342,7 +342,9 @@
       <available file="src/${component}/webinf" type="dir" />
       <then>
         <copy todir="${build.dir}/webapp/WEB-INF" preservelastmodified="true">
-          <fileset dir="src/${component}/webinf">
+          <fileset 
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/webinf">
             <include name="**"/>
             <exclude name="**/taglib-extra.tld" />
           </fileset>
