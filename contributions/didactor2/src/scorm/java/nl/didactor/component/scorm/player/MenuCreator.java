@@ -1,9 +1,7 @@
 package nl.didactor.component.scorm.player;
 
 import java.io.File;
-import java.util.Vector;
-import java.util.Iterator;
-
+import java.util.*;
 
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: MenuCreator.java,v 1.7 2007-04-24 16:10:50 michiel Exp $
+ * @version $Id: MenuCreator.java,v 1.8 2007-04-24 16:22:29 michiel Exp $
  */
 
 public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator {
@@ -35,31 +33,26 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
     /**
      * A count of organizations (should really only be one for the tree widget)
      */
-    private int _orgCount = -1;
+    private int orgCount = -1;
 
     /**
      * Used to keep track of how many items there are in a organization
      * (this is array based, so initially set to -1)
      */
-    private int _itemCount = -1;
+    private int itemCount = -1;
+
+    private Element defaultOrg;
+
+    private final SCORM12_Core scormCore;
+    private final String webAppsPath;
+    private final String packageHref;
 
 
-    private SCORM12_Core scormCore;
-    private Element _defaultorg;
-    private String sWebAppsPath;
-    private String sPackageHref;
-
-    private boolean bDebugMode = LogController.showLogs("az"); // WTF
-    private String  sDebugIndo = "Scorm menu creater: ";
-
-
-    private String sSubManifest = "";
-
-    public MenuCreator(File fileManifest, String sWebAppsPath, String sPackageHref) throws Exception {
+    public MenuCreator(File fileManifest, String webAppsPath, String packageHref) throws Exception {
         super.loadDocument(fileManifest);
         scormCore = new SCORM12_Core(this);
-        this.sWebAppsPath = sWebAppsPath;
-        this.sPackageHref = sPackageHref;
+        this.webAppsPath = webAppsPath;
+        this.packageHref = packageHref;
     }
 
 
@@ -67,25 +60,25 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
     public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath) {
-        log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
 
 
-        // New Vector
-        if(log.isDebugEnabled()) log.debug("--------------------- Start of JS Parser ---------------------");
+        if(log.isDebugEnabled()) {
+            log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
+            log.debug("--------------------- Start of JS Parser ---------------------");
+        }
 
-        Vector v = new Vector();
+        List<String> v = new ArrayList<String>();
         writePackageSettings(v, "packageName", 0);
 
 
         Element manifestRoot = (Element)getDocument().getRootElement().clone();
         Element orgs = manifestRoot.getChild(SCORM12_Core.ORGANIZATIONS, manifestRoot.getNamespace());
         // get the identifier for the default organization
-        _defaultorg = scormCore. getDefaultOrganization(orgs);
+        defaultOrg = scormCore. getDefaultOrganization(orgs);
 
         //Selecting the submanifest element
-        //      if(bDebugMode) System.out.println(sDebugIndo + "Selecting the submanifest element");
         try {
-            Element elemCurrent = _defaultorg;
+            Element elemCurrent = defaultOrg;
             String[] arrstrOffsets = sSubPath.split(",");
             for(int f = 0; f < arrstrOffsets.length; f++) {
                 int iOffsetAtThisLevel = (new Integer(arrstrOffsets[f])).intValue();
@@ -95,20 +88,18 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
             createNavLinks(v, elemCurrent, "menu", useRelativePaths);
         } catch(Exception e) {
             //Let's start from the root then
-            createNavLinks(v, _defaultorg, "menu", useRelativePaths);
+            createNavLinks(v, defaultOrg, "menu", useRelativePaths);
         }
 
 
         // now call createNavLinks() which should interrogate the org/item structure
-        //      if(bDebugMode) System.out.println(sDebugIndo + "Creating Links");
 
-        //      createNavLinks(v, ((Element)((Element) _defaultorg.getChildren().get(1)).getChildren().get(1)), "menu", useRelativePaths);
-        //      createNavLinks(v, _defaultorg, "menu", useRelativePaths);
+        //      createNavLinks(v, ((Element)((Element) defaultOrg.getChildren().get(1)).getChildren().get(1)), "menu", useRelativePaths);
+        //      createNavLinks(v, defaultOrg, "menu", useRelativePaths);
 
 
         // Convert Vector to String array
-        String[] javascriptStrings = new String[v.size()];
-        v.copyInto(javascriptStrings);
+        String[] javascriptStrings = v.toArray(new String[] {});
 
         if(log.isDebugEnabled()){
             log.debug("-----------------SCORM menu for offset=" + sSubPath + ":----------------");
@@ -123,13 +114,13 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
 
-    protected void writePackageSettings(Vector javascriptStrings, String name, int value) {
+    protected void writePackageSettings(List<String> javascriptStrings, String name, int value) {
         javascriptStrings.add("CPAPI." + name + " = " + value + ";");
     }
 
 
 
-    protected void createNavLinks(List javascriptStrings, Element element, String menuParent, boolean useRelativePaths) {
+    protected void createNavLinks(List<String> javascriptStrings, Element element, String menuParent, boolean useRelativePaths) {
         String name = element.getName();
         if (log.isDebugEnabled()) {
             log.debug("*** name:" + name);
@@ -138,8 +129,8 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
         }
         // ORGANIZATION
         if(name.equals(CP_Core.ORGANIZATION) && this.isDocumentNamespace(element)) {
-            ++_orgCount;
-            _itemCount = -1;
+            ++orgCount;
+            itemCount = -1;
             String orgId = element.getAttributeValue(CP_Core.IDENTIFIER);
             menuParent = "menu";
             String title = "Organization";
@@ -151,16 +142,16 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
                 }
             }
             // find out if this the default organization...
-            String _defaultOrganization = _defaultorg.getAttributeValue(CP_Core.IDENTIFIER);
-            if (_defaultOrganization != null) {
-                if (_defaultOrganization.equals(orgId)) {
-                    writePackageSettings(javascriptStrings, "_defaultOrg", _orgCount);
+            String defaultOrganization = defaultOrg.getAttributeValue(CP_Core.IDENTIFIER);
+            if (defaultOrganization != null) {
+                if (defaultOrganization.equals(orgId)) {
+                    writePackageSettings(javascriptStrings, "_defaultorg", orgCount);
                 }
             }
             writeOrganization(javascriptStrings, title, orgId);
         } else if(name.equals(CP_Core.ITEM) && this.isDocumentNamespace(element)) {
             // ITEM
-            ++_itemCount;
+            ++itemCount;
             String itemId = element.getAttributeValue(CP_Core.IDENTIFIER);
             String hyperLink = "";
             String url = "";
@@ -195,7 +186,7 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
                         // Only if local path add relative bit
                         if(GeneralUtils.isExternalURL(url) == false) {
                             //AZ                    url = "../" + url;
-                            url = sPackageHref + url;
+                            url = packageHref + url;
                         }
                     } else {
                         // Absolute Paths for Previewing in-situ
@@ -234,14 +225,14 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
                 hyperLink = "javascript:void(0)";
             }
             if (log.isDebugEnabled()) {
-                log.debug("adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
-                //        _sequence.addNewItem(itemId, hyperLink, _itemCount, scoType, title,  prerequisites);
+                log.debug("adding to sequencer:"+ itemId + " " + hyperLink+ " " + itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
+                //        _sequence.addNewItem(itemId, hyperLink, itemCount, scoType, title,  prerequisites);
             }
 
 
-            if(_orgCount == -1) {
+            if(orgCount == -1) {
                 // It is "SubManifestMode"
-                _orgCount++;
+                orgCount++;
                 writeOrganization(javascriptStrings, title, "");
             }
             writeItem(javascriptStrings, title, hyperLink, itemId, menuParent);
@@ -262,29 +253,24 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
 
-    protected void writeItem(Vector javascriptStrings, String title, String url, String itemId, String parentMenu) {
+    protected void writeItem(List<String> javascriptStrings, String title, String url, String itemId, String parentMenu) {
         // the javscript tree widget doesn't like hyphens, so replace them with underscores...
         parentMenu = parentMenu.replace('-', '_');
         // add the item...
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").itemArray(" + _itemCount + ").itemTitle = \"" + escapeQuotes(title) + "\";");
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").itemArray(" + _itemCount + ").itemIdentifier = \"" + itemId + "\";");
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").itemArray(" + _itemCount + ").itemParent = \"" + parentMenu + "\";");
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").itemArray(" + _itemCount + ").itemHyper = \"" + url + "\";");
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").itemArray(" + itemCount + ").itemTitle = \"" + escapeQuotes(title) + "\";");
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").itemArray(" + itemCount + ").itemIdentifier = \"" + itemId + "\";");
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").itemArray(" + itemCount + ").itemParent = \"" + parentMenu + "\";");
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").itemArray(" + itemCount + ").itemHyper = \"" + url + "\";");
     }
 
 
 
 
 
-    protected void writeOrganization(Vector javascriptStrings, String title, String orgId) {
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").organizationName = \"" + escapeQuotes(title) + "\";");
-        javascriptStrings.add("CPAPI.orgArray(" + _orgCount + ").organizationIdentifier = \"" + orgId + "\";");
+    protected void writeOrganization(List<String> javascriptStrings, String title, String orgId) {
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").organizationName = \"" + escapeQuotes(title) + "\";");
+        javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").organizationIdentifier = \"" + orgId + "\";");
     }
-
-
-
-
-
 
 
 
@@ -301,12 +287,12 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
 
-    public String getLaunch(Element element) {
+    protected String getLaunch(Element element) {
         String url = scormCore.getAbsoluteURL(element);
         // an item that references somthing has been found..
         if (url.startsWith("file:///")) {
             String tempHref;
-            if (GeneralUtils.getOS()== GeneralUtils.MACINTOSH || GeneralUtils.getOS()== GeneralUtils.UNIX){
+            if (GeneralUtils.getOS() == GeneralUtils.MACINTOSH || GeneralUtils.getOS() == GeneralUtils.UNIX){
                 tempHref = url.substring(7, url.length());//mac & linux
             } else {
                 tempHref = url.substring(8, url.length()); // windows
@@ -314,11 +300,11 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
             tempHref = tempHref.replaceAll("%20", " ");
 
             //            String testHref = ScormTomcatHandler.getSharedInstance().getScormWebAppPath().toString().replace('\\', '/');
-            String testHref = sWebAppsPath;
+            String testHref = webAppsPath;
 
             testHref = testHref.replaceAll("%20", " ");
             if (tempHref.startsWith(testHref)) {
-                String localUrlMinusPath = tempHref.substring(sWebAppsPath.length(),  tempHref.length());
+                String localUrlMinusPath = tempHref.substring(webAppsPath.length(),  tempHref.length());
                 String correctLocalUrl = localUrlMinusPath.replace('\\', '/');
                 url = "../.." + correctLocalUrl;
             }
