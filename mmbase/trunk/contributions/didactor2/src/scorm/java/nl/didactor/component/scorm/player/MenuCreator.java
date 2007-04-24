@@ -22,11 +22,14 @@ import nl.didactor.utils.debug.LogController;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * @javadoc
+ * @version $Id: MenuCreator.java,v 1.6 2007-04-24 16:02:32 michiel Exp $
+ */
 
-public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator
-{
+public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator {
 
-   private static Logger log = Logging.getLoggerInstance(MenuCreator.class);
+   private static final Logger log = Logging.getLoggerInstance(MenuCreator.class);
 
 
    /**
@@ -52,8 +55,7 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
    private String sSubManifest = "";
 
-   public MenuCreator(File fileManifest, String sWebAppsPath, String sPackageHref) throws Exception
-   {
+   public MenuCreator(File fileManifest, String sWebAppsPath, String sPackageHref) throws Exception {
       super.loadDocument(fileManifest);
       scormCore = new SCORM12_Core(this);
       this.sWebAppsPath = sWebAppsPath;
@@ -64,8 +66,7 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
 
-   public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath)
-   {
+   public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath) {
       log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
 
 
@@ -83,20 +84,17 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
       //Selecting the submanifest element
 //      if(bDebugMode) System.out.println(sDebugIndo + "Selecting the submanifest element");
-      try
-      {
+      try {
          Element elemCurrent = _defaultorg;
          String[] arrstrOffsets = sSubPath.split(",");
-         for(int f = 0; f < arrstrOffsets.length; f++)
-         {
+         for(int f = 0; f < arrstrOffsets.length; f++) {
             int iOffsetAtThisLevel = (new Integer(arrstrOffsets[f])).intValue();
             elemCurrent = (Element) elemCurrent.getChildren("item", null).get(iOffsetAtThisLevel);
          }
 
          createNavLinks(v, elemCurrent, "menu", useRelativePaths);
-      }
-      catch(Exception e)
-      {//Let's start from the root then
+      } catch(Exception e) {
+          //Let's start from the root then
          createNavLinks(v, _defaultorg, "menu", useRelativePaths);
       }
 
@@ -131,44 +129,37 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
 
-  protected void createNavLinks(Vector javascriptStrings, Element element, String menuParent, boolean useRelativePaths)
-  {
+  protected void createNavLinks(List javascriptStrings, Element element, String menuParent, boolean useRelativePaths) {
     String name = element.getName();
-    log.debug("*** name:" + name);
-    log.debug("*** menu:" + menuParent);
-    log.debug("*** value:" + element.getText());
-
+    if (log.isDebugEnabled()) {
+        log.debug("*** name:" + name);
+        log.debug("*** menu:" + menuParent);
+        log.debug("*** value:" + element.getText());
+    }
     // ORGANIZATION
-    if(name.equals(CP_Core.ORGANIZATION) && this.isDocumentNamespace(element))
-    {
-       ++_orgCount;
+    if(name.equals(CP_Core.ORGANIZATION) && this.isDocumentNamespace(element)) {
+        ++_orgCount;
        _itemCount = -1;
        String orgId = element.getAttributeValue(CP_Core.IDENTIFIER);
        menuParent = "menu";
        String title = "Organization";
        // Display Title if there is one
        Element titleElement = element.getChild(CP_Core.TITLE, element.getNamespace());
-       if(titleElement != null)
-       {
-          if(!titleElement.getText().equals(""))
-          {
+       if(titleElement != null) {
+          if(!titleElement.getText().equals("")) {
              title = titleElement.getText();
           }
        }
        // find out if this the default organization...
        String _defaultOrganization = _defaultorg.getAttributeValue(CP_Core.IDENTIFIER);
-       if (_defaultOrganization != null)
-       {
-          if (_defaultOrganization.equals(orgId))
-          {
+       if (_defaultOrganization != null) {
+          if (_defaultOrganization.equals(orgId)) {
              writePackageSettings(javascriptStrings, "_defaultOrg", _orgCount);
           }
        }
        writeOrganization(javascriptStrings, title, orgId);
-    }
-    // ITEM
-    else if(name.equals(CP_Core.ITEM) && this.isDocumentNamespace(element))
-    {
+    } else if(name.equals(CP_Core.ITEM) && this.isDocumentNamespace(element)) {
+        // ITEM
        ++_itemCount;
        String itemId = element.getAttributeValue(CP_Core.IDENTIFIER);
        String hyperLink = "";
@@ -177,54 +168,43 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
        // Display Title if there is one
        String title = "Item";
        Element titleElement = element.getChild(CP_Core.TITLE, element.getNamespace());
-       if(titleElement != null)
-       {
+       if(titleElement != null) {
           if(!titleElement.getText().equals("")) title = titleElement.getText();
        }
        // check to see that the isvisible attribute is not set to false...
        String isVisibleAttrib = element.getAttributeValue(CP_Core.ISVISIBLE);
-       if(isVisibleAttrib != null)
-       {
-          if(isVisibleAttrib.equals("false"))
-          {
+       if(isVisibleAttrib != null) {
+          if(isVisibleAttrib.equals("false")) {
               title = "* hidden";
           }
        }
        // What does this Item reference?
        Element ref_element = scormCore.getReferencedElement(element);
        String prerequisites = "";
-       if(ref_element != null)
-       {
+       if(ref_element != null) {
           String ref_name = ref_element.getName();
           // A RESOURCE
-          if(ref_name.equals(CP_Core.RESOURCE))
-          {
-/*AZ
-Unknown
-              scoType = _navViewer.findScoType(element);
-*/
+          if(ref_name.equals(CP_Core.RESOURCE)) {
+              /*AZ
+                Unknown
+                scoType = _navViewer.findScoType(element);
+              */
               // Relative path for export - Note the "../" is relative to where the Nav file is!
-              if(useRelativePaths)
-              {
+              if(useRelativePaths) {
                   url = scormCore.getRelativeURL(element);
                   // Only if local path add relative bit
-                  if(GeneralUtils.isExternalURL(url) == false)
-                  {
-//AZ                    url = "../" + url;
+                  if(GeneralUtils.isExternalURL(url) == false) {
+                      //AZ                    url = "../" + url;
                      url = sPackageHref + url;
                   }
-             }
+             } else {
               // Absolute Paths for Previewing in-situ
-             else
-             {
                  String turl = this.getLaunch(element);
                  url = turl;
              }
-             if(url != null)
-             {
+             if(url != null) {
                  hyperLink = url;
-                 if(!title.equals("* hidden"))
-                 {
+                 if(!title.equals("* hidden")) {
 /*AZ
                        prerequisites = _navViewer.getPrerequisites(element);
                        if (prerequisites == null)
@@ -234,37 +214,33 @@ Unknown
 */
                  }
              }
-          }
+          } else if(ref_name.equals(CP_Core.MANIFEST)) {
           // A sub-MANIFEST
-          else if(ref_name.equals(CP_Core.MANIFEST))
-          {
               hyperLink = "javascript:void(0)";
-             // Get ORGANIZATIONS Element
-             Element orgsElement = ref_element.getChild(CP_Core.ORGANIZATIONS, ref_element.getNamespace());
-             // Now we have to get the default ORGANIZATION
-             if(orgsElement != null) ref_element = scormCore.getDefaultOrganization(orgsElement);
-             // Get the children of the referenced <organization> element and graft clones
-             if(ref_element != null)
-             {
-                Iterator it = ref_element.getChildren().iterator();
-                while(it.hasNext())
-                {
+              // Get ORGANIZATIONS Element
+              Element orgsElement = ref_element.getChild(CP_Core.ORGANIZATIONS, ref_element.getNamespace());
+              // Now we have to get the default ORGANIZATION
+              if(orgsElement != null) ref_element = scormCore.getDefaultOrganization(orgsElement);
+              // Get the children of the referenced <organization> element and graft clones
+              if(ref_element != null) {
+                  Iterator it = ref_element.getChildren().iterator();
+                  while(it.hasNext()) {
                    Element ref_child = (Element) it.next();
                    element.addContent((Element) ref_child.clone());
-                }
-             }
+                  }
+              }
           }
-       }
-       else
-       {
+       } else {
            hyperLink = "javascript:void(0)";
        }
-       log.debug("adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
-//        _sequence.addNewItem(itemId, hyperLink, _itemCount, scoType, title, prerequisites);
+       if (log.isDebugEnabled()) {
+           log.debug("adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
+           //        _sequence.addNewItem(itemId, hyperLink, _itemCount, scoType, title,  prerequisites);
+       }
 
 
-       if(_orgCount == -1)
-       {// It is "SubManifestMode"
+       if(_orgCount == -1) {
+           // It is "SubManifestMode"
           _orgCount++;
           writeOrganization(javascriptStrings, title, "");
        }
@@ -275,12 +251,11 @@ Unknown
 
     // round we go again...
     Iterator it = element.getChildren().iterator();
-    while(it.hasNext())
-    {
-       Element child = (Element) it.next();
-       createNavLinks(javascriptStrings, child, menuParent, useRelativePaths);
+    while(it.hasNext()) {
+        Element child = (Element) it.next();
+        createNavLinks(javascriptStrings, child, menuParent, useRelativePaths);
     }
- }
+  }
 
 
 
@@ -326,18 +301,14 @@ Unknown
 
 
 
-   public String getLaunch(Element element)
-   {
+   public String getLaunch(Element element) {
        String url = scormCore.getAbsoluteURL(element);
        // an item that references somthing has been found..
-       if (url.startsWith("file:///"))
-       {
+       if (url.startsWith("file:///")) {
            String tempHref;
            if (GeneralUtils.getOS()== GeneralUtils.MACINTOSH || GeneralUtils.getOS()== GeneralUtils.UNIX){
              tempHref = url.substring(7, url.length());//mac & linux
-           }
-           else
-           {
+           } else {
              tempHref = url.substring(8, url.length()); // windows
            }
            tempHref = tempHref.replaceAll("%20", " ");
@@ -346,8 +317,7 @@ Unknown
            String testHref = sWebAppsPath;
 
            testHref = testHref.replaceAll("%20", " ");
-           if (tempHref.startsWith(testHref))
-           {
+           if (tempHref.startsWith(testHref)) {
                String localUrlMinusPath = tempHref.substring(sWebAppsPath.length(),  tempHref.length());
                String correctLocalUrl = localUrlMinusPath.replace('\\', '/');
                url = "../.." + correctLocalUrl;
