@@ -53,7 +53,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.82 2007-02-10 16:52:47 nklasens Exp $
+ * @version $Id: Dove.java,v 1.83 2007-04-24 13:04:19 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -240,13 +240,8 @@ public class Dove extends AbstractDove {
      */
     public void getDataNode(Element in, Element out, Cloud cloud) {
         String alias = in.getAttribute(ELM_NUMBER);
-        try {
-            org.mmbase.bridge.Node nd = cloud.getNode(alias);
-            getDataNode(in,out,nd);
-        } catch (RuntimeException e) {
-            Element err = addContentElement(ERROR,"node not found",out);
-            err.setAttribute(ELM_TYPE, IS_SERVER);
-        }
+        org.mmbase.bridge.Node nd = cloud.getNode(alias);
+        getDataNode(in,out,nd);
     }
 
     /**
@@ -280,43 +275,38 @@ public class Dove extends AbstractDove {
 
         // determines whether to load the object (and possible restrictions)
         Element objectDef = getFirstElement(relation,OBJECT);
-        try {
-            for (RelationIterator i = nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
-                Relation nrel=i.nextRelation();
-                if (searchDir==1) {
-                    if (thisNumber!=nrel.getIntValue("snumber")) continue;
-                }
-                if (searchDir==2) {
-                    if (thisNumber!=nrel.getIntValue("dnumber")) continue;
-                }
-                Element data=doc.createElement(RELATION);
-                if (role!=null) {
-                    data.setAttribute(ELM_ROLE, role);
-                } else {
-                    data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
-                }
-                data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
-                data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
-
-                int otherNumber;
-                if (thisNumber == nrel.getIntValue("snumber")) {
-                    otherNumber = nrel.getIntValue("dnumber");
-                } else {
-                    otherNumber = nrel.getIntValue("snumber");
-                }
-                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
-                out.appendChild(data);
-                getDataNode(relation,data,nrel);
-                if (objectDef!=null) {
-                    Element nodeData=doc.createElement(OBJECT);
-                    nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
-                    data.appendChild(nodeData);
-                    getDataNode(objectDef, nodeData,nd.getCloud().getNode(otherNumber));
-                }
+        for (RelationIterator i = nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
+            Relation nrel=i.nextRelation();
+            if (searchDir==1) {
+                if (thisNumber!=nrel.getIntValue("snumber")) continue;
             }
-        } catch (RuntimeException e) {
-            Element err = addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
-            err.setAttribute(ELM_TYPE, IS_CLIENT);
+            if (searchDir==2) {
+                if (thisNumber!=nrel.getIntValue("dnumber")) continue;
+            }
+            Element data=doc.createElement(RELATION);
+            if (role!=null) {
+                data.setAttribute(ELM_ROLE, role);
+            } else {
+                data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
+            }
+            data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
+            data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
+            
+            int otherNumber;
+            if (thisNumber == nrel.getIntValue("snumber")) {
+                otherNumber = nrel.getIntValue("dnumber");
+            } else {
+                otherNumber = nrel.getIntValue("snumber");
+            }
+            data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
+            out.appendChild(data);
+            getDataNode(relation,data,nrel);
+            if (objectDef!=null) {
+                Element nodeData=doc.createElement(OBJECT);
+                nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
+                data.appendChild(nodeData);
+                getDataNode(objectDef, nodeData,nd.getCloud().getNode(otherNumber));
+            }
         }
     }
 
@@ -336,38 +326,33 @@ public class Dove extends AbstractDove {
      */
     public void getRelationsNodes(Element in, Element out, Cloud cloud) {
         String alias = in.getAttribute(ELM_NUMBER);
-        try {
-            org.mmbase.bridge.Node nd = cloud.getNode(alias);
-            NodeManager nm=nd.getNodeManager();
-            out.setAttribute(ELM_TYPE,nm.getName());
-
-            Element relation=getFirstElement(in,RELATION);
-            if (relation==null) {
-                int thisNumber=nd.getNumber();
-                for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
-                    Relation nrel=i.nextRelation();
-                    Element data=doc.createElement(RELATION);
-                    data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
-                    data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
-                    if (thisNumber==nrel.getIntValue("snumber")) {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
-                    } else {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("dnumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
-                    }
-                    out.appendChild(data);
-                    getDataNode(null,data,nrel);
+        org.mmbase.bridge.Node nd = cloud.getNode(alias);
+        NodeManager nm=nd.getNodeManager();
+        out.setAttribute(ELM_TYPE,nm.getName());
+        
+        Element relation=getFirstElement(in,RELATION);
+        if (relation==null) {
+            int thisNumber=nd.getNumber();
+            for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
+                Relation nrel=i.nextRelation();
+                Element data=doc.createElement(RELATION);
+                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
+                data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
+                if (thisNumber == nrel.getIntValue("snumber")) {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
+                } else {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("dnumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
                 }
-            } else {
-                while (relation!=null) { // select all child tags, should be 'relation'
-                    addRelationNodes(relation,out,nd);
-                    relation=getNextElement(relation,RELATION);
-               }
+                out.appendChild(data);
+                getDataNode(null,data,nrel);
             }
-        } catch (RuntimeException e) {
-            Element err = addContentElement(ERROR,"node not found",out);
-            err.setAttribute(ELM_TYPE, IS_SERVER);
+        } else {
+            while (relation!=null) { // select all child tags, should be 'relation'
+                addRelationNodes(relation,out,nd);
+                relation=getNextElement(relation,RELATION);
+            }
         }
     }
 
@@ -405,7 +390,7 @@ public class Dove extends AbstractDove {
                 Element err = addContentElement(ERROR,"Unknown subtag in getdata: "+node.getTagName(),out);
                 err.setAttribute(ELM_TYPE, IS_PARSER);
             }
-            node=getNextElement(node);
+            node = getNextElement(node);
         }
     }
 
@@ -427,23 +412,17 @@ public class Dove extends AbstractDove {
             Element err = addContentElement(ERROR,"type required for getnew",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
+            out.setAttribute(ELM_TYPE,nodemanagername);
+            NodeManager nm =cloud.getNodeManager(nodemanagername);
+            org.mmbase.bridge.Node n = nm.createNode();
             try {
-                out.setAttribute(ELM_TYPE,nodemanagername);
-                NodeManager nm =cloud.getNodeManager(nodemanagername);
-                org.mmbase.bridge.Node n = nm.createNode();
-                try {
-                    Element data=doc.createElement(OBJECT);
-                    int number=java.lang.Math.abs(n.getNumber());
-                    data.setAttribute(ELM_NUMBER, "n"+number);
-                    out.appendChild(data);
-                    getDataNode(null,data,n);
-                } finally {
-                    n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
-                }
-            } catch (RuntimeException e) {
-                Element err = addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
-                log.warn(Logging.stackTrace(e));
-                err.setAttribute(ELM_TYPE, IS_CLIENT);
+                Element data=doc.createElement(OBJECT);
+                int number=java.lang.Math.abs(n.getNumber());
+                data.setAttribute(ELM_NUMBER, "n"+number);
+                out.appendChild(data);
+                getDataNode(null,data,n);
+            } finally {
+                n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
             }
         }
     }
@@ -473,45 +452,35 @@ public class Dove extends AbstractDove {
             Element err = addContentElement(ERROR,"role required for getrelations",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
+            out.setAttribute(ELM_ROLE,rolename);
+            out.setAttribute(ELM_DESTINATION, destination);
+            out.setAttribute(ELM_SOURCE, source);
+            // if both types are given, use these as a constraint for the Relationmanager
+            RelationManager nm;
+            if (destinationType.equals("") || sourceType.equals("") ) {
+                nm =cloud.getRelationManager(rolename);
+            } else {
+                nm =cloud.getRelationManager(sourceType,destinationType,rolename);
+            }
+            org.mmbase.bridge.Node n = nm.createNode();
             try {
-                out.setAttribute(ELM_ROLE,rolename);
-                out.setAttribute(ELM_DESTINATION, destination);
-                out.setAttribute(ELM_SOURCE, source);
-                // if both types are given, use these as a constraint for the Relationmanager
-                RelationManager nm;
-                if (destinationType.equals("") || sourceType.equals("") ) {
-                    nm =cloud.getRelationManager(rolename);
+                Element data=doc.createElement(RELATION);
+                int number=java.lang.Math.abs(n.getNumber());
+                data.setAttribute(ELM_NUMBER, "n"+number);
+                if (createDir == RelationStep.DIRECTIONS_SOURCE) {
+                    log.debug("Creating relation in the INVERSE direction");
+                    data.setAttribute(ELM_DESTINATION, source);
+                    data.setAttribute(ELM_SOURCE, destination);
                 } else {
-                    nm =cloud.getRelationManager(sourceType,destinationType,rolename);
+                    log.debug("Creating relation in the NORMAL direction");
+                    data.setAttribute(ELM_DESTINATION, destination);
+                    data.setAttribute(ELM_SOURCE, source);
                 }
-                org.mmbase.bridge.Node n = nm.createNode();
-                try {
-                    Element data=doc.createElement(RELATION);
-                    int number=java.lang.Math.abs(n.getNumber());
-                    data.setAttribute(ELM_NUMBER, "n"+number);
-                    if (createDir == RelationStep.DIRECTIONS_SOURCE) {
-                        log.debug("Creating relation in the INVERSE direction");
-                        data.setAttribute(ELM_DESTINATION, source);
-                        data.setAttribute(ELM_SOURCE, destination);
-                    } else {
-                        log.debug("Creating relation in the NORMAL direction");
-                        data.setAttribute(ELM_DESTINATION, destination);
-                        data.setAttribute(ELM_SOURCE, source);
-                    }
-                    data.setAttribute(ELM_ROLE,rolename);
-                    out.appendChild(data);
-                    getDataNode(null, data, n);
-                } finally  {
-                    n.cancel();  // have to cancel node !
-                }
-            } catch (RuntimeException e) {
-                if (destinationType.equals("") || sourceType.equals("") ) {
-                    Element err = addContentElement(ERROR,"role ("+rolename+") does not exist",out);
-                    err.setAttribute(ELM_TYPE, IS_CLIENT);
-                } else {
-                    Element err = addContentElement(ERROR,"relation ("+sourceType+"-"+rolename+"->"+destinationType+") constraint does not exist",out);
-                    err.setAttribute(ELM_TYPE, IS_CLIENT);
-                }
+                data.setAttribute(ELM_ROLE,rolename);
+                out.appendChild(data);
+                getDataNode(null, data, n);
+            } finally  {
+                n.cancel();  // have to cancel node !
             }
         }
     }
@@ -570,128 +539,122 @@ public class Dove extends AbstractDove {
             Element err = addContentElement(ERROR,"type required for getconstraints",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
-            try {
-                out.setAttribute(ELM_TYPE,nodeManagerName);
-                NodeManager nm =cloud.getNodeManager(nodeManagerName);
-
-                Locale locale = cloud.getLocale();
-                String lang= in.getAttribute(ELM_LANG);
-                if (!"".equals(lang)) {
-                    out.setAttribute(ELM_LANG,lang);
-                    locale = new Locale(lang);
-                }
-
-                // singular name
-                Element elm=addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR,locale),out);
-                if (lang!=null) elm.setAttribute(ELM_LANG,lang);
-
-                // plural name
-                elm=addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL,locale),out);
-                if (lang!=null) elm.setAttribute(ELM_LANG,lang);
+            out.setAttribute(ELM_TYPE,nodeManagerName);
+            NodeManager nm =cloud.getNodeManager(nodeManagerName);
+            
+            Locale locale = cloud.getLocale();
+            String lang= in.getAttribute(ELM_LANG);
+            if (!"".equals(lang)) {
+                out.setAttribute(ELM_LANG,lang);
+                locale = new Locale(lang);
+            }
+            
+            // singular name
+            Element elm = addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR, locale), out);
+            if (lang != null) elm.setAttribute(ELM_LANG, lang);
+            
+            // plural name
+            elm = addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL, locale), out);
+            if (lang != null) elm.setAttribute(ELM_LANG, lang);
 
                 // description
-                elm=addContentElement(DESCRIPTION,nm.getDescription(locale),out);
-                if (lang!=null) elm.setAttribute(ELM_LANG,lang);
-
-                // parent
-                try {
-                    NodeManager nmparent = nm.getParent();
-                    Element parent = doc.createElement(PARENT);
-                    out.appendChild(parent);
-                    parent.setAttribute(ELM_TYPE,nmparent.getName());
-                } catch (NotFoundException nfe) {
-                    log.debug("no parent available");
-                }
-
-                // descendants
-                NodeManagerList nmdesclist = nm.getDescendants();
-                if (nmdesclist.size()>0) {
-                    Element descendants = doc.createElement(DESCENDANTS);
-                    out.appendChild(descendants);
-                    for (NodeManagerIterator i = nmdesclist.nodeManagerIterator(); i.hasNext();) {
-                        Element descendant=doc.createElement(DESCENDANT);
-                        descendants.appendChild(descendant);
-                        descendant.setAttribute(ELM_TYPE,i.nextNodeManager().getName());
-                    }
-                }
-
-                // fields
-                Element fields=doc.createElement(FIELDS);
-                out.appendChild(fields);
-                for(FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
-                    Field fielddef=i.nextField();
-                    String fname=fielddef.getName();
-                    // Filter out the owner/otype/number/CacheCount fields and
-                    // the virtual fields.
-                    if (isDataField(nm,fielddef)) {
-                        Element field=doc.createElement(FIELD);
-                        field.setAttribute(ELM_NAME,fname);
-                        fields.appendChild(field);
-                        // guiname (XXX:language is ignored)
-                        elm = addContentElement(GUINAME, fielddef.getGUIName(locale),field);
-                        elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
-                        if (lang != null) elm.setAttribute(ELM_LANG, lang);
-                        // guitype
-                        DataType dataType = fielddef.getDataType();
-                        String baseType = dataType.getBaseTypeIdentifier();
-                        String specialization = dataType.getName();
-                        if ("".equals(specialization)) {
-                            DataType origin = dataType.getOrigin();
-                            if (origin != null) {
-                                specialization = origin.getName();
-                            }
-                        }
-                        // exceptions, for backward comp. with old guitypes
-                        if (specialization.equals("field")) {
-                            specialization = "text";
-                        } else if (specialization.equals("eventtime")) {
-                            baseType = "datetime";
-                            specialization = "datetime";
-                        } else if (specialization.equals("newimage")) {
-                            specialization = "image";
-                        } else if (specialization.equals("newfile")) {
-                            specialization = "file";
-                        } else {
-                            // backward compatibility: NODE and XML are passed as int and string
-                            // TODO: should change ?
-                            if (dataType instanceof NodeDataType) {
-                                baseType = "int";
-                            } else if (dataType instanceof XmlDataType) {
-                                baseType = "string";
-                            } else if (dataType instanceof BinaryDataType) {
-                                Pattern p = ((BinaryDataType) dataType).getValidMimeTypes();
-                                if (p.matcher("image/someimageformat").matches()) {
-                                    specialization = "image";
-                                } else {
-                                    specialization = "file";
-                                }
-                            }
-                        }
-                        String guiType = baseType + "/" + specialization;
-
-                        addContentElement(GUITYPE, guiType, field);
-                        int maxLength = fielddef.getMaxLength();
-                        if (maxLength>0) {
-                            addContentElement(MAXLENGTH, "" + maxLength, field);
-                        }
-
-                        if (fielddef.isRequired()) {
-                            addContentElement(REQUIRED, IS_TRUE, field);
-                        } else {
-                            addContentElement(REQUIRED, IS_FALSE, field);
-                        }
-                    }
-                }
-                // relations
-                Element relations = doc.createElement(RELATIONS);
-                out.appendChild(relations);
-                // XXX: getAllowedRelations is not yet supported by the MMCI
-                // This code commented out
-            } catch (RuntimeException e) {
-                Element err = addContentElement(ERROR, "node type " + nodeManagerName + " does not exist(" + e.toString() + ")",out);
-                log.warn(Logging.stackTrace(e));
-                err.setAttribute(ELM_TYPE, IS_CLIENT);
+            elm = addContentElement(DESCRIPTION,nm.getDescription(locale), out);
+            if (lang != null) elm.setAttribute(ELM_LANG, lang);
+            
+            // parent
+            try {
+                NodeManager nmparent = nm.getParent();
+                Element parent = doc.createElement(PARENT);
+                out.appendChild(parent);
+                parent.setAttribute(ELM_TYPE,nmparent.getName());
+            } catch (NotFoundException nfe) {
+                log.debug("no parent available");
             }
+            
+            // descendants
+            NodeManagerList nmdesclist = nm.getDescendants();
+            if (nmdesclist.size()>0) {
+                Element descendants = doc.createElement(DESCENDANTS);
+                out.appendChild(descendants);
+                for (NodeManagerIterator i = nmdesclist.nodeManagerIterator(); i.hasNext();) {
+                    Element descendant=doc.createElement(DESCENDANT);
+                    descendants.appendChild(descendant);
+                    descendant.setAttribute(ELM_TYPE,i.nextNodeManager().getName());
+                }
+            }
+            
+            // fields
+            Element fields=doc.createElement(FIELDS);
+            out.appendChild(fields);
+            for(FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
+                Field fielddef=i.nextField();
+                String fname=fielddef.getName();
+                // Filter out the owner/otype/number/CacheCount fields and
+                // the virtual fields.
+                if (isDataField(nm,fielddef)) {
+                    Element field=doc.createElement(FIELD);
+                    field.setAttribute(ELM_NAME,fname);
+                    fields.appendChild(field);
+                    // guiname (XXX:language is ignored)
+                    elm = addContentElement(GUINAME, fielddef.getGUIName(locale),field);
+                    elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
+                    if (lang != null) elm.setAttribute(ELM_LANG, lang);
+                    // guitype
+                    DataType dataType = fielddef.getDataType();
+                    String baseType = dataType.getBaseTypeIdentifier();
+                    String specialization = dataType.getName();
+                    if ("".equals(specialization)) {
+                        DataType origin = dataType.getOrigin();
+                        if (origin != null) {
+                            specialization = origin.getName();
+                        }
+                    }
+                    // exceptions, for backward comp. with old guitypes
+                    if (specialization.equals("field")) {
+                        specialization = "text";
+                    } else if (specialization.equals("eventtime")) {
+                        baseType = "datetime";
+                        specialization = "datetime";
+                    } else if (specialization.equals("newimage")) {
+                        specialization = "image";
+                    } else if (specialization.equals("newfile")) {
+                        specialization = "file";
+                    } else {
+                        // backward compatibility: NODE and XML are passed as int and string
+                        // TODO: should change ?
+                        if (dataType instanceof NodeDataType) {
+                            baseType = "int";
+                        } else if (dataType instanceof XmlDataType) {
+                            baseType = "string";
+                        } else if (dataType instanceof BinaryDataType) {
+                            Pattern p = ((BinaryDataType) dataType).getValidMimeTypes();
+                            if (p.matcher("image/someimageformat").matches()) {
+                                specialization = "image";
+                            } else {
+                                specialization = "file";
+                            }
+                        }
+                    }
+                    String guiType = baseType + "/" + specialization;
+                    
+                    addContentElement(GUITYPE, guiType, field);
+                    int maxLength = fielddef.getMaxLength();
+                    if (maxLength > 0) {
+                        addContentElement(MAXLENGTH, "" + maxLength, field);
+                    }
+                    
+                    if (fielddef.isRequired()) {
+                        addContentElement(REQUIRED, IS_TRUE, field);
+                    } else {
+                        addContentElement(REQUIRED, IS_FALSE, field);
+                    }
+                }
+            }
+            // relations
+            Element relations = doc.createElement(RELATIONS);
+            out.appendChild(relations);
+            // XXX: getAllowedRelations is not yet supported by the MMCI
+            // This code commented out
         }
     }
 
@@ -746,40 +709,35 @@ public class Dove extends AbstractDove {
                         err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
                         String nodepath = xpath.substring(3);
-                        try {
-                            NodeIterator i = null;
 
-                            if (nodepath.indexOf("/") == -1) {
-                                // If there is no '/' seperator, we only get fields from one nodemanager. This is the fastest
-                                // way of getting those.
-                                i = cloud.getNodeManager(xpath.substring(3)).getList(where,orderby,directions).nodeIterator();
-                            } else {
-                                // If there are '/' seperators, we need to do a multilevel search. Therefore we first need to
-                                // get a list of all the fields (as subnodes) to query.
-                                String fields = "";
-                                Element field = getFirstElement(node, FIELD);
-                                nodepath = nodepath.replace('/', ',');
-                                while (field != null) {
-                                    String fname = field.getAttribute(ELM_NAME);
-                                    if (!fields.equals(""))
-                                        fields += ",";
-                                    fields += fname;
-                                    field = getNextElement(field, FIELD);
-                                }
-                                i = cloud.getList("", nodepath, fields, where, orderby, directions, null, true).nodeIterator();
+                        NodeIterator i = null;
+                        
+                        if (nodepath.indexOf("/") == -1) {
+                            // If there is no '/' seperator, we only get fields from one nodemanager. This is the fastest
+                            // way of getting those.
+                            i = cloud.getNodeManager(xpath.substring(3)).getList(where,orderby,directions).nodeIterator();
+                        } else {
+                            // If there are '/' seperators, we need to do a multilevel search. Therefore we first need to
+                            // get a list of all the fields (as subnodes) to query.
+                            String fields = "";
+                            Element field = getFirstElement(node, FIELD);
+                            nodepath = nodepath.replace('/', ',');
+                            while (field != null) {
+                                String fname = field.getAttribute(ELM_NAME);
+                                if (!fields.equals(""))
+                                    fields += ",";
+                                fields += fname;
+                                field = getNextElement(field, FIELD);
                             }
-
-                            for(; i.hasNext(); ) {
-                                org.mmbase.bridge.Node n=i.nextNode();
-                                Element data=doc.createElement(OBJECT);
-                                data.setAttribute(ELM_NUMBER, ""+n.getNumber());
-                                querydata.appendChild(data);
-                                getDataNode(node,data,n);
-                            }
-                        } catch(RuntimeException e) {
-                            Element err = addContentElement(ERROR,"node type " + xpath.substring(3) + " does not exist(" + e.toString() + ")",out);
-                            log.warn(Logging.stackTrace(e));
-                            err.setAttribute(ELM_TYPE, IS_CLIENT);
+                            i = cloud.getList("", nodepath, fields, where, orderby, directions, null, true).nodeIterator();
+                        }
+                        
+                        for(; i.hasNext(); ) {
+                            org.mmbase.bridge.Node n=i.nextNode();
+                            Element data=doc.createElement(OBJECT);
+                            data.setAttribute(ELM_NUMBER, ""+n.getNumber());
+                            querydata.appendChild(data);
+                            getDataNode(node,data,n);
                         }
                     }
                 }
@@ -900,31 +858,25 @@ public class Dove extends AbstractDove {
             Map addedNodes     = new HashMap ();
             Map addedRelations = new HashMap();
             if (mergeClouds(originalNodes, newNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
-                try {
-                    trans.commit();
-                    // retrieve all numbers and reset them to the right value
-                    // This is possible, as the nodes themselves contain this info after the
-                    // transaction
-                    //
-                    for (Iterator i = addedNodes.entrySet().iterator(); i.hasNext(); ) {
-                        Map.Entry me=(Map.Entry)i.next();
-                        org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
-                        Element oe = (Element)me.getValue();
-                        oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
-                    }
-                    // retrieve all numbers, snumbers, dnumbers and reset them to the right value
-                    for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
-                        Map.Entry me=(Map.Entry)i.next();
-                        org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
-                        Element re = (Element)me.getValue();
-                        re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
-                        re.setAttribute(ELM_SOURCE, "" + n.getIntValue("snumber"));
-                        re.setAttribute(ELM_DESTINATION, "" + n.getIntValue("dnumber"));
-                    }
-                } catch (RuntimeException e) {
-                    Element err = addContentElement(ERROR, "Transaction failed : " + e.getMessage(), out);
-                    log.error(Logging.stackTrace(e));
-                    err.setAttribute(ELM_TYPE, IS_SERVER);
+                trans.commit();
+                // retrieve all numbers and reset them to the right value
+                // This is possible, as the nodes themselves contain this info after the
+                // transaction
+                //
+                for (Iterator i = addedNodes.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry me=(Map.Entry)i.next();
+                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
+                    Element oe = (Element)me.getValue();
+                    oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
+                }
+                // retrieve all numbers, snumbers, dnumbers and reset them to the right value
+                for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry me=(Map.Entry)i.next();
+                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
+                    Element re = (Element)me.getValue();
+                    re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
+                    re.setAttribute(ELM_SOURCE, "" + n.getIntValue("snumber"));
+                    re.setAttribute(ELM_DESTINATION, "" + n.getIntValue("dnumber"));
                 }
             } else {
                 trans.cancel();
@@ -1061,40 +1013,29 @@ public class Dove extends AbstractDove {
      */
     protected boolean putNewNode(String alias, Map values, Map aliases, Map addedNodes, Element out, Cloud cloud) {
         String type = (String) values.get("_otype");
-        try {
-            NodeManager nm = cloud.getNodeManager(type);
-            org.mmbase.bridge.Node newnode = nm.createNode();
-            Element objectelement = doc.createElement(OBJECT);
-            objectelement.setAttribute(ELM_TYPE, type);
-            fillFields(alias, newnode, objectelement, values);
-            try {
-                String context = (String) values.get("_context");
-                if (context!=null) {
-                  newnode.setContext(context);
-                }
-                newnode.commit();
-                int number = newnode.getNumber();
-                if (log.isDebugEnabled())
-                    log.debug("Created new node " + number);
-                aliases.put(alias,new Integer(number));
-                objectelement.setAttribute(ELM_NUMBER,""+number);
-                objectelement.setAttribute(ELM_OLDNUMBER, alias);
-                // keep in transaction for later update...
-                addedNodes.put(newnode,objectelement);
-                // add node to response
-                out.appendChild(objectelement);
-                return true;
-            } catch (RuntimeException e) {
-                // give error
-                Element err = addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE, IS_SERVER);
-            }
-        } catch (BridgeException e) {
-            // give error this cloud doesn't support this type
-            Element err = addContentElement(ERROR, Logging.stackTrace(e), out);
-            err.setAttribute(ELM_TYPE, IS_SERVER);
+
+        NodeManager nm = cloud.getNodeManager(type);
+        org.mmbase.bridge.Node newnode = nm.createNode();
+        Element objectelement = doc.createElement(OBJECT);
+        objectelement.setAttribute(ELM_TYPE, type);
+        fillFields(alias, newnode, objectelement, values);
+        
+        String context = (String) values.get("_context");
+        if (context!=null) {
+            newnode.setContext(context);
         }
-        return false;
+        newnode.commit();
+        int number = newnode.getNumber();
+        if (log.isDebugEnabled())
+            log.debug("Created new node " + number);
+        aliases.put(alias,new Integer(number));
+        objectelement.setAttribute(ELM_NUMBER,""+number);
+        objectelement.setAttribute(ELM_OLDNUMBER, alias);
+        // keep in transaction for later update...
+        addedNodes.put(newnode,objectelement);
+        // add node to response
+        out.appendChild(objectelement);
+        return true;
     }
 
     /**
@@ -1111,46 +1052,36 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean putNewRelation(String alias, Map values, Map aliases, Map addedRelations, Element out, Cloud cloud) {
-        String role=(String)values.get("_role");
-        try {
-            RelationManager relman=cloud.getRelationManager(role);
-            String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
-            String destinationnumber=getNodeReferenceFromValue("_destination",values, aliases);
-            if (log.isDebugEnabled()) log.debug("Creating a relations between node " + sourcenumber + " and " + destinationnumber);
-            Relation newnode=relman.createRelation(cloud.getNode(sourcenumber), cloud.getNode(destinationnumber));
-            Element relationelement=doc.createElement(RELATION);
-            // note that source and destination may be switched (internally) when you
-            // commit a bi-directional relation, if the order of the two differs in typerel
-            relationelement.setAttribute(ELM_SOURCE,""+sourcenumber);
-            relationelement.setAttribute(ELM_DESTINATION,""+destinationnumber);
-            relationelement.setAttribute(ELM_ROLE,role);
-            fillFields(alias,newnode,relationelement,values);
-            try {
-                String context = (String) values.get("_context");
-                if (context!=null) {
-                  newnode.setContext(context);
-                }
-                newnode.commit();
-                int number = newnode.getNumber();
-                if (log.isServiceEnabled()) log.service("Created new relation " + number);
-                aliases.put(alias, new Integer(number));
-                // keep in transaction for later update...
-                addedRelations.put(newnode,relationelement);
-                // add node to response
-                relationelement.setAttribute(ELM_NUMBER,""+number); // result in transaction ???
-                out.appendChild(relationelement);
-                return true;
-            } catch (RuntimeException e) {
-                // give error
-                Element err = addContentElement(ERROR,"Cloud can not insert this object, alias number : " + alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE, IS_SERVER);
-            }
-        } catch (RuntimeException e) {
-            // give error can't find builder of that type
-            Element err = addContentElement(ERROR,"Error. Does the cloud support role :" + role + "?:" + e.getMessage(), out);
-            err.setAttribute(ELM_TYPE, IS_CLIENT);
+        String role = (String) values.get("_role");
+
+        RelationManager relman=cloud.getRelationManager(role);
+        String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
+        String destinationnumber=getNodeReferenceFromValue("_destination",values, aliases);
+        if (log.isDebugEnabled()) log.debug("Creating a relations between node " + sourcenumber + " and " + destinationnumber);
+        Relation newnode=relman.createRelation(cloud.getNode(sourcenumber), cloud.getNode(destinationnumber));
+        Element relationelement=doc.createElement(RELATION);
+        // note that source and destination may be switched (internally) when you
+        // commit a bi-directional relation, if the order of the two differs in typerel
+        relationelement.setAttribute(ELM_SOURCE,""+sourcenumber);
+        relationelement.setAttribute(ELM_DESTINATION,""+destinationnumber);
+        relationelement.setAttribute(ELM_ROLE,role);
+        fillFields(alias,newnode,relationelement,values);
+        
+        String context = (String) values.get("_context");
+        if (context!=null) {
+            newnode.setContext(context);
         }
-        return false;
+        newnode.commit();
+        int number = newnode.getNumber();
+        if (log.isServiceEnabled()) log.service("Created new relation " + number);
+        aliases.put(alias, new Integer(number));
+        // keep in transaction for later update...
+        addedRelations.put(newnode,relationelement);
+        // add node to response
+        relationelement.setAttribute(ELM_NUMBER,""+number); // result in transaction ???
+        out.appendChild(relationelement);
+        return true;
+
     }
 
 
@@ -1169,29 +1100,17 @@ public class Dove extends AbstractDove {
         // mmbase cloud and if its still the same
         // also check if its the same type
         String type = (String)originalValues.get("_otype");
-        try {
-            NodeManager nm = cloud.getNodeManager(type);
-            try {
-                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
-                if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
-                    mmbaseNode.delete(true);
-                    return true;
-                } else {
-                    // give error its the wrong type
-                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+nm.getName()+")",out);
-                    err.setAttribute(ELM_TYPE, IS_SERVER);
-                }
-            } catch(RuntimeException e) {
-                // give error node not found
-                Element err = addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE, IS_SERVER);
-            }
-        } catch(RuntimeException e) {
-            // give error can't find builder of that type
-            Element err = addContentElement(ERROR,"Cloud does not support type : "+type + "(" + e.toString() + ")",out);
-            err.setAttribute(ELM_TYPE, IS_CLIENT);
+        NodeManager nm = cloud.getNodeManager(type);        
+        org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
+        if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
+            mmbaseNode.delete(true);
+            return true;
+        } else {
+            // give error its the wrong type
+            Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+nm.getName()+")",out);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
+            return false;
         }
-        return false;
      }
 
     /**
@@ -1206,28 +1125,17 @@ public class Dove extends AbstractDove {
      */
     protected boolean putDeleteRelation(String alias, Map originalValues, Element out, Cloud cloud) {
         String role = (String)originalValues.get("_role");
-        try {
-            RelationManager relman = cloud.getRelationManager(role);
-            try {
-                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
-                // check if they are the same type
-                if (mmbaseNode.getNodeManager().getName().equals(relman.getName()) ) {
-                    mmbaseNode.delete(true);
-                    return true;
-                } else {
-                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
-                    err.setAttribute(ELM_TYPE, IS_SERVER);
-                }
-            } catch (RuntimeException e) {
-                Element err = addContentElement(ERROR,"Relation not in the cloud (anymore?), relation number : "+alias,out);
-                err.setAttribute(ELM_TYPE, IS_SERVER);
-            }
-        } catch (RuntimeException e) {
-            // give error can't find builder of that type
-            Element err = addContentElement(ERROR,"Cloud does not support role : "+role, out);
+        RelationManager relman = cloud.getRelationManager(role);
+        org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
+        // check if they are the same type
+        if (mmbaseNode.getNodeManager().getName().equals(relman.getName()) ) {
+            mmbaseNode.delete(true);
+            return true;
+        } else {
+            Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
             err.setAttribute(ELM_TYPE, IS_SERVER);
+            return false;
         }
-        return false;
      }
 
     /**
@@ -1247,42 +1155,28 @@ public class Dove extends AbstractDove {
         // mmbase cloud and if its still the same
         // also check if its the same type
         String type = (String)values.get("_otype");
-        try {
-            NodeManager nm = cloud.getNodeManager(type);
-            try {
-                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
-                // check if they are the same type
-                if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
-                    // create new node for response
-                    Element objectElement = doc.createElement(OBJECT);
-                    objectElement.setAttribute(ELM_TYPE, type);
-                    objectElement.setAttribute(ELM_NUMBER, alias);
-                    if (!fillFields(alias, mmbaseNode, objectElement, values, originalValues)) {
-                        out.appendChild(objectElement);
-                        return false;
-                    }
-                    mmbaseNode.commit();
-                    // add node to response
-                    out.appendChild(objectElement);
-                    return true;
-                } else {
-                    // give error its the wrong type
-                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : " + alias + ", cloud type=" + mmbaseNode.getNodeManager().getName()+", expected=" + nm.getName() + ")", out);
-                    err.setAttribute(ELM_TYPE, IS_SERVER);
-                }
-
-            } catch(RuntimeException e) {
-                // give error node not found
-                log.error(Logging.stackTrace(e));
-                Element err = addContentElement(ERROR,"Node not in the cloud (any more), node number : " + alias + "(" + e.toString() + ")", out);
-                err.setAttribute(ELM_TYPE, IS_SERVER);
+        NodeManager nm = cloud.getNodeManager(type);
+        org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
+        // check if they are the same type
+        if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
+            // create new node for response
+            Element objectElement = doc.createElement(OBJECT);
+            objectElement.setAttribute(ELM_TYPE, type);
+            objectElement.setAttribute(ELM_NUMBER, alias);
+            if (!fillFields(alias, mmbaseNode, objectElement, values, originalValues)) {
+                out.appendChild(objectElement);
+                return false;
             }
-        } catch(RuntimeException e) {
-            // give error can't find builder of that type
-            Element err = addContentElement(ERROR, "Cloud does not support type : " + type + "(" + e.toString() + ")", out);
-            err.setAttribute(ELM_TYPE, IS_CLIENT);
-        }
-        return false;
+            mmbaseNode.commit();
+            // add node to response
+            out.appendChild(objectElement);
+            return true;
+        } else {
+            // give error its the wrong type
+            Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : " + alias + ", cloud type=" + mmbaseNode.getNodeManager().getName()+", expected=" + nm.getName() + ")", out);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
+            return false;
+        }        
     }
 
     /**
@@ -1456,25 +1350,19 @@ public class Dove extends AbstractDove {
 
         if (command!=null && command.getTagName().equals(SECURITY)) {
             String userName = command.getAttribute(SECURITY_NAME); // retrieve name
-            try {
-                String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
-                String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
-                if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
-                String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
-                if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
-                Map user = new HashMap();
-                if ((userName!=null) && (!userName.equals(""))) {
-                    user.put("username", userName);
-                    user.put("password", password);
-                }
-                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName, methodName, user);
-                return cloud;
-            } catch (RuntimeException e) {
-                // most likely security failed...
-                log.warn("Authentication error : " + e.getMessage());
-                Element err = addContentElement(ERROR, "Authentication error : " + e.getMessage(), data);
-                err.setAttribute(ELM_TYPE, IS_CLIENT);
+            
+            String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
+            String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
+            if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
+            String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
+            if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
+            Map user = new HashMap();
+            if ((userName!=null) && (!userName.equals(""))) {
+                user.put("username", userName);
+                user.put("password", password);
             }
+            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName, methodName, user);
+            return cloud;
         } else {
             log.warn("Authentication error  (security info missing)");
             Element err = addContentElement(ERROR, "Authentication error (security info missing).", data);
