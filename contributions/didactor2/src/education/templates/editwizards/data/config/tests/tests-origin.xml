@@ -2,7 +2,6 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
 [
    <!ENTITY extra_loads SYSTEM "extra_loads.xml">
-   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
    <!ENTITY extra_lists SYSTEM "extra_lists.xml">
 ]>
@@ -44,19 +43,26 @@
     <optionlist include="config/option_list/boolean.xml" />
     <optionlist include="config/option_list/boolean_inverse.xml" /> 
     <optionlist name="questionsperpage">
-      <option id="0">Alle vragen op 1 pagina</option>
-      <option id="1">1 vraag per pagina</option>
+      <option id="0">
+        <prompt xml:lang="nl">Alle vragen op 1 pagina</prompt>
+        <prompt xml:lang="en">All question on 1 page</prompt>
+      </option>
+      <option id="1">
+        <prompt xml:lang="nl">1 vraag per pagina</prompt>
+        <prompt xml:lang="en">1 question per page</prompt>
+      </option>
     </optionlist>
     <optionlist name="feedbackpage">
-      <option id="0">geslaagd/gezakt</option>
-      <option id="1">overzicht van antwoorden</option>
+      <option id="0">
+        <prompt xml:lang="nl">geslaagd/gezakt</prompt>
+        <prompt xml:lang="en">passed/failed</prompt>
+      </option>
+      <option id="1">
+        <prompt xml:lang="nl">overzicht van antwoorden</prompt>
+        <prompt xml:lang="en">answers overview</prompt>
+      </option>
     </optionlist>
   </lists>
-
-  <steps>
-    <step form-schema="step1" />
-    &extra_steps;
-  </steps>
 
   <form-schema id="step1">
     <title xml:lang="nl">Toets invoeren</title>
