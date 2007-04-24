@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.63 2007-04-23 14:10:44 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.64 2007-04-24 14:52:32 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -47,7 +47,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * MMBase reference. While null, servlet does not accept request.
      */
-    protected MMBase mmbase = null;
+    protected static MMBase mmbase = null;
     // private   static String context;
 
 
