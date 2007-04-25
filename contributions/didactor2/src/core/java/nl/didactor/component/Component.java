@@ -101,7 +101,7 @@ public abstract class Component {
         try {
         if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
             try {
-                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile);
+                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, false, Component.class); // there is no DTD!
                 Node rootNode = doc.getDocumentElement();
                 Node componentNode = XPathAPI.selectSingleNode(rootNode, "/component");
                 this.templatepath = getAttribute(componentNode, "templatepath");
@@ -275,14 +275,18 @@ public abstract class Component {
     /**
      * Settings: return a setting in the given context. If no value can be found for any
      * of the scopes in the context, the default value for the setting will be returned.
-     * @param setting The name of the setting for which a value should be 
+     * This differs from {@link getObjectSetting} in that it falls back to defaults provided by
+     * 'parent' scopes.
+     * @param settingName The name of the setting for which a value should be 
      * returned
-     * @param context A 'Map' containing name-value pairs, that can be needed
+     * @param context A Map containing name-value pairs, that can be needed
      * to retrieve the setting value. For instance the current username or
      * education node number.
      */
     public Object getSetting(String settingName, Cloud cloud, Map context) {
-        log.debug("Retrieving value for setting '" + settingName + "', with in context: " + context.keySet());
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving value for setting '" + settingName + "', with in context: " + context.keySet());
+        }
         Setting setting = (Setting) settings.get(settingName);
         if (setting == null) {
             throw new RuntimeException("Setting '" + settingName + "' is not defined for component '" + getName() + "'");
@@ -293,13 +297,17 @@ public abstract class Component {
         for (int i = 0; i < scope.size(); i++) { // 
             String scopeName    = (String)scope.get(i);
             String scopeReferId = (String)scopesReferid.get(scopeName);
-            log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
+            if (log.isDebugEnabled()) {
+                log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
+            }
             int objectid = -1;
             if ("component".equals(scopeName)) {
                 objectid =  node.getNumber();
             } else if (context.get(scopeReferId) != null) {
                 objectid = Integer.parseInt(org.mmbase.util.Casting.toString(context.get(scopeReferId)));
-                log.debug("" + scopeReferId + " = " + objectid);
+                if (log.isDebugEnabled()) {
+                    log.debug("" + scopeReferId + " = " + objectid);
+                }
             }
 
             if (objectid > 0) {
@@ -432,6 +440,7 @@ public abstract class Component {
             }
         }
         // not found, we need to create a new setting node.
+        log.service("missing settings node. Creating one now for setting '" + settingName + "' -> " + newValue);
         org.mmbase.bridge.NodeManager nm = cloud.getNodeManager("settings");
         org.mmbase.bridge.Node node = nm.createNode();
         node.setValue("name", settingName);
