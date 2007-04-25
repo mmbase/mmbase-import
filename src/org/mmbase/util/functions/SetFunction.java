@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.18 2007-01-06 15:16:38 nklasens Exp $
+ * @version $Id: SetFunction.java,v 1.19 2007-04-25 12:59:23 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -94,13 +94,31 @@ class SetFunction extends AbstractFunction<Object> {
             returnType = getReturnType();
         }
 
-	String methodReturnType = functionMethod.getReturnType().getName();
-	String xmlReturnType    = returnType.getDataType().getTypeAsClass().getName();
-
-	if (methodReturnType.equals("boolean")) {  // ??
-            methodReturnType = "java.lang.Boolean"; 
+	Class methodReturnType = functionMethod.getReturnType();
+        if (methodReturnType.isPrimitive()) {
+            if (methodReturnType.equals(Boolean.TYPE)) {
+                methodReturnType = Boolean.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Character.class;
+            } else if (methodReturnType.equals(Byte.TYPE)) {
+                methodReturnType = Byte.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Short.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Integer.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Long.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Float.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Double.class;
+            } else if (methodReturnType.equals(Character.TYPE)) {
+                methodReturnType = Void.class;
+            }
         }
-        if (! methodReturnType.equals(xmlReturnType)) {
+	Class xmlReturnType    = returnType.getDataType().getTypeAsClass();
+
+        if (! xmlReturnType.isAssignableFrom(methodReturnType)) {
             log.warn("Return value of function " + className + "." + methodName + "(" + methodReturnType + ") does not match method return type as specified in XML: (" + xmlReturnType + ")");
         }
     }
