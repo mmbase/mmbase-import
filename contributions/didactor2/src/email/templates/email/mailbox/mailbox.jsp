@@ -83,7 +83,7 @@
             <mm:compare referid="mailboxtype" value="1" inverse="true">
               <di:cell><a href="${link}"><b><mm:field name="from" /></b></a></di:cell>
             </mm:compare>
-            <di:cell><a href="${link}"><b><mm:field name="gui(date)" /></b></a></di:cell>
+            <di:cell><a href="${link}"><b><mm:field name="date"><mm:time format=":LONG.SHORT" /></mm:field></b></a></di:cell>
           </mm:present>
 
           <mm:notpresent referid="isnew">
@@ -94,7 +94,7 @@
             <mm:compare referid="mailboxtype" value="1" inverse="true">
               <di:cell><a href="${link}"><mm:field name="from" /></a></di:cell>
             </mm:compare>
-            <di:cell><a href="${link}"><mm:field name="gui(date)" /></a></di:cell>
+            <di:cell><a href="${link}"><mm:field name="date"><mm:time format=":LONG.SHORT" /></mm:field></a></di:cell>
           </mm:notpresent>
 
         </di:row>
