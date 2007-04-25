@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22.2.3 2007-01-30 18:08:00 ernst Exp $
+ * @version $Id: FunctionSets.java,v 1.22.2.4 2007-04-25 12:54:58 michiel Exp $
  */
 public class FunctionSets {
 
@@ -237,7 +237,7 @@ public class FunctionSets {
                     if (parameterClass.isPrimitive() && parameter.getDefaultValue() == null && ! parameter.isRequired()) {
                         // that would give enigmatic IllegalArgumentExceptions, so fix that.
                         parameter.setDefaultValue(Casting.toType(parameterClass, new Integer(-1)));
-                        log.info("Primitive parameter '" + parameterName + "' had default value null, which is impossible for primitive types. Setting to " + parameter.getDefaultValue());
+                        log.debug("Primitive parameter '" + parameterName + "' had default value null, which is impossible for primitive types. Setting to " + parameter.getDefaultValue());
                     }
                     
                     parameterList.add(parameter);
