@@ -9,7 +9,7 @@ import java.util.Enumeration;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.5 2006-11-23 15:48:18 mmeeuwissen Exp $
+ * @version $Id: SMTPModule.java,v 1.6 2007-04-25 11:36:37 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
@@ -24,6 +24,7 @@ public class SMTPModule extends org.mmbase.module.Module {
             "mailboxbuilder", "mailboxbuilder.where", "mailboxbuilder.notfound",
             "emailbuilder.tofield", "emailbuilder.fromfield", "emailbuilder.subjectfield",
             "emailbuilder.headersfield", "emailbuilder.datefield", "emailbuilder.ccfield",
+            "emailbuilder.bccfield",
             "emailbuilder.typefield"
     };
     
