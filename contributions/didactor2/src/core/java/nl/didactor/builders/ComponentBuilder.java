@@ -23,7 +23,7 @@ import nl.didactor.component.BasicComponent;
 /**
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ComponentBuilder.java,v 1.10 2006-12-06 14:35:02 mmeeuwissen Exp $
+ * @version $Id: ComponentBuilder.java,v 1.11 2007-04-25 12:26:00 michiel Exp $
  */
 public class ComponentBuilder extends AbstractSmartpathBuilder {
 
@@ -34,6 +34,8 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
      */
     public boolean init() {
         super.init();
+
+        log.info("Registering didactor components");
         NodeSearchQuery query = new NodeSearchQuery(this);
         List v = new ArrayList();
 
@@ -51,7 +53,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
         }
 
         // Make sure that all builders are correct.
-        initBuilders();
+        // initBuilders(); // i
 
         // Make sure that all applications are correct.
         initApplications();
@@ -97,7 +99,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                     }
                 }
             } catch (ClassNotFoundException e) {
-                log.error("Class not found: " + classname);
+                log.info("Class not found: " + classname);
             } catch (Exception e) {
                 log.error("Exception while initializing (" + component + "): " + e);
             }
@@ -114,6 +116,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
      * This method will do a sanity check between the XML files that define the builders,
      * and the tables in the database. If fields are missing on database level, they will be added.
      * Note: inheritance will make this a little hard!.
+     * @todo currently unused
      */
     private void initBuilders() {
         Iterator i = MMBase.getMMBase().getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
@@ -132,6 +135,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
     /**
      * This method will verify that all the fields specified in the builder XML
      * are also in the database. If not, the field will be created in the database.
+     * @todo currently unused
      */
     private void initBuilder(String path, String builderName) throws java.io.IOException {
         if (!getMMBase().getBuilder(builderName).created()) {
@@ -257,7 +261,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                 String appname = appNode.getStringValue("name");
                 String path = "applications/";
                 if (! ResourceLoader.getConfigurationRoot().getResource(path + appname + ".xml").openConnection().getDoInput()) {
-                    log.warn("Application '" + appname + "' is in the Versions table, but application XML file cannot be loaded.");
+                    log.warn("Application '" +  appname + "' is in the Versions table, but application XML file cannot be loaded.");
                     continue;
                 }
                 ApplicationReader app = new ApplicationReader(ResourceLoader.getConfigurationRoot().getInputSource(path + appname + ".xml"));
