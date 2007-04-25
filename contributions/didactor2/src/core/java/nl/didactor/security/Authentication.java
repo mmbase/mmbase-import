@@ -45,10 +45,12 @@ public class Authentication extends org.mmbase.security.Authentication {
                 "nl.didactor.security.aselect.ASelectSecurityComponent", // if available, use aselect first
                 PlainSecurityComponent.class.getName()      // always fall back on plain
         };
-        for (int i=0; i<securityClasses.length; i++) {
+        for (int i=0; i < securityClasses.length; i++) {
             try {
                 Class cls = Class.forName(securityClasses[i]);
                 securityComponents.add(cls.newInstance());
+            } catch (ClassNotFoundException cnfe) {
+                log.service("Cannot initialize security class [" + securityClasses[i] + "], will not use it.");
             } catch (Exception e) {
                 log.warn("Cannot initialize security class [" + securityClasses[i] + "]");
             }
