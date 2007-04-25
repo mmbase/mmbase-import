@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.13.2.1 2006-10-26 11:41:56 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.13.2.2 2007-04-25 12:57:22 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -123,11 +123,31 @@ class SetFunction extends AbstractFunction {
         }
         if (returnType == null) returnType = new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName());
 
-	String returni = functionMethod.getReturnType().getName();
-	String returnx = returnType.getDataType().getTypeAsClass().getName();
-	if (returni.equals("boolean")) { returni = "java.lang.Boolean"; } 
-        if (!returni.equals(returnx)) {
-            log.warn("Return value of function " + className + "." + methodName + "(" + returni + ") does not match method return type as specified in XML: (" + returnx + ")");
+	Class returni = functionMethod.getReturnType();
+        if (returni.isPrimitive()) {
+            if (returni.equals(Boolean.TYPE)) {
+                returni = Boolean.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Character.class;
+            } else if (returni.equals(Byte.TYPE)) {
+                returni = Byte.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Short.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Integer.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Long.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Float.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Double.class;
+            } else if (returni.equals(Character.TYPE)) {
+                returni = Void.class;
+            }
+        }
+	Class returnx = returnType.getDataType().getTypeAsClass();
+        if (! returnx.isAssignableFrom(returni)) {
+            log.warn("Return value of function " + className + "." + methodName + " (" + returni + ") does not match method return type as specified in XML: (" + returnx + ")");
         }
     }
 }
