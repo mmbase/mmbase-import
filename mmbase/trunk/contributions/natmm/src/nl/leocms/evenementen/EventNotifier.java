@@ -327,11 +327,11 @@ public class EventNotifier implements Runnable {
              String thisSubscription = nextNode.getStringValue("inschrijvingen.number");
              String thisEvent= nextNode.getStringValue("evenement.number");
              
-             // check if event is a group excursion
-             if (Evenement.isGroupExcursion(cloud, thisEvent)) {
+             // send notification if this event or its parent event is a group excursion
+             if (Evenement.isGroupExcursion(cloud, Evenement.findParentNumber(thisEvent))) {
                 SubscribeAction.sendConfirmationPeriodExpired(cloud, thisSubscription);
                 nEmailSend++;
-             }
+             } 
          }   
       } catch(Exception e) {
          log.info(e);
