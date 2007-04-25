@@ -15,9 +15,12 @@ and restart Tomcat.
 2006-12
 
    To upgrade mmbob:
+    alter table mmb_posters  modify password varchar(128);
+    alter table mmb_posters add column state integer;
+    alter table mmb_posters add re state integer;
+    alter table mmb_posters add column registrationdate datetime;
 
     alter table mmb_postings add column c_body blob;
-    alter table mmb_posters  modify password varchar(128);
     alter table mmb_postings change poster c_poster varchar(64);    
 
     alter table mmb_postings add column posternumber integer;
@@ -25,11 +28,14 @@ and restart Tomcat.
     alter table mmb_postings add column enable_html integer;
     alter table mmb_postings add column enable_sig integer;
     alter table mmb_postings add column enable_bbcode integer;
+    alter table mmb_postings add column enable_smilies integer;
+
     
 
     alter table mmb_postthreads change lastposttime c_lastposttime int(11);    
     alter table mmb_postthreads change lastpostsubject c_lastpostsubject varchar(255);
     alter table mmb_postthreads change lastposter c_lastposter varchar(64);
+    alter table mmb_postthreads add column postthreadcount integer;
       
     alter table mmb_postthreads add lastposternumber int(11);
     alter table mmb_postthreads add lastpostnumber int(11);
@@ -67,8 +73,10 @@ and restart Tomcat.
     alter table mmb_images add width int(11);       
     alter table mmb_images add height int(11);    
     alter table mmb_images add filesize int(11);    
+    alter table mmb_images add filename varchar(128);
     alter table mmb_icaches add width int(11);       
     alter table mmb_icaches add height int(11)
+    alter table mmb_icaches add itype varchar(32);
 
     alter table mmb_attachments modify mimetype varchar(128);  
 
