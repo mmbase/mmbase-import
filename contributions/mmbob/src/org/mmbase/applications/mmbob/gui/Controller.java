@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.71 2007-03-08 14:28:03 michiel Exp $
+ * @version $Id: Controller.java,v 1.72 2007-04-25 13:02:53 michiel Exp $
  */
 public class Controller {
 
@@ -469,11 +469,11 @@ public class Controller {
      * @param imagecontext The context where to find the images (eg smilies)
      * @return List of (map) representing the postings within the given postthread
      */
-    public HashMap getPosting(String forumid, String postareaid, String postthreadid, String postingid, int activeid, String imagecontext) {
+    public Map getPosting(String forumid, String postareaid, String postthreadid, String postingid, int activeid, String imagecontext) {
         List list = new ArrayList();
         long start = System.currentTimeMillis();
 
-        HashMap map = new HashMap();
+        Map map = new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -952,7 +952,7 @@ public class Controller {
      * @return (map) representing the configuration of the given forum
      *
      */
-    public HashMap getForumConfig(String id, String sactiveid) {
+    public Map getForumConfig(String id, String sactiveid) {
         HashMap map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
@@ -1029,7 +1029,7 @@ public class Controller {
         return map;
     }
 
-    public HashMap getForumsConfig() {
+    public Map getForumsConfig() {
         HashMap map = new HashMap();
         map.put("language", ForumManager.getLanguage());
         map.put("accountcreationtype", ForumManager.getAccountCreationType());
@@ -1136,7 +1136,7 @@ public class Controller {
      * @param mailboxid Id for mailbox we want
      * @return (map) representing info for the given poster
      */
-    public HashMap getMailboxInfo(String id, int posterid,String mailboxid) {
+    public Map getMailboxInfo(String id, int posterid,String mailboxid) {
         HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
@@ -1614,7 +1614,7 @@ public class Controller {
      * @param body Body of the reply
      * @return  Feedback regarding this post action
      */
-    public HashMap postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
+    public Map postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
         HashMap map = new HashMap();
 
         if (subject.length() > 60) subject = subject.substring(0, 57) + "..."; 
@@ -1742,7 +1742,7 @@ public class Controller {
      * @param body Body of the new post
      * @return (map) containing privatemessageid of the newly created private message
      */
-    public HashMap newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
+    public Map newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
 
         HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(forumid);
@@ -2164,7 +2164,7 @@ public class Controller {
      * @param password default/first admin password name for this new forum
      * @return (map) containing the forumid of the newly created forum
      */
-    public Map<String, Object> newForum(String name, String language, String description, String account, String password,String nick,String email) {
+    public Map<String, Object> newForum(String name, String language, String description, String account, String password, String nick, String email) {
         Map<String, Object> map = new HashMap();
         name = filterHTML(name);
         description = filterHTML(description);
@@ -2806,8 +2806,9 @@ public class Controller {
         return false;
     }
 
+    // much much too simple
     public String filterHTML(String body) {
-        StringObject obj=new StringObject(body);
+        StringObject obj = new StringObject(body);
         obj.replace(">", "&gt;");
         obj.replace("<", "&lt;");
         return obj.toString();
@@ -2825,11 +2826,11 @@ public class Controller {
                         Map map = new HashMap();
                         ProfileEntryDef pd = (ProfileEntryDef) i.next();
                         if (pd.getGuiPos()>=guipos) {
-                            map.put("name",pd.getName());
-                            map.put("guiname",pd.getGuiName());
-                            map.put("guipos",new Integer(pd.getGuiPos()));
-                            map.put("edit",""+pd.getEdit());
-                            map.put("type",pd.getType());
+                            map.put("name", pd.getName());
+                            map.put("guiname", pd.getGuiName());
+                            map.put("guipos", new Integer(pd.getGuiPos()));
+                            map.put("edit", "" + pd.getEdit());
+                            map.put("type", pd.getType());
                             ProfileEntry pe = po.getProfileValue(pd.getName());
                             if (pe!=null) {
                                 map.put("value",pe.getValue());

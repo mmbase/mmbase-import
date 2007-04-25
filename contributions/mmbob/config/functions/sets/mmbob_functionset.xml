@@ -26,7 +26,7 @@
     <param name="postingid" type="String" description="MMBase node number of the posting" />
     <param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
     <param name="imagecontext" type="String" description="The imagecontext where to find images (eg smilies)">/mmbase/thememanager/images</param>
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -103,7 +103,7 @@
     <method>getForumInfo</method>
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="name" type="String" description="Name of the forum" />
       <field name="language" type="String" description="language code of this forum" />
       <field name="description" type="String" description="Description of the forum" />
@@ -138,7 +138,7 @@
     <type>class</type>
     <class>org.mmbase.applications.mmbob.gui.Controller</class>
     <method>getForumsConfig</method>
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="language" type="String" description="language code of this forum" />
       <field name="accountcreationtype" type="String" description="TODO" />
       <field name="accountremovaltype" type="String" description="TODO" />
@@ -163,7 +163,7 @@
     <method>getForumConfig</method>
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="language" type="String" description="language code of this forum" />
       <field name="accountcreationtype" type="String" description="TODO" />
       <field name="accountremovaltype" type="String" description="TODO" />
@@ -192,7 +192,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
     <param name="postareaid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -236,7 +236,7 @@
     <method>getPosterInfo</method>
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="String" description="Id for poster we want (string/account field)" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="account" type="String" description="Account name of active poster" />
       <field name="firstname" type="String" description="Firstname of the active poster" />
       <field name="lastname" type="String" description="Lastname of the active poster" />
@@ -257,7 +257,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="int" description="Id for poster we want (string/account field)" />
     <param name="barsize" type="int" description="total size of the wanted used bar" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -270,7 +270,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="posterid" type="int" description="Id for poster we want (string/account field)" />
     <param name="mailboxid" type="String" description="Id for mailbox we want" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -296,7 +296,7 @@
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="account" type="String" description="account" />
     <param name="password" type="String" description="password" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -308,7 +308,7 @@
     <method>getPosterPassword</method>
     <param name="forumid" type="String" description="MMBase node number of the forum" />
     <param name="account" type="String" description="account" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -336,7 +336,7 @@
     <param name="poster" type="String" description="Posterid to be attached to the postthread as its creator" />
     <param name="body" type="String" description="Body of the new post" />
     <param name="mood" type="String" description="Body of the new post">normal</param>
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="postthreadid" type="int" description="Newly related id (MMBase node number)" />
     </return> 
   </function>
@@ -352,7 +352,7 @@
     <param name="poster" type="String" description="Poster who is sending the message" />
     <param name="to" type="String" description="Poster to which to send the message" />
     <param name="body" type="String" description="Body of the new post" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="postthreadid" type="int" description="Newly message id (MMBase node number)" />
     </return> 
   </function>
@@ -655,7 +655,7 @@
     <param name="name" type="String" description="Name of the new post area" />
     <param name="description" type="String" description="Description of the new post area" />
     <param name="activeid" type="int" description="current userid" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="newpostareaid" type="int" description="MMBase node number of the new postarea" />
     </return> 
   </function>
@@ -699,7 +699,7 @@
     <param name="pagesize" type="int" description="Number of postings per page">5</param>
     <param name="baseurl" type="String" description="Base url for links in the navigation html">thread.jsp</param>
     <param name="cssclass" type="String" description="stylesheet name for the url links" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="navline" type="String" description="The created html navigation code to be included in the page" />
       <field name="lastpage" type="String" description="Is this page the last page in the thread. true/false" />
       <field name="pagecount" type="int" description="Number of pages in this thread" />
@@ -876,7 +876,7 @@
                 <param name="pagesize" type="int" description="Number of postings per page">25</param>
                 <param name="baseurl" type="String" description="Base url for links in the navigation html">postarea.jsp</param>
                 <param name="cssclass" type="String" description="stylesheet name for the url links" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
       <field name="name" type="String" description="Name of this PostArea" />
       <field name="postthreadcount" type="int" description="Number of postthreads in this postarea" />
       <field name="postcount" type="int" description="Number of postings in this postarea" />
@@ -909,7 +909,7 @@
     <param name="postareaid" type="String" description="MMBase node number of the postarea" />
     <param name="postthreadid" type="String" description="MMBase node number of the postarea" />
                 <param name="pagesize" type="int" description="Number of postings per page">25</param>
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -1146,7 +1146,7 @@
     <param name="subject" type="String" description="Subject of the reply (normally same as the postthread sibject)" />
     <param name="poster" type="String" description="Posterid of the reply" />
     <param name="body" type="String" description="Body of the reply" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -1325,7 +1325,7 @@
     <method>getSingleSignature</method>
     <param name="forumid" type="String" description="list mode" />
     <param name="posterid" type="String" description="list mode" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -1418,7 +1418,7 @@
     <param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
     <param name="pname" type="String" description="Name of profile value" />
     <param name="pvalue" type="String" description="Value of profile value" />
-    <return type="java.util.HashMap"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 </functionset>
