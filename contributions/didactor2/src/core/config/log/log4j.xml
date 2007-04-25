@@ -44,12 +44,11 @@
     <level class="&mmlevel;" value ="warn" />
   </logger>
 
-  <!-- Uncomment this to log all sql commands to file:
   <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
-    <level class="&mmlevel;" value ="debug" />
+    <level class="&mmlevel;" value ="service" />
     <appender-ref ref="sqllog" />
   </logger>
-  -->
+
 
   <logger name="STDERR">
     <level class="&mmlevel;" value ="fatal" />
