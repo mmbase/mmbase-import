@@ -2,13 +2,14 @@
   This template shows all people in the addressbooks: all students that
   are related to those classes that we are in.
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="java.util.StringTokenizer"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="java.util.StringTokenizer"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
 
-<%@include file="/shared/setImports.jsp" %>
+<jsp:directive.include file="/shared/setImports.jsp" />
+
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="address.addressbook" /></title>
@@ -39,14 +40,8 @@
       <mm:relatednodes type="addressbooks" max="1">
         <mm:import id="addressbook"><mm:field name="number"/></mm:import>
         <mm:notpresent referid="addr_class"><b></mm:notpresent>
-        <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
+        <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?">
                    <mm:param name="addressbook"><mm:field name="number"/></mm:param>
-                   <mm:present referid="field">
-                     <mm:param name="field"><mm:write referid="field"/></mm:param>
-                   </mm:present>
-                   <mm:present referid="mailid">
-                     <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
-                   </mm:present>
                  </mm:treefile>"><mm:field name="name"/></a>
         <mm:notpresent referid="addr_class"></b></mm:notpresent>
         <br />
@@ -56,13 +51,7 @@
       <mm:relatednodes type="classes" orderby="name">
         <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
          <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
-         <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
-                    <mm:present referid="field">
-                      <mm:param name="field"><mm:write referid="field"/></mm:param>
-                    </mm:present>
-                    <mm:present referid="mailid">
-                      <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
-                    </mm:present>
+         <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?">
                     <mm:param name="addr_class"><mm:field name="number"/></mm:param>
                   </mm:treefile>"><mm:field name="name"/></a>
          <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"></b></mm:compare></mm:present>
@@ -73,13 +62,7 @@
       <mm:relatednodes type="workgroups" orderby="name">
         <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
         <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
-        <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
-                   <mm:present referid="field">
-                     <mm:param name="field"><mm:write referid="field"/></mm:param>
-                   </mm:present>
-                   <mm:present referid="mailid">
-                     <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
-                   </mm:present>
+        <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?">
                    <mm:param name="addr_class"><mm:field name="number"/></mm:param>
                  </mm:treefile>"><mm:field name="name"/></a>
         <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"></b></mm:compare></mm:present>
