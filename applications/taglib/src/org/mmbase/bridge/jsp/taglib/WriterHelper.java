@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88.2.2 2007-04-26 10:22:22 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.3 2007-04-26 19:36:32 michiel Exp $
  */
 
 public class WriterHelper {
@@ -344,6 +344,7 @@ public class WriterHelper {
                         v = new HashSet((Collection)v);
                     }
                 }
+                break;
             case TYPE_UNSET:
                 break;
             case TYPE_INTEGER:
