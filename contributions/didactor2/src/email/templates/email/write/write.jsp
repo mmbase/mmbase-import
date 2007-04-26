@@ -346,7 +346,7 @@
             </div>
             
             <script>
-              var email = new RegExp("\b.+@.+\b","i");
+              var email = new RegExp("\\b.+@.+\\b","i");
               
               function checkFields(frm) {
               if(frm.elements['to'].value.length == 0) {
@@ -500,8 +500,8 @@
           <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
           
         </mm:notpresent>
-
     </mm:cloud>
+    
   </mm:content>
   
 
