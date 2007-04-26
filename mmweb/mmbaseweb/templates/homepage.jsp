@@ -208,7 +208,7 @@
 		<xsl:for-each select="item">
 		  <xsl:if test="position() &lt; 6">
 		    <li>
-		      <a href="{link}"><xsl:value-of select="title" /></a>
+		      <a href="{link}"><xsl:value-of select="title" /> (<xsl:value-of select="component" />)</a>
 		    </li>
 		  </xsl:if>
 		</xsl:for-each>
