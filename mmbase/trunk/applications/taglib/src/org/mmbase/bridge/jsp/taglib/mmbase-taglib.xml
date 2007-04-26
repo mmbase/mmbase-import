@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.392 2007-04-20 12:18:37 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.393 2007-04-26 19:42:54 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -137,17 +137,28 @@ version: $Id: mmbase-taglib.xml,v 1.392 2007-04-20 12:18:37 pierre Exp $
     <function-signature>org.mmbase.util.LocalizedString string(org.mmbase.util.LocalizedString, javax.servlet.jsp.PageContext)</function-signature>
     <since>MMBase-1.9</since>
   </function>
+  <function>
+    <description>
+      Simple version of the 'treefile' tag, which can be used more concisely directly in a href attribute or so.
+    </description>
+    <name>treefile</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.String treefile(java.lang.String, javax.servlet.jsp.PageContext, java.lang.Object)</function-signature>
+    <since>MMBase-1.8.4</since>
+    <see tag="treefile" />
+  </function>
 
-<tagtypes>
-  <type name="all">
-    <description>all tags</description>
-    <info>
-      <p>
-  This is the group containing all mmbase tags.
-      </p>
-    </info>
-  </type>
-  <type name="mmbase.basic">
+
+  <tagtypes>
+    <type name="all">
+      <description>all tags</description>
+      <info>
+        <p>
+          This is the group containing all mmbase tags.
+        </p>
+      </info>
+    </type>
+    <type name="mmbase.basic">
     <description>basic tags</description>
     <info>
       <p>
