@@ -38,11 +38,14 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.149 2007-04-09 19:12:25 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.150 2007-04-26 19:42:54 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
 
+
+    public static final String KEY = "org.mmbase.cloud";
+    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     private static String INITIAL_REALM_PREFIX = "initial-";
 
@@ -78,6 +81,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Attribute cloudName = Attribute.NULL;
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
+    private Object prevCloud;
 
     /**
      * @since MMBase-1.7
@@ -510,6 +514,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud == null) {
             return SKIP_BODY;
         }
+        prevCloud = pageContext.getAttribute(KEY, SCOPE);
+        if (prevCloud != null) {
+            log.debug("Found previous cloud " + prevCloud);
+        }
+        pageContext.setAttribute(KEY, cloud, SCOPE);
+
         cloud.setProperty("request", request);
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
@@ -1336,6 +1346,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public int doEndTag() throws JspTagException {
+        pageContext.setAttribute(KEY, prevCloud, SCOPE);
         return super.doEndTag();
     }
 
