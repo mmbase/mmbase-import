@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.26.2.1 2006-12-05 19:34:50 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.26.2.2 2007-04-26 14:27:10 michiel Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -86,6 +86,10 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         return node;
     }
     public Cloud getCloudVar() throws JspTagException {
+        CloudProvider cp = findCloudProvider(false);
+        if (cp != null) {
+            return cp.getCloudVar();
+        }
         NodeProvider np = findNodeProvider(false);
         if (np != null) {
             Node n = np.getNodeVar();
