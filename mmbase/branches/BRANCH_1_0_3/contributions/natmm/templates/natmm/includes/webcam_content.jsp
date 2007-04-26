@@ -144,11 +144,11 @@ String attachmentID = request.getParameter("at");
 
 <%-- link from webcam to weblog (pagina relation) / or if in highligh video mode to 'back to webcam'--%>
 <% if (attachmentID == null) { %>
-	<p>
+	<p valign="bottom">
 	<mm:related path="readmore,pagina" fields="pagina.number,pagina.titel">
 		<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">  
-			<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><img src="media/arrowright_fun.gif" alt="" border="0" /></a>
-			<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><b><mm:field name="pagina.titel" /></b></a>
+			<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><img src="media/arrowright_fun.gif" alt="" border="0" style="vertical-align:bottom" /></a>
+			&nbsp;<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><b><mm:field name="pagina.titel" /></b></a>
 		</mm:field>
 	</mm:related>
 	</p><br/>				
@@ -160,8 +160,8 @@ String attachmentID = request.getParameter("at");
 	</jsp:include>
 <% } else { %>
 	<p>
-			<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>>"><img src="media/arrowright_fun.gif" alt="" border="0" /></a>
-			<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>"><b>webcam pagina</b></a>
+			<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>>"><img src="media/arrowright_fun.gif" alt="" border="0" style="vertical-align:bottom" /></a>
+			&nbsp;<a href="<%= pHelper.createPaginaUrl(paginaID,request.getContextPath()) %>"><b>terug naar <mm:field name="titel" vartype="String" /></b></a>
 
 	</p><br/>	
 <% } %>	
