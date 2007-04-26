@@ -53,7 +53,7 @@
       
       <list include="config/link/zoek_contentelement_contentrel_link.xml" />
       <list include="config/attachments/add_attachments_contentrel.xml" />
-      <list include="config/pagina/add_pagina_readmore_summary.xml" />
+      <list include="config/pagina/add_pagina_readmore_webcam.xml" />
       
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
    </form-schema> 
