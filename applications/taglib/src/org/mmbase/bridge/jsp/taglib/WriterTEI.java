@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.13 2006-09-07 13:55:41 michiel Exp $ 
+ * @version $Id: WriterTEI.java,v 1.14 2007-04-26 10:25:49 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -61,6 +61,8 @@ public class WriterTEI extends TagExtraInfo {
             type = Long.class.getName(); break;
         case WriterHelper.TYPE_VECTOR:// deprecated
             type = java.util.Vector.class.getName(); break;
+        case WriterHelper.TYPE_SET:
+            type = java.util.Set.class.getName(); break;
         case WriterHelper.TYPE_LIST:
             type = java.util.List.class.getName(); break;
         case WriterHelper.TYPE_DATE:
