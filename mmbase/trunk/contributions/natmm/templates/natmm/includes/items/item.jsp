@@ -93,7 +93,7 @@ shop_itemHref = "shoppingcart.jsp?p=bestel&u=" + shop_itemID;
 						><mm:compare referid="size" value="1">het volgende artikel</mm:compare
 						><mm:compare referid="size" value="1" inverse="true">&eacute;&eacute;n van de volgende artikelen</mm:compare
 					></mm:size
-					> besteld: </mm:first
+					> bestelt: </mm:first
 					><mm:first inverse="true">, </mm:first
 					><a href="<mm:url page="shop_items.jsp"><mm:param name="u"><mm:field name="items.number" /></mm:param></mm:url
 						>"><mm:field name="items.titel" /></a><mm:last>.</mm:last
