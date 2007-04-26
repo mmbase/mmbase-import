@@ -38,11 +38,13 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.144.2.1 2006-10-06 12:30:52 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.144.2.2 2007-04-26 19:36:32 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
 
+    public static final String KEY = "org.mmbase.cloud";
+    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     private static String INITIAL_REALM_PREFIX = "initial-";
 
@@ -78,6 +80,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Attribute cloudName = Attribute.NULL;
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
+    private Object prevCloud;
 
     /**
      * @since MMBase-1.7
@@ -505,7 +508,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         if (cloud == null) {
             return SKIP_BODY;
+        }            
+        prevCloud = pageContext.getAttribute(KEY, SCOPE);
+        if (prevCloud != null) {
+            log.debug("Found previous cloud " + prevCloud);
         }
+        pageContext.setAttribute(KEY, cloud, SCOPE);
         cloud.setProperty("request", request);
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
@@ -1087,10 +1095,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             switch (reason) {
             case DENYREASON_FAIL : {
                 if ("name/password".equals(getAuthenticate())) {
+                    if (exactReason == null) exactReason = "wrong password";
                     throw new JspTagException("Logon of with "
                                               + (logon != null && logon.size() > 0 ? "'" + logon.get(0) + "'" : "''")
                                               + " failed."
-                                              + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
+                                              + (pwd == Attribute.NULL ? " (no password given)" : "") + " (" + exactReason + ")");
                 } else {
                     throw new JspTagException("Authentication ('" + getAuthenticate() + "') failed");
                 }
@@ -1332,6 +1341,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public int doEndTag() throws JspTagException {
+        pageContext.setAttribute(KEY, prevCloud, SCOPE);
         return super.doEndTag();
     }
 

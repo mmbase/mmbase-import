@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.13.2.1 2006-11-30 11:22:09 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.13.2.2 2007-04-26 19:36:32 michiel Exp $
  */
 
 public class TreeHelper {
@@ -63,7 +63,7 @@ public class TreeHelper {
      * @param objectlist The list of objectnumbers (comma-seperated) that is used to find the correct file to include
      * @param session The session context can contain version information (used in getVerion).
      */
-    protected String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
+    public String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
         if ("".equals(objectlist)) {
             return encodedPath(includePage);
         }
@@ -172,7 +172,7 @@ public class TreeHelper {
      * @param session The session context can contain version information (used in getVerion).
      * TODO: add support for 'intermediate paths' as LeafInclude has.
      */
-    protected String findTreeFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
+    public String findTreeFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
         if (cloud == null) {
             throw new JspTagException("Cloud was not defined");
         }
