@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88.2.1 2006-11-13 14:59:22 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.2 2007-04-26 10:22:22 michiel Exp $
  */
 
 public class WriterHelper {
@@ -51,6 +51,7 @@ public class WriterHelper {
     static final int TYPE_FLOAT   = 9;
     static final int TYPE_DECIMAL = 10;
     static final int TYPE_DATE    = 11;
+    static final int TYPE_SET     = 12;
 
 
     static final int TYPE_NODE    = 20;
@@ -87,6 +88,8 @@ public class WriterHelper {
             return TYPE_VECTOR;
         } else if ("list".equals(t)) {
             return TYPE_LIST;
+        } else if ("set".equals(t)) {
+            return TYPE_SET;
         } else if ("bytes".equals(t)) {
             return TYPE_BYTES;
         } else if ("fileitem".equals(t)) {
@@ -285,20 +288,20 @@ public class WriterHelper {
      */
     public void setValueOnly(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
-        if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
+        if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR && vartype != TYPE_SET) {
             // Take one element of list if vartype defined not to be a list.
             // this is usefull when using mm:includes and passing a var which also can be on the request
-            if (v instanceof List) {
-                List l = (List) v;
+            if (v instanceof Collection) {
+                Collection l = (Collection) v;
                 if (l.size() > 0) {
                     // v = l.get(l.size() - 1); // last element
-                    v = l.get(0);               // first element, allows for 'overriding'.
+                    v = l.iterator().next();               // first element, allows for 'overriding'.
                 } else {
                     v = null;
                 }
             }
         }
-        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR) {
+        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR || vartype == TYPE_SET) {
             switch (vartype) {
                 // these accept a value == null (meaning that they are empty)
             case TYPE_LIST:
@@ -328,6 +331,19 @@ public class WriterHelper {
                     }
                 }
                 break;
+            case TYPE_SET:
+                if (v == null) {
+                    v = new HashSet();
+                } else if (! (v instanceof Set)) {
+                    if (! (v instanceof Collection)) {
+                        // not even a Collection!
+                        Set set = new HashSet();
+                        set.add(v);
+                        v = set;
+                    } else {
+                        v = new HashSet((Collection)v);
+                    }
+                }
             case TYPE_UNSET:
                 break;
             case TYPE_INTEGER:
