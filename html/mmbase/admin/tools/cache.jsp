@@ -64,14 +64,14 @@
   <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="active" jspvar="active" vartype="String">
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% Cache.getCache(cache).setActive(active.equals("on") ? true : false); %>
+  <% CacheManager.getCache(cache).setActive(active.equals("on") ? true : false); %>
   </mm:write></mm:write>
 </mm:present>
 
 <mm:present referid="clear">
   <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% Cache.getCache(cache).clear();   %>
+  <% CacheManager.getCache(cache).clear();   %>
   </mm:write>
 </mm:present>
 
@@ -94,8 +94,8 @@
        //first sort the caches
 
 
-   for (Iterator i = Cache.getCaches().iterator(); i.hasNext(); ) {
-      Cache cache = Cache.getCache((String) i.next());
+   for (Iterator i = CacheManager.getCaches().iterator(); i.hasNext(); ) {
+      Cache cache = CacheManager.getCache((String) i.next());
       if(cache instanceof QueryResultCache){
          queryCaches.add(cache);
       }else{
