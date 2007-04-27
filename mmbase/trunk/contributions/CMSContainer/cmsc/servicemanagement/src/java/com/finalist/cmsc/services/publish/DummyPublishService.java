@@ -39,4 +39,9 @@ public class DummyPublishService extends PublishService {
         // nothing
     }
 
+    @Override
+    public int getLiveNumber(Node node) {
+        return node.getNumber();
+    }
+
 }

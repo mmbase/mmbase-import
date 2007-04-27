@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.publish;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.remotepublishing.PublishListener;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
@@ -95,5 +94,10 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
          Workflow.reject(publishedNode, "Publiceren is gefaald (systeem melding: "+systemMessage+")");
       }
    }
+
+    @Override
+    public int getLiveNumber(Node node) {
+        return getPublisher(node).getLiveNumber(node);
+    }
 
 }

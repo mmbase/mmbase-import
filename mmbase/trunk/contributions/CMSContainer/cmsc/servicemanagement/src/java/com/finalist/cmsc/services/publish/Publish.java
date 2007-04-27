@@ -41,4 +41,9 @@ public class Publish {
         cService.unpublish(node);
     }
 
+
+    public static int getLiveNumber(Node node) {
+        return cService.getLiveNumber(node);
+    }
+
 }
