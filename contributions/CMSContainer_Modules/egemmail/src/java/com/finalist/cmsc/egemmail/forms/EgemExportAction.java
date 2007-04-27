@@ -9,12 +9,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.ResourcesUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.util.http.HttpUtil;
@@ -48,7 +48,7 @@ public class EgemExportAction extends MMBaseFormlessAction {
 				
 				String number = key.substring(key.indexOf("_")+1);
 				Node node = cloud.getNode(number);
-            String liveUrl = getContentUrl(cloud, node);
+            String liveUrl = getContentUrl(node);
             if(liveUrl != null) {
                postParams.put("url", liveUrl);
                
@@ -81,31 +81,17 @@ public class EgemExportAction extends MMBaseFormlessAction {
 		return mapping.findForward(SUCCESS);
 	}
 
-    private String getContentUrl(Cloud cloud, Node node) {
-    	NodeList remoteNodes = cloud.getNodeManager("remotenodes").getList("sourcenumber = "+node.getNumber(), null, null);
-    	if(remoteNodes.size() == 0) {
-    		return null;
+    private String getContentUrl(Node node) {
+        if (Publish.isPublished(node) && Search.hasContentPages(node)) {
+             int remoteNumber = Publish.getLiveNumber(node);
+             String appPath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
+                     String.valueOf(remoteNumber), node.getStringValue("title"));
+             String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
+             return livePath + appPath;
     	}
-    	else {
-         int remoteNumber = remoteNodes.getNode(0).getIntValue("destinationnumber");
-         Cloud remoteCloud = getRemoteCloud(cloud);
-         Node remoteNode = remoteCloud.getNode(remoteNumber);
-
-         if(Search.hasContentPages(remoteNode)) {
-            String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
-            return livePath + "/content/" + remoteNumber + "/" + node.getStringValue("title");
-         }
-         else {
-            return null;
-         }
-    	}
+        return null;
     }
-	
-    public Cloud getRemoteCloud(Cloud cloud) {
-       Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
-       return remoteCloud;
-   }
-    
+        
 	private String buildTeaser(Node node) {
 		if(node.getNodeManager().hasField("intro")) {
 			String intro = node.getStringValue("intro");

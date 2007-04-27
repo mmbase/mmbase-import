@@ -9,10 +9,10 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.publish;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.remotepublishing.PublishManager;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
@@ -70,6 +70,15 @@ public abstract class Publisher {
                }
             }
         }
+    }
+
+    public int getLiveNumber(Node node) {
+//        Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
+//        Iterator<Integer> iter = numbers.values().iterator();
+//        if (iter.hasNext()) {
+//            return iter.next();
+//        }
+        return -1;
     }
 
 }
