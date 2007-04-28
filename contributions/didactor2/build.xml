@@ -72,6 +72,7 @@
     <delete dir="${build.dir}" />
   </target>
   <target name="mmbase.distro.exists">
+    <echo message="Using MMBase ${mmbase.version}" />
     <available file="${mmbase.dest}" property="mmbase.distro.exists"/>
     <available file="${build.dir}/mmbase" property="mmbase.distro.expanded.exists"/>
   </target>
