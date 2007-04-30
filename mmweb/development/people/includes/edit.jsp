@@ -3,7 +3,7 @@
 <mm:import externid="page" /> 
 <mm:import externid="portal" /> 
 <mm:present referid="objectnumber">
-<mm:cloud logon="admin" pwd="dontusesvp">
+<mm:cloud authenticate="class" method="delegate">
 <mm:import id="referrer"
 	><mm:url page="/editors/referrer.jsp" referids="portal,page"
 		><mm:param name="person"><mm:write referid="objectnumber" /></mm:param
