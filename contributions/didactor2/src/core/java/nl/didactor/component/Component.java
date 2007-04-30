@@ -14,7 +14,6 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
-import org.apache.xpath.XPathAPI; //slow but useful
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
@@ -22,6 +21,7 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * @javadoc
  * @javadoc
  */
 public abstract class Component {
@@ -92,104 +92,109 @@ public abstract class Component {
 
     /**
      * Initializes the component. This is called during startup 
-     * of Didactor. This method will be called every time your Didastor
+     * of Didactor. This method will be called every time your Didactor
      * installation is restarted.
      */
     public void init() {
         String configFile = "components/" + getName() + ".xml";
         log.debug("Reading component configuration from file '" + configFile + "'");
-        try {
-        if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
-            try {
+        try {                
+            if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
                 Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, false, Component.class); // there is no DTD!
-                Node rootNode = doc.getDocumentElement();
-                Node componentNode = XPathAPI.selectSingleNode(rootNode, "/component");
+                Node componentNode = doc.getDocumentElement();
                 this.templatepath = getAttribute(componentNode, "templatepath");
                 this.templatebar = getAttribute(componentNode, "templatebar");
                 try {
                     this.barposition = Integer.parseInt(getAttribute(componentNode, "barposition"));
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    log.warn(e);
+                }
 
-                NodeList scopeNodes = XPathAPI.selectNodeList(componentNode, "scope");
-                log.debug("Number of scopes: " + scopeNodes.getLength());
-                for (int i=0; i<scopeNodes.getLength(); i++) {
-                    Node scope = scopeNodes.item(i);
-                    String scopeName = getAttribute(scope, "name");
-                    String scopeReferid = getAttribute(scope, "referid");
-                    log.debug("Scope name: " + scopeName);
-                    scopes.add(scopeName);
-                    scopesReferid.put(scopeName, scopeReferid);
-                    NodeList settingNodes  = XPathAPI.selectNodeList(scope, "setting");
-                    for (int j=0; j<settingNodes.getLength(); j++) {
-                        Node settingNode = settingNodes.item(j);
-                        String settingName = getAttribute(settingNode, "name");
-                        String settingRef = getAttribute(settingNode, "ref");
-                        if (settingName == null && settingRef != null) {
-                            Setting setting = (Setting)settings.get(settingRef);
-                            setting.addScope(scopeName);
-                            log.debug("Added scope '" + scopeName + "' for setting '" + settingRef + "'");
-                        } else if (settingName != null) {
-                            String settingType = getAttribute(settingNode, "type");
-                            String settingDefault = getAttribute(settingNode, "default");
-                            String settingPrompt = getAttribute(settingNode, "prompt");
+                NodeList childNodes = componentNode.getChildNodes();
 
-                            Setting setting = new Setting(settingName, settingType, settingPrompt);
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    if (childNodes.item(i).getNodeName().equals("scope")) {
+                        Node scope = childNodes.item(i);
+                        String scopeName = getAttribute(scope, "name");
+                        String scopeReferid = getAttribute(scope, "referid");
+                        log.debug("Scope name: " + scopeName);
+                        scopes.add(scopeName);
+                        scopesReferid.put(scopeName, scopeReferid);
+                        NodeList childNodes2  = scope.getChildNodes();
+                        for (int j = 0; j < childNodes2.getLength(); j++) {
+                            if ("setting".equals(childNodes2.item(j).getNodeName())) {
+                                Node settingNode = childNodes2.item(j);
+                                String settingName = getAttribute(settingNode, "name");
+                                String settingRef = getAttribute(settingNode, "ref");
+                                if (settingName == null && settingRef != null) {
+                                    Setting setting = (Setting)settings.get(settingRef);
+                                    setting.addScope(scopeName);
+                                    log.debug("Added scope '" + scopeName + "' for setting '" + settingRef + "'");
+                                } else if (settingName != null) {
+                                    String settingType = getAttribute(settingNode, "type");
+                                    String settingDefault = getAttribute(settingNode, "default");
+                                    String settingPrompt = getAttribute(settingNode, "prompt");
+                                    
+                                    Setting setting = new Setting(settingName, settingType, settingPrompt);
 
-                            if ("domain".equals(settingType)) {
-                                NodeList options = XPathAPI.selectNodeList(settingNode, "option");
-                                String domain[] = new String[options.getLength()];
-                                for (int k=0; k<options.getLength(); k++) {
-                                    Node option = options.item(k);
-                                    String optionName = getAttribute(option, "name");
-                                    domain[k] = optionName;
+                                    if ("domain".equals(settingType)) {
+                                        NodeList options = settingNode.getChildNodes();
+                                        List<String> domains = new ArrayList<String>();
+                                        for (int k = 0; k < options.getLength(); k++) {
+                                            if ("option".equals(options.item(k).getNodeName())) {
+                                                Node option = options.item(k);
+                                                String optionName = getAttribute(option, "name");
+                                                domains.add(optionName);
+                                            }
+                                        }
+                                        setting.setDomain(domains.toArray(new String[] {}));
+                                    }
+                                    setting.setDefault(settingDefault);
+                                    setting.addScope(scopeName);
+                                    settings.put(settingName, setting);
+                                    log.debug("Added setting '" + settingName + "' of type '" + settingType + "' for scope '" + scopeName + "', default = '" + settingDefault + "'");
                                 }
-                                setting.setDomain(domain);
                             }
-                            setting.setDefault(settingDefault);
-                            setting.addScope(scopeName);
-                            settings.put(settingName, setting);
-                            log.debug("Added setting '" + settingName + "' of type '" + settingType + "' for scope '" + scopeName + "', default = '" + settingDefault + "'");
                         }
                     }
                 }
 
-                NodeList builderNodes = XPathAPI.selectNodeList(componentNode, "builder");
-                log.debug("Number of builders: " + builderNodes.getLength());
-                for (int i=0; i<builderNodes.getLength(); i++) {
-                    Node builderNode = builderNodes.item(i);
-                    String builderName = getAttribute(builderNode, "name");
-                    log.debug("Builder name: " + builderName);
-                    MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
-                    if (builder == null) {
-                        log.warn("Cannot load builder '" + builderName + "' for component '" + getName() + "')");
-                    }
-                    NodeList fieldNodes = XPathAPI.selectNodeList(builderNode, "field");
-                    for (int j=0; j<fieldNodes.getLength(); j++) {
-                        Node fieldNode = fieldNodes.item(j);
-                        String fieldName = getAttribute(fieldNode, "name");
-                        String fieldType = getAttribute(fieldNode, "type");
-                        int ftype = FieldDefs.TYPE_UNKNOWN;
-                        if ("string".equals(fieldType)) {
-                            ftype = FieldDefs.TYPE_STRING;
-                        } else if ("integer".equals(fieldType)) {
-                            ftype = FieldDefs.TYPE_INTEGER;
+                for (int i=0; i< childNodes.getLength(); i++) {
+                    if ("builder".equals(childNodes.item(i).getNodeName())) {
+                        Node builderNode = childNodes.item(i);
+                        String builderName = getAttribute(builderNode, "name");
+                        log.debug("Builder name: " + builderName);
+                        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
+                        if (builder == null) {
+                            log.warn("Cannot load builder '" + builderName + "' for component '" + getName() + "')");
                         }
-
-                        FieldDefs fd = new FieldDefs(fieldName, fieldType, -1, -1, fieldName, ftype, 200, FieldDefs.DBSTATE_VIRTUAL);
-                        // position 300: used later on internally to figure out which virtual fields are didactor-managed
-                        fd.setDBPos(300);
-                        builder.addField(fd);
+                        
+                        NodeList childNodes2 = builderNode.getChildNodes();
+                        for (int j = 0; j< childNodes2.getLength(); j++) {
+                            if ("field".equals(childNodes2.item(j).getNodeName())) {
+                                Node fieldNode = childNodes2.item(j);
+                                String fieldName = getAttribute(fieldNode, "name");
+                                String fieldType = getAttribute(fieldNode, "type");
+                                int ftype = FieldDefs.TYPE_UNKNOWN;
+                                if ("string".equals(fieldType)) {
+                                    ftype = FieldDefs.TYPE_STRING;
+                                } else if ("integer".equals(fieldType)) {
+                                    ftype = FieldDefs.TYPE_INTEGER;
+                                }
+                            
+                                FieldDefs fd = new FieldDefs(fieldName, fieldType, -1, -1, fieldName, ftype, 200, FieldDefs.DBSTATE_VIRTUAL);
+                                // position 300: used later on internally to figure out which virtual fields are didactor-managed
+                                fd.setDBPos(300);
+                                builder.addField(fd);
+                            }
+                        }
                     }
                 }
-            } catch (Exception e) {
-                log.error(e);
             }
-        } 
-        } catch (IOException ioe) {
-            log.error(ioe);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
-
     /**
      * Installs the component. This method will only be called once, 
      * during the first initial installation of the component. The component
@@ -330,7 +335,7 @@ public abstract class Component {
      * Get the setting for an object and a component from MMBase. This object can be a 'people' object,
      * 'component' object, etc. If the object is the component, and no value can be found in the database,
      * the setting's default value will be returned.
-     * This method is used internally to get a setting on a specific layer. This is the reason that the
+     * This method is used internally to get a setting on a specific layer. This is the reason that te
      * default value is not returned for objects other than the component itself, because it would be
      * impossible to distinguish between a 'real' value and a default value later on.
      * @param settingname The name of the setting in MMBase.
