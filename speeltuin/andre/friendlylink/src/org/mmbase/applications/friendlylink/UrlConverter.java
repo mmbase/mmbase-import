@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBaseContext;
  * TODO: Create a method to be called at initialization of webapp to fill the cache with links
  * 
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlConverter.java,v 1.6 2007-03-16 23:25:41 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.7 2007-04-30 20:53:12 andre Exp $
  */
 public class UrlConverter {
 
@@ -40,13 +40,13 @@ public class UrlConverter {
 	    }
 	    return cache;
 	}
-    
+/*    
     protected Map<String, FriendlyLink> getFlinks() {
         Map<String, FriendlyLink> flinks = new HashMap<String, FriendlyLink>();
         flinks = UrlFilter.getFriendlylinks();
         return flinks;
     }
-    
+*/    
     /**
      * Called by UrlFilter passing the HttpServletRequest with the 
      * 'userfriendly' URL to be converted to a technical URL.
@@ -100,7 +100,7 @@ public class UrlConverter {
     	        
     	        FriendlyLink friendlylink = friendlylinks.get(name);
 	            jspurl = new StringBuffer( friendlylink.convertToJsp(flink, params) );
-	            if ( !"".equals(jspurl.toString()) ) continue; // we've found something
+	            if ( !"".equals(jspurl.toString()) ) break;     // we've found something
             }
 	    }
 
@@ -120,7 +120,18 @@ public class UrlConverter {
 	}
 
 
-   /** 
+    /**
+     * Lists all cache entries, not just the cache entries of this nodetype
+     * but all entries in UrlCache, by calling UrlCache#toString().
+     *
+     * @return  all cache entries
+     */
+    public String showCache() {
+        UrlCache cache = UrlConverter.getCache();
+        return cache.toString();
+    }
+    
+    /** 
 	 * To test the methods
 	 *
 	 * @param arg1    the first parameter
