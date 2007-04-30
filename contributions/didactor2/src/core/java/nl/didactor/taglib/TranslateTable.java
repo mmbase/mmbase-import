@@ -1,5 +1,7 @@
 package nl.didactor.taglib;
 import org.mmbase.util.FileWatcher;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.Servlet;
 import java.util.*;
 import java.io.*;
 import org.mmbase.util.logging.Logger;
@@ -20,10 +22,11 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
+ * @version $Id: TranslateTable.java,v 1.10 2007-04-30 16:50:36 michiel Exp $
  */
 public class TranslateTable {
     private static Logger log = Logging.getLoggerInstance(TranslateTable.class.getName());
-    private static Map translationTable = Collections.synchronizedMap(new HashMap());
+    private static Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
     private String translationlocale;
@@ -31,7 +34,8 @@ public class TranslateTable {
     /**
      * Inner class that watches the translation files and 
      * reloads them into the translation table in case they are
-     * changed */
+     * changed 
+     */
     static class TranslationFileWatcher extends FileWatcher { 
         public String basepath;
         /**
@@ -55,10 +59,12 @@ public class TranslateTable {
      * once. The method is synchronized to prevent concurrent thread
      * to accessing it simultaniously.
      */
-    public static synchronized void init(String path) {
+    public static synchronized void init(PageContext pageContext) {
         if (initialized) {
             return;
         }
+        String path = ((Servlet)pageContext.getPage()).getServletConfig().getServletContext().getRealPath("/WEB-INF/config/translations");
+        
 
         try {
             path = (new File(path)).getCanonicalPath();
