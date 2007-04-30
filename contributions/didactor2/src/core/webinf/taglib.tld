@@ -323,10 +323,13 @@
     <path>/WEB-INF/tags/di/core/hascomponent.tagx</path>
   </tag-file>
 
+  <function>
+    <description>
+      Simple version of di:translate. Easily usuable in EL like ${di:translate(pageContext, 'address.back')}.
+    </description>
+    <name>translate</name>
+    <function-class>nl.didactor.taglib.Functions</function-class>
+    <function-signature>String translate(javax.servlet.jsp.PageContext, java.lang.String)</function-signature>
+  </function>
 
-  <!--
-    Place for extra tags. The following token will be filled
-    with extra tag definitions by the build script.
-    EXTRATAGDEF
-  -->
 </taglib>

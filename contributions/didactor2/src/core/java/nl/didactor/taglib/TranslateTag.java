@@ -88,8 +88,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
         return new CharSequence() {
                 protected String get() {
                     
-                    String translationpath = ((Servlet)pageContext.getPage()).getServletConfig().getServletContext().getRealPath("/WEB-INF/config/translations");
-                    TranslateTable.init(translationpath);
+                    TranslateTable.init(pageContext);
                     
 
 
