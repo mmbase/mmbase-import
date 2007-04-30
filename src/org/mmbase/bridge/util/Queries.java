@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.87 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: Queries.java,v 1.88 2007-04-30 13:20:22 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -439,7 +439,7 @@ abstract public class Queries {
                         Node node = cloud.getNode((String)value);
                         value = Integer.valueOf(node.getNumber());
                     } else {
-                        value = Integer.parseInt((String) value);
+                        value = -1; // non existing node number. Integer.parseInt((String) value);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Iterator i = ((Collection) value).iterator();
