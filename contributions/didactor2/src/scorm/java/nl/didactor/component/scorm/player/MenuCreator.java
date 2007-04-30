@@ -15,21 +15,20 @@ import uk.ac.reload.jdom.XMLDocument;
 
 import uk.ac.reload.scormplayer.client.generic.contentpackaging.SCORM12_DocumentHandler;
 
-import nl.didactor.utils.debug.LogController;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: MenuCreator.java,v 1.8 2007-04-24 16:22:29 michiel Exp $
+ * @version $Id: MenuCreator.java,v 1.9 2007-04-30 16:37:17 michiel Exp $
  */
 
-public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator {
+public class MenuCreator extends XMLDocument  {
 
     private static final Logger log = Logging.getLoggerInstance(MenuCreator.class);
-    
-    
+        
     /**
      * A count of organizations (should really only be one for the tree widget)
      */
@@ -44,26 +43,25 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
     private Element defaultOrg;
 
     private final SCORM12_Core scormCore;
-    private final String webAppsPath;
-    private final String packageHref;
+    private final Node packageNode;
 
+    public static File getManifest(Node packageNode) {
+        File directory = org.mmbase.servlet.FileServlet.getFile("scorm", null);
+        File file = new File(directory + File.separator + packageNode.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME);
+        return file;
+    }
 
-    public MenuCreator(File fileManifest, String webAppsPath, String packageHref) throws Exception {
-        super.loadDocument(fileManifest);
+    public MenuCreator(Node packageNode) throws Exception {
+        super.loadDocument(getManifest(packageNode));
         scormCore = new SCORM12_Core(this);
-        this.webAppsPath = webAppsPath;
-        this.packageHref = packageHref;
+        this.packageNode = packageNode;
     }
 
 
-
-
-
-    public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath) {
-
+    public String[] parse(boolean useRelativePaths, Integer[] sSubPath) {
 
         if(log.isDebugEnabled()) {
-            log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
+            //log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
             log.debug("--------------------- Start of JS Parser ---------------------");
         }
 
@@ -79,9 +77,8 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
         //Selecting the submanifest element
         try {
             Element elemCurrent = defaultOrg;
-            String[] arrstrOffsets = sSubPath.split(",");
-            for(int f = 0; f < arrstrOffsets.length; f++) {
-                int iOffsetAtThisLevel = (new Integer(arrstrOffsets[f])).intValue();
+            for(int f = 0; f < sSubPath.length; f++) {
+                int iOffsetAtThisLevel = sSubPath[f];
                 elemCurrent = (Element) elemCurrent.getChildren("item", null).get(iOffsetAtThisLevel);
             }
 
@@ -92,29 +89,18 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
         }
 
 
-        // now call createNavLinks() which should interrogate the org/item structure
-
-        //      createNavLinks(v, ((Element)((Element) defaultOrg.getChildren().get(1)).getChildren().get(1)), "menu", useRelativePaths);
-        //      createNavLinks(v, defaultOrg, "menu", useRelativePaths);
-
-
-        // Convert Vector to String array
-        String[] javascriptStrings = v.toArray(new String[] {});
-
         if(log.isDebugEnabled()){
-            log.debug("-----------------SCORM menu for offset=" + sSubPath + ":----------------");
-            for(int f = 0; f < javascriptStrings.length; f++){
-                log.debug("|" + javascriptStrings[f]);
-            }
+            //log.debug("-----------------SCORM menu for offset=" + sSubPath + ":----------------");
+            log.debug("" + v);
             log.debug("--------------------- End of JS Parser ---------------------");
         }
-        return javascriptStrings;
+        return v.toArray(new String[] {});
     }
 
 
 
 
-    protected void writePackageSettings(List<String> javascriptStrings, String name, int value) {
+    protected static void writePackageSettings(List<String> javascriptStrings, String name, int value) {
         javascriptStrings.add("CPAPI." + name + " = " + value + ";");
     }
 
@@ -185,8 +171,8 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
                         url = scormCore.getRelativeURL(element);
                         // Only if local path add relative bit
                         if(GeneralUtils.isExternalURL(url) == false) {
-                            //AZ                    url = "../" + url;
-                            url = packageHref + url;
+                            url = "../" + url;
+                            //url = packageHref + url;
                         }
                     } else {
                         // Absolute Paths for Previewing in-situ
@@ -248,11 +234,6 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
         }
     }
 
-
-
-
-
-
     protected void writeItem(List<String> javascriptStrings, String title, String url, String itemId, String parentMenu) {
         // the javscript tree widget doesn't like hyphens, so replace them with underscores...
         parentMenu = parentMenu.replace('-', '_');
@@ -264,22 +245,17 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
     }
 
 
-
-
-
     protected void writeOrganization(List<String> javascriptStrings, String title, String orgId) {
         javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").organizationName = \"" + escapeQuotes(title) + "\";");
         javascriptStrings.add("CPAPI.orgArray(" + orgCount + ").organizationIdentifier = \"" + orgId + "\";");
     }
-
-
 
     /**
      * Utility method to escape all string delimiters found with a string
      * @param inputString - the string to escape
      * @return - the string with escaped quotes (in javascript format)
      */
-    protected String escapeQuotes(String inputString) {
+    protected static String escapeQuotes(String inputString) {
         inputString = inputString.replaceAll("'", "\\\\\\\\'"); // replace a single quote with \\'
         inputString = inputString.replaceAll("\"","\\\\\""); // replace a double quote with \"
         return inputString;
@@ -299,12 +275,11 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
             }
             tempHref = tempHref.replaceAll("%20", " ");
 
-            //            String testHref = ScormTomcatHandler.getSharedInstance().getScormWebAppPath().toString().replace('\\', '/');
-            String testHref = webAppsPath;
+            String testHref = "";//webAppsPath;
 
             testHref = testHref.replaceAll("%20", " ");
             if (tempHref.startsWith(testHref)) {
-                String localUrlMinusPath = tempHref.substring(webAppsPath.length(),  tempHref.length());
+                String localUrlMinusPath = tempHref;//.substring(webAppsPath.length(),  tempHref.length());
                 String correctLocalUrl = localUrlMinusPath.replace('\\', '/');
                 url = "../.." + correctLocalUrl;
             }
