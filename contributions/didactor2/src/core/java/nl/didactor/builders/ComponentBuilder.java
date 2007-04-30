@@ -23,7 +23,7 @@ import nl.didactor.component.BasicComponent;
 /**
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ComponentBuilder.java,v 1.11 2007-04-25 12:26:00 michiel Exp $
+ * @version $Id: ComponentBuilder.java,v 1.12 2007-04-30 13:21:02 michiel Exp $
  */
 public class ComponentBuilder extends AbstractSmartpathBuilder {
 
@@ -266,9 +266,9 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                 }
                 ApplicationReader app = new ApplicationReader(ResourceLoader.getConfigurationRoot().getInputSource(path + appname + ".xml"));
 
-                Vector neededRelDefs = app.getNeededRelDefs();
+                List neededRelDefs = app.getNeededRelDefs();
                 for (int i=0; i<neededRelDefs.size(); i++) {
-                    Hashtable rd = (Hashtable)neededRelDefs.get(i);
+                    Map rd = (Map)neededRelDefs.get(i);
                     String sname = (String)rd.get("source");
                     String dname = (String)rd.get("target");
                     String direction = (String)rd.get("direction");
@@ -307,10 +307,10 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                     }
                 }
 
-                Vector allowedRelations = app.getAllowedRelations();
+                List allowedRelations = app.getAllowedRelations();
                 for (int i=0; i<allowedRelations.size(); i++) {
                     boolean error = false;
-                    Hashtable tr = (Hashtable)allowedRelations.get(i);
+                    Map tr = (Map)allowedRelations.get(i);
                     String sname = (String)tr.get("from");
                     String dname = (String)tr.get("to");
                     String rname = (String)tr.get("type");
@@ -345,7 +345,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 }
