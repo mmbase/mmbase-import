@@ -4,7 +4,6 @@ package nl.didactor.xsl;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
-import org.apache.xpath.XPathAPI;
 
 public  class Utilities {
     private static final Logger log = Logging.getLoggerInstance(Utilities.class);
