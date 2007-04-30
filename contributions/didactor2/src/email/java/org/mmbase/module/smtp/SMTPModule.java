@@ -1,20 +1,19 @@
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-import java.util.Hashtable;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * RFC 2821 partial-compliant SMTP server. All commands
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.6 2007-04-25 11:36:37 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.7 2007-04-30 13:26:45 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
     SMTPListener listener;
-    Hashtable properties;
+    Map properties;
 
     private String[] mandatoryProperties = {"hostname", "port", "domains",
             "emailbuilder", "emailbuilder.bodyfield", 
@@ -36,7 +35,7 @@ public class SMTPModule extends org.mmbase.module.Module {
      * Initialize the SMTP engine. Creates a listening thread that can
      * initiate worker threads.
      */
-    private void init(Hashtable properties) {
+    private void init(Map properties) {
         log.info("Initializing SMTP module");
         this.properties = properties;
         
@@ -57,7 +56,7 @@ public class SMTPModule extends org.mmbase.module.Module {
             properties = new Hashtable();
         }
         boolean result = true;
-        for (int i=0; i<mandatoryProperties.length; i++) {
+        for (int i = 0; i < mandatoryProperties.length; i++) {
             if (!properties.containsKey(mandatoryProperties[i])) {
                 log.error("Mandatory property '" + mandatoryProperties[i] + "' not defined!");
                 result = false;
@@ -65,15 +64,15 @@ public class SMTPModule extends org.mmbase.module.Module {
         }
 
         Hashtable allproperties = new Hashtable();
-        for (int i=0; i<mandatoryProperties.length; i++) {
+        for (int i = 0; i < mandatoryProperties.length; i++) {
             allproperties.put(mandatoryProperties[i], "yes");
         }
-        for (int i=0; i<optionalProperties.length; i++) {
+        for (int i = 0; i < optionalProperties.length; i++) {
             allproperties.put(optionalProperties[i], "yes");
         }
 
-        for (Enumeration e = properties.keys(); e.hasMoreElements(); ) {
-            Object key = e.nextElement();
+        for (Iterator e = properties.keySet().iterator(); e.hasNext(); ) {
+            Object key = e.next();
             if (!allproperties.containsKey(key)) {
                 log.warn("Property '" + key + "' unknown, ignoring");
             }
