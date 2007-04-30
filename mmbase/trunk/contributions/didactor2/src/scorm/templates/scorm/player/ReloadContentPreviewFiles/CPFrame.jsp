@@ -40,14 +40,14 @@
  *  Web:      http://www.reload.ac.uk
  *
  *  @author Paul Sharples
- *  @version $Id: CPFrame.jsp,v 1.2 2005-12-02 11:27:01 azemskov Exp $
+ *  @version $Id: CPFrame.jsp,v 1.1 2007-04-30 16:40:49 michiel Exp $
  */
 // -->
 <html>
 <head>
 <meta http-equiv="Pragma" content="no-cache">
 <script language="javascript" src="CPModel.js"></script>
-<script language="javascript" src="CPOrgs<%= request.getParameter("path") %>.js"></script>
+<script language="javascript" src="CPOrgs.jsp?number=${param.number}"></script>
 
 <script>
 <!--
