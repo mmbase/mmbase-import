@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.13 2007-03-14 13:56:46 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.14 2007-04-30 13:25:12 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -119,14 +119,25 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     protected String getLoginPage(HttpServletRequest request) {
+        
+        log.debug("Trying " + request.getServerName() + request.getContextPath() + ".plain.login_page property ");
         String page = request == null ? null : (String) properties.get(request.getServerName() + request.getContextPath() + ".plain.login_page");
         if (page == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("No " + request.getServerName() + request.getContextPath() + ".plain.login_page property found.");
+            }
             page = request == null ? null : (String) properties.get(request.getServerName() + ".plain.login_page");
         }
         if (page == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("No " + request.getServerName() + ".plain.login_page property found.");
+            }
             page = (String) properties.get("plain.login_page");
         }
         if (page == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("No plain.login_page property found.");
+            }
             org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
             if (mmb.getRootBuilder().getNode("component.portal") != null) {
                 page = "/portal";
