@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import nl.didactor.events.*;
 import nl.didactor.builders.*;
@@ -313,13 +313,6 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("Creating parameters for '" + application + "' -> " + parameters);
         }
         return parameters;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public int getMethod(String m) {
-        return super.getMethod(m);
     }
 
     /**
