@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlCache.java,v 1.4 2007-04-18 12:46:50 andre Exp $
+ * @version $Id: UrlCache.java,v 1.5 2007-04-30 20:53:12 andre Exp $
  */
 
 public class UrlCache implements NodeEventListener {
@@ -50,17 +50,18 @@ public class UrlCache implements NodeEventListener {
     
     public void notify(NodeEvent event) {
         int type = event.getType();
-        log.debug("Something should be done...");
         if (type == Event.TYPE_DELETE || type == Event.TYPE_CHANGE) {
-            // remove(event.getNodeNumber());
-            int nodenr = event.getNodeNumber();
-            log.debug("Node: " + nodenr + " should (maybe) be removed");
-            
-            String jsp = getJspEntryFromNode(nodenr); // cacheNodeToJSP
-            String url = getURLEntry(jsp);
-            cacheNodeToJSP.remove(nodenr);
-            cacheJSPToURL.remove(jsp);
-            cacheURLToJSP.remove(url);
+            String nodenr = String.valueOf(event.getNodeNumber());
+            //log.debug("Checking if node '" + nodenr + "' has entries");
+            if (cacheNodeToJSP.containsKey(nodenr)) {
+                if (log.isDebugEnabled())
+                    log.debug("Removing entries for node '" + nodenr + "'");
+                String jsp = getJspEntryFromNode(nodenr); // cacheNodeToJSP
+                String url = getURLEntry(jsp);
+                cacheNodeToJSP.remove(nodenr);
+                cacheJSPToURL.remove(jsp);
+                cacheURLToJSP.remove(url);
+            }
         }
     }
         
@@ -127,26 +128,27 @@ public class UrlCache implements NodeEventListener {
      * Saves nodenumbers and their jsp urls, to enable flushing links
      * 
      * @param nodenr  number of a node
-     * @param jsp     technical url
+     * @param jsp     technical (jsp) url
      */    
     public void putNodeEntry(String nodenr, String jsp) {
         cacheNodeToJSP.put(nodenr, jsp);
     }
     
     /**
-     * Get jsp url
+     * Gets jsp url from node
      *
-     * @param  
-     * @return 
+     * @param  nodenr Node number
+     * @return technical (jsp) url
      */
-    public String getJspEntryFromNode(int nodenr) {
+    public String getJspEntryFromNode(String nodenr) {
         return (String) cacheNodeToJSP.get(nodenr);
     }
     
     /** 
      * Common toString() method to return all cache entries
      *
-     * @return  String with all present key/value pairs of both Maps
+     * @return  String (html snippet) with all present key/value pairs of
+     *          the caches
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();

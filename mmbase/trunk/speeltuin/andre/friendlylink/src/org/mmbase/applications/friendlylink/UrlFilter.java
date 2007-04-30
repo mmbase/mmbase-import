@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Finalist IT Group
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: UrlFilter.java,v 1.5 2007-03-16 23:18:00 andre Exp $
+ * @version $Id: UrlFilter.java,v 1.6 2007-04-30 20:53:12 andre Exp $
  */
 
 public class UrlFilter implements Filter, MMBaseStarter  {
@@ -56,9 +56,9 @@ public class UrlFilter implements Filter, MMBaseStarter  {
      */
     public static Element configElement;    // TODO: pass this element to the FriendlyLinks class
     
-    private static Map<String, FriendlyLink> flinks = new HashMap<String, FriendlyLink>();
+    public static Map<String, FriendlyLink> flinks = new HashMap<String, FriendlyLink>();
     
-    protected static Map getFriendlylinks() {
+    public static Map getFriendlylinks() {
         return flinks;
     }
     
