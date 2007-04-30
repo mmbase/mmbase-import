@@ -6,7 +6,7 @@
 <mm:import externid="firstname" /> 
 <mm:import externid="lastname" /> 
 <mm:present referid="email">
-<mm:cloud logon="admin" pwd="dontusesvp">
+<mm:cloud method="delegate" authenticate="class">
 <mm:listnodes type="users" constraints="email='$email'" max="1">
 	<mm:import id="usernumber"><mm:field name="number" /></mm:import>
 </mm:listnodes> 
