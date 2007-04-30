@@ -3,21 +3,21 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.LocalContext;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.6 2006-12-27 12:48:22 mmeeuwissen Exp $
+ * @version $Id: SMTPListener.java,v 1.7 2007-04-30 13:26:45 michiel Exp $
  */
 public class SMTPListener extends Thread {
     private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
     private boolean running = true;
     private java.net.ServerSocket ssocket;
-    private final Hashtable properties;
+    private final Map properties;
 
-    public SMTPListener(Hashtable properties) {
+    public SMTPListener(Map properties) {
         this.properties = properties;
     }
 
