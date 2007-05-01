@@ -133,7 +133,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
        if (isWorkflowItem) {
            return TYPE_LINK.equals(node.getStringValue(TYPE_FIELD));
        }
-      return RepositoryUtil.isContentChannel(node);
+      return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node);
    }
 
     @Override
