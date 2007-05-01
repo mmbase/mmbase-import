@@ -107,10 +107,9 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
     <field name="date">
       <descriptions>
@@ -140,10 +139,9 @@
         <guiname xml:lang="nl">Headers</guiname>
         <guiname xml:lang="en">Headers</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
     </field>
 
     <field name="body">
@@ -155,10 +153,9 @@
         <guiname xml:lang="nl">Body</guiname>
         <guiname xml:lang="en">Body</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
     </field>
     
     <field name="mimetype">
