@@ -275,6 +275,7 @@
     <mm:import externid="lookup_to_action"/>
     <mm:present referid="lookup_to_action">
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=to</mm:import>
+      <mm:log>Redirecting to ${redirect_url}</mm:log>
       <%    response.sendRedirect(redirect_url); %>
     </mm:present>
     
@@ -385,9 +386,14 @@
               </div>
               <div class="contentBodywit">
                 <br/><br/><br/><%-- aarch --%>
-                <form action="<mm:treefile write="true" page="/email/write/write.jsp" objectlist="$includePath">
-                  <mm:notpresent referid="course"><mm:param name="provider" value="$provider"/></mm:notpresent>
-                  </mm:treefile>" method="post" enctype="multipart/form-data" name="webmailForm">
+                <form action="${mm:treefile('/email/write/write.jsp', pageContext, includePath)}"  
+                      method="post" enctype="multipart/form-data" name="webmailForm">
+                  <mm:notpresent referid="course">
+                    <input type="hidden" name="provider" value="${provider}" />
+                  </mm:notpresent>
+                  <mm:present referid="class">
+                    <input type="hidden" name="class" value="${class}" />
+                  </mm:present>
                   <mm:present referid="id">
                     <input type="hidden" name="id" value="${id}" />
                   </mm:present>
