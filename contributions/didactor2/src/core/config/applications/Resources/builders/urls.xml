@@ -12,8 +12,10 @@
     <singular xml:lang="en">URL</singular>
     <singular xml:lang="nl">URL</singular>
 
-    <plural xml:lang="en">URL</plural>
-    <plural xml:lang="nl">URL</plural>
+    <plural xml:lang="en">URLs</plural>
+    <plural xml:lang="nl">Links</plural>
+    <plural xml:lang="bg">Връзки</plural>
+    <plural xml:lang="ro">Legături</plural>
   </names>
   
   <descriptions>
