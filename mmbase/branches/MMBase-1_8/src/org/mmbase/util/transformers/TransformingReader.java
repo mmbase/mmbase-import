@@ -95,7 +95,7 @@ public class TransformingReader extends PipedReader {
      * ALso closes the wrapped Reader.
      */   
     public void close() throws IOException {   
-        log.info("closing");
+        log.debug("closing");
         super.close();
         in.close();
     }
