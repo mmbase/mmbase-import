@@ -1,5 +1,5 @@
 <%@ page import = "java.util.*" 
-%><%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector" 
+%><%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector,org.mmbase.bridge.Node" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:cloud method="delegate" jspvar="cloud">
@@ -27,7 +27,8 @@
    <mm:node number="$user" jspvar="node">
      <mm:hasrank value="administrator">
       <%
-         hsetEducations = new HashSet(node.getCloud().getNodeManager("educations").getList(null, null, null));
+         
+         hsetEducations = new HashSet(node.getCloud().getNodeManager("educations").getList(node.getCloud().getNodeManager("educations").createQuery()));
       %>
      </mm:hasrank>
      <mm:hasrank value="administrator" inverse="true">
@@ -133,12 +134,12 @@
          <option value="0">--------</option>
          <%
          for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
-           String sEducationID = (String) it.next();
+           Node sEducation = (Node) it.next();
            %>
            <option
-              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals(sEducationID))) out.print(" selected=\"selected\" "); %>
-              value="<%=sEducationID%>">
-                <mm:node number="<%=sEducationID%>"><mm:field name="name"/></mm:node>
+              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals("" + sEducation.getNumber()))) out.print(" selected=\"selected\" "); %>
+              value="<%=sEducation.getNumber()%>">
+                <mm:node number="<%="" + sEducation.getNumber()%>"><mm:field name="name"/></mm:node>
            </option>
            <%
          }
