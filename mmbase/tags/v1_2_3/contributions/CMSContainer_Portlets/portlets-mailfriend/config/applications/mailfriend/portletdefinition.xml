@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/mailfriend" timestamp="20060906000000">
+	<node number="44005" owner="default">
+		<title>MailFriendPortlet</title>
+		<description>MailFriendPortlet</description>
+		<definition>mailfriendportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>
