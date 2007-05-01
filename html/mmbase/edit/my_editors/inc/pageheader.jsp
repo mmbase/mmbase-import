@@ -3,7 +3,7 @@
   <form action="edit_object.jsp" method="post">
     <fieldset>
       <label for="nr">edit node #</label>
-      <input type="text" name="nr" size="8" maxlength="255" id="nr" tabindex="1" accesskey="E" />
+      <input type="text" name="nr" value="<mm:present referid="nr"><mm:write referid="nr" /></mm:present>" size="8" maxlength="255" id="nr" tabindex="1" accesskey="E" />
     </fieldset>
   </form>
   <div>
