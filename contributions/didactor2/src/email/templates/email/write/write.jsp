@@ -177,7 +177,7 @@
     <mm:import externid="ids" vartype="List"/>
     <mm:present referid="ids">
       <mm:listnodes type="people" constraints="number IN ($ids)">
-        <mm:import id="$field" reset="true"><jsp:directive.include file="/address/show_email.jspx" /></mm:import>
+        <mm:import id="$field" reset="true"><mm:write referid="$field"><mm:isnotempty><mm:write />, </mm:isnotempty></mm:write> <jsp:directive.include file="/address/show_email.jspx" /></mm:import>
       </mm:listnodes>
     </mm:present>
   </mm:present>
