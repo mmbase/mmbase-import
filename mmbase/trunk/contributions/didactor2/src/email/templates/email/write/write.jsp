@@ -177,11 +177,7 @@
     <mm:import externid="ids" vartype="List"/>
     <mm:present referid="ids">
       <mm:listnodes type="people" constraints="number IN ($ids)">
-        <mm:import id="tmp_email" reset="true"><mm:field name="email"/></mm:import>
-        <mm:isempty referid="tmp_email">
-          <mm:import id="tmp_email" reset="true"><mm:field name="username"/></mm:import>
-        </mm:isempty>
-        <mm:import id="$field" reset="true"><mm:isempty referid="$field" inverse="true"><mm:write referid="$field"/>, </mm:isempty><mm:write referid="tmp_email"/></mm:import>
+        <mm:import id="$field" reset="true"><jsp:directive.include file="/address/show_email.jspx" /></mm:import>
       </mm:listnodes>
     </mm:present>
   </mm:present>
