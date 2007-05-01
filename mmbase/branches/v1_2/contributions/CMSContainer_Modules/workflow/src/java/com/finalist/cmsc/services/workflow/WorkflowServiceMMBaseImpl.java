@@ -120,7 +120,8 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
     public boolean isWorkflowElement(Node node) {
         Cloud cloud = node.getCloud();
         return getContentWorkflow(cloud).isWorkflowElement(node, false) 
-            || getPageWorkflow(cloud).isWorkflowElement(node, false);
+            || getPageWorkflow(cloud).isWorkflowElement(node, false)
+            || getLinkWorkflow(cloud).isWorkflowElement(node, false);
     }
     
     private Cloud getUserCloud() {
