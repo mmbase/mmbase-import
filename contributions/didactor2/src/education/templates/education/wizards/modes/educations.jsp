@@ -39,7 +39,7 @@
          %>
          <mm:node number="$user" jspvar="node">
            <jsp:scriptlet>
-               hsetEducationsForUser = educationPeopleConnector.relatedEducations("" + node.getNumber());
+               hsetEducationsForUser = educationPeopleConnector.relatedEducations(node);
            </jsp:scriptlet>
          </mm:node>
          <mm:import id="number_of_educations" reset="true"><%= hsetEducationsForUser.size() %></mm:import>
@@ -73,7 +73,7 @@
             {
                if (hsetEducationsForUser.iterator().hasNext())
                {
-                  sEducationID = (String) hsetEducationsForUser.iterator().next();
+                  sEducationID = "" + hsetEducationsForUser.iterator().next().getNumber();
                }
             }
          %>

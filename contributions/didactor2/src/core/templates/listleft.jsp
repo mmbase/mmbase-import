@@ -10,11 +10,11 @@
          <%
             sUserID = "" + nodeUser.getNumber();
             EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(nodeUser.getCloud());
-            for(Iterator it = educationPeopleConnector.relatedEducations("" + nodeUser.getNumber()).iterator(); it.hasNext(); )
+            for(Iterator<Node> it = educationPeopleConnector.relatedEducations(nodeUser).iterator(); it.hasNext(); )
             {
-               String sEducationID = (String) it.next();
+               Node sEducationID = it.next();
                %>
-                  <mm:node number="<%= sEducationID %>" jspvar="nodeEducation">
+                  <mm:node number="<%= sEducationID.getNumber() %>" jspvar="nodeEducation">
                      <%
                         sortmapEducations.put((String) nodeEducation.getValue("name"), sEducationID);
                      %>
