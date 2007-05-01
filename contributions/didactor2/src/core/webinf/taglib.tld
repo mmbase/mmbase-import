@@ -298,6 +298,15 @@
    </attribute>
   </tag>
 
+  <!-- belongs to agenda, temporary copied to here, because tld-merging broken -->
+  <tag>
+    <name>usercalwriter</name>
+    <tagclass>nl.didactor.agenda.UserCalendarWriterTag</tagclass>
+    <!-- bodycontent>JSP</bodycontent -->
+    <info>...</info>
+  </tag>
+
+
   <tag-file>
     <name>person</name>
     <path>/WEB-INF/tags/di/core/person.tagx</path>
