@@ -17,10 +17,10 @@
     </neededreldeflist>
 
     <allowedrelationlist>
-        <relation from="classes" to="forums" type="related" />
-        <relation from="educations" to="forums" type="related" />
-        <relation from="forums" to="forumthreads" type="related" />
-        <relation from="forumthreads" to="forummessages" type="related" />
+      <relation from="classes" to="forums" type="related" />
+      <relation from="educations" to="forums" type="related" />
+      <relation from="forums" to="forumthreads" type="related" />
+      <relation from="forumthreads" to="forummessages" type="related" />
     </allowedrelationlist>
 
     <datasourcelist>
