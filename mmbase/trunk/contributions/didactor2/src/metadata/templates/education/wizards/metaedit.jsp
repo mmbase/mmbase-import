@@ -1,8 +1,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<%@page import = "java.util.*" %>
+<%@page contentType="text/html;charset=UTF-8"
+%><%@page import = "java.util.*" %>
 <%@page import = "java.text.SimpleDateFormat" %>
 
 <%@page import = "org.mmbase.bridge.*" %>
@@ -13,6 +13,7 @@
 
 <html>
    <head>
+     <title>Metadata</title>
    </head>
    <body style="padding-left:10px">
    <%
@@ -49,8 +50,10 @@
 
          //------------------------------- Save form -------------------------------
          %>
-            <mm:cloud method="delegate" jspvar="cloud">
-               <%@include file="/shared/setImports.jsp" %>
+	 
+	 <mm:cloud method="delegate" jspvar="cloud">
+	   <%@include file="/shared/setImports.jsp" %>
+
                <%
                   Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
                   Node nodeObject = cloud.getNode(sNode);
@@ -204,7 +207,7 @@
                            }
                         </style>
 
-                        <font style="color:red; font-size:11px; font-weight:bold; text-decoration:none; letter-spacing:1px;"><font style="font-size:15px">O</font>NTBREKENDE VERPLICHTE VELDEN!</font>
+                        <font style="color:red; font-size:11px; font-weight:bold; text-decoration:none; letter-spacing:1px;"><font style="font-size:15px">O</font>ONTBREKENDE VERPLICHTE VELDEN!</font>
                         <br/>
                         <%
 
