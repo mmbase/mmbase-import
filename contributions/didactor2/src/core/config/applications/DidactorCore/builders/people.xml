@@ -35,6 +35,7 @@
         <guiname xml:lang="nl">Voornaam</guiname>
         <guiname xml:lang="ro">Prenume</guiname>
         <guiname xml:lang="bg">Собствено име</guiname>
+        <guiname xml:lang="hi">प्रथम नाम</guiname>
       </gui>
       <editor>
         <positions>
@@ -57,6 +58,7 @@
         <guiname xml:lang="nl">Initialen</guiname>
         <guiname xml:lang="fr">Initials</guiname>
         <guiname xml:lang="ro">Initiale</guiname>
+        <guiname xml:lang="hi">आद्याक्षरित कीजिए</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -90,6 +92,7 @@
         <guiname xml:lang="nl">Achternaam</guiname>
         <guiname xml:lang="ro">Nume</guiname>
         <guiname xml:lang="bg">Фамилия</guiname>
+        <guiname xml:lang="hi">अंतिम नाम</guiname>
       </gui>
       <editor>
         <positions>
@@ -113,6 +116,7 @@
         <guiname xml:lang="fr">Adresse</guiname>
         <guiname xml:lang="ro">Adresa</guiname>
         <guiname xml:lang="bg">Адрес</guiname>
+        <guiname xml:lang="hi">पता</guiname>
       </gui>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -130,6 +134,7 @@
         <guiname xml:lang="fr">Zipcode</guiname>
         <guiname xml:lang="ro">Cod postal</guiname>
         <guiname xml:lang="bg">Пощ. код</guiname>
+        <guiname xml:lang="hi">झीपकोड़</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -148,6 +153,7 @@
         <guiname xml:lang="fr">Ville</guiname>
         <guiname xml:lang="ro">Oras</guiname>
         <guiname xml:lang="bg">Град</guiname>
+        <guiname xml:lang="hi">शहर</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -185,6 +191,8 @@
         <guiname xml:lang="en">Telephone number</guiname>
         <guiname xml:lang="fr">Le numéro de téléphone</guiname>
         <guiname xml:lang="ro">Telefon</guiname>
+        <guiname xml:lang="bg">Телефон</guiname>
+        <guiname xml:lang="hi">दुरभाष</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
       <db>
@@ -215,6 +223,7 @@
         <guiname xml:lang="nl">Email-adres</guiname>
         <guiname xml:lang="ro">Adresa de email</guiname>
         <guiname xml:lang="bg">ел. поща</guiname>
+        <guiname xml:lang="hi">इ-मेल</guiname>
       </gui>
       <editor>
         <positions>
@@ -300,7 +309,7 @@
         <guiname xml:lang="it">Descrizione</guiname>
       </gui>
       <db>
-        <type state="persistent" size="2048" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="2048" notnull="false" key="false">STRING</type>
       </db>
     </field>
 
