@@ -3,18 +3,18 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.Module;
-import java.util.Hashtable;
-import java.util.Enumeration;
+import java.util.*;
 import nl.eo.chat.*;
 import java.io.File;
 
 /**
  * Wrapper that allows the EO chat to be started as an MMBase module.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @version $Id: ChatModule.java,v 1.2 2007-05-01 12:31:19 michiel Exp $
  */
 public class ChatModule extends Module {
     private Logger log = Logging.getLoggerInstance(ChatModule.class.getName());
-    Hashtable properties;
+    private Map properties; // used?
     private boolean hasstarted = false;
 
     public void init() {
@@ -24,7 +24,7 @@ public class ChatModule extends Module {
     /**
      * Initialize the Chat module.
      */
-    private void init(Hashtable properties) {
+    private void init(Map properties) {
         log.info("Initializing Chat module");
         this.properties = properties;
         maintainance();
