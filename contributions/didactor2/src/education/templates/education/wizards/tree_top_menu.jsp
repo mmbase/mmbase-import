@@ -25,9 +25,16 @@
       Set hsetEducations = null;
    %>
    <mm:node number="$user" jspvar="node">
+     <mm:hasrank value="administrator">
       <%
-         hsetEducations = educationPeopleConnector.relatedEducations("" + node.getNumber());
+         hsetEducations = new HashSet(node.getCloud().getNodeManager("educations").getList(null, null, null));
       %>
+     </mm:hasrank>
+     <mm:hasrank value="administrator" inverse="true">
+      <%
+         hsetEducations = educationPeopleConnector.relatedEducations(node);
+      %>
+     </mm:hasrank>
    </mm:node>
 
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
