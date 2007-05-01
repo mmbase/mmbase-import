@@ -186,33 +186,6 @@
              includes="**/*.xml"
     />
 
-  	<echo>Hardcoding Admin's password into the application</echo>
-  	
-    <if>
-      <available file="${build.webapp.dir}/register/index.jsp" />
-      <then>
-        <replace file="${build.webapp.dir}/register/index.jsp"
-                 token="$${cloudprovider.adminpassword}"
-                 value="${cloudprovider.adminpassword}"/>
-      </then>
-    </if>
-
-  	<replace file="${build.webapp.dir}/install.jsp"
-  	         token="$${cloudprovider.adminpassword}"
-  	         value="${cloudprovider.adminpassword}"/>
-  	<if>
-  	  <available file="${build.webapp.dir}/mmbob/check.jsp" />
-  	    <then>
-  	      <replace file="${build.webapp.dir}/mmbob/check.jsp"
-  			       token="$${cloudprovider.adminpassword}"
-  			       value="${cloudprovider.adminpassword}" />
-  	      <replace file="${build.webapp.dir}/mmbob/index.jsp"
-  			       token="$${cloudprovider.adminpassword}"
-  			       value="${cloudprovider.adminpassword}" />
-      </then>
-  	</if>
-  	
-
     <if>
       <available file="${build.dir}/webapp/chat/chat.jsp" />
       <then>
