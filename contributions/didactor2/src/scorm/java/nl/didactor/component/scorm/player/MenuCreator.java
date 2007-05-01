@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: MenuCreator.java,v 1.9 2007-04-30 16:37:17 michiel Exp $
+ * @version $Id: MenuCreator.java,v 1.10 2007-05-01 12:34:41 michiel Exp $
  */
 
 public class MenuCreator extends XMLDocument  {
@@ -171,7 +171,7 @@ public class MenuCreator extends XMLDocument  {
                         url = scormCore.getRelativeURL(element);
                         // Only if local path add relative bit
                         if(GeneralUtils.isExternalURL(url) == false) {
-                            url = "../" + url;
+                            url = "/files/scorm/" + packageNode.getNumber() + "_/" + url;
                             //url = packageHref + url;
                         }
                     } else {
