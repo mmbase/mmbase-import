@@ -193,15 +193,19 @@ public class WizardController {
                     if ("new".equals(objectnr)) {
                         String channelnr = (String) session.getAttribute("creation");
                         log.debug("Creation " + channelnr);
-                        if (!StringUtil.isEmpty(channelnr)) {
-                            RepositoryUtil.addCreationChannel(editNode, channelnr);
-                            ContentElementUtil.addOwner(editNode);
-                            if (isMainWizard(ewconfig, wizardConfig)) {
-                                RepositoryUtil.addContentToChannel(editNode, channelnr);
-                            }
-                        }
-                        else {
-                            log.warn("ContentElement: Creationchannel was not found in session");
+
+                        // this has creation channel check is needed, because with it will create double creationchannels when first "save" and then "save and close"
+                        if (!RepositoryUtil.hasCreationChannel(editNode)) {
+                            if (!StringUtil.isEmpty(channelnr)) {
+                               RepositoryUtil.addCreationChannel(editNode, channelnr);
+                               ContentElementUtil.addOwner(editNode);
+                               if (isMainWizard(ewconfig, wizardConfig)) {
+                                   RepositoryUtil.addContentToChannel(editNode, channelnr);
+                               }
+                           }
+                           else {
+                               log.warn("ContentElement: Creationchannel was not found in session");
+                           }
                         }
                     }
                     else {
