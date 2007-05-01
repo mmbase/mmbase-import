@@ -140,8 +140,7 @@ public class ContentWorkflow extends RepositoryWorkflow {
             return TYPE_CONTENT.equals(node.getStringValue(TYPE_FIELD));
         }
 
-        return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node) ||
-            (ContentElementUtil.isContentElement(node) && RepositoryUtil.hasContentChannel(node));
+        return (ContentElementUtil.isContentElement(node) && RepositoryUtil.hasContentChannel(node));
     }
     
 
