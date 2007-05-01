@@ -38,9 +38,17 @@
             Set hsetEducationsForUser = null;
          %>
          <mm:node number="$user" jspvar="node">
-           <jsp:scriptlet>
-               hsetEducationsForUser = educationPeopleConnector.relatedEducations(node);
-           </jsp:scriptlet>
+           <mm:hasrank value="administrator">
+             <%
+             
+             hsetEducationsForUser = new HashSet(node.getCloud().getNodeManager("educations").getList(node.getCloud().getNodeManager("educations").createQuery()));
+             %>
+           </mm:hasrank>
+           <mm:hasrank value="administrator" inverse="true">
+             <%
+             hsetEducationsForUser = educationPeopleConnector.relatedEducations(node);
+             %>
+           </mm:hasrank>
          </mm:node>
          <mm:import id="number_of_educations" reset="true"><%= hsetEducationsForUser.size() %></mm:import>
 
@@ -73,7 +81,7 @@
             {
                if (hsetEducationsForUser.iterator().hasNext())
                {
-                  sEducationID = "" + hsetEducationsForUser.iterator().next().getNumber();
+                  sEducationID = "" + ((org.mmbase.bridge.Node) hsetEducationsForUser.iterator().next()).getNumber();
                }
             }
          %>

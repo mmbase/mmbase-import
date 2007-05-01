@@ -19,10 +19,15 @@
          overflow: scroll;
       }
       .contentBody {
+
         top: 0em;
         left: 0em;
         right: 0em;
+        bottom: 0em;
+        height: 100%;
         padding: 0em;
+      }
+      .componentBody {
       }
     </style>
     </mm:param>
@@ -106,12 +111,14 @@
 </script>
 
 
-<table cellpadding="0" cellspacing="0" border="0" width="100%" height="89%">
+<table 
+    cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
    <tr class="navigationbar">
       <td colspan="2" class="titlebar">
-         <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="education.editwizards" />" alt="<di:translate key="education.editwizards" />" />
-         <span class="menu_font">Editwizards:</span> 
-         <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
+        <img src="${mm:treefile('/gfx/icon_agenda.gif', pageContext, includePath)}" 
+             title="${di:translate(pageContext, 'education.editwizards')}" alt="${di:translate(pageContext, 'education.editwizards')}" />
+        <span class="menu_font">Editwizards:</span> 
+        <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
       </td>
    </tr>
    <tr>
