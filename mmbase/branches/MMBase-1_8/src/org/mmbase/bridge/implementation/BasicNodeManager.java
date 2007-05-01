@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.3 2006-12-28 09:22:39 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.4 2007-05-01 15:53:37 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -364,6 +364,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public NodeList getList(NodeQuery query) {
         try {
+            if (query == null) query = createQuery();
+            
             boolean checked = cloud.setSecurityConstraint(query);
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
