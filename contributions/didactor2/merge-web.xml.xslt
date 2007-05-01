@@ -22,6 +22,8 @@
       <xsl:apply-templates select="$mergeXml/j2ee:web-app/j2ee:filter" />
       <xsl:apply-templates select="j2ee:filter-mapping" />
       <xsl:apply-templates select="$mergeXml/j2ee:web-app/j2ee:filter-mapping" />
+      <xsl:apply-templates select="j2ee:listener" />
+      <xsl:apply-templates select="$mergeXml/j2ee:web-app/j2ee:listener" />
       <xsl:apply-templates select="j2ee:servlet" />
       <xsl:apply-templates select="$mergeXml/j2ee:web-app/j2ee:servlet" />
       <xsl:apply-templates select="j2ee:servlet-mapping" />
