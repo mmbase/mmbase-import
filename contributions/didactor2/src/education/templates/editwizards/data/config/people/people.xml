@@ -48,7 +48,9 @@
     <field name="password" />
     <field name="remarks" ftype="line" />
     <field name="description" rows="8" ftype="text" dtminlength="0" />
-    <field name="person_status" ftype="enum" />
+    <field name="person_status" ftype="enum">
+      <optionlist select="enabled" />        
+    </field>
 
     <list extends="config/role/roles-list.xml" />
     <list extends="config/workgroup/workgroups-list.xml" />
