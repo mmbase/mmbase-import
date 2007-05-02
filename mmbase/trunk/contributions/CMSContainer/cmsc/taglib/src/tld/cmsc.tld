@@ -354,6 +354,20 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+        <attribute>
+            <description>Controls whether the name of the site will be included in the result. Default is true.</description>
+            <name>includeSite</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The page to find the page path for. Default is zero, meaning the current page.</description>
+            <name>page</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
 	</tag>
 	<tag>
 		<description>Make a link to a Page</description>
