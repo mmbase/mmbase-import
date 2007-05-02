@@ -39,7 +39,7 @@
       </gui>
       <editor>
         <positions>
-          <list>3</list>
+          <list>1</list>
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -75,6 +75,11 @@
         <guiname xml:lang="en">Suffix</guiname>
         <guiname xml:lang="nl">Tussenvoegsel</guiname>
       </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
@@ -96,7 +101,7 @@
       </gui>
       <editor>
         <positions>
-          <list>2</list>
+          <list>3</list>
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -225,11 +230,6 @@
         <guiname xml:lang="bg">ел. поща</guiname>
         <guiname xml:lang="hi">इ-मेल</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>3</list>
-        </positions>
-      </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
       <db>
         <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
