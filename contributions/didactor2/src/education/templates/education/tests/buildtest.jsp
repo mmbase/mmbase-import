@@ -62,9 +62,7 @@
 <body>
 <div class="learnenvironment">
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
-<form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids">
-                                     <mm:param name="thismadetest"><mm:write referid="madetest"/></mm:param>
-                                  </mm:treefile>" method="POST">
+<form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" />" method="POST">
 
 <mm:node number="$learnobject">
    <mm:field name="showtitle">
