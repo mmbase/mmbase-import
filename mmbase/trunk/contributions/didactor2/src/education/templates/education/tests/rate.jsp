@@ -163,17 +163,18 @@
   <% } %>
   <%-- If "done" pressed then show the feedback else show next question set --%>
   <% if ( sCommand.equals("done") ) { %>
-      <script language="javascript">
-        // reload the page, this makes the progressbar be recalculated
-         window.parent.location.href = '<mm:url escapeamps="false" referids="education,provider?" page="/education/index.jsp"><mm:param name="justposted"><mm:field name="number" /></mm:param></mm:url>';
-      </script>
+  <mm:hasnode number="component.progress">
+    <script language="javascript">
+      window.parent.reloadProgress();
+    </script>
+  </mm:hasnode>
       <mm:field name="feedbackpage">
         <mm:compare value="0">
-          <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids,madetest,tests" />
-          
-          <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids,madetest,my_tests">
-            <mm:param name="tests"><mm:field name="number"/></mm:param>
-          </mm:treeinclude>
+          <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" 
+                          referids="$referids,madetest,tests" />          
+          <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" 
+                          referids="$referids,madetest,my_tests,_node@tests" />
+
       </mm:compare>
 
       <mm:compare value="0" inverse="true">
