@@ -73,7 +73,7 @@ and restart Tomcat.
     alter table mmb_images add width int(11);       
     alter table mmb_images add height int(11);    
     alter table mmb_images add filesize int(11);    
-    alter table mmb_images add filename varchar(128);
+    alter table mmb_images add filename varchar(255);
     alter table mmb_icaches add width int(11);       
     alter table mmb_icaches add height int(11)
     alter table mmb_icaches add itype varchar(32);
