@@ -27,14 +27,14 @@
   <mm:compare referid="formsubmit" value="true">
     <mm:fieldlist nodetype="people" fields="firstname,lastname,address,zipcode,city,email,country">
       <mm:fieldinfo type="name" id="name">
-	<mm:isempty referid="${_}">
-	  <mm:import id="error" reset="true" escape="trimmer">
-	    <mm:write referid="error" escape="none"/>	    
-	    <mm:fieldinfo type="guiname">
-	      <li title="${name}"><di:translate key="register.mandatory_missing" arg0="${_}" /></li>
-	    </mm:fieldinfo>
-	  </mm:import>
-	</mm:isempty>
+        <mm:isempty referid="${_}">
+          <mm:import id="error" reset="true" escape="trimmer">
+            <mm:write referid="error" escape="none"/>	    
+            <mm:fieldinfo type="guiname">
+              <li title="${name}"><di:translate key="register.mandatory_missing" arg0="${_}" /></li>
+            </mm:fieldinfo>
+          </mm:import>
+        </mm:isempty>
       </mm:fieldinfo>
     </mm:fieldlist>
     <mm:isnotempty referid="email">
@@ -56,30 +56,30 @@
    // already exists.
 
         String uname = firstname.substring(0, 1) + lastname;
-   uname = uname.replaceAll(" ", "").toLowerCase().replaceAll("[^a-z]", "");
-   if (uname.length() > 8) {
-     uname = uname.substring(0, 8);
-   }
-   boolean founduser = false;
-   String constraint = "";
-   for (int i=-1; i<100 && !founduser; i++) {
-     constraint = uname;
-     if (i >= 0) {
-       constraint += i;
-     }
-     %>
-       <mm:listnodescontainer type="people">
-         <mm:constraint field="username" operator="EQUAL" value="<%=constraint%>" />
-         <mm:size write="false" id="peoplecount" />
-         <mm:compare referid="peoplecount" value="0">
+        uname = uname.replaceAll(" ", "").toLowerCase().replaceAll("[^a-z]", "");
+        if (uname.length() > 8) {
+        uname = uname.substring(0, 8);
+        }
+        boolean founduser = false;
+        String constraint = "";
+        for (int i=-1; i<100 && !founduser; i++) {
+        constraint = uname;
+        if (i >= 0) {
+        constraint += i;
+        }
+        %>
+        <mm:listnodescontainer type="people">
+          <mm:constraint field="username" operator="EQUAL" value="<%=constraint%>" />
+          <mm:size write="false" id="peoplecount" />
+          <mm:compare referid="peoplecount" value="0">
             <%
-               founduser = true;
+            founduser = true;
             %>
-         </mm:compare>
-         <mm:remove referid="peoplecount" />
-       </mm:listnodescontainer>
-          <%
-   }
+          </mm:compare>
+          <mm:remove referid="peoplecount" />
+        </mm:listnodescontainer>
+        <%
+        }
 
         // Generate a random 6-digit password
         char[] dict = new char[] {
@@ -109,14 +109,10 @@
 
 
       <mm:import id="edu" externid="education" />
+      <mm:node number="$education" id="edu" />
+      <mm:createrelation role="related" source="edu" destination="person" />
 
-      <mm:present referid="edu">
-         <mm:remove referid="edu" />
-         <mm:node number="$education" id="edu" />
-         <mm:createrelation role="classrel" source="edu" destination="person" />
-         <mm:remove referid="edu" />
-      </mm:present>
-
+      <mm:log>Created person ${person}, for education ${education}</mm:log>
       <mm:remove referid="person" />
 
 
