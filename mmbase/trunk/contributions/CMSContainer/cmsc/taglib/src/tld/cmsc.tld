@@ -704,6 +704,12 @@
 		<name>version</name>
 		<tag-class>com.finalist.cmsc.taglib.VersionTag</tag-class>
 		<body-content>scriptless</body-content>
+		<attribute>
+			<description>which version: application (default), cmsc or mmbase</description>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<description>Dumps the data of the framework builders to a certain path on the server.</description>
