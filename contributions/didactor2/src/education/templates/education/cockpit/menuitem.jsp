@@ -7,7 +7,6 @@
    <%@include file="/education/wizards/roles_defs.jsp" %>
         
    <mm:import id="scope" externid="scope"/>
-   
    <mm:compare referid="scope" value="provider">
 
       <mm:import id="editcontextname" reset="true">cursuseditor</mm:import>
@@ -15,11 +14,11 @@
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW"> 
          <div class="menuSeperator"></div>
          <div class="menuItem" id="coursemanagement">
-            <a href="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids">
-                        <mm:present referid="user"><mm:param name="user"><mm:write referid="user"/></mm:param></mm:present>
-                     </mm:treefile>" class="menubar">
-               <di:translate key="education.coursemanagement" />
-            </a>
+           <a href="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids">
+             <mm:present referid="user"><mm:param name="user"><mm:write referid="user"/></mm:param></mm:present>
+             </mm:treefile>" class="menubar">
+             <di:translate key="education.coursemanagement" />
+           </a>
          </div>
       </mm:islessthan>
    </mm:compare>

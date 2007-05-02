@@ -68,12 +68,12 @@
               <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
                 <mm:listnodes type="roles" orderby="name">
                   <td class="tightborder"><a href="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids">
-                                                     <mm:param name="command">deleterole</mm:param>
-                                                     <mm:param name="rolenumber"><mm:field name="number"/></mm:param>
-                                                   </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');" 
-                                              target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif" 
-                                                                          objectlist="$includePath" referids="$referids"/>" border="0"
-                                                                title="<di:translate key="education.deletethisrole"/>" alt="<di:translate key="education.deletethisrole"/>" /></a></td>
+                    <mm:param name="command">deleterole</mm:param>
+                    <mm:param name="rolenumber"><mm:field name="number"/></mm:param>
+                    </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');" 
+                    target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif" 
+                    objectlist="$includePath" referids="$referids"/>" border="0"
+                    title="<di:translate key="education.deletethisrole"/>" alt="<di:translate key="education.deletethisrole"/>" /></a></td>
                 </mm:listnodes>
               </mm:islessthan>
               <mm:islessthan referid="rights" referid2="RIGHTS_RWD">
