@@ -3,7 +3,7 @@ var debugAlpha = false;
  function alphaImages(){
  
    var rslt = navigator.appVersion.match(/MSIE (\d+\.\d+)/, '');
-   var itsAllGood = (rslt != null && Number(rslt[1]) >= 5.5);
+   var itsAllGood = (rslt != null && Number(rslt[1]) >= 5.5 && Number(rslt[1]) < 7.0);
 
    if (itsAllGood) {
      if(debugAlpha) alert("doing alpha!");
