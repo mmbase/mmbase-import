@@ -106,7 +106,7 @@
       <html>
         <head>
           <title><di:translate key="education.test" /></title>
-          <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
+          <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}"  />
         </head>
         <body>
           <div class="learnenvironment">
@@ -120,11 +120,11 @@
             <mm:field id="feedback"  name="feedbackpage" write="false"/>
             <mm:import externid="justposted" />
             <mm:field name="number">
-            <mm:compare referid2="justposted" inverse="true">
-              <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
-                <di:translate key="education.alreadymade_tobescored" /><p/><%-- empty paragraphs, come on, that is stupid! --%>
-              </mm:compare>
-              
+              <mm:compare referid2="justposted" inverse="true">
+                <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
+                  <di:translate key="education.alreadymade_tobescored" /><p/><%-- empty paragraphs, come on, that is stupid! --%>
+                </mm:compare>
+                
               <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
                 <%-- if madestestscore larger or equal than requiredscore --%>
                 <mm:field id="requiredscore" name="requiredscore" write="false"/>
