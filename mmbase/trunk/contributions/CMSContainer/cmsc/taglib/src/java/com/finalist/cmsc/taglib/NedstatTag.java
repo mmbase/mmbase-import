@@ -108,7 +108,7 @@ public class NedstatTag extends CmscTag {
 			// Construct the string according to the type.			
 			String type = getType().toLowerCase();
 			if (type.equals(TYPE_NORMAL)){
-				nedstat = "<!-- Begin Sitestat4 code -->\n<script language=\'JavaScript1.1\' type=\'text/javascript\'>\n";
+				nedstat = "<!-- Begin Sitestat4 code -->\n<script type=\'text/javascript\'>\n";
 				nedstat = nedstat + "<!--\nfunction sitestat(ns_l){ns_l+=\'&amp;ns__t=\'+(new Date()).getTime();ns_pixelUrl=ns_l;\n";
 				nedstat = nedstat + "ns_0=document.referrer;\n";
 				nedstat = nedstat + "ns_0=(ns_0.lastIndexOf(\'/\')==ns_0.length-1)?ns_0.substring(ns_0.lastIndexOf(\'/\'),0):ns_0;\n";
@@ -120,15 +120,15 @@ public class NedstatTag extends CmscTag {
 				nedstat = nedstat + "<!-- End Sitestat4 code -->";
 			}
 			else if (type.equals(TYPE_TECHNICAL)){
-				nedstat = "<!-- Begin Sitestat4 Technical code -->\n<script language=\'JavaScript1.1\' type=\'text/javascript\' src=\'/sitestat.js\'></script>\n<!-- End Sitestat4 Technical Code -->";			
+				nedstat = "<!-- Begin Sitestat4 Technical code -->\n<script type=\'text/javascript\' src=\'/sitestat.js\'></script>\n<!-- End Sitestat4 Technical Code -->";			
 			}
 			else if (type.equals(TYPE_LOADTIME1)){
 				// Place just underneath the <head> tag.
-				nedstat = "<!-- Begin Sitestat4 Loadingtime1 code -->\n<script language=\'JavaScript1.1\' type=\'text/javascript\'>ns_loadingtime1=(new Date()).getTime()</script>\n<!-- End Sitestat4 Loadingtime1 code -->";
+				nedstat = "<!-- Begin Sitestat4 Loadingtime1 code -->\n<script type=\'text/javascript\'>ns_loadingtime1=(new Date()).getTime()</script>\n<!-- End Sitestat4 Loadingtime1 code -->";
 			}
 			else if (type.equals(TYPE_LOADTIME2)){
 				// Place just before the </body> tag, after the technical measurement.
-				nedstat = "<!-- Begin Sitestat4 Loadingtime2 code -->\n<script language=\'JavaScript1.1\' type=\'text/javascript\' src=\'/sitestat.js\'></script>\n<script language=\'JavaScript1.1\' type=\'text/javascript\'>ns_loadingtime2=(new Date()).getTime()</script>\n<!-- End Sitestat4 Loadingtime2 code -->";				
+				nedstat = "<!-- Begin Sitestat4 Loadingtime2 code -->\n<script type=\'text/javascript\' src=\'/sitestat.js\'></script>\n<script type=\'text/javascript\'>ns_loadingtime2=(new Date()).getTime()</script>\n<!-- End Sitestat4 Loadingtime2 code -->";				
 			}
 			else if (type.equals(TYPE_CLICKIN)){
 				if (getExternalUrl() == null) {
