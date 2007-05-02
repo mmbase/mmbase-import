@@ -1,6 +1,7 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
+%>
 
 <mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
 <%@include file="/shared/setImports.jsp" %>
@@ -8,9 +9,28 @@
 <mm:isgreaterthan referid="user" value="0">
 
   <mm:present referid="education">
-    <mm:node number="component.progress" notfound="skip">
-      <mm:treeinclude page="/progress/cockpit/bar_connector.jsp" objectlist="$includePath" referids="$referids"/>
-    </mm:node>
+    <mm:hasnode number="component.progress">
+      <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false">
+        <script type="text/javascript">
+          function reloadProgress() {
+              var xmlhttp =  new XMLHttpRequest();
+              xmlhttp.open('GET', '${_}', true);              
+              xmlhttp.onreadystatechange = function() {
+                  if (xmlhttp.readyState == 4) {
+                      // Your callback code goes here
+                      var ser = new XMLSerializer();
+                      document.getElementById('progressMeter').innerHTML = ser.serializeToString(xmlhttp.responseXML);
+                  }
+              }
+              xmlhttp.send(null);
+          }
+        </script>
+      </mm:treefile>
+      <div id="progressMeter">
+        <mm:treeinclude page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" />
+      </div>
+      
+    </mm:hasnode>
   </mm:present>
   <%
     TreeMap tm = new TreeMap();
