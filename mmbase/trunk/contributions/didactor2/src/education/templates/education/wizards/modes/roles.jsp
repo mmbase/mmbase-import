@@ -42,7 +42,6 @@
                    <mm:link referid="listjsp">
                      <mm:param name="wizard">config/people/people</mm:param>
                      <mm:param name="nodepath">people</mm:param>
-                     <mm:param name="fields">firstname,suffix,lastname,username,externid</mm:param>
                      <mm:param name="orderby">lastname</mm:param>
                      <mm:param name="searchfields">firstname,suffix,lastname,username,externid</mm:param>
                      <mm:param name="search">yes</mm:param>
