@@ -2,7 +2,6 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="java.util.*"
 %>
-<script src="js/browser_version.js"></script>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
@@ -10,6 +9,7 @@
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <title><di:translate key="education.learnenvironmenttitle" /></title>
+      <script src="js/browser_version.js"></script>
     </mm:param>
   </mm:treeinclude>
 
@@ -538,14 +538,15 @@ catch(err){};
       </div>
       <div class="contentBodywit" id="contentBodywit">
          <mm:present referid="the_only_node_to_show">
-            <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />"
-               onClick="parent.document.location.href='<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
-                  <mm:param name="learnobject"><mm:write referid="return_to"/></mm:param>
-                  <mm:param name="learnobjecttype"><mm:write referid="return_to_type"/></mm:param>
-               </mm:url>'"
-             /></div>
+           <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />"
+           onClick="parent.document.location.href='<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
+           <mm:param name="learnobject"><mm:write referid="return_to"/></mm:param>
+           <mm:param name="learnobjecttype"><mm:write referid="return_to_type"/></mm:param>
+           </mm:url>'"
+           /></div>
          </mm:present>
-         <iframe width="100%" height="100%" onload="resize()" name="content" id="content" frameborder="0" style="overflow:hidden"></iframe>
+         <iframe width="100%" height="100%" onload="resize()" name="content" 
+                 id="content" frameborder="0" style="overflow:hidden"></iframe>
       </div>
    </div>
 </div>
