@@ -59,6 +59,7 @@
     -->
     <setting name="personfields" type="string" default="firstname,suffix,lastname" />
     <setting name="personorderfield" type="string" default="lastname" />
+    <setting name="admin_personfields" type="string" default="firstname,suffix,lastname" />
   </scope>
   <scope name="classes" referid="class">
     <!-- reference back on class level to settings defined on component level
