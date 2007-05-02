@@ -152,7 +152,11 @@ input.search {
   width: 1px;
   margin: 0px;
   float: left;
-  padding: 0.3em 1.5em 0.1em 0.5em }
+  padding: 0.3em 1.5em 0.1em 0.5em 
+}
+.menuSeperator:first-child { 
+  display: none;
+}
 
 
 .menuItemApplicationMenubar {
