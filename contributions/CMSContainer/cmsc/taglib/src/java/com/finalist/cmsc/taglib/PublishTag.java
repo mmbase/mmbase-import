@@ -128,7 +128,8 @@ public class PublishTag extends NodeReferrerTag {
                 toPublishNodes.add(child);
             }
 
-            NodeList channels = RepositoryUtil.getChildren(node);
+            NodeList channels = 
+                node.getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, RepositoryUtil.CHILDREL, "DESTINATION");
             for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
                 Node child = iter.next();
                 findNodes(child, toPublishNodes);
