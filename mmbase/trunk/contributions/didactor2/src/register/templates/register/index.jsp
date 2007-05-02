@@ -14,6 +14,7 @@
 
   <mm:import externid="firstname" jspvar="firstname" />
   <mm:import externid="lastname" jspvar="lastname" />
+  <mm:import externid="suffix" />
   <mm:import externid="address" />
   <mm:import externid="zipcode" />
   <mm:import externid="city" />
@@ -99,6 +100,7 @@
          <mm:setfield name="password"><%=password%></mm:setfield>
          <mm:setfield name="firstname"><mm:write referid="firstname" /></mm:setfield>
          <mm:setfield name="lastname"><mm:write referid="lastname" /></mm:setfield>
+         <mm:setfield name="suffix"><mm:write referid="suffix" /></mm:setfield>
          <mm:setfield name="address"><mm:write referid="address" /></mm:setfield>
          <mm:setfield name="zipcode"><mm:write referid="zipcode" /></mm:setfield>
          <mm:setfield name="city"><mm:write referid="city" /></mm:setfield>
