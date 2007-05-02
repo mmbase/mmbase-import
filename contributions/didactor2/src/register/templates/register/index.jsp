@@ -4,11 +4,11 @@
 %>
 <mm:cloud  authenticate="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
-  <mm:content postprocessor="reducespace" language="$language">
+  <mm:content postprocessor="reducespace" language="$language" expires="0">
   <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
    <mm:param name="extraheader">
      <style>.columns {height: 100%;}</style>
-     <link rel="stylesheet" type="text/css" href='<mm:treefile page="/register/css/register.css" objectlist="$includePath"  />' />
+     <link rel="stylesheet" type="text/css" href="${mm:treefile('/register/css/register.css', pageContext,  includePath)}"  />
    </mm:param>
   </mm:treeinclude>
 
@@ -24,6 +24,7 @@
   <mm:import externid="formsubmit">false</mm:import>
 
   <mm:import id="error" />
+
 
   <mm:compare referid="formsubmit" value="true">
     <mm:fieldlist nodetype="people" fields="firstname,lastname,address,zipcode,city,email,country">
@@ -109,13 +110,8 @@
          <mm:setfield name="remarks"><mm:write referid="remarks" /></mm:setfield>
       </mm:createnode>
 
-
-      <mm:import id="edu" externid="education" />
-      <mm:node number="$education" id="edu" />
-      <mm:createrelation role="related" source="edu" destination="person" />
-
+      <mm:createrelation role="related" source="education" destination="person" />
       <mm:log>Created person ${person}, for education ${education}</mm:log>
-      <mm:remove referid="person" />
 
 
       <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids">
