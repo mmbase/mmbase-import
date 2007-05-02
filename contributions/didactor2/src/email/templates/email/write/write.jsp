@@ -280,6 +280,11 @@
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
       <%    response.sendRedirect(redirect_url); %>
     </mm:present>
+    <mm:import externid="lookup_bcc_action"/>
+    <mm:present referid="lookup_bcc_action">
+      <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=bcc</mm:import>
+      <%    response.sendRedirect(redirect_url); %>
+    </mm:present>
     
   </mm:present>
   
