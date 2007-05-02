@@ -1,12 +1,14 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
-  <%@include file="/shared/setImports.jsp" %>
+<mm:cloud method="delegate" authenticate="asis">
+  <%@include file="/shared/setImports.jsp" %>  
+<mm:content postprocessor="reducespace" language="$language" >
 
-  <mm:import externid="firstname" jspvar="firstname" />
-  <mm:import externid="lastname" jspvar="lastname" />
+
+  <mm:import externid="firstname" />
+  <mm:import externid="lastname" />
+  <mm:import externid="suffix" />
   <mm:import externid="address" />
   <mm:import externid="zipcode" />
   <mm:import externid="city" />
@@ -21,45 +23,23 @@
     </div>
     <div class="columnMiddle">
       <h2><di:translate key="register.registration" /></h2>
-      <ul>
-        <mm:write referid="error" escape="none" />
-      </ul>
-      <table class="registerTable" border="0">
-        <form method="post">
-          <tr>
-            <td><di:translate key="register.firstname" />:</td>
-            <td><input name="firstname" value="<mm:write referid="firstname" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.lastname" />:</td>
-            <td><input name="lastname" value="<mm:write referid="lastname" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.address" />:</td>
-            <td><input name="address" value="<mm:write referid="address" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.zipcode" />:</td>
-            <td><input name="zipcode" value="<mm:write referid="zipcode" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.city" />:</td>
-            <td><input name="city" value="<mm:write referid="city" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.email" />:</td>
-            <td><input name="email" value="<mm:write referid="email" />"/></td>
-          </tr>
-
-          <tr>
-            <td><di:translate key="register.country" />:</td>
-            <td><input name="country" value="<mm:write referid="country" />"/></td>
-          </tr>
+      <mm:write referid="error" escape="none">
+        <mm:isnotempty>
+          <ul>
+            <mm:write escape="none" />
+          </ul>
+        </mm:isnotempty>
+      </mm:write>
+      <form method="post">          
+        <table class="registerTable" border="0">
+          <mm:fieldlist nodetype="people" fields="${di:setting(pageContext, 'core', 'admin_personfields')},address,zipcode,city,email,country" id="field">
+            <tr>
+              <td><mm:fieldinfo type="guiname" />:</td>
+              <mm:write referid="${field.name}">
+                <td><input name="${field.name}" value="${_}"/></td>
+              </mm:write>
+            </tr>
+          </mm:fieldlist>
           <tr>
             <td><di:translate key="register.education" />:</td>
             <td>
@@ -108,8 +88,8 @@
               <input type="submit" class="formSubmit" value="<di:translate key="register.submit" />" />
             </td>
           </tr>
-        </form>
-      </table>
+        </table>
+      </form>                
       <p>
         <di:translate key="register.extra" />
       </p>
@@ -117,5 +97,6 @@
     <div class="columnRight">
     </div>
   </div>
-</mm:cloud>
 </mm:content>
+</mm:cloud>
+
