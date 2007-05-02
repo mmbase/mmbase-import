@@ -75,11 +75,19 @@
      <a <mm:compare referid="mode" value="content_metadata">class="education_top_menu_selected"</mm:compare> href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
    </mm:islessthan>
 
+   
+   <%-- TODO, i think the filemanagent feature is intrinsically a bit stupid 
+   DIDACTOR-46
+   I temorpary switched it off for sites which dont' configure it.
+   Should device something better..
+   --%>
+   <% if (getServletContext().getInitParameter("filemanagementBaseDirectory") != null) { %>
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
      <a <mm:compare referid="mode" value="filemanagement">class="education_top_menu_selected"</mm:compare> href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
    </mm:islessthan>
+   <% } %>
    
    <mm:node number="component.virtualclassroom" notfound="skipbody">
      <mm:import id="editcontextname" reset="true">virtualclassroom</mm:import>
