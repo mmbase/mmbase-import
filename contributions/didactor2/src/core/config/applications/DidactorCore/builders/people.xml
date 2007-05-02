@@ -261,6 +261,7 @@
       <gui>
         <guiname xml:lang="nl">Gebruikersnaam</guiname>
         <guiname xml:lang="en">Username</guiname>
+        <guiname xml:lang="fr">Nom d'utilisateur</guiname>
         <guiname xml:lang="bg">Потребителско име</guiname>
         <guiname xml:lang="ro">Utilizator</guiname>
       </gui>
@@ -284,6 +285,7 @@
       <gui>
         <guiname xml:lang="nl">Wachtwoord</guiname>
         <guiname xml:lang="en">Password</guiname>
+        <guiname xml:lang="fr">Mot de passe</guiname>
         <guiname xml:lang="bg">Парола</guiname>
         <guiname xml:lang="ro">Parola</guiname>
       </gui>
