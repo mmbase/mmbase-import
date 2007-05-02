@@ -1490,3 +1490,9 @@ label {
 	width: 100%;
 	text-alignment: center;
 }
+
+.dashboard iframe {
+	width:200px; 
+	height: 100px; 
+	border:0px; 
+}
