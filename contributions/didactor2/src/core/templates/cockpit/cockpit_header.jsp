@@ -8,8 +8,11 @@
 <jsp:directive.include file="/shared/setImports.jsp" />
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <mm:write referid="extraheader" escape="none" />
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+    <mm:write referid="extraheader" escape="none" />    
+    <mm:link page="/core/js/sarissa/sarissa.js">
+      <script src="${_}"><!-- Help IE --></script>
+    </mm:link>    
+    <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}" />
   </head>
   <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
 
