@@ -8,6 +8,7 @@
 	<mm:listnodes type="user" constraints="username='${username}'">
 		<mm:field name="language" jspvar="language" write="false"/>
 	</mm:listnodes>
+</mm:cloud>
 
 	<c:choose>
 		<c:when test="${empty language}">
@@ -17,7 +18,12 @@
 			<fmt:setLocale value="${language}" scope="session"/>
 		</c:otherwise>
 	</c:choose>
-	<mm:locale language="${language}">
+
+<%-- A cloud tag inside a locale tag will set the locale to the user cloud
+ A local tag inside a cloud tag will only set the locale for its body
+ This code sets the locale for all editors --%>
+<mm:locale language="${language}">
+	<mm:cloud loginpage="login.jsp" rank="basic user">
 		<html:html xhtml="true">
 			<head><title><fmt:message key="editors.title" /></title>
 				<link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
@@ -34,6 +40,6 @@
 				<frame src="footer.jsp" name="footerpane" frameborder="0" scrolling="no"/>
 			</frameset>
 		</html:html>
-	</mm:locale>
-</mm:cloud>
+	</mm:cloud>
+</mm:locale>
 
