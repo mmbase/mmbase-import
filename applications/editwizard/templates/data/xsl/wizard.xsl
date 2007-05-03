@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.11 2007-03-29 12:31:43 pierre Exp $
+    @version $Id: wizard.xsl,v 1.160.2.12 2007-05-03 14:49:48 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -65,7 +65,7 @@
 
     <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
     <xsl:choose>
-      <xsl:when test="$SEARCH_LIST_TYPE=&apos;IFRAME&apos;">
+      <xsl:when test="$SEARCH_LIST_TYPE='IFRAME'">
         <script type="text/javascript">
           <xsl:text disable-output-escaping="yes">
             <![CDATA[
@@ -139,7 +139,7 @@
           // Store htmlarea names.
           var htmlAreas = new Array();
         ]]></xsl:text>
-      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype=&apos;html&apos; and @maywrite!=&apos;false&apos;]">
+      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype='html' and @maywrite!='false']">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
       <xsl:text disable-output-escaping="yes">
@@ -560,58 +560,61 @@
     fieldintern is called to draw the values
   -->
   <xsl:template name="fieldintern">
-    <xsl:apply-templates select="prefix"/>
+    <xsl:call-template name="i18n">
+      <xsl:with-param name="nodes" select="prefix"/>
+    </xsl:call-template>
+
 
     <xsl:choose>
-      <xsl:when test="@ftype=&apos;startwizard&apos;">
+      <xsl:when test="@ftype='startwizard'">
         <xsl:call-template name="ftype-startwizard"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;function&apos;">
+      <xsl:when test="@ftype='function'">
         <xsl:call-template name="ftype-function"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;data&apos;">
+      <xsl:when test="@ftype='data'">
         <xsl:call-template name="ftype-data"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;line&apos;">
+      <xsl:when test="@ftype='line'">
         <xsl:call-template name="ftype-line"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;text&apos;">
+      <xsl:when test="@ftype='text'">
         <xsl:call-template name="ftype-text"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;mmxf&apos;">
+      <xsl:when test="@ftype='mmxf'">
         <xsl:call-template name="ftype-text"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;html&apos;">
+      <xsl:when test="@ftype='html'">
         <xsl:call-template name="ftype-html"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;relation&apos;">
+      <xsl:when test="@ftype='relation'">
         <xsl:call-template name="ftype-relation"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;enum&apos;">
+      <xsl:when test="@ftype='enum'">
         <xsl:call-template name="ftype-enum"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;enumdata&apos;">
+      <xsl:when test="@ftype='enumdata'">
         <xsl:call-template name="ftype-enumdata"/>
       </xsl:when>
-      <xsl:when test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
+      <xsl:when test="(@ftype='datetime') or (@ftype='date') or (@ftype='time') or (@ftype='duration')">
         <xsl:call-template name="ftype-datetime"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;image&apos;">
+      <xsl:when test="@ftype='image'">
         <xsl:call-template name="ftype-image"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;file&apos;">
+      <xsl:when test="@ftype='file'">
         <xsl:call-template name="ftype-file"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;radio&apos;">
+      <xsl:when test="@ftype='radio'">
          <xsl:call-template name="ftype-radio"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;checkbox&apos;">
+      <xsl:when test="@ftype='checkbox'">
          <xsl:call-template name="ftype-checkbox"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;boolean&apos;">
+      <xsl:when test="@ftype='boolean'">
          <xsl:call-template name="ftype-checkbox"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;realposition&apos;">
+      <xsl:when test="@ftype='realposition'">
         <xsl:call-template name="ftype-realposition"/>
       </xsl:when>
       <xsl:otherwise>
@@ -619,16 +622,11 @@
       </xsl:otherwise>
     </xsl:choose>
 
-    <xsl:apply-templates select="postfix"/>
+    <xsl:call-template name="i18n">
+      <xsl:with-param name="nodes" select="postfix"/>
+    </xsl:call-template>
   </xsl:template>
 
-  <!--
-    Prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
-    Useful in fieldsets.
-  -->
-  <xsl:template match="prefix|postfix">
-    <xsl:value-of select="."/>
-  </xsl:template>
 
   <xsl:template name="ftype-startwizard">
     <xsl:if test="@objectnumber!=''">
@@ -641,7 +639,7 @@
   </xsl:template>
 
   <xsl:template name="ftype-function">
-    <xsl:if test="not(string(number(@number)) = &apos;NaN&apos;)">
+    <xsl:if test="not(string(number(@number)) = 'NaN')">
       <xsl:apply-templates select="value" mode="line">
         <xsl:with-param name="val">
           <xsl:value-of select="node:function($cloud, string(@number), string(value))" disable-output-escaping="yes"/>
@@ -652,10 +650,10 @@
 
   <xsl:template name="ftype-data">
     <xsl:choose>
-      <xsl:when test="@dttype=&apos;datetime&apos;">
+      <xsl:when test="@dttype='datetime'">
         <xsl:value-of select="date:format(string(value), $date-pattern, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
-      <xsl:when test="@dttype=&apos;millisecondsdatetime&apos;">
+      <xsl:when test="@dttype='millisecondsdatetime'">
         <xsl:value-of select="date:format(string(value), $date-pattern, 1, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
