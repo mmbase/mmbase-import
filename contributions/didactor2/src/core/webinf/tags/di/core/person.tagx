@@ -11,14 +11,22 @@
 
   <mm:cloud>
     <mm:node element="${element}">
-      <di:getsetting component="core" setting="personfields" vartype="list">
-        <mm:stringlist referid="_">
-          <mm:hasfield name="${_}">
-            <mm:field name="${_}"/>
-          </mm:hasfield>
-          <mm:last inverse="true"><jsp:text> </jsp:text></mm:last>
-        </mm:stringlist>
-      </di:getsetting>
+      <mm:import id="p">
+        <di:getsetting component="core" setting="personfields" vartype="list" write="false">
+          <mm:stringlist referid="_">
+            <mm:hasfield name="${_}">
+              <mm:field name="${_}"/>
+            </mm:hasfield>
+            <mm:last inverse="true"><jsp:text> </jsp:text></mm:last>
+          </mm:stringlist>
+        </di:getsetting>
+      </mm:import>
+      <mm:write referid="p">
+        <mm:write />
+        <mm:isempty>
+          <mm:field name="username" />
+        </mm:isempty>
+      </mm:write>
     </mm:node>
   </mm:cloud>
 </jsp:root>
