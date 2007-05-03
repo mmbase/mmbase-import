@@ -140,11 +140,14 @@
             </mm:relatedcontainer>
           </mm:node>
           <td>
-            <mm:field name="showtitle">
-              <mm:compare value="1">
-                <h2><mm:field name="title"/></h2>
-              </mm:compare>
-            </mm:field>
+            <!-- I think this code can be removed? -->
+            <mm:hasfield name="showtitle">
+              <mm:field name="showtitle">
+                <mm:compare value="1">
+                  <h2><mm:field name="title"/></h2>
+                </mm:compare>
+              </mm:field>
+            </mm:hasfield>
           </td>
           <td>
             <select name="<mm:write referid="question"/>_<mm:write referid="answer"/>">
