@@ -12,10 +12,9 @@
   <html>
     <head>
       <title>View Answers</title>
-      <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
+      <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext, includePath)}" />
     </head>
     <body>
-
       <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids,madetestNo@madetest,testNo@tests" />
       <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids,testNo@tests,madetestNo@madetest" />
       <hr/>
