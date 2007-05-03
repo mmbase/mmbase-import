@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.21 2007-04-18 09:11:11 michiel Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.22 2007-05-03 13:38:49 michiel Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -155,8 +155,9 @@ public class ExtendedJMSendMail extends SendMail {
         }
 
         if (remoteRecipients.size() > 0) {
+            log.service("Sending remote to " + remoteRecipients);
             InternetAddress[] ia = new InternetAddress[remoteRecipients.size()];
-            for (int i=0; i<remoteRecipients.size(); i++) {
+            for (int i=0; i < remoteRecipients.size(); i++) {
                 ia[i] = (InternetAddress)remoteRecipients.get(i);
             }
             sendRemoteMail(ia, n);
@@ -245,17 +246,7 @@ public class ExtendedJMSendMail extends SendMail {
                     try {
                         /// should use Sender header here (in case of boucnes).
                         // and perhaps als Resent-From header.
-                        Address localAddress = null;
-                        Set domains = getDomains();
-                        if (domains.size() > 0) {
-                            try {
-                                String local = person.getStringValue("username") + "@" + domains.iterator().next();
-                                localAddress = new InternetAddress(local);
-                                log.debug("Sender " + localAddress);
-                            } catch (Exception f) {
-                                log.error(f);
-                            }
-                        }
+                        Address localAddress = to[i];
                         sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
                     } catch (Exception e) {
                         // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
