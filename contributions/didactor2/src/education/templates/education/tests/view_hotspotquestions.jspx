@@ -14,7 +14,7 @@
   <mm:relatednodes type="hotspotanswers" orderby="x1,y1">
     <a href="#" class="hotspot" 
        style="position: absolute; left: ${_node.x1}px; top: ${_node.y1}px; width: ${_node.x2}px; height: ${_node.y2}px;">
-      <jsp:scriptlet>i++</jsp:scriptlet>
+      <jsp:scriptlet>i++;</jsp:scriptlet>
     </a>
   </mm:relatednodes>
   <b><di:translate key="education.givenanswer" />:</b> 

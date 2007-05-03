@@ -5,7 +5,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page">
   >                        
   <b><di:translate key="education.givenanswer" />:</b> 
-  <mm:related page="posrel,rankinganswers">
+  <mm:related path="posrel,rankinganswers">
     <mm:node element="rankinganswers">
       <mm:relatednodescontainer type="images">
         <mm:size>

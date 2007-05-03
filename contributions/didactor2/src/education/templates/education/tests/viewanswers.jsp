@@ -63,8 +63,8 @@
           <!-- Feedback (from the question) -->
           <mm:node referid="question">
             <mm:relatednodescontainer type="feedback">
-              <mm:constraint field="maximalscore" referid="questionscore" operator=">="/>
-              <mm:constraint field="minimalscore" referid="questionscore" operator="<="/>
+              <mm:constraint field="maximalscore" value="${answer.score}" operator=">="/>
+              <mm:constraint field="minimalscore" value="${answer.score}" operator="<="/>
               <mm:relatednodes>
                 <b><di:translate key="education.feedback" />: <mm:field name="name"/></b><br/>
                 
