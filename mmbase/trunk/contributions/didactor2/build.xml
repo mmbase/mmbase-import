@@ -17,8 +17,8 @@
   <property name="download.dir"           location="${basedir}" />
   <property name="war.dir"                value="${build.dir}" />
 
-  <property name="mmbase.version"         value="mmbase-1.8.4.20070428" />
-  <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/2007-04-28/" />
+  <property name="mmbase.version"         value="mmbase-1.8.4.20070505" />
+  <property name="mmbase.distro.location" value="http://www.mmbase.org/development/download/stable/2007-05-05/" />
   <property name="mmbase.zip"             value="${mmbase.version}.zip" />
   <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.zip}" />
 
