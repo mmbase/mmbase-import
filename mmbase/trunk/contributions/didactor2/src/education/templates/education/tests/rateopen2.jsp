@@ -67,6 +67,7 @@
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
+    <!-- TODO, this is dutch -->
     <title>Voortgang -> Correctie</title>
   </mm:param>
 </mm:treeinclude>
