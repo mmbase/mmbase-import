@@ -147,11 +147,11 @@
                   <mm:compare referid="mayview" value="1">
                     <td>
                       <div class="button1">
-                        <a href="<mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids">
-                          <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
-                          <mm:param name="madetestNo"><mm:write referid="madetestNo"/></mm:param>
-                          <mm:param name="userNo"><mm:write referid="user"/></mm:param>
-                        </mm:treefile>"><di:translate key="education.view" /></a>
+                        <mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"  write="false"
+                                     referids="$referids,testNo,madetestNo,user@userNo" 
+                                     >
+                          <a href="${_}"><di:translate key="education.view" /></a>
+                        </mm:treefile>
                       </div>
                     </td>
                   </mm:compare>
@@ -159,17 +159,22 @@
                   <mm:compare referid="maychange" value="1">
                     <td>
                       <div class="button1">
-                        <a href="<mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
-                          <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
-                        </mm:treefile>"><mm:compare referid="feedback" value="1"><di:translate key="education.again" /></mm:compare><mm:compare referid="feedback" value="0"><di:translate key="education.retry" /></a></mm:compare></a>
+                        <mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
+                                     referids="$referids,testNo@learnobject">                          
+                          <a href="${_}">
+                            <mm:compare referid="feedback" value="1"><di:translate key="education.again" /></mm:compare>
+                            <mm:compare referid="feedback" value="0"><di:translate key="education.retry" /></mm:compare>
+                          </a>
+                        </mm:treefile>
                       </div>
                     </td>
                     <td>
                       <div class="button1">
-                        <a href="<mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
-                          <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
+                        <mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
+                                     referids="$referids,testNo@learnobject">                          
                           <mm:param name="clearmadetest">true</mm:param>
-                        </mm:treefile>"><mm:compare referid="feedback" value="1"><di:translate key="education.clear" /></mm:compare><mm:compare referid="feedback" value="0"><di:translate key="education.clear" /></a></mm:compare></a>
+                          <a href="${_}"><di:translate key="education.clear" /></a>
+                        </mm:treefile>
                       </div>
                     </td>
                   </mm:compare>
