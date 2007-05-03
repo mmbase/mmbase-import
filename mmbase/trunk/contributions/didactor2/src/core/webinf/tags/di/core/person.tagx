@@ -24,7 +24,9 @@
       <mm:write referid="p">
         <mm:write />
         <mm:isempty>
-          <mm:field name="username" />
+          <mm:hasfield name="username">
+            <mm:field name="username" />
+          </mm:hasfield>
         </mm:isempty>
       </mm:write>
     </mm:node>
