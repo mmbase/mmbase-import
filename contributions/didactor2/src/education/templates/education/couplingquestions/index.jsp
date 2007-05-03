@@ -37,10 +37,10 @@
   <mm:relatednodes id="my_shuffled_couplinganswers" comparator="SHUFFLE"/>
 
   <%-- Generate for each text1 answer a dropdown with possible text2 answers --%>
-  <mm:field name="text1" write="true"/> 
+  <mm:field name="text" write="true"/> 
   <mm:relatednodes referid="my_shuffled_couplinganswers">
 
-    <mm:field name="text1"/>
+    <mm:field name="text"/>
     <mm:field id="answer" name="number" write="false"/>
     <mm:import id="givencouplinganswer" reset="true">-1</mm:import>
     <mm:relatedcontainer path="leftanswer,givenanswers,rightanswer,couplinganswers">
