@@ -10,16 +10,16 @@
 
   <mm:present referid="education">
     <mm:hasnode number="component.progress">
-      <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false">
+      <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
         <script type="text/javascript">
           function reloadProgress() {
               var xmlhttp =  new XMLHttpRequest();
               xmlhttp.open('GET', '${_}', true);              
               xmlhttp.onreadystatechange = function() {
                   if (xmlhttp.readyState == 4) {
-                      // Your callback code goes here
                       var ser = new XMLSerializer();
-                      document.getElementById('progressMeter').innerHTML = ser.serializeToString(xmlhttp.responseXML);
+                      var s = ser.serializeToString(xmlhttp.responseXML);
+                      document.getElementById('progressMeter').innerHTML = s; 
                   }
               }
               xmlhttp.send(null);
