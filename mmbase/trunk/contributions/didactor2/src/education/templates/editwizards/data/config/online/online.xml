@@ -5,10 +5,7 @@
     <title xml:lang="en">Online/Offline time Editor</title>
 
     <action type="create">
-        <object type="mmevents">
-            <field name="start">0</field>
-            <field name="stop">0</field>
-        </object>
+      <object type="mmevents" />
     </action>
     
     <action type="load">
@@ -31,20 +28,14 @@
         <field name="start" ftype="dateoffset" dttype="datetime">>
             <prompt xml:lang="nl">Online vanaf</prompt>
             <prompt xml:lang="en">Online from</prompt>
-            <!-- MMBase does not support xml:lang on postfix elements! :(
             <postfix xml:lang="nl">na aanvang van de cursus.</postfix>
             <postfix xml:lang="en">after start of the class.</postfix>
-            -->
-            <postfix>na aanvang van de cursus</postfix>
         </field>
         <field name="stop" ftype="dateoffset" dttype="datetime">
             <prompt xml:lang="nl">Offline vanaf</prompt>
             <prompt xml:lang="en">Offline from</prompt>
-            <!-- MMBase does not support xml:lang on postfix elements! :(
             <postfix xml:lang="nl">na aanvang van de cursus.</postfix>
             <postfix xml:lang="en">after start of the class.</postfix>
-            -->
-            <postfix>na aanvang van de cursus</postfix>
         </field>
     </form-schema>
 </wizard-schema>

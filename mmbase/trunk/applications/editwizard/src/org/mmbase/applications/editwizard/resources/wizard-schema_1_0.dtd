@@ -136,7 +136,10 @@
 <!ATTLIST search-fields search-type ( like | equals | notequals | greaterthan | lessthan | notgreaterthan | notlessthan | string ) #IMPLIED >
 
 <!ELEMENT prefix ( #PCDATA ) >
+<!ATTLIST prefix xml:lang NMTOKEN #IMPLIED >
 
 <!ELEMENT postfix ( #PCDATA ) >
+<!ATTLIST postfix xml:lang NMTOKEN #IMPLIED >
+
 
 
