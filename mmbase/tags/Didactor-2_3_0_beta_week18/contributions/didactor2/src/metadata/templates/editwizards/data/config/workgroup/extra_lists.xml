@@ -1,0 +1,2 @@
+   <list destination="metastandard" role="posrel" extends="config/metastandard/metastandard-posrel-list.xml" />
+   <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
