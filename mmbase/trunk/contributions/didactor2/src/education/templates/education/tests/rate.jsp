@@ -166,6 +166,13 @@
   <mm:hasnode number="component.progress">
     <script language="javascript">
       window.parent.reloadProgress();
+      if (window.parent.document.documentElement && window.parent.document.documentElement.scrollTop) {
+          window.parent.document.documentElement.scrollTop = 0;
+      }
+      if (window.parent.document.body && window.parent.document.body.scrollTop) {
+          window.parent.document.body.scrollTop = 0;
+      }
+
     </script>
   </mm:hasnode>
       <mm:field name="feedbackpage">
