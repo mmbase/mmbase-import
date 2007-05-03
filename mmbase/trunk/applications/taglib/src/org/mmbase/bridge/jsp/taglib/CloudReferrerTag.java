@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.32 2007-03-30 14:17:36 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.33 2007-05-03 12:40:45 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -88,7 +88,11 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * @return a Cloud
      */
     public Cloud getCloudVar() throws JspTagException {
-        return findCloudProvider().getCloudVar();
+        CloudProvider provider = findCloudProvider(false);
+        if (provider != null) return provider.getCloudVar();
+        Cloud c = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        if (c != null) return c;
+        throw new JspTagException("Could not find parent cloud provider");
     }
 
 
