@@ -47,7 +47,7 @@
     <field name="username" />
     <field name="password" />
     <field name="remarks" ftype="line" />
-    <field name="description" rows="8" ftype="text" dtminlength="0" />
+    <field name="description" rows="8" ftype="text" />
     <field name="person_status" ftype="enum">
       <optionlist select="enabled" />        
     </field>
