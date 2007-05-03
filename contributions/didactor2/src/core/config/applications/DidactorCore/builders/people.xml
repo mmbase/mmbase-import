@@ -67,10 +67,6 @@
     </field>
 
     <field name="suffix">
-      <descriptions>
-        <description xml:lang="en"></description>
-        <description xml:lang="nl"></description>
-      </descriptions>
       <gui>
         <guiname xml:lang="en">Suffix</guiname>
         <guiname xml:lang="nl">Tussenvoegsel</guiname>
