@@ -33,10 +33,10 @@
           </mm:notpresent>
 
           <div class="view_question">
-            <mm:haspage page="/education/tests/view_${questiontype}.jspx">
-              <mm:include page="/education/tests/view_${questiontype}.jspx" referids="question" />
+            <mm:haspage page="/education/${questiontype}/view.jspx">
+              <mm:include page="/education/${questiontype}/view.jspx" referids="question" />
             </mm:haspage>
-            <mm:haspage page="/education/tests/view_${questiontype}.jspx" inverse="true">
+            <mm:haspage page="/education/${questiontype}/view.jspx" inverse="true">
               <p>No delegate view_${questiontype}.jspx</p>
             </mm:haspage>
           </div>
