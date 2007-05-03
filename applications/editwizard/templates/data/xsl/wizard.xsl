@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.172 2007-03-29 12:31:56 pierre Exp $
+    @version $Id: wizard.xsl,v 1.173 2007-05-03 14:52:41 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -65,7 +65,7 @@
 
     <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
     <xsl:choose>
-      <xsl:when test="$SEARCH_LIST_TYPE=&apos;IFRAME&apos;">
+      <xsl:when test="$SEARCH_LIST_TYPE='IFRAME'">
         <script type="text/javascript">
           <xsl:text disable-output-escaping="yes">
             <![CDATA[
@@ -560,7 +560,10 @@
     fieldintern is called to draw the values
   -->
   <xsl:template name="fieldintern">
-    <xsl:apply-templates select="prefix"/>
+
+    <xsl:call-template name="i18n">
+      <xsl:with-param name="nodes" select="prefix"/>
+    </xsl:call-template>
 
     <xsl:choose>
       <xsl:when test="@ftype='startwizard'">
@@ -619,16 +622,12 @@
       </xsl:otherwise>
     </xsl:choose>
 
-    <xsl:apply-templates select="postfix"/>
+    <xsl:call-template name="i18n">
+      <xsl:with-param name="nodes" select="postfix"/>
+    </xsl:call-template>
+
   </xsl:template>
 
-  <!--
-    Prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
-    Useful in fieldsets.
-  -->
-  <xsl:template match="prefix|postfix">
-    <xsl:value-of select="."/>
-  </xsl:template>
 
   <xsl:template name="ftype-startwizard">
     <xsl:if test="@objectnumber!=''">
