@@ -37,7 +37,7 @@
               <mm:include page="/education/${questiontype}/view.jspx" referids="question" />
             </mm:haspage>
             <mm:haspage page="/education/${questiontype}/view.jspx" inverse="true">
-              <p>No delegate view_${questiontype}.jspx</p>
+              <p>No delegate /education/${questiontype}/view.jspx</p>
             </mm:haspage>
           </div>
           <br/>
