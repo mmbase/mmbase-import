@@ -17,12 +17,14 @@
         <p>
           <mm:relatednodes type="questions">
             <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
-            <mm:field id="questiontext" name="text" write="false"/>
-            <b><di:translate key="education.question" />:</b> <mm:write referid="questiontext" escape="none"/>
-            <br/>
-            <mm:remove referid="questiontext"/>
-            <mm:field id="questionNo" name="number" write="false"/>
+            <div class="view_answer">
+              <b><di:translate key="education.question" />:</b> 
+              <mm:field name="text" escape="none" />
+              <br/>
+              <mm:node id="question" />
+            </div>
           </mm:relatednodes>
+
           <mm:notpresent referid="questiontype">
             <b>questiontype not found </b>
             <br/>
@@ -30,7 +32,7 @@
           </mm:notpresent>
 
           <mm:compare referid="questiontype" value="hotspotquestions">
-            <mm:node referid="questionNo">
+            <mm:node referid="question">
               <div style="position: relative">
                 <mm:relatednodes type="images" max="1">
                   <mm:image mode="src" border="0" />
@@ -46,10 +48,10 @@
             <br/>
           </mm:compare>
 
-      <mm:compare referid="questiontype" value="dropquestions">
-        <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text" escape="none"/>
-        <br/>
-      </mm:compare>
+          <mm:compare referid="questiontype" value="dropquestions">
+            <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text" escape="none"/>
+            <br/>
+          </mm:compare>
 
       <mm:compare referid="questiontype" value="openquestions">
         <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text"/>
@@ -113,9 +115,9 @@
         <% for (int i= 0;i < size.intValue();i++) { %>
           <%counter=0;%>
           <mm:relatednodes type="answers" role="leftanswer" orderby="posrel.pos">
-	    <% counter++;if (counter-1 == i) { %>
-              <mm:field id="leftanswer" name="number" write="false"/>
-	    <% } %>
+            <% counter++;if (counter-1 == i) { %>
+            <mm:field id="leftanswer" name="number" write="false"/>
+            <% } %>
           </mm:relatednodes>
 
           <%counter=0;%>
