@@ -22,23 +22,37 @@
     <title>$overviewPageTitle</title>
     <author email="michal.maczka@dimatics.com">Michal Maczka</author>
   </properties>  
+  <head>
+    <script type="text/javascript" src="js/sorttable.js" />
+  </head>
  <body> 
    <section name="$overviewPageTitle">
+    <p>
+     <![CDATA[
+       Below is a complete list of all components, libraries, applications, frameworks, tools and examples built on top of MMBase. You can sort this table on any column
+       by clicking on the column header.
+     ]]>
+    </p>
     <p>
       #if ($overviewPageText && $overviewPageText.length() > 0)
         ${overviewPageText}
         <br/>
       #end
-      <table>          
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Status</th>
+        </tr>
         #foreach ($project in $multiprojects)
           <tr>
            #if ($navType == "aggregate")
-             <th><a href="${aggregateDir}${project.artifactId}/index.html">${project.name}</a></th>
+             <td><a href="${aggregateDir}${project.artifactId}/index.html">${project.name}</a></td>
            #else
-             <th><a href="${project.url}">${project.name}</a></th>
+             <td><a href="${project.url}">${project.name}</a></td>
            #end        
-            <td>${project.shortDescription}</td>
-            <td>status: ${project.getProperty("status")}</td>
+           <td>${project.getProperty("type")}</td>
+           <td>${project.getProperty("status")}</td>
           </tr>  
         #end  
       </table> 
