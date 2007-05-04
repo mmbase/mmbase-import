@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-xmlimporter</artifactId>
-  <name>MMBase XML Importer</name>
+  <name>XML Importer</name>
   <shortDescription>MMBase XML Importer</shortDescription>
   <description>
     The XML importer allows you to import large quantities of data into MMBase objects. 

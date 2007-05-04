@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-clustering</artifactId>
-  <name>MMBase Clustering support</name>
+  <name>Clustering</name>
   <shortDescription>MMBase Clustering support</shortDescription>
   <description>
     The clustering libraries allow you to run MMBase in a clustered environment: where multiple MMBase machines serve content from a shared database. In order to keep these machiens in sync (for instance when an object changes on one machine and the other machines needs to flush it's cache), this code must be activated. This component provides several different implementations for communication between machines, including one which depends on the 'jgroups' software.

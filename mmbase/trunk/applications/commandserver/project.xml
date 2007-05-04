@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-commandserver</artifactId>
-  <name>MMBase Commandserver utility</name>
+  <name>Commandserver</name>
   <shortDescription>MMBase Commandserver utility</shortDescription>
   <description>
     Very small java application that allows you to execute command-line applications from a seperate java process. This is because the System.execute call needs to fork() on unix OS-es, which means the executed command allocates just as much memory as the entire java JVM has allocated.
