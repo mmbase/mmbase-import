@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-community</artifactId>
-  <name>MMBase Community application</name>
+  <name>Community</name>
   <shortDescription>MMBase Community application</shortDescription>
   <description>
     This is a very old, and deprecated, attempt to write a community forum in MMBase. DO NOT USE THIS CODE!

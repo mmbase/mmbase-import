@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-codings</artifactId>
-  <name>MMBase Codings example</name>
+  <name>Codings</name>
   <shortDescription>MMBase Codings example</shortDescription>
   <description>
     The codings example contains an object with a lot of non-ascii characters, and some code illustrating how this can be rendered. Install this application in order to debug encoding problems.

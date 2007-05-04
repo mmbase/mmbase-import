@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-richtext</artifactId>   
-  <name>MMBase Richtext application</name>
+  <name>Richtext</name>
   <shortDescription>MMBase Richtext application</shortDescription>
   <description>
     Richtext provides utilities to use rich content in MMBase, with embedded links etc. 

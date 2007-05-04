@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-email</artifactId>
-  <name>MMBase Email application</name>
+  <name>Email</name>
   <shortDescription>MMBase Email application</shortDescription>
   <description>
     The email application provides builders and functions to enable MMBase to send email. You can create 'email' objects which you can fill with information that needs to be send, and use some code to send this email to the user. It also includes MIME support that enables you to send out multipart emails including attachments.
