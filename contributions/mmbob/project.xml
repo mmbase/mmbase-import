@@ -2,6 +2,13 @@
 <project>
   <extend>${basedir}/../../applications/app-base/project.xml</extend>
   <artifactId>mmbase-mmbob</artifactId>     
+  <name>MMBob</name>
+  <shortDescription>MMBase forum software</shortDescription>
+  <description>MMBob is forum software written in MMBase. It is currently in use at kennisnet.nl</description>
+  <properties>
+    <type>application</type>
+    <status>stable</status>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>mmbase</groupId>
