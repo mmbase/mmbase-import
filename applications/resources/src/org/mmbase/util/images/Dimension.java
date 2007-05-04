@@ -48,6 +48,13 @@ public class Dimension {
     public String toString() {
         return "" + x + "x" + y;
     }
+
+    public boolean equalsIgnoreRound(Dimension dim, int offset) {
+        boolean xOk = dim.x >= x - offset && dim.x <= x + offset;
+        boolean yOk = dim.y >= y - offset && dim.y <= y + offset;
+        return xOk && yOk;
+    }
+
     public boolean equals(Object o) {
         if (o instanceof Dimension) {
             Dimension dim = (Dimension) o;

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * The 'image conversion receiver' storing the result in an 'icaches' node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReceiver.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: NodeReceiver.java,v 1.2 2007-05-04 16:20:30 nklasens Exp $
  * @since MMBase-1.9
  */
 public class NodeReceiver implements ImageConversionReceiver {
@@ -58,9 +58,16 @@ public class NodeReceiver implements ImageConversionReceiver {
     }
     public void setDimension(Dimension dim) {
         Dimension predicted = (Dimension) icacheNode.getFunctionValue("dimension", null);
-        if (! predicted.equals(dim)) {
-            log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
-        } 
+        if (log.isDebugEnabled()) {
+            if (! predicted.equals(dim)) {
+                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
+            }
+        }
+        else {
+            if (! predicted.equalsIgnoreRound(dim, 1)) {
+                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
+            }
+        }
         icacheNode.setValue("height", dim.y);
         icacheNode.setValue("width", dim.x);
     }
