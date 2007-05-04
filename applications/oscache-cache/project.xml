@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-cache-oscache</artifactId>
-  <name>MMBase OSCache cache implementation</name>
+  <name>OSCache-cache</name>
   <shortDescription>MMBase OSCache cache implementation</shortDescription>
   <description>
     MMBase contains a pluggable architecture for it's caches, where you can write your own cache implementation to 

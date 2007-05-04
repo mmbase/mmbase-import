@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-dove</artifactId>
-  <name>MMBase Dove application</name>
+  <name>Dove</name>
   <shortDescription>MMBase Dove XML interface application</shortDescription>
   <description>
     The MMBase Dove application provides an XML interface to MMBase. This interface used to be part of the
