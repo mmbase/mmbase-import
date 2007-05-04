@@ -28,13 +28,17 @@ downloaddir="/home/nightly/download"
 optdir="/home/nightly/optional-libs"
 
 echo generating version, and some directories
+
 version=`date '+%Y-%m-%d'`
-tag=
+
+cvsversion=${version}
+dir=${version}
+
 #version="MMBase-1.8.1.final"
 #tag="MMBase-1_8_1_Final"
 
 # UNSTABLE branch
-builddir="/home/nightly/builds/${version}"
+builddir="/home/nightly/builds/${dir}"
 mkdir -p ${builddir}
 
 cd ${BUILD_HOME}/nightly-build/cvs/mmbase
@@ -42,26 +46,27 @@ cd ${BUILD_HOME}/nightly-build/cvs/mmbase
 echo Cleaning
 ${MAVEN} multiproject:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
 
-# update CVS
-${CVS} update -d -P -D ${version}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+echo update ${CVS} -d -P -D ${cvsversion}
+${CVS} update -d -P -D ${cvsversion}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 echo Starting nightly build
 ${MAVEN} all:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
 
-echo Creating site
-${MAVEN} multiproject:site >> ${builddir}/messages.lorg 2>> ${builddir}/errors.log
+cd maven-site
+echo Creating site `pwd`.
+${MAVEN} multiproject:site >> ${builddir}/messages.org 2>> ${builddir}/errors.log
 
 
 echo Copying todays artifacts
-cp -ra ~/.maven/repository/mmbase/mmbase-modules/*SNAPSHOT* ${builddir}
+cp -ra $HOME/.maven/repository/mmbase/mmbase-modules/*SNAPSHOT* ${builddir}
 
 
 echo Creating sym for latest build
 rm /home/nightly/builds/latest
 cd /home/nightly/builds
-ln -s ${version} latest
+ln -s ${dir} latest
 
 
 if [ 1 == 0 ] ; then 
