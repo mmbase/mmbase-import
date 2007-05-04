@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.66 2007-03-08 08:51:36 nklasens Exp $
+ * @version $Id: Config.java,v 1.67 2007-05-04 12:11:54 nklasens Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -697,7 +697,7 @@ public class Config implements java.io.Serializable {
                 }
                 if (ref != null) {
                     if (! config.language.equals("")) {
-                        URL refi18n = new URL(ref, "i18n/" + config.language);
+                        URL refi18n = new URL(ref, "i18n/" + config.language + "/");
                         if (getResource(refi18n.getPath()) != null) {
                             extraDirs.add("refi18n:", refi18n);
                         }
@@ -716,6 +716,12 @@ public class Config implements java.io.Serializable {
                     URL templatesDir = getResource(config.templates);
                     if (templatesDir == null) {
                         throw new WizardException("" +  config.templates + " does not exist");
+                    }
+                    if (! config.language.equals("")) {
+                        URL templatesi18n = new URL(templatesDir, "i18n/" + config.language + "/");
+                        if (getResource(templatesi18n.getPath()) != null) {
+                            extraDirs.add("templatesi18n:", templatesi18n);
+                        }
                     }
                     extraDirs.add("templates:", templatesDir);
                 }
