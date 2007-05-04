@@ -40,15 +40,19 @@ mkdir -p ${builddir}
 cd ${BUILD_HOME}/nightly-build/cvs/mmbase
 
 echo Cleaning
-${MAVEN} all:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
+${MAVEN} multiproject:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
 
 # update CVS
 ${CVS} update -d -P -D ${version}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 echo Starting nightly build
-${MAVEN} all:install-snapshot >>  ${builddir}/messages.log
+${MAVEN} all:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
+
+echo Creating site
+${MAVEN} multiproject:site >> ${builddir}/messages.lorg 2>> ${builddir}/errors.log
+
 
 echo Copying todays artifacts
 cp -ra ~/.maven/repository/mmbase/mmbase-modules/*SNAPSHOT* ${builddir}
