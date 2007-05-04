@@ -2,5 +2,13 @@
 <project>
   <extend>${basedir}/../../applications/app-base/project.xml</extend>
   <artifactId>mmbase-multilanguagegui</artifactId>     
+  <name>Multilanguagegui</name>
+  <shortDescription>MMBase Multilanguage Gui</shortDescription>
+  <description>Obsolete multilanguage support</description>
+  <properties>
+    <type>library</type>
+    <status>obsolete</status>
+  </properties>
+
 </project>
 
