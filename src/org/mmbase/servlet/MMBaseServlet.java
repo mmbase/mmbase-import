@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.64 2007-04-24 14:52:32 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.65 2007-05-04 12:33:51 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -55,12 +55,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     // members needed for refcount functionality.
 
     /**
-     * To keep track of the currently running servlets
-     * switch the following boolean to true.
+     * To keep track of the currently running servlets, you can use this logger.
      *
-     * @bad-constant
      */
-    private static final boolean logServlets = true;
+    private static final Logger servletsLog =  Logging.getLoggerInstance("org.mmbase.SERVLETS");
+
     private static int servletCount; // Number of running servlets
     /**
      *  Lock to sync add and remove of threads
@@ -148,7 +147,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * Returns the MMBase instance.
      * @since MMBase-1.7
      */
-    public MMBase getMMBase() {
+    public  MMBase getMMBase() {
         return mmbase;
     }
 
@@ -509,7 +508,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected void decRefCount(HttpServletRequest req) {
-        if (logServlets) {
+        if (servletsLog.isDebugEnabled()) {
             String url = getRequestURL(req) + " " + req.getMethod();
             synchronized (servletCountLock) {
                 servletCount--;
@@ -537,7 +536,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected void incRefCount(HttpServletRequest req) {
-        if (logServlets) {
+        if (servletsLog.isDebugEnabled()) {
             String url = getRequestURL(req) + " " + req.getMethod();
             int curCount;
             synchronized (servletCountLock) {
@@ -556,9 +555,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
                     synchronized(servletCountLock) {
-                        log.info("Running servlets: " + curCount);
+                        servletsLog.debug("Running servlets: " + curCount);
                         for (Object element : runningServlets.values())
-                            log.info(element);
+                            servletsLog.debug(element);
                     }
 
                 }// curCount>0
