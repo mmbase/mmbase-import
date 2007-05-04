@@ -14,10 +14,13 @@
    	</mm:field>
    </mm:list><%
 } %>
-<br>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
 	<td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+    <br>
    	<%@include file="includes/navleft.jsp" %>
       <br />
    	<jsp:include page="includes/teaser.jsp">
@@ -36,6 +39,7 @@
          <jsp:param name="p" value="<%= paginaID %>" />
          <jsp:param name="a" value="<%= artikelID %>" />
          <jsp:param name="showpageintro" value="true" />
+         <jsp:param name="isNaardermeer" value="<%=isNaardermeer %>" />
       </jsp:include>
 	</td>
 </tr>

@@ -14,10 +14,13 @@
    	</mm:field>
    </mm:list><%
 } %>
-<br>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
 	<td style="vertical-align:top;width:185px;padding:10px;padding-top:0px;">
+	<br/>
    	<%@include file="includes/navleft.jsp" %>
       <br />
    	<jsp:include page="includes/teaser.jsp">
@@ -29,6 +32,7 @@
       <img src="media/trans.gif" height="1px" width="165px;" />
 	</td>
 	<td style="vertical-align:top;width:374px;padding:10px;padding-top:0px">
+	<br/>
       <mm:import id="nodotline" />
       <%@include file="includes/page_intro.jsp" %>
       <jsp:include page="includes/teaser.jsp">
@@ -39,7 +43,10 @@
          <jsp:param name="sr" value="1" />
       </jsp:include>	
    </td>
-   <td style="vertical-align:top;width:185px;padding-left:10px;padding-right:10px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+   <td style="vertical-align:top;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+      <% if (isNaardermeer.equals("true")) { %>			
+   		<img src="media/trans.gif" height="216" width="1">
+	  <% } %>	
       <jsp:include page="includes/home/relateddossiers.jsp">
 		   <jsp:param name="o" value="<%= paginaID %>"/>
 	   </jsp:include>
@@ -51,6 +58,7 @@
 	      <jsp:param name="sr" value="2" />
 	   </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
+      </div>
    </td>
 </tr>
 </table>

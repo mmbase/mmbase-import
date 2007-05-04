@@ -19,6 +19,7 @@ ids.put("persoon", personID);
 ids.put("provincies", provID);
 ids.put("vacature", vacatureID);
 ids.put("items", shop_itemID);
+ids.put("isNaardermeer", isNaardermeer);
 
 ids = ph.findIDs(ids, path, "nm_pagina");
 
@@ -37,6 +38,7 @@ personID = (String) ids.get("persoon");
 provID = (String) ids.get("provincies");
 vacatureID = (String) ids.get("vacature");
 shop_itemID = (String) ids.get("items");
+isNaardermeer = (String) ids.get("isNaardermeer");
 
 Vector breadcrumbs = new Vector();
 String lnRubriekID = "";

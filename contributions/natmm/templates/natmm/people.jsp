@@ -7,10 +7,13 @@
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
-<br/>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
    <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+   <br/>
    <%@include file="includes/navleft.jsp" %>
    <br/>
    <jsp:include page="includes/teaser.jsp">
@@ -21,6 +24,7 @@
     </jsp:include>
     </td>
     <td style="width:374;vertical-align:top;padding:10px;padding-top:0px;">
+      <br/>
       <%@include file="includes/page_intro.jsp" %>
       <% if(personID.equals("-1")) { %>
             <jsp:include page="includes/people/summary.jsp">
@@ -46,7 +50,11 @@
       <img src="media/trans.gif" height="1px" width="352px;" />
    </td>
    <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-      <% if(!personID.equals("-1")) { %>
+      <% if (isNaardermeer.equals("true")) { %>			
+   		<img src="media/trans.gif" height="216" width="1">
+	  <% } %>	
+	<br/>
+	<% if(!personID.equals("-1")) { %>
             <jsp:include page="includes/people/detail2.jsp">
                <jsp:param name="r" value="<%= rubriekID %>" />
                <jsp:param name="pers" value="<%= personID %>" />
@@ -62,6 +70,7 @@
          <%
       } %>
       <img src="media/trans.gif" height="1px" width="165px;" />
+      </div>
    </td>
 </tr>
 </table>

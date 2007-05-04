@@ -13,10 +13,13 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <%@include file="includes/calendar.jsp" %>
-<br>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
    <td style="width:185px;vertical-align:top;padding:10px;padding-top:0px;">
+   <br/>
    <%@include file="includes/navleft.jsp" %>
    <br>
    <jsp:include page="includes/teaser.jsp">
@@ -27,6 +30,7 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
    </jsp:include>
    </td>
    <td style="width:374;vertical-align:top;padding:10px;padding-top:0px;">
+   <br/>
    <%
    if(!artikelID.equals("-1")) { %>
 
@@ -78,6 +82,10 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
    <img src="media/trans.gif" height="1px" width="354px;" />
    </td>
    <td style="width:185;vertical-align:top;padding-left:10px;padding-right:10px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+       	 <% if (isNaardermeer.equals("true")) { %>			
+   		<img src="media/trans.gif" height="216" width="1">
+	  	<% } %>	
+	  <br/>
       <jsp:include page="includes/navright.jsp">
          <jsp:param name="s" value="<%= paginaID %>" />
          <jsp:param name="r" value="<%= rubriekID %>" />
@@ -95,6 +103,7 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
          <jsp:param name="sr" value="2" />
       </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
+      </div>
    </td>
 </tr>
 </table>

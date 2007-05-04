@@ -15,9 +15,9 @@
 <script language="JavaScript" src="scripts/launchcenter.js"></script>
 </head>
 <body background="media/bg_top.gif"><a name="top"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr><td colspan="2">
-     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" valign="top">
+<tr height="1px"><td colspan="2" valign="top">
+     <table width="100%" border="0" cellspacing="0" cellpadding="0" valign="top">
         <tr>
             <td width="274" valign="top"><%@include file="/editors/paginamanagement/flushlink.jsp" %>
               <% 
@@ -38,12 +38,25 @@
             </td>
         </tr>
     </table>
+    </td>
+    <td width="159" rowspan="2" valign="top" class="topgradient"  style="padding-top:29px;">
+    <img src="media/natmm_logo_rgb1.gif" width="159" height="216">
+    </td>
+    <td width="73" rowspan="2">
+	<img width="73" height="1" src="media/spacer.gif"/>
+	</td>
+</tr>
+<tr height="1px" valign="top">
     <td width="73"><img src="media/spacer.gif" width="73" height="1"></td>
+    <td width="100%" height="1px">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr><td><%@include file="nav.jsp" %></td></tr>
+        <tr><td><img src="media/spacer.gif" width="1" height="1"></td></tr>
+     </table>
+	</td>
 </tr>
 <tr>
     <td width="73"><img src="media/spacer.gif" width="73" height="1"></td>
-    <td width="100%">
+    <td width="100%" colspan="2">    
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr><td><%@include file="nav.jsp" %></td></tr>
-        <tr><td><img src="media/spacer.gif" width="1" height="20"></td></tr>
-        <tr><td>
+        <tr><td>   

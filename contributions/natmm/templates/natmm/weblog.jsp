@@ -9,6 +9,9 @@
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <mm:node number="<%= paginaID %>">
 <%@include file="actie/includes/navsettings.jsp" %>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <% if(artikelID.equals("-1")) { %>
 	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="down" max="1">
        <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
@@ -16,10 +19,10 @@
        </mm:field>
     </mm:relatednodes><%
 } %>
-<br>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
 	<td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+   	<br>
    	<%@include file="includes/navleft.jsp" %>
       <br />
    	<jsp:include page="includes/teaser.jsp">
@@ -38,7 +41,8 @@
          <jsp:param name="p" value="<%= paginaID %>" />
          <jsp:param name="a" value="<%= artikelID %>" />
          <jsp:param name="showpageintro" value="true" />
-			<jsp:param name="shownav" value="true" />
+		<jsp:param name="shownav" value="true" />
+         <jsp:param name="isNaardermeer" value="<%=isNaardermeer %>" />
       </jsp:include>
 	</td>
 </tr>
