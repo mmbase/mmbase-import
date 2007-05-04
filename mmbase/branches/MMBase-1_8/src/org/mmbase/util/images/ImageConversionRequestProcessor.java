@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.5 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.5.2.1 2007-05-04 16:20:36 nklasens Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -113,8 +113,15 @@ public class ImageConversionRequestProcessor implements Runnable {
                         try {
                             Dimension predicted = (Dimension) node.getFunctionValue("dimension", null);
                             Dimension dim = Factory.getImageInformer().getDimension(picture);
-                            if (! predicted.equals(dim)) {
-                                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + node.getNumber());
+                            if (log.isDebugEnabled()) {
+                                if (! predicted.equals(dim)) {
+                                    log.debug("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + node.getNumber());
+                                }
+                            }
+                            else {
+                                if (! predicted.equalsIgnoreRound(dim, 1)) {
+                                    log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + node.getNumber());
+                                }
                             }
                             node.setValue("height", dim.y);
                             node.setValue("width", dim.x);
