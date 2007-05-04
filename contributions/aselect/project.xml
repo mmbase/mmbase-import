@@ -2,6 +2,14 @@
 <project>
   <extend>${basedir}/../../applications/app-base/project.xml</extend>
   <artifactId>mmbase-aselect</artifactId>     
+  <name>A-Select</name>
+  <shortDescription>MMBase Aselect integration</shortDescription>
+  <description>MMBase Aselect integretion
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>aselect</groupId>
