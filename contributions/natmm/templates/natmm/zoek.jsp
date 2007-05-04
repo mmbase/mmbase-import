@@ -18,10 +18,13 @@ if(!sQueryForm.equals("")&&!sQueryForm.equals(sQuery)) {
    sQuery = sQueryForm;
 }
 %>
-<br>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
    <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+   <br/>
    <%@include file="includes/navleft.jsp" %>
    <br>
 	<jsp:include page="includes/teaser.jsp">
@@ -32,7 +35,8 @@ if(!sQueryForm.equals("")&&!sQueryForm.equals(sQuery)) {
    </jsp:include>
    </td>
    <td style="vertical-align:top;width:374px;padding:10px;padding-top:0px">
-	   <mm:import id="nodotline" />
+	  <br/>
+	  <mm:import id="nodotline" />
       <%@include file="includes/page_intro.jsp" %>
       <jsp:include page="includes/zoek/resultaten.jsp" flush="true">
          <jsp:param name="query" value="<%= sQuery %>"/>
@@ -42,6 +46,10 @@ if(!sQueryForm.equals("")&&!sQueryForm.equals(sQuery)) {
       </jsp:include>
    </td>
    <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+ 	 <% if (isNaardermeer.equals("true")) { %>			
+   		<img src="media/trans.gif" height="216" width="1">
+	  <% } %>	  
+	  <br/>
       <jsp:include page="includes/navright.jsp">
          <jsp:param name="s" value="<%= paginaID %>" />
          <jsp:param name="r" value="<%= rubriekID %>" />
@@ -54,6 +62,7 @@ if(!sQueryForm.equals("")&&!sQueryForm.equals(sQuery)) {
          <jsp:param name="sr" value="2" />
       </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
+      </div>
    </td>
 </tr>
 </table>

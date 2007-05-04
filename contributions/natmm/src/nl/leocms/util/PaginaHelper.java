@@ -46,7 +46,8 @@ public class PaginaHelper {
 
    public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
-
+   final static String RUBRIEK_NODE_NAARDERMEER = "naardermeer";
+   
    Cloud cloud;
 	 ApplicationHelper ap;
    public HashMap pathsFromPageToElements;
@@ -1248,6 +1249,17 @@ public class PaginaHelper {
       ids.put("object", ID);
       ids.put("rubriek", rubriekID);
       ids.put("pagina", paginaID);
+      
+      // Checking if page belongs tot he Neerdermeer subsite (rubriek)
+      String isNaardermeer;
+      String subRubriek = getSubsiteRubriek(cloud, paginaID); //node number of our sub rubriek
+       if (cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek)) {
+    	   // the node numbers match - we are at naardermeer site
+         isNaardermeer = "true";
+      } else {
+         isNaardermeer = "false";
+      }
+      ids.put("isNaardermeer", isNaardermeer);
       return ids;
    }
 

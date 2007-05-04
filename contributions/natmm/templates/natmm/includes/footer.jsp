@@ -1,3 +1,6 @@
+   </td>
+</tr>
+</table>
 <mm:node number="search_template" notfound="skipbody">
    <mm:related path="gebruikt,pagina,posrel,rubriek1,parent,rubriek2"
       constraints="<%= "rubriek2.number = '" + subsiteID + "'" %>" fields="pagina.number,rubriek1.number">
@@ -66,6 +69,7 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEM
    </form>
 </mm:present>
 <br/>
+</div>
 </body>
 <% 
 if(iRubriekLayout!=NatMMConfig.DEMO_LAYOUT) { 

@@ -8,8 +8,6 @@ String rnImageID = request.getParameter("rnimageid");
 
 String shortyRol = ""; 
 
-String callingPageID =request.getParameter("cp"); //for back to webcam functionality
-
 %>
 <mm:import externid="showdate" jspvar="showdateID">false</mm:import>
 <mm:import externid="showpageintro">false</mm:import>
@@ -66,6 +64,7 @@ if(hasRightCell) {
    %><table width="539px;" border="0" cellspacing="0" cellpadding="0">
    <tr>
    	<td style="vertical-align:top;padding-right:10px;padding-bottom:10px;width:364px;">
+   	<br/>
          <mm:compare referid="showpageintro" value="true">
             <%@include file="../includes/page_intro.jsp" %>
          </mm:compare>
@@ -95,8 +94,12 @@ if(hasRightCell) {
       	<% } %>
       </td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-	<% // back to weblog link according to existence of a passed callingPageID parameter
-	  if (callingPageID !=null) { %>
+ 	 <% if (isNaardermeer.equals("true")) { %>			
+   		<img src="media/trans.gif" height="216" width="1">
+	  <% } %>	
+	  <br/>
+	  <% // back to weblog link according to existence of a passed callingPageID parameter
+	  if ((callingPageID !=null) || (!callingPageID.equals("-1"))) { %>
 	         <jsp:include page="../includes/fun/webcam_backlink.jsp">
             	<jsp:param name="cp" value="<%= callingPageID %>" />
    	      </jsp:include>
@@ -105,6 +108,7 @@ if(hasRightCell) {
 				<jsp:include page="../actie/includes/nav.jsp">
             	<jsp:param name="a" value="<%= artikelID %>" />
 	            <jsp:param name="p" value="<%= paginaID %>" />
+	            <jsp:param name="cp" value="<%= callingPageID %>" />
    	      </jsp:include>
 				<br/>
 			</mm:compare>
@@ -139,6 +143,7 @@ if(hasRightCell) {
             <jsp:param name="sr" value="2" />
          </jsp:include>
          <% } %>
+         </div>
    	</td>
    </tr>
    </table><%

@@ -19,9 +19,15 @@ boolean showNextDotLine = false;
 %>
 <%@include file="../includes/getstyle.jsp" %>
 <mm:node number="<%=objectID%>" notfound="skipbody">
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<%-- For vertical logo of naardermeer site to be displayed without covering article content --%>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<table width="88%" cellpadding="0" cellspacing="0" border="0" align="left">
+  <% } else { %>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<% } %>
 <tr>
-	<td valign="top"><a name="0" id="0"></a>
+	<td valign="top">
+	<a name="0" id="0"></a>
    	<jsp:include page="../includes/panno_extratext.jsp">
          <jsp:param name="o" value="<%= objectID %>" />
       </jsp:include>

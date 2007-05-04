@@ -110,6 +110,11 @@ if(path.equals("newsletter.jsp")) {
       readmoreURL = "";
    } 
    %></td>
-   <td style="width:48%"></td>
+   <td style="width:48%" rowspan="2" valign="top">
+   <img src="media/natmm_logo_rgb1.gif" width="159" height="216" style="padding:0;">
+   </td>
 </tr>
 </mm:context>
+<tr>
+   <td style="width:48%"></td>
+   <td style="width:744px;padding-bottom:1px;">

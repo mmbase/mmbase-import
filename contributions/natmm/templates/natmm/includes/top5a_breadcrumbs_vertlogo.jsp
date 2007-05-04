@@ -7,8 +7,8 @@
 if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) { 
 %><tr>
 	<td style="width:48%;background-color:#0076b9"></td>
-	<td style="width:744px;height:68px"><div style="background-color: #c6d5ec;">		
-	<table width="744" border="0" cellspacing="0" cellpadding="0" background="media/bgtab_ho_light.gif">
+	<td style="width:744px;height:68px;background-color: #c6d5ec;"><div style="background-color: #c6d5ec;">		
+	<table width="744" border="0" cellspacing="0" cellpadding="0" background="media/bgtab_ho_light.gif" style="background-color: #c6d5ec;"> 
 		<tr>
 			<td style="width:523;height:68;vertical-align:bottom;padding-bottom:2px;">
 			<% 
@@ -69,10 +69,11 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
          }
       } %>
 			</td>
-			<td width="220" align="right" valign="top"><img src="media/logos/nmlogo.gif" alt="Vereniging Natuurmonumenten" width="209" height="68" hspace="2" vspace="2" border="0">
-		</td></tr></table></div>
+			<td width="220" align="right" valign="top" >
+		</td></tr>
+		</table></div>
 	</td>
-	<td style="width:48%;background-color:#000098;vertical-align:bottom;">
+	<td style="width:48%;background-color:#c6d5ec;vertical-align:bottom;">
 	<%--
       <script language="JavaScript1.1" src="scripts/styleswitcher.js">
       </script>
