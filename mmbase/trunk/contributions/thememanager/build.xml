@@ -9,6 +9,4 @@
 	<property name="project.templates.dir" value="${project.source.dir}/templates/jsp/" />
 
   <import file="../../applications/buildbase-include.xml" />
-
-
 </project>
