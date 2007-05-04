@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.207 2007-03-20 16:18:51 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.208 2007-05-04 12:00:00 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -54,34 +54,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7.4
      */
     public final static String VALUE_SHORTED = "$SHORTED";
-
-    /**
-     * @deprecated use RelationsCache.getCache().getHits()
-     */
-    public static int getRelationCacheHits() {
-        return relationsCache.getHits();
-    }
-
-    /**
-     * @deprecated use RelationsCache.getCache().getMisses()
-     */
-    public static int getRelationCacheMiss() {
-        return relationsCache.getMisses();
-    }
-
-    /**
-     * Results of getRelatedNodes
-     * @since 1.7
-     */
-    protected static final RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
-
-    /**
-     * objectNumber -> List of all relation nodes
-     * @since MMBase-1.7
-     */
-    protected static final RelationsCache relationsCache = RelationsCache.getCache();
-    // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
-    // private Vector relations=null; // possibly filled with insRels
 
     /**
      * Map which stores the current database value for fields when
@@ -1270,7 +1242,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param number nodenumber
      */
     public static void delRelationsCache(Integer number) {
-        relationsCache.remove(number);
+        RelationsCache.getCache().remove(number);
     }
 
     /**
@@ -1323,6 +1295,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     protected List<MMObjectNode> getRelationNodes() {
         Integer number = Integer.valueOf(getNumber());
         List<MMObjectNode> relations;
+        RelationsCache relationsCache = RelationsCache.getCache();
         if (! relationsCache.contains(number)) {
             relations = parent.getRelations_main(getNumber());
             relationsCache.put(number, relations);
@@ -1612,6 +1585,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             snodes.add("" + getNumber());
 
             SearchQuery query = clusterBuilder.getMultiLevelSearchQuery(snodes, fields, "NO", tables,  null, ordered, directions, search_type);
+            RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
             List<MMObjectNode> v = relatedCache.get(query);
             if (v == null) {
                 try {
