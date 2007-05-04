@@ -47,6 +47,19 @@ public class MultiLanguageGui {
     public static final String PUBLIC_ID_LANGUAGEGUISETS_1_0 = "-//MMBase//DTD MMBase - languageguisets 1.0//EN";
     public static final String PUBLIC_ID_LANGUAGEGUISET_1_0 = "-//MMBase//DTD MMBase - languageguiset 1.0//EN";
 
+
+    // used to make code compile agains both 1.8 and 1.9
+    protected static Iterable<Element> list(final Object o) {
+        if (o instanceof Iterator) {
+            return new Iterable<Element>() {
+                public Iterator<Element> iterator() {
+                    return (Iterator<Element>) o;
+                }
+            };
+        } else {
+            return (Iterable<Element>) o;
+        }
+    }
     /**
      * Register the Public Ids for DTDs used by DatabaseReader This method is called by XMLEntityResolver.
      */
@@ -62,8 +75,7 @@ public class MultiLanguageGui {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("multilanguagegui/" + languageguisetsfile);
             DocumentReader reader = new DocumentReader(is, MultiLanguageGui.class);
             if (reader != null) {
-                for (Iterator ns = reader.getChildElements("languageguisets", "languageguiset"); ns.hasNext();) {
-                    Element n = (Element) ns.next();
+                for (Element n : list(reader.getChildElements("languageguisets", "languageguiset"))) {
 
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -97,14 +109,12 @@ public class MultiLanguageGui {
             DocumentReader reader = new DocumentReader(is, MultiLanguageGui.class);
 
             Hashtable languageguiset = new Hashtable();
-            for (Iterator n = reader.getChildElements("languageguiset", "keyword"); n.hasNext();) {
-                Element element = (Element) n.next();
+            for (Element element : list(reader.getChildElements("languageguiset", "keyword"))) {
                 String name = reader.getElementAttributeValue(element, "name");
                 if (name != null) {
                     Hashtable keyword = new Hashtable();
 
-                    for (Iterator n2 = reader.getChildElements(element, "translation"); n2.hasNext();) {
-                        Element translation_element = (Element) n2.next();
+                    for (Element translation_element : list(reader.getChildElements(element, "translation"))) {
                         String language = reader.getElementAttributeValue(translation_element, "language");
                         String value = reader.getElementAttributeValue(translation_element, "value");
                         keyword.put(language, value);
