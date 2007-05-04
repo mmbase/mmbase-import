@@ -7,7 +7,29 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
 <project>
-    <extend>${basedir}/../app-base/project.xml</extend>
-    <artifactId>mmbase-resources</artifactId>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-resources</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>jai</groupId>
+      <artifactId>jai_codec</artifactId>
+      <version>1.1.2_01</version>
+      <type>jar</type>
+      <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>jai</groupId>
+      <artifactId>jai_core</artifactId>
+      <version>1.1.2_01</version>
+      <type>jar</type>
+      <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+  </dependencies>
 </project>
 
