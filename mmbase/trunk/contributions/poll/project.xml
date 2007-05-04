@@ -2,6 +2,15 @@
 <project>
   <extend>${basedir}/../../applications/app-base/project.xml</extend>
   <artifactId>mmbase-poll</artifactId>     
+  <name>Poll</name>
+  <shortDescription>An MMBase poll</shortDescription>
+  <description>
+    An MMBase poll
+  </description>
+  <properties>
+    <type>component</type>
+    <status>beta</status>
+  </properties>
   <dependencies>
   </dependencies>
 </project>
