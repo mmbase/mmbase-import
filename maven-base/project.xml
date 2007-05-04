@@ -104,9 +104,10 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Ernst Bunders</name>
-            <id>3</id>
-            <email>Ernst.Bunders@vara.nl</email>
-            <organization>Vara</organization>
+            <id>ernst</id>
+            <email>ernst@dynasol.nl</email>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
             <timezone>1</timezone>
         </developer>
         <developer>
@@ -152,7 +153,8 @@ See http://www.MMBase.org/license
             <name>Michiel Meeuwissen</name>
             <id>michiel</id>
             <email>Michiel.Meeuwissen@dynasol.nl</email>
-            <organization>Publieke Omroep</organization>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
             <timezone>1</timezone>
             <roles>
             	<role>Release Manager</role>
