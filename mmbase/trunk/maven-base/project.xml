@@ -150,8 +150,8 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Michiel Meeuwissen</name>
-            <id>9</id>
-            <email>Michiel.Meeuwissen@omroep.nl</email>
+            <id>michiel</id>
+            <email>Michiel.Meeuwissen@dynasol.nl</email>
             <organization>Publieke Omroep</organization>
             <timezone>1</timezone>
             <roles>
@@ -242,6 +242,7 @@ See http://www.MMBase.org/license
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
+        <!--
         <dependency>
             <groupId>jai</groupId>
             <artifactId>jai_codec</artifactId>
@@ -262,6 +263,7 @@ See http://www.MMBase.org/license
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
