@@ -56,12 +56,16 @@ try{
        <mm:compare referid="show_links" value="true">
           <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>"
              offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= ""+ objectPerPage %>" 
-             constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
+             constraints="<%= objectConstraint %>" orderby="<%= objecttype + "." + objectdate %>" directions="DOWN">
             <tr style="padding-bottom:10px;">
               <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
               <td>
                 <mm:field name="number" jspvar="oNumber" vartype="String" write="false">
-                  <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getContextPath()) %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
+                  <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getContextPath())+"&cp="+ callingPageID %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
+                   <% if (menuType==TITLE) { %>
+                  <mm:field name="<%= objectdate %>" jspvar="object_begindatum" vartype="String" write="false"
+                  ><span class="colortxt"><mm:time time="<%=object_begindatum%>" format="d MMM yy"/></span></mm:field>
+                  <% } %>
                 </mm:field>
                 <% 
                 if(menuType!=TITLE) {
