@@ -36,6 +36,9 @@ See http://www.MMBase.org/license
         <branch>
             <tag>MMBase-1_7</tag>
         </branch>
+        <branch>
+            <tag>MMBase-1_8</tag>
+        </branch>
     </branches>
     <licenses>
         <license>
