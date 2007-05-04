@@ -391,7 +391,8 @@ public class PaginaHelper {
                String ewType = editwizardNode.getStringValue("type");
                if(ewType.equals("list")) {
                   boolean showEw = true;
-                  if(ewNodePath.indexOf("pagina")>-1 && ap.isInstalled("NatMM")) {   // ** check whether the path is used at least once
+                  // Commented out for NMCMS-121
+                  /*if(ewNodePath.indexOf("pagina")>-1 && ap.isInstalled("NatMM")) {   // ** check whether the path is used at least once
                     showEw = false;
                     NodeList nl = null;
                     try {
@@ -400,7 +401,7 @@ public class PaginaHelper {
                        log.error("The editwizard " + ewTitle + " could not be shown, because the path " + ewNodePath + " does not exist in the objectcloud.");
                     }
                     showEw = (nl!=null && nl.size()>0);
-                  }
+                  }*/
                   if(showEw) {
                      ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard");
                      String startnodes = editwizardNode.getStringValue("startnodes");
