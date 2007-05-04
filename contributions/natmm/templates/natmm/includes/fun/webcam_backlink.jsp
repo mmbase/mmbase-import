@@ -1,7 +1,7 @@
 <%@include file="/taglibs.jsp" %>
+<%@include file="../../includes/request_parameters.jsp" %>
 <mm:cloud jspvar="cloud">
 <%
-String callingPageID =request.getParameter("cp"); //for back to webcam functionality
 if (callingPageID !=null) {
  %>
  <mm:node number="<%=callingPageID%>" notfound="skipbody">
