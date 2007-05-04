@@ -2,6 +2,13 @@
 <project>
   <extend>${basedir}/../../applications/app-base/project.xml</extend>
   <artifactId>mmbase-lucene</artifactId>     
+  <name>Lucene</name>
+  <shortDescription>MMBase Lucene integration</shortDescription>
+  <description>MMBase Lucene integration</description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>mmbase</groupId>
