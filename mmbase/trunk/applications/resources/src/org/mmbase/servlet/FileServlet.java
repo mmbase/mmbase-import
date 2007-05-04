@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @version $Id: FileServlet.java,v 1.2 2007-04-24 15:37:44 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.3 2007-05-04 12:49:09 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -37,21 +37,28 @@ public class FileServlet extends BridgeServlet {
         super.init();
         log = Logging.getLoggerInstance(FileServlet.class);
     }
-    protected  boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
-        boolean inited = super.checkInited(res);
-        if (inited && files == null) {
-            MMBase mmb = getMMBase();
-            if (mmb == null) throw new RuntimeException("MMBase is null");
-            String dataDir = mmb.getInitParameter("datadir");
-            if (dataDir != null && ! "".equals(dataDir)) {
-                if (! dataDir.startsWith("/")) {
-                    dataDir = MMBaseContext.getServletContext().getRealPath(dataDir);
-                }
-            } else {
-                dataDir = MMBaseContext.getServletContext().getRealPath("WEB-INF/data/files");
+    public static void init(HttpServletResponse res) {
+        if (files == null) {
+            if (log == null) {
+                log = Logging.getLoggerInstance(FileServlet.class);
             }
-            files = new File(dataDir);
+            if (mmbase == null) throw new RuntimeException("MMBase is null");
+            String dataDir = mmbase.getInitParameter("datadir");
+            if (dataDir != null && ! "".equals(dataDir)) {
+                File data;
+                if (dataDir.startsWith(".")) {
+                    data = new File(new File(MMBaseContext.getServletContext().getRealPath("WEB-INF/data/")), dataDir);
+                } else if (dataDir.startsWith("/")) {
+                    data = new File(dataDir);
+                } else {
+                    data = new File(MMBaseContext.getServletContext().getRealPath(dataDir));
+                }
+                files = new File(data, "files");
+            } else {
+                files = new File(MMBaseContext.getServletContext().getRealPath("WEB-INF/data/files"));
+            }
 
+            
             if (! files.exists()) {
                 if (files.mkdirs()) {
                     log.info("Directory " + files + " was created");
@@ -59,8 +66,15 @@ public class FileServlet extends BridgeServlet {
                     log.warn("Directory " + files + " could not be created");
                 }
             }
-            
             log.info("Using datadir " + files);
+
+        }
+        
+    }
+    protected boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
+        boolean inited = super.checkInited(res);
+        if (inited) {
+            init(res);
             /*
             try {
                 properties.load(new FileInputStream(new File(files, ".mmbaseowners")));
@@ -82,7 +96,8 @@ public class FileServlet extends BridgeServlet {
     }
     
 
-    public static File getFile(String pathInfo) {
+    public static File getFile(String pathInfo, ServletResponse res) {
+        if (res != null) init((HttpServletResponse) res);
         if (pathInfo == null) {
             return files;
         } else {
@@ -92,13 +107,15 @@ public class FileServlet extends BridgeServlet {
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        File file = getFile(req.getPathInfo());
+        File file = getFile(req.getPathInfo(), resp);
         if (! file.exists()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + req.getPathInfo() + "' does not exist");
+            log.debug("" + file + " does not exist");
             return;
         }
         if (! file.canRead()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' may not be read");
+            log.debug("" + file + " may not be read");
             return;
         }
         resp.setContentType(getServletContext().getMimeType(file.getName()));
@@ -115,7 +132,7 @@ public class FileServlet extends BridgeServlet {
         out.close();
     }
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        File file = getFile(req.getPathInfo());
+        File file = getFile(req.getPathInfo(), resp);
         if (file.exists()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' already exists");
             return;
@@ -140,7 +157,7 @@ public class FileServlet extends BridgeServlet {
     }
 
     protected long getLastModified(HttpServletRequest req) {
-        return getFile(req.getPathInfo()).lastModified();
+        return getFile(req.getPathInfo(), null).lastModified();
     }
 }
 
