@@ -37,9 +37,22 @@ public class ThemeManager {
     }
 
     static {
-        // First static initializer block
         init();
-    }// end first static initializer block
+    }
+
+
+    protected static Iterable<Element> list(final Object o) {
+        if (o instanceof Iterator) {
+            return new Iterable<Element>() {
+                public Iterator<Element> iterator() {
+                    return (Iterator<Element>) o;
+                }
+            };
+        } else {
+            return (Iterable<Element>) o;
+        }
+    }
+
 
     private static HashMap themes;
     private static HashMap assigned;
@@ -77,8 +90,7 @@ public class ThemeManager {
             DocumentReader reader = new DocumentReader(is, ThemeManager.class);
             if (reader != null) {
                 // decode themes
-                for (Iterator ns = reader.getChildElements("themes", "theme"); ns.hasNext();) {
-                    Element n = (Element) ns.next();
+                for (Element n : ThemeManager.list(reader.getChildElements("themes", "theme"))) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String id = null;
@@ -188,8 +200,7 @@ public class ThemeManager {
             DocumentReader reader = new DocumentReader(is, ThemeManager.class);
             if (reader != null) {
                 // decode assigned
-                for (Iterator ns = reader.getChildElements("assigned", "assign"); ns.hasNext();) {
-                    Element n = (Element) ns.next();
+                for (Element n : ThemeManager.list(reader.getChildElements("assigned", "assign"))) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String id = null;
