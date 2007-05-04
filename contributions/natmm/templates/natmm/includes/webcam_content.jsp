@@ -37,8 +37,7 @@ String attachmentID = request.getParameter("at");
 	     
 	<p>
 	<br/>
-	<img src="media/logo_nm.gif"><img src="media/logo_nuon.gif">
-	<br/>
+
 	<mm:related path="contentrel,attachments" fields="attachments.titel">
 	    <mm:field name="attachments.number" jspvar="pagina_number" vartype="String" write="false">  
 	    <mm:first>
@@ -110,9 +109,6 @@ String attachmentID = request.getParameter("at");
 				
 			</mm:node>
     <p>
-	<br/>
-	<img src="media/logo_nm.gif"><img src="media/logo_nuon.gif">
-	<br/>
 	
 	<%-- Links to all highlight videos - only displayed when not blank --%>
 	<mm:related path="contentrel,attachments" fields="attachments.titel,attachments.number">
