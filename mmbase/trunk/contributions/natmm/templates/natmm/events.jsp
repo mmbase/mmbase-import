@@ -24,6 +24,7 @@ if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) {
 
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/events/dateutil.jsp" %>
+
 <%
 String actionID = request.getParameter("action");
 
@@ -41,10 +42,13 @@ if(!natuurgebiedID.equals("-1")) {
    
 SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeForm");
 %><%@include file="includes/events/selecteddateandtype.jsp" %>
-<br>
+  <% if (isNaardermeer.equals("true")) { %>		
+   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+  <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
       <td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
+         <br/>
          <%@include file="includes/navleft.jsp" %>
          <br>
          <jsp:include page="includes/teaser.jsp">
@@ -55,6 +59,7 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
          </jsp:include>
       </td>
       <td width="<%= (subscribeForm==null ? "374" : "559") %>" valign="top" style="padding-left:10px;padding-right:10px;">
+         <br/>
          <% 
           if(actionID!=null&&actionID.equals("confirm")) {
           
@@ -107,6 +112,10 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             } %>
             </td>
             <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+            	 <% if (isNaardermeer.equals("true")) { %>			
+   					<img src="media/trans.gif" height="216" width="1">
+	 			 <% } %>	
+			  <br/>
                <jsp:include page="includes/events/searchform.jsp">
                   <jsp:param name="p" value="<%= paginaID %>" />
                   <jsp:param name="prov" value="<%= provID %>" />
@@ -129,6 +138,7 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                   <%
                }
             } %>
+            </div>
             </td>
    </tr>
 </table>

@@ -1,9 +1,16 @@
 html { 
    font-size: 100%; 
 }
-body {
-   background-color: #FFFFFF;
-}
+body /* Internet Explorer */ 
+{ 
+text-align: center; 
+background-color: #FFFFFF;
+} 
+body /* Mozilla Firefox alignment */ 
+{ 
+text-align: -moz-center; 
+background-color: #FFFFFF;
+} 
 td {
 	font-family: Arial, Helvetica, sans-serif; 
 	color: #050080;
