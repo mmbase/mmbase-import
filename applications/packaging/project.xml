@@ -7,7 +7,16 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
 <project>
-    <extend>${basedir}/../app-base/project.xml</extend>
-    <artifactId>mmbase-packaging</artifactId>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-packaging</artifactId>
+  <name>MMBase Packaging</name>
+  <shortDescription>MMBase Packaging</shortDescription>
+  <description>
+    Old method of creating MMBase packages, now deprecated since the introduction of MMBase components.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>deprecated</status>
+  </properties>
 </project>
 

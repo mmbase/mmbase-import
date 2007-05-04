@@ -7,10 +7,19 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
 <project>
-    <extend>${basedir}/../app-base/project.xml</extend>
-    <artifactId>mmbase-richtext</artifactId>   
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-richtext</artifactId>   
+  <name>MMBase Richtext application</name>
+  <shortDescription>MMBase Richtext application</shortDescription>
+  <description>
+    Richtext provides utilities to use rich content in MMBase, with embedded links etc. 
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
 
-    <dependencies>
+  <dependencies>
 <!--
         <dependency>
             <groupId>kupu</groupId>
@@ -19,6 +28,6 @@ See http://www.MMBase.org/license
             <url>http://kupu.oscom.org/</url>
         </dependency>
 -->
-    </dependencies>
+  </dependencies>
 </project>
 

@@ -9,6 +9,16 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-resources</artifactId>
+  <name>MMBase Resources</name>
+  <shortDescription>MMBase Resources</shortDescription>
+  <description>
+    This application provides builders and utility code for some very often reused object types. 
+    You are very encouraged to use this application always in your MMBase applications.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>jai</groupId>
