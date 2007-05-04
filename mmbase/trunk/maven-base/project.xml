@@ -52,7 +52,7 @@ See http://www.MMBase.org/license
     <repository>
         <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
         <developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
-        <url>http://www.mmbase.org/viewcvs/</url>
+        <url>http://cvs.mmbase.org/viewcvs/</url>
     </repository>
     <mailingLists>
         <mailingList>
