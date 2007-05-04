@@ -19,16 +19,5 @@ See http://www.MMBase.org/license
     <type>tool</type>
     <status>deprecated</status>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>mmbase</groupId>
-      <artifactId>mmbase-scan</artifactId>
-      <version>${mmbase.version}</version>
-      <url>http://www.mmbase.org/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-  </dependencies>
 </project>
 
