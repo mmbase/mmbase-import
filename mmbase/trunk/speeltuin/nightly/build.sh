@@ -3,23 +3,27 @@
 #echo Removing old build stuff if there was...
 #rm -rf /export/home/nightlybuild/data/build
 
-echo setting PATH, JAVA HOME and ANT HOME
+echo setting PATH, JAVA HOME
 export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/home/nightly/bin
+
+echo $HOME
+
+export BUILD_HOME="/home/nightly"
+
 export JAVA_HOME=/home/nightly/jdk
 export JAVAC=${JAVA_HOME}/bin/javac
-#export ANT_HOME=/usr/share/ant
-#export ANT_HOME=${HOME}/ant
+
+export MAVEN="/home/nightly/maven/bin/maven"
 export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
+
 export FILTER="/home/nightly/filterlog"
-export BUILD_HOME="/home/nightly"
+
+
 export CCMAILADDRESS="Michiel.Meeuwissen@omroep.nl"
 #export MAILADDRESS="-c ${CCMAILADDRESS} developers@lists.mmbase.org"
 #export MAILADDRESS=${CCMAILADDRESS}
 export MAILADDRESS="developers@lists.mmbase.org"
 
-# settings
-antcommand="/usr/bin/ant -lib /home/nightly/.ant/lib -buildfile nightly-build.xml"
-#antcommand="${HOME}/ant/bin/ant --noconfig -buildfile nightly-build.xml"
 downloaddir="/home/nightly/download"
 optdir="/home/nightly/optional-libs"
 
@@ -33,23 +37,21 @@ tag=
 builddir="/home/nightly/builds/${version}"
 mkdir -p ${builddir}
 
-cd ${BUILD_HOME}
+cd ${BUILD_HOME}/nightly-build/cvs/mmbase
 
-#echo cleaning
-#${antcommand} clean > ${builddir}/messages.log 2> ${builddir}/errors.log
+echo Cleaning
+${MAVEN} all:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
 
-# update the nightly-build.xml
-${CVS} co -p  all/nightly-build.xml >  ${BUILD_HOME}/nightly-build.xml
+# update CVS
+${CVS} update -d -P -D ${version}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
-options="-Ddeprecation=off -Dversion='${version}' -Dtag=${tag} -Ddestination.dir=${builddir} -Ddownload.dir=${downloaddir} -Doptional.lib.dir=${optdir}"
-echo "options : ${options}"
-
-echo "Ant Command: ${antcommand} ${options}"
 echo Starting nightly build
-#${antcommand} ${options} -Dbuild.documentation=false >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-${antcommand} ${options} -Dbuild.documentation=true >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-cd nightly-build/cvs/mmbase
+${MAVEN} all:install-snapshot >>  ${builddir}/messages.log
+
 ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
+
+echo Copying todays artifacts
+cp -ra ~/.maven/repository/mmbase/mmbase-modules/*SNAPSHOT* ${builddir}
 
 
 echo Creating sym for latest build
