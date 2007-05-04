@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.63.2.1 2006-10-05 14:06:11 pierre Exp $
+ * @version $Id: Config.java,v 1.63.2.2 2007-05-04 12:12:00 nklasens Exp $
  */
 
 public class Config {
@@ -697,7 +697,7 @@ public class Config {
                 }
                 if (ref != null) {
                     if (! config.language.equals("")) {
-                        URL refi18n = new URL(ref, "i18n/" + config.language);
+                        URL refi18n = new URL(ref, "i18n/" + config.language + "/");
                         if (getResource(refi18n.getPath()) != null) {
                             extraDirs.add("refi18n:", refi18n);
                         }
@@ -716,6 +716,12 @@ public class Config {
                     URL templatesDir = getResource(config.templates);
                     if (templatesDir == null) {
                         throw new WizardException("" +  config.templates + " does not exist");
+                    }
+                    if (! config.language.equals("")) {
+                        URL templatesi18n = new URL(templatesDir, "i18n/" + config.language + "/");
+                        if (getResource(templatesi18n.getPath()) != null) {
+                            extraDirs.add("templatesi18n:", templatesi18n);
+                        }
                     }
                     extraDirs.add("templates:", templatesDir);
                 }
