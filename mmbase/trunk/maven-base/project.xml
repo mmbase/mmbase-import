@@ -127,7 +127,7 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Johannes Verelst</name>
-            <id>6</id>
+            <id>johannes</id>
             <email>jverelst@gmail.com</email>
             <timezone>1</timezone>
         </developer>
@@ -328,6 +328,8 @@ See http://www.MMBase.org/license
         </unitTest>
     </build>
     <reports>
+      <report>maven-changelog-plugin</report>
+      <!--
         <report>maven-changelog-plugin</report>
         <report>maven-changes-plugin</report>
         <report>maven-developer-activity-plugin</report>
@@ -338,15 +340,14 @@ See http://www.MMBase.org/license
         <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
         <report>maven-linkcheck-plugin</report>
-        <!--
-    <report>maven-jdiff-plugin</report>
-    -->
+        <report>maven-jdiff-plugin</report>
         <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
-        <!-- report>maven-clover-plugin</report -->
+        <report>maven-clover-plugin</report>
         <report>maven-simian-plugin</report>
         <report>maven-findbugs-plugin</report>
+        -->
     </reports>
 </project>
 
