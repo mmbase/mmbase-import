@@ -3,6 +3,11 @@
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
+<%
+// In this page we need to override the Cache parameter expireTime that we had in standart include top2_cacheparams.jsp
+// We are enforcing the fresh loading of the weblog pages. This enables back to webcam link display properly [NMCMS-128]
+expireTime = 0;
+%>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
