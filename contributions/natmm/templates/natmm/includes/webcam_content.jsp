@@ -145,7 +145,7 @@ String attachmentID = request.getParameter("at");
 		<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">  
 			<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><img src="media/arrowright_fun.gif" alt="" border="0" style="vertical-align:bottom" /></a>
 			&nbsp;<a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>?cp=<%=paginaID%>"><b><mm:field name="pagina.titel" /></b></a>
-		</mm:field>
+		</mm:field><br/>
 	</mm:related>
 	</p><br/>				
 
