@@ -64,7 +64,7 @@ try{
                   <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getContextPath())+"&cp="+ callingPageID %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
                    <% if (menuType==TITLE) { %>
                   <mm:field name="<%= objectdate %>" jspvar="object_begindatum" vartype="String" write="false"
-                  ><span class="colortxt"> <br/> <mm:time time="<%=object_begindatum%>" format="d MMM yy"/></span></mm:field>
+                  ><span class="colortxt"> <br/> <mm:time time="<%=object_begindatum%>" format="d MMM yyyy"/></span></mm:field>
                   <% } %>
                 </mm:field>
                 <% 
