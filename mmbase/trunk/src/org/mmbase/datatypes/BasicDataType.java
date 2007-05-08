@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.71 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.72 2007-05-08 15:18:25 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -252,6 +252,7 @@ s     */
      *
      * Tries to determin  cloud by node and field if possible and wraps {@link #preCast(Object, Cloud, Node, Field)}.
      */
+    //public final <D> DpreCast(D value, Node node, Field field) {
     public final Object preCast(Object value, Node node, Field field) {
         return preCast(value, getCloud(node, field), node, field);
     }
@@ -259,6 +260,7 @@ s     */
     /**
      * This method is as yet unused, but can be anticipated
      */
+    //public final <D> D preCast(D value, Cloud cloud) {
     public final Object preCast(Object value, Cloud cloud) {
         return preCast(value, cloud, null, null);
     }
@@ -486,8 +488,8 @@ s     */
         return errors;
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = new StringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = new StringBuilder();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
@@ -513,7 +515,7 @@ s     */
 
     }
     public final String toString() {
-        StringBuffer buf = toStringBuffer();
+        StringBuilder buf = toStringBuilder();
         if (isFinished()) {
             buf.append(".");
         }

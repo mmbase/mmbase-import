@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.27 2007-01-06 15:08:45 nklasens Exp $
+ * @version $Id: ComparableDataType.java,v 1.28 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
@@ -175,8 +175,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         return clone;
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         Object minValue = minRestriction.getValue();
         Object maxValue = maxRestriction.getValue();
         if (minValue != null) {
