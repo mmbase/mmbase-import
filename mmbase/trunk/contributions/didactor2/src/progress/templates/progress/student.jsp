@@ -2,7 +2,6 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><%@page import="java.util.*"
 %>
-
 <mm:content postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
 
@@ -22,36 +21,36 @@
         <div class="titlebar"><di:translate key="progress.progresstitle" /></div>
       </div>
       
-  <div class="folders">
-    <div class="folderHeader">&nbsp;</div>
-    <div class="folderBody">&nbsp;</div>
-  </div>
-
-  <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import> 
-  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-    <mm:import id="student" externid="student" reset="true" />
-  </mm:islessthan>
-  <mm:isempty referid="student">
-    <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import>
-  </mm:isempty>
-
-  <div class="mainContent">
-    <div class="contentHeader">
-      <%--    Some buttons working on this folder--%>
-      <mm:node referid="student">
-        <di:person />
-        <mm:field name="username" id="usern" />
-      </mm:node>
-    </div>
-
-    <div class="contentBodywit">
-      <mm:import externid="showfeedback" />
-    
-      <mm:present referid="showfeedback">
+      <div class="folders">
+        <div class="folderHeader">&nbsp;</div>
+        <div class="folderBody">&nbsp;</div>
+      </div>
       
-        <mm:import externid="madetest" required="true" />
-        <mm:import externid="tests" required="true" />
+      <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import> 
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+        <mm:import id="student" externid="student" reset="true" />
+      </mm:islessthan>
+      <mm:isempty referid="student">
+        <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import>
+      </mm:isempty>
+      
+      <div class="mainContent">
+        <div class="contentHeader">
+          <%--    Some buttons working on this folder--%>
+          <mm:node referid="student">
+            <di:person />
+            <mm:field name="username" id="usern" />
+          </mm:node>
+        </div>
 
+        <div class="contentBodywit">
+          <mm:import externid="showfeedback" />
+          
+          <mm:present referid="showfeedback">
+            
+            <mm:import externid="madetest" required="true" />
+            <mm:import externid="tests" required="true" />
+            
         <mm:node number="$tests">
           <b><di:translate key="progress.scoretest" /> <mm:field name="name" /></b>
           <br>
@@ -123,11 +122,8 @@
             <tr>
               <td><di:translate key="progress.online" /></td>
               <td>
-                <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
-                  <%int hour = onlinetime.intValue() / 3600;
-                    int min = (onlinetime.intValue() % 3600) / 60;
-                  %>
-                  <%=hour%>:<%=min%>
+                <mm:field name="onlinetime">
+                  <mm:time format="HH:mm" />
                 </mm:field>
               </td>
             </tr>
