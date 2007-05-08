@@ -8,12 +8,12 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.7 2007-04-30 13:26:45 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.8 2007-05-08 12:03:08 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
     SMTPListener listener;
-    Map properties;
+    Map<String, String> properties;
 
     private String[] mandatoryProperties = {"hostname", "port", "domains",
             "emailbuilder", "emailbuilder.bodyfield", 
@@ -35,7 +35,7 @@ public class SMTPModule extends org.mmbase.module.Module {
      * Initialize the SMTP engine. Creates a listening thread that can
      * initiate worker threads.
      */
-    private void init(Map properties) {
+    private void init(Map<String, String> properties) {
         log.info("Initializing SMTP module");
         this.properties = properties;
         
@@ -53,7 +53,7 @@ public class SMTPModule extends org.mmbase.module.Module {
      */
     private boolean checkProperties() {
         if (properties == null) {
-            properties = new Hashtable();
+            properties = new HashMap<String, String>();
         }
         boolean result = true;
         for (int i = 0; i < mandatoryProperties.length; i++) {
@@ -63,7 +63,7 @@ public class SMTPModule extends org.mmbase.module.Module {
             }
         }
 
-        Hashtable allproperties = new Hashtable();
+        Map<String, String> allproperties = new HashMap<String, String>();
         for (int i = 0; i < mandatoryProperties.length; i++) {
             allproperties.put(mandatoryProperties[i], "yes");
         }
@@ -71,8 +71,8 @@ public class SMTPModule extends org.mmbase.module.Module {
             allproperties.put(optionalProperties[i], "yes");
         }
 
-        for (Iterator e = properties.keySet().iterator(); e.hasNext(); ) {
-            Object key = e.next();
+        for (Iterator<String> e = properties.keySet().iterator(); e.hasNext(); ) {
+            String key = e.next();
             if (!allproperties.containsKey(key)) {
                 log.warn("Property '" + key + "' unknown, ignoring");
             }
@@ -81,7 +81,7 @@ public class SMTPModule extends org.mmbase.module.Module {
     }
 
     public String getLocalEmailDomains() {
-        return (String)properties.get("domains");
+        return properties.get("domains");
     }
 
     public void onload() {
@@ -98,7 +98,7 @@ public class SMTPModule extends org.mmbase.module.Module {
      * Useful for debugging
      */
     public static void main(String args[]) {
-        Hashtable h = new Hashtable();
+        Map<String, String> h = new HashMap<String, String>();
         h.put("hostname", "localhost");
         h.put("port", "1026");
         h.put("domains", "*");
