@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.CachePolicy;
@@ -22,13 +23,15 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.40 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.41 2007-05-08 08:29:08 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
-    /** Distinct property. */
+    /** 
+     * Distinct property.  
+     */
     private boolean distinct = false;
 
     /** MaxNumber property. */
@@ -38,9 +41,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
     private List<Step> steps = new ArrayList<Step>();
-
     protected List<StepField> fields = new ArrayList<StepField>();
-
     private List<SortOrder> sortOrders = new ArrayList<SortOrder>();
 
     /** Constraint.. */
@@ -441,9 +442,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        Iterator<CoreField> iFields = builder.getFields().iterator();
-        while (iFields.hasNext()) {
-            CoreField field = iFields.next();
+        // http://www.mmbase.org/jira/browse/MMB-1435, 
+        // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
+        // right order, which is import for microsoft JDBC.
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
