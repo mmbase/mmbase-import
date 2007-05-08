@@ -240,7 +240,7 @@
                     </di:row>
                     <mm:listnodes id="mycontacts">
                       <mm:treefile id="link" write="false" 
-                                   page="/address/updatecontact.jsp" objectlist="$includePath" referids="$referids,_node@contact,addressbook">
+                                   page="/address/updatecontact.jspx" objectlist="$includePath" referids="$referids,_node@contact,addressbook">
                         <mm:param name="callerpage">/address/index.jsp?sf=lastname,firstname&amp;so=up,up</mm:param>
                       </mm:treefile>
                       <di:row>
