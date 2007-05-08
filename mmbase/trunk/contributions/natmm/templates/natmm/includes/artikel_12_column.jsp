@@ -143,7 +143,6 @@ if(hasRightCell) {
             <jsp:param name="sr" value="2" />
          </jsp:include>
          <% } %>
-         </div>
    	</td>
    </tr>
    </table><%

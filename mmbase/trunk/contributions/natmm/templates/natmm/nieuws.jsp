@@ -75,7 +75,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
             <jsp:param name="a" value="<%= artikelID %>" />
             <jsp:param name="showdate" value="<%= showdate %>" />
          </jsp:include>
-      </div></td><%
+      </td><%
    } else {  // *** show the dossiers if there are dossiers related to this page
       %><td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
 	      <% if (isNaardermeer.equals("true")) { %>			
@@ -99,7 +99,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
             </mm:node><%
             
          } %>
-      </div></td><%
+      </td><%
    } %>
 </tr>
 </table>

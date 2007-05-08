@@ -138,7 +138,6 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                   <%
                }
             } %>
-            </div>
             </td>
    </tr>
 </table>
