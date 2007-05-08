@@ -74,7 +74,8 @@
               
               <input type="hidden" name="formsubmitted" value="true"/>
               <table class="font">
-                <mm:fieldlist  fields="initials,firstname,lastname,email,address,zipcode,city,telephone">
+                <mm:import id="fields"><mm:treeinclude objectlist="$includePath" page="/address/fields.jspx" /></mm:import>
+                <mm:fieldlist  fields="$fields">
                   <tr>
                     <td><mm:fieldinfo type="guiname" /></td>
                     <td>
