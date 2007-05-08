@@ -12,9 +12,11 @@
     <singular xml:lang="en">Person</singular>
     <singular xml:lang="fr">Personne</singular>
     <singular xml:lang="nl">Persoon</singular>
+    <singular xml:lang="eo">Persono</singular>
     <plural xml:lang="en">Persons</plural>
     <plural xml:lang="fr">Personnes</plural>
     <plural xml:lang="nl">Personen</plural>
+    <plural xml:lang="eo">Personoj</plural>
   </names>
 
   <descriptions>
@@ -36,16 +38,17 @@
         <guiname xml:lang="ro">Prenume</guiname>
         <guiname xml:lang="bg">Собствено име</guiname>
         <guiname xml:lang="hi">प्रथम नाम</guiname>
+        <guiname xml:lang="eo">Antaŭnomo</guiname>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minLength value="1" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="initials">
@@ -59,27 +62,27 @@
         <guiname xml:lang="fr">Initials</guiname>
         <guiname xml:lang="ro">Initiale</guiname>
         <guiname xml:lang="hi">आद्याक्षरित कीजिए</guiname>
+        <guiname xml:lang="eo">Inicialoj</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="32" />
+      </datatype>
     </field>
 
     <field name="suffix">
       <gui>
         <guiname xml:lang="en">Suffix</guiname>
         <guiname xml:lang="nl">Tussenvoegsel</guiname>
+        <guiname xml:lang="eo">Internomo</guiname>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="lastname">
@@ -94,16 +97,17 @@
         <guiname xml:lang="ro">Nume</guiname>
         <guiname xml:lang="bg">Фамилия</guiname>
         <guiname xml:lang="hi">अंतिम नाम</guiname>
+        <guiname xml:lang="eo">Familinomo</guiname>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="address">
@@ -118,10 +122,11 @@
         <guiname xml:lang="ro">Adresa</guiname>
         <guiname xml:lang="bg">Адрес</guiname>
         <guiname xml:lang="hi">पता</guiname>
+        <guiname xml:lang="eo">Adreso</guiname>
       </gui>
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="zipcode">
@@ -136,11 +141,11 @@
         <guiname xml:lang="ro">Cod postal</guiname>
         <guiname xml:lang="bg">Пощ. код</guiname>
         <guiname xml:lang="hi">झीपकोड़</guiname>
+        <guiname xml:lang="eo">Poŝtkodo</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="city">
@@ -155,11 +160,11 @@
         <guiname xml:lang="ro">Oras</guiname>
         <guiname xml:lang="bg">Град</guiname>
         <guiname xml:lang="hi">शहर</guiname>
+        <guiname xml:lang="eo">Urbo</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="country">
@@ -173,12 +178,12 @@
         <guiname xml:lang="fr">Pay</guiname>
         <guiname xml:lang="ro">Tara</guiname>
         <guiname xml:lang="bg">Държава</guiname>
+        <guiname xml:lang="eo">Lando</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" > 
+        <maxLength value="255" />
+      </datatype>
       <!-- todo 'countries' could be an enumeration -->
-      <db>
-        <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
-      </db>
     </field>
 
 
@@ -194,22 +199,23 @@
         <guiname xml:lang="ro">Telefon</guiname>
         <guiname xml:lang="bg">Телефон</guiname>
         <guiname xml:lang="hi">दुरभाष</guiname>
+        <guiname xml:lang="eo">Telefonnumero</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="mobile">
       <gui>
         <guiname xml:lang="en">Mobile</guiname>
         <guiname xml:lang="nl">Mobiel</guiname>
+        <guiname xml:lang="eo">Poŝtelefono</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-      <db>
-        <type state="persistent"  notnull="false" size="32" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" > 
+        <maxLength value="255" />
+      </datatype>
+
     </field>
 
 
@@ -225,11 +231,11 @@
         <guiname xml:lang="ro">Adresa de email</guiname>
         <guiname xml:lang="bg">ел. поща</guiname>
         <guiname xml:lang="hi">इ-मेल</guiname>
+        <guiname xml:lang="eo">Retadreso</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-      <db>
-        <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+        <maxLength value="1024" />
+      </datatype>
     </field>
 
 
@@ -237,11 +243,11 @@
       <gui>
         <guiname xml:lang="en">Website</guiname>
         <guiname xml:lang="nl">Website</guiname>
+        <guiname xml:lang="eo">Retejo</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-      <db>
-        <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="dayofbirth">
@@ -249,6 +255,7 @@
         <guiname xml:lang="en">Date of birth</guiname>
         <guiname xml:lang="nl">Geboortedatum</guiname>
         <guiname xml:lang="ro">Ziua nasterii</guiname>
+        <guiname xml:lang="eo">Naskiĝdato</guiname>
       </gui>
       <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
@@ -260,17 +267,16 @@
         <guiname xml:lang="fr">Nom d'utilisateur</guiname>
         <guiname xml:lang="bg">Потребителско име</guiname>
         <guiname xml:lang="ro">Utilizator</guiname>
+        <guiname xml:lang="eo">Uzulo</guiname>
       </gui>
       <editor>
         <positions>
           <list>6</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /> 
-
-      <db>
-        <type state="persistent" size="12" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+        <maxLength value="12" />
+      </datatype>
     </field>
 
     <field name="password">
@@ -284,14 +290,13 @@
         <guiname xml:lang="fr">Mot de passe</guiname>
         <guiname xml:lang="bg">Парола</guiname>
         <guiname xml:lang="ro">Parola</guiname>
+        <guiname xml:lang="eo">Pasvorto</guiname>
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
         <password value="true" />
+        <maxLength value="255" />
       </datatype>
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
     </field>
 
     <field name="description">
@@ -306,9 +311,9 @@
         <guiname xml:lang="eo">Priskribo</guiname>
         <guiname xml:lang="it">Descrizione</guiname>
       </gui>
-      <db>
-        <type state="persistent" size="2048" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="2048" />
+      </datatype>
     </field>
 
 
@@ -321,10 +326,11 @@
         <guiname xml:lang="en">Remarks</guiname>
         <guiname xml:lang="nl">Opmerkingen</guiname>
         <guiname xml:lang="fr">Remarques</guiname>
+        <guiname xml:lang="eo">Rimarkoj</guiname>
       </gui>
-      <db>
-        <type state="persistent"  notnull="false" size="65535" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
     </field>
 
     <field name="lastactivity" state="system">
@@ -335,6 +341,7 @@
       <gui>
         <guiname xml:lang="nl">Activiteit</guiname>
         <guiname xml:lang="en">Last activity</guiname>
+        <guiname xml:lang="eo">Lasta ago</guiname>
       </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
@@ -343,11 +350,11 @@
       <gui>
         <guiname xml:lang="en">Externid</guiname>
         <guiname xml:lang="nl">Extern Id</guiname>
+        <guiname xml:lang="eo">Eksterna identigilo</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
 
@@ -358,18 +365,14 @@
       <gui>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
+        <guiname xml:lang="eo">Statuso</guiname>
       </gui>
       <datatype base="enableddisabled" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="true" />
         <required value="false" />
       </datatype>
     </field>
-
     <field name="islogged">
-      <gui>
-        <guiname xml:lang="nl">isLogged</guiname>
-        <guiname xml:lang="en">isLogged</guiname>
-      </gui>
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="false" />
       </datatype>
