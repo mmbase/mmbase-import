@@ -98,10 +98,10 @@
         <div class="mainContent">
           <div class="contentHeader">
             <mm:present referid="mailboxname">
-	      <mm:node referid="mailbox">
-		<jsp:include page="mailboxname.jspx" />
-	      </mm:node>
-	    </mm:present>
+              <mm:node referid="mailbox">
+                <jsp:directive.include file="mailboxname.jspx" />
+              </mm:node>
+            </mm:present>
             <mm:notpresent referid="mailboxname">
               User ${user} has no mailbox.
             </mm:notpresent>
