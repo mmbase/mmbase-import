@@ -58,6 +58,8 @@
         <mm:import id="wrote" reset="true"><mm:field name="from" escape="none"/></mm:import>
         <mm:import id="subject" reset="true">Fw:<mm:field name="subject" escape="none"/></mm:import>
       </mm:present>
+
+      <mm:relatednodes type="attachments" id="oldAttachments" />
       
       <mm:escaper id="plaintextquoter" type="regexps">
         <mm:param name="patterns">
@@ -107,7 +109,7 @@
         </mm:field>
       </mm:field>
     </mm:node>
-  </mm:present>
+  </mm:present><!-- loadOld -->
   
   <mm:node number="$user">
     <mm:relatednodescontainer type="mailboxes">
@@ -215,6 +217,11 @@
       <mm:setfield name="body"><mm:write referid="body" escape="none"/></mm:setfield>
       <mm:setfield name="type">0</mm:setfield>
     </mm:node>
+    <mm:present referid="oldAttachments">
+      <mm:listnodes referid="oldAttachments" id="oldAttachment">
+        <mm:createrelation source="emailNode" destination="oldAttachment" role="related" />
+      </mm:listnodes>
+    </mm:present>
     
     <mm:import id="testattachment" externid="att_handle" />
     <mm:compare referid="testattachment" value="" inverse="true">
@@ -454,15 +461,19 @@
                           <table border="0" class="Font">
                             <mm:present referid="emailNode">
                               <mm:node number="$emailNode">
-                                <mm:relatednodes type="attachments">
+                                <mm:relatednodes type="attachments" role="related">
                                   <mm:first><tr><td><di:translate key="email.attachment_name" /></td>
                                   <td><di:translate key="email.attachment_delete" /></td></tr></mm:first>
                                   <tr>
                                     <td>
                                       <mm:attachment>
                                         <a href="${_}">
-                                          <mm:field name="title">
-                                            <mm:isempty><mm:field name="filename" /></mm:isempty>
+                                          <mm:field name="title" write="true">
+                                            <mm:isempty>
+                                              <mm:field name="filename" write="true">
+                                                <mm:isempty><mm:field name="number" /></mm:isempty>
+                                              </mm:field>
+                                            </mm:isempty>
                                           </mm:field>
                                         </a>
                                       </mm:attachment>
