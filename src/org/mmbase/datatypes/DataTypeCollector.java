@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.13 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: DataTypeCollector.java,v 1.14 2007-05-08 15:18:25 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -95,7 +95,7 @@ public final class DataTypeCollector {
     /**
      * Set local datatypes of the collector
      */
-    public Map<String,BasicDataType<?>> getDataTypes() {
+    public Map<String, BasicDataType<?>> getDataTypes() {
         return dataTypes;
     }
 

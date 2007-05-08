@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.12 2007-01-05 19:59:57 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.13 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -73,8 +73,8 @@ public class ConfirmPasswordDataType extends StringDataType {
         return passwordRestriction.getField();
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         buf.append(" confirm(").append(passwordRestriction.getValue()).append(")");
         return buf;
     }

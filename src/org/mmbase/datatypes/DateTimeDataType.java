@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.35 2006-09-06 18:23:02 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.36 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -132,8 +132,8 @@ public class DateTimeDataType extends ComparableDataType {
         return clone;
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         buf.append(" " + pattern);
         return buf;
     }

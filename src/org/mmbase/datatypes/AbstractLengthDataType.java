@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.18 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.19 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
@@ -124,8 +124,8 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
 
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         if (getMinLength() > 0) {
             buf.append("minLength:" + getMinLength() + " ");
         }
