@@ -19,7 +19,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.21 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: ListDataType.java,v 1.22 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType<List> {
@@ -84,8 +84,8 @@ public class ListDataType extends AbstractLengthDataType<List> {
         return errors;
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         buf.append("items: " + getItemDataType());
         return buf;
     }

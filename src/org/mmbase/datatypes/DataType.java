@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.60 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: DataType.java,v 1.61 2007-05-08 15:18:25 michiel Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
@@ -134,6 +134,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
      */
+    //    public <D> D preCast(D value, Node node, Field field);
     public Object preCast(Object value, Node node, Field field);
 
     /**

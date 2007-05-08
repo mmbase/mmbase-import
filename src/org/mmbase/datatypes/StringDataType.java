@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.39 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: StringDataType.java,v 1.40 2007-05-08 15:18:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -247,8 +247,8 @@ public class StringDataType extends ComparableDataType<String> implements Length
         return errors;
     }
 
-    protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
+    protected StringBuilder toStringBuilder() {
+        StringBuilder buf = super.toStringBuilder();
         Pattern p = getPattern();
         if (p != null && ! (p.pattern().equals(".*"))) {
             buf.append(" pattern:").append(p.pattern());
