@@ -1,4 +1,6 @@
 <%--
+  WTF
+
   This template updates or shows a contact of a addressbook.
 --%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
