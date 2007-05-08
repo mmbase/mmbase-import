@@ -20,15 +20,6 @@
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
 
-<%-- import of input fields --%>
-<mm:import id="initials" externid="_initials"/>
-<mm:import id="firstname" externid="_firstname"/>
-<mm:import id="lastname" externid="_lastname"/>
-<mm:import id="email" externid="_email"/>
-<mm:import id="address" externid="_address"/>
-<mm:import id="zipcode" externid="_zipcode"/>
-<mm:import id="city" externid="_city"/>
-<mm:import id="telephone" externid="_telephone"/>
 
 <mm:node number="$addressbook" id="myaddressbook"/>
 
@@ -106,19 +97,11 @@
     <form name="addcontact" class="formInput" method="post" action="<mm:treefile page="/address/addcontact.jsp" objectlist="$includePath" referids="$referids"/>">
 
       <table class="font">
-
-        <tr><td><di:translate key="address.initials" /></td><td><input type="text" name="_initials" size="80" value="<mm:write referid="initials"/>"/></td></tr>
-        <tr><td><di:translate key="address.firstname" /></td><td><input type="text" name="_firstname" size="80" value="<mm:write referid="firstname"/>"/></td></tr>
-        <tr><td><di:translate key="address.lastname" /></td><td><input type="text" name="_lastname" size="80" value="<mm:write referid="lastname"/>"/></td></tr>
-        <tr><td><di:translate key="address.email" /></td><td><input type="text" name="_email" size="80" value="<mm:write referid="email"/>"/></td></tr>
-        <tr><td><di:translate key="address.address" /></td><td><input type="text" name="_address" size="80" value="<mm:write referid="address"/>"/></td></tr>
-        <tr><td><di:translate key="address.zipcode" /></td><td><input type="text" name="_zipcode" size="80" value="<mm:write referid="zipcode"/>"/></td></tr>
-        <tr><td><di:translate key="address.city" /></td><td><input type="text" name="_city" size="80" value="<mm:write referid="city"/>"/></td></tr>
-        <tr><td><di:translate key="address.telephone" /></td><td><input type="text" name="_telephone" size="80" value="<mm:write referid="telephone"/>"/></td></tr>
-
+        <mm:fieldlist nodetype="people" fields="initials,firstname,lastname,email,address,zipcode,telephone">
+          <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+        </mm:fieldlist>
       </table>
-
-	  <br />
+      <br />
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="addressbook" value="<mm:write referid="addressbook"/>"/>
       <input type="submit" class="formbutton" name="action1" value="<di:translate key="address.create" />"/>

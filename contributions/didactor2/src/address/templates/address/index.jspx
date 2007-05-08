@@ -28,7 +28,7 @@
           <img src="${mm:treefile('/gfx/icon_addressbook.gif', pageContext, includePath)}" width="25" height="13" border="0" 
                title="${di:translate(pageContext, 'address.addressbook')}" 
                alt="${di:translate(pageContext, 'address.addressbook')}"  />
-            <di:translate key="address.addressbook" />
+          <di:translate key="address.addressbook" />
         </div>
       </div>
       <mm:node number="$user">
@@ -39,37 +39,17 @@
             
             <!-- will collect the users which must be shown -->
             <mm:import id="peopleSet" jspvar="peopleSet" vartype="Set"/>
-            <mm:write request="peopleSet" referid="peopleSet" /> 
+            <mm:write request="peopleSet" referid="peopleSet" />             
+            <mm:import externid="addr_class"/>            
             
-            <mm:import externid="addr_class"/>
-            <!-- Show personal addressbook -->
-            
-            <mm:relatednodes type="addressbooks" max="1">
-              <span class="${addr_class eq _node.number ? 'current' : ''} addressbook">
-                <mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?,_node@addressbook" write="false">
-                  <a href="${_}"><mm:field name="name"/></a>
-                </mm:treefile>
-              </span>
-            </mm:relatednodes>
 
-            <!-- Show class addressbook -->
-            <mm:relatednodes type="classes" orderby="name">
-              <span class="${addr_class eq _node.number ? 'current' : ''} addressbook">
-                <mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?,_node@addr_class" write="false">
-                  <a href="${_}"><mm:field name="name" /></a>
-                </mm:treefile>
-              </span>
-            </mm:relatednodes>
+            <mm:treefile id="indexlink" page="/address/index.jsp"      objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?" write="false" />
 
-            <!-- Show workgroup addressbook -->
-            <mm:relatednodes type="workgroups" orderby="name">
-              <span class="${addr_class eq _node.number ? 'current' : ''} addressbook">
-                <mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?,_node@addr_class" write="false">
-                  <a href="${_}"><mm:field name="name" /></a>
-                </mm:treefile>
-              </span>
-            </mm:relatednodes>
-              
+            <mm:treeinclude page="/address/personal.addressbook.jspx"  objectlist="$includePath" referids="indexlink@link" />     
+            <mm:treeinclude page="/address/class.addressbook.jspx"     objectlist="$includePath" referids="indexlink@link" />
+            <mm:treeinclude page="/address/workgroup.addressbook.jspx" objectlist="$includePath" referids="indexlink@link" />            
+            <mm:treeinclude page="/address/search.form.jspx"           objectlist="$includePath" referids="field?,mailid?,addr_class?" />
+
             <!-- Use complete provider  -->
             <mm:node referid="provider">
               <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
@@ -80,20 +60,6 @@
               <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
             </mm:node>
             -->
-            <mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids" write="false" id="action" />
-            <form action="${action}" method="GET">
-              <mm:present referid="field">
-                <input type="hidden" name="field" value="${field}" />
-              </mm:present>
-              <mm:present referid="mailid">
-                <input type="hidden" name="mailid" value="${mailid}" />
-              </mm:present>
-              <mm:present referid="addr_class">
-                <input type="hidden" name="addr_class" value="${addr_class}" />
-              </mm:present>
-              <input type="text" size="20" name="addr_search"/><br/>
-              <input type="submit" value="${di:translate(pageContext, 'address.search')}" />
-            </form>
 
             <mm:import externid="addressbook">-1</mm:import>
 
@@ -372,7 +338,7 @@
                         </di:getsetting>
                         <di:cell>
                           <a href="${link}">
-                            <jsp:directive.page include="show_email.jspx" />
+                            <jsp:directive.include file="show_email.jspx" />
                           </a>
                         </di:cell>
                       </di:row>
