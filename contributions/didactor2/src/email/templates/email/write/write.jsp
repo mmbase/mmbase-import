@@ -391,7 +391,7 @@
             
             <div class="mainContent">
               <div class="contentHeader">
-                <mm:import externid="mailboxname from="parameters"/><mm:write referid="mailboxname" />
+                <mm:import externid="mailboxname" from="parameters"/><mm:write referid="mailboxname" />
               </div>
               <div class="contentBodywit">
                 <br/><br/><br/><%-- aarch --%>
