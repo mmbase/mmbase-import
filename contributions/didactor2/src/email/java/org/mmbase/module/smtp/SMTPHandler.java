@@ -33,9 +33,9 @@ import nl.didactor.mail.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.20 2007-01-11 17:31:58 mmeeuwissen Exp $
+ * @version $Id: SMTPHandler.java,v 1.21 2007-05-08 12:03:08 michiel Exp $
  */
-public class SMTPHandler extends Thread {
+public class SMTPHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
     private boolean running = true;
     private final java.net.Socket socket;
@@ -239,7 +239,7 @@ public class SMTPHandler extends Thread {
                     while ((c = reader.read()) == -1) {
                         try {
                             // why's this?
-                            this.sleep(50);
+                            Thread.currentThread().sleep(50);
                         } catch (InterruptedException e) {}
                     }
                     data.append((char)c);
