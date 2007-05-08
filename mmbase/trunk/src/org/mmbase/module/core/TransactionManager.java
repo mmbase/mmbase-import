@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.39 2007-01-03 00:48:59 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.40 2007-05-08 14:22:57 michiel Exp $
  */
 public class TransactionManager {
 
@@ -236,7 +236,7 @@ public class TransactionManager {
 
     boolean performCommits(Object user, Collection<MMObjectNode> nodes) {
         if (nodes == null || nodes.size() == 0) {
-            log.warn("Empty list of nodes");
+            log.debug("Empty list of nodes");
             return true;
         }
 
