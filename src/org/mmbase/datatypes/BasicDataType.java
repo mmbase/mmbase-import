@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.72 2007-05-08 15:18:25 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.73 2007-05-08 15:23:37 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -473,6 +473,8 @@ s     */
 
         errors = requiredRestriction.validate(errors, value, node, field);
 
+        errors = validateCastValueOrNull(errors, castValue, value, node, field);
+
         if (castValue == null) {
             return errors; // null is valid, unless required.
         }
@@ -485,6 +487,12 @@ s     */
     }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
+        return errors;
+    }
+    /**
+     * @since MMBase-1.8.4
+     */
+    protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
     }
 
@@ -885,7 +893,7 @@ s     */
             error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
             error.replaceAll("\\$\\{CONSTRAINTVALUE\\}", ReplacingLocalizedString.makeLiteral(valueString(node, field)));
-            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral("" + v));
+            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral(Casting.toString(v)));
             errors.add(error);
             return errors;
         }
@@ -894,7 +902,7 @@ s     */
          * If value of a a restriction depends on node, field, then you can override this
          */
         protected String valueString(Node node, Field field) {
-            return "" + value;
+            return Casting.toString(value);
         }
 
         /**
