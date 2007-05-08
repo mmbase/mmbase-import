@@ -333,7 +333,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       %>
       <tr><td class="fieldname" style="<%= fNStyle %>">behandeld door</td>
           <td>
-            <mm:list nodes="<%= source %>" path="evenement,posrel,inschrijvingen,schrijver,users" fields="users.number" distinct="true">
+            <mm:list nodes="<%= parent_number %>" path="evenement,posrel,inschrijvingen,schrijver,users" fields="users.number" distinct="true">
                <mm:node element="users">
                <mm:first><table class="formcontent"></mm:first>
                <tr>
