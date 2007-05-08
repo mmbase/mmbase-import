@@ -9,22 +9,22 @@
   <mm:field name="type">
     <c:choose>
       <c:when test="${_ eq 0}">
-	<di:translate key="email.inbox" />
+        <di:translate key="email.inbox" />
       </c:when>
       <c:when test="${_ eq 1}">
-	<di:translate key="email.sent" />
+        <di:translate key="email.sent" />
       </c:when>
       <c:when test="${_ eq 11}">
-	<di:translate key="email.drafts" />
+        <di:translate key="email.drafts" />
       </c:when>
       <c:when test="${_ eq 2}">
-	<di:translate key="email.trash" />
+        <di:translate key="email.trash" />
       </c:when>
       <c:when test="${_ eq 3 and _node.name eq 'Persoonlijke map'}">
-	<di:translate key="email.personal" />
+        <di:translate key="email.personal" />
       </c:when>
       <c:otherwise>	
-	<mm:field name="name" />
+        <mm:field name="name" />
       </c:otherwise>
     </c:choose>
   </mm:field>
