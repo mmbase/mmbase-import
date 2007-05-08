@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.35 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.35.2.1 2007-05-08 15:12:29 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -145,6 +145,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     }
 
     public long getLength(Object value) {
+        if (value == null) return 0;
         return ((String) value).length();
     }
     /**
@@ -235,11 +236,16 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength,length,pattern").setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
 
     }
+    protected Collection validateCastValueOrNull(Collection errors, Object castValue, Object value,  Node node, Field field) {
+        errors = super.validateCastValueOrNull(errors, castValue, value,  node, field);
+        errors = minLengthRestriction.validate(errors, castValue, node, field);
+        return errors;
+
+    }
 
     protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = patternRestriction.validate(errors, castValue, node, field);
-        errors = minLengthRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
         return errors;
     }
