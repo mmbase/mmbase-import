@@ -57,14 +57,10 @@
         </mm:field>
           
         <mm:compare referid="mailboxtype" value="11" inverse="true">
-          <mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?" id="link"  write="false">
-            <mm:param name="email"><mm:field name="number" /></mm:param>
-          </mm:treefile>
+          <mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?,_node@email" id="link"  write="false" />
         </mm:compare>
         <mm:compare referid="mailboxtype" value="11" >
-          <mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?" id="link" write="false">
-            <mm:param name="id"><mm:field name="number" /></mm:param>
-          </mm:treefile>
+          <mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids,mailbox?,sf?,so?,_node@id" id="link" write="false" />
         </mm:compare>
         <di:row>
           <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
