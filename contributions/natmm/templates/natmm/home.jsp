@@ -58,7 +58,6 @@
 	      <jsp:param name="sr" value="2" />
 	   </jsp:include>
       <img src="media/trans.gif" height="1px" width="165px;" />
-      </div>
    </td>
 </tr>
 </table>
