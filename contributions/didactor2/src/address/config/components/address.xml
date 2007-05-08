@@ -3,7 +3,7 @@
   </scope>
   <scope name="providers" referid="provider">
     <!-- some addresses always appearing in the address-book -->
-    <setting name="addresses" type="string"  default="did@meeuw.org" />
+    <setting name="addresses" type="string"  default="" />
   </scope>
   <scope name="educations" referid="education">
     <setting name="coaches_see_workgroup" type="boolean"  default="true" />
