@@ -1,4 +1,4 @@
-<%@ page import="nl.didactor.component.education.utils.EducationPeopleConnector,java.util.*" 
+<%@ page import="nl.didactor.component.education.utils.EducationPeopleConnector,java.util.*,org.mmbase.bridge.*" 
 %>
       <mm:import id="tmpreferids" reset="true">provider?</mm:import>
       <%
@@ -14,7 +14,7 @@
             {
                Node sEducationID = it.next();
                %>
-                  <mm:node number="<%= sEducationID.getNumber() %>" jspvar="nodeEducation">
+                  <mm:node number="<%= "" + sEducationID.getNumber() %>" jspvar="nodeEducation">
                      <%
                         sortmapEducations.put((String) nodeEducation.getValue("name"), sEducationID);
                      %>
@@ -31,7 +31,7 @@
             String sEducationID = (String) sortmapEducations.get(sEducationName);
             String sConstraints;
             %>
-               <mm:node number="<%= sEducationID %>">
+               <mm:node number="<%= "" + sEducationID %>">
                   <%
                      sConstraints = "people.number=" + sUserID;
                   %>
