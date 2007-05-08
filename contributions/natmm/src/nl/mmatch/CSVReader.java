@@ -369,7 +369,8 @@ public class CSVReader implements Runnable {
             personsNode.setValue("lastname", thisPerson.get("E_NAAM"));
         }
         personsNode.setValue("gender",getGender((String) thisPerson.get("GENDER")));
-        if (!personsNode.getValue("importstatus").equals(IGNORE_BEAUFORT)) {
+        // if null means not in db - new medewerker. set to active to prevent NullPE. also being in beaufort means it is an active medewerker
+        if ((personsNode.getValue("importstatus") == null) || (!personsNode.getValue("importstatus").equals(IGNORE_BEAUFORT))) {
         	personsNode.setValue("importstatus","active");
         }
         personsNode.commit();
