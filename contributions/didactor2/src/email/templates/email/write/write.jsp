@@ -260,7 +260,7 @@
         
       <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
       
-      <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no">
+      <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?,class" escapeamps="no">
         <mm:param name="provider" value="$provider"/>
         <mm:param name="mailbox" value="$mailbox"/>
       </mm:treefile>
@@ -273,11 +273,12 @@
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=to</mm:import>
       <mm:log>Redirecting to ${redirect_url}</mm:log>
       <%    response.sendRedirect(redirect_url); %>
+
     </mm:present>
     
     <mm:import externid="lookup_cc_action"/>
     <mm:present referid="lookup_cc_action">
-      <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
+      <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?,class" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
       <%    response.sendRedirect(redirect_url); %>
     </mm:present>
     <mm:import externid="lookup_bcc_action"/>
@@ -383,7 +384,7 @@
             
             <div class="mainContent">
               <div class="contentHeader">
-                <mm:import externid="mailboxname" from="parameters"/><mm:write referid="mailboxname" />
+                <mm:import externid="mailboxname from="parameters"/><mm:write referid="mailboxname" />
               </div>
               <div class="contentBodywit">
                 <br/><br/><br/><%-- aarch --%>

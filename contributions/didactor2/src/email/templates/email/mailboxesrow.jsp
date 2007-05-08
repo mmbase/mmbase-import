@@ -24,7 +24,7 @@
   <mm:import id="mails" reset="true"><mm:size /></mm:import>
 </mm:relatednodescontainer>
 
-<a href="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids,mboxdisplayname?@mailboxtitle">
+<a href="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids,mboxdisplayname?@mailboxname">
   <mm:param name="mailbox"><mm:field name="number" /></mm:param>
   <mm:param name="so">down</mm:param>
 </mm:treefile>"><mm:write referid="activemailbox" escape="none" /> (<mm:write referid="newmails"/>/<mm:write referid="mails"/>)</a> 
