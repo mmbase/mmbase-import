@@ -4,20 +4,47 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.LocalContext;
 import java.util.Map;
+import java.net.*;
+import java.util.concurrent.*;
 
 /**
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.7 2007-04-30 13:26:45 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.8 2007-05-08 12:03:08 michiel Exp $
  */
 public class SMTPListener extends Thread {
+
+    private static final int THREADS = 10;
+    static int number = 1;
+    private static final ThreadFactory factory = new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "SMTPLISTENER-" + (number++)) {
+                        /**
+                         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+                         */
+                        public void run() {
+                            try {
+                                super.run();
+                            } catch (Throwable t) {
+                                System.err.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
+                            }
+                        }
+                    };
+                t.setDaemon(true);
+                return t;
+            }
+        };
+    final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue(), factory);
+
+
     private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
     private boolean running = true;
-    private java.net.ServerSocket ssocket;
-    private final Map properties;
+    private ServerSocket ssocket;
+    private final Map<String, String> properties;
 
-    public SMTPListener(Map properties) {
+    public SMTPListener(Map<String, String> properties) {
         this.properties = properties;
     }
 
@@ -32,27 +59,32 @@ public class SMTPListener extends Thread {
         } catch (java.lang.ExceptionInInitializerError e) {
             // fail silently?
         }
-        String portnr = (String)properties.get("port");
+        String portnr = properties.get("port");
         int port = Integer.parseInt(portnr);
 
+        String host = properties.get("hostname");
+        if (host == null) host = "localhost";
+
         try {
-            ssocket = new java.net.ServerSocket(port);
+            ssocket = new ServerSocket();
+            SocketAddress address = new InetSocketAddress(host, port);
+            ssocket.bind(address);
         } catch (Exception e) {
             running = false;
-            log.error("Cannot listen on port " + port);
+            log.error("Cannot listen on port " + port + " because " + e.getMessage());
         }
         log.info("SMTP listening on " + ssocket);
 
         while (running) {
             try {
-                java.net.Socket socket = ssocket.accept();
+                final Socket socket = ssocket.accept();
                 if (log.isDebugEnabled()) {
                     log.debug("Accepted connection: " + socket);
                 }
-                SMTPHandler handler = new SMTPHandler(socket, properties, cloud);
-                handler.start();
+                final SMTPHandler handler = new SMTPHandler(socket, properties, cloud);
+                socketThreads.execute(handler);
             } catch (Exception e) {
-                log.error("Exception while accepting connections: " + e);
+                log.error("Exception while accepting connections: " + e.getMessage(), e);
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ie) {return;}
