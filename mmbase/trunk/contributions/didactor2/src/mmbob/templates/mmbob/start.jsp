@@ -11,7 +11,7 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
     <title><di:translate key="mmbob.mmbaseforums" /></title>
   </head>
   <mm:import externid="forumid">unknown</mm:import>
@@ -143,20 +143,20 @@
             </tr>
           </mm:nodelistfunction>
         </table>
-  <mm:compare referid="adminmode" value="true">
-    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-    <tr><th align="lef"><di:translate key="mmbob.adminfunctions" /></th></tr>
-    <td>
-    <p />
-    <a href="<mm:url page="changeforum.jsp">
+        <mm:compare referid="adminmode" value="true">
+          <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+            <tr><th align="lef"><di:translate key="mmbob.adminfunctions" /></th></tr>
+            <td>
+              <p />
+              <a href="<mm:url page="changeforum.jsp">
+                <mm:param name="forumid" value="$forumid" />
+                </mm:url>"><di:translate key="mmbob.changeforum" /></a><br />
+                <a href="<mm:url page="newpostarea.jsp">
                   <mm:param name="forumid" value="$forumid" />
-                 </mm:url>"><di:translate key="mmbob.changeforum" /></a><br />
-    <a href="<mm:url page="newpostarea.jsp">
-                  <mm:param name="forumid" value="$forumid" />
-                 </mm:url>"><di:translate key="mmbob.addnewarea" /></a>
-    <p />
-    </td>
-    </tr>
+                  </mm:url>"><di:translate key="mmbob.addnewarea" /></a>
+                  <p />
+                </td>
+              </tr>
     </table>
   </mm:compare>
 

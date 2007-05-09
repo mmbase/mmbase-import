@@ -10,8 +10,7 @@
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
         <title>MMBob</title>
-        <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
-        <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbob/css/navigation.css" objectlist="$includePath" referids="$referids" />" />
+        <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbob/css/navigation.css" objectlist="$includePath" />" />
       </mm:param>
     </mm:treeinclude>
 

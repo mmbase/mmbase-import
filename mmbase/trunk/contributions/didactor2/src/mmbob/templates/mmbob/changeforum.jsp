@@ -6,8 +6,8 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
-<HTML>
-<HEAD>
+<html>
+<head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
    <title>MMBob</title>
