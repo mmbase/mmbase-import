@@ -65,7 +65,7 @@ if(path.equals("newsletter.jsp")) {
 %>
 <tr>
    <td style="width:48%"></td>
-   <td style="text-align:center;width:744;height:<%= pHeight %>px;padding-bottom:1px;">
+   <td style="text-align:left;width:744;height:<%= pHeight %>px;padding-bottom:1px;">
    <% 
    for (int i =0; i<shortyCnt;i++){ %>
       <%@include file="../includes/shorty_logic_2.jsp" %>
