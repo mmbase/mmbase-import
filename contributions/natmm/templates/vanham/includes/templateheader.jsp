@@ -13,8 +13,6 @@
 <mm:import externid="a" jspvar="artikelID" vartype="String">-1</mm:import>
 <%
 
-String imageId = request.getParameter("i");
-String offsetId = request.getParameter("offset"); if(offsetId==null){ offsetId=""; }
 String emailId = request.getParameter("e");
 String nameId = request.getParameter("n");
 String textId = request.getParameter("d");
