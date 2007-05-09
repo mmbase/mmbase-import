@@ -83,8 +83,9 @@ if(thisOffset+1<(listSize/pageSize + 1)) {
 }
 
 int startPage = thisOffset*pageSize;
+int articlesSize = articles.size();
 for(int i=startPage;i<startPage + pageSize;i++){
-   if(i<articles.size()) {
+   if(i<articlesSize) {
       %><mm:node number="<%= (String) articles.get(i) %>">
          <mm:field name="titel" jspvar="titel" vartype="String" write="false">
          <mm:field name="number" jspvar="number" vartype="String" write="false">
@@ -96,13 +97,13 @@ for(int i=startPage;i<startPage + pageSize;i++){
 		<a href="usedinitems.jsp?ID=<%= (String) articles.get(i) %>" target="_blank">used in items</a><% 
    } else if (i < listSize) {
    // as we move through "articles + paragraphs" we need to adjust paragraphs index by removing the articles size in i
-       %><mm:node number="<%= (String) paragraphs.get(i - articles.size()) %>">
+       %><mm:node number="<%= (String) paragraphs.get(i - articlesSize) %>">
          <mm:field name="number" jspvar="number" vartype="String" write="false">
          <mm:field name="titel" jspvar="titel" vartype="String" write="false">
             <mm:field name="tekst" jspvar="tekst" vartype="String" write="false"><%= viewHrefs(titel, number, "paragraaf", "tekst", tekst) %></mm:field>
          </mm:field>
          </mm:field>
-      </mm:node><br/><a href="usedinitems.jsp?ID=<%= (String) paragraphs.get(i - articles.size()) %>" target="_blank">used in items</a><% 
+      </mm:node><br/><a href="usedinitems.jsp?ID=<%= (String) paragraphs.get(i - articlesSize) %>" target="_blank">used in items</a><% 
    }
 }%>
 </body>
