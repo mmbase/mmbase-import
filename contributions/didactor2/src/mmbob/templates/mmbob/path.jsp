@@ -1,4 +1,5 @@
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@ page contentType="text/html; charset=utf-8" language="java" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
@@ -31,7 +32,8 @@
 		<mm:param name="forumid" value="$forumid" />
 		<mm:param name="postareaid" value="$postareaid" />
 		</mm:url>">
-	<mm:field name="name" /></a>
+    <mm:field name="name" />
+</a>
 	</mm:node>
 </mm:compare>
 
@@ -41,7 +43,7 @@
 	<a href="<mm:url page="start.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">
-	<mm:field name="name" /></a>
+    <mm:field name="name" /></a>
 	</mm:node> >
 
 	<mm:list nodes="$posterid" path="posters,people">
@@ -57,7 +59,7 @@
 	<a href="<mm:url page="start.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">
-	<mm:field name="name" /></a>
+    <mm:field name="name" /></a>
 	</mm:node> >
 
 	<a href="<mm:url page="onlineposters.jsp">
@@ -70,7 +72,7 @@
 	<a href="<mm:url page="start.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">
-	<mm:field name="name" /></a>
+    <mm:field name="name" />/</a>
 	</mm:node> >
 
 	<a href="<mm:url page="allposters.jsp">
@@ -84,7 +86,7 @@
 	<a href="<mm:url page="start.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">
-	<mm:field name="name" /></a>
+    <mm:field name="name" /></a>
 	</mm:node> >
 
 	<a href="<mm:url page="privatemessages.jsp">
