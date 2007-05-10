@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="portlets-banner/src/java"/>
+	<classpathentry kind="src" path="portlets-ecard/src/java"/>
+	<classpathentry kind="src" path="portlets-maileditors/src/java"/>
 	<classpathentry kind="src" path="portlets-playlist/src/java"/>
 	<classpathentry kind="src" path="portlets-search/src/java"/>
 	<classpathentry kind="src" path="portlets-poll/src/java"/>
@@ -44,5 +46,11 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.2-20061208.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jcaptcha/jars/jcaptcha-all-1.0-RC3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/finalist/jars/cmsc-security-1.2-20070403.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/plexus/jars/plexus-utils-1.0-alpha-3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
