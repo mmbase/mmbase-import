@@ -88,7 +88,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
         return new CharSequence() {
                 protected String get() {
                     
-                    TranslateTable.init(pageContext);
+                    TranslateTable.init();
                     
 
 
