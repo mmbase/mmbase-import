@@ -28,7 +28,7 @@ aLabels.add("omschrijving");
 aLabels.add("Wat houdt de vrijwilligersfunctie in?"); 
 aLabels.add("Functieomvang"); 
 aLabels.add("Duur"); 
-aLabels.add("Bezoekercentrum / Regio / Centraal kantoor"); 
+aLabels.add("Standplaats"); 
 aLabels.add("Wat verwachten wij van de vrijwilliger?"); 
 aLabels.add("opleidingseisen"); 
 aLabels.add("Extra opmerkingen"); 

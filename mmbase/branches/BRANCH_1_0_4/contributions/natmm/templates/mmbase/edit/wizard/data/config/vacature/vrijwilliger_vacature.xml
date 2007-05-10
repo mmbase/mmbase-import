@@ -72,7 +72,7 @@
          <prompt>duur</prompt>
       </field>
       <field name="afdeling" ftype="html" rows="16" dtrequired="false">
-         <prompt>Bezoekercentrum/Regio/Centraal kantoor</prompt>
+         <prompt>Standplaats</prompt>
       </field>
       <field name="functieeisen" ftype="html" rows="16">
          <prompt>wat verwachten wij van de vrijwilliger?</prompt>
