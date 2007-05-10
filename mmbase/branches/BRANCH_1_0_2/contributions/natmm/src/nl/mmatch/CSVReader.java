@@ -181,7 +181,8 @@ public class CSVReader implements Runnable {
         int nodesDeleted = 0;
         while(i<thisnodesList.size()) {
             thisnode = thisnodesList.getNode(i);
-            if((thisnode.getValue(thisFields[0]).toString()).equals(thisFields[1])) {
+            // for newly imported departements, importstatus [0] might be null. This code never deletes departments anyway as [1] is set to -1 before
+            if((thisnode.getValue(thisFields[0]) != null) && (thisnode.getValue(thisFields[0]).toString()).equals(thisFields[1])) {
                 thisnode.delete(true);
                 nodesDeleted++;
             } else {
@@ -189,8 +190,13 @@ public class CSVReader implements Runnable {
                     relations = thisnode.getRelations(thisRelations[t],thisRelations[t+1]);
                     for(int r=0; r<relations.size(); r++) {
                         Relation relation = relations.getRelation(r);
-                        if(relation.getValue("readmore2").equals("inactive")) {
-                            relation.delete(true);
+                        // for a newly imported department no medewerkers might be assigned in the first place
+                        if (relation.getValue("readmore2") == null) {
+                        	log.info("afdelingen/medewerker relation readmore2 is missing");
+                        } else {
+                        	if(relation.getValue("readmore2").equals("inactive")) {
+                        		relation.delete(true);
+                        	}
                         }
                     }
                 }
