@@ -99,6 +99,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         }
 
         if ("class".equals(application)) {
+            checkBuilder();
             ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
             if (li == null) {
                 throw new org.mmbase.security.SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
