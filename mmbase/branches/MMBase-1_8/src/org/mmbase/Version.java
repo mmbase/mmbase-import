@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.39.2.5 2007-05-03 14:12:05 michiel Exp $
+ * @version $Id: Version.java,v 1.39.2.6 2007-05-10 13:12:11 michiel Exp $
  */
 public class Version {
 
@@ -27,9 +27,10 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getName() {
-        String cvsTag = "$Name: not supported by cvs2svn $";
-        String name = cvsTag.substring(6, cvsTag.length() - 1).trim();
-        return name.equals("") ? "MMBase" : name;
+        //String cvsTag = "$Name: not supported by cvs2svn $";
+        //String name = cvsTag.substring(6, cvsTag.length() - 1).trim();
+        //return name.equals("") ? "MMBase" : name;
+        return "MMBase";
     }
 
     /**
@@ -96,7 +97,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
