@@ -24,7 +24,7 @@
       <a href='<mm:url referids="referrer" page="$jsps/list.jsp">                                                               
         <mm:param name="wizard">../samples/people</mm:param>
         <mm:param name="nodepath">people</mm:param>
-        <mm:param name="fields">firstname,lastname,owner</mm:param></mm:url>" >Person-Test</a>
+        <mm:param name="fields">firstname,lastname,owner</mm:param></mm:url>' >Person-Test</a>
       </td><td>
       A simple one-step person editor. First-name, last-name and related articles.
       </td></tr>
