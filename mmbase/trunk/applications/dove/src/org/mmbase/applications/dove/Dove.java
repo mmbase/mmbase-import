@@ -53,7 +53,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.83 2007-04-24 13:04:19 michiel Exp $
+ * @version $Id: Dove.java,v 1.84 2007-05-10 11:58:08 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -117,6 +117,40 @@ public class Dove extends AbstractDove {
     }
 
     /**
+     * @since MMBase-1.8.4
+     */
+    protected Element addField(Element out, NodeManager nm, Field f, org.mmbase.bridge.Node node) {
+        Element fel;
+        DataType dataType = f.getDataType();
+        String fname = f.getName();
+        if (dataType instanceof BinaryDataType) {
+            fel = addContentElement(FIELD, "", out);
+            
+            int byteLength = 0;
+            if (nm.hasField("filesize")) {
+                byteLength = node.getIntValue("filesize");
+            } else if (nm.hasField("size")) {
+                byteLength = node.getIntValue("size");
+            } else {
+                byte[] bytes = node.getByteValue(fname);
+                byteLength = bytes != null ? bytes.length : 0;
+            }
+            fel.setAttribute(ELM_SIZE, "" + byteLength);
+        } else if (dataType instanceof DateTimeDataType ||
+                   dataType instanceof IntegerDataType ||
+                   dataType instanceof LongDataType
+                               ) {
+            // have to convert ourselves because bridge will use user-defined formatting
+            fel = addContentElement(FIELD, node.isNull(fname) ? null : "" + node.getLongValue(fname), out);
+        } else {
+            fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
+        }
+        fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
+        fel.setAttribute(ELM_NAME, fname);
+        return fel;
+    }
+
+    /**
      * Handles a node storing its content in a DOM element.
      * This method accepts a object to store, as well as a DOM element, which
      * may contain as it child nodes elements describing the fields to retrieve.
@@ -149,33 +183,8 @@ public class Dove extends AbstractDove {
             for (FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f = i.nextField();
                 String fname = f.getName();
-                if (isDataField(nm,f)) {
-                    Element fel;
-                    DataType dataType = f.getDataType();
-                    if (dataType instanceof BinaryDataType) {
-                        fel = addContentElement(FIELD, "", out);
-
-                        int byteLength = 0;
-                        if (nm.hasField("filesize")) {
-                            byteLength = node.getIntValue("filesize");
-                        } else if (nm.hasField("size")) {
-                            byteLength = node.getIntValue("size");
-                        } else {
-                            byte[] bytes = node.getByteValue(fname);
-                            byteLength = bytes != null ? bytes.length : 0;
-                        }
-                        fel.setAttribute(ELM_SIZE, "" + byteLength);
-                    } else if (dataType instanceof DateTimeDataType ||
-                               dataType instanceof IntegerDataType ||
-                               dataType instanceof LongDataType
-                               ) {
-                        // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
-                    } else {
-                        fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
-                    }
-                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
-                    fel.setAttribute(ELM_NAME, fname);
+                if (isDataField(nm, f)) {
+                    addField(out, nm, f, node);
                 }
             }
         } else {
@@ -184,25 +193,9 @@ public class Dove extends AbstractDove {
                 if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR, "name required for field",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
-                } else if (isDataField(nm,fname)) {
-                    Element fel;
+                } else if (isDataField(nm, fname)) {
                     Field f = nm.getField(fname);
-                    DataType dataType = f.getDataType();
-                    if (dataType instanceof BinaryDataType) {
-                        fel = addContentElement(FIELD, "", out);
-                        byte[] bytes = node.getByteValue(fname);
-                        fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (dataType instanceof DateTimeDataType ||
-                               dataType instanceof IntegerDataType ||
-                               dataType instanceof LongDataType
-                               ) {
-                        // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
-                    } else {
-                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
-                    }
-                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
-                    fel.setAttribute(ELM_NAME, fname);
+                    addField(out, nm, f, node);
                 } else {
                     Element err = addContentElement(ERROR, "field with name " + fname + " does not exist", out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
