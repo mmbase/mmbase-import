@@ -256,7 +256,7 @@ public class PortletFragment extends AbstractFragmentSingle {
                     responseWriter.println("the portlet is currently unavailable!");
                 }
                 else {
-                    responseWriter.println(storedWriter.toString());
+                    responseWriter.print(storedWriter.toString());
                 }
     		} finally {
     			// output the footer JSP page
