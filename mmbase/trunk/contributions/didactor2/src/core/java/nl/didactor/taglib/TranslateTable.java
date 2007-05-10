@@ -1,5 +1,6 @@
 package nl.didactor.taglib;
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ResourceWatcher;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.Servlet;
 import java.util.*;
@@ -22,11 +23,11 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.10 2007-04-30 16:50:36 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.11 2007-05-10 15:14:00 michiel Exp $
  */
 public class TranslateTable {
-    private static Logger log = Logging.getLoggerInstance(TranslateTable.class.getName());
-    private static Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
+    private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
+    private static final Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
     private String translationlocale;
@@ -36,21 +37,16 @@ public class TranslateTable {
      * reloads them into the translation table in case they are
      * changed 
      */
-    static class TranslationFileWatcher extends FileWatcher { 
-        public String basepath;
-        /**
-         * Constructor
-         */
-        public TranslationFileWatcher(String path) { 
-            super(true); 
-            this.basepath = path;
+    static class TranslationFileWatcher extends ResourceWatcher { 
+        public TranslationFileWatcher(ResourceLoader rl) { 
+            super(rl); 
         } 
         
         /**
          * Change event. Read the file and process it.
          */
-        public void onChange(File file) { 
-            readFile(file);
+        public void onChange(String resource) { 
+            readResource(resourceLoader, resource);
         } 
     } 
 
@@ -59,20 +55,14 @@ public class TranslateTable {
      * once. The method is synchronized to prevent concurrent thread
      * to accessing it simultaniously.
      */
-    public static synchronized void init(PageContext pageContext) {
+    public static synchronized void init() {
         if (initialized) {
             return;
         }
-        String path = ((Servlet)pageContext.getPage()).getServletConfig().getServletContext().getRealPath("/WEB-INF/config/translations");
-        
-
-        try {
-            path = (new File(path)).getCanonicalPath();
-        } catch (IOException e) {}
-
-        watcher = new TranslationFileWatcher(path);
+        ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader("translations");
+        watcher = new TranslationFileWatcher(loader);
         watcher.setDelay(10 * 1000);
-        addFiles(new File(path), watcher);
+        addResources(watcher);
 
         watcher.start();
         initialized = true;
@@ -81,18 +71,11 @@ public class TranslateTable {
     /**
      * Read a given directory and add all files to the filewatcher
      */
-    private static void addFiles(File path, TranslationFileWatcher watcher) {
-        if (!path.exists()) {
-            return;
-        }
-        File[] files = path.listFiles();
-        for (int i=0; i<files.length; i++) {
-            if (files[i].isDirectory()) {
-                // ignore
-            } else {
-                readFile(files[i]);
-                watcher.add(files[i]);
-            }
+    private static void addResources(TranslationFileWatcher watcher) {
+        Set<String> subs =  watcher.getResourceLoader().getResourcePaths(java.util.regex.Pattern.compile(".*\\.properties"), false);
+        for (String sub : subs) {
+            readResource(watcher.getResourceLoader(), sub);
+            watcher.add(sub);
         }
     }
 
@@ -100,10 +83,9 @@ public class TranslateTable {
      * Read a file into the inner data structures.
      * @param file the file to read
      */
-    protected static synchronized void readFile(File file) {
+    protected static synchronized void readResource(ResourceLoader loader, String resource) {
         // filename has the form: namespace.locale.properties
-        String filename = file.getName();
-        StringTokenizer st = new StringTokenizer(filename, ".");
+        StringTokenizer st = new StringTokenizer(resource, ".");
         String namespace = st.nextToken();
 
         // If there is no '.' in the filename then it's not a valid translation file
@@ -120,7 +102,7 @@ public class TranslateTable {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("#")) {
@@ -162,14 +144,12 @@ public class TranslateTable {
      * when we are writing it to disk.
      */
     public static void save() {
-        Vector seenFiles = new Vector();
+        Map<String, PrintWriter> seenFiles = new HashMap<String, PrintWriter>();
         synchronized(translationTable) {
-            TreeSet ts = new TreeSet(translationTable.keySet());
+            TreeSet<String> ts = new TreeSet<String>(translationTable.keySet());
             String previousFilename = "";
-            Iterator i = ts.iterator();
             PrintWriter out = null;
-            while (i.hasNext()) {
-                String key = (String)i.next();
+            for (String key : ts) {
                 StringTokenizer st = new StringTokenizer(key, ".");
                 String component = st.nextToken();
                 String locale = st.nextToken();
@@ -194,35 +174,32 @@ public class TranslateTable {
                         out.close();
                     }
                     try {
-                        String fname = watcher.basepath + File.separator + filename;
 
                         // If we have written to this file before, we must append to it!
-                        if (seenFiles.contains(fname)) {
-                            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fname, true), "UTF-8")));
-                        } else {
+                        out = seenFiles.get(filename);
+                        if (out == null) {
                             // New file, remove it from the filewatcher (so we are sure that there is nobody
                             // reading the file when we are writing it.
-                            watcher.remove(new File(fname));
-                            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fname, false), "UTF-8")));
-                            seenFiles.add(fname);
+                            watcher.remove(filename);
+                            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(watcher.getResourceLoader().createResourceAsStream(filename), "UTF-8")));
+                            seenFiles.put(filename, out);
                         }
                     } catch (IOException e) {
-                        log.error("Exception while trying to write file '" + watcher.basepath + File.separator + filename + "': " + e);
-                        log.error(e);
+                        log.error("Exception while trying to write resource '" +  watcher.getResourceLoader() + " " + filename + "': " + e, e);
                     }
                 }
                 previousFilename = filename;
                 out.println(key + "=" + translationTable.get(completekey));
             }
-            if (out != null) {
-                out.flush();
-                out.close();
+            for (PrintWriter o : seenFiles.values()) {
+                o.flush();
+                o.close();
             }
         }
 
         // Final step: add the files to the filewatcher again
-        for (int i=0; i<seenFiles.size(); i++) {
-            watcher.add(new File((String)seenFiles.get(i)));
+        for (String fn : seenFiles.keySet()) {
+            watcher.add(fn);
         }
     }
     

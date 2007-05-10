@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Provide some Didactor specify functionality as EL-functions too.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.2 2007-05-02 14:03:23 michiel Exp $
+ * @version $Id: Functions.java,v 1.3 2007-05-10 15:14:00 michiel Exp $
  * @since Didactor-2.3
  */
 public class Functions {
@@ -21,7 +21,7 @@ public class Functions {
 
 
     public static String translate(PageContext pageContext, String key) {
-        TranslateTable.init(pageContext);
+        TranslateTable.init();
         Locale loc = (Locale) pageContext.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request", PageContext.REQUEST_SCOPE);
         
         TranslateTable tt = new TranslateTable(loc == null ? null : loc.toString());
