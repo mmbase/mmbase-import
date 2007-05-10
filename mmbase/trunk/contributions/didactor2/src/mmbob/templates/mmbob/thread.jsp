@@ -11,7 +11,7 @@
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
-   <title>MMBob</title>
+   <title>MMBob - THREAD</title>
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 </head>
 <mm:import externid="forumid" />
@@ -244,7 +244,7 @@
         </td>
     </tr>
     <tr><td colspan="3"><input type="hidden" name="action" value="postreply">
-    <center><input type="submit" value="       <di:translate key="mmbob.placeresponse" />"></center>
+    <center><input type="submit" value="<di:translate key="mmbob.placeresponse" />"></center>
     </td></tr>
   </form>
 </table>
