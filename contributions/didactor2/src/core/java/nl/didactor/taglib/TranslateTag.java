@@ -94,7 +94,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
                         log.debug("Getting translation table for locale '" + translateLocale + "'");
                     }
 
-                    TranslateTable tt = new TranslateTable(translateLocale);
+                    TranslateTable tt = new TranslateTable(org.mmbase.util.LocalizedString.getLocale(translateLocale));
                     String translation = "";
                     
                     if (key != null) {
