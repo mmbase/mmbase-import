@@ -58,7 +58,6 @@ public class EcardPortlet extends ContentChannelPortlet {
    private static final String ERRORMESSAGES = "errormessages";
    private static final String PARAMETER_MAP = "parameterMap";
    private static final String VIEW_ECARD_INVALID = "view.ecard.invalid";
-   private static final String VIEW_ECARD_EMPTY = "view.ecard.empty";
    private static final String SEND_NEWSLETTER = "sendNewsletter";
    private static final String FROM_EMAIL = "fromEmail";
    private static final String TO_EMAIL = "toEmail";
@@ -95,23 +94,23 @@ public class EcardPortlet extends ContentChannelPortlet {
          getLogger().error("image or galery not available");
       }
       if (StringUtil.isEmptyOrWhitespace(fromEmail)) {
-         errorMessages.put(FROM_EMAIL, VIEW_ECARD_EMPTY);         
+         errorMessages.put(FROM_EMAIL, "view.ecard.fromEmail.empty");         
       } else if (!fromEmail.matches(getEmailRegex())) {
          errorMessages.put(FROM_EMAIL, VIEW_ECARD_INVALID);      
       }
       if (StringUtil.isEmptyOrWhitespace(toEmail)) {
-         errorMessages.put(TO_EMAIL, VIEW_ECARD_EMPTY);         
+         errorMessages.put(TO_EMAIL, "view.ecard.toEmail.empty");         
       } else if (!toEmail.matches(getEmailRegex())) {
          errorMessages.put(TO_EMAIL, VIEW_ECARD_INVALID);      
       }
       if (StringUtil.isEmptyOrWhitespace(fromName)) {
-         errorMessages.put(FROM_NAME, VIEW_ECARD_EMPTY);         
+         errorMessages.put(FROM_NAME, "view.ecard.fromName.empty");         
       }
       if (StringUtil.isEmptyOrWhitespace(toName)) {
-         errorMessages.put(TO_NAME, VIEW_ECARD_EMPTY);         
+         errorMessages.put(TO_NAME, "view.ecard.toName.empty");         
       }
       if (StringUtil.isEmptyOrWhitespace(textBody)) {
-         errorMessages.put(TEXT_BODY, VIEW_ECARD_EMPTY);         
+         errorMessages.put(TEXT_BODY, "view.ecard.textBody.empty");         
       } else if (textBody.length() > TEXTAREA_MAXLENGTH){
          textBody = textBody.substring(0, TEXTAREA_MAXLENGTH - 1);
       }
@@ -135,20 +134,18 @@ public class EcardPortlet extends ContentChannelPortlet {
           RelationUtil.createRelation(ecard, image, "posrel");     
           
           String url = getPageUrl(request, Integer.parseInt(pageId), ecardWindow, mailkey, ecard.getStringValue("number"), galleryId);
-          
           sendEmail(request, cloud, toName, toEmail, url);             
-          response.setRenderParameter("emailsent", "true");
-          response.setRenderParameter("elementId", elementId);
+          response.setRenderParameter("emailsent", "true");         
           response.setRenderParameter("ecardId", ecard.getStringValue("number"));
       }
       else {
          request.getPortletSession().setAttribute(ERRORMESSAGES, errorMessages);
          request.getPortletSession().setAttribute(PARAMETER_MAP, parameterMap);
-         response.setRenderParameter("elementId", elementId);
-         response.setRenderParameter("selgallery", galleryId);
          response.setRenderParameter("pageId", pageId);
          response.setRenderParameter("ecardWindow", ecardWindow);           
-      }           
+      }   
+      response.setRenderParameter("elementId", elementId);
+      response.setRenderParameter("selgallery", galleryId);
      
     }   	
 
@@ -157,7 +154,7 @@ public class EcardPortlet extends ContentChannelPortlet {
        String[] chars1 = new String[] {"b","c","d","f","g","h","j","k","m","n","p","r","s","t","v","w","x","z","Y","G","2","0","Q"};
        String[] chars2 = new String[] {"a","e","i","o","u","y","2","3","4","5","6","7","8","9"};
        String account = "";
-       for (int i=0;i<8;i++){
+       for (int i=0 ; i<8 ; i++){
           int ri1 = rand.nextInt(chars1.length);
           int ri2 = rand.nextInt(chars2.length);
           account += chars1[ri1];
