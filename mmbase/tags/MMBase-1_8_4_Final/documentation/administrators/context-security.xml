@@ -1,0 +1,382 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Context Security Configuration</title>
+    <date>2003-02-12</date>
+    <edition>$Id: context-security.xml,v 1.12 2006-06-21 05:24:39 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Eduard</firstname>
+        <surname>Witteveen</surname>
+      </author>
+      <author>
+        <firstname>Sjoerd</firstname>
+        <surname>de Heer</surname>
+      </author>
+      <author>
+        <firstname>Henk</firstname>
+        <surname>Hangyi</surname>
+      </author>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+    <revhistory>
+      <revision>
+        <revnumber>0.1</revnumber>
+        <date>Undated</date>
+        <authorinitials>EW</authorinitials>
+      </revision>
+      <revision>
+        <revnumber>0.2</revnumber>
+        <date>2002-10-25</date>
+        <authorinitials>SdH</authorinitials>
+      </revision>
+      <revision>
+        <revnumber>0.3</revnumber>
+        <date>2003-01-30</date>
+        <authorinitials>HH</authorinitials>
+      </revision>
+      <revision>
+        <revnumber>0.4</revnumber>
+        <date>2003-02-07</date>
+        <authorinitials>PvR</authorinitials>
+        <revremark>Placed security framework and xml how-to in separate documents</revremark>
+      </revision>
+    </revhistory>
+  </articleinfo>
+  <section id="introduction">
+    <title>Introduction</title>
+    <section id="context_security">
+      <title>A security implementation with contexts</title>
+      <para>A context exists of a set of rights which describe what you can do within this context with an object of MMBase. For example you define read access to a the context which is used by anonymous visitors of your site and you can define a context with edit rights for registered users of your site. The main parts of the security framework are:</para>
+      <itemizedlist>
+        <listitem>
+          <para>Single users (users)</para>
+        </listitem>
+        <listitem>
+          <para>Groups (users)</para>
+        </listitem>
+        <listitem>
+          <para>Contexts</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section id="users">
+      <title>Users</title>
+      <para>The users of MMBase can have different levels anonymous or registered users. The anonymous users are the normal page viewers. There rights are being served through the anonymous module of MMBase. Registered users are being served through the user/password module, this are the users that can alter data within MMBase.</para>
+      <para>For registered users there is also an extra level called rank. The default ranks are &#39;Basic user&#39; and &#39;Administrator&#39;. These ranks can denote extra rights within MMBase. The anonymous users can only have the rank &#39;Anonymous&#39;.</para>
+    </section>
+    <section id="groups">
+      <title>Groups</title>
+      <para>A Group can exist of users and/ or groups. In this way you can define a structure which inherits rights from lower levels. For example the office-sweeper group may read the newspaper. The office-clerk group is member of the office-sweeper group but may also use the toilet. So a member of the office-clerk may read the newspaper and go to the toilet, even at the same time. While a office-sweeper can only read the paper and work fast to get home in time to use the bathroom. As you probably noticed a stupid example which might help to understand the framework.</para>
+      <para>A user can be member of more than one group within MMBase.</para>
+    </section>
+    <section id="contexts">
+      <title>Contexts</title>
+      <para>Each object within MMBase has a context. Which context is associated with an object can be seen in the owner field of that object. The name found there is the name first used as context before fallback on the default context. In the context is defined which rights are granted to a user or group. The following rights are available.</para>
+      <itemizedlist>
+        <listitem>
+          <para>read, read the content of an object.</para>
+        </listitem>
+        <listitem>
+          <para>write, write content to an object.</para>
+        </listitem>
+        <listitem>
+          <para>link, making a relation between two objects.</para>
+        </listitem>
+        <listitem>
+          <para>delete, remove an object.</para>
+        </listitem>
+        <listitem>
+          <para>create, create a new object of the type typedef. The so called editors.</para>
+        </listitem>
+        <listitem>
+          <para>change, changing of context.</para>
+        </listitem>
+      </itemizedlist>
+      <para>Of each context is also know to which context it may change. An admin may change to a user but a user may not change to an admin.</para>
+    </section>
+  </section>
+  <section id="explanation">
+    <title>Central notions in the context security model</title>
+    <section id="contexts_groups_users">
+      <title>Contexts, Groups and Users </title>
+      <section id="reference_field">
+        <title>Reference field</title>
+        <para>Within MMBase each object has a field called &#39;owner&#39;. The value of this field is used by the security system to specify the context of an object. If an object is accessed and the name of its context does not exist a warning will be issued in the logs and the default context will be selected.</para>
+      </section>
+      <section id="expl_contexts">
+        <title>Contexts</title>
+        <para>A context defines which rights a group has on a object. Also is defined within this context to which contexts you can change to assume there rights.</para>
+      </section>
+      <section id="groups">
+        <title>Groups</title>
+        <para>A group is a collection of users and groups. In this way you can represent your organization in the security system. If used properly in combination with contexts for each group.</para>
+      </section>
+      <section id="users">
+        <title>Users</title>
+        <para>Anonymous users: These users get there rights from the module called anonymous. They are considered the normal page viewers. There rank will always be &#39;ANONYMOUS&#39;.</para>
+        <para>Logged in users: These users are validated through the user/password module of the context security. They are the users which can change your data in MMBase. The rank of these users is normally &#39;Basic users&#39; but can also be &#39;Administrator&#39; which is a rank that grants more rights within MMBase.</para>
+      </section>
+      <section id="overview">
+        <title>Overview picture of the security model</title>
+        <screenshot>
+          <graphic fileref="media/contextSecurity.png" />
+        </screenshot>
+        <para>Note that the context to which a user belongs, is stored in the owner field of the user.</para>
+      </section>
+    </section>
+    <section id="operations">
+      <title>Operations on objects</title>
+      <section id="rwd">
+        <title>Read, Write and Delete</title>
+        <para>To be able to read or write or delete an object in MMBase a user needs the right &#39;read&#39; or &#39;write&#39; or &#39;delete&#39; for this object.</para>
+      </section>
+      <section id="making_reference">
+        <title>Making a reference to.</title>
+        <para>The right &#39;link&#39; give a user the possibility to create relations between objects in MMBase. The user needs create rights on the relation builder for this to work!</para>
+      </section>
+      <section id="create">
+        <title>Create</title>
+        <para>The right &#39;create&#39; is only used for builders. It gives the specified user the right to create objects in this selected builder.</para>
+      </section>
+      <section id="change">
+        <title>Change</title>
+        <para>The right &#39;change context&#39; gives a users the right to alter the rights defined in the selected context.</para>
+      </section>
+    </section>
+    <section id="rights">
+      <title>Rights</title>
+      <section id="create_object">
+        <title>Create a new object</title>
+        <para>To be able to create an object the user needs &#39;create&#39; rights on the node that represents the node-type within MMBase, see the typedef table.</para>
+      </section>
+      <section id="create_relation">
+        <title>Creating a new relation</title>
+        <para>To create a new relation your users needs &#39;create&#39; rights on the insrel table and &#39;link&#39; rights between the objects where he or she wants to create a relation in-between.</para>
+      </section>
+      <section id="alter">
+        <title>Altering an object</title>
+        <para>To be able to change an object the user needs the &#39;change&#39; right for that object.</para>
+      </section>
+      <section id="change_rights">
+        <title>Changing rights in contexts</title>
+        <para>When you want a user to be able to change the rights of a context then that user needs &#39;change context&#39; rights for that selected context.</para>
+      </section>
+      <section id="delete_right">
+        <title>Deleting objects</title>
+        <para>To remove an object the user needs &#39;delete&#39; rights.</para>
+      </section>
+    </section>
+  </section>
+  <section id="extended_example">
+    <title>An extended example</title>
+    <para>The following XML will be used to provide some explanation on the context security configuration</para>
+    <programlisting><![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd">
+<contextconfig>
+  <loginmodules>
+    <module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin" />
+    <module name="name/password" class="org.mmbase.security.implementation.context.PasswordLogin" />
+  </loginmodules>
+  <accounts>
+    <user name="anonymous" context="default" />
+    <user name="admin" context="admin">
+      <identify type="name/password" rank="administrator">admin2k</identify>
+    </user>
+    <user name="foo" context="default" >
+      <identify type="name/password" rank="basic user">bar</identify>
+    </user>
+  </accounts>
+  <groups>
+    <group name="everyone">
+      <contains type="group" named="users" />
+      <contains type="user" named="anonymous" />
+    </group>
+    <group name="users">
+      <contains type="user" named="foo" />
+      <contains type="group" named="administrators" />
+    </group>
+    <group name="administrators">
+      <contains type="user" named="admin" />
+    </group>
+  </groups>
+  <contexts default="default">
+    <context name="default">
+      <operation type="create">
+        <grant group="users" />
+      </operation>
+      <operation type="read">
+        <grant group="everyone" />
+      </operation>
+      <operation type="write">
+        <grant group="users" />
+      </operation>
+      <operation type="link">
+        <grant group="users" />
+      </operation>
+      <operation type="delete">
+        <grant group="users" />
+      </operation>
+      <operation type="change context">
+        <grant group="administrators" />
+      </operation>
+      <possible context="default" />
+    </context>
+  </contexts>
+</contextconfig>
+    ]]></programlisting>
+    <section id="loginmodule">
+      <title>&lt;loginmodules /&gt;</title>
+      <para>This is the module that takes care of the login process within MMBase. There are no changes needed to this field so it will not be described any further.</para>
+    </section>
+    <section id="accounts">
+      <title>&lt;accounts /&gt;</title>
+      <para>This are the accounts of the users which are know to the system. It is advised to also create a user called anonymous since it does not exists anywhere else.</para>
+    </section>
+    <section id="user_tag">
+      <title>&lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</title>
+      <para>The following values can be given to the elements of user.</para>
+      <itemizedlist>
+        <listitem>
+          <para>name="..." : The name of the user</para>
+        </listitem>
+        <listitem>
+          <para>context="..." : The context that objects get when created through this user</para>
+        </listitem>
+        <listitem>
+          <para>&lt;identify type="..." &gt; : The login type refers to /contextconfig/loginmodules/module[@name] , this shall always be "name/password"</para>
+        </listitem>
+        <listitem>
+          <para>&lt;identify rank="..." &gt; : This is the rank of the user after login. The default is &#39;basic user&#39; unless a person is administrator then the rank will be &#39;administrator&#39;. Anonymous users always get the rank &#39;anonymous&#39;</para>
+        </listitem>
+        <listitem>
+          <para>&lt;identify &gt; ... &lt;/identify &gt; : The password for this user</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section id="group_tag">
+      <title>&lt;group&gt; &lt;contains /&gt; &lt;/group&gt;</title>
+      <para>This defines groups within the context security. The following structure applies:</para>
+      <programlisting><![CDATA[
+<group name="%name%">
+  <contains type="user" named="%username%" />
+  <contains type="user" named="%username%" />
+  <contains type="group" named="%groupname%" />
+  <contains type="group" named="%groupname%" />
+</group>
+      ]]></programlisting>
+      <para>The following values can be given to the elements of group:</para>
+      <itemizedlist>
+        <listitem>
+          <para>name="..." : The name of the group.</para>
+        </listitem>
+        <listitem>
+          <para>&lt;contains type="..." &gt; : The type of of the element &#39;named&#39; valid values are &#39;user&#39; and &#39;group&#39;.</para>
+        </listitem>
+        <listitem>
+          <para>&lt;contains named="..." &gt; : The group or user that is member of this group. The element &#39;type&#39; determines of this is a user or a group member. If you specify the wrong type then the correct entry cannot be found.</para>
+        </listitem>
+    </itemizedlist>
+    </section>
+  <section id="contexts_tag">
+      <title>&lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</title>
+      <para>The following values can be given to the elements of contexts.</para>
+      <itemizedlist>
+        <listitem>
+          <para>&lt;contexts&gt; ... &lt;/contexts&gt; : This is a list of contexts that can be used within the context system.</para>
+        </listitem>
+        <listitem>
+          <para>&lt;contexts default="..." &gt; : This field refers to a context that should be used when the owner field of an object refers to an context that cannot be found. So the value should be named in one of the &lt;contexts&gt;
+      &lt;context name="..." &gt; &lt;/contexts&gt; elements.</para>
+          <para>Within these &lt;contexts&gt; ... &lt;/contexts&gt; is it possible to create new contexts which use the following structure:</para>
+          <programlisting><![CDATA[
+<context name="%contextname%">
+  <operation type="%operation%" />
+  <operation type="%operation%">
+    <grant group="%groupname%" />
+    <grant group="%groupname%" />
+  </operation>
+  <possible context="%contextname%" />
+  <possible context="%contextname%" />
+</context>
+          ]]></programlisting>
+          <para>The following values can be given to the elements:</para>
+          <itemizedlist>
+            <listitem>
+              <para>&lt;context name="..." &gt;  : The name of the context.</para>
+            </listitem>
+            <listitem>
+              <para>&lt;context&gt; &lt;operation type="..." /&gt; &lt;/context&gt; : The type of operation where rights are granted to. Valid values are &#39;read&#39;, &#39;write&#39;, &#39;link&#39;, &#39;delete&#39; and &#39;change context&#39;</para>
+            </listitem>
+            <listitem>
+              <para>&lt;context&gt; &lt;operation &gt; &lt;grant group="..." /&gt; &lt;/operation&gt; &lt;/context&gt;  : The group which receives the rights within this context. Off course the group should be found in a &lt;groups&gt; &lt;group name="..." /&gt; &lt;/groups&gt; element.</para>
+            </listitem>
+            <listitem>
+              <para>&lt;context&gt; &lt;possible context="..." /&gt; &lt;/context&gt; context/possible[@context] : When the context of object van be changed, it can only be changed into the values specified in this element. Which should be found in an element called &lt;contexts&gt; &lt;context name="..." /&gt; &lt;/contexts&gt;.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section id="dtd">
+      <title>The DTD of context.xml</title>
+      <para>For completeness this is the full DTD used for context.xml:</para>
+      <programlisting><![CDATA[
+<!ELEMENT contextconfig ( loginmodules, accounts, groups, contexts ) >
+
+<!ELEMENT loginmodules ( module+ ) >
+
+<!ELEMENT module ( property* ) >
+<!ATTLIST module class NMTOKEN #REQUIRED >
+<!ATTLIST module name CDATA #REQUIRED >
+
+<!ELEMENT property ( #PCDATA ) >
+<!ATTLIST property name NMTOKEN #REQUIRED >
+
+<!ELEMENT accounts ( user+ ) >
+
+<!ELEMENT user ( identify* ) >
+<!ATTLIST user context NMTOKEN #REQUIRED >
+<!ATTLIST user name NMTOKEN #REQUIRED >
+
+<!ELEMENT identify ( #PCDATA ) >
+<!ATTLIST identify rank (administrator | basic user) #REQUIRED >
+<!ATTLIST identify type CDATA #REQUIRED >
+
+<!ELEMENT groups ( group+ ) >
+
+<!ELEMENT group ( contains+ ) >
+<!ATTLIST group name NMTOKEN #REQUIRED >
+
+<!ELEMENT contains EMPTY >
+<!ATTLIST contains named NMTOKEN #REQUIRED >
+<!ATTLIST contains type NMTOKEN #REQUIRED >
+
+<!ELEMENT contexts ( context+ ) >
+<!ATTLIST contexts default NMTOKEN #REQUIRED >
+
+<!ELEMENT context ( operation*, possible* ) >
+<!ATTLIST context name NMTOKEN #REQUIRED >
+
+<!ELEMENT operation ( grant* ) >
+<!ATTLIST operation type (read | write | link | delete | change context) #REQUIRED >
+
+<!ELEMENT grant EMPTY >
+<!ATTLIST grant group NMTOKEN #REQUIRED >
+
+<!ELEMENT possible EMPTY >
+<!ATTLIST possible context NMTOKEN #REQUIRED >
+      ]]></programlisting>
+    </section>
+  </section>
+</article>

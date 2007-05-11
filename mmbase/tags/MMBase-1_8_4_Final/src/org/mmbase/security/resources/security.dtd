@@ -1,0 +1,11 @@
+<!ATTLIST security active (true|false) #REQUIRED >
+<!ELEMENT security ( authentication, authorization, sharedsecret ) >
+<!ELEMENT authentication EMPTY >
+<!ATTLIST authentication class NMTOKEN #REQUIRED >
+<!ATTLIST authentication url CDATA "" > 
+
+<!ELEMENT authorization EMPTY >
+<!ATTLIST authorization class NMTOKEN #REQUIRED >
+<!ATTLIST authorization url CDATA "" > 
+
+<!ELEMENT sharedsecret ( #PCDATA ) >

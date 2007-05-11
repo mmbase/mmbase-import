@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging PUBLIC "-//MMBase/DTD packaging config 1.0//EN" "http://www.mmbase.org/dtd/packaging_1_0.dtd">
+<packaging basedir=".">
+	<package name="display" type="display/html" file="packaging/packinging_display.xml" />
+	<package name="java" type="java/jar" file="packaging/packinging_java.xml" />
+	<package name="set" type="function/set" file="packaging/packinging_function_set.xml" />
+	<bundle name="basic" type="bundle/basic" file="packaging/packinging_bundle_basic.xml" />
+</packaging>

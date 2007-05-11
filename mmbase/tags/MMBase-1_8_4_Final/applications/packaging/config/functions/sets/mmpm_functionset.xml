@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+  <status>active</status>
+  <version>6</version>
+  <description>Support functions for package manager</description>
+
+  <function name="getProviderInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>getProviderInfo</method>
+    <param name="name" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="makeShareActive">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>makeShareActive</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+  <function name="makeShareInactive">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>makeShareInactive</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+  <function name="getBundles">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
+    <method>getBundles</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getPackageHandlers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
+    <method>getPackageHandlers</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+      <field name="value" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getProviderHandlers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>getProviderHandlers</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+      <field name="value" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getPackages">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
+    <method>getPackages</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getRemoteSharedPackages">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getRemoteSharedPackages</method>
+    <param name="user" type="String" description="" />
+    <param name="password" type="String" description="" />
+    <param name="method" type="String" description="" />
+    <param name="host" type="String" description="" />
+    <param name="callbackurl" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getSharedPackages">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getSharedPackages</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getNotSharedPackages">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getNotSharedPackages</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getSharedBundles">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getSharedBundles</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getNotSharedBundles">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getNotSharedBundles</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getPackageVersions">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
+    <method>getPackageVersions</method>
+    <param name="id" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getPackageVersionNumbers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
+    <method>getPackageVersionNumbers</method>
+    <param name="id" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="int" description="version number" />
+    </return>
+  </function>
+
+
+  <function name="getBundleVersions">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
+    <method>getBundleVersions</method>
+    <param name="id" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getBundleNeededPackages">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
+    <method>getBundleNeededPackages</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getPackageInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getPackageInfo</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getPackagePeople">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getPackagePeople</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <param name="type" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getBundlePeople">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getBundlePeople</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <param name="type" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getBundleScreenshots">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getBundleScreenshots</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getBundleStarturls">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getBundleStarturls</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getBundleInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getBundleInfo</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getShareUsers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getShareUsers</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getAllUsers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getAllUsers</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getGroupUsers">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getGroupUsers</method>
+    <param name="group" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="addGroupUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>addGroupUser</method>
+    <param name="group" type="String" description="" />
+    <param name="newuser" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="createGroup">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>createGroup</method>
+    <param name="newgroup" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="removeGroup">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>removeGroup</method>
+    <param name="delgroup" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="removeGroupUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>removeGroupUser</method>
+    <param name="group" type="String" description="" />
+    <param name="deluser" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="getAllGroups">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getAllGroups</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="addShareUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>addShareUser</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="newuser" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="addShareGroup">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>addShareGroup</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="newgroup" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="createNewUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>createNewUser</method>
+    <param name="newuser" type="String" description="" />
+    <param name="newpassword" type="String" description="" />
+    <param name="newmethod" type="String" description="" />
+    <param name="newip" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="delUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>delUser</method>
+    <param name="deluser" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getUserInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getUserInfo</method>
+    <param name="account" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="addShare">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>addShare</method>
+    <param name="id" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="addBundleShare">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>addBundleShare</method>
+    <param name="id" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="delShare">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>delShare</method>
+    <param name="id" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="delBundleShare">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>delBundleShare</method>
+    <param name="id" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="changeProviderSettings">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>changeProviderSettings</method>
+    <param name="name" type="String" description="" />
+    <param name="maintainer" type="String" description="" />
+    <param name="account" type="String" description="" />
+    <param name="password" type="String" description="" />
+    <param name="path" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="changeSettings">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>changeSettings</method>
+    <param name="providername" type="String" description="" />
+    <param name="callbackurl" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="changeUserSettings">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>changeUserSettings</method>
+    <param name="account" type="String" description="" />
+    <param name="password" type="String" description="" />
+    <param name="method" type="String" description="" />
+    <param name="host" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="delProvider">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>delProvider</method>
+    <param name="id" type="String" description="" />
+    <return type="Boolean">
+    </return>
+  </function>
+
+
+  <function name="addSubscribeProvider">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>addSubscribeProvider</method>
+    <param name="url" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="addDiskProvider">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>addDiskProvider</method>
+    <param name="name" type="String" description="" />
+    <param name="path" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="removeShareUser">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>removeShareUser</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="olduser" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="removeShareGroup">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>removeShareGroup</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="delgroup" type="String" description="" />
+    <return type="Boolean">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getShareUsersReverse">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getShareUsersReverse</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getShareGroupsReverse">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getShareGroupsReverse</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getShareGroups">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getShareGroups</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getShareInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getShareInfo</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="org.mmbase.module.core.MMObjectNode">
+    </return>
+  </function>
+
+
+  <function name="getBundleShareInfo">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
+    <method>getBundleShareInfo</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getPackageInstallSteps">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getPackageInstallSteps</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <param name="logid" type="String" description="">-1</param>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="havePackageLog">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>havePackageLog</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="log" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="haveBundleLog">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>haveBundleLog</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="java.util.List">
+      <field name="log" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="getBundleInstallSteps">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getBundleInstallSteps</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <param name="logid" type="String" description="">-1</param>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+
+  <function name="installPackage">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
+    <method>installPackage</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="Boolean" />
+  </function>
+
+
+  <function name="createPackage">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>createPackage</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="Boolean" />
+  </function>
+
+
+  <function name="installBundle">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
+    <method>installBundle</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="Boolean" />
+  </function>
+
+
+  <function name="signalRemoteChange">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>signalRemoteChange</method>
+    <param name="id" type="String" description="" />
+  </function>
+
+  <function name="uninstallPackage">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
+    <method>uninstallPackage</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="Boolean" />
+  </function>
+
+
+  <function name="uninstallBundle">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
+    <method>uninstallBundle</method>
+    <param name="id" type="String" description="" />
+    <param name="version" type="String" description="" />
+    <param name="provider" type="String" description="" />
+    <return type="Boolean" />
+  </function>
+
+  <function name="getPackageManagerSettings">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.gui.Controller</class>
+    <method>getPackageManagerSettings</method>
+    <return type="java.util.List">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+  <function name="getProviders">
+    <description>
+    </description>
+    <type>class</type>
+    <class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
+    <method>getProviders</method>
+    <return type="NodeList">
+      <field name="name" type="String" description="" />
+    </return>
+  </function>
+
+</functionset>

@@ -1,0 +1,3 @@
+<SECURE>
+$MOD-MMEDIT-STATE-SETHTMLVALUE-Chooser-select
+<GOTO $MOD-INFO-SERVERCONTEXT^/mmeditors/Editor.shtml?$PARAM1>

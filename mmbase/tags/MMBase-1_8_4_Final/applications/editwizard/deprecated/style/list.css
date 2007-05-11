@@ -1,0 +1,84 @@
+
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  @version  $Id: list.css,v 1.1 2003-12-19 11:09:06 nico Exp $
+  
+*/
+
+@import url("base.css");
+
+/*
+  For the list
+*/
+
+body {
+}
+
+table.body {
+ width: 80%;
+ cell-spacing: 0;
+}
+
+table.body table {
+ width: 100%;
+}
+
+td.left {
+  width: 20%;
+}
+
+td.searchcanvas, td.listcanvas { 
+   border-style:solid; 
+   border-width:3; 
+   border-color:#CCC; 
+   padding:5; 
+   width: 100%;
+}
+
+tr.itemrow, 
+tr.itemrow-hover, 
+tr.itemrow td, 
+tr.itemrow-hover td { 
+   cursor:pointer; 
+   cursor:hand; 
+   color:#18248C; 
+   padding: 0;
+   vertical-align: top;
+}
+tr.itemrow-hover td	{
+   /* background-color: #ff0; */
+   text-decoration:underline;  
+}
+
+/* if permission to edit is lacking, the row is 'disabled' */
+tr.itemrow-disabled td  { 
+  font-weight: normal; 
+  text-decoration : none; 
+  color:#CCCCCC; 
+  cursor:default;
+}
+
+td.deletebutton {
+  width: 10;
+}
+
+td.number {
+  text-align: right;
+  width: 6ex;
+}
+
+td.listcanvas table th {
+   text-align: left;
+   color:#CCC; 
+   font-weight:900; 
+   font-size:15px; 
+}
+
+td.listcanvas table th.number {
+   text-align: center;
+}
+
+.subscript {font-size:10px; color:#333333;}

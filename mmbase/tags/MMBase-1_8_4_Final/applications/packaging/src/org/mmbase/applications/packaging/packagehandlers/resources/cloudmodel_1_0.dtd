@@ -1,0 +1,29 @@
+<!--
+    cloudmodel.dtd
+-->
+
+<!ELEMENT cloudmodel (neededbuilderlist,neededreldeflist,allowedrelationlist)>
+
+<!ELEMENT neededbuilderlist (builder*)>
+
+<!ELEMENT builder (#PCDATA)>
+<!ATTLIST builder maintainer CDATA #IMPLIED>
+<!ATTLIST builder version CDATA #IMPLIED>
+<!ATTLIST builder md5 CDATA #IMPLIED>
+
+
+<!ELEMENT neededreldeflist (reldef*)>
+<!ELEMENT reldef (#PCDATA)>
+<!ATTLIST reldef source CDATA #IMPLIED>
+<!ATTLIST reldef target CDATA #IMPLIED>
+<!ATTLIST reldef direction CDATA #IMPLIED>
+<!ATTLIST reldef guisourcename CDATA #IMPLIED>
+<!ATTLIST reldef guitargetname CDATA #IMPLIED>
+<!ATTLIST reldef builder CDATA #IMPLIED>
+
+<!ELEMENT allowedrelationlist (relation*)>
+<!ELEMENT relation (#PCDATA)>
+<!ATTLIST relation from CDATA #IMPLIED>
+<!ATTLIST relation to CDATA #IMPLIED>
+<!ATTLIST relation type CDATA #IMPLIED>
+<!ATTLIST relation count CDATA #IMPLIED>

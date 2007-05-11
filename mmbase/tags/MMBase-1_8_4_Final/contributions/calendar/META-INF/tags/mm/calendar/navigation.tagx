@@ -1,0 +1,16 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <jsp:directive.attribute name="dir"  />
+  <jsp:directive.attribute name="name"  />
+  <jsp:directive.attribute name="alt"  />
+  <mm:haspage page="${dir}/${name}">
+    <img src="${dir}/${name}" alt="${alt}"/>
+  </mm:haspage>
+  <mm:haspage page="${dir}/${name}" inverse="true">
+    <jsp:text>${alt}</jsp:text>
+  </mm:haspage>
+</jsp:root>

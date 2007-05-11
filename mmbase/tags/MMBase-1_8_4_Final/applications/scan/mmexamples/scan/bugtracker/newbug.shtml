@@ -1,0 +1,125 @@
+<PROCESSOR MMBASE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+<FORM ACTION="executes/newbugreport.shtml?$PARAM1" METHOD="POST">
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+
+
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B> Type</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Priority</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Version</B>
+	</TD>
+</TR>
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			<SELECT NAME="SESSION-TYPE">
+				<OPTION VALUE="1">bug
+				<OPTION VALUE="2">enhanchement
+				<OPTION VALUE="3">docbug
+				<OPTION VALUE="4">docenhanchement
+			</SELECT>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			<SELECT NAME="SESSION-PRIORITY">
+				<OPTION VALUE="1">high
+				<OPTION VALUE="2">medium
+				<OPTION VALUE="3">low
+			</SELECT>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			<INPUT NAME="SESSION-VERSION" VALUE="1.0" SIZE="10">
+		</TD>
+</TR>
+
+<TR>
+	<TD>
+	&nbsp;	
+	</TD>
+</TR>	
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=3>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Issue : give the issue in one line </B>
+	</TD>
+</TR>
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="3">
+			&nbsp;&nbsp;<INPUT SIZE="50" NAME="SESSION-ISSUE">
+		</TD>
+</TR>
+
+
+<TR>
+	<TD>
+	&nbsp;	
+	</TD>
+</TR>	
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=3>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description : Describe the issue as compleet as possible </B>
+	</TD>
+</TR>
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="3">
+			<TEXTAREA NAME="SESSION-DESCRIPTION" COLS="50" ROWS="15"></TEXTAREA>
+		</TD>
+</TR>
+
+
+<TR>
+	<TD>
+	&nbsp;	
+	</TD>
+</TR>	
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Submitter</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	&nbsp;	
+	</TD>
+</TR>
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<INPUT NAME="SESSION-SUBMITTER" TYPE="hidden" VALUE="$PARAM1">
+			&nbsp;&nbsp;
+			$MOD-MMBASE-FIELD-$PARAM1-firstname
+			$MOD-MMBASE-FIELD-$PARAM1-lastname
+			( $MOD-MMBASE-FIELD-$PARAM1-email )
+			
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			<CENTER><INPUT TYPE="submit" VALUE="SUBMIT REPORT">
+		</TD>
+</TR>
+
+</TABLE>
+</FORM>
+
+</BODY>
+</HTML>

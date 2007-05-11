@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+
+  <!-- A rather odd provider (example) -->
+  <node number="3001" owner="media">
+    <host>cgi.omroep.nl</host>
+    <state>1</state>
+    <name>Play cgi script server</name>
+     <description>Creates real media/windowmedia, sb/bb URL's</description>
+    <rootpath>/cgi-bin/streams?</rootpath>
+    <protocol>http</protocol>
+  </node>
+
+  
+  <!-- A server for windows media -->
+  <node number="3002" owner="media">
+    <host>media.omroep.nl</host>
+    <state>1</state>
+    <name>Windows media server</name>
+    <description>Creates windows media URL's</description>
+    <rootpath></rootpath>
+    <protocol>mms</protocol>
+  </node>
+
+  <!-- For real media -->
+  <node number="3003" owner="media">
+    <host>streams.omroep.nl</host>
+    <state>1</state>
+    <name>Streams server</name>
+    <description>Creates real streaming media URL's</description>
+    <rootpath></rootpath>
+    <protocol>rtsp</protocol>
+  </node>
+
+
+  <!-- for other media -->
+  <node number="3004" owner="media">
+    <host>streams.omroep.nl</host>
+    <state>1</state>
+    <name>Streams server (http)</name>
+    <description>http</description>
+    <rootpath></rootpath>
+    <protocol>http</protocol>
+  </node>
+
+</mediaproviders>

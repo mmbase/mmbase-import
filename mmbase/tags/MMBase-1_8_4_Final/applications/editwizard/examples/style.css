@@ -1,0 +1,91 @@
+@import url("../../mmbase/style/css/mmbase.css");
+
+/* Style below this needs review */
+.pagenav,
+.pagenav-disabled,
+.pagenav-current,
+a.pagenav { font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; font-weight:900;
+}
+a.pagenav		{ color: #18248C; text-decoration:none;}
+a.pagenav:hover	{ color: #18248C; text-decoration:underline;}
+
+body,
+td,
+p,
+div,
+span,
+input,
+select,
+option,
+textarea
+		{ font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size:13px; letter-spacing:0.05em; font-weight:400; color:#000000; }
+
+h1	{font-size:22px}
+
+i,
+textarea		{ padding-left:3px; }
+.imagebutton		{ cursor:pointer;/* xpadding:0; xmargin:0 1 1 0; */width:20px; height:20px; border-style:none; border-width:0px; }
+.imagebutton_down	{ cursor:pointer;/* xpadding:0; xmargin:1 0 0 1; */width:20px; height:20px; border-style:none; border-width:0px; }
+
+.superhead	{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; letter-spacing:0em; color:#000000; }
+.head		{ font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; }
+.subhead	{ font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:14px; letter-spacing:0em; color:#000000; }
+.valid		{ color:#009900; cursor:default; font-weight:bold; }
+.notvalid	{ color:#CC0000; cursor:default; font-weight:bold; }
+.step		{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#999999; }
+.divider	{ background-color:#CCCCCC; }
+.listmeta	{ font-size:11px; color:#999999; }
+
+.width400	{ width:400px; }
+.width240	{ width:240px; }
+
+.submit_goto	{ background-color:#FFFFFF; border-width:0; cursor: pointer; padding:0; margin:0; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#18248C; }
+
+.listcanvas	{ background-color:#ffffff; border-style:solid; border-width:3px; border-color:#CCCCCC; padding:5px; }
+
+.tooltip	{
+		  background-color:#FFFF88;
+		  border-style:solid; border-width:1px; border-color:#000000;
+		  padding:3px;
+		  position:absolute; top:0; left:0;
+		  visibility:visible;
+		  z-index:1001;
+		  width:250px;
+		  font-size:11px;
+		}
+		
+input.submitbutton	{ background-color:#FFFFFF; color:#18248C; border-style:none; cursor:pointer; cursor:pointer; text-decoration:underline;
+			  font-family:"Trebuchet MS", Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; 
+			}		
+
+.modaliframe	{
+		  width:402px; height:302px;
+		  background-color:#FFFFFF;
+		  z-index:3000;
+		}
+
+.unselected_search		{ color:#000000; }
+.selected_search span	{ color:#FFFFFF; }
+.selected_search		{ background-color:#000000; }
+
+.currentstepicon-valid, .currentstepicon, .stepicon-valid, .stepicon, .step, .step-disabled
+					{ cursor:pointer;  background-color:#FFFFFF; border-width:0; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#18248C; }
+
+
+.currentstepicon-valid		{ color:#009900; text-decoration:underline; } 
+.currentstepicon			{ color:#CC0000; text-decoration:underline; }
+.stepicon-valid			{ color:#009900; }
+.stepicon				{ color:#CC0000; }
+.step					{ font-weight:900; font-size:16px; cursor:pointer; color:#18248C; }
+.step-disabled			{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default;}
+
+.bottombutton				{ font-weight:900; font-size:16px; cursor:pointer; color:#18248C;  }
+.bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
+
+.tableheader		{ color:#CCCCCC; font-weight:900; }
+.itemrow, 
+.itemrow-hover, .itemrow td, .itemrow-hover td
+			{ cursor:pointer; color:#18248C; }
+.itemrow-hover td	{ text-decoration:underline;  }
+
+.imageupload		{ padding:5px;}

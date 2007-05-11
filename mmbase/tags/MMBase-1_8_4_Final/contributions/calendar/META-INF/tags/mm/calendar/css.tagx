@@ -1,0 +1,15 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <mm:cloud>
+    <mm:listnodes type="calendar_item_types">
+      .ct${_node},
+      select.mm_validate option[value="${_node}"] {
+        background-color: ${_node.color};
+      }
+    </mm:listnodes>
+  </mm:cloud>
+</jsp:root>

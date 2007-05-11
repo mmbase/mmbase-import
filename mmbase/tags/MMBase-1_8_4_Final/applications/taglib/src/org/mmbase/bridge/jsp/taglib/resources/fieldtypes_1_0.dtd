@@ -1,0 +1,4 @@
+<!ELEMENT fieldtypes (fieldtype*) >
+<!ELEMENT fieldtype  (class) >
+<!ATTLIST fieldtype  id  NMTOKEN  #REQUIRED > 
+<!ELEMENT class      (#PCDATA) >

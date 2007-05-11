@@ -1,0 +1,5 @@
+<IF $PARAM1==insEditor>
+ <IF $PARAM2=N>
+ ($PARAM2)
+ </IF>
+</IF>

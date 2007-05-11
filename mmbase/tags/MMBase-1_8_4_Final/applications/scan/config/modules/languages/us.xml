@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE mmlanguage PUBLIC "-//MMBase//mmlanguage config 1.0//EN" "http://www.mmbase.org/dtd/mmlanguage_1_0.dtd">
+<mmlanguage xml:lang="us">
+<!-- no version info -->
+<dictionary>
+<other_editors>Other Editors</other_editors>
+<search>Search</search>
+<ok>Oke</ok>
+<new>New</new>
+<fields>Fields</fields>
+<relations>Relations</relations>
+<remove>Remove</remove>
+<display>Display</display>
+<to>to</to>
+<of_total>of total</of_total>
+<back>Back</back>
+<yes>Yes</yes>
+<no>No</no>
+<remove_object>Remove Object</remove_object>
+<change_field>Change Field</change_field>
+<go_to>Go To</go_to>
+<save_changes>Save Changes</save_changes>
+<do_not_save_changes>Don't Save Changes</do_not_save_changes>
+<create_relation>Create Relation</create_relation>
+<remove_relation>Remove Relation</remove_relation>
+<do_not_create_relation>Don't Create Relation</do_not_create_relation>
+<age>Age</age>
+<none>No</none>
+<results_found>results found</results_found>
+</dictionary>
+</mmlanguage>
+

@@ -1,0 +1,53 @@
+<!--
+    shared.dtd
+-->
+
+<!ELEMENT shared (bundles*,packages*,users*,groups,settings,providingpaths*)>
+
+<!ELEMENT bundles (bundle*)>
+
+<!ELEMENT bundle (login*)>
+<!ATTLIST bundle name CDATA #IMPLIED>
+<!ATTLIST bundle maintainer CDATA #IMPLIED>
+<!ATTLIST bundle type CDATA #IMPLIED>
+<!ATTLIST bundle versions CDATA #IMPLIED>
+<!ATTLIST bundle active CDATA #IMPLIED>
+
+<!ELEMENT packages (package*)>
+
+<!ELEMENT package (login*)>
+<!ATTLIST package name CDATA #IMPLIED>
+<!ATTLIST package maintainer CDATA #IMPLIED>
+<!ATTLIST package type CDATA #IMPLIED>
+<!ATTLIST package versions CDATA #IMPLIED>
+<!ATTLIST package active CDATA #IMPLIED>
+
+
+<!ELEMENT login (#PCDATA)>
+<!ATTLIST login user CDATA #IMPLIED>
+<!ATTLIST login group CDATA #IMPLIED>
+
+<!ELEMENT users (user*)>
+
+<!ELEMENT user (#PCDATA)>
+<!ATTLIST user name CDATA #IMPLIED>
+<!ATTLIST user password CDATA #IMPLIED>
+<!ATTLIST user method CDATA #IMPLIED>
+<!ATTLIST user ip CDATA #IMPLIED>
+
+<!ELEMENT groups (group*)>
+
+<!ELEMENT group (member*)>
+<!ATTLIST group name CDATA #IMPLIED>
+
+<!ELEMENT member (#PCDATA)>
+<!ATTLIST member user CDATA #IMPLIED>
+
+<!ELEMENT settings (providername,callbackurl)>
+<!ELEMENT providername (#PCDATA)>
+<!ELEMENT callbackurl (#PCDATA)>
+
+<!ELEMENT providingpaths (providingpath)>
+<!ELEMENT providingpath (#PCDATA)>
+<!ATTLIST providingpath method CDATA #IMPLIED>
+<!ATTLIST providingpath path CDATA #IMPLIED>

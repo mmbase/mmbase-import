@@ -1,0 +1,4 @@
+<!--
+  DTD of XML used by BasicReader if file to parse could not be found.
+-->
+<!ELEMENT error (#PCDATA)>

@@ -1,0 +1,14 @@
+<lists><!-- must be automaticly made in sync with Format.java !! -->
+  <optionlist name="formats">
+     <option id="-1" >Autodectect</option>    
+     <option id="6">real audio/video</option>
+     <option id="12">windows media</option>
+     <option id="1" >mp3 encoded</option>
+     <option id="3" >wav</option>
+     <option id="4" >pcm</option>
+     <option id="5" >mp2</option>
+     <option id="11" >mpg video</option>
+     <option id="13" >mov</option>
+   </optionlist>
+</lists>
+

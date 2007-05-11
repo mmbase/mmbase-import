@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_cloud_model PUBLIC "-//MMBase/DTD packaging_cloud_model config 1.0//EN" "http://www.mmbase.org/dtd/packaging_cloud_model_1_0.dtd">
+<packaging_cloud_model>
+	<lastversion>10</lastversion>
+	<lastdate>Wed May 05 01:04:57 CEST 2004</lastdate>
+	<name>MMBob forums model</name>
+	<maintainer>Submarine</maintainer>
+	<description>Jar's needed for the MMBob forum system</description>
+	<license type="MPL" version="1.0" name="mozzila public license" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<modelfile>config/models/default.xml</modelfile>
+	<buildersdir>config/builders/</buildersdir>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+		<supporter company="MMBase Foundation" />
+		<supporter company="Submarine" />
+		<supporter company="Kennisnet" />
+		<supporter company="Million Pieces" />
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" mailto="daniel@submarien.nl" />
+		<developer name="Gerard van Enk" company="Million Pieces" mailto="gerard@millionpieces.nl" />
+	</developers>
+	<contacts>
+		<contact name="Gerard van Enk" reason="Bugs Reports" mailto="gerard@millionpieces.nl" />
+		<contact name="Bruno Felix" reason="Sponser/Support questions" mailto="bruno@submarine.nl" />
+	</contacts>
+</packaging_cloud_model>

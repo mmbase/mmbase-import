@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+
+
+
+  <!-- fragment -> source -->
+  <node number="4003" owner="media" snumber="6030" dnumber="5011" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4009" owner="media" snumber="6030" dnumber="5012" rtype="related" dir="bidirectional">
+  </node>
+
+
+  <node number="4004" owner="media" snumber="6100" dnumber="5100" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4005" owner="media" snumber="6020" dnumber="5010" rtype="related" dir="bidirectional">
+  </node>
+
+
+
+
+  <!-- source -> providers -->
+  
+
+  <node number="4011" owner="media" snumber="5010" dnumber="3003" rtype="related" dir="bidirectional">
+  </node>
+
+  <!-- rm -->
+  <node number="4012" owner="media" snumber="5011" dnumber="3001" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4015" owner="media" snumber="5100" dnumber="3003" rtype="related" dir="bidirectional">
+  </node>
+
+  <!-- asf -->
+  <node number="4016" owner="media" snumber="5012" dnumber="3001" rtype="related" dir="bidirectional">
+  </node>
+
+  <!-- netwerk -->
+  <node number="4017" owner="media" snumber="5000" dnumber="3002" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4018" owner="media" snumber="5001" dnumber="3001" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4019" owner="media" snumber="5004" dnumber="3004" rtype="related" dir="bidirectional">
+  </node>
+
+
+
+
+  <!-- fragment -> source -->
+  <node number="4100" owner="media" snumber="6000" dnumber="5000" rtype="related" dir="bidirectional">
+  </node>
+  <node number="4101" owner="media" snumber="6001" dnumber="5001" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4104" owner="media" snumber="6003" dnumber="5004" rtype="related" dir="bidirectional">
+  </node>
+
+ <!-- intro -->
+  <node number="4200" owner="media" snumber="6002" dnumber="5002" rtype="related" dir="bidirectional">
+  </node>
+
+  <node number="4201" owner="media" snumber="6002" dnumber="5003" rtype="related" dir="bidirectional">
+  </node>
+
+    
+  <node number="4202" owner="media" snumber="5002" dnumber="3003" rtype="related" dir="bidirectional">
+  </node>
+  <node number="4203" owner="media" snumber="5003" dnumber="3002" rtype="related" dir="bidirectional">
+  </node>
+
+
+
+</insrel>

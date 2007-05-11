@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="object" maintainer="mmbase.org" version="0">
+  <status>active</status>
+  <class>Dummy</class>
+  <searchage>1000</searchage>
+  <names>
+    <singular xml:lang="en">Object</singular>
+    <singular xml:lang="nl">Object</singular>
+    <singular xml:lang="es">Objeto</singular>
+    <singular xml:lang="eo">Objekto</singular>
+    <singular xml:lang="fr">Objet</singular>
+    <singular xml:lang="fy">Objekt</singular>
+    <singular xml:lang="it">Oggetto</singular>
+    <singular xml:lang="ja">舞台</singular><!-- 'buttai' or? 部隊 -->
+    <plural xml:lang="en">Objects</plural>
+    <plural xml:lang="nl">Objecten</plural>
+    <plural xml:lang="es">Objetos</plural>
+    <plural xml:lang="eo">Objektoj</plural>
+    <plural xml:lang="fr">Objets</plural>
+    <plural xml:lang="fy">Objekts</plural>
+    <plural xml:lang="it">Oggetti</plural>
+    <plural xml:lang="ja">舞台</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Objects</description>
+    <description xml:lang="nl">Objekten</description>
+    <description xml:lang="es">Objetos</description>
+    <description xml:lang="eo">Objektoj</description>
+    <description xml:lang="fr">Objets</description>
+    <description xml:lang="fy">Objekten</description>
+    <description xml:lang="it">Oggetti</description>
+  </descriptions>
+
+  <properties>
+    <property name="max-nodes-from-query">10000</property>
+  </properties>
+
+  <fieldlist>
+    <field name="number" state="system">
+
+      <descriptions>
+        <description xml:lang="en">Unique objectnumber</description>
+        <description xml:lang="nl">Uniek objectnummer</description>
+        <description xml:lang="es">Numero unico del objeto</description>
+        <description xml:lang="eo">Unika numero de ĉi objekto</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Object</guiname>
+        <guiname xml:lang="nl">Object</guiname>
+        <guiname xml:lang="eo">Objekto</guiname>
+        <guiname xml:lang="es">Objeto</guiname>
+        <guiname xml:lang="fr">Objet</guiname>
+        <guiname xml:lang="fy">Objekt Nummer</guiname>
+        <guiname xml:lang="it">Oggetto</guiname>
+        <guiname xml:lang="ro">Numar</guiname>
+        <guiname xml:lang="bg">Номер</guiname>
+        <guiname xml:lang="zh">号</guiname>
+        <guiname xml:lang="ja">数</guiname><!-- 'kazu', I found 6 other possibilities ... , suuzi, suu-->
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>100</list>
+          <search>100</search>
+        </positions>
+      </editor>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" enforce="never" />
+        <required value="true" enforce="never" />
+      </datatype>
+    </field>
+
+    <field name="otype" state="system">
+
+      <descriptions>
+        <description xml:lang="en">Object's type</description>
+        <description xml:lang="nl">Objecttype</description>
+        <description xml:lang="eo">Tipo de tiu ĉi objekto</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+      </datatype>
+    </field>
+
+    <field name="owner" state="system" readonly="false">
+
+      <descriptions>
+        <description xml:lang="en">
+          Object's owner. Depending on the chosen security implementation this can mean different
+          things. E.g. in the 'context' security implementations in this field the 'security context'
+          of the node is stored.
+        </description>
+        <description xml:lang="nl">
+          'Eigenaar' van het object. Het hangt af van de gekozen security-implementatie, wat dit
+          precies betekent. In de verschillende 'context' implementaties wordt de 'security context'
+          in dit veld opgeslagen.
+        </description>
+        <description xml:lang="es">
+          Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas.
+          Por Ejemplo, si se usa 'seguridad contexto' el contexto seguridad sera grabado aqui.
+        </description>
+        <description xml:lang="eo">
+          Posedanto de la objekto. Depende de la elektita sekureca realigo, la signifo de tio povas
+          varii. Ekzemple en la diversaj kontekstaj realigoj, la 'sekureca konteksto' estas stokata
+          en ĉi tiu kampo.
+        </description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Owner</guiname>
+        <guiname xml:lang="nl">Eigenaar</guiname>
+        <guiname xml:lang="es">dueno</guiname>
+        <guiname xml:lang="eo">Posedanto</guiname>
+        <guiname xml:lang="fr">Propriétaire</guiname>
+        <guiname xml:lang="fy">Context</guiname>
+        <guiname xml:lang="it">Proprietario</guiname>
+        <guiname xml:lang="zh">闆</guiname>
+        <guiname xml:lang="ja">主勇者</guiname><!-- 'shoyuusha' -->
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>101</list>
+          <search>101</search>
+        </positions>
+      </editor>
+      <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="12" enforce="never"/>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>

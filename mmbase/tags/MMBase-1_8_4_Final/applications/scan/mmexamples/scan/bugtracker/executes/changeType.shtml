@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="../beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+<transactions>
+	<create>
+		<accessObject id="report1" mmbaseId="$PARAM1">
+			<setField name="btype">$SESSION-TYPE</setField>
+		</accessObject>
+
+		<createObject id="event1" type="mmevents">
+			<IF $SESSION-TYPE^==1><setField name="name">Changed type to bug</setField></IF>
+			<IF $SESSION-TYPE^==2><setField name="name">Changed type to enhanchement</setField></IF>
+			<IF $SESSION-TYPE^==3><setField name="name">Changed type to docbug</setField></IF>
+			<IF $SESSION-TYPE^==4><setField name="name">Changed type to docenhanchement</setField></IF>
+			<setField name="start">$MOD-INFO-TIME-CURTIME^</setField>
+		</createObject>
+
+
+ 		<createRelation type="related" source="report1" destination="event1" />
+	</create>
+</transactions>
+
+<FORM ACTION="../fullview.shtml?$PARAM1" METHOD="POST">
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="50"><IMG SRC="../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>feedback</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+		<CENTER> Changes Saved <BR>
+		<BR>
+		 <CENTER><INPUT TYPE="SUBMIT" VALUE="OKE">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>
