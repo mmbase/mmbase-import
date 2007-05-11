@@ -14,7 +14,7 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
 			<% 
       if(breadcrumbs.size()==2){
         %>
-				<div style="font-size:22px;color:#FFFFFF;margin:0px 0px 5px 0px; font-weight: bold;">Natuurmonumenten</div>
+				<div style="font-size:22px;color:#FFFFFF;margin:0px 0px 5px 0px; font-weight: bold;">Natuurmonumenten.</div>
 				<div style="font-size:16px;color:#FFFFFF;margin:0px 0px 5px 0px;">Als je van Nederland houdt.</div>
         <% 
       } else { 
