@@ -90,15 +90,18 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
                     
                     TranslateTable.init();
                     
+                    if (log.isDebugEnabled()) {                        
+                        log.debug("Getting translation table for locale '" + translateLocale + "'");
+                    }
 
-
-                    log.debug("Getting translation table for locale '" + translateLocale + "'");
                     TranslateTable tt = new TranslateTable(translateLocale);
                     String translation = "";
                     
                     if (key != null) {
-                        translation = tt.translate(key);
-                        log.debug("Translating '" + key + "' to '" + translation + "'");
+                        translation = tt.translate(key, new Object[] {sArg0, sArg1, sArg2, sArg3, sArg4});
+                        if (log.isDebugEnabled()) {
+                            log.debug("Translating '" + key + "' to '" + translation + "' " + tt.translate(key));
+                        }
                     } else {
                         return "";
                     }
@@ -123,6 +126,10 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
                     }
                     
                     //Arguments like arg0="John" arg1="eats" arg2="an apple"
+                    // FOLLOWING IS DEPRECATED, only remaining for backwards compatibility.
+                    // you can indicate {0} {1} in stead of {$$$} etc. 
+                    // This is because MessageFormat is used now (in {@link
+                    // TranslateTable#translate(String Object[])})
 
                     // How now can you change the order??? It is not garanteed that in every language you must 
                     // express such things in the same order.
@@ -141,6 +148,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
                     if(sArg4 != null){
                         translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg4);
                     }
+                    
                     return translation;
                 }
                 public char charAt(int index) {
