@@ -54,7 +54,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
    if(!artikelID.equals("-1")&&artCnt<2) { // *** show the selected article, or the unique article related to this page
       %><td style="vertical-align:top;width:75%;padding:10px;padding-top:0px;">
       <% if (isNaardermeer.equals("true")) { %>			
-   		<img src="media/trans.gif" height="216" width="1">
+   		<img src="media/trans.gif" height="226" width="1">
 	  <% } %>	
 			  <br/>
          <mm:list nodes="<%= artikelID %>" path="artikel,posrel,dossier" orderby="dossier.naam">
