@@ -15,7 +15,7 @@ expireTime = 0;
 <mm:node number="<%= paginaID %>">
 <%@include file="actie/includes/navsettings.jsp" %>
   <% if (isNaardermeer.equals("true")) { %>		
-   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+   	<div style="position:absolute; left:681px; width:70px; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
   <% } %>
 <% if(artikelID.equals("-1")) { %>
 	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="down" max="1">
