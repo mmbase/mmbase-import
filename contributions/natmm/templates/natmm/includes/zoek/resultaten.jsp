@@ -181,11 +181,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                   <mm:related path="contentrel,artikel" fields="artikel.number">
                      <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetArticlesNodes.contains(sID)){
-                    	 // fix: we would like this kind to be displayed without any parameters
-						/*
                         %><li><a href="<%= templateUrl %>id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
-						*/
-                    	 %><li><a href="<%= templateUrl %>"><mm:field name="artikel.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
