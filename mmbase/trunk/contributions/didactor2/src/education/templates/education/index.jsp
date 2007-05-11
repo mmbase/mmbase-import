@@ -13,13 +13,13 @@
     </mm:param>
   </mm:treeinclude>
 
-  <mm:node number="component.drm" notfound="skip">
+  <mm:hasnode number="component.drm">
     <mm:treeinclude page="/drm/testlicense.jsp" objectlist="$includePath" referids="$referids "/>
-  </mm:node>
+  </mm:hasnode>
   
   <mm:import externid="learnobject" jspvar="learnObject"/>
   <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
-  <mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
+  <mm:import jspvar="educationNumber" externid="education" from="this" />
   <mm:import externid="fb_madetest"/>
   
   <%
