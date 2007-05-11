@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+  <description>
+    Extra servlets for this component, file will be merged into web.xml by build process.
+  </description>
+  <servlet>
+    <servlet-name>report</servlet-name>
+    <display-name>Report Servlet</display-name>
+    <description>Servlet used for generating PDF reports on students</description>
+    <servlet-class>nl.didactor.report.ReportServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+   </servlet>
+
+
+   <servlet-mapping>
+     <servlet-name>report</servlet-name>
+     <url-pattern>/report.db</url-pattern>
+   </servlet-mapping>
+ 
+</web-app>
+

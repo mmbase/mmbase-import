@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Versioning" maintainer="didactor.nl" version="1" auto-deploy="true">
+    <requirements>
+        <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
+        <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
+    </requirements>
+
+    <neededbuilderlist>
+        <builder maintainer="didactor.nl" version="1">archives</builder>
+    </neededbuilderlist>
+    
+    <neededreldeflist />
+    <allowedrelationlist />
+
+    <datasourcelist>
+        <datasource builder="components" path="Versioning/components.xml" />
+    </datasourcelist>
+    
+    <relationsourcelist/>
+    <contextsourcelist/>
+
+    <description></description>
+
+    <install-notice></install-notice>
+
+</application>
