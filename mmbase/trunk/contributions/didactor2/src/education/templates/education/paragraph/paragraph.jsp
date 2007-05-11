@@ -21,7 +21,7 @@
                <td style="padding-bottom:10px;">
                   <mm:field name="showtitle">
                      <mm:compare value="1">
-                       <h4><mm:field name="title" /></h4>jspvar="paragraphs_title" vartype="String" write="false">
+                       <h4><mm:field name="title" /></h4>
                      </mm:compare>
                   </mm:field>
 
