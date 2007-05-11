@@ -25,14 +25,7 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
 General New Features:
 --------------------
 [1.8.4]    
-     * [MMB-194] - Writer-value conversion (e.g. to bridge.Node) not yet completely implemented.
-    * [MMB-845] - Image upload does not show image immediately
-    * [MMB-1253] - Missing a way to remove markup.
-    * [MMB-1349] - A right click paste does not validate the form
-    * [MMB-1369] - Override default max upload size with dtmaxsize attribute
-    * [MMB-1426] - Can't Sort on Parts of a Date
-    * [MMB-1433] - Log servlets functionality is annoying.
-    * [MMB-1434] - Predicted dimension are sometimes wrong which result in a lot of spam in the log
+
     * [MMB-194] - Writer-value conversion (e.g. to bridge.Node) not yet completely implemented.
     * [MMB-845] - Image upload does not show image immediately
     * [MMB-1253] - Missing a way to remove markup.
@@ -40,6 +33,7 @@ General New Features:
     * [MMB-1369] - Override default max upload size with dtmaxsize attribute
     * [MMB-1433] - Log servlets functionality is annoying.
     * [MMB-1434] - Predicted dimension are sometimes wrong which result in a lot of spam in the log
+
     * [MMB-1365] - email module does not support things like smtp port and user authentication.
     * [MMB-1429] - Writer support for Set.
     * [MMB-1430] - treefile be available as a taglib function
@@ -268,10 +262,6 @@ Bug Fixes:
     * [MMB-1428] - <mm:cloud method="pagelogon" .. > goes wrong with <mm:createnode> when within <mm:node> tag
     * [MMB-1431] - postfix prefix elements (of field), don't support xml:lang
     * [MMB-1432] - Wizards fail to pickup i18n directories in referrer and templates directory
-
-
-
-** Improvement
 
 [1.8.3]
 MMB-1331  	 mm:treefile cannot be used as a writer.
