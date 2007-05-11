@@ -1,10 +1,10 @@
 package nl.didactor.taglib;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.ResourceWatcher;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.Servlet;
+import org.mmbase.util.*;
+
 import java.util.*;
 import java.io.*;
+import java.text.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.11 2007-05-10 15:14:00 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.12 2007-05-11 09:00:14 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
     private static final Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
-    private String translationlocale;
+    private final String translationLocale;
 
     /**
      * Inner class that watches the translation files and 
@@ -206,16 +206,18 @@ public class TranslateTable {
     /**
      * Public constructor, it initializes the internal data structures.
      */
-    public TranslateTable(String translationlocale) {
-        this.translationlocale = translationlocale;
+    public TranslateTable(String translationLocale) {
+        this.translationLocale = translationLocale;
     }
    
     /**
      * Fetch a translation from the translation tables.
      */
     public String translate(String tkey) {
-        log.debug("translate('" + tkey + "')");
-        String locale = translationlocale;
+        if (log.isDebugEnabled()) {
+            log.debug("translate('" + tkey + "')");
+        }
+        String locale = translationLocale;
         StringTokenizer st = new StringTokenizer(tkey, ".");
         String namespace = st.nextToken();
         if (!st.hasMoreTokens()) {
@@ -244,6 +246,16 @@ public class TranslateTable {
                 locale = "";
             }
         }
+    }
+    public String translate(String tkey, Object[] args) {
+        String translation = translate(tkey);
+        Locale locale = LocalizedString.getLocale(translationLocale);
+        if (log.isDebugEnabled()) {
+            log.debug("Formatting " + translation + " " + Arrays.asList(args) + " (" + locale + ")");
+        }
+        if (translation == null) return tkey;
+        MessageFormat message = new MessageFormat(translation, locale);
+        return message.format(args, new StringBuffer(), null).toString();
     }
 
     /**
