@@ -1251,13 +1251,15 @@ public class PaginaHelper {
       ids.put("pagina", paginaID);
       
       // Checking if page belongs tot he Neerdermeer subsite (rubriek)
-      String isNaardermeer;
+      String isNaardermeer = "false";
       String subRubriek = getSubsiteRubriek(cloud, paginaID); //node number of our sub rubriek
-       if (cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek)) {
-    	   // the node numbers match - we are at naardermeer site
-         isNaardermeer = "true";
-      } else {
-         isNaardermeer = "false";
+      try{
+    	  if (cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek)) {
+    		  // the node numbers match - we are at naardermeer site
+    		  isNaardermeer = "true";
+    	  }
+      } catch (NotFoundException nodeNotFound) {
+    	  log.debug("Node with alias 'naardermeer' not found. Setting isNaardermeer = false.");
       }
       ids.put("isNaardermeer", isNaardermeer);
       return ids;
