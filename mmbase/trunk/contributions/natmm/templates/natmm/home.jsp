@@ -45,8 +45,9 @@
    </td>
    <td style="vertical-align:top;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
       <% if (isNaardermeer.equals("true")) { %>			
-   		<img src="media/trans.gif" height="216" width="1">
-	  <% } %>	
+   		<img src="media/trans.gif" height="226" width="1">
+	  <% } %>
+	  <br/>	
       <jsp:include page="includes/home/relateddossiers.jsp">
 		   <jsp:param name="o" value="<%= paginaID %>"/>
 	   </jsp:include>
