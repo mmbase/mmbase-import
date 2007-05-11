@@ -97,9 +97,7 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<default value="true" />
-      </datatype>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="layout">
@@ -136,4 +134,9 @@
     </field>
 
   </fieldlist>
+  <functionlist>
+    <function key="educationLocale" name="locale">
+      <class>nl.didactor.builders.Functions</class>
+    </function>
+  </functionlist>
 </builder>
