@@ -83,7 +83,7 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
    </td>
    <td style="width:185;vertical-align:top;padding-left:10px;padding-right:10px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
        	 <% if (isNaardermeer.equals("true")) { %>			
-   		<img src="media/trans.gif" height="216" width="1">
+   		<img src="media/trans.gif" height="226" width="1">
 	  	<% } %>	
 	  <br/>
       <jsp:include page="includes/navright.jsp">
