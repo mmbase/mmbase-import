@@ -43,7 +43,7 @@ if(!natuurgebiedID.equals("-1")) {
 SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeForm");
 %><%@include file="includes/events/selecteddateandtype.jsp" %>
   <% if (isNaardermeer.equals("true")) { %>		
-   	<div style="position:absolute; left:681px; width:100%; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
+   	<div style="position:absolute; left:681px; width:70px; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
   <% } %>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
