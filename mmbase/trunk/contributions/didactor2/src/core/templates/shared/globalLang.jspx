@@ -5,7 +5,18 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <!-- Global language code -->
+  <!-- Global language code
+       
+       TODO it produces very odd locales like:
+       fr_<provider path>_<education path>
+
+       while an locale should look like:
+       fr_<country>_<variant>
+
+      In other words, i think the provider must be interpreted as 'country' or the locale is 
+      incompatible with java.util.Locale
+       
+  -->
   <mm:present referid="provider">
     <mm:node number="$provider">
       <mm:field name="locale">
