@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: LocalizedString.java,v 1.30 2007-05-11 09:36:56 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -246,7 +246,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         Locale loc = null;
         if (xmlLang != null && (! xmlLang.equals(""))) {
 
-            String[] split = xmlLang.split("[-_]");
+            String[] split = xmlLang.split("[-_]", 3);
             if (split.length == 1) {
                 loc = new Locale(split[0]);
             } else if (split.length == 2) {
