@@ -23,13 +23,21 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.13 2007-05-11 12:33:33 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.14 2007-05-11 15:27:17 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
     private static final Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
+
+    private static TranslateTable defaultTable = null;
+
+    private static TranslateTable getDefault() {
+        if (defaultTable == null) defaultTable = new TranslateTable(null);
+        return defaultTable;
+    }
+
     private final Locale translationLocale;
 
     /**
@@ -214,6 +222,7 @@ public class TranslateTable {
    
 
 
+
     protected Locale degrade(Locale locale, Locale originalLocale) {
         String language = locale.getLanguage();
         String country  = locale.getCountry();
@@ -305,7 +314,13 @@ public class TranslateTable {
                 locale = degrade(locale, translationLocale);
             }
             if (locale == null) {
-                return null;
+                TranslateTable def = getDefault();
+                if (def != this) {
+                    return def.translate(tkey);
+                } else {
+                    String t = translationTable.get(namespace + "." + key);
+                    return t != null ? t : key;
+                }
             }
         }
     }
