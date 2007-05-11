@@ -12,13 +12,13 @@
         <mm:isnotempty>
           <mm:field name="path">
             <mm:isnotempty>
-              <mm:import id="locale"><mm:field name="locale" />_<mm:field name="path" /></mm:import>
+              <mm:import id="locale"><mm:field name="locale" />_<mm:write /></mm:import>
               <mm:import id="language" reset="true"><mm:field name="locale" /></mm:import>
               <mm:present referid="education">
                 <mm:node number="$education">
-                  <mm:field vartype="String" write="false" name="path">
+                  <mm:field name="path">
                     <c:if test="${! empty _}">
-                      <mm:import id="locale" reset="true">${locale}_${_}</mm:import>
+                      <mm:import id="locale" reset="true">${locale}_<mm:write /></mm:import>
                     </c:if>
                   </mm:field>
                 </mm:node>
@@ -39,7 +39,6 @@
       </mm:field>
     </mm:node>
   </mm:present>
-  
   <!-- fall back to the default: english (no locale specified) -->
   <mm:notpresent referid="provider">
     <mm:import id="language" reset="true">en</mm:import>
