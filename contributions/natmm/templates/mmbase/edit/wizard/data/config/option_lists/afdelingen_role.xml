@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="afdelingen_role">
-   <option id="1">organisator (neemt initiatief en voert excursie uit)</option>
-   <option id="2">boekende afdeling (als er boekende afdelingen zijn geselecteerd, mogen alleen deze boeken)</option>
-   <option id="99">overig</option>
-</optionlist>

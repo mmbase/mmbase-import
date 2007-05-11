@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.11 2007-02-27 13:33:02 michiel Exp $
+ * @version $Id: Event.java,v 1.8.2.1 2007-02-27 13:32:43 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -26,7 +26,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public static final int TYPE_CHANGE   = 1;
     public static final int TYPE_DELETE   = 2;
 
-    protected int eventType = TYPE_UNSPECIFIED;
+    protected int    eventType = TYPE_UNSPECIFIED;
     protected String machine;
 
     /**
@@ -63,7 +63,6 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public Event(String machine) {
         this(machine, TYPE_UNSPECIFIED);
     }
-
     /**
      * @since MMBase-1.8.4
      */

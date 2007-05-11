@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.93 2007-04-26 10:25:49 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.3 2007-04-26 19:36:32 michiel Exp $
  */
 
 public class WriterHelper {
@@ -129,7 +129,7 @@ public class WriterHelper {
      * 'underscore' stack, containing the values for '_'.
      * @since MMBase_1.8
      */
-    private   Stack<Object> _Stack;
+    private   Stack _Stack;
     // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
@@ -274,7 +274,7 @@ public class WriterHelper {
             if (e == null) {
                 return (CharTransformer) thisTag.getPageContext().findAttribute(ContentTag.ESCAPER_KEY);
             } else {
-                return ContentTag.getCharTransformer(e, thisTag);
+                return ContentTag.getCharTransformer((String) e, thisTag);
             }
         } else {
             return null;
@@ -323,7 +323,7 @@ public class WriterHelper {
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
                         // make a vector of size 1.
-                        Vector<Object> vector = new Vector<Object>();
+                        Vector vector = new Vector();
                         vector.add(v);
                         v = vector;
                     } else {
@@ -420,9 +420,9 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack<Object>) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
-            _Stack = new Stack<Object>();
+            _Stack = new Stack();
             pushed = false;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
@@ -464,7 +464,7 @@ public class WriterHelper {
 
         // If this tag explicitely specified an escaper, and also a jspvar attribute, then use it too for the jspvar value itself:
         String e = getEscape();
-        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer(e, thisTag);
+        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer((String) e, thisTag);
         Object jspValue = ct != null ? Casting.wrap(value, ct) : value;
         thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, jspValue);
     }
@@ -473,7 +473,7 @@ public class WriterHelper {
     public void setVartype(String t) throws JspTagException {
         vartype = stringToType(t);
         if (vartype == TYPE_UNKNOWN) {
-            //throw new JspTagException("Type " + t + " is not known");
+            throw new JspTagException("Type " + t + " is not known");
         }
     }
 

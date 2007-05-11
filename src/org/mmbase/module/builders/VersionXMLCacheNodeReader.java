@@ -16,8 +16,8 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.DocumentReader;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.9 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.6 2005-11-23 15:45:13 pierre Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -36,7 +36,7 @@ public class VersionXMLCacheNodeReader {
 
     public VersionXMLCacheNodeReader(String filename) {
         try {
-            DocumentBuilder db = DocumentReader.getDocumentBuilder(false);
+            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
             File file = new File(filename);
             if (!file.exists()) {
                 log.error("no cache version " + filename + " found)");
@@ -57,7 +57,7 @@ public class VersionXMLCacheNodeReader {
 
     /**
     */
-    public Hashtable<String, Vector<VersionCacheNode>> getCacheVersions(Hashtable<String, Vector<VersionCacheNode>> handlers) {
+    public Hashtable getCacheVersions(Hashtable handlers) {
         Node n1 = document.getFirstChild();
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
@@ -77,9 +77,9 @@ public class VersionXMLCacheNodeReader {
                             // find the node
                             MMObjectNode versionnode = null;
                             String query = "name=='" + name + "'+type=='cache'";
-                            Enumeration<MMObjectNode> b = parent.search(query);
+                            Enumeration b = parent.search(query);
                             if (b.hasMoreElements()) {
-                                versionnode = b.nextElement();
+                                versionnode = (MMObjectNode)b.nextElement();
                             }
                             if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
                             VersionCacheNode cnode = new VersionCacheNode(parent.getMMBase());
@@ -103,9 +103,9 @@ public class VersionXMLCacheNodeReader {
 
                                                 // place ourselfs in the call hash
 
-                                                Vector<VersionCacheNode> subs = handlers.get(type);
+                                                Vector subs = (Vector)handlers.get(type);
                                                 if (subs == null) {
-                                                    subs = new Vector<VersionCacheNode>();
+                                                    subs = new Vector();
                                                     subs.addElement(cnode);
                                                     handlers.put(type, subs);
                                                 } else {
@@ -136,14 +136,16 @@ public class VersionXMLCacheNodeReader {
         return handlers;
     }
 
-    public Vector<Map<String,String>> getDefines() {
-        Vector<Map<String,String>> results = new Vector<Map<String,String>>();
+    /**
+    */
+    public Vector getDefines() {
+        Vector results = new Vector();
         Node n1 = document.getFirstChild();
         if (n1 != null) {
             Node n2 = n1.getFirstChild();
             while (n2 != null) {
                 if (n2.getNodeName().equals("define")) {
-                    Map<String,String> rep = new Hashtable<String,String>();
+                    Hashtable rep = new Hashtable();
 
                     // decode all the needed values in the replace itself
                     NamedNodeMap nm = n2.getAttributes();

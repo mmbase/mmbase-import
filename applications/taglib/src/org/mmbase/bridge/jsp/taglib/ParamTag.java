@@ -13,20 +13,19 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Entry;
 import javax.servlet.jsp.*;
 import java.util.*;
-import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
 /**
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.15 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: ParamTag.java,v 1.13 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class ParamTag extends ContextReferrerTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
 
-    protected List<Entry<String, Object>>       entries      = null;
+    protected List       entries      = null;
 
     private Attribute name    = Attribute.NULL;
     private Attribute value   = Attribute.NULL;
@@ -48,8 +47,8 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
     }
 
     public void addParameter(String key, Object value) throws JspTagException {
-        if (entries == null) entries = new ArrayList<Entry<String, Object>>();
-        entries.add(new Entry<String, Object>(key, value));
+        if (entries == null) entries = new ArrayList();
+        entries.add(new Entry(key, value));
         if (log.isDebugEnabled()) {
             log.debug("entries " + entries);
         }
@@ -57,26 +56,9 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
 
     public int doStartTag() throws JspException {
         findWriter(false); // just to call haveBody, mainly for mm:link.
-        paramHandler = findParentTag(ParamHandler.class, null);
+        paramHandler = (ParamHandler) findParentTag(ParamHandler.class, null);
         handled = false;
         return super.doStartTag();
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    protected void addParameter(Object value) throws JspTagException {
-        if (name == Attribute.NULL) {
-            if (value instanceof CharSequence) {
-                for (Map.Entry<String, String> entry : StringSplitter.map(((CharSequence) value).toString()).entrySet()) {
-                    paramHandler.addParameter(entry.getKey(), entry.getValue());
-                }
-            } else {
-                throw new TaglibException("You must specifiy a 'name' attribute if the value is not a comma separated String of <name>=<value> pairs.");
-            }
-        } else {
-            paramHandler.addParameter(name.getString(this), value);
-        }
     }
 
     public int doAfterBody() throws JspException {
@@ -84,7 +66,7 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
             if (bodyContent != null) {
                 // the value is the body context.
                 helper.setValueOnly(bodyContent.getString(), WriterHelper.IMPLICITLIST); // to deal with 'vartype' casting
-                addParameter(helper.getValue());
+                paramHandler.addParameter(name.getString(this), helper.getValue());
                 handled = true;
             }
         }
@@ -96,16 +78,16 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
             if (value != Attribute.NULL) {
                 if (referid != Attribute.NULL || entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
                 helper.setValueOnly(value.getString(this), WriterHelper.IMPLICITLIST); // to deal with 'vartype' casting
-                addParameter(helper.getValue());
+                paramHandler.addParameter(name.getString(this), helper.getValue());
 
             } else if (referid != Attribute.NULL) {
                 if (entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
-                addParameter(getObject(referid.getString(this)));
+                paramHandler.addParameter(name.getString(this), getObject(referid.getString(this)));
             } else if (entries != null) {
-                addParameter(entries);
+                paramHandler.addParameter(name.getString(this), entries);
                 entries = null;
             } else {
-                addParameter("");
+                paramHandler.addParameter(name.getString(this), "");
             }
         }
         paramHandler = null;

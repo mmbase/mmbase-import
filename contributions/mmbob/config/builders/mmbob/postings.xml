@@ -16,97 +16,294 @@
   </descriptions>
 
   <fieldlist>
-    <field name="subject">
+    <field>
+      <descriptions>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Subject</guiname>
       </gui>
       <editor>
         <positions>
+          <input>1</input>
           <list>1</list>
+          <search>1</search>
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name xml:lang="en">subject</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="c_poster">
+    <field>
+      <descriptions>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Poster</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>-1</list>
+          <search>2</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>c_poster</name>
         <type key="false" notnull="false" size="64" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="mood">
+    <field>
+      <descriptions>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Mood</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>-1</list>
+          <search>3</search>
+        </positions>
+      </editor>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>mood</name>
         <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="body">
+    <field>
+      <descriptions>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Text</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <list>-1</list>
+          <search>4</search>
+        </positions>
+      </editor>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>
 
-    <field name="createtime">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">createtime</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>8</input>
+          <list>-1</list>
+          <search>8</search>
+        </positions>
+      </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>createtime</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="updatetime">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">updatetime</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>9</input>
+          <list>-1</list>
+          <search>9</search>
+        </positions>
+      </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>updatetime</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="edittime">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">edittime</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>10</input>
+          <list>-1</list>
+          <search>10</search>
+        </positions>
+      </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>edittime</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field  name="posternumber">
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="false" /> <!-- can post as guest -->
-      </datatype>
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>posternumber</name>
+        <type key="false" notnull="false" state="persistent">NODE</type>
+      </db>
     </field>
 
-    <field name="editcount">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>editcount</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <!-- should following fields not be booleans? -->
-    <field name="enable_html">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>enable_html</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="enable_smilies">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>enable_smilies</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="enable_sig">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>enable_sig</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="enable_bbcode">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>enable_bbcode</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="state">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>state</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="c_body">
+    <field>
+      <descriptions>
+      </descriptions>
+      <gui>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+       </editor>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
        <db>
+         <name>c_body</name>
          <type key="false" notnull="false" size="128000" state="persistent">STRING</type>
        </db>
      </field>

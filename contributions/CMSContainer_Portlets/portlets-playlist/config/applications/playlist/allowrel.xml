@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<allowrel exportsource="jdbc:mysql://localhost/playlist" timestamp="20050919142139">
-   <node number="801" owner="default" snumber="55001" dnumber="55010" rtype="allowrel" dir="bidirectional">
-      <allow>yes</allow>
-   </node>
-</allowrel>

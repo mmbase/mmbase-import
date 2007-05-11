@@ -1,12 +1,12 @@
 /*
  
-  This software is OSI Certified Open Source Software.
-  OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
  
-  The license (Mozilla version 1.0) can be read at the MMBase site.
-  See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
  
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -23,32 +23,29 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
 
-
 /**
- * forumManager
- * ToDo: Write docs!
- *
+ * forumManager ToDo: Write docs!
+ * 
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: PostAreaConfig.java,v 1.9 2007-01-16 18:01:57 michiel Exp $
  */
 public class PostAreaConfig {
-    private static final Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
+    private static Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
     private String defaultaccount, defaultpassword;
     private String id = "unkown";
     private int pos = 0;
     private String guestreadmodetype, guestwritemodetype, threadstartlevel;
 
-    public PostAreaConfig(DocumentReader reader,Element n) {
-	decodeConfig(reader, n);
+    public PostAreaConfig(DocumentReader reader, Element n) {
+        decodeConfig(reader, n);
     }
 
     public PostAreaConfig(String id) {
-	defaultaccount = "admin";
-	defaultpassword = "admin2k";
-	this.id = id;
+        defaultaccount = "admin";
+        defaultpassword = "admin2k";
+        this.id = id;
     }
 
-    private boolean decodeConfig(DocumentReader reader,Element n) {
+    private boolean decodeConfig(DocumentReader reader, Element n) {
         NamedNodeMap nm = n.getAttributes();
         if (nm != null) {
             String account = "admin";
@@ -63,8 +60,7 @@ public class PostAreaConfig {
             if (n3 != null) {
                 try {
                     pos = Integer.parseInt(n3.getNodeValue());
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
             }
             // decode account
             n3 = nm.getNamedItem("account");
@@ -76,13 +72,14 @@ public class PostAreaConfig {
             if (n3 != null) {
                 password = n3.getNodeValue();
             }
-            //log.info("ID="+id+" account="+account+" password="+password);
+            // log.info("ID="+id+" account="+account+" password="+password);
             if (id.equals("default")) {
                 defaultaccount = account;
                 defaultpassword = password;
             }
 
-            for (Element n2 : ForumsConfig.list(reader.getChildElements(n, "generatedata"))) {
+            for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
+                Element n2 = (Element) ns2.next();
                 nm = n2.getAttributes();
                 if (nm != null) {
                     String role = null;
@@ -104,21 +101,20 @@ public class PostAreaConfig {
                 }
             }
 
-
             guestreadmodetype = getAttributeValue(reader, n, "guestreadmode", "type");
-            guestwritemodetype = getAttributeValue(reader, n,"guestwritemode", "type");
+            guestwritemodetype = getAttributeValue(reader, n, "guestwritemode", "type");
             threadstartlevel = getAttributeValue(reader, n, "threadstart", "level");
         }
         return true;
     }
-  
+
     public String getId() {
-	return id;
+        return id;
     }
 
-
-    private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
-        for (Element n2 : ForumsConfig.list(reader.getChildElements(n, itemname))) {
+    private String getAttributeValue(DocumentReader reader, Element n, String itemname, String attribute) {
+        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
+            Element n2 = (Element) ns2.next();
             NamedNodeMap nm = n2.getAttributes();
             if (nm != null) {
                 org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
@@ -139,8 +135,8 @@ public class PostAreaConfig {
     }
 
     public String getThreadStartLevel() {
-	// this should be fixed by asking the parent
-	if (threadstartlevel==null || threadstartlevel.equals("default")) return "";
+        // this should be fixed by asking the parent
+        if (threadstartlevel == null || threadstartlevel.equals("default")) return "";
         return threadstartlevel;
     }
 
@@ -157,11 +153,11 @@ public class PostAreaConfig {
     }
 
     public int getPos() {
-	return pos;
+        return pos;
     }
 
     public void setPos(int pos) {
-	this.pos = pos;	
-   }
+        this.pos = pos;
+    }
 
 }

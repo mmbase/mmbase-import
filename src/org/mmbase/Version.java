@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.40 2006-08-30 18:17:07 michiel Exp $
+ * @version $Id: Version.java,v 1.39.2.8 2007-05-10 15:37:58 michiel Exp $
  */
 public class Version {
 
@@ -27,6 +27,9 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getName() {
+        //String cvsTag = "$Name: not supported by cvs2svn $";
+        //String name = cvsTag.substring(6, cvsTag.length() - 1).trim();
+        //return name.equals("") ? "MMBase" : name;
         return "MMBase";
     }
 
@@ -44,7 +47,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getMinor() {
-        return 9;
+        return 8;
     }
 
     /**
@@ -53,7 +56,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 0;
+        return 4;
     }
 
     /**
@@ -94,7 +97,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
@@ -103,7 +106,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "";
+        return "final";
     };
 
     /**
@@ -112,7 +115,8 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String get() {
-        return getName() + " " + getNumber();
+        String name = getName();
+        return name + ("MMBase".equals(name) ? " " + getNumber() : "");
     }
 
 

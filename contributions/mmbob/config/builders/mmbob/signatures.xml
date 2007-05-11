@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
     name="signatures" maintainer="mmbase.org" version="0" extends="object">
 
 
@@ -20,23 +20,30 @@
   </descriptions>
 
   <fieldlist>
-    <field name="body">
+    <field>
+      <descriptions>
+        <description xml:lang="en">body</description>
+        <description xml:lang="nl">body</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Text</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
       </gui>
       <editor>
         <positions>
+          <input>1</input>
           <list>2</list>
+          <search>1</search>
         </positions>
       </editor>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>body</name>
         <type key="false" notnull="true" size="2048" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="mode">
+    <field>
       <descriptions>
         <description xml:lang="en">Mode</description>
         <description xml:lang="nl">Mode</description>
@@ -47,17 +54,19 @@
       </gui>
       <editor>
         <positions>
+          <input>2</input>
           <list>3</list>
+          <search>2</search>
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <!-- enumeration? -->
       <db>
+        <name>mode</name>
         <type key="false" notnull="true" size="64" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="encoding">
+    <field>
       <descriptions>
         <description xml:lang="en">Encoding</description>
         <description xml:lang="nl">Encoding</description>
@@ -66,9 +75,16 @@
         <guiname xml:lang="en">Encoding</guiname>
         <guiname xml:lang="nl">Encoding</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>-1</list>
+          <search>3</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <!-- enumeration? -->
       <db>
+        <name>encoding</name>
         <type key="false" notnull="true" size="64" state="persistent">STRING</type>
       </db>
     </field>

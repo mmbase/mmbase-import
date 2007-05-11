@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Resource loader</title>
     <date>2005-12-09</date>
-    <edition>$Id: resourceloader.xml,v 1.2 2006-11-28 18:40:03 michiel Exp $</edition>
+    <edition>$Id: resourceloader.xml,v 1.1 2005-12-10 10:53:53 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname><surname>Meeuwissen</surname>
@@ -59,7 +59,7 @@
     <para>
       So, there are several methods to load resources, and every method has its own advantages and
       disadvantages. A file can easily be changed and 'watched' for changes, a classloader has a
-      provision for 'multiple' resources with the same name (every jar can contain a copy of the same file),
+      provision for 'multiple' resources with the same name (every jar can contain a copy the same file),
       and the servletContext method can access resources, even if the 'war' is still packed .
     </para>
     <para>
@@ -67,13 +67,11 @@
       certain resource is the best. A good way is a way that works, so methods that don't work are
       ignored. If for example the MMBase resource 'builders/core/object.xml' is not available as a
       File (which we like most, because they can easily be changed and updated), then the resource
-      can be accessed as such. If it is not available as a file, then it tries to do it with a
-      ClassLoader or with a ServletContext. For more details, see also <ulink
-      url="http://www.mmbase.org/api/org/mmbase/util/ResourceLoader.html">the javadoc of
-      org.mmbase.util.ResourceLoader</ulink>
+      can be accessed as such. If it is not available as a file, then it tries to do it with is implemented as a kind oa
+      ClassLoader or with a ServletContext. For more details, see also <ulink url="http://www.mmbase.org/api/org/mmbase/util/ResourceLoader.html">the javadoc of org.mmbase.util.ResourceLoader</ulink>
     </para>
     <para>
-      The MMBase Resource Loader itself extends from ClassLoader. So, it works like a Class Loader, and it
+      MMBase Resource Loader is extends from ClassLoader. So, it works like a Class Loader, and it
       basicly serves to produces URL's or InputStreams for you. We add a few convience methods like
       getting a Document immediately (because we have to deal with XML so much...)
     </para>
@@ -81,15 +79,11 @@
   <section>
     <title>Reading one specific Resource</title>
       <para>
-        MMBase resources come in several different flavours, whith which different ResourceLoader
-        instances are associated. The most important one is the 'ConfigurationLoader', because we
-        mainly think of configuration.
-        <programlisting>ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();</programlisting>
-
-        There are also ResourceLoaders for resolving relative to the web-application root, or the
-        file system root. Furthermore new ResourceLoaders can be instantiated which are relative to
-        one of these staticly defined root ResourceLoaders:
-        <programlisting>ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");</programlisting>
+        MMBase resources come in several different flavours. The most important one is the
+        'ConfigLoader', because we mainly think of configuration. There are also ResourceLoaders for
+        resolving relative to the web-application root, or the file system root. Furthermore new
+        ResourceLoaders can be instantiated which are relative to one of these staticly defined root
+        ResourceLoaders.
       </para>
   </section>
   <section>
@@ -97,7 +91,7 @@
       <para>
         Because a resource with certain name can be represented with several URL's, corresponding to
         the several strategies which are applied by the ResourceLoader, a kind of conflict
-        resolution mechanism is required. If multiple resources with the same name are available,
+        resolution mechanism is required. If multiple resources with the same name are available,resourceloader.xml
         then they have a certain order, and the first one is obtained when you request one Resource.
       </para>
       <para>

@@ -12,7 +12,7 @@ package org.mmbase.module.database;
 import java.sql.*;
 import java.util.*;
 
-import java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 /**
  * MultiPoolHandler handles multi pools so we can have more than one database
  * open and they can all have a multipool.
@@ -26,7 +26,7 @@ public class MultiPoolHandler {
     private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
     private int maxConnections;
     private int maxQueries;
-    private Map<String,MultiPool> pools = new ConcurrentHashMap<String,MultiPool>();
+    private Map pools = new ConcurrentHashMap();
 
     private DatabaseSupport databaseSupport;
     private long maxLifeTime = 120000;
@@ -49,7 +49,7 @@ public class MultiPoolHandler {
     }
 
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-	MultiPool pool = pools.get(url + "," + name + "," + password);
+	MultiPool pool = (MultiPool) pools.get(url + "," + name + "," + password);
 	if (pool != null) {
 	    return pool.getFree();
 	} else {
@@ -68,19 +68,21 @@ public class MultiPoolHandler {
      * @since MMBase-1.6.2
      */
     public void shutdown() {
-        for (MultiPool pool : pools.values()) {
-            pool.shutdown();
+        for (Iterator i = pools.values().iterator(); i.hasNext();) {
+            MultiPool pool = (MultiPool) i.next();
+	    pool.shutdown();
 	}
     }
 
     public void checkTime() {
-	for (MultiPool pool : pools.values()) {
+	for (Iterator i = pools.values().iterator(); i.hasNext();) {
+	    MultiPool pool = (MultiPool) i.next();
 	    pool.checkTime();
 	}
     }
 
-    public Set<String> keySet() {
-        return pools.keySet();
+    public Set keySet() {
+	return pools.keySet();
     }
 
     /*
@@ -90,7 +92,7 @@ public class MultiPoolHandler {
     */
 
     public MultiPool get(String id) {
-        return pools.get(id);
+        return (MultiPool) pools.get(id);
     }
 
     public void setMaxConnections(int max) {

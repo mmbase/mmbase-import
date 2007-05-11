@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.module.corebuilders.TypeRel;
+import org.mmbase.module.core.MMObjectNode;
 
 /**
  * The PostgreSQL query handler, implements {@link
@@ -36,46 +36,21 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.32 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.24.2.2 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
-
-    private boolean localeMakesCaseInsensitive = false;
-
     /**
      * Constructor.
      */
     public PostgreSqlSqlHandler() {
         super();
-        /* TODO: make this work..
-        DataSource ds =  ((org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory()).getDataSource();
-        Connection con = null;
-        Statement statement = null;
-        ResultSet results = null;
-        try {
-            con = ds.getConnection();
-            statement = con.createStatement();
-            results = statement.executeQuery("select 'ab' > 'Ac'");
-            results.next();
-            localeMakesCaseInsensitive = results.getBoolean(0);
-        } catch (Exception e) {
-            log.error(e);
-        } finally {
-            if (results != null) try { results.close(); } catch (Exception e) {};
-            if (statement != null) try { statement.close(); } catch (Exception e) {};
-            if (con != null) try { con.close(); } catch (Exception e) {};
-        }
-        log.info("Postgresql database instance is case " + (localeMakesCaseInsensitive ? "INSENSITIVE" : "SENSITIVE") + " (because of Locale settings)");
-        */
-
     }
 
     // javadoc is inherited
-    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -98,7 +73,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override
     protected boolean useLower(FieldCompareConstraint constraint) {
         if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
             return false;
@@ -108,7 +82,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE ");
@@ -119,12 +92,14 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
+    /// TODO: Needs to determine the value of this (select 'a' > 'A' or so?)
+    private final boolean localeMakesCaseInsensitive = false;
+
     /**
      * Normally, Postgresql does not sort case senstively, so we should not sort on
      * UPPER(fieldname). This is mainly very bad if the query is also distinct. (ERROR: for SELECT
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
-    @Override
     protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
@@ -162,7 +137,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @javadoc
      */
-    @Override
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
@@ -201,7 +175,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
 
     // javadoc is inherited
-    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -253,7 +226,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
      */
-    @Override
     protected void appendTableName(StringBuffer sb, Step step) {
         if(step instanceof RelationStep) {
             RelationStep rs = (RelationStep) step;
@@ -267,31 +239,14 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 // no role specified, check if more than one role on sub tables are possible...
                 int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
-                int searchDir = rs.getDirectionality();
+                int directionality = rs.getDirectionality();
                 RelDef reldef = mmbase.getRelDef();
-
-                // TODO it is not necessary to determin the full table, because the only used
-                // informations are:
-                // 1. whether it has 1 entry.
-                // 2. if it has, which it is.
-                //
-                // TODO Seems to be a bit of code-duplication from TypeRel#optimizeRelationStep,
-                // perhaps an extra helper method must be created in TypeRel.
-
-                Set<String> tables = new HashSet<String>();
-                TypeRel typeRel = mmbase.getTypeRel();
-                for (Integer rnumber : reldef.getRoles()) {
-                    log.debug(" considering role " + rnumber + "(" + reldef.getNode(rnumber).getStringValue("sname"));
-                    boolean sourceToDestination =
-                        searchDir != RelationStep.DIRECTIONS_SOURCE
-                        && typeRel.contains(sourceBuilder, destinationBuilder, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
-                    boolean destinationToSource =
-                        searchDir != RelationStep.DIRECTIONS_DESTINATION
-                        && typeRel.contains(destinationBuilder, sourceBuilder, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
-
-                    if (sourceToDestination || destinationToSource) {
-                        tables.add(reldef.getBuilder(rnumber).getTableName());
-                    }
+                Set tables = new HashSet();
+                Iterator allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder, 0, directionality).iterator();
+                while(allowed.hasNext()) {
+                    MMObjectNode typeRel = (MMObjectNode) allowed.next();
+                    int rnumber = typeRel.getIntValue("rnumber");
+                    tables.add(reldef.getBuilder(rnumber).getTableName());
                 }
                 if (tables.size() == 1) {
                     if (log.isDebugEnabled()) {
@@ -300,14 +255,13 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                     sb.append(" ONLY ").
                         append(mmbase.getBaseName()).
                         append('_').
-                        append( tables.iterator().next());
+                        append((String) tables.iterator().next());
                     appendTableAlias(sb, step);
                     return;
                 } else {
                     if (log.isDebugEnabled()) {
                         log.debug("Not adding ONLY to table name because role of " + step + " is null, and the following tables are possible " + tables);
                     }
-                    // falling back to super.
                 }
             }
         }

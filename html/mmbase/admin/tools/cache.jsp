@@ -64,14 +64,14 @@
   <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="active" jspvar="active" vartype="String">
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% CacheManager.getCache(cache).setActive(active.equals("on") ? true : false); %>
+  <% Cache.getCache(cache).setActive(active.equals("on") ? true : false); %>
   </mm:write></mm:write>
 </mm:present>
 
 <mm:present referid="clear">
   <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% CacheManager.getCache(cache).clear();   %>
+  <% Cache.getCache(cache).clear();   %>
   </mm:write>
 </mm:present>
 
@@ -94,8 +94,8 @@
        //first sort the caches
 
 
-   for (Iterator i = CacheManager.getCaches().iterator(); i.hasNext(); ) {
-      Cache cache = CacheManager.getCache((String) i.next());
+   for (Iterator i = Cache.getCaches().iterator(); i.hasNext(); ) {
+      Cache cache = Cache.getCache((String) i.next());
       if(cache instanceof QueryResultCache){
          queryCaches.add(cache);
       }else{
@@ -250,7 +250,7 @@
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + saveDevide(strategy.getTotalEvaluationTimeMillis(), strategy.getTotalEvaluated())%></div>
                      </div>
                      <div class="row">
-                        <div class="label" style="<mm:write referid="textStyle"/>">relative performance:</div>
+                        <div class="label" style="<mm:write referid="textStyle"/>">percentatge performance:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + savePercentage(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%> %</div>
                      </div>
                </td>

@@ -13,7 +13,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.12.2.1 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 

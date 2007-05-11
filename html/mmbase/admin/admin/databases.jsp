@@ -56,7 +56,7 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <tr>
     <td class="data" colspan="2"><mm:field name="item1" id="item1" /></td>
     <td class="data"><mm:field name="item2" /></td>
-    <td class="data"><mm:field name="item3" /></td>
+    <td class="data"><mm:field name="item2" /></td>
     <td class="navigate">
       <a href="<mm:url referids="item1" page="database/connections.jsp" />"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
   </td>
@@ -64,7 +64,7 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
 </mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
 </mm:hasfunction>
-<mm:hasfunction module="jdbc" name="POOLS" inverse="true">
+<mm:hasfunction module="jdbc" name="POOL" inverse="true">
   <tr>
     <td>Function for database pool inspection not available</td>
   </tr>

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -25,12 +26,11 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.16 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Functions.java,v 1.12 2006-01-13 15:37:24 pierre Exp $
  */
 public class Functions {
 
     private static final Logger log = Logging.getLoggerInstance(Functions.class);
-
 
     /**
      * Converts a certain List to an Parameters if it is not already one.
@@ -49,22 +49,16 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List<Parameter> define(Parameter[] def, List<Parameter> list) {
+    public static List define(Parameter[] def, List list) {
         if (def == null) return list;
-        for (Parameter d : def) {
-            if (d instanceof Parameter.Wrapper) {
-                define(((Parameter.Wrapper) d).arguments, list);
+        for (int i = 0; i < def.length; i++) {
+            if (def[i] instanceof Parameter.Wrapper) {
+                define(((Parameter.Wrapper) def[i]).arguments, list);
             } else {
-                list.add(d);
+                list.add(def[i]);
             }
         }
         return list;
-    }
-    /**
-     * @since MMBase-1.9
-     */
-    public static List<Parameter> define(Parameter[] def) {
-        return define(def, new ArrayList<Parameter>());
     }
 
     /**
@@ -73,12 +67,12 @@ public class Functions {
     public static Method getMethodFromClass(Class claz, String name) {
         Method method = null;
         Method[] methods = claz.getMethods();
-        for (Method element : methods) {
-            if (element.getName().equals(name)) {
+        for (int j = 0; j < methods.length; j++) {
+            if (methods[j].getName().equals(name)) {
                 if (method != null) {
                     throw new IllegalArgumentException("There is more than one method with name '" + name + "' in " + claz);
                 }
-                method = element;
+                method = methods[j];
             }
         }
         if (method == null) {
@@ -119,11 +113,12 @@ public class Functions {
      * @param map
      * @return A map of parameter definitions (Parameter[] objects), keys by function name (String)
     */
-    public static Map<String, Parameter[]> getParameterDefinitonsByReflection(Class clazz, Map<String, Parameter[]> map) {
+    public static Map getParameterDefinitonsByReflection(Class clazz, Map map) {
 
         log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
+        for (int i = 0 ; i < fields.length; i++) {
+            Field field = fields[i];
             int mod = field.getModifiers();
             // only static public final Parameter[] constants are considered
             if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) &&

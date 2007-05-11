@@ -27,21 +27,29 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
+public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
+    public Writer transform(Reader r, Writer w) {
+        try {
+            BufferedReader br = new BufferedReader(r);
+            PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
-    protected void transform(PrintWriter bw, String line) {
-        if (!line.trim().equals("")) {
-            bw.println(line);
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().equals("")) {
+                    bw.println(line);
+                }
+            }
+            bw.flush();
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
         }
+        return w;
     }
 
-    /**
-     * This was the original, now unused implementation (not efficient enough)
-     */
-    protected Writer transform2(Reader r, Writer w) {
+    public Writer transform2(Reader r, Writer w) {
 
         int space = 1;  // 'open' spaces (on this line)
         int nl    = 1;  // 'open' newlines

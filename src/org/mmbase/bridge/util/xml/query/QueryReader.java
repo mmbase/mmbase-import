@@ -22,9 +22,8 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.14 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.8 2006-05-17 11:30:22 michiel Exp $
  * @since MMBase-1.8
- * @javadoc
  **/
 public class QueryReader {
 
@@ -67,24 +66,17 @@ public class QueryReader {
         if (hasAttribute(fieldElement,"name")) {
             FieldDefinition fieldDefinition = configurer.getFieldDefinition();
             fieldDefinition.fieldName = fieldElement.getAttribute("name");
-
-            String opt = fieldElement.getAttribute("optional");
-
-            if (opt.equals("")) {
-                try {
-                    fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
-                } catch (IllegalArgumentException iae) {
-                    // the field did not exist in the database.
-                    // this is possible if the field is, for instance, a bytefield that is stored on disc.
-                    fieldDefinition.stepField = null;
-                }
-            } else {
-                fieldDefinition.optional = java.util.regex.Pattern.compile(opt);
+            try {
+                fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
+            } catch (IllegalArgumentException iae) {
+                // the field did not exist in the database.
+                // this is possible if the field is, for instance, a bytefield that is stored on disc.
+                fieldDefinition.stepField = null;
             }
             // custom configuration of field
             fieldDefinition.configure(fieldElement);
             queryDefinition.fields.add(fieldDefinition);
-            if (queryDefinition.isMultiLevel && fieldDefinition.optional == null) {
+            if (queryDefinition.isMultiLevel) {
                 // have to add field for multilevel queries
                 queryDefinition.query.addField(fieldDefinition.fieldName);
             }
@@ -143,8 +135,8 @@ public class QueryReader {
         NodeQuery query = dayMarks.createQuery();
         StepField step = query.createStepField("daycount");
         int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-        int day = currentDay  - age;
-        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(day));
+        Integer day = new Integer(currentDay  - age);
+        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
         query.setConstraint(constraint);
         query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
         query.setMaxNumber(1);
@@ -200,17 +192,17 @@ public class QueryReader {
             int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
                 // BETWEEN constraint
-                constraint = queryDefinition.query.createConstraint(stepField, Integer.valueOf(maxMarker + 1), Integer.valueOf(getDayMark(cloud, minAge - 1)));
+                constraint = queryDefinition.query.createConstraint(stepField, new Integer(maxMarker + 1), new Integer(getDayMark(cloud, minAge - 1)));
             } else {
-                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
+                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(cloud, minAge - 1)));
             }
         } else if (maxAge != -1) { // only on max
             int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
-                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
+                constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, new Integer(maxMarker + 1));
             }
         } else if (minAge > 0) {
-            constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
+            constraint = queryDefinition.query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(cloud, minAge - 1)));
         }
         return constraint;
     }
@@ -218,13 +210,14 @@ public class QueryReader {
 
     protected static Integer getAlias(Cloud cloud, String name) {
         org.mmbase.bridge.Node node = cloud.getNode(name);
-        return node.getNumber();
+        return new Integer(node.getNumber());
     }
 
-    protected static SortedSet<Integer> getAliases(Cloud cloud, List<String> names) {
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        for (String name : names) {
-            set.add(getAlias(cloud, name));
+    protected static SortedSet getAliases(Cloud cloud, List names) {
+        SortedSet set = new TreeSet();
+        Iterator i = names.iterator();
+        while (i.hasNext()) {
+            set.add(getAlias(cloud, (String) i.next()));
         }
         return set;
     }
@@ -244,20 +237,20 @@ public class QueryReader {
         StepField stepField = queryDefinition.query.createStepField(step, "number");
 
         String name = getAttribute(constraintElement,"name");
-        List<String> names =  Casting.toList(name);
+        List names =  Casting.toList(name);
         return queryDefinition.query.createConstraint(stepField, getAliases(queryDefinition.query.getCloud(),names));
     }
 
-    protected static SortedSet<Integer> getOTypes(Cloud cloud, List<String> names, boolean descendants) {
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
+    protected static SortedSet getOTypes(Cloud cloud, List names, boolean descendants) {
+        SortedSet set = new TreeSet();
+        Iterator i = names.iterator();
         while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager(i.next());
-            set.add(nm.getNumber());
+            NodeManager nm = cloud.getNodeManager((String) i.next());
+            set.add(new Integer(nm.getNumber()));
             if (descendants) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
                 while (j.hasNext()) {
-                    set.add(j.nextNodeManager().getNumber());
+                    set.add(new Integer(j.nextNodeManager().getNumber()));
                 }
             }
         }
@@ -278,7 +271,7 @@ public class QueryReader {
         }
         StepField stepField = queryDefinition.query.createStepField(step, "otype");
         String name = getAttribute(constraintElement,"name");
-        List<String> names =  Casting.toList(name);
+        List names =  Casting.toList(name);
         boolean descendants = true;
         if (hasAttribute(constraintElement,"descendants")) {
             descendants = "true".equals(getAttribute(constraintElement,"descendants"));
@@ -396,8 +389,8 @@ public class QueryReader {
                 if (hasAttribute(queryElement,"element")) {
                   element = getAttribute(queryElement,"element");
                 } else {
-                    List<String> builders  = StringSplitter.split(path);
-                    element = builders.get(builders.size()-1);
+                    List builders  = StringSplitter.split(path);
+                    element = (String)builders.get(builders.size()-1);
                 }
             }
             if (relateFrom != null) {
@@ -409,7 +402,7 @@ public class QueryReader {
             queryDefinition.isMultiLevel = !path.equals(element);
 
             if (element != null) {
-                queryDefinition.elementManager = cloud.getNodeManager(Queries.removeDigits(element));
+                queryDefinition.elementManager = cloud.getNodeManager(element);
             }
             if (queryDefinition.isMultiLevel) {
                 queryDefinition.query = cloud.createQuery();
@@ -420,7 +413,7 @@ public class QueryReader {
             if (element != null) {
                 queryDefinition.elementStep = queryDefinition.query.getStep(element);
             }
-            if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList<FieldDefinition>();
+            if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList();
 
             if (hasAttribute(queryElement, "startnodes")) {
                 String startNodes = getAttribute(queryElement, "startnodes");

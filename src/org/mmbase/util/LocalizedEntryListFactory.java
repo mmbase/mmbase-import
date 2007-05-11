@@ -37,10 +37,10 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.45 2007-04-16 08:39:04 nklasens Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
-public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
+public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
@@ -52,14 +52,14 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     private static class LocalizedEntry implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L;
         ArrayList entries    = new ArrayList(); //  List of Map.Entries, Bundles and DocumentSerializable's
-        ArrayList<Serializable> unusedKeys = new ArrayList<Serializable>(); //  List of unused keys;
+        ArrayList unusedKeys = new ArrayList(); //  List of unused keys;
         public Object clone() {
             try {
                 LocalizedEntry clone = (LocalizedEntry) super.clone();
-                Iterator<PublicCloneable> i = clone.entries.iterator();
+                Iterator i = clone.entries.iterator();
                 clone.entries = new ArrayList();
                 while(i.hasNext()) {
-                    clone.entries.add(i.next().clone());
+                    clone.entries.add(((PublicCloneable)i.next()).clone());
                 }
                 clone.unusedKeys = (ArrayList) unusedKeys.clone();
                 return clone;
@@ -72,9 +72,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             return "entries:" + entries + "uu:" + unusedKeys;
         }
     }
-    private HashMap<Locale, LocalizedEntry> localized  = new HashMap<Locale, LocalizedEntry>();   
-    private ArrayList<Bundle> bundles  = new ArrayList<Bundle>(); // contains all Bundles
-    private ArrayList<Serializable> fallBack = new ArrayList<Serializable>(); // List of known keys, used as fallback, if nothing defined for a certain locale
+    private HashMap localized  = new HashMap();   // Locale -> LocalizedEntry
+    private ArrayList bundles  = new ArrayList(); // contains all Bundles
+    private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
     private DocumentSerializable xml = null;
 
@@ -92,20 +92,22 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * Adds a value for a certain key and Locale
      * @return The created Map.Entry.
      */
-    public Map.Entry<Serializable, Serializable> add(Locale locale, Serializable key, Serializable value) {
+    public Map.Entry add(Locale locale, Serializable key, Serializable value) {
         if (locale == null) {
             locale = LocalizedString.getDefault();
         }
 
-        Entry<Serializable, Serializable> entry = new Entry(key, value);
-        List<Serializable> unused = add(locale, entry);
+        Entry entry = new Entry(key, value);
+        List unused = add(locale, entry);
         if (! fallBack.contains(key)) {
             // this is an as yet unknown key.
             size++;
             fallBack.add(key);
-            for (Map.Entry<Locale, LocalizedEntry> e : localized.entrySet()) {
+            Iterator i = localized.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
                 if (! e.getKey().equals(locale)) {
-                    LocalizedEntry loc = e.getValue();
+                    LocalizedEntry loc = (LocalizedEntry) e.getValue();
                     loc.unusedKeys.add(key);
                 }
             }
@@ -125,7 +127,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         if (locale == null) {
             locale = LocalizedString.getDefault();
         }
-        LocalizedEntry local = localized.get(locale);
+        LocalizedEntry local = (LocalizedEntry) localized.get(locale);
         if (local == null) {
             local = new LocalizedEntry();
             local.entries.addAll(bundles);
@@ -190,7 +192,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     /**
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
-    public List<Map.Entry<C, String>> get(final Locale locale) {
+    public List get(final Locale locale) {
         return get(locale, usesCloud ? getCloud(locale) : null);
     }
 
@@ -216,7 +218,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         }
     }
 
-
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
@@ -227,13 +228,13 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * @param cloud  The cloud to use. Can be <code>null</code> if no queries added (see {@link #addQuery}).
      *               If Locale is <code>null</code>, but cloud isn't, the locale of the cloud is used.
      */
-    public List<Map.Entry<C, String>> get(final Locale locale, final Cloud cloud) {
-        return new AbstractSequentialList<Map.Entry<C, String>> () {
+    public List /* <Map.Entry> */ get(final Locale locale, final Cloud cloud) {
+        return new AbstractSequentialList () {
 
             public int size() {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
-            public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
+            public ListIterator listIterator(final int index) {
                 return new ListIterator() {
                     int   i = -1;
                     Locale useLocale = locale;
@@ -246,12 +247,12 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     }
                     private ChainedIterator iterator = new ChainedIterator();
                     private Iterator subIterator = null;
-                    private Map.Entry<C, String> next = null;
+                    private Map.Entry next = null;
 
                     {
-                        LocalizedEntry loc = localized.get(useLocale);
+                        LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
                         if (loc == null) {
-                            loc = localized.get(LocalizedString.getDefault());
+                            loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
                         }
 
                         if (loc == null) {
@@ -361,6 +362,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
+                    public void remove(int index) {
+                        throw new UnsupportedOperationException();
+                    }
                     public void add(Object o) {
                         throw new UnsupportedOperationException();
                     }
@@ -378,10 +382,10 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
         int queriesSize = size();
         Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
-        LocalizedEntry localizedList = localized.get(locale);
+        LocalizedEntry localizedList = (LocalizedEntry) localized.get(locale);
         if (localizedList == null) {
             locale = LocalizedString.getDefault();
-            localizedList = localized.get(locale);
+            localizedList = (LocalizedEntry) localized.get(locale);
         }
         if (localizedList != null) {
             Iterator i = localizedList.entries.iterator();
@@ -437,13 +441,13 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      */
     public Object castKey(final Object key, final Cloud cloud) {
         String string = null;
-        Iterator<Bundle> i = bundles.iterator();
+        Iterator i = bundles.iterator();
         if (i.hasNext()) {
             string = Casting.toString(key);
             while (i.hasNext()) {
-                Bundle b = i.next();
+                Bundle b = (Bundle) i.next();
                 Class wrapper = b.wrapper;
-                Map<String,Object> constants = b.constantsProvider;
+                HashMap constants = b.constantsProvider;
                 Object nk = SortedBundle.castKey(string, null, constants, wrapper);
                 if (string != nk) {
                     if (log.isDebugEnabled()) {
@@ -466,16 +470,16 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     public Object clone() {
         try {
             LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
-            Iterator<Bundle> j = clone.bundles.iterator();
-            clone.bundles   = new ArrayList<Bundle>();
+            Iterator j = clone.bundles.iterator();
+            clone.bundles   = new ArrayList();
             while(j.hasNext()) {
-                clone.bundles.add((j.next().clone()));
+                clone.bundles.add(((PublicCloneable) j.next()).clone());
             }
-            Iterator<Map.Entry<Locale, LocalizedEntry>> i = clone.localized.entrySet().iterator();
+            Iterator i = clone.localized.entrySet().iterator();
             clone.localized = new HashMap();
             while(i.hasNext()) {
-                Map.Entry<Locale, LocalizedEntry> entry =  i.next();
-                clone.localized.put(entry.getKey(), (entry.getValue()).clone());
+                Map.Entry entry = (Map.Entry) i.next();
+                clone.localized.put(entry.getKey(), ((PublicCloneable) entry.getValue()).clone());
             }
             clone.fallBack  = (ArrayList) fallBack.clone();
             return clone;
@@ -599,7 +603,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
         private String      resource;
         private ClassLoader classLoader;
-        private HashMap<String,Object>     constantsProvider;
+        private HashMap     constantsProvider;
         private Class       wrapper;
         private Comparator  comparator;
 
@@ -626,7 +630,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
 
-        Bundle(String r, ClassLoader cl, HashMap<String,Object> cp, Class w, Comparator comp) {
+        Bundle(String r, ClassLoader cl, HashMap cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
         /**
@@ -637,7 +641,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
             } catch (IllegalArgumentException iae) {
                 log.error(iae);
-                return Collections.emptyList();
+                return Collections.EMPTY_LIST;
             }
         }
 
@@ -673,7 +677,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             log.debug("Cloning bundle " + this);
             try {
                 Bundle clone = (Bundle) super.clone();
-                clone.constantsProvider = constantsProvider != null ? (HashMap<String,Object>) constantsProvider.clone() : null;
+                clone.constantsProvider = constantsProvider != null ? (HashMap) constantsProvider.clone() : null;
                 return clone;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -701,7 +705,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         fact.add(en, "a", "good bye");
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         fact.add(nl, "c", "doegg");
-        fact.add(dk, 5, "dk");
+        fact.add(dk, new Integer(5), "dk");
         fact.add(null, "e", "oi");
         fact.addBundle(resource2, null, null, String.class, SortedBundle.NO_COMPARATOR);
 

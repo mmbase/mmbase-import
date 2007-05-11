@@ -11,6 +11,7 @@ import org.mmbase.core.event.NodeEventHelper;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.tests.BridgeTest;

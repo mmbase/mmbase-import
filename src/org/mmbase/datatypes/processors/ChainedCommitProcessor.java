@@ -9,22 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import org.mmbase.bridge.*;
 import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.6 2007-03-29 15:22:48 pierre Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.2.2.1 2007-03-26 12:51:14 pierre Exp $
  * @since MMBase-1.7
  */
 
-public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util.PublicCloneable {
+public class ChainedCommitProcessor implements  CommitProcessor {
+    private static final Logger log = Logging.getLoggerInstance(ChainedCommitProcessor.class);
 
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<CommitProcessor> processors = new ArrayList<CommitProcessor>();
+    private List processors = new ArrayList();
 
     public ChainedCommitProcessor add(CommitProcessor proc) {
         processors.add(proc);
@@ -32,25 +35,21 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
     }
 
     public void commit(Node node, Field field) {
-        for (CommitProcessor proc : processors) {
-            proc.commit(node, field);
+        Iterator i = processors.iterator();
+        while (i.hasNext()) {
+            Object proc = i.next();
+            if (proc instanceof CommitProcessor) {
+                CommitProcessor commitProc = (CommitProcessor) proc;
+                commitProc.commit(node, field);
+            }
         }
         return;
     }
 
     public String toString() {
-        return "chained" + processors;
+        return "chained commit" + processors;
     }
 
-    public Object clone() {
-        try {
-            ChainedCommitProcessor clone = (ChainedCommitProcessor)super.clone();
-            clone.processors = (ArrayList<CommitProcessor>) processors.clone();
-            return clone;
-        } catch (CloneNotSupportedException cnse) {
-            //
-            return null;
-        }
-    }
+
 
 }

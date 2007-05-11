@@ -16,12 +16,12 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.12 2006-10-25 20:29:25 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.9.2.1 2006-10-18 10:01:03 michiel Exp $
  * @see Parameter
  */
 
 public class AutodefiningParameters extends Parameters {
-    //private static Logger log = Logging.getLoggerInstance(AutodefiningParameters.class);
+    //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
     public AutodefiningParameters(Parameter[] base) {
         super(base);
@@ -35,7 +35,7 @@ public class AutodefiningParameters extends Parameters {
         return true;
     }
 
-    protected int define(Parameter<?> param) {
+    protected int define(Parameter param) {
         Parameter[] newDef = new Parameter[definition.length + 1];
         for (int i = 0; i < definition.length; i++) {
             newDef[i] = definition[i];
@@ -50,7 +50,7 @@ public class AutodefiningParameters extends Parameters {
         return define(new Parameter(param, Object.class));
     }
 
-    public int indexOfParameter(Parameter<?> parameter) {
+    public int indexOfParameter(Parameter parameter) {
         int index = super.indexOfParameter(parameter);
         if (index == -1) {
             return define(parameter);
@@ -68,24 +68,5 @@ public class AutodefiningParameters extends Parameters {
         }
     }
 
-    public static void main(String[] args) {
-        AutodefiningParameters pars = new AutodefiningParameters();
-        for (String arg : args) {
-            pars.setIfDefined(arg, "");
-        }
-
-        System.out.println("" + pars);
-        for (String arg : args) {
-            System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
-        }
-        for (String arg : args) {
-            pars.set(arg, "X");
-        }
-
-        for (String arg : args) {
-            System.out.println(" " + arg + ": " + pars.indexOfParameter(arg));
-        }
-
-    }
 
 }

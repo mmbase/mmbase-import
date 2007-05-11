@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -24,7 +25,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: LeafConstraintsTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: LeafConstraintsTag.java,v 1.6 2006-03-14 17:56:24 michiel Exp $
  */
 public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer {
 
@@ -78,7 +79,7 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         } else {
             throw new JspTagException("Unknown value for 'on' attribute '" + o + "' (known are 'template' and 'trunk')");
         }
-        tree = (findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
+        tree = ((TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
         return EVAL_BODY;
     }
 

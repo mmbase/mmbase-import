@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.173 2007-05-03 14:52:41 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.12 2007-05-03 14:49:48 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -560,10 +560,10 @@
     fieldintern is called to draw the values
   -->
   <xsl:template name="fieldintern">
-
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="prefix"/>
     </xsl:call-template>
+
 
     <xsl:choose>
       <xsl:when test="@ftype='startwizard'">
@@ -625,7 +625,6 @@
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="postfix"/>
     </xsl:call-template>
-
   </xsl:template>
 
 
@@ -640,10 +639,10 @@
   </xsl:template>
 
   <xsl:template name="ftype-function">
-    <xsl:if test="not(string(number(@number)) = &apos;NaN&apos;)">
+    <xsl:if test="not(string(number(@number)) = 'NaN')">
       <xsl:apply-templates select="value" mode="line">
         <xsl:with-param name="val">
-          <xsl:value-of select="node:saxonFunction($cloud, string(@number), string(value))" disable-output-escaping="yes"/>
+          <xsl:value-of select="node:function($cloud, string(@number), string(value))" disable-output-escaping="yes"/>
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:if>
@@ -651,10 +650,10 @@
 
   <xsl:template name="ftype-data">
     <xsl:choose>
-      <xsl:when test="@dttype=&apos;datetime&apos;">
+      <xsl:when test="@dttype='datetime'">
         <xsl:value-of select="date:format(string(value), $date-pattern, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
-      <xsl:when test="@dttype=&apos;millisecondsdatetime&apos;">
+      <xsl:when test="@dttype='millisecondsdatetime'">
         <xsl:value-of select="date:format(string(value), $date-pattern, 1, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
@@ -680,7 +679,7 @@
 
   <xsl:template name="ftype-text">
     <xsl:choose>
-      <xsl:when test="@maywrite!='false'">
+      <xsl:when test="@maywrite!=&apos;false&apos;">
         <span>
           <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
             <xsl:if test="@ftype = &apos;html&apos;">
@@ -961,10 +960,10 @@
               </a>
               <br/>
               <xsl:if test="@size &gt; 0">
-                <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
-                <br/>
+                <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
+                 <br/>
                  <a
-                   href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
+                   href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
                    target="_new">
                    <xsl:call-template name="prompt_image_full" />
                  </a>
@@ -997,10 +996,10 @@
         </xsl:when>
         <xsl:otherwise>
           <span>
-            <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
             <br/>
             <a
-              href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+              href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
               target="_new">
               <xsl:call-template name="prompt_image_full" />
             </a>
@@ -1009,17 +1008,17 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <xsl:if test="@maywrite='false'">
+    <xsl:if test="@maywrite=&apos;false&apos;">
       <span class="readonly">
-        <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0"/>
+        <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
       </span>
     </xsl:if>
   </xsl:template>
 
   <xsl:template name="ftype-file">
     <xsl:choose>
-      <xsl:when test="@dttype='data' or @maywrite='false'">
-        <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}">
+      <xsl:when test="@dttype=&apos;data&apos; or @maywrite=&apos;false&apos;">
+        <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
           <xsl:call-template name="prompt_do_download"/>
         </a>
       </xsl:when>
@@ -1036,7 +1035,7 @@
               <br/>
             </xsl:if>
             <xsl:if test="@size &gt; 0">
-              <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}">
+              <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
                 <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
               </a>
@@ -1325,13 +1324,13 @@
   <xsl:template name="listsearch-fields">
     <!-- other search-possibilities are given in the xml -->
     <select name="searchfields_{../command[@name=&apos;add-item&apos;]/@cmd}" class="searchpossibilities" onChange="form[&apos;searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;default&apos;); form[&apos;searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;searchtype&apos;);">
-      <xsl:for-each select="search-filter">
-        <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
-          <xsl:call-template name="i18n">
-            <xsl:with-param name="nodes" select="name"/>
-          </xsl:call-template>
-        </option>
-      </xsl:for-each>
+          <xsl:for-each select="search-filter">
+            <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
+              <xsl:call-template name="i18n">
+                <xsl:with-param name="nodes" select="name"/>
+              </xsl:call-template>
+            </option>
+          </xsl:for-each>
       <xsl:call-template name="listsearch-fields-default"/>
     </select>
     <input type="hidden" name="searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/search-fields/@searchtype}"/>
@@ -1361,7 +1360,7 @@
     <xsl:choose>
        <xsl:when test="@displaytype='none'">
         <!-- don't show a thing -->
-      </xsl:when>
+       </xsl:when>
       <xsl:when test="@displaytype='link'">
         <xsl:call-template name="item-link"/>
       </xsl:when>
@@ -1415,12 +1414,12 @@
           <xsl:when test="field[@name = 'handle']">
             <xsl:if test="field[@name = 'handle' and @size &gt; 0]">
             <!-- the image -->
-            <img src="{node:saxonFunction($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
             <!-- the image -->
-            <img src="{node:saxonFunction($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
           </xsl:otherwise>
         </xsl:choose>
       </td>
@@ -1472,7 +1471,7 @@
   </xsl:template>
 
   <xsl:template name="itemfields-hover">
-    <xsl:if test="field[@ftype='startwizard'] or fieldset/field[@ftype='startwizard']">
+    <xsl:if test="field[@ftype=&apos;startwizard&apos;] or fieldset/field[@ftype=&apos;startwizard&apos;]">
       <xsl:attribute name="class">itemrow</xsl:attribute>
       <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
       <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
@@ -1542,16 +1541,16 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->
   <xsl:template name="mediaitembuttons">
     <td>
-      <xsl:if test="@displaytype='audio'">
+      <xsl:if test="@displaytype=&apos;audio&apos;">
         <span	class="imgbutton"	title="{$tooltip_audio}">
-          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), 'url()')}">
+          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_audio"/>
           </a>
         </span>
       </xsl:if>
-      <xsl:if test="@displaytype='video'">
+      <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
-          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), 'url()')}">
+          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_video"/>
           </a>
         </span>
@@ -1625,7 +1624,7 @@
     <td>
       <xsl:choose>
         <xsl:when test="@maywrite=&apos;true&apos; and command[@name=&apos;move-down&apos;]">
-          <span class="imgbutton" title="{$tooltip_down}" onclick="doMoveDown(&apos;{command[@name='move-down']/@cmd}&apos;);">
+          <span class="imgbutton" title="{$tooltip_down}" onclick="doMoveDown(&apos;{command[@name=&apos;move-down&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_down"/>
           </span>
         </xsl:when>

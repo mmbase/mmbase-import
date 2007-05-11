@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.11 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: TmpObject.java,v 1.8 2005-10-06 14:14:41 michiel Exp $
  */
 public class TmpObject {
 
@@ -34,8 +35,15 @@ public class TmpObject {
     final static String _SNUMBER  = "_snumber";
     final static String _DNUMBER  = "_dnumber";
 
-    private static Logger log = Logging.getLoggerInstance(TmpObject.class);
+    /** Logger instance. */
+    private static Logger log
+        = Logging.getLoggerInstance(TmpObject.class.getName());
 
+    /** The mmbase module. */
+    private static MMBase mmbase;
+
+    /** The temporary node manager. */
+    private static TemporaryNodeManagerInterface tmpNodeManager;
 
     /** All user-related data. */
     private UserTransactionInfo uti;
@@ -53,13 +61,26 @@ public class TmpObject {
      * no relations on commit, false otherwise. */
     private boolean disposeWhenNotReferenced = false;
 
+    /**
+     * Gets reference to the MMBase module.
+     * @return The MMBase module.
+     */
+    private static MMBase getMMBase() {
+        if (mmbase == null) {
+            mmbase=(MMBase) Module.getModule("MMBASEROOT");
+        }
+        return mmbase;
+    }
 
     /**
      * Gets reference to TemporaryNodeManager module.
      * @return the TemporaryNodeManager module.
      */
-    private static synchronized TemporaryNodeManager getTmpNodeManager() {
-        return TransactionManager.getInstance().getTemporaryNodeManager();
+    private static synchronized TemporaryNodeManagerInterface getTmpNodeManager() {
+        if (tmpNodeManager == null) {
+            tmpNodeManager = new TemporaryNodeManager(getMMBase());
+        }
+        return tmpNodeManager;
     }
 
     /**
@@ -137,7 +158,7 @@ public class TmpObject {
         int mmbaseId = getMMBaseId();
         if (mmbaseId != -1) {
             // Access object.
-            relations = MMBase.getMMBase().getInsRel().getRelations_main(mmbaseId);
+            relations = getMMBase().getInsRel().getRelations_main(mmbaseId);
             if (log.isDebugEnabled()) {
                 log.debug("Relations in persistent cloud of " + this
                 + ": " + relations);

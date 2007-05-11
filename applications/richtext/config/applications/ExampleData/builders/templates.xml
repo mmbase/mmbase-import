@@ -19,7 +19,7 @@
     <description xml:lang="en">Templates</description>
   </descriptions>
  <fieldlist>
-	<field name="name">
+	<field>
 		<gui>
 			<guiname xml:lang="nl">Naam</guiname>
 			<guiname xml:lang="en">Name</guiname>
@@ -31,11 +31,12 @@
 		</editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 		<db>
+			<name>name</name>
 			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<field name="url">
+	<field>
 		<gui>
 			<guiname xml:lang="nl">Url</guiname>
 			<guiname xml:lang="en">Url</guiname>
@@ -47,22 +48,24 @@
 		</editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 		<db>
+			<name>url</name>
 			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<field name="description">
+	<field>
 		<gui>
 			<guiname xml:lang="nl">Omschrijving</guiname>
 			<guiname xml:lang="en">Description</guiname>
 		</gui>
     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     <db>
+      <name>description</name>
 			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<field name="mimetype">
+	<field>
 		<gui>
 			<guiname xml:lang="nl">Mime-type</guiname>
 			<guiname xml:lang="en">Mime-type</guiname>
@@ -74,16 +77,20 @@
 		</editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 		<db>
+			<name>mimetype</name>
 			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<field name="expires">
+	<field>
 		<gui>
 			<guiname xml:lang="nl">Expires</guiname>
 			<guiname xml:lang="en">Expires</guiname>
 		</gui>
-    <datatype base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+		<db>
+			<name>expires</name>
+      <type notnull="false" state="persistent">INTEGER</type>
+		</db>
 	</field>
 
 </fieldlist>

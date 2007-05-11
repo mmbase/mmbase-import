@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.35 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: Message.java,v 1.33 2006-08-30 18:05:17 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -122,7 +122,7 @@ public class Message extends MMObjectBuilder {
         if ((messageUser == null) || (messageUser.length() == 0)) {
             messageUser = "system";
         }
-        tmpNodeManager = TransactionManager.getInstance().getTemporaryNodeManager();
+        tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
         chatboxMessages = new NodeBreaker(2 * expireTime, tmpNodeManager);
 
@@ -795,7 +795,7 @@ public class Message extends MMObjectBuilder {
      */
     private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
         if (key != null) {
-            MMObjectNode node = temporaryNodes.get("" + key);
+            MMObjectNode node = (MMObjectNode) temporaryNodes.get("" + key);
             count = addRelatedNode(node, otypeWanted, count, offset, result);
         }
         return count;
@@ -832,7 +832,7 @@ public class Message extends MMObjectBuilder {
         // Get all temporary nodes and filter out all insrels.
         Iterator tmpInsRels = temporaryNodes.keySet().iterator();
         while ((count < (offset + max)) && tmpInsRels.hasNext()) {
-            tmpInsRel = temporaryNodes.get(tmpInsRels.next());
+            tmpInsRel = (MMObjectNode) temporaryNodes.get(tmpInsRels.next());
             if (tmpInsRel != null) {
                 if (tmpInsRel.getBuilder() instanceof InsRel) {
                     found = false;
@@ -1136,7 +1136,7 @@ public class Message extends MMObjectBuilder {
         String tmp = tok.nextToken();
         MMObjectNode message = getNode(tmp);
         //tmp = tmp.substring(tmp.indexOf("_") + 1);
-        if (message == null) message = temporaryNodes.get(tmp.trim());
+        if (message == null) message = (MMObjectNode) temporaryNodes.get(tmp.trim());
         if (message == null) {
             log.error("Message with id '" + tmp + "' cannot be found.");
             return "";

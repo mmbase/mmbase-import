@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.util.Hashtable;
 import org.mmbase.util.xml.ModuleReader;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.13 2006-11-24 14:25:12 pierre Exp $
+ * @version $Id: ReloadableModule.java,v 1.9 2005-10-09 14:55:03 ernst Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -35,10 +35,11 @@ public abstract class ReloadableModule extends Module {
      *
      * @return Whether successful.
      */
-    protected boolean reloadConfiguration() {
-        ModuleReader parser = getModuleReader();
+
+    protected boolean reloadConfiguration(String moduleName) {
+        ModuleReader parser = getModuleReader(moduleName);
         if (parser == null) {
-            log.error("Configuration missing for module " + getName() + " with path '" + configurationPath + "': Canceling reload");
+            log.error("Configuration missing for: " + moduleName + " Canceling reload");
             return false;
         } else {
             return reloadConfiguration(parser);
@@ -56,28 +57,18 @@ public abstract class ReloadableModule extends Module {
             return false;
         }
 
-        setContext(parser.getContext());
+        properties = new Hashtable(parser.getProperties());
         setMaintainer(parser.getMaintainer());
         setVersion(parser.getVersion());
-        properties = parser.getProperties();
-        parser.getLocalizedDescription(getLocalizedDescription());
-        parser.getLocalizedGUIName(getLocalizedGUIName());
-        loadFromContext();
         return true;
     }
+
 
     /**
      * This method should be called when the module should be reloaded.
      */
+
     public abstract void reload();
 
-    {
-        addFunction(new AbstractFunction<Void>("reload") {
-                public Void getFunctionValue(Parameters arguments) {
-                    ReloadableModule.this.reload();
-                    return null;
-                }
-            });
-    }
 
 }

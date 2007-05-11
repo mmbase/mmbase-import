@@ -22,8 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * @javadoc
  * @author     Daniel Ockeloen
+ *
  */
 public class Project {
 
@@ -47,6 +47,7 @@ public class Project {
      */
     public final static String PUBLIC_ID_PACKAGING_1_0 = "-//MMBase//DTD packaging config 1.0//EN";
 
+
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
      * This method is called by XMLEntityResolver.
@@ -54,6 +55,7 @@ public class Project {
     public static void registerPublicIDs() {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_1_0, "DTD_PACKAGING_1_0", Project.class);
     }
+
 
     /**
      *Constructor for the Project object
@@ -69,6 +71,7 @@ public class Project {
         readTargets();
     }
 
+
     /**
      *  Sets the name attribute of the Project object
      *
@@ -78,6 +81,7 @@ public class Project {
         this.name = name;
     }
 
+
     /**
      *  Sets the path attribute of the Project object
      *
@@ -86,6 +90,7 @@ public class Project {
     public void setPath(String path) {
         this.path = path;
     }
+
 
     /**
      *  Gets the path attribute of the Project object
@@ -97,12 +102,12 @@ public class Project {
     }
 
     public String getDir() {
-        if (path!=null) {
-            int pos=path.lastIndexOf("/");
-            if (pos==-1) pos=path.lastIndexOf("\\");
-            if (pos!=-1) return path.substring(0,pos+1);
-        }
-        return null;
+	if (path!=null) {
+		int pos=path.lastIndexOf("/");
+		if (pos==-1) pos=path.lastIndexOf("\\");
+		if (pos!=-1) return path.substring(0,pos+1);
+	} 
+       	return null;
     }
 
     /**
@@ -114,6 +119,7 @@ public class Project {
         return name;
     }
 
+
     /**
      *  Gets the baseDir attribute of the Project object
      *
@@ -123,6 +129,7 @@ public class Project {
         return basedir;
     }
 
+
     /**
      *  Gets the targets attribute of the Project object
      *
@@ -131,6 +138,7 @@ public class Project {
     public Iterator getTargets() {
         return targets.values().iterator();
     }
+
 
     /**
      *  Description of the Method
@@ -146,6 +154,7 @@ public class Project {
         save();
         return true;
     }
+
 
     /**
      *  Adds a feature to the BundleTarget attribute of the Project object
@@ -187,6 +196,7 @@ public class Project {
         return true;
     }
 
+
     /**
      *  Adds a feature to the PackageTarget attribute of the Project object
      *
@@ -198,17 +208,17 @@ public class Project {
     public boolean addPackageTarget(String name, String type, String path) {
         CreatorInterface cr = ProjectManager.getCreatorByType(type);
         if (name.equals("") || name.equals("[auto]")) {
-        if (cr != null) {
-        name = cr.getDefaultTargetName();
-        name = checkDubName(name);
-        } else {
-                name = type.substring(type.indexOf("/") + 1);
-        }
+	    if (cr != null) {
+		name = cr.getDefaultTargetName();
+		name = checkDubName(name);
+	    } else {
+            	name = type.substring(type.indexOf("/") + 1);
+	    }
         }
         if (path.equals("") || path.equals("[auto]")) {
             path = "packaging" + File.separator + getName() + "_" + type.replace('/','_') + ".xml";
             path = path.replace(' ', '_');
-        path = checkDubFilename(path);
+	    path = checkDubFilename(path);
         }
         // check if the dirs are created, if not create them
         String dirsp = basedir + path.substring(0, path.lastIndexOf(File.separator));
@@ -228,6 +238,7 @@ public class Project {
         save();
         return true;
     }
+
 
     /**
      *  Gets the target attribute of the Project object
@@ -251,6 +262,7 @@ public class Project {
         return null;
     }
 
+
     /**
      *  Gets the target attribute of the Project object
      *
@@ -258,16 +270,17 @@ public class Project {
      * @return       The target value
      */
     public Target getTargetById(String id) {
-    // find the target with the same package id
+	// find the target with the same package id
         Iterator e = packagetargets.values().iterator();
         while (e.hasNext()) {
             Target t = (Target) e.next();
-            if (t.getId().equals(id)) {
-            return t;
-            }
-        }
+	    if (t.getId().equals(id)) {
+		return t;
+	    }
+	}
         return null;
     }
+
 
     /**
      *  Gets the packageTargets attribute of the Project object
@@ -278,6 +291,7 @@ public class Project {
         return packagetargets.values().iterator();
     }
 
+
     /**
      *  Gets the bundleTargets attribute of the Project object
      *
@@ -286,6 +300,7 @@ public class Project {
     public Iterator getBundleTargets() {
         return bundletargets.values().iterator();
     }
+
 
     /**
      *  Description of the Method
@@ -309,8 +324,10 @@ public class Project {
                         }
                     }
                 }
+
                 // decode targets
-                for (Element n: reader.getChildElements("packaging", "target")) {
+                for (Iterator ns = reader.getChildElements("packaging", "target"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -336,13 +353,16 @@ public class Project {
                         }
                     }
                 }
+
                 // decode packagetargets
-                for (Element n: reader.getChildElements("packaging", "package")) {
+                for (Iterator ns = reader.getChildElements("packaging", "package"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
                         String type = null;
                         String path = null;
+
                         // decode name
                         org.w3c.dom.Node n3 = nm.getNamedItem("name");
                         if (n3 != null) {
@@ -353,6 +373,7 @@ public class Project {
                         if (n3 != null) {
                             path = n3.getNodeValue();
                         }
+
                         // decode type
                         n3 = nm.getNamedItem("type");
                         if (n3 != null) {
@@ -377,8 +398,10 @@ public class Project {
                         }
                     }
                 }
+
                 // decode bundletargets
-                for (Element n: reader.getChildElements("packaging", "bundle")) {
+                for (Iterator ns = reader.getChildElements("packaging", "bundle"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -406,6 +429,7 @@ public class Project {
                         if (n3 != null) {
                             depends = n3.getNodeValue();
                         }
+
                         if (name != null) {
                             Target t = new Target(this,name);
                             t.setBundle(true);
@@ -424,15 +448,18 @@ public class Project {
                                     t.setCreator(cr);
                                 }
                             }
+
                             bundletargets.put(name, t);
                         }
                     }
                 }
+
             }
         } else {
             log.error("missing projects file : " + path);
         }
     }
+
 
     /**
      *  Description of the Method
@@ -447,6 +474,7 @@ public class Project {
         }
         return basedir;
     }
+
 
     /**
      *  Description of the Method
@@ -488,6 +516,7 @@ public class Project {
         return true;
     }
 
+
     /**
      *  Description of the Method
      *
@@ -514,34 +543,34 @@ public class Project {
     }
 
     private String checkDubName(String name) {
-        boolean dub =  true;
-        int counter = 2;
-        String newname =  name;
-        while (dub) {
-            Target t =  getTarget(newname);
-            if (t != null) {
-                newname = name + (counter++);
-            } else {
-                dub = false;
-            }
-        }
-        return newname;
+	boolean dub =  true;
+	int counter = 2;
+	String newname =  name;
+	while (dub) {
+		Target t =  getTarget(newname);
+		if (t != null) {
+			newname = name + (counter++);
+		} else {
+			dub = false;
+		}
+	}
+	return newname;
     }
 
 
     private String checkDubFilename(String filename) {
-        boolean dub =  true;
-        int counter = 2;
-        String newfilename =  filename;
-        while (dub) {
-            File t=new File(basedir+File.separator+newfilename);
-            if (t.exists()) {
-                newfilename = filename.substring(0,filename.length()-4) + (counter++)+".xml";
-            } else {
-                dub = false;
-            }
-        }
-        return newfilename;
+	boolean dub =  true;
+	int counter = 2;
+	String newfilename =  filename;
+	while (dub) {
+		File t=new File(basedir+File.separator+newfilename);
+		if (t.exists()) {
+			newfilename = filename.substring(0,filename.length()-4) + (counter++)+".xml";
+		} else {
+			dub = false;
+		}
+	}
+	return newfilename;
     }
 
 }

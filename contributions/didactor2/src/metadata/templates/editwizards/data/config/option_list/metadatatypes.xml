@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="metadatatypes">
-   <option id="0">Kies het type</option>
-   <option id="1">keuzelijst</option>
-   <option id="2">datum</option>
-   <option id="3">tekenreeks</option>
-   <option id="4">duur</option>
-</optionlist>

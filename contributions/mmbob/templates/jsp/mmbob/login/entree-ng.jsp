@@ -84,7 +84,7 @@
 
                                                         <mm:compare referid="hasnick" value="true">
                                                             <tr>
-                                                                <th width="150" >Nick</th>
+                                                                <th width="150" >Nick *</th>
                                                                 <td> <input name="newnick" value="" style="width: 100%" /> </td>
                                                             </tr>
                                                         </mm:compare>

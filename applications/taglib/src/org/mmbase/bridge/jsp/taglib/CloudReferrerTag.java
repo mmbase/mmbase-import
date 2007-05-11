@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.33 2007-05-03 12:40:45 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.29.2.1 2007-05-03 12:40:04 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -65,7 +65,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
 
     protected CloudProvider findCloudProvider() throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
     */
     public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
 
@@ -131,7 +131,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     }
 
 
-    public void fillStandardParameters(Parameters p) throws JspTagException {
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         CloudProvider prov = findCloudProvider(false);
         if (prov != null) {
@@ -147,15 +147,14 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * @since MMBase-1.8
      */
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {
                 return locale;
             }
         }
-        CloudProvider cloudProvider = findCloudProvider(false);
-        return cloudProvider == null ? null : cloudProvider.getCloudVar().getLocale();
+        return  getCloudVar().getLocale();
     }
 
 }

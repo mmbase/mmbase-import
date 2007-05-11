@@ -37,6 +37,7 @@ public class MimeBodyTag {
     private String related;
     private String alt;
     private String formatter;
+    private String attachmentid;
     private String filepath;
     private String filename;
     private Vector altnodes; // synchronized?
@@ -113,6 +114,7 @@ public class MimeBodyTag {
     }
 
     public void setAttachment(String attachmentid) {
+        this.attachmentid=attachmentid;
     }
 
     public String getFormatter() {

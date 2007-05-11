@@ -48,7 +48,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             log.debug("Creating transformer, with " + parameters);
         }
         URL referrer;
-        String referer = (parameters.get(Parameter.REQUEST)).getHeader("Referer");
+        String referer = ((javax.servlet.http.HttpServletRequest) parameters.get(Parameter.REQUEST)).getHeader("Referer");
         if (referer == null) return CopyCharTransformer.INSTANCE;
 
         try {
@@ -72,7 +72,8 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         String[] query = queryString.split("&");
 
         String s = null;
-        for (String q : query) {
+        for (int i = 0; i < query.length; i++) {
+            String q = query[i];
             if (q.startsWith("q=")) {
                 try {
                     s = java.net.URLDecoder.decode(q.substring(2), "UTF-8");
@@ -91,12 +92,12 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         log.debug("Using search " + search);
 
         RegexpReplacer trans = new RegexpReplacer() {
-                private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
+                private Collection patterns = new ArrayList();
                 {
                     Pattern p        = Pattern.compile("(" + search.replace('+', '|') + ")");
-                    patterns.add(new Entry<Pattern,String>(p, (String) parameters.get("format")));
+                    patterns.add(new Entry(p, parameters.get("format")));
                 }
-                public Collection<Entry<Pattern,String>> getPatterns() {
+                public Collection getPatterns() {
                     return patterns;
                 }
             };

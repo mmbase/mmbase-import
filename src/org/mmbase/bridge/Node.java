@@ -21,9 +21,9 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.72 2007-01-17 15:01:09 michiel Exp $
+ * @version $Id: Node.java,v 1.70 2006-07-11 09:17:48 michiel Exp $
  */
-public interface Node extends Comparable<Node> {
+public interface Node extends Comparable {
 
     /**
      * Returns the cloud this node belongs to.
@@ -462,7 +462,7 @@ public interface Node extends Comparable<Node> {
      * @return Collection of errors as <code>String</code> (in the current locale of the cloud) or an empty collection if everything ok.
      * @since MMBase-1.8
      */
-    public Collection<String> validate();
+    public Collection validate();
 
     /**
      * Commit the node to the database.
@@ -507,7 +507,7 @@ public interface Node extends Comparable<Node> {
      * A Set of Strings containing the names of all changed fields.
      * @since MMBase-1.8
      */
-    public Set<String> getChanged();
+    public Set getChanged();
 
     /**
      * Whether  field values were changed since the last commit.

@@ -19,6 +19,7 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 import org.w3c.dom.Element;
 import java.util.*;
+import java.io.File;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of
@@ -143,7 +144,8 @@ public class URLComposerFactory  {
                 log.error(e.toString());
             }
 
-            for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
+            for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
+                Element element = (Element)e.next();
                 String  clazz   =  reader.getElementValue(element);
                 String  f = element.getAttribute(FORMAT_ATT);
                 List formats;
@@ -170,7 +172,7 @@ public class URLComposerFactory  {
         if (cache.size() > 0) {
             log.service("Clearing Media URL-cache");
         }
-        cache.clear();
+        org.mmbase.applications.media.cache.URLCache.getCache().clear();
     }
 
 

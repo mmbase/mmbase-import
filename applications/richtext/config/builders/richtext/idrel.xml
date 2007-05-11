@@ -24,7 +24,7 @@
   </descriptions>
 
   <fieldlist>
-    <field name="id">
+    <field>
       <descriptions>
         <description xml:lang="en">
           The ID field of the idrel relation points to an 'id' attribute of a tag in an XML field of
@@ -39,16 +39,18 @@
       </gui>
       <editor>
         <positions>
+          <input>3</input>
           <list>3</list>
+          <search>3</search>
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>id</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
-
-    <field name="destinationid">
+    <field>
       <descriptions>
         <description xml:lang="en">ID in the destination node</description>
         <description xml:lang="nl">Verwijzing naar een 'id' attribuut van een tag in een XML veld in het doelobject van deze relatie.</description>
@@ -58,14 +60,19 @@
         <guiname xml:lang="nl">Doel-ID</guiname>
         <guiname xml:lang="eo">Cela ID</guiname>
       </gui>
-
+      <editor>
+        <positions>
+          <input>4</input>
+          <search>3</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>destinationid</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
-
-    <field name="class">
+    <field>
       <descriptions>
         <description xml:lang="en">CSS Class</description>
         <description xml:lang="nl">CSS-Klasse</description>
@@ -75,8 +82,15 @@
         <guiname xml:lang="nl">Klasse</guiname>
         <guiname xml:lang="eo">Klaso</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <search>4</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>class</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>

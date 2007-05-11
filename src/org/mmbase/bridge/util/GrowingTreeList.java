@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.19 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: GrowingTreeList.java,v 1.17 2006-07-25 18:56:24 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -126,7 +126,6 @@ public  class GrowingTreeList extends TreeList {
     }
 
 
-    @Override
     public int size() {
         while (! foundEnd) {
             addPathElement();
@@ -134,14 +133,12 @@ public  class GrowingTreeList extends TreeList {
         return super.size();
     }
 
-    @Override
     protected NodeList getList(int queryNumber) {
         while (queryNumber >= branches.size() && (!foundEnd)) {
             addPathElement();
         }
         return super.getList(queryNumber);
     }
-    @Override
     protected NodeList getLeafList(int queryNumber) {
         while (queryNumber >= branches.size() && (!foundEnd)) {
             addPathElement();
@@ -167,7 +164,7 @@ public  class GrowingTreeList extends TreeList {
                 cleanLeafConstraint = leafElementTemplate.getCleanConstraint();
             }
 
-            Iterator<Step> steps = pathElementTemplate.getSteps().iterator();;
+            Iterator steps = pathElementTemplate.getSteps().iterator();;
             steps.next(); // ignore first step
             if (! steps.hasNext()) {
                 foundEnd = true;
@@ -175,7 +172,7 @@ public  class GrowingTreeList extends TreeList {
             }
             while (steps.hasNext()) {
                 RelationStep relationStepTemplate = (RelationStep) steps.next();
-                Step stepTemplate = steps.next();
+                Step         stepTemplate         = (Step)         steps.next();
                 String role;
                 {   // it's a pity but role cannot be requested directly from RelationStep
                     // some hackery
@@ -195,7 +192,7 @@ public  class GrowingTreeList extends TreeList {
                     break;
                 }
                 // Step doesn't have a .getQuery() method, so we'll have to fall back to this:
-                Branch branch = branches.get(branches.size() - 1);
+                Branch branch = (Branch) branches.get(branches.size() - 1);
                 Query newQuery = branch.getQuery();
 
                 // add sortorder to the query

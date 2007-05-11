@@ -13,6 +13,8 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.Module;
+import org.mmbase.module.sessionInfo;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.11 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: TransactionHandler.java,v 1.10 2006-05-15 10:14:34 andre Exp $
  */
 
 public class TransactionHandler extends Module  {

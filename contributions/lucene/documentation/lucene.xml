@@ -5,9 +5,10 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
 
-    <date>2005-12-24</date>
+    <date>2007-02-21</date>
 
-    <edition>$Id: lucene.xml,v 1.8 2007-04-02 14:30:34 andre Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.4.2.2 2007/02/22 15:23:58 michiel Exp
+    $</edition>
 
     <authorgroup>
       <author>
@@ -154,8 +155,7 @@
       <para>It is also possible to add 'related' or 'relatednodes' subtags to
       'list'.</para>
 
-      <programlisting>
-&lt;?xml version="1.0"?&gt;
+      <programlisting>&lt;?xml version="1.0"?&gt;
 &lt;luceneindex
   xmlns="http://www.mmbase.org/xmlns/luceneindex"
   xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
@@ -184,19 +184,16 @@
 </programlisting>
 
       <para>The use of these tags is very simular to those in de MMBase
-      taglib. Below an example with 'related'. </para>
+      taglib. Below you find an example with 'related'.</para>
 
-<programlisting>
-  &lt;list type="documents"&gt;
+      <programlisting>  &lt;list type="news"&gt;
     &lt;mmsq:field name="title" /&gt;
     &lt;mmsq:field name="subtitle" /&gt;
     &lt;mmsq:field name="intro" /&gt;
     &lt;mmsq:field name="body" /&gt;
-    &lt;mmsq:field name="kindofdocument"  alias="kindofdocument" keyword="true" /&gt;
-    &lt;mmsq:related path="items,meetings,kindofmeetings" element="kindofmeetings"&gt;
-      &lt;mmsq:field name="meetings.date" alias="date" keyword="true" /&gt;
-      &lt;mmsq:field name="kindofmeetings.number" alias="kindofmeeting" 
-               keyword="true" /&gt;
+    &lt;mmsq:related path="mmmevents" element="mmevents"&gt;
+      &lt;mmsq:field name="mmevents.start" alias="date" keyword="true" /&gt;
+      &lt;mmsq:field name="mmevents.number" alias="event" keyword="true" /&gt;
     &lt;/mmsq:related&gt;
   &lt;/list&gt;
 </programlisting>
@@ -231,8 +228,8 @@
   &lt;index name="vraag"&gt;
     &lt;analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" /&gt;
     &lt;jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by id"
-          identifier="id"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
+          key="id"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
           &gt;
     &lt;/jdbc&gt;
   &lt;/index&gt;
@@ -240,8 +237,8 @@
   &lt;index name="vraag_threads"&gt;
     &lt;analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" /&gt;
     &lt;jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and (status != 'H' or status is null) order by threadid,id"
-          identifier="threadid"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
+          key="threadid"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
           &gt;
       &lt;field name="createdtime" multiple="first" /&gt;
     &lt;/jdbc&gt;
@@ -251,11 +248,10 @@
   &lt;index name="vraag_threads_variant"&gt;
     &lt;analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" /&gt;
     &lt;jdbc sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id == threadid and (status != 'H' or status is null) order by id"
-          identifier="threadid"
           key="threadid"
-          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [IDENTIFIER]"
+          find="select id, parentid, threadid, title, body, authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and id = [KEY]"
           &gt;
-          &lt;related sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and threadid == [PARENTKEY] and (status != 'H' or status is null) order by id" key="id"&gt;
+          &lt;related sql="select id,parentid,threadid,title,body,authorid,ratingcount,ratingpoints,configtype,status,createdtime,modifiedtime,priority,ip from frm_forum where configtype = 'vraag' and threadid == [KEY] and (status != 'H' or status is null) order by id" key="id"&gt;
              &lt;field name="createdtime" multiple="first" /&gt;
           &lt;/related&gt;
     &lt;/jdbc&gt;
@@ -266,17 +262,17 @@
         </programlisting>
           </example></para>
       </section>
-    </section>
 
-    <section id="history">
-      <title>History</title>
+      <section id="history">
+        <title>History</title>
 
-      <para>There are currently two publicly available Lucene modules. The
-      site http://mmapps.sourceforge.net provides an alternate version,
-      careted by Finalist, which works on MMBase 1.7.</para>
+        <para>There are currently two publicly available Lucene modules. The
+        site http://mmapps.sourceforge.net provides an alternate version,
+        careted by Finalist, which works on MMBase 1.7.</para>
 
-      <para>The version you are looking at now was developed on the 1.8
-      version of MMBase.</para>
+        <para>The version you are looking at now was developed on the 1.8
+        version of MMBase.</para>
+      </section>
     </section>
   </section>
 </article>

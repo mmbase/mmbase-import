@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +26,7 @@ import org.w3c.dom.NamedNodeMap;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
- *
+ * 
  * @author Daniel Ockeloen (MMBased)
  */
 public class Model {
@@ -175,7 +176,9 @@ public class Model {
         if (file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(path, Model.class);
             if (reader != null) {
-                for (Element n: reader.getChildElements("cloudmodel.neededbuilderlist","builder")) {
+                for (Iterator ns = reader.getChildElements("cloudmodel.neededbuilderlist",
+                        "builder"); ns.hasNext();) {
+                    Element n = (Element) ns.next();
                     String name = reader.getElementValue(n);
                     NeededBuilder nb = new NeededBuilder();
                     nb.setName(name);
@@ -194,7 +197,9 @@ public class Model {
                     // try to find if this is defined in a real file
                     readBuilder(nb);
                 }
-                for (Element n: reader.getChildElements("cloudmodel.neededreldeflist","reldef")) {
+                for (Iterator ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef"); ns
+                        .hasNext();) {
+                    Element n = (Element) ns.next();
                     NeededRelDef nr = new NeededRelDef();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -225,7 +230,10 @@ public class Model {
                     }
                     neededreldefs.add(nr);
                 }
-                for (Element n: reader.getChildElements("cloudmodel.allowedrelationlist","relation")) {
+
+                for (Iterator ns = reader.getChildElements("cloudmodel.allowedrelationlist",
+                        "relation"); ns.hasNext();) {
+                    Element n = (Element) ns.next();
                     AllowedRelation ar = new AllowedRelation();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -297,7 +305,9 @@ public class Model {
                         nb.setClassName(n2.getNodeValue());
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.names", "singular")) {
+                for (Iterator ns = reader.getChildElements("builder.names", "singular"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String name = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -309,7 +319,8 @@ public class Model {
                         nb.setSingularName(language, name);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.names", "plural")) {
+                for (Iterator ns = reader.getChildElements("builder.names", "plural"); ns.hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String name = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -321,7 +332,9 @@ public class Model {
                         nb.setPluralName(language, name);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.descriptions", "description")) {
+                for (Iterator ns = reader.getChildElements("builder.descriptions", "description"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String description = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -333,7 +346,9 @@ public class Model {
                         nb.setDescription(language, description);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.fieldlist", "field")) {
+                for (Iterator ns = reader.getChildElements("builder.fieldlist", "field"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     decodeField(nb, n4);
                 }
             }

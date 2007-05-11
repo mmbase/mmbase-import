@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.packaging;
@@ -65,7 +65,7 @@ public class ShareManager {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_SHARING_1_0, "DTD_SHARING_1_0", ShareManager.class);
     }
 
-
+    
     public static synchronized void init() {
         if (!isRunning()) {
             state=true;
@@ -217,76 +217,81 @@ public class ShareManager {
                 decodeGroups(reader);
 
                 // decode packages
-                for (Element n: reader.getChildElements("shared", "packaging")) {
-                    for (Element n2: reader.getChildElements(n, "package")) {
-                        NamedNodeMap nm = n2.getAttributes();
-                        if (nm != null) {
-                            String name = null;
-                            String maintainer = null;
-                            String type = null;
-                            String versions = null;
-                            String active = null;
+                for(Iterator ns = reader.getChildElements("shared","packaging");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
 
-                            // decode name
-                            org.w3c.dom.Node n3 = nm.getNamedItem("name");
-                            if (n3 != null) {
-                                name = n3.getNodeValue();
-                            }
+                        for(Iterator ns2 = reader.getChildElements(n,"package");ns2.hasNext(); ) {
+                            Element n2 = (Element)ns2.next();
+                            NamedNodeMap nm = n2.getAttributes();
+                            if (nm != null) {
+                                String name = null;
+                                String maintainer = null;
+                                String type = null;
+                                String versions = null;
+                                String active = null;
+                
+                                // decode name
+                                org.w3c.dom.Node n3 = nm.getNamedItem("name");
+                                if (n3 != null) {
+                                    name = n3.getNodeValue();
+                                }
 
-                            // decode maintainer
-                            n3 = nm.getNamedItem("maintainer");
-                            if (n3 != null) {
-                                maintainer = n3.getNodeValue();
-                            }
+                                // decode maintainer
+                                n3 = nm.getNamedItem("maintainer");
+                                if (n3 != null) {
+                                    maintainer = n3.getNodeValue();
+                                }
 
-                            // decode type
-                            n3 = nm.getNamedItem("type");
-                            if (n3 != null) {
-                                type = n3.getNodeValue();
-                            }
+                                // decode type
+                                n3 = nm.getNamedItem("type");
+                                if (n3 != null) {
+                                    type = n3.getNodeValue();
+                                }
 
-                            // decode versions
-                            n3 = nm.getNamedItem("versions");
-                            if (n3 != null) {
-                                versions = n3.getNodeValue();
-                            }
+                                // decode versions
+                                n3 = nm.getNamedItem("versions");
+                                if (n3 != null) {
+                                    versions = n3.getNodeValue();
+                                } 
 
-                            // decode active
-                            n3 = nm.getNamedItem("active");
-                            if (n3 != null) {
-                                active = n3.getNodeValue();
-                            }
+                                // decode active
+                                n3 = nm.getNamedItem("active");
+                                if (n3 != null) {
+                                    active = n3.getNodeValue();
+                                }
 
 
-                            // create its id (name+maintainer)
-                            String id = name+"@"+maintainer+"_"+type;
-                            id = id.replace(' ','_');
-                            id = id.replace('/','_');
-                            PackageContainer p = (PackageContainer)PackageManager.getPackage(id);
-                            if (p != null) {
-                                ShareInfo shareinfo = p.getShareInfo();
-                                if (shareinfo == null) {
-                                    shareinfo = new ShareInfo();
-                                    if (active.equals("true")) {
-                                        shareinfo.setActive(true);
-                                    } else {
-                                        shareinfo.setActive(false);
+                                // create its id (name+maintainer)
+                                String id = name+"@"+maintainer+"_"+type;
+                                id = id.replace(' ','_');
+                                id = id.replace('/','_');
+                                PackageContainer p = (PackageContainer)PackageManager.getPackage(id);
+                                if (p != null) {
+                                    ShareInfo shareinfo = p.getShareInfo();
+                                    if (shareinfo == null) {
+                                        shareinfo = new ShareInfo();
+                                        if (active.equals("true")) {
+                                            shareinfo.setActive(true);
+                                        } else {
+                                            shareinfo.setActive(false);
+                                        }
                                     }
+                                    if (versions.equals("best")) {
+                                        p.setShareInfo(shareinfo);
+                                    }
+                                    decodeLogins(p,reader,n2);
+                                } else {    
+                                    log.error("trying to share a non available package, ignoring");
                                 }
-                                if (versions.equals("best")) {
-                                    p.setShareInfo(shareinfo);
-                                }
-                                decodeLogins(p,reader,n2);
-                            } else {
-                                log.error("trying to share a non available package, ignoring");
-                            }
+                            } 
                         }
-                    }
                 }
 
                 // decode bundles
-                for (Element n: reader.getChildElements("shared", "bundles")) {
-                    for (Element n2: reader.getChildElements(n, "bundle")) {
+                for(Iterator ns = reader.getChildElements("shared","bundles");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
+                    for(Iterator ns2 = reader.getChildElements(n,"bundle");ns2.hasNext(); ) {
+                        Element n2 = (Element)ns2.next();
                         NamedNodeMap nm = n2.getAttributes();
                         if (nm != null) {
                             String name = null;
@@ -294,7 +299,7 @@ public class ShareManager {
                             String type = null;
                             String versions = null;
                             String active = null;
-
+                
                             // decode name
                             org.w3c.dom.Node n3 = nm.getNamedItem("name");
                             if (n3 != null) {
@@ -344,7 +349,7 @@ public class ShareManager {
                                     b.setShareInfo(shareinfo);
                                 }
                                 decodeBundleLogins(b,reader,n2);
-                            } else {
+                            } else {    
                                 log.error("trying to share a non available package, ignoring");
                             }
                         }
@@ -355,12 +360,13 @@ public class ShareManager {
             log.error("missing shares file : "+filename);
         }
     }
-
+    
 
     private static boolean decodeLogins(PackageContainer p,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = p.getShareInfo();
         if (s != null) {
-            for (Element loginnode: reader.getChildElements(e,"login")) {
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -385,7 +391,8 @@ public class ShareManager {
     private static boolean decodeBundleLogins(BundleContainer b,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = b.getShareInfo();
         if (s != null) {
-            for (Element loginnode: reader.getChildElements(e, "login")) {
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -410,15 +417,17 @@ public class ShareManager {
 
 
     private static boolean decodeUsers(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "users")) {
-            for (Element n2: reader.getChildElements(n, "user")) {
+        for(Iterator ns = reader.getChildElements("shared","users");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"user");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
                     String password = null;
                     String method = null;
                     String ip = null;
-
+            
                     // decode name
                     org.w3c.dom.Node n3 = nm.getNamedItem("name");
                     if (n3 != null) {
@@ -455,13 +464,15 @@ public class ShareManager {
     }
 
     private static boolean decodeProvidingPaths(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "providingpaths")) {
-            for (Element n2: reader.getChildElements(n, "providingpath")) {
+        for(Iterator ns = reader.getChildElements("shared","providingpaths");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"providingpath");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String method = null;
                     String path = null;
-
+            
                     // decode path
                     org.w3c.dom.Node n3 = nm.getNamedItem("path");
                     if (n3 != null) {
@@ -473,7 +484,7 @@ public class ShareManager {
                     if (n3 != null) {
                         method = n3.getNodeValue();
                     }
-
+    
                     if (path != null && method != null) {
                         providingpaths.put(method,path);
                     }
@@ -485,7 +496,8 @@ public class ShareManager {
 
 
     private static boolean decodeSettings(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "settings")) {
+        for(Iterator ns = reader.getChildElements("shared","settings");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
             org.w3c.dom.Node n2 = n.getFirstChild();
                 while (n2 != null) {
                 String name = n2.getNodeName();
@@ -506,12 +518,15 @@ public class ShareManager {
 
 
     private static boolean decodeGroups(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "groups")) {
-            for (Element n2: reader.getChildElements(n,"group")) {
+        for(Iterator ns = reader.getChildElements("shared","groups");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+
+            for(Iterator ns2 = reader.getChildElements(n,"group");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
-
+            
                     // decode name
                     org.w3c.dom.Node n3 = nm.getNamedItem("name");
                     if (n3 != null) {
@@ -519,7 +534,8 @@ public class ShareManager {
                     }
 
                     ShareGroup sg = new ShareGroup(name);
-                    for (Element n4: reader.getChildElements(n2,"member")) {
+                    for(Iterator ns3 = reader.getChildElements(n2,"member");ns3.hasNext(); ) {
+                        Element n4 = (Element)ns3.next();
                         NamedNodeMap nm2 = n4.getAttributes();
                         if (nm2 != null) {
                             String member = null;
@@ -530,7 +546,7 @@ public class ShareManager {
                                 sg.addMember(member);
                             }
                         }
-                    }
+                    }  
                     groups.put(name,sg);
                 }
             }
@@ -541,7 +557,7 @@ public class ShareManager {
     public static boolean createGroup(String name) {
         if (!name.equals("") && groups.get(name) == null) {
             ShareGroup sg = new ShareGroup(name);
-            groups.put(name,sg);
+            groups.put(name,sg);        
             writeShareFile();
             return true;
         } else {
@@ -550,7 +566,7 @@ public class ShareManager {
     }
 
     public static boolean removeGroup(String name) {
-        groups.remove(name);
+        groups.remove(name);        
         writeShareFile();
         return true;
     }
@@ -567,7 +583,7 @@ public class ShareManager {
         Object o=users.get(name);
         if (o!=null) {
             return (ShareUser)users.get(name);
-        }
+        } 
         log.error("Share refers to a user ("+name+") that is not defined");
         return null;
     }
@@ -576,7 +592,7 @@ public class ShareManager {
         Object o = groups.get(name);
         if (o != null) {
             return (ShareGroup)groups.get(name);
-        }
+        } 
         log.error("Share refers to a group ("+name+") that is not defined");
         return null;
     }
@@ -634,7 +650,7 @@ public class ShareManager {
                 scs=new ShareClientSession(callbackurl);
                 clients.put(callbackurl,scs);
             }
-        }
+        }    
     }
 
     public static void signalRemoteClients() {
@@ -643,7 +659,7 @@ public class ShareManager {
             ShareClientSession s = (ShareClientSession)e.next();
             s.sendRemoteSignal(getProviderName());
         }
-    }
+    } 
 
     public static String getProvidingPath(String method) {
         return (String)providingpaths.get(method);

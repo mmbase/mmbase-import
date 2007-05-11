@@ -13,7 +13,7 @@
 
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
 
-<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
+<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode" commitonclose="false">
 
 <% 
    if (urlStack.size() == 0) {

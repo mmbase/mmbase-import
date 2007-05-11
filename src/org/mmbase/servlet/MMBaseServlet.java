@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.65 2007-05-04 12:33:51 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.53.2.2 2007-05-04 12:35:50 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -64,11 +64,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      *  Lock to sync add and remove of threads
      */
-    private static final Object servletCountLock = new Object();
+    private static Object servletCountLock = new Object();
     /**
-     * Map containing currently running servlets
+     * Hashtable containing currently running servlets
      */
-    private static Map<MMBaseServlet, ServletReferenceCount> runningServlets = new HashMap<MMBaseServlet, ServletReferenceCount>();
+    private static Map runningServlets = new HashMap();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -78,15 +78,15 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     private static int servletInstanceCount = 0;
     // servletname -> servletmapping
     // obtained from web.xml
-    private static Map<String, List<String>> servletMappings    = new HashMap<String, List<String>>();
+    private static Map servletMappings    = new Hashtable();
     // topic -> servletname
     // set by isntantiated servlets
-    private static Map<String, ServletEntry> associatedServlets = new HashMap<String, ServletEntry>();
+    private static Map associatedServlets = new Hashtable();
     // topic -> servletmapping
     // set by instantiated servlets
-    private static Map<String, ServletEntry> associatedServletMappings = new HashMap<String, ServletEntry>();
+    private static Map associatedServletMappings = new Hashtable();
     // mapping to servlet instance
-    private static Map<String, HttpServlet> mapToServlet = new HashMap<String, HttpServlet>();
+    private static Map mapToServlet = new Hashtable();
 
     private long start = System.currentTimeMillis();
 
@@ -119,8 +119,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @return A map of Strings (function) -> Integer (priority). Never null.
      */
 
-    protected Map<String, Integer> getAssociations() {
-        return new HashMap<String, Integer>();
+    protected Map getAssociations() {
+        return new Hashtable();
     }
 
     /**
@@ -147,7 +147,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * Returns the MMBase instance.
      * @since MMBase-1.7
      */
-    public  MMBase getMMBase() {
+    public MMBase getMMBase() {
         return mmbase;
     }
 
@@ -159,13 +159,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new java.util.Date(System.currentTimeMillis() - start));
         if (! mmbaseInited) {
-            log.info("MMBase servlets are ready to receive requests, started in " +
-                     cal.get(Calendar.MINUTE) + " min " + cal.get(Calendar.SECOND) +" sec.");
+            log.info("MMBase servlets are ready to receive requests, started in " +cal.get(Calendar.MINUTE)+" min "+cal.get(Calendar.SECOND)+" sec.");
         }
 
         mmbase = mmb;
         mmbaseInited = true;
-        initThread = null;
     }
 
 
@@ -190,22 +188,21 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     public void init() throws ServletException {
 
-        ServletContext servletContext = getServletConfig().getServletContext();
-
-        String retryAfterParameter = servletContext.getInitParameter("retry-after");
+        String retryAfterParameter = getInitParameter("retry-after");
         if (retryAfterParameter == null) {
             // default: one minute
             retryAfter = 60;
         } else {
-            retryAfter = Integer.valueOf(retryAfterParameter).intValue();
+            retryAfter = new Integer(retryAfterParameter).intValue();
         }
-
+        log.info("Init of servlet " + getServletName() + ".");
         if (! MMBaseContext.isInitialized()) {
+            ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
             MMBaseContext.initHtmlRoot();
         }
 
-        log.info("Init of servlet " + getServletName() + ".");
+
         boolean initialize = false;
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
@@ -233,16 +230,17 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     log.service("Reading servlet mappings from " + url);
                     DocumentReader webDotXml = new DocumentReader(path, false);
 
-                    for (Element mapping: webDotXml.getChildElements("web-app", "servlet-mapping")) {
+                    for (Iterator mappingsIter = webDotXml.getChildElements("web-app", "servlet-mapping"); mappingsIter.hasNext();) {
+                        Element mapping = (Element) mappingsIter.next();
                         Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
                         String name = webDotXml.getElementValue(servName);
                         if (!(name.equals(""))) {
                             Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
                             String pattern=webDotXml.getElementValue(urlPattern);
                             if (!(pattern.equals(""))) {
-                                List<String> ls = servletMappings.get(name);
+                                List ls = (List) servletMappings.get(name);
                                 if (ls == null) {
-                                    ls = new ArrayList<String>();
+                                    ls = new ArrayList();
                                     servletMappings.put(name, ls);
                                 }
                                 ls.add(pattern);
@@ -251,32 +249,27 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     }
                 }
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                log.error(e.getMessage() + Logging.stackTrace(e));
             }
             log.debug("Loaded servlet mappings");
         }
         log.debug("Associating this servlet with functions");
-        for (Map.Entry<String, Integer> e : getAssociations().entrySet()) {
-            associate(e.getKey(), getServletName(), e.getValue());
+        Iterator i = getAssociations().entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry e = (Map.Entry) i.next();
+            associate((String) e.getKey(), getServletName(), (Integer) e.getValue());
         }
         log.debug("Associating this servlet with mappings");
-        for (String mapping :  getServletMappings(getServletConfig().getServletName())) {
-            mapToServlet.put(mapping, this);
+        i = getServletMappings(getServletConfig().getServletName()).iterator();
+        while (i.hasNext()) {
+            String mapping=(String)i.next();
+            mapToServlet.put(mapping,this);
         }
 
-        String hold = servletContext.getInitParameter("stall-server");
-        log.info("stall-server: '" + hold + "'");
-        if ("yes".equals(hold) || "true".equals(hold)) {
-            log.info("Waiting until MMBase is started");
-            Runnable starter = new MMBaseStartThread.Job(this);
-            starter.run();
-            log.info("Ready");
-        } else {
-            if (initialize) {
-                // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
-                initThread = new MMBaseStartThread(this);
-                initThread.start();
-            }
+        if (initialize) {
+            // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
+            initThread = new MMBaseStartThread(this);
+            initThread.start();
         }
     }
 
@@ -287,7 +280,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @return the Servlet that handles the mapping
      */
     public static HttpServlet getServletByMapping(String mapping) {
-        return mapToServlet.get(mapping);
+        return (HttpServlet)mapToServlet.get(mapping);
     }
 
     /**
@@ -296,10 +289,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @param servletName the name of the servlet
      * @return an unmodifiable list of servlet mappings for this servlet
      */
-    public static List<String> getServletMappings(String servletName) {
-        List<String> ls = servletMappings.get(servletName);
-        if (ls == null) {
-            return Collections.emptyList();
+    public static List getServletMappings(String servletName) {
+        List ls = (List) servletMappings.get(servletName);
+        if (ls==null) {
+            return Collections.EMPTY_LIST;
         } else {
             return Collections.unmodifiableList(ls);
         }
@@ -315,12 +308,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @param function the function that identifies the type of association
      * @return an unmodifiable list of servlet mappings associated with the function
      */
-    public static List<String> getServletMappingsByAssociation(String function) {
+    public static List getServletMappingsByAssociation(String function) {
         // check if any mappings were explicitly set for this function
         // if so, return that list.
-        ServletEntry mapping = associatedServletMappings.get(function);
+        ServletEntry mapping = (ServletEntry)associatedServletMappings.get(function);
         if (mapping != null) {
-            List<String> mappings = new ArrayList<String>();
+            List mappings = new ArrayList();
             mappings.add(mapping.name);
             return mappings;
         }
@@ -329,7 +322,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (name != null) {
             return getServletMappings(name);
         } else {
-            return Collections.emptyList();
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -345,7 +338,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @return the name of the servlet associated with the function, or null if there is none
      */
     public static String getServletByAssociation(String function) {
-        ServletEntry e = associatedServlets.get(function);
+        ServletEntry e = ((ServletEntry) associatedServlets.get(function));
         if (e != null) {
             return e.name;
         } else {
@@ -364,10 +357,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      *                    with higher priority for the same function is present already
      */
     private static synchronized void associate(String function, String servletName, Integer priority) {
-        if (priority == null) priority = 0;
-        ServletEntry m = associatedServletMappings.get(function);
+        if (priority == null) priority = new Integer(0);
+        ServletEntry m = (ServletEntry) associatedServletMappings.get(function);
         if (m != null && (priority.intValue() < m.priority)) return;
-        ServletEntry e = associatedServlets.get(function);
+        ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
         log.service("Associating function '" + function + "' with servlet name " + servletName +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
@@ -388,10 +381,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      *                    with higher priority for the same function is present already
      */
     protected static synchronized void associateMapping(String function, String servletMapping, Integer priority) {
-        if (priority == null) priority = 0;
-        ServletEntry m = associatedServletMappings.get(function);
+        if (priority == null) priority = new Integer(0);
+        ServletEntry m = (ServletEntry) associatedServletMappings.get(function);
         if (m != null && (priority.intValue() < m.priority)) return;
-        ServletEntry e = associatedServlets.get(function);
+        ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
         log.service("Associating function '" + function + "' with servlet mapping " + servletMapping +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
@@ -413,10 +406,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         pw.print(org.mmbase.Version.get());
         String q = req.getQueryString();
         if ("starttime".equals(q)) {
-            res.setHeader("Cache-Control", "no-cache");
             pw.print("\nUp since " + new Date((long) MMBase.startTime * 1000));
         } else if ("uptime".equals(q)) {
-            res.setHeader("Cache-Control", "no-cache");
             int seconds = (int) (System.currentTimeMillis() / 1000) - MMBase.startTime;
             int days = seconds / (60 * 60 * 24);
             seconds %=  60 * 60 * 24;
@@ -512,7 +503,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             String url = getRequestURL(req) + " " + req.getMethod();
             synchronized (servletCountLock) {
                 servletCount--;
-                ServletReferenceCount s = runningServlets.get(this);
+                ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
                 if (s!=null) {
                     if (s.refCount == 0) {
                         runningServlets.remove(this);
@@ -543,9 +534,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 servletCount++;
                 curCount = servletCount;
                 printCount++;
-                ServletReferenceCount s = runningServlets.get(this);
-                if (s == null) {
-                    runningServlets.put(this, new ServletReferenceCount(this, url, 0));
+                ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
+                if (s==null) {
+                    runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
                 } else {
                     s.refCount++;
                     s.uris.add(url);
@@ -556,8 +547,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 if (curCount > 0) {
                     synchronized(servletCountLock) {
                         servletsLog.debug("Running servlets: " + curCount);
-                        for (Object element : runningServlets.values())
-                            servletsLog.debug(element);
+                        for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
+                            servletsLog.debug(e.next());
                     }
 
                 }// curCount>0
@@ -573,7 +564,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             log.debug(" " + getServletName() + " was not initialized");
         }
         log.debug("Disassociating this servlet with mappings");
-        for (String mapping :  getServletMappings(getServletConfig().getServletName())) {
+        Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
+        while (i.hasNext()) {
+            String mapping=(String)i.next();
             mapToServlet.remove(mapping);
         }
         super.destroy();
@@ -604,7 +597,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * This class maintains current state information for a running servlet.
      * It contains a reference count, as well as a list of URI's being handled by the servlet.
      */
-    private class ServletReferenceCount {
+    private class ReferenceCountServlet {
         /**
          * The servlet do debug
          * @scope private
@@ -614,7 +607,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
          * List of URIs that call the servlet
          * @scope private
          */
-        List<String> uris = new ArrayList<String>();
+        List uris = new ArrayList();
         /**
          * Nr. of references
          * @scope private
@@ -624,7 +617,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         /**
          * Create a new ReferenceCountServlet using the jamesServlet
          */
-        ServletReferenceCount(MMBaseServlet servlet, String uri, int refCount) {
+        ReferenceCountServlet(MMBaseServlet servlet, String uri, int refCount) {
             this.servlet = servlet;
             uris.add(uri);
             this.refCount = refCount;

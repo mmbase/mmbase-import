@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
+import java.util.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 import java.io.*;
@@ -17,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.4 2007-03-08 08:51:38 nklasens Exp $
+ * @verion $Id: DocumentReaderTest.java,v 1.3 2006-05-16 22:12:30 michiel Exp $
  */
 public class DocumentReaderTest extends TestCase {
 

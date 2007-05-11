@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.72 2007-03-30 14:40:55 johannes Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.2 2007-03-15 10:53:16 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -63,7 +62,6 @@ public class IncludeTag extends UrlTag {
     protected Attribute notFound        = Attribute.NULL;
 
     protected Attribute resource        = Attribute.NULL;
-    //protected Attribute configuration   = Attribute.NULL;
 
 
     /**
@@ -92,47 +90,18 @@ public class IncludeTag extends UrlTag {
     public void setResource(String r) throws JspTagException {
         resource = getAttribute(r);
     }
-    /*
-    public void setConfiguration(String r) throws JspTagException {
-        configuration = getAttribute(r);
-    }
-    */
 
     protected String getPage() throws JspTagException {
         if (resource != Attribute.NULL) return resource.getString(this);
         return super.getPage();
     }
 
-    
-
     public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, true);
-            } else {
-                url = new Url(this, Casting.toString(o), getComponent(), parameters, true);
-            }
-        } else {
-            url = new Url(this, getPage(), getComponent(), parameters, true);
+        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("No attribute 'page' or 'resource' was specified");
         }
-
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
-
-        return EVAL_BODY_BUFFERED;
+        return super.doStartTag();
     }
-    
 
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
@@ -226,6 +195,21 @@ public class IncludeTag extends UrlTag {
         } catch (IOException e) {
             throw new TaglibException (e.getMessage(), e);
         }
+    }
+
+    /**
+     * Include a local file by doing a new HTTP request
+     * Do not use this method, but use the 'internal()' method instead
+     */
+    private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
+        external(bodyContent,
+                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl,
+                 request, response);
+    }
+
+
+    protected boolean addContext() {
+        return false;
     }
 
     /**
@@ -390,12 +374,9 @@ public class IncludeTag extends UrlTag {
      * Includes another page in the current page.
      */
     protected void includePage() throws JspTagException {
+        String gotUrl = null;
         try {
-            String gotUrl = url == null ? null : url.get(false);
-            if (gotUrl == null) {
-                gotUrl = page.getString(this);
-                pageLog.service("No URL object found, using: " + gotUrl);
-            }
+            gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (gotUrl == null || "".equals(gotUrl)) {
                 return; //if there is no url, we cannot include
@@ -492,7 +473,7 @@ public class IncludeTag extends UrlTag {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
-            pageLog.debug("END Parsing mm:include JSP page");
+            pageLog.debug("END Parsing mm:include JSP page " + gotUrl);
         }
     }
 

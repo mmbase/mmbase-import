@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Xml.java,v 1.17 2005-12-21 08:05:01 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -42,8 +42,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        HashMap<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        HashMap h = new HashMap();
         h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
         h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
         h.put("escape_wml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
@@ -66,8 +66,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (char element : data) {
-            c = element;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c == quot){
                 if (quot == '"') {
                     sb.append("&quot;");
@@ -92,8 +92,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (char element : data) {
-            c = element;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c == '"') {
                 sb.append("&quot;");
             } else if (c == '\'')  {
@@ -132,8 +132,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public static void XMLEscape(String xml, StringBuffer sb) {
         char[] data = xml.toCharArray();
         char c;
-        for (char element : data) {
-            c = element;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c =='&'){
                 sb.append("&amp;");
             }

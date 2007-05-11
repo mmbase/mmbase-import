@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.99 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.1 2006-10-03 21:12:52 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -217,7 +217,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         DocumentReader reader  = new DocumentReader(fieldtypes, thisClass);
         Element fieldtypesElement = reader.getElementByPath("fieldtypes");
 
-        for (Element element: reader.getChildElements(fieldtypesElement, "fieldtype")) {
+        for (Iterator iter = reader.getChildElements(fieldtypesElement, "fieldtype"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String type = element.getAttribute("id");
             DataType dataType = DataTypes.getDataType(type);
             Class dataTypeClass = dataType.getClass();
@@ -257,7 +258,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
              * EXPERIMENTAL
              */
             CloudTag ct = null;
-            ct = findParentTag(CloudTag.class, null, false);
+            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
@@ -330,8 +331,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             Function guiFunction = node.getFunction("gui");
             Parameters args = guiFunction.createParameters();
-            args.set(Parameter.FIELD,    field.getName());
-            args.set("session",  sessionName);
+            if (args.containsParameter(Parameter.FIELD)) {
+                args.set(Parameter.FIELD,    field.getName());
+            }
+            if (args.containsParameter("session")) {
+                args.set("session",  sessionName);
+            }
             fillStandardParameters(args);
 
             show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
@@ -357,7 +362,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, true);
             break;
         case TYPE_USESEARCHINPUT: {
-            QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this), false);
+            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this), false);
             if (c == null) { // produce a String to use in a constraint attribute of a list (legacy)
                 log.debug("creating string constraint");
                 show = whereHtmlInput(field);
@@ -373,7 +378,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         }
         case TYPE_REUSESEARCHINPUT: {
-            paramHtmlInput(findParentTag(ParamHandler.class, null), field);
+            paramHtmlInput((ParamHandler) findParentTag(ParamHandler.class, null), field);
             show = "";
             break;
         }
@@ -483,7 +488,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @since MMBase-1.8
      */
     public String getPrefix() throws JspTagException {
-        FormTag ft = findParentTag(FormTag.class, null, false);
+        FormTag ft = (FormTag) findParentTag(FormTag.class, null, false);
         String id = (ft != null ? ft.getId() : null);
         if (id == null) {
             id = findFieldProvider().getId();

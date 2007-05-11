@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.42 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: Jumpers.java,v 1.36 2006-07-05 15:15:07 pierre Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -88,12 +88,12 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * @since MMBase-1.7.1
      */
-    public String getGUIIndicator(MMObjectNode node, Parameters args) {
+    protected String getGUIIndicator(MMObjectNode node, Parameters args) {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
             String url = node.getStringValue("url");
-            HttpServletRequest req = args.get(Parameter.REQUEST);
-            HttpServletResponse res = args.get(Parameter.RESPONSE);
+            HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
+            HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
             String link;
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
@@ -102,7 +102,7 @@ public class Jumpers extends MMObjectBuilder {
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 String u = context + "/" + url;
                 link = res == null ? u : res.encodeURL(u);
-            } else { 
+            } else {
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 // request relative to host's root
                 if (url.startsWith(context + "/")) { // in this context!
@@ -112,8 +112,6 @@ public class Jumpers extends MMObjectBuilder {
                     link = url;
                 }
             }
-            link = org.mmbase.util.transformers.Xml.XMLEscape(link);
-            url = org.mmbase.util.transformers.Xml.XMLEscape(url);
             return "<a href=\"" + link + "\" target=\"extern\">" + url + "</a>";
         } else {
             if (field == null || field.equals("")) {
@@ -155,13 +153,13 @@ public class Jumpers extends MMObjectBuilder {
         CoreField field = getField(fieldName); // "name");
         StepField queryField = query.getField(field);
         StepField numberField = query.getField(getField(FIELD_NUMBER));
-        query.addSortOrder(numberField); // use 'oldest' jumper
+        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = null;
         if (field.getType() == Field.TYPE_STRING) {
             cons = new BasicFieldValueConstraint(queryField, key);
         } else if (field.getType() == Field.TYPE_INTEGER) {
             try {
-                cons = new BasicFieldValueConstraint(queryField, key);
+                cons = new BasicFieldValueConstraint(queryField, new Integer(key));
             } catch(NumberFormatException e) { log.error("this key("+key+") should be a number because field("+fieldName+") is of type int!");
                 cons = null;
             }
@@ -169,9 +167,9 @@ public class Jumpers extends MMObjectBuilder {
         query.setConstraint(cons);
         query.setMaxNumber(1);
         try {
-            List<MMObjectNode> resultList = getNodes(query);
+            List resultList = getNodes(query);
             if (resultList.size() > 0) {
-                MMObjectNode node = resultList.get(0);
+                MMObjectNode node = (MMObjectNode) resultList.get(0);
                 return node.getStringValue("url");
             }
         } catch (SearchQueryException sqe) {
@@ -192,7 +190,7 @@ public class Jumpers extends MMObjectBuilder {
         if (key.equals("")) {
             url = jumperNotFoundURL;
         } else {
-            url = jumpCache.get(key);
+            url = (String) jumpCache.get(key);
             if (log.isDebugEnabled()) {
                 if (url != null) {
                     log.debug("Jumper - Cache hit on " + key);
@@ -259,7 +257,7 @@ public class Jumpers extends MMObjectBuilder {
         super.notify(event);
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List<?> arguments) {
+    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (function.equals("gui")) {
             String rtn;
             if (arguments == null || arguments.size() == 0) {
@@ -274,7 +272,7 @@ public class Jumpers extends MMObjectBuilder {
 
 }
 
-class JumpersCache extends Cache<String,String> {
+class JumpersCache extends Cache {
     public String getName() {
         return "JumpersCache";
     }
@@ -285,6 +283,6 @@ class JumpersCache extends Cache<String,String> {
 
     JumpersCache(int size) {
         super(size);
-        this.putCache();
+        putCache(this);
     }
 }

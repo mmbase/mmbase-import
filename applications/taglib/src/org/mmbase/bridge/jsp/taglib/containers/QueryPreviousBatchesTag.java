@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.7 2006-04-11 22:58:36 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
@@ -65,8 +65,8 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
     }
 
 
-    protected List<String> getList() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+    protected List getList() throws JspTagException {
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
@@ -102,12 +102,12 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
 
 
-        List<String> result = new ArrayList<String>();
+        List result = new ArrayList();
 
         while (offset > 0) {
             offset -= maxNumber;
             if (offset < 0) offset = 0;
-            result.add(0, String.valueOf(offset));
+            result.add(0, new Integer(offset));
             if (maxSize > 0 && result.size() == maxSize) break;
         }
         if (offset > 0) {

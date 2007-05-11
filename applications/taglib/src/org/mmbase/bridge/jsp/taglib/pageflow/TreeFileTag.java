@@ -9,16 +9,12 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.util.Casting;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.24 2007-03-30 14:47:08 johannes Exp $
+ * @version $Id: TreeFileTag.java,v 1.18.2.1 2006-11-30 11:22:09 michiel Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -44,38 +40,61 @@ public class TreeFileTag extends UrlTag {
     public void setNotfound(String n) throws JspTagException {
         notFound = getAttribute(n);
     }
-    
+
+
     public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
-        log.info("leaffile starttag: " + getPage());
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
+        if (page == Attribute.NULL) {
+            throw new JspTagException("Attribute 'page' was not specified");
+        }
+        if (objectList == Attribute.NULL) {
+            throw new JspTagException("Attribute 'objectlist' was not specified");
+        }
         th.setCloud(getCloudVar());
-        
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+        super.doStartTag();
+        helper.setValue(new Comparable() {
+                            final TreeFileTag t = TreeFileTag.this;
+                            public String toString() {
+                                try {
+                                    String string = t.getUrl();
+                                    // this means that it is written to page by ${_} and that consequently there _must_ be a body.
+                                    // this is needed when body is not buffered.
+                                    haveBody();
+                                    return string;
+                                } catch (Throwable e){
+                                    return e.toString();
+                                }
+                            }
+                            public int compareTo(Object o) {
+                                return toString().compareTo(Casting.toString(o));
+                            }
+                        });
+        return EVAL_BODY; // lets try _not_ buffering the body.
+        // this may give unexpected results if ${_} is not used (or another tag calling 'haveBody')
+    }
 
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, false);
-            } else {
-                url = new Url(this,  th.findTreeFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
-            }
-        } else {
-            url = new Url(this, th.findTreeFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
-        }
-        
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
+    protected String getPage() throws JspTagException {
+        String orgPage = super.getPage();
+        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving page '" + treePage + "'");
         }
 
-        url.setLegacy();
-        log.info("leaffile end of starttag: " + url.toString());
-        return EVAL_BODY_BUFFERED;
+        if (treePage == null || "".equals(treePage)) {
+            throw new JspTagException("Could not find page " + orgPage);
+        }
+
+        return treePage;
+    }
+
+
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
+    }
+
+    public int doEndTag() throws JspTagException {
+        // Let UrlTag do the rest
+        int retval = super.doEndTag();
+        return retval;
     }
 
     public void doFinally() {
@@ -83,14 +102,30 @@ public class TreeFileTag extends UrlTag {
         super.doFinally();
     }
 
-    public void setObjectlist(String p) throws JspTagException {
-        objectList = getAttribute(p);
+    /**
+     * @param includePage the page to include, can contain arguments and path (path/file.jsp?argument=value)
+      */
+
+    public void setObjectlist(String includePage) throws JspTagException {
+        objectList = getAttribute(includePage);
     }
 
     // override to cancel
     protected boolean doMakeRelative() {
-        log.debug("doMakeRelative() overridden!");
+    	log.debug("doMakeRelative() overridden!");
         return false;
+    }
+
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+        String url = "";
+        try {
+            url = super.getUrl(writeamp, encode);
+        } catch (JspTagException e) {
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
+            }
+        }
+        return url;
     }
 
 }

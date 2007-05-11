@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -33,54 +33,52 @@ import org.xml.sax.*;
  * 
  */
 public class ProfileEntry {
- 
-   // logger
-   static private Logger log = Logging.getLoggerInstance(ProfileEntry.class); 
 
-   private String name;
-   private String guiname;
-   private int guipos;
-   private boolean edit;
-   private String value;
-   private String external;
-   private String externalname;
-   private String type;
-   private boolean synced;
+    // logger
+    static private Logger log = Logging.getLoggerInstance(ProfileEntry.class);
 
-   public ProfileEntry() {
-   }
- 
-   public void setName(String name) {
-	this.name = name;
-   }
+    private String name;
+    private String guiname;
+    private int guipos;
+    private boolean edit;
+    private String value;
+    private String external;
+    private String externalname;
+    private String type;
+    private boolean synced;
 
-   public String getName() {
-	return name;
-   }
+    public ProfileEntry() {}
 
-   public void setValue(String value) {
-	this.value = value;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public String getValue() {
-	return value;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public void setType(String type) {
-	this.type = type;
-   }
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-   public String getType() {
-	return type;
-   }
+    public String getValue() {
+        return value;
+    }
 
-   public void setSynced(boolean synced) {
-	this.synced = synced;
-   }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-   public boolean getSynced() {
-	return synced;
-   }
+    public String getType() {
+        return type;
+    }
 
+    public void setSynced(boolean synced) {
+        this.synced = synced;
+    }
+
+    public boolean getSynced() {
+        return synced;
+    }
 
 }

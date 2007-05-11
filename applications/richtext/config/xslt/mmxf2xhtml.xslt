@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.8 2007-02-27 12:28:28 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.3 2006-08-25 14:16:52 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -22,33 +22,17 @@
     <div class="mmxf">
       <xsl:choose>
         <xsl:when test="*">
-          <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol|text()" mode="root" />
+          <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol" />
         </xsl:when>      
         <xsl:otherwise>
-          <p></p>
+          <p />
         </xsl:otherwise>
       </xsl:choose>
     </div>
   </xsl:template>
-
-  <xsl:template match = "text()" mode="root">
-    <p>
-      <xsl:copy-of select="." />
-    </p>
-  </xsl:template>
-
-  <xsl:template match="mmxf:p|mmxf:table|mmxf:ul|mmxf:ol" mode="root" >
-    <xsl:element name="{name()}">
-      <xsl:copy-of select="@*" />
-      <xsl:apply-templates select="node()" />
-    </xsl:element>
-  </xsl:template>
-  <xsl:template match ="mmxf:section" mode="root">
-    <xsl:apply-templates select="mmxf:section|mmxf:h|mmxf:p|mmxf:ul|mmxf:ol|mmxf:table|mmxf:sub|mmxf:sup"  />
-  </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:a|mmxf:table|mmxf:th|mmxf:td|mmxf:caption|mmxf:br"  >
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:table|mmxf:th|mmxf:td|mmxf:caption|mmxf:br" >
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
@@ -114,7 +98,7 @@
   </xsl:template>
 
   <xsl:template match="mmxf:h" mode="h1"><xsl:if test="string(.)"><h3><xsl:apply-templates select="node()" /></h3></xsl:if></xsl:template>
-  <xsl:template match="mmxf:h" mode="h2"><xsl:if test="node()"><p><strong><xsl:apply-templates select="node()" /></strong></p></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h2"><p><strong><xsl:apply-templates select="node()" /></strong></p></xsl:template>
   <xsl:template match="mmxf:h" mode="h3"><p><xsl:value-of select="node()" /></p></xsl:template>
   
   <xsl:template match="mmxf:h" mode="h4"><xsl:apply-templates select="." mode="deeper" /></xsl:template>

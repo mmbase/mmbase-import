@@ -274,7 +274,6 @@ void inc_period() : {}
   | "month"  { field = Calendar.MONTH; }
   | "year" {   field = Calendar.YEAR; }
   | "century" {   field = Calendar.YEAR; factor =  100;}
- | "millisecond" { field = Calendar.MILLISECOND; }
 }
 
 void this_period() : {}  {

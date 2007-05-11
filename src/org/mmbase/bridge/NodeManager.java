@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.42 2007-04-16 08:33:43 nklasens Exp $
+ * @version $Id: NodeManager.java,v 1.38 2005-09-19 12:24:21 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -109,7 +109,7 @@ public interface NodeManager extends Node {
      * @return a map of node manager properties
      * @since  MMBase-1.7
      */
-    public Map<String, String> getProperties();
+    public Map getProperties();
 
     /**
      * Returns the descriptive name of this node manager. This name will be in
@@ -300,7 +300,7 @@ public interface NodeManager extends Node {
      * @since MMBase-1.7
      */
     public NodeList getList(NodeQuery query);
-    
+
 
     /**
      * Retrieve info from a node manager based on a command string.

@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.37 2007-04-23 14:08:32 michiel Exp $
+    @version $Id: base.xsl,v 1.35.2.1 2006-12-18 20:39:49 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -138,7 +138,6 @@
 
   <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer_encoded" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
   <xsl:variable name="deletepage">deletelistitem.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
-  <xsl:variable name="unlinkpage">unlinklistitem.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="uploadpage">upload.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
 
   <xsl:variable name="wizardtitle">

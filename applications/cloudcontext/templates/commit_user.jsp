@@ -50,7 +50,7 @@
       </mm:listrelations>
       <mm:unrelatednodes id="unrelated" type="mmbasegroups" />   
       <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-        <mm:stringlist referid="_groups">  
+        <mm:stringlist referid="_groups">              
           <mm:node id="ugroup" number="$_" jspvar="ugroup">
             <% if (unrelated.contains(ugroup)) { %>
             <mm:createrelation source="ugroup" destination="user" role="contains" />
@@ -60,18 +60,11 @@
       </mm:write>
       <mm:import externid="_rank" />
       <mm:isnotempty referid="_rank">      
-        <mm:relatednodescontainer type="mmbaseranks" role="rank">
-          <mm:constraint field="number" value="$_rank" />
-          <mm:size>
-            <mm:compare value="0">
-              <mm:listrelations type="mmbaseranks" role="rank">
-                <mm:deletenode />
-              </mm:listrelations> 
-              <mm:node id="ranknode" number="$_rank" />
-              <mm:createrelation source="user" destination="ranknode" role="rank" />
-            </mm:compare>
-          </mm:size>
-        </mm:relatednodescontainer>
+        <mm:listrelations type="mmbaseranks" role="rank">
+          <mm:deletenode />
+        </mm:listrelations> 
+        <mm:node id="ranknode" number="$_rank" />
+        <mm:createrelation source="user" destination="ranknode" role="rank" />
       </mm:isnotempty>
     </mm:compare>
   </mm:field>

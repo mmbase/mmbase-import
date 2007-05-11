@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<view exportsource="jdbc:mysql://localhost/responseform" timestamp="20060906000000">
-	<node number="44030" owner="default">
-		<title>responseform/basic</title>
-		<resource>responseform/basic.jsp</resource>
-	</node>
-</view>

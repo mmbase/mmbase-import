@@ -1,0 +1,46 @@
+This document will track the bugs that were fixed for kennisnet and what 
+releases are created. Currently development is done in the 1.8 branche.
+I will create a set of kennisnet tags to idenitfy different releases.
+
+the details for the bugs can be found in mmbase jira.
+
+tags:
+-----------------------
+
+kennisnet-0
+This is the startpoint. From here i start fixing bugs.
+
+fixed bugs:
+
+1) 
+	mmbase jira: MMBOB-1
+	kennisnet manitis:0011352
+	'Forum is hard to remove'
+	
+2)
+	mmbase jira: MMBOB-4
+	kennisnet manitis:0011432
+	'Removing posting dous not always work'
+
+3)
+	mmbase jira: MMBOB-5
+	kennisnet manitis:0010303
+	'Forum dousn't jump to the next page after posting'
+	
+4)
+	mmbase-jira: MMBOB-6
+	'Some forum objects have fields of type node. when there is no valid value for them they should be null, but mmbob sets these fields to value -1, which is illegal'
+	
+5)
+	mmbase-jira: MMBOB-7
+	kennisnet namtis:0011329 (well, not exactly..)
+	'when navigating to a non existing page of postings in a thread, all postings in the thread are shown.'
+	
+6) 
+	mmbase-jira: MMBOB-9
+	when naviating to an non existing postarea or postthread, you get an exception
+	
+7) 
+	mmbase-jira MMBOB-8
+	kennisnet namtis: 0011329
+	when navigating to a non existing page of post threads in a post area Exceptions are your reward.

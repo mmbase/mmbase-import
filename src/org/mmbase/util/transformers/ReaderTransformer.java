@@ -15,7 +15,7 @@ import java.io.*;
  * You need only to implement transform(Reader, Writer) you have the simplest
  * kind of tranformer (which is 'streamable'). The name becoming your class name.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  */
 
@@ -28,7 +28,7 @@ public abstract class ReaderTransformer implements CharTransformer {
     public Writer transformBack(Reader r, Writer w) {
         throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
-
+        
     // javadoc inherited
     public final Writer transformBack(Reader r) {
         return transformBack(r, new StringWriter());

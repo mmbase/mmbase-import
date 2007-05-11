@@ -8,7 +8,9 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
+import java.util.*;
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.module.core.MMBase;
 
 /**
  * This class reflects a ,,change relation event. it contains information about the kind of event (new, delete, change),
@@ -18,7 +20,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.19 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: RelationEvent.java,v 1.18 2006-06-20 21:23:57 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 

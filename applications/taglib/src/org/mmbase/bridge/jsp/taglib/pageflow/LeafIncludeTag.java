@@ -1,23 +1,16 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,46 +22,40 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.19 2007-03-30 14:47:08 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
-
-    private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class);
-   
+    
+    private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class.getName());
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
-    public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
+    public int doStartTag() throws JspTagException {        
+        if (objectList == Attribute.NULL) {
+            throw new JspTagException("Attribute 'objectlist' was not specified");
+        }
+        return super.doStartTag();
+    }
+
+    protected String getPage() throws JspTagException {        
+        String orgPage = super.getPage();
+        String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving page '" + leafPage + "'");
+        }
+
+        if (leafPage == null || "".equals(leafPage)) {
+            throw new JspTagException("Could not find page " + orgPage);
+        }
+
+        return leafPage;
+    }
+    
+    public void doAfterBodySetValue() throws JspTagException {
         th.setCloud(getCloudVar());
-        
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, true);
-            } else {
-                url = new Url(this, th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
-            }
-        } else {
-            String leafPage = th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
-            url = new Url(this, leafPage , getComponent(), parameters, true);
-        }
-
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
-
-        url.setLegacy();
-        return EVAL_BODY_BUFFERED;
+        // Let IncludeTag do the rest of the work
+        includePage();
     }
 
     public void doFinally() {
@@ -76,11 +63,24 @@ public class LeafIncludeTag extends IncludeTag {
         super.doFinally();
     }
 
+    
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
     }
 
-    // override to cancel
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+        String url = "";
+        try {
+            url = super.getUrl(writeamp, encode);
+        } catch (JspTagException e) {
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
+            }
+        }
+        return url;
+    }
+
+    // override to cancel 
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;

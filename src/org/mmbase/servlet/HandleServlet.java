@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.31 2007-03-14 15:17:53 nklasens Exp $
+ * @version $Id: HandleServlet.java,v 1.29.2.1 2007-03-14 15:17:59 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -43,9 +43,9 @@ public class HandleServlet extends BridgeServlet {
     protected Map getAssociations() {
         Map a = super.getAssociations();
         // Can do the following:
-        a.put("attachments", 0);
-        a.put("downloads",   20); // good at this (because it does not determine the mime-type)
-        a.put("images",      -10); // bad in images (no mime-type, no awareness of icaches)
+        a.put("attachments", new Integer(0));
+        a.put("downloads",   new Integer(20)); // good at this (because it does not determine the mime-type)
+        a.put("images",      new Integer(-10)); // bad in images (no mime-type, no awareness of icaches)
         return a;
     }
 
@@ -234,10 +234,10 @@ public class HandleServlet extends BridgeServlet {
         boolean canSendLength = true;
 
         if (isIECompatibleJpeg) {
-        	if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-            	bytes = new IECompatibleJpegInputStream(bytes);
-            	canSendLength = false;
-            	//res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+            if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
+                bytes = new IECompatibleJpegInputStream(bytes);
+                canSendLength = false;
+                //res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
             }
         }
 

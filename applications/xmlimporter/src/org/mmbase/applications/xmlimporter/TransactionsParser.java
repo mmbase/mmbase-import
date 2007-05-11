@@ -30,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.10 2006-11-11 13:57:53 michiel Exp $
+ * @version $Id: TransactionsParser.java,v 1.8 2006-06-30 09:01:09 andre Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -98,10 +98,10 @@ public class TransactionsParser extends DefaultHandler {
     // private static Upload upload = null;
 
     /** TransactionManager module. */
-    private TransactionManager transactionManager;
+    private TransactionManagerInterface transactionManager;
 
     /** TemporaryNodeManager module. */
-    private TemporaryNodeManager tmpObjectManager;
+    private TemporaryNodeManagerInterface tmpObjectManager;
 
     /** Path of the MMBase dtd directory. */
     private String dtdDirectory;
@@ -175,9 +175,8 @@ public class TransactionsParser extends DefaultHandler {
         //upload = (Upload)Module.getModule("upload");
         dtdDirectory = MMBaseContext.getConfigPath() + File.separator + "dtd" + File.separator;
         reportDirectory = MMBaseContext.getConfigPath() + File.separator + "import" + File.separator + "report" + File.separator;
-        transactionManager = TransactionManager.getInstance();
-        tmpObjectManager = transactionManager.getTemporaryNodeManager();
-
+        tmpObjectManager = new TemporaryNodeManager(mmbase);
+        transactionManager = new TransactionManager(mmbase, tmpObjectManager);
     }
 
     /**

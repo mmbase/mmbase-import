@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.7 2006-11-16 08:31:14 michiel Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.6 2006-06-21 05:51:34 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -119,12 +119,7 @@
         <varlistentry>
           <term>templates</term>
           <listitem>
-            <para>
-              The directory where xsl templates and editwizard task xml's can be found. Use this
-              to specify an alternate directory for xsl templates and wizard xml's. The other
-              directories (current directory, default directory) remain working too, but this
-              'templates' is added between them in the resolve path.
-            </para>
+            <para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
             <programlisting format="linespecific">templates=data/my_xsl</programlisting>
           </listitem>
         </varlistentry>
@@ -349,8 +344,7 @@
         <varlistentry>
           <term>templates</term>
           <listitem>
-            <para>A directory where xsl templates and wizard xml could be found. See also the
-            description of the same parameter for list.jsp</para>
+            <para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
             <programlisting format="linespecific">templates=data/my_xsl</programlisting>
           </listitem>
         </varlistentry>

@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://www.mmbase.org/mmbase/attachments/25482/MyShop.1.0.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>

@@ -20,7 +20,7 @@ import org.mmbase.security.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.12 2006-09-07 12:48:41 pierre Exp $
+ * @version $Id: Verify.java,v 1.11.2.1 2006-09-07 12:46:49 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {

@@ -17,19 +17,19 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * TEI class for the Locale tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTEI.java,v 1.3 2007-02-16 20:17:47 michiel Exp $
+ * @version $Id: LocaleTEI.java,v 1.2 2003-06-06 10:03:08 pierre Exp $ 
 s */
 
 public class LocaleTEI extends TagExtraInfo {
 
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo[] variableInfo = null;
-        String jspvarAttribute  = (String) data.getAttribute("jspvar");
+        String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
         if (jspvarAttribute != null) {
             variableInfo = new VariableInfo[1];
-            variableInfo[0] =  new VariableInfo(jspvarAttribute, java.util.Locale.class.getName(), true, VariableInfo.NESTED);
+            variableInfo[0] =  new VariableInfo(jspvarAttribute, "java.util.Locale", true, VariableInfo.NESTED);
         }
         return variableInfo;
-    }
+    }        
 
 }

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_evenement_type">
-      <field name="naam" ftype="line" ><prompt>naam</prompt></field>
-      <field name="isoninternet" ftype="enum"><prompt>selectie optie op internet</prompt><optionlist select="ja_nee"/></field>
-      <list include="config/images/zoek_contentelement_posrel_images.xml" />
-      <list include="config/deelnemers_categorie/zoek_evenement_type_posrel_deelnemers_categorie.xml" />
-<!--  <list include="config/evenement/zoek_evenement_type_related_evenement.xml" /> -->
-</form-schema>

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Handles content extraction
  *
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.3 $
  */
 public class ContentExtractor {
 
@@ -29,7 +29,7 @@ public class ContentExtractor {
 
     private static ContentExtractor instance = null;
 
-    private Map<String, Extractor> extractors = new HashMap<String, Extractor>();
+    private Map extractors = new HashMap();
 
     public ContentExtractor() {
     }
@@ -44,7 +44,7 @@ public class ContentExtractor {
     public Extractor findExtractor(String mimetype) {
         log.debug("Find extractor: '" + mimetype + "'");
         if (extractors.containsKey(mimetype)) {
-            Extractor ext = extractors.get(mimetype);
+            Extractor ext = (Extractor) extractors.get(mimetype);
             return ext;
         } else {
             // keep track on not found extractors

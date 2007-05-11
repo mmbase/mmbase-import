@@ -11,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.27 2007-04-23 17:34:32 michiel Exp $
+    @version $Id: searchlist.xsl,v 1.23.2.1 2006-09-14 13:02:13 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -21,10 +21,10 @@
   <xsl:variable name="BodyOnLoad">window.focus(); preselect(selected); doOnloadSearch(); resizeSelectTable();</xsl:variable>
 
   <xsl:template name="javascript">
-    <script type="text/javascript" src="{$javascriptdir}tools.js">
+    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
@@ -120,17 +120,17 @@
                 id="cb_{@number}" />
               </td>
               <xsl:choose>
-                <xsl:when test="@type='images'">
+                <xsl:when test="@type=&apos;images&apos;">
                   <td>
                     <img
-                      src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $listimagesize, '))'))}"
+                      src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $listimagesize, &apos;))&apos;))}"
                       hspace="0"
                       vspace="0"
                       border="0"
-                      title="{field[@name='description']}" />
+                      title="{field[@name=&apos;description&apos;]}" />
                     <br />
                     <a
-                      href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+                      href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
                       target="_new">
                       <xsl:call-template name="prompt_image_full" />
                     </a>
@@ -143,17 +143,17 @@
                     <xsl:value-of select="field[2]" />
                   </td>
                 </xsl:when>
-                <xsl:when test="@type='audioparts'">
+                <xsl:when test="@type=&apos;audioparts&apos;">
                   <td>
-                    <a target="_blank" href="{node:saxonFunction($cloud, string(field/@number), 'url()')}">
+                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_audio" />
                     </a>
                   </td>
                   <xsl:apply-templates select="field" />
                 </xsl:when>
-                <xsl:when test="@type='videoparts'">
+                <xsl:when test="@type=&apos;videoparts&apos;">
                   <td>
-                    <a target="_blank" href="{node:saxonFunction($cloud, string(field/@number), 'url()')}">
+                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_video" />
                     </a>
                   </td>

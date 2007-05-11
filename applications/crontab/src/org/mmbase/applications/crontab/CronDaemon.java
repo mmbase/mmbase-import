@@ -17,17 +17,18 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.13 2006-11-11 16:03:21 michiel Exp $
  */
 public class CronDaemon  {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
+    private TimerTask task;
+
     private static CronDaemon cronDaemon;
     private Timer cronTimer;
-    private Set<CronEntry> cronEntries;
-    private Set<CronEntry> removedCronEntries;
-    private Set<CronEntry> addedCronEntries;
+    private Set cronEntries;
+    private Set removedCronEntries;
+    private Set addedCronEntries;
 
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
@@ -43,8 +44,10 @@ public class CronDaemon  {
      * Finds in given set the CronEntry with the given id.
      * @return a CronEntry if found, <code>null</code> otherwise.
      */
-    protected static CronEntry getById(Set<CronEntry> set, String id) {
-        for (CronEntry entry : set) {
+    protected static CronEntry getById(Set set, String id) {
+        Iterator i = set.iterator();
+        while (i.hasNext()) {
+            CronEntry entry = (CronEntry)i.next();
             if (entry.getId().equals(id))
                 return entry;
         }
@@ -124,7 +127,9 @@ public class CronDaemon  {
         log.info("Stopping CronDaemon");
         cronTimer.cancel();
         cronTimer = null;
-        for (CronEntry entry : cronEntries) {
+        Iterator i = cronEntries.iterator();
+        while (i.hasNext()) {
+            CronEntry entry = (CronEntry)i.next();
             entry.stop();
         }
     }
@@ -145,9 +150,10 @@ public class CronDaemon  {
     }
 
     /**
-     * The main loop of the daemon.
+     * The main loop of the daemon, which of course is a Thread, implemented in run() to satisfy the
+     * 'Runnable' interface.
      */
-    protected void run() {
+    public void run() {
         long now = System.currentTimeMillis();
         try {
             Date currentMinute = new Date(now / 60000 * 60000);
@@ -157,9 +163,9 @@ public class CronDaemon  {
             }
 
             // remove jobs which were scheduled for removal
-            Iterator<CronEntry> z = removedCronEntries.iterator();
+            Iterator z = removedCronEntries.iterator();
             while (z.hasNext()) {
-                CronEntry entry = z.next();
+                CronEntry entry = (CronEntry)z.next();
                 if (entry.isAlive()) {
                     if (log.isDebugEnabled()) {
                         log.debug("Job " + entry + " still running, so could not yet be removed");
@@ -175,8 +181,10 @@ public class CronDaemon  {
                 }
             }
             // start jobs which need starting on this minute
-            for (CronEntry entry : cronEntries) {
+            z = cronEntries.iterator();
+            while (z.hasNext()) {
                 if (Thread.currentThread().isInterrupted()) return;
+                CronEntry entry = (CronEntry)z.next();
                 if (entry.mustRun(currentMinute)) {
                     if (entry.kick()) {
                         if (log.isDebugEnabled()) {
@@ -195,7 +203,7 @@ public class CronDaemon  {
     /**
      * @since MMBase-1.8
      */
-    public Set<CronEntry> getEntries() {
+    public Set getEntries() {
         return Collections.unmodifiableSet(cronEntries);
     }
 

@@ -12,31 +12,36 @@ package org.mmbase.util;
 import java.util.*;
 import javax.naming.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @javadoc
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.2 2006-07-06 14:34:22 pierre Exp $
  */
 public class ApplicationContextReader {
+
+    private static Logger log = Logging.getLoggerInstance(ApplicationContextReader.class);
 
     /**
      * @javadoc
      */
-    public static Map<String, String> getProperties(String path) throws NamingException {
+    public static Map getProperties(String path) throws NamingException {
         if (path == null || "".equals(path)) {
             throw new IllegalArgumentException("Path is empty");
         }
-        Map<String, String> properties = new HashMap<String, String>();
+        Map properties = new HashMap();
         Context env = getContext();
         if (env != null) {
-            NamingEnumeration<NameClassPair> ne = env.list(path);
+            NamingEnumeration ne = env.list(path);
             while (ne.hasMoreElements()) {
-                NameClassPair element = ne.nextElement();
+                NameClassPair element = (NameClassPair) ne.nextElement();
                 String contextName = element.getName();
                 String lookupName = env.composeName(contextName, path);
-                String value = env.lookup(lookupName).toString();
+                Object value = env.lookup(lookupName);
                 properties.put(contextName, value);
             }
         }

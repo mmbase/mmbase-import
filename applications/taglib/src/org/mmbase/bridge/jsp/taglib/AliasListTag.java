@@ -19,12 +19,12 @@ import org.mmbase.bridge.Node;
  * This class makes a tag which can list the aliases of a Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AliasListTag.java,v 1.21 2007-03-02 21:01:15 nklasens Exp $ 
+ * @version $Id: AliasListTag.java,v 1.20 2003-08-05 18:42:55 michiel Exp $ 
  */
 
 public class AliasListTag extends StringListTag implements ListProvider, Writer {
 
-    protected List<String> getList() throws JspTagException {
+    protected List getList() throws JspTagException {
         Node node = getNode();
         return node.getAliases();
     }

@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
-import org.mmbase.util.Entry;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -30,7 +28,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
 
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("patterns", Collection.class, Collections.emptyList()),
+        new Parameter("patterns", Collection.class, Collections.EMPTY_LIST),
         new Parameter("mode", String.class),
         new Parameter("replacefirst", String.class)
     };
@@ -48,18 +46,18 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
             log.debug("Creating transformer, with " + parameters);
         }
         RegexpReplacer trans = new RegexpReplacer() {
-                private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
+                private Collection patterns = new ArrayList();
                 {
-                    addPatterns((Collection<?>) parameters.get("patterns"), patterns);
+                    addPatterns((Collection) parameters.get("patterns"), patterns);
                 }
-                public Collection<Entry<Pattern,String>> getPatterns() {
+                public Collection getPatterns() {
                     return patterns;
                 }
             };
         String mode = (String) parameters.get("mode");
         if (mode == null) mode = "WORDS";
-        Config c = trans.transformers().get("REGEXPS_" + mode.toUpperCase());
-        if (c == null) c = trans.transformers().get(mode);
+        Config c = (Config)trans.transformers().get("REGEXPS_" + mode.toUpperCase());
+        if (c == null) c = (Config)trans.transformers().get(mode);
         if (c == null) throw new IllegalArgumentException("" + mode + " cannot be found in " + trans.transformers());
         String firstParam = (String) parameters.get("replacefirst");
         boolean replaceFirst = "true".equals(firstParam);

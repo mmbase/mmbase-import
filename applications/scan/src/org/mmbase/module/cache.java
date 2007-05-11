@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: pierre $
- * @version $Id: cache.java,v 1.15 2006-11-24 14:22:22 pierre Exp $
+ * @author  $Author: nklasens $
+ * @version $Id: cache.java,v 1.13 2005-09-20 19:28:29 nklasens Exp $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -162,27 +162,24 @@ public class cache extends Module implements cacheInterface {
     /**
      * @javadoc
      */
-    public Map<String, String> getStates() {
-        setState("Hits",""+hits);
-        setState("Misses",""+miss);
+    public Hashtable state() {
+        state.put("Hits",""+hits);
+        state.put("Misses",""+miss);
         if (hits!=0 && miss!=0) {
-            setState("Cache hits %",""+((hits+miss)*100)/hits);
-            setState("Cache misses %",""+((hits+miss)*100)/miss);
+            state.put("Cache hits %",""+((hits+miss)*100)/hits);
+            state.put("Cache misses %",""+((hits+miss)*100)/miss);
         }
-        setState("Number cachelines",""+lines.size());
+        state.put("Number cachelines",""+lines.size());
         cacheline line;
         int size=0;
         for (Enumeration t=lines.elements();t.hasMoreElements();) {
             line=(cacheline)t.nextElement();
             size+=line.filesize;
         }
-        setState("Cache Size (in kb)",""+(size+1)/1024);
-        return super.getStates();
+        state.put("Cache Size (in kb)",""+(size+1)/1024);
+        return state;
     }
 
-    public Map<String, String> state() {
-        return getStates();
-    }
 
     /**
      * @javadoc

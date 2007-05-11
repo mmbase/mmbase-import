@@ -68,14 +68,11 @@ import org.mmbase.util.logging.*;
 public class RMIHandlerServlet extends MMBaseServlet {
     private static Logger log = Logging.getLoggerInstance(RMIHandlerServlet.class.getName());
     
-    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         log.service("HTTP RMI bridge loaded");
     }
     
-    @SuppressWarnings("unused")
-    @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         try {
             // Command and parameter for this POST request.
@@ -129,15 +126,11 @@ public class RMIHandlerServlet extends MMBaseServlet {
      * @exception  ServletException and IOException when invoking
      *             methods of <code>req<code> or <code>res<code>.
      */
-    @SuppressWarnings("unused")
-    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
         returnClientError(res, "GET Operation not supported: Can only forward POST requests.");
     }
     
-    @SuppressWarnings("unused")
-    @Override
     public void doPut(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
         returnClientError(res,
@@ -145,7 +138,6 @@ public class RMIHandlerServlet extends MMBaseServlet {
         "Can only forward POST requests.");
     }
     
-    @Override
     public String getServletInfo() {
         return "RMI Call Forwarding Servlet";
     }
@@ -325,7 +317,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
         }
     }
     public void getHostname(HttpServletRequest req, HttpServletResponse res, String param)
-    throws IOException {
+    throws ServletClientException, ServletServerException, IOException {
         
         byte[] getHostStringBytes = req.getServerName().getBytes();
         
@@ -339,14 +331,15 @@ public class RMIHandlerServlet extends MMBaseServlet {
     }
     
     
-    public void ping(HttpServletRequest req, HttpServletResponse res, String param) {
+    public void ping(HttpServletRequest req, HttpServletResponse res, String param)
+    throws ServletClientException, ServletServerException, IOException {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/octet-stream");
         res.setContentLength(0);
     }
     
     public void hostname(HttpServletRequest req, HttpServletResponse res, String param)
-    throws IOException {
+    throws ServletClientException, ServletServerException, IOException {
         
         PrintWriter pw = res.getWriter();
         

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
     name="topics" maintainer="mmbase.org" version="0" extends="object">
 
   <names>
@@ -19,7 +19,7 @@
   </descriptions>
 
   <fieldlist>
-    <field name="title">
+    <field>
       <descriptions>
         <description xml:lang="en">Title of the topic</description>
         <description xml:lang="nl">Titel van het onderwerp</description>
@@ -37,11 +37,12 @@
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>title</name>
         <type notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field name="body">
+    <field>
       <descriptions>
         <description xml:lang="en">Description of the topic</description>
         <description xml:lang="nl">Beschrijving of toelichting bij het onderwerp</description>
@@ -50,8 +51,16 @@
         <guiname xml:lang="en">Text</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>-1</list>
+          <search>2</search>
+        </positions>
+      </editor>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>body</name>
         <type notnull="false" size="64000" state="persistent">STRING</type>
       </db>
     </field>

@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.packaging;
@@ -40,7 +40,7 @@ public class ProviderManager {
     private static Logger log = Logging.getLoggerInstance(ProviderManager.class);
     private static boolean state = false;
     private static PackageDiscovery packagediscovery = null;
-
+    
     // Contains all providers key=provider value=reference to provider
     private static HashMap providers = null;
 
@@ -97,17 +97,17 @@ public class ProviderManager {
      */
     public static ProviderInterface getProvider(String name) {
         if (providers == null) init();
-    Object o = providers.get(name);
-    if (o != null) {
-        return (ProviderInterface)o;
-    } else {
-        return null;
-    }
+	Object o = providers.get(name);
+	if (o != null) {
+		return (ProviderInterface)o;	
+	} else {
+		return null;
+	}
     }
 
     public static void resetSleepCounter() {
         packagediscovery.resetSleepCounter();
-    }
+    } 
 
 
 
@@ -161,7 +161,8 @@ public class ProviderManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
-                for (Element n: reader.getChildElements("providers", "provider")) {
+                for(Iterator ns = reader.getChildElements("providers","provider");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -180,7 +181,7 @@ public class ProviderManager {
                             method = n2.getNodeValue();
                         }
 
-                        // decode the maintainer
+                        // decode the maintainer 
                         n2 = nm.getNamedItem("maintainer");
                         if (n2 != null) {
                             maintainer = n2.getNodeValue();
@@ -213,7 +214,7 @@ public class ProviderManager {
         ProviderFileWriter.write();
         return true;
     }
-
+  
     // should be moved to the correct class
     public static String addDiskProvider(String name,String path) {
         if (get(name) == null) {
@@ -243,7 +244,8 @@ public class ProviderManager {
             String account = "guest";
             String password = "guest";
             String path = "";
-            for (Element e: reader.getChildElements("shareautoconfig")) {
+            for(Iterator ns = reader.getChildElements("shareautoconfig");ns.hasNext(); ) {  
+                Element e = (Element)ns.next();
                 String field = e.getNodeName();
                 org.w3c.dom.Node n = e.getFirstChild();
                 if (field.equals("name")) name = n.getNodeValue();
@@ -272,7 +274,7 @@ public class ProviderManager {
         return feedback;
     }
 
-    // should be moved to the correct class
+    // should be moved to the correct class 
     private static ExtendedDocumentReader getAutoConfigReader(String url) {
         ExtendedDocumentReader reader = null;
         try {
@@ -282,7 +284,7 @@ public class ProviderManager {
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
             reader = new ExtendedDocumentReader(new InputSource(input),ProviderManager.class);
             return reader;
-        } catch(Exception e) {
+        } catch(Exception e) { 
             return null;
         }
     }
@@ -296,7 +298,8 @@ public class ProviderManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
-                for (Element n: reader.getChildElements("providerhandlers", "providerhandler")) {
+                for(Iterator ns = reader.getChildElements("providerhandlers","providerhandler");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String method = null;
@@ -316,7 +319,7 @@ public class ProviderManager {
                             state = n2.getNodeValue();
                         }
 
-                        // decode the basescore
+                        // decode the basescore 
                         n2 = nm.getNamedItem("basescore");
                         if (n2 != null) {
                             basescore = n2.getNodeValue();
@@ -341,7 +344,7 @@ public class ProviderManager {
     }
 
     public static void discoverPackages() {
-    packagediscovery.getPackages();
+	packagediscovery.getPackages();
     }
-
+    
 }

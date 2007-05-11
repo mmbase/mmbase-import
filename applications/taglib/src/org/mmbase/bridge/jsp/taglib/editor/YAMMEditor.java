@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.12 2007-02-24 21:58:52 nklasens Exp $
+ * @version $Id: YAMMEditor.java,v 1.10 2006-07-06 11:36:12 michiel Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -50,12 +50,12 @@ public class YAMMEditor extends Editor {
 
 
 
-    private List<String> startList = new ArrayList<String>();       // startnodes: 346
-    private List<String> pathList  = new ArrayList<String>();       // paths: 346_news,posrel,urls
-    private List<String> nList = new ArrayList<String>();           // nodes: 346_602
-    private List<String> fList = new ArrayList<String>();           // 602_news.title
+    private List startList = new ArrayList();       // startnodes: 346
+    private List pathList  = new ArrayList();       // paths: 346_news,posrel,urls
+    private List nList = new ArrayList();           // nodes: 346_602
+    private List fList = new ArrayList();           // 602_news.title
     // Map to accommadate the fields and their startnodes
-    private Map<String, String> fld2snMap = new HashMap<String, String>();
+    private Map fld2snMap = new HashMap();
 
 
     /**
@@ -119,10 +119,10 @@ public class YAMMEditor extends Editor {
             log.debug("Added path : " + path);
         }
 
-        List<String> nl = getNodesFromQuery(query, nodenr);
-        Iterator<String> e = nl.iterator();         // iterate over the startnodes
+        List nl = getNodesFromQuery(query, nodenr);
+        Iterator e = nl.iterator();         // iterate over the startnodes
         while (e.hasNext()) {
-            String nr = e.next();
+            String nr = (String)e.next();
             boolean startnode = false;
 
             /* fills fld2snMap (only used to keep track of startnodes,
@@ -164,8 +164,8 @@ public class YAMMEditor extends Editor {
 
     }
 
-    protected List<String> getNodesFromQuery(Query query, String nr) {
-        List<String> nl = new ArrayList<String>();
+    protected List getNodesFromQuery(Query query, String nr) {
+        List nl = new ArrayList();
         List steps = query.getSteps();
 
         if (steps.size() == 1) {    // why ?
@@ -202,8 +202,8 @@ public class YAMMEditor extends Editor {
      * @param   ql  List with queries
      * @return      List with paths from #getPathFromQuery
      */
-    protected List<String> fillPathList(List ql) {
-        List<String> pl = new ArrayList<String>();
+    protected List fillPathList(List ql) {
+        List pl = new ArrayList();
 
         Iterator i = ql.iterator();
         while (i.hasNext()) {
@@ -228,7 +228,7 @@ public class YAMMEditor extends Editor {
     *           meaning: startnode(s)_path
     */
     protected String getPathFromQuery(Query query) {
-        StringBuilder path = new StringBuilder();
+        StringBuffer path = new StringBuffer();
 
         java.util.List steps = query.getSteps();
         log.debug("Nr of steps : " + steps.size());
@@ -270,15 +270,15 @@ public class YAMMEditor extends Editor {
     * @return   A ; seperated String with the elements in the List
     *
     */
-    protected String makeList4Url(List<String> al) {
-        StringBuilder sb = new StringBuilder();
+    protected String makeList4Url(List al) {
+        StringBuffer sb = new StringBuffer();
         if (al.size() > 0) {
-            Iterator<String> e = al.iterator();
+            Iterator e = al.iterator();
             while(e.hasNext()) {
                 if (sb.length() == 0) {
-                    sb.append( e.next() );
+                    sb.append( (String) e.next() );
                 } else {
-                    sb.append(';').append( e.next() );
+                    sb.append(';').append( (String) e.next() );
                 }
             }
         }
@@ -294,7 +294,7 @@ public class YAMMEditor extends Editor {
     *
     */
     public String makeHTML(String url, String icon) {
-        StringBuilder html = new StringBuilder();
+        StringBuffer html = new StringBuffer();
 
         html.append("<div class=\"et\"><a title=\"click to edit\" href=\"");
         html.append(url);
@@ -324,7 +324,7 @@ public class YAMMEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuilder show = new StringBuilder(url);
+        StringBuffer show = new StringBuffer(url);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {

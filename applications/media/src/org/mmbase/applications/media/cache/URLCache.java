@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.cache;
 
 import org.mmbase.cache.Cache;
-import org.mmbase.cache.CacheManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
@@ -38,7 +37,7 @@ public class URLCache extends Cache {
     
     static {
         cache = new URLCache(cacheSize);
-        cache.putCache();
+        putCache(cache);
     }
 
     /**
@@ -116,7 +115,7 @@ public class URLCache extends Cache {
         };
 
         public CacheExpire() {
-            objectNumber2Keys.putCache();
+            Cache.putCache(objectNumber2Keys);
         }
 
         public void clear() {

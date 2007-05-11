@@ -247,7 +247,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         {
             Step step = nq2.addStep(newsManager);
             nq2.setNodeStep(step);
-            RelationStep relationStep = nq1.addRelationStep(urlsManager, "posrel", "destination");
+            RelationStep relationStep = nq2.addRelationStep(urlsManager, "posrel", "destination");
         }
 
         //a new relation node should not flush cache the cache

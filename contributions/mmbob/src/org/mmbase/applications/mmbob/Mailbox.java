@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 
 package org.mmbase.applications.mmbob;
 
@@ -33,9 +33,9 @@ public class Mailbox {
     private Node node;
     private Poster parent;
     private int id;
-    private int messagecount=0;
-    private int messagenewcount=0;
-    private int messageunreadcount=0;
+    private int messagecount = 0;
+    private int messagenewcount = 0;
+    private int messageunreadcount = 0;
 
     /**
      * Constructor
@@ -46,7 +46,7 @@ public class Mailbox {
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
-	readStats();
+        readStats();
     }
 
     /**
@@ -57,7 +57,6 @@ public class Mailbox {
         return node.getStringValue("name");
     }
 
-
     /**
      * get message count of this mailbox
      * @return number of messages in this mailbox
@@ -66,7 +65,6 @@ public class Mailbox {
         return messagecount;
     }
 
-
     /**
      * get message count unread of this mailbox
      * @return number of unread messages in this mailbox
@@ -74,7 +72,6 @@ public class Mailbox {
     public int getMessageUnreadCount() {
         return messageunreadcount;
     }
-
 
     /**
      * get message count unread of this mailbox
@@ -98,11 +95,11 @@ public class Mailbox {
      */
     public boolean remove() {
         try {
-	    node.deleteRelations();
+            node.deleteRelations();
             node.delete();
             return true;
         } catch (Exception e) {
-	    e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
     }
@@ -115,28 +112,27 @@ public class Mailbox {
         return node;
     }
 
-  public void signalMailboxChange() {
-	readStats();
-	parent.mailboxChanged(this);
-  }
+    public void signalMailboxChange() {
+        readStats();
+        parent.mailboxChanged(this);
+    }
 
-
-   public void readStats() {
-	messagecount = 0;
-	messagenewcount = 0;
-	messageunreadcount = 0;
-	if (node!=null) {
-		NodeIterator i=node.getRelatedNodes("forumprivatemessage").nodeIterator();
-		while (i.hasNext()) {
-			Node node=i.nextNode();
-			messagecount = messagecount + 1;
-			int viewstate =  node.getIntValue("viewstate");
-			if ( viewstate == 0 ) {
-				messageunreadcount = messageunreadcount + 1;
-			}
-			//log.info ("p="+parent.getLastSessionEnd()+" c="+node.getIntValue("createtime"));
-			if (parent.getLastSessionEnd() < node.getIntValue("createtime")) messagenewcount =  messagenewcount + 1;
-		}
-	}
-   }
+    public void readStats() {
+        messagecount = 0;
+        messagenewcount = 0;
+        messageunreadcount = 0;
+        if (node != null) {
+            NodeIterator i = node.getRelatedNodes("forumprivatemessage").nodeIterator();
+            while (i.hasNext()) {
+                Node node = i.nextNode();
+                messagecount = messagecount + 1;
+                int viewstate = node.getIntValue("viewstate");
+                if (viewstate == 0) {
+                    messageunreadcount = messageunreadcount + 1;
+                }
+                // log.info ("p="+parent.getLastSessionEnd()+" c="+node.getIntValue("createtime"));
+                if (parent.getLastSessionEnd() < node.getIntValue("createtime")) messagenewcount = messagenewcount + 1;
+            }
+        }
+    }
 }

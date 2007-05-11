@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.5 2007-04-19 12:28:45 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.4.2.2 2007-04-19 12:29:19 michiel Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
@@ -29,8 +29,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
     private static final String NL_TOKEN = "XXXX_NL_XXXX";
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("tags", String.class, "NONE"),  // allowed tags, default no tags are permitted.
-        new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE)
+        new Parameter("tags", String.class, "NONE"),  // allowed tags, default no tags are permitted.
+        new Parameter("addbrs", Boolean.class, Boolean.FALSE)
     };
 
     public Parameters createParameters() {
@@ -49,7 +49,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             log.debug("Creating transformer, with " + parameters);
         }
         
-        final List<Tag> tagList;
+        final List tagList;
         String tags = parameters.getString("tags").toUpperCase();
         if (tags.equals("XSS")) {
             tagList = XSS;
@@ -65,8 +65,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         ReaderTransformer trans = new ReaderTransformer() {
                 public Writer transform(Reader r, Writer w) {
                     final TagStripper callback = new TagStripper(w, tagList);
-                    callback.addBrs = addbrs;
-                    if (addbrs) {
+                    callback.addBrs = addbrs.booleanValue();
+                    if (addbrs.booleanValue()) {
                         r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
                                 protected boolean replace(String string, Writer w, Status status) throws IOException {
                                     w.write(string.replaceAll("\n", NL_TOKEN));
@@ -85,7 +85,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     return w;
                 }
                 public String toString() {
-                    return tagList + " " + (addbrs ? "(adding brs)" : "");
+                    return tagList + " " + (addbrs.booleanValue() ? "(adding brs)" : "");
                 }
             };
         if (log.isDebugEnabled()) {
@@ -98,10 +98,10 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     /**
      * Enumeration for types of allowances
      */
-    private enum Allows {
-        YES,
-        NO, 
-        DONTKNOW
+    private static class Allows {
+        static final Allows YES = new Allows();
+        static final Allows NO = new Allows();
+        static final Allows DONTKNOW = new Allows();
     }
 
     /**
@@ -148,14 +148,16 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         }
     }
     private static class ChainedAllowance extends Allowance {
-        private final List<Allowance> allowances = new ArrayList<Allowance>();
-        void add(Allowance... alls) {
-            for (Allowance a : alls) {
-                allowances.add(a);
+        private final List allowances = new ArrayList();
+        void add(Allowance[] alls) {
+            for (int i = 0; i < alls.length; i++) {
+                allowances.add(alls[i]);
             }
         }
         Allows allows(String p) {
-            for (Allowance a : allowances) {
+            Iterator i = allowances.iterator();
+            while (i.hasNext()) {
+                Allowance a = (Allowance) i.next();
                 Allows allows = a.allows(p);
                 if (allows != Allows.DONTKNOW) return allows;
             }
@@ -192,21 +194,22 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
 
     private static class Tag extends ChainedAllowance {
-        private final List<Attr> attributes = new ArrayList<Attr>();
-        public Tag(Allowance... wrapped) {
+        private final List attributes = new ArrayList();
+        public Tag(Allowance[] wrapped) {
             super();
             add(wrapped);
         }
-        public List<Attr> getAttributes() {
+        public List getAttributes() {
             return attributes;
         }
         public  boolean allowsAttribute(String k, String v) {
             //System.out.println("Checking " + k + "=" + v + " for " + this);
-            for (Attr attr : attributes) {
-                switch (attr.allows(k, v)) {
-                case YES: return true;
-                case NO: return false;
-                }
+            Iterator i = attributes.iterator();
+            while (i.hasNext()) {
+                Attr attr = (Attr) i.next();
+                Allows a = attr.allows(k, v);
+                if (a == Allows.YES) return true;
+                if (a == Allows.NO) return false;
             }
             return true;
         }
@@ -218,13 +221,13 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
     protected static class TagStripper extends HTMLEditorKit.ParserCallback {
         private final Writer out;
-        private final List<Tag> tags;
+        private final List tags;
         boolean addImplied = false;
         boolean addBrs     = false;
-        List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
-        List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
+        List impliedTags = new ArrayList();
+        List  stack       = new ArrayList();
 
-        public TagStripper(Writer out, List<Tag> t) {
+        public TagStripper(Writer out, List t) {
             this.out = out;
             tags = t;
         }
@@ -232,13 +235,12 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         public String toString() {
             return "" + tags + (addBrs ? "(replacing newlines)" : "");
         }
-        protected Tag allowed(String tagName) {
-            for (Tag tag : tags) {
-                Allows a = tag.allows(tagName);
-                switch (a) {
-                case YES: return tag;
-                case NO: return null;
-                }
+        public Tag allowed(String tagName) {
+            for (Iterator i = tags.iterator(); i.hasNext();) { 
+                Tag tag = (Tag) i.next();
+                Allows a = tag.allows(tagName);                
+                if (a == Allows.YES) return tag;
+                if (a == Allows.NO) return null;
             }
             return null;
         }
@@ -255,7 +257,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                         log.trace("handling " + t);
                     }
                     
-                    if (stack.get(0).isPreformatted()) {
+                    if (((HTML.Tag) stack.get(0)).isPreformatted()) {
                         out.write(t.replaceAll(NL_TOKEN, "\n"));
                     } else {
                         out.write(t.replaceAll(NL_TOKEN, "<br class='auto' />"));
@@ -273,7 +275,6 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 log.warn(e);
             }
         }
-
         protected Tag getTag(HTML.Tag tag, MutableAttributeSet attributes) {
             boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
             Tag t;
@@ -307,7 +308,6 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 }
             }
         }
-        
         public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
             try {
                 stack.add(0, tag);
@@ -381,7 +381,6 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             }
 	}
 
-
         
         public void flush() {
             try {                
@@ -403,27 +402,27 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     protected static final Attr EVENTS = new Attr(new PatternDisallowance("(?i)onclick|ondblclick|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onload|onunload|onchange|onsubmit|onreset|onselect|onblur|onfocus|onkeydown|onkeyup|onkeypress"));
 
     // only strip cross-site-scripting
-    public final static List<Tag> XSS = new ArrayList<Tag>();
+    public final static List XSS = new ArrayList();
     static {
         {
-            Tag a = new Tag(new PatternAllowance("(?i)a"));
+            Tag a = new Tag(new Allowance[] {new PatternAllowance("(?i)a")});
             a.getAttributes().add(new Attr(new PatternAllowance("(?i)href"), new PatternDisallowance("(?i)javascript:.*")));
             a.getAttributes().add(EVENTS);
             XSS.add(a);
         }            
-        XSS.add(new Tag(new PatternDisallowance("(?i)script|embed|object|frameset"))); 
+        XSS.add(new Tag(new Allowance[] {new PatternDisallowance("(?i)script|embed|object|frameset")})); 
 
         {
-            Tag all = new Tag(ALLOW_ALL);
+            Tag all = new Tag(new Allowance[] {ALLOW_ALL});
             all.getAttributes().add(EVENTS);
             XSS.add(all);
         }
     }
 
     // strip all tags
-    public final  static List<Tag> NONE = new ArrayList<Tag>();
+    public final  static List NONE = new ArrayList();
     static {
-        NONE.add(new Tag(DISALLOW_ALL));
+        NONE.add(new Tag(new Allowance[] {DISALLOW_ALL}));
     }
 
 
@@ -443,7 +442,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         transformer.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
         //System.out.println("Destination = "+dest);
 
-        org.mmbase.util.ThreadPools.filterExecutor.shutdown();
+        //org.mmbase.util.ThreadPools.filterExecutor.shutdown();
 
         
     }

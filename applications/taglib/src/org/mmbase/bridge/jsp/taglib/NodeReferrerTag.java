@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.30 2007-04-26 14:27:32 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.26.2.2 2007-04-26 14:27:10 michiel Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -61,7 +62,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider() throws JspTagException {
-        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
+        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -69,7 +70,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {
-        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
+        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
     }
 
     /**
@@ -98,7 +99,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     }
 
 
-    public void fillStandardParameters(Parameters p) throws JspTagException {
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         NodeProvider np = findNodeProvider(false);
         if (np != null) {
@@ -111,7 +112,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     }
 
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {

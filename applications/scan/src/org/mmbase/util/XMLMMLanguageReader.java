@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * @application SCAN
  * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.13 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.12 2005-07-09 15:29:12 nklasens Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 
@@ -59,8 +59,8 @@ public class XMLMMLanguageReader extends XMLBasicReader {
         Element e = document.getDocumentElement();
         languagecode = getElementAttributeValue(e,"xml:lang");
         Element d = getElementByPath("mmlanguage.dictionary");
-
-        for (Iterator iter = getChildElements(d).iterator(); iter.hasNext();) {
+        
+        for (Iterator iter = getChildElements(d); iter.hasNext();) {
             Element a = (Element) iter.next();
             dictionary.put(getElementName(a),getElementValue(a));
         }

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * use a localized String as customized in datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatDateTime.java,v 1.4 2006-11-29 08:07:20 michiel Exp $
+ * @version $Id: FormatDateTime.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -43,7 +43,7 @@ public class FormatDateTime implements Processor {
             if (date == null) {
                 return "";
             } else {
-                return org.mmbase.util.Casting.ISO_8601_LOOSE.get().format(node.getDateValue(field.getName()));
+                return org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(field.getName()));
             }
         }
     }

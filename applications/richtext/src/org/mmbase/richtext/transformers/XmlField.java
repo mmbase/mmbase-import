@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.4 2007-02-21 15:03:25 michiel Exp $
+ * @version $Id: XmlField.java,v 1.2 2006-01-02 16:57:46 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -61,9 +61,6 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     private final static String XML_TAGEND   = "</mmxf>";
 
 
-    // to make it compile in 1.8
-    protected final static boolean LISTS_INSIDE_P   = true;
-    protected final static boolean LISTS_OUTSIDE_P  = false;
 
 
     private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
@@ -139,15 +136,15 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         try {
             switch (to) {
             case RICH :
-                result = XML_TAGSTART + richToXML(r, false, LISTS_INSIDE_P) + XML_TAGEND;
+                result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
                 // rich will not be validated... Cannot be used yet!!
                 break;
             case POOR :
-                result = XML_TAGSTART + poorToXML(r, false, LISTS_INSIDE_P) + XML_TAGEND;
+                result = XML_TAGSTART + poorToXML(r) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case WIKI :
-                result = XML_TAGSTART + wikiToXML(r, LISTS_INSIDE_P) + XML_TAGEND;
+                result = XML_TAGSTART + wikiToXML(r) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case BODY :

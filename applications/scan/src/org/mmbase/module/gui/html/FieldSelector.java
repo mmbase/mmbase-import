@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.13 2006-09-11 10:44:48 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.11 2006-01-16 14:47:28 michiel Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -63,7 +63,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getRelTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=Collections.enumeration(stateMngr.mmBase.getBuilders());h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (bul instanceof InsRel) {
                 results.addElement(""+bul.getNumber());
@@ -77,7 +77,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getDataTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=Collections.enumeration(stateMngr.mmBase.getBuilders());h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (!(bul instanceof InsRel)) {
                 results.addElement(""+bul.getNumber());
@@ -151,7 +151,7 @@ public class FieldSelector implements CommandHandlerInterface {
         String language=ed.getLanguage();
         MMObjectBuilder obj=ed.getBuilder();
         String key,val;
-        Vector tempresults = new Vector(obj.getFields(org.mmbase.bridge.NodeManager.ORDER_EDIT));
+        Vector tempresults=obj.getEditFields();
         FieldDefs def;
         for (Enumeration h=tempresults.elements();h.hasMoreElements();) {
             def=(FieldDefs)h.nextElement();

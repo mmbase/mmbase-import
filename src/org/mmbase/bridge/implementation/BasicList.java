@@ -18,24 +18,24 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.30 2007-03-30 10:02:54 michiel Exp $
+ * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
  */
-public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> implements BridgeList<E>  {
-    
+public class BasicList extends ArrayList implements BridgeList  {
+
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
-    private Map<Object, Object> properties = new HashMap<Object, Object>();
+    private Map properties = new HashMap();
 
-    // during inititializion of the list, you sometimes want to switch off
+    // during inititializion of the list, you sometimes want to switch off 
     // also when everything is certainly converted
     boolean autoConvert = true;
 
     BasicList() {
-        super();
+         super();
     }
 
     protected BasicList(Collection c) {
-        super(c);
+         super(c);
     }
 
     public Object getProperty(Object key) {
@@ -46,46 +46,38 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
         properties.put(key,value);
     }
 
-    /**
-     * converts the object in the list to the excpected format
+    /*
+     * converts the object in teh list to the excpected format
      */
-    @SuppressWarnings("unchecked")
-    protected E convert(Object o) {
-        return (E) o;
-    }
-    protected final E convert(Object o, int index) {
-        E newO = convert(o);
-        if (log.isDebugEnabled()) {
-            log.debug("Converted " + o.getClass() + " to " + newO.getClass() + " in " + getClass());
-        }
-        if (newO != o) {
-            set(index, newO);
-        }
-        return newO;
+    protected Object convert(Object o, int index) {
+        return o;
     }
 
-    @Override
     public boolean contains(Object o ) {
         // make sure every element is of the right type, ArrayList implementation does _not_ call get.
         convertAll();
         return super.contains(o);
     }
 
-    @Override
     public boolean remove(Object o) {
         // make sure every element is of the right type, otherwise 'equals' is very odd..
         convertAll();
         return super.remove(o);
     }
-    @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection c) {
         // make sure every element is of the right type, otherwise 'equals' is very odd..
         convertAll();
         return super.removeAll(c);
     }
 
-    @Override
-    public E get(int index) {
+    /*
+     * validates that an object can be converted to the excpected format
+     */
+    protected Object validate(Object o) throws ClassCastException {
+        return o;
+    }
+
+    public Object get(int index) {
         if (autoConvert) {
             return convert(super.get(index), index);
         } else {
@@ -94,24 +86,25 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
     }
 
     public void sort() {
-        Collections.sort( this);
+        Collections.sort(this);
     }
 
-    public void sort(Comparator<? super E> comparator) {
-        Collections.sort(this, comparator);
+    public void sort(Comparator comparator) {
+        Collections.sort(this,comparator);
     }
 
+    public Object set(int index, Object o) {
+        return super.set(index,validate(o));
+    }
 
-    @Override
-    public void add(int index, E o) {
+    public void add(int index, Object o) {
         autoConvert = true;
-        super.add(index, o);
+        super.add(index,validate(o));
     }
 
-    @Override
-    public boolean add(E o) {
+    public boolean add(Object o) {
         autoConvert = true;
-        return super.add(o);
+        return super.add(validate(o));
     }
 
     /**
@@ -126,22 +119,17 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
     }
 
 
-    @Override
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
         if (autoConvert) convertAll();
         return super.toArray();
     }
 
-    public BridgeList<E> subList(int fromIndex, int toIndex)  {
-        return new BasicList<E>(super.subList(fromIndex, toIndex));
-    }
-
-    protected class BasicIterator implements ListIterator<E> {
-        protected ListIterator<E> iterator;
+    protected class BasicIterator implements ListIterator {
+        protected ListIterator iterator;
 
         protected BasicIterator() {
-            this.iterator = BasicList.this.listIterator();
+            this.iterator = listIterator();
         }
 
         public boolean hasNext() {
@@ -165,25 +153,24 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(E o) {
+        public void set(Object o) {
             iterator.set(o);
         }
 
-        public void add(E o) {
+        public void add(Object o) {
             BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
-        public E next() {
-            E next = iterator.next();
-            int i = nextIndex();
-            return BasicList.this.convert(next, i);
+        // normally also e.g. set(Node n); and add(Node n) will be created in
+        // descendant class, because that is better for performance.
+
+        public Object next() {
+            return iterator.next();
         }
 
-        public E previous() {
-            E previous = iterator.previous();
-            int i = previousIndex();
-            return BasicList.this.convert(previous, i);
+        public Object previous() {
+            return iterator.previous();
         }
 
     }

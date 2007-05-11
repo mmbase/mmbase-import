@@ -44,18 +44,6 @@ function dosubmit() {
     closeSearch();
 }
 
-//alert("defining doAddSubmit");
-
-function doAddSubmit(newfromlist) {
-    selected = buildSelectedList();
-    var url = "linklistitem.jsp?"+"newfromlist="+newfromlist+"&selected="+selected;
-    loadXMLDoc(url, false);
-
-    window.opener.document.forms[0].submit();
-    window.close();
-
-}
-
 function buildSelectedList() {
     var s = selected + "|";
     var f = document.forms[0];
@@ -79,13 +67,13 @@ function browseTo(start) {
     selected = buildSelectedList();
     var href = listpage;
     href += "&popupid=search&listtype=search&start="+start+"&selected="+selected+"&cmd="+cmd;
-    if (relationRole != undefined && relationRole != "") {
+    if (relationRole != "") {
       href += "&relationRole=" + relationRole;
     }
-    if (relationOriginNode != undefined && relationOriginNode != "") {
+    if (relationOriginNode != "") {
       href += "&relationOriginNode=" + relationOriginNode;
     }
-    if (relationCreateDir != undefined && relationCreateDir != "") {
+    if (relationCreateDir != "") {
       href += "&relationCreateDir=" + relationCreateDir;
     }
     document.location.replace(href);

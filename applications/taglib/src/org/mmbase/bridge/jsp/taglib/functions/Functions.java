@@ -10,11 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.functions;
 
 
-import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.ContentTag;
+import org.mmbase.bridge.jsp.taglib.CloudTag;
+import java.util.Collection;
+import java.util.Iterator;
 
-import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
+
+import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -37,7 +40,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.18 2007-04-26 19:42:54 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.1 2007-04-26 19:36:32 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -80,7 +83,8 @@ public class Functions {
 
 
     /**
-     * Provides the 'escape' functionality of taglib. Can be used in EL (using mm:escape('p', value)) and XSLT (using taglib:escape('p', mytag))
+     * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
+     * 
      */
     public static String escape(String escaper, String string) {
         try {
@@ -99,12 +103,11 @@ public class Functions {
     }
 
     /**
-     * MMBase url generation for EL
      * @since MMBase-1.8.2
      */
     public static String url(String page, javax.servlet.jsp.PageContext pageContext) {
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-        StringBuilder show = new StringBuilder();
+        StringBuffer show = new StringBuffer();
         if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
             if (requestURI.endsWith("/")) {
@@ -121,7 +124,6 @@ public class Functions {
 
     }
 
-
     /**
      * @since MMBase-1.8.4
      */
@@ -134,19 +136,6 @@ public class Functions {
         return req.getContextPath() + (t.charAt(0) == '/' ? "" : "/") + t;
     }
 
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static LocalizedString string(LocalizedString s, javax.servlet.jsp.PageContext pageContext) {
-        WrappedLocalizedString result = new WrappedLocalizedString(s);
-        Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
-        if (locale == null) {
-            locale = LocalizedString.getDefault();
-        }
-        result.setLocale(locale);
-        return result;
-    }
 
 
 }

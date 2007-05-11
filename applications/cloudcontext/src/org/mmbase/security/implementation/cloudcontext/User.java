@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.23 2006-10-13 15:55:50 nklasens Exp $
+ * @version $Id: User.java,v 1.22.2.1 2006-10-13 15:55:44 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {

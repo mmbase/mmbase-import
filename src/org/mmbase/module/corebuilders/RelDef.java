@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.44 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: RelDef.java,v 1.40 2006-07-05 15:16:34 pierre Exp $
  */
 public class RelDef extends MMObjectBuilder {
 
@@ -63,14 +63,14 @@ public class RelDef extends MMObjectBuilder {
 
     // cache of relation definitions
     // sname or sname/dname -> rnumber
-    private final Map<String, Integer> relCache = new HashMap<String, Integer>();
+    private Map relCache = new HashMap();
 
     // cache of valid relationbuilders
     // otype of relations builder -> MMObjectBuilder
-    private  Map<Integer, MMObjectBuilder> relBuilderCache = null;
+    private  Map relBuilderCache = null;
 
     // rnumber -> MMObjectBuilder Name
-    private  Map<Integer, String> rnumberCache = new HashMap<Integer, String>();
+    private  Map rnumberCache = new HashMap();
 
     /**
      *  Contruct the builder
@@ -95,7 +95,7 @@ public class RelDef extends MMObjectBuilder {
      * it's sname/dname combination.
      */
     private void addToCache(MMObjectNode node) {
-        Integer rnumber = node.getNumber();
+        Integer rnumber = (Integer) node.getValue("number");
         relCache.put(node.getStringValue("sname"), rnumber);
         relCache.put(node.getStringValue("sname") + "/" + node.getStringValue("dname"), rnumber);
 
@@ -111,18 +111,18 @@ public class RelDef extends MMObjectBuilder {
         relCache.remove(node.getStringValue("sname"));
         relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
 
-        rnumberCache.remove(Integer.valueOf(node.getNumber()));
+        rnumberCache.remove(new Integer(node.getNumber()));
     }
 
     /**
      * @since MMBase-1.7.1
      */
     private void removeFromCache(int rnumber) {
-        Integer r = Integer.valueOf(rnumber);
-        Iterator<Map.Entry<String, Integer>> i = relCache.entrySet().iterator();
+        Integer r = new Integer(rnumber);
+        Iterator i = relCache.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry<String, Integer> entry = i.next();
-            Integer value = entry.getValue();
+            Map.Entry entry = (Map.Entry) i.next();
+            Object value = entry.getValue();
             if (r.equals(value)) {
                 i.remove();
             }
@@ -140,14 +140,15 @@ public class RelDef extends MMObjectBuilder {
     private boolean readCache() {
         rnumberCache.clear();
         relCache.clear();        // add insrel (default behavior)
-        relCache.put("insrel", Integer.valueOf(-1));
+        relCache.put("insrel", new Integer(-1));
         // add relation definiation names
         try {
-            for (MMObjectNode n :getNodes(new NodeSearchQuery(this))) {
+            for (Iterator i = getNodes(new NodeSearchQuery(this)).iterator(); i.hasNext();) {
+                MMObjectNode n = (MMObjectNode) i.next();
                 addToCache(n);
             }
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            log.error("Error while reading reldef cache" + sqe.getMessage(), sqe);
+            log.error("Error while reading reldef cache" + sqe.getMessage());
         }
         return true;
     }
@@ -176,7 +177,7 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public String getBuilderName(Integer reldefNodeNumber) {
-        return  rnumberCache.get(reldefNodeNumber);
+        return (String) rnumberCache.get(reldefNodeNumber);
     }
 
 
@@ -212,7 +213,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return rnumberCache.get(Integer.valueOf(node.getNumber()));
+        return (String) rnumberCache.get(new Integer(node.getNumber()));
     }
 
 
@@ -256,7 +257,7 @@ public class RelDef extends MMObjectBuilder {
         MMObjectNode node = null;
         NodeSearchQuery query = new NodeSearchQuery(this);
         if (usesbuilder) {
-            Integer value = relBuilder.getNumber();
+            Integer value = new Integer(relBuilder.getNumber());
             Constraint constraint = new BasicFieldValueConstraint(query.getField(getField("builder")), value);
             query.setConstraint(constraint);
         } else {
@@ -271,9 +272,9 @@ public class RelDef extends MMObjectBuilder {
         }
         query.setMaxNumber(1);
         try {
-            List<MMObjectNode> reldefs = getNodes(query);
+            List reldefs = getNodes(query);
             if (reldefs.size() != 0) {
-                node = reldefs.get(0);
+                node =(MMObjectNode)reldefs.get(0);
             }
         } catch (SearchQueryException sqe) {
             // should never happen
@@ -350,10 +351,10 @@ public class RelDef extends MMObjectBuilder {
         try {
             MMObjectBuilder typeRel = mmb.getTypeRel();
             NodeSearchQuery query = new NodeSearchQuery(typeRel);
-            Integer value = node.getNumber();
+            Integer value = new Integer(node.getNumber());
             Constraint constraint = new BasicFieldValueConstraint(query.getField(typeRel.getField("rnumber")), value);
             query.setConstraint(constraint);
-            List<MMObjectNode> typerels = typeRel.getNodes(query);
+            List typerels = typeRel.getNodes(query);
             if (typerels.size() > 0) {
                 throw new RuntimeException("Cannot delete reldef, it is referenced by typerels: " + typerels);
             }
@@ -366,7 +367,7 @@ public class RelDef extends MMObjectBuilder {
         try {
             MMObjectBuilder insRel = mmb.getInsRel();
             NodeSearchQuery query = new NodeSearchQuery(insRel);
-            Integer value = node.getNumber();
+            Integer value = new Integer(node.getNumber());
             Constraint constraint = new BasicFieldValueConstraint(query.getField(insRel.getField("rnumber")), value);
             query.setConstraint(constraint);
             int i = insRel.count(query);
@@ -392,14 +393,6 @@ public class RelDef extends MMObjectBuilder {
         if (usesbuilder) {
             node.setValue("builder", mmb.getInsRel().getNumber());
         }
-    }
-
-    /**
-     * Returns all possible rnumbers ('roles').
-     * @since MMBase-1.9
-     */
-    public Set<Integer> getRoles() {
-        return Collections.unmodifiableSet(rnumberCache.keySet());
     }
 
     /**
@@ -443,18 +436,22 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public boolean isRelationTable(String name) {
-        return relCache.containsKey(name);
+        Object ob;
+        ob=relCache.get(name);
+        return ob!=null;
     }
 
     // Retrieves the relationbuildercache (initializes a new cache if the old one is empty)
-    private Map<Integer, MMObjectBuilder> getRelBuilderCache() {
+    private Map getRelBuilderCache() {
         // first make sure the buildercache is loaded
         if (relBuilderCache == null) {
-            relBuilderCache = new HashMap<Integer, MMObjectBuilder>();
+            relBuilderCache = new HashMap();
             // add all builders that descend from InsRel
-            for (MMObjectBuilder fbul : mmb.getBuilders()) {
+            Iterator buls = mmb.getBuilders().iterator();
+            while (buls.hasNext()) {
+                MMObjectBuilder fbul = (MMObjectBuilder) buls.next();
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(Integer.valueOf(fbul.getNumber()), fbul);
+                    relBuilderCache.put(new Integer(fbul.getNumber()), fbul);
                 }
             }
         }
@@ -468,7 +465,9 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public boolean isRelationBuilder(int number) {
-        return getRelBuilderCache().containsKey(Integer.valueOf(number));
+        Object ob;
+        ob = getRelBuilderCache().get(new Integer(number));
+        return ob != null;
     }
 
     /**
@@ -476,11 +475,9 @@ public class RelDef extends MMObjectBuilder {
      * @return an <code>Enumeration</code> containing the builders (as otype)
      */
 
-    public Enumeration<MMObjectBuilder> getRelationBuilders() {
+    public Enumeration getRelationBuilders() {
         return Collections.enumeration(getRelBuilderCache().values());
     }
-
-
 
     /**
      * Search the relation definition table for the identifying number of
@@ -524,7 +521,7 @@ public class RelDef extends MMObjectBuilder {
      * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
      */
     public int getNumberByName(String role, boolean searchBidirectional) {
-        Integer number = relCache.get(role);
+        Integer number = (Integer) relCache.get(role);
         if (number != null) {
             return number.intValue();
         }
@@ -534,9 +531,9 @@ public class RelDef extends MMObjectBuilder {
             query.setConstraint(constraint);
             query.setMaxNumber(1);
             try {
-                List<MMObjectNode> reldefs = getNodes(query);
+                List reldefs = getNodes(query);
                 if (reldefs.size() != 0) {
-                    MMObjectNode node = reldefs.get(0);
+                    MMObjectNode node = (MMObjectNode)reldefs.get(0);
                     return node.getNumber();
                 }
             } catch (SearchQueryException sqe) {
@@ -559,7 +556,7 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public int getGuessedByName(String role) {
-        return getNumberByName(role, true);
+        return getNumberByName(role,true);
     }
 
     /**
@@ -572,10 +569,10 @@ public class RelDef extends MMObjectBuilder {
      *     indicated names, the first one found is returned.
      * @deprecated use {@link #getNumberByName} instead
      */
-    public int getRelsNrByName(String sname, String dname) {
-        int res = getNumberByName(sname + "/" + dname);
-        if (res < -1) {
-            res = getNumberByName(dname + "/" + sname);
+    public int getRelNrByName(String sname, String dname) {
+        int res=getNumberByName(sname+"/"+dname);
+        if (res<-1) {
+            res=getNumberByName(dname+"/"+sname);
         }
         return res;
     }
@@ -587,11 +584,8 @@ public class RelDef extends MMObjectBuilder {
      * cache.
      * @todo Old roles are cuerrently not cleared or removed - which means that they may remain
      * useable for some time after the actual role is deleted or renamed.
-     * @todo Use 1.8 event mechanism in stead.
-     *
      * This because old role information is no longer available when this call is made.
      * @since MMBase-1.7.1
-
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {

@@ -12,10 +12,12 @@ package org.mmbase.applications.xmlimporter;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.TemporaryNodeManager;
+import org.mmbase.module.core.TemporaryNodeManagerInterface;
 import org.mmbase.module.core.TransactionManager;
 import org.mmbase.module.core.TransactionManagerException;
 import org.mmbase.applications.xmlimporter.SimilarObjectFinder;
@@ -33,18 +35,18 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.10 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: Transaction.java,v 1.6 2005-10-06 14:14:41 michiel Exp $
  */
 public class Transaction implements Runnable {
 
     /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(Transaction.class);
+    private static Logger log = Logging.getLoggerInstance(Transaction.class.getName());
 
     /** The mmbase module. */
     private static MMBase mmbase;
 
     /** The temporary node manager. */
-    private static TemporaryNodeManager tmpNodeManager;
+    private static TemporaryNodeManagerInterface tmpNodeManager;
 
     /** The transaction manager. */
     private static TransactionManager transactionManager;
@@ -159,10 +161,9 @@ public class Transaction implements Runnable {
      */
     private static synchronized TransactionManager getTransactionManager() {
         if (transactionManager == null) {
-            mmbase = MMBase.getMMBase();
-            transactionManager = TransactionManager.getInstance();
-            tmpNodeManager = transactionManager.getTemporaryNodeManager();
-
+            mmbase=(MMBase) Module.getModule("MMBASEROOT");
+            tmpNodeManager = new TemporaryNodeManager(mmbase);
+            transactionManager = new TransactionManager(mmbase,tmpNodeManager);
         }
         return transactionManager;
     }
@@ -198,8 +199,7 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            key = id; 
-            getTransactionManager().createTransaction(id);
+            key = getTransactionManager().create(uti.user, id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }
@@ -254,8 +254,7 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            getTransactionManager().createTransaction(id);
-            key = id;
+            key = getTransactionManager().create(uti.user, id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }
@@ -911,9 +910,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator<String> fieldNames = tempObj1.getNode().getBuilder().getFieldNames().iterator();
+        Iterator fieldNames = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {
@@ -958,9 +957,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator<String> fieldNames  = tempObj1.getNode().getBuilder().getFieldNames().iterator();
+        Iterator fieldNames  = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {

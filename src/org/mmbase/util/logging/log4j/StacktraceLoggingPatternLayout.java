@@ -20,10 +20,10 @@ public class StacktraceLoggingPatternLayout extends PatternLayout {
         String res = super.format(event);
         Exception e = new Exception();
         StackTraceElement[] ste = e.getStackTrace();
-        StringBuffer trace = new StringBuffer(res);
-        for (StackTraceElement element : ste) {
-          trace.append("\tat ").append(element.toString()).append("\n");
+        StringBuffer trace = new StringBuffer();
+        for (int i=0; i<ste.length; i++) {
+          res += "\tat " + ste[i].toString() + "\n";
         }
-        return trace.toString();
+        return res;
     }
 }

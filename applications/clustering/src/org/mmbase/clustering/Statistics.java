@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * A structute for basic statistical information about receiving an sending messages in the cluster.
- * @version $Id: Statistics.java,v 1.2 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: Statistics.java,v 1.1 2006-06-20 17:30:45 michiel Exp $
  */
 public class Statistics {
 

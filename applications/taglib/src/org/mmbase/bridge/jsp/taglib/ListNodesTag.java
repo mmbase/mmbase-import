@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.30 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ListNodesTag.java,v 1.28 2005-11-23 10:29:39 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -88,7 +88,7 @@ public class ListNodesTag extends AbstractNodeListTag {
      * @since MMBase-1.7
      */
     protected NodeQuery getQuery() throws JspTagException {
-        ListNodesContainerTag c = findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
+        ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
         if (c == null || type != Attribute.NULL || path != Attribute.NULL) {           
@@ -112,7 +112,7 @@ public class ListNodesTag extends AbstractNodeListTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.setNodeStep(query.getSteps().get(0));
+                    query.setNodeStep((Step) query.getSteps().get(0));
                 }
             }
         } else {            

@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.53 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: Contexts.java,v 1.48.2.1 2006-09-07 12:46:49 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -125,13 +125,13 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     public boolean init() {
-        String s = getInitParameters().get("readall");
+        String s = (String) getInitParameters().get("readall");
         readAll = "true".equals(s);
 
-        s = getInitParameters().get("allcontextspossible");
+        s = (String) getInitParameters().get("allcontextspossible");
         allContextsPossible = ! "false".equals(s);
 
-        s = getInitParameters().get("maxcontextsinquery");
+        s = (String) getInitParameters().get("maxcontextsinquery");
         if (! "".equals(s) && s != null) {
             maxContextsInQuery = Integer.parseInt(s);
         }
@@ -144,7 +144,8 @@ public class Contexts extends MMObjectBuilder {
         CacheInvalidator.getInstance().addCache(contextCache);
         CacheInvalidator.getInstance().addCache(allowingContextsCache);
         CacheInvalidator.getInstance().addCache(invalidableObjects);
-        addEventListener(CacheInvalidator.getInstance());
+        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
 
         return super.init();
     }
@@ -198,11 +199,11 @@ public class Contexts extends MMObjectBuilder {
                     Step step = query.addStep(users);
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
                     query.setConstraint(constraint);
-                    BasicAggregatedField baf = query.addAggregatedField(query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
+                    BasicAggregatedField baf = query.addAggregatedField((Step) query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
                     baf.setAlias("count");
 
                     AggregatedResultCache cache = AggregatedResultCache.getCache();
-                    List resultList = cache.get(query);
+                    List resultList = (List) cache.get(query);
                     if (resultList == null) {
                         ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
                         resultList = mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
@@ -507,7 +508,7 @@ public class Contexts extends MMObjectBuilder {
                         }
                     } else {
                         // may read nothing, simply making the query result nothing: number = -1
-                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), new Integer(-1));
+                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
                 }
@@ -990,7 +991,7 @@ public class Contexts extends MMObjectBuilder {
             }
         } else if (function.equals("may")) {
             Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode(a.get(Parameter.USER));
+            MMObjectNode checkingUser = getUserNode((UserContext) a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }

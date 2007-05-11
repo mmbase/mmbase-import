@@ -34,7 +34,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.6 2007-03-02 21:03:05 nklasens Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.4 2005-09-02 15:02:44 pierre Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
@@ -56,14 +56,14 @@ public class EtxIndexCreator {
         // Get database connection:
         // 1 - read database configuration
         ModuleReader moduleReader = new ModuleReader(new InputSource(new FileInputStream(configDir + "/modules/jdbc.xml")));
-        Map<String, String> properties = moduleReader.getProperties();
-        String url = properties.get("url");
-        String host = properties.get("host");
-        String port = properties.get("port");
-        String database = properties.get("database");
-        String user = properties.get("user");
-        String password = properties.get("password");
-        String driver = properties.get("driver");
+        Map properties = moduleReader.getProperties();
+        String url = (String) properties.get("url");
+        String host = (String) properties.get("host");
+        String port = (String) properties.get("port");
+        String database = (String) properties.get("database");
+        String user = (String) properties.get("user");
+        String password = (String) properties.get("password");
+        String driver = (String) properties.get("driver");
         // 2 - construct url, substituting database, host and port when needed
         int pos = url.indexOf("$DBM");
         if (pos != -1) {
@@ -125,12 +125,12 @@ public class EtxIndexCreator {
                         new BufferedReader(
                             new FileReader(etxConfigFile))));
 
-            for (Iterator<Element> iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
-                Element sbspace = iSbspaces.next();
+            for (Iterator iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
+                Element sbspace = (Element) iSbspaces.next();
                 String sbspaceName = configReader.getSbspaceName(sbspace);
 
-                for (Iterator<Element> iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
-                    Element etxindex = iEtxindices.next();
+                for (Iterator iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
+                    Element etxindex = (Element) iEtxindices.next();
                     String name = configReader.getEtxindexValue(etxindex);
                     String table = configReader.getEtxindexTable(etxindex);
                     String field = configReader.getEtxindexField(etxindex);
@@ -205,10 +205,11 @@ public class EtxIndexCreator {
                 + "PHRASE_SUPPORT='MAXIMUM', "
                 + "WORD_SUPPORT='PATTERN') IN " + sbspace;
 
-            PreparedStatement st = null;
+            Statement st = null;
             try {
-                st = con.prepareStatement(sqlCreateIndex);
-                st.executeUpdate();
+                System.out.println(sqlCreateIndex);
+                st = con.createStatement();
+                st.executeUpdate(sqlCreateIndex);
                 System.out.println("Index " + name + " created.");
             } finally {
                 if (st != null) {

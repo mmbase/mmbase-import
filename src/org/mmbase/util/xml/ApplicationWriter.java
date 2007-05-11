@@ -10,24 +10,25 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
-
 import org.w3c.dom.*;
+import javax.xml.transform.TransformerException;
 
 import org.mmbase.module.core.*;
 import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.xml.applicationdata.ContextDepthDataWriter;
 import org.mmbase.util.xml.applicationdata.FullBackupDataWriter;
+import org.mmbase.util.xml.applicationdata.ContextDepthDataWriter;
 import org.mmbase.util.*;
 
 /**
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ApplicationWriter.java,v 1.4 2006-03-28 17:49:36 daniel Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -80,14 +81,15 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.requirements",root);
         Element elementSet = document.createElement("requirements");
         root.appendChild(elementSet);
-        List<Map<String,String>> requirements = reader.getRequirements();
-        for (Map<String, String> bset : requirements) {
+        List requirements = reader.getRequirements();
+        for (Iterator i = requirements.iterator(); i.hasNext();) {
             Element requirement = document.createElement("requirement");
             elementSet.appendChild(requirement);
-            requirement.setAttribute("name", bset.get("name"));
-            requirement.setAttribute("maintainer", bset.get("maintainer"));
-            requirement.setAttribute("version", bset.get("version"));
-            String type = bset.get("type");
+            Map bset = (Map)i.next();
+            requirement.setAttribute("name", (String)bset.get("name"));
+            requirement.setAttribute("maintainer", (String)bset.get("maintainer"));
+            requirement.setAttribute("version", (String)bset.get("version"));
+            String type = (String)bset.get("type");
             if (type == null) type = "application";
             requirement.setAttribute("type", type);
         }
@@ -97,13 +99,14 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.neededbuilderlist",root);
         Element elementSet = document.createElement("neededbuilderlist");
         root.appendChild(elementSet);
-        List<Map<String,String>> builders = reader.getNeededBuilders();
-        for (Map<String, String> bset : builders) {
+        List builders = reader.getNeededBuilders();
+        for (Iterator i = builders.iterator(); i.hasNext();) {
             Element builder = document.createElement("builder");
             elementSet.appendChild(builder);
-            builder.setAttribute("name", bset.get("name"));
-            builder.setAttribute("maintainer", bset.get("maintainer"));
-            builder.setAttribute("version", bset.get("version"));
+            Map bset = (Map)i.next();
+            builder.setAttribute("name", (String)bset.get("name"));
+            builder.setAttribute("maintainer", (String)bset.get("maintainer"));
+            builder.setAttribute("version", (String)bset.get("version"));
         }
     }
 
@@ -111,16 +114,17 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.neededreldeflist",root);
         Element elementSet = document.createElement("neededreldeflist");
         root.appendChild(elementSet);
-        List<Map<String,String>> reldefs = reader.getNeededRelDefs();
-        for (Map<String, String> bset : reldefs) {
+        List reldefs = reader.getNeededRelDefs();
+        for (Iterator i = reldefs.iterator(); i.hasNext();) {
             Element reldef = document.createElement("reldef");
             elementSet.appendChild(reldef);
-            reldef.setAttribute("source", bset.get("source"));
-            reldef.setAttribute("target", bset.get("target"));
-            reldef.setAttribute("direction", bset.get("direction"));
-            reldef.setAttribute("guisourcename", bset.get("guisourcename"));
-            reldef.setAttribute("guitargetname", bset.get("guitargetname"));
-            String builder = bset.get("builder");
+            Map bset = (Map)i.next();
+            reldef.setAttribute("source", (String)bset.get("source"));
+            reldef.setAttribute("target", (String)bset.get("target"));
+            reldef.setAttribute("direction", (String)bset.get("direction"));
+            reldef.setAttribute("guisourcename", (String)bset.get("guisourcename"));
+            reldef.setAttribute("guitargetname", (String)bset.get("guitargetname"));
+            String builder = (String)bset.get("builder");
             if (builder != null) {
                 reldef.setAttribute("builder", builder);
             }
@@ -131,13 +135,14 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.allowedrelationlist",root);
         Element elementSet = document.createElement("allowedrelationlist");
         root.appendChild(elementSet);
-        List<Map<String,String>> relations = reader.getAllowedRelations();
-        for (Map<String, String> bset : relations) {
+        List relations = reader.getAllowedRelations();
+        for (Iterator i = relations.iterator(); i.hasNext();) {
             Element relation = document.createElement("relation");
             elementSet.appendChild(relation);
-            relation.setAttribute("from", bset.get("from"));
-            relation.setAttribute("to", bset.get("to"));
-            relation.setAttribute("type", bset.get("type"));
+            Map bset = (Map)i.next();
+            relation.setAttribute("from", (String)bset.get("from"));
+            relation.setAttribute("to", (String)bset.get("to"));
+            relation.setAttribute("type", (String)bset.get("type"));
         }
     }
 
@@ -145,12 +150,13 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.datasourcelist",root);
         Element elementSet = document.createElement("datasourcelist");
         root.appendChild(elementSet);
-        List<Map<String,String>> sources = reader.getDataSources();
-        for (Map<String, String> bset : sources) {
+        List sources = reader.getDataSources();
+        for (Iterator i = sources.iterator(); i.hasNext();) {
             Element source = document.createElement("datasource");
             elementSet.appendChild(source);
-            source.setAttribute("path", bset.get("path"));
-            source.setAttribute("builder", bset.get("builder"));
+            Map bset = (Map)i.next();
+            source.setAttribute("path", (String)bset.get("path"));
+            source.setAttribute("builder", (String)bset.get("builder"));
         }
     }
 
@@ -158,12 +164,13 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.relationsourcelist",root);
         Element elementSet = document.createElement("relationsourcelist");
         root.appendChild(elementSet);
-        List<Map<String,String>> sources = reader.getRelationSources();
-        for (Map<String, String> bset : sources) {
+        List sources = reader.getRelationSources();
+        for (Iterator i = sources.iterator(); i.hasNext();) {
             Element source = document.createElement("relationsource");
             elementSet.appendChild(source);
-            source.setAttribute("path", bset.get("path"));
-            source.setAttribute("builder", bset.get("builder"));
+            Map bset = (Map)i.next();
+            source.setAttribute("path", (String)bset.get("path"));
+            source.setAttribute("builder", (String)bset.get("builder"));
         }
     }
 
@@ -171,13 +178,14 @@ public class ApplicationWriter extends DocumentWriter  {
         addComment("application.contextsourcelist",root);
         Element elementSet = document.createElement("contextsourcelist");
         root.appendChild(elementSet);
-        List<Map<String,String>> sources = reader.getContextSources();
-        for (Map<String, String> bset : sources) {
+        List sources = reader.getContextSources();
+        for (Iterator i = sources.iterator(); i.hasNext();) {
             Element source = document.createElement("contextsource");
             elementSet.appendChild(source);
-            source.setAttribute("path", bset.get("path"));
-            source.setAttribute("type", bset.get("type"));
-            source.setAttribute("goal", bset.get("goal"));
+            Map bset = (Map)i.next();
+            source.setAttribute("path", (String)bset.get("path"));
+            source.setAttribute("type", (String)bset.get("type"));
+            source.setAttribute("goal", (String)bset.get("goal"));
         }
     }
 
@@ -189,7 +197,7 @@ public class ApplicationWriter extends DocumentWriter  {
      * @throws IOException if one or more files cannot be written
      * @throws SearchQueryException if data could not be obtained from the database
      */
-    public void writeToPath(String targetPath, Logger logger) throws SearchQueryException {
+    public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException, SearchQueryException {
         //writeToFile(targetPath + "/" + reader.getName() + ".xml");
 	CloudModel cm = ModelsManager.getModel(reader.getName());
 	log.info("CMW="+cm);
@@ -205,12 +213,13 @@ public class ApplicationWriter extends DocumentWriter  {
         logger.info("Writing Application file : " + targetPath + "/" + reader.getName() + ".xml");
     }
 
-    private void writeDateSources(String targetPath, Logger logger) throws SearchQueryException  {
-        List<Map<String,String>> sources = reader.getContextSources();
-        for (Map<String, String> bset : sources) {
-            String path = bset.get("path");
-            String type = bset.get("type");
-            String goal = bset.get("goal");
+    private void writeDateSources(String targetPath, Logger logger) throws IOException, SearchQueryException  {
+        List sources = reader.getContextSources();
+        for (Iterator i = sources.iterator(); i.hasNext();) {
+            Map bset = (Map)i.next();
+            String path = (String)bset.get("path");
+            String type = (String)bset.get("type");
+            String goal = (String)bset.get("goal");
 
             logger.info("save type : " + type);
             logger.info("save goal : " + goal);
@@ -225,10 +234,11 @@ public class ApplicationWriter extends DocumentWriter  {
     }
 
     private void writeContextSources(String targetPath) {
-        List<Map<String,String>> sources = reader.getContextSources();
-        for (Map<String, String> bset : sources) {
-            String path = bset.get("path");
-            String type = bset.get("type");
+        List sources = reader.getContextSources();
+        for (Iterator i = sources.iterator(); i.hasNext();) {
+            Map bset = (Map)i.next();
+            String path = (String)bset.get("path");
+            String type = (String)bset.get("type");
             if (type.equals("depth")) {
                 XMLContextDepthReader contextReader = new XMLContextDepthReader( MMBaseContext.getConfigPath() + "/applications/" + path);
                 ContextDepthDataWriter.writeContextXML(contextReader, targetPath + "/" + path);
@@ -236,16 +246,17 @@ public class ApplicationWriter extends DocumentWriter  {
         }
     }
 
-    private void writeBuilders(String targetPath, Logger logger) {
+    private void writeBuilders(String targetPath, Logger logger) throws IOException, TransformerException {
         // create the dir for the Data & resource files
         File file = new File(targetPath + "/" + reader.getName() + "/builders");
         file.mkdirs();
 	// get the default model.
 	CloudModel cm = ModelsManager.getModel("default");
 	log.info("CM="+cm);
-        List<Map<String,String>> builders = reader.getNeededBuilders();
-        for (Map<String, String> bset : builders) {
-            String name = bset.get("name");
+        List builders = reader.getNeededBuilders();
+        for (Iterator i = builders.iterator(); i.hasNext();) {
+            Map bset = (Map)i.next();
+            String name = (String)bset.get("name");
             MMObjectBuilder builder = mmbase.getBuilder(name);
             if (builder != null) {
                 logger.info("save builder : " + name);

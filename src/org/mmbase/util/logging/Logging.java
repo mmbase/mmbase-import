@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
+import java.util.Iterator;
 import java.lang.reflect.Method;
 
 import org.mmbase.util.ResourceWatcher;
@@ -56,13 +57,13 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.42 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Logging.java,v 1.40 2006-07-15 19:51:45 michiel Exp $
  */
 
 
 public class Logging {
 
-    private static Class<?>  logClass    = SimpleTimeStampImpl.class; // default Logger Implementation
+    private static Class  logClass    = SimpleTimeStampImpl.class; // default Logger Implementation
     private static boolean configured = false;
     private static final Logger log   = getLoggerInstance(Logging.class); // logger for this class itself
 
@@ -168,7 +169,7 @@ public class Logging {
         // System.out.println("(Depending on your selected logging system no more logging");
         // System.out.println("might be written to this file. See the configuration of the");
         // System.out.println("selected logging system for more hints where logging will appear)");
-        Class<?> logClassCopy = logClass; // if something's wrong, we can restore the current value.
+        Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
             if (configured) {
@@ -192,7 +193,9 @@ public class Logging {
         log.service("Logging configured");
         log.debug("Now watching " + configWatcher.getResources());
         log.debug("Replacing wrappers " + LoggerWrapper.getWrappers());
-        for (LoggerWrapper wrapper : LoggerWrapper.getWrappers()) {
+        Iterator wrappers = LoggerWrapper.getWrappers().iterator();
+        while (wrappers.hasNext()) {
+            LoggerWrapper wrapper = (LoggerWrapper) wrappers.next();
             wrapper.setLogger(getLoggerInstance(wrapper.getName()));
             log.debug("Replaced logger " + wrapper.getName());
         }
@@ -252,7 +255,7 @@ public class Logging {
      * Most Logger categories in MMBase are based on class name.
      * @since MMBase-1.6.4
      */
-    public static Logger getLoggerInstance(Class<?> cl) {
+    public static Logger getLoggerInstance(Class cl) {
         return getLoggerInstance(cl.getName());
     }
 
@@ -380,26 +383,26 @@ public class Logging {
 
         boolean mmbaseClassesFound = false;
         int appended = 0;
-        for (StackTraceElement element : stackTrace) {
-           String className = element.getClassName();
+        for (int i = 0; i < stackTrace.length; i++) {
+           String className = stackTrace[i].getClassName();
 
            if (className.indexOf("org.mmbase") > -1) {
                mmbaseClassesFound = true;
                // show mmbase taglib
                if (className.indexOf("bridge.jsp.taglib") > -1) {
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                }
            } else {
                if (mmbaseClassesFound) {
                    // show none mmbase method which invoked an mmbase method.
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                    break;
                }
                // show compiled jsp lines
                if (className.indexOf("_jsp") > -1) {
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                }
            }

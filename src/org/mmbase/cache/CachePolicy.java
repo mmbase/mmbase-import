@@ -20,12 +20,12 @@ import java.util.HashMap;
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: CachePolicy.java,v 1.4 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: CachePolicy.java,v 1.3 2005-09-23 13:59:26 pierre Exp $
  */
 abstract public class CachePolicy implements Serializable {
 
     // map with all known policies
-    static private Map<Object,CachePolicy> policies = new HashMap<Object,CachePolicy>();
+    static private Map policies = new HashMap();
 
     /**
      * Standard cache policy that advises to never cache a passed object.
@@ -62,7 +62,7 @@ abstract public class CachePolicy implements Serializable {
      * @throws IllegalArgumentException if the policy does not exist
      */
     static public CachePolicy getPolicy(Object policyKey) {
-        CachePolicy policy = policies.get(policyKey);
+        CachePolicy policy = (CachePolicy) policies.get(policyKey);
         if (policy == null) {
             throw new IllegalArgumentException("There is no cache policy known with key '"+policyKey+"'");
         }

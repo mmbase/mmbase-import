@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.util.xml.*;
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.24 2007-04-16 08:37:18 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.21 2006-05-16 21:11:05 michiel Exp $
  */
 
 public class DataTypes {
@@ -82,13 +83,13 @@ public class DataTypes {
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
     private static void readDataTypes(ResourceLoader loader, String resource) {
-        List<URL> resources = loader.getResourceList(resource);
+        List resources = loader.getResourceList(resource);
         if (log.isDebugEnabled()) log.debug("Using " + resources);
-        ListIterator<URL> i = resources.listIterator();
+        ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = i.previous();
+                URL u = (URL) i.previous();
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
@@ -287,9 +288,9 @@ public class DataTypes {
      * Returns a new XML completely describing the given DataType.
      * This means that the XML will <em>not</em> have a base attribute.
      */
-    public static Document toXml(DataType<?> dataType) {
+    public static Document toXml(DataType dataType) {
         // create an inheritance stack
-        List<DataType<?>> stack = new ArrayList<DataType<?>>();
+        List stack = new ArrayList();
         stack.add(dataType);
         while (dataType.getOrigin() != null) {
             dataType = dataType.getOrigin();
@@ -300,12 +301,12 @@ public class DataTypes {
         Document doc = DocumentReader.getDocumentBuilder().newDocument();
 
         // iterate the stack to completely resolve everything.
-        Iterator<DataType<?>> i = stack.iterator();
-        dataType = i.next();
+        Iterator i = stack.iterator();
+        dataType = (DataType) i.next();
         Element e = (Element) doc.importNode(dataType.toXml(), true);
         doc.appendChild(e);
         while (i.hasNext()) {
-            dataType = i.next();
+            dataType = (DataType) i.next();
             dataType.toXml(e);
         }
         return doc;
