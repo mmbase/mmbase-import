@@ -24,12 +24,25 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
 --------------------
 General New Features:
 --------------------
-[1.8.4]
-  Added capabilities to sort queries on parts of a date (such as date-of-year, which can be used to
-  sort, for instance, on birthdays).
-  The mmbase taglib sortorder tag now ahs a 'part' atribute to facilitate this.
-  The values for part work similar as those of the constraint tag, buta ffect what part
-  of a date is used to sort on.
+[1.8.4]    
+     * [MMB-194] - Writer-value conversion (e.g. to bridge.Node) not yet completely implemented.
+    * [MMB-845] - Image upload does not show image immediately
+    * [MMB-1253] - Missing a way to remove markup.
+    * [MMB-1349] - A right click paste does not validate the form
+    * [MMB-1369] - Override default max upload size with dtmaxsize attribute
+    * [MMB-1426] - Can't Sort on Parts of a Date
+    * [MMB-1433] - Log servlets functionality is annoying.
+    * [MMB-1434] - Predicted dimension are sometimes wrong which result in a lot of spam in the log
+    * [MMB-194] - Writer-value conversion (e.g. to bridge.Node) not yet completely implemented.
+    * [MMB-845] - Image upload does not show image immediately
+    * [MMB-1253] - Missing a way to remove markup.
+    * [MMB-1349] - A right click paste does not validate the form
+    * [MMB-1369] - Override default max upload size with dtmaxsize attribute
+    * [MMB-1433] - Log servlets functionality is annoying.
+    * [MMB-1434] - Predicted dimension are sometimes wrong which result in a lot of spam in the log
+    * [MMB-1365] - email module does not support things like smtp port and user authentication.
+    * [MMB-1429] - Writer support for Set.
+    * [MMB-1430] - treefile be available as a taglib function
 
 [1.8.3]
 
@@ -211,6 +224,55 @@ Obsolete Features:
 ------------------
 Bug Fixes:
 ------------------
+
+    * [MMB-235] - mm:url referids. Question-marks/amperstands in values should be escaped.
+    * [MMB-675] - In contradiction to prompts and titles, optionlists can not be multilangual.
+    * [MMB-703] - xsl transformation for objectypes processing dies quietly
+    * [MMB-859] - Cursor appears in lowest HtmlArea instead of first input
+    * [MMB-872] - Scroll-position still not saved well.
+    * [MMB-944] - ImageMagick crashes or just seizes to convert
+    * [MMB-965] - [email] pushing towards the use of context and datasource when using smtp
+    * [MMB-1002] - Editwizard inserts additional carriage returns in textarea when saving
+    * [MMB-1023] - Present no longer default for datetime fields.
+    * [MMB-1032] - Can get NPE from mm:cloud if name unset and session.
+    * [MMB-1220] - Can not search on INTEGER field with guitype string
+    * [MMB-1305] - datepicker: if wizard is scrolled, datepicker appear on very odd places.
+    * [MMB-1317] - Editwizards don't  seem to understand 'null' values.
+    * [MMB-1319] - tiny_mce doesn't validate when required
+    * [MMB-1335] - inline anonymous datatype declaration in builder files does not work
+    * [MMB-1347] - mm:countrelations role=""
+    * [MMB-1348] - MMbase taglib 2 completely hangs tomcat 5.5.9
+    * [MMB-1352] - mm:hasfield has no 'nodemanager' attribute.
+    * [MMB-1353] - Convertor that converts BLOB's to disk fails horribly
+    * [MMB-1356] - In transaction you can create a node, even if you have no rights.
+    * [MMB-1362] - _name, _type, _size variables are not any more produced for binary uploads.
+    * [MMB-1366] - CachePolicy does not work when used on NodeManager.getList()
+    * [MMB-1370] - default constructor of QueryREsultCache now call MMBase.getMMBase. Goes wrong if MMObjectNode is serialized as part of UserContext.
+    * [MMB-1371] - mm:node element="" tries the empty node.
+    * [MMB-1376] - mm:createalias does not work directly in mm:createnode.
+    * [MMB-1380] - functionsets: default values for primitive parameter types (at least int's) will never be read from xml, they are overriden by default first
+    * [MMB-1381] - s( ..<) and s(..>) features are not working when using JAI.
+    * [MMB-1383] - defaulttype attribute is required in taglib/content.xml but it shouldn't be.
+    * [MMB-1384] - function tag does not work well with EL
+    * [MMB-1385] - Fullback and import requires loads of memory to import binaries
+    * [MMB-1387] - the functionset_1_0.dtd does not allow the attribute 'required' on element 'param', but functionset.java does.
+    * [MMB-1392] - crontab: equals of cronentry n ot complete, cannot change only configuration.
+    * [MMB-1398] - Filled filename field is browser/os  dependent.
+    * [MMB-1403] - Specifying empty database in mmbaseroot.xml, supposes a database with empty name.
+    * [MMB-1417] - Chained Commitor Processor doesn't work
+    * [MMB-1419] - ThreadPools are not shut down on shutdown of MMBAse
+    * [MMB-1420] - date-picker javascript errors in tinymce
+    * [MMB-1421] - dtminlength/binary field validation inconsistent
+    * [MMB-1425] - No 'inverse' attribute on mm:escaper
+    * [MMB-1427] - Function Set XML's are not very forgiving with e.g. return types.
+    * [MMB-1428] - <mm:cloud method="pagelogon" .. > goes wrong with <mm:createnode> when within <mm:node> tag
+    * [MMB-1431] - postfix prefix elements (of field), don't support xml:lang
+    * [MMB-1432] - Wizards fail to pickup i18n directories in referrer and templates directory
+
+
+
+** Improvement
+
 [1.8.3]
 MMB-1331  	 mm:treefile cannot be used as a writer.
 MMB-1345 	MMServers only considers 'machinename', not host, if host overriden with -Dmmbaseroot.host, that has no effect on the default machinename
