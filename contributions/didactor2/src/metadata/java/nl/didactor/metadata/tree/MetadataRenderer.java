@@ -112,6 +112,6 @@ public class MetadataRenderer extends TreeCellRendererAdapter implements TreeCel
       this.cloud = cloud;
       this.wizardjsp = wizardjsp;
       this.listjsp = listjsp;
-      this.tt = new TranslateTable(translateLocale);
+      this.tt = new TranslateTable(org.mmbase.util.LocalizedString.getLocale(translateLocale));
    }
 }

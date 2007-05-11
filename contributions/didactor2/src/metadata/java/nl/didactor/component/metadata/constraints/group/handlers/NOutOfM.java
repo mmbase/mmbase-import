@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * License.
  * </p>
  * @author Alex Zemskov
- * @version 1.0
+ * @version $Id: NOutOfM.java,v 1.2 2007-05-11 12:34:03 michiel Exp $
 */
 
 
@@ -70,7 +70,7 @@ public class NOutOfM implements HandlerInterface{
         log.debug("NOutOfM.check(): " + iCounter + " MetaDefinitions are filled in. Constraints [" + iMin + "," + iMax + "]");
 
         if((iCounter < iMin) || (iCounter > iMax)){
-            TranslateTable tt = new TranslateTable(sLocale);
+            TranslateTable tt = new TranslateTable(org.mmbase.util.LocalizedString.getLocale(sLocale));
 
             String sErrorReport = null;
 

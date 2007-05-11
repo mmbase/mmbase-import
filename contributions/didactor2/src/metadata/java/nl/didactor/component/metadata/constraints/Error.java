@@ -23,7 +23,7 @@ import nl.didactor.taglib.*;
  * License.
  * </p>
  * @author Alex Zemskov
- * @version 1.0
+ * @version $Id: Error.java,v 1.3 2007-05-11 12:34:03 michiel Exp $
  */
 
 
@@ -43,7 +43,7 @@ public class Error {
     private Constraint constraint;
     private Node nodeMetaDefinition;
     private TranslateTable tt = null;
-    private String sLocale = "nl";
+    private String sLocale = "nl"; // WTF!
 
     public Error(Node nodeMetaDefinition, int type, Constraint constraint){
         this.nodeMetaDefinition = nodeMetaDefinition;
@@ -73,7 +73,7 @@ public class Error {
 
     public String getErrorReport(){
         if(tt == null){
-            this.tt = new TranslateTable(this.sLocale);
+            this.tt = new TranslateTable(org.mmbase.util.LocalizedString.getLocale(this.sLocale));
         }
 
         String sBundleKey = "metadata.form_error";
