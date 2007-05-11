@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.12 2007-05-11 09:00:14 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.13 2007-05-11 12:33:33 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
     private static final Map<String, String>  translationTable = Collections.synchronizedMap(new HashMap<String, String>());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
-    private final String translationLocale;
+    private final Locale translationLocale;
 
     /**
      * Inner class that watches the translation files and 
@@ -125,7 +125,9 @@ public class TranslateTable {
 
                 if (translationTable.containsKey(fkey)) {
                     translationTable.remove(fkey);
-                    log.debug("removed previous definition for '" + fkey + "'");
+                    if (log.isDebugEnabled()) {
+                        log.debug("removed previous definition for '" + fkey + "'");
+                    }
                 }
                 translationTable.put(fkey, value);
                 log.debug("added translation value for '" + fkey + "': '" + value + "'");
@@ -206,19 +208,84 @@ public class TranslateTable {
     /**
      * Public constructor, it initializes the internal data structures.
      */
-    public TranslateTable(String translationLocale) {
-        this.translationLocale = translationLocale;
+    public TranslateTable(Locale translationLocale) {
+        this.translationLocale = translationLocale == null ? org.mmbase.module.core.MMBase.getMMBase().getLocale() : translationLocale;
     }
    
+
+
+    protected Locale degrade(Locale locale, Locale originalLocale) {
+        String language = locale.getLanguage();
+        String country  = locale.getCountry();
+        String variant  = locale.getVariant();
+        if (variant != null && ! "".equals(variant)) {
+            String[] var = variant.split("_");
+            if (var.length > 1) {
+                StringBuilder v = new StringBuilder(var[0]);
+                for (int i = 1; i < var.length - 1; i++) {
+                    v.append('_');
+                    v.append(var[i]);
+                }
+                return new Locale(language, country, v.toString());
+            } else {
+                return new Locale(language, country);
+            }
+        }
+        if (! "".equals(country)) {
+            String originalVariant = originalLocale.getVariant();
+            if (originalVariant  != null && ! "".equals(originalVariant)) {
+                return new Locale(language, "", originalVariant);
+            } else {
+                return new Locale(language);
+            }
+        }
+        // cannot be degraded any more.
+        return null;
+    }
+
     /**
+     * A bit different then Locale#toString, because country can be skipped.
+     */
+    protected String toString(Locale locale) {
+        StringBuilder loc = new StringBuilder(locale.getLanguage());
+        String country = locale.getCountry();
+        if (! "".equals(country)) {
+            loc.append('_'); 
+            loc.append(country);
+        }
+        String variant = locale.getVariant();
+        if (variant != null && ! "".equals(variant)) {
+            loc.append('_'); 
+            loc.append(variant);
+        }
+        return loc.toString();
+    }
+
+    /**
+       Default ResourceBundle#getBundle
+       # baseName + "_" + language1 + "_" + country1 + "_" + variant1
+       # baseName + "_" + language1 + "_" + country1
+       # baseName + "_" + language1 
+       
+       Didactor:
+
+       #0 baseName + "_" + language1 + "_" + country1 + "_" + variant1_variant2
+       #1 baseName + "_" + language1 + "_" + country1 + "_" + variant1
+       #2 baseName + "_" + language1 + "_" + country1
+       #3 baseName + "_" + language1 + "_" + variant1_variant2
+       #4 baseName + "_" + language1 + "_" + variant1
+       #5 baseName + "_" + language1 
+       #6 baseName + "_" + language1 
+       
      * Fetch a translation from the translation tables.
      */
     public String translate(String tkey) {
         if (log.isDebugEnabled()) {
             log.debug("translate('" + tkey + "')");
         }
-        String locale = translationLocale;
+        Locale locale = translationLocale;
         StringTokenizer st = new StringTokenizer(tkey, ".");
+
         String namespace = st.nextToken();
         if (!st.hasMoreTokens()) {
             log.error("Cannot translate key with no namespace: '" + tkey + "'");
@@ -227,34 +294,28 @@ public class TranslateTable {
         String key = st.nextToken();
 
         while (true) {
-            String gkey = namespace;
-            if (locale != null && !"".equals(locale)) {
-                gkey += "." + locale;
+            String gkey = namespace + "." + toString(locale) + "." + key;
+            if (log.isDebugEnabled()) {
+                log.debug("Looking for translation for [" + gkey + "]");
             }
-            gkey += "." + key;
-            log.debug("Looking for translation for [" + gkey + "]");
-            if (translationTable.containsKey(gkey)) {
-                return (String)translationTable.get(gkey);
+            String translation = translationTable.get(gkey);
+            if (translation != null) {
+                return translation;
             } else {
-                if (locale == null || "".equals(locale)) {
-                    return null;
-                }
+                locale = degrade(locale, translationLocale);
             }
-            if (locale.lastIndexOf("_") > -1) {
-                locale = locale.substring(0, locale.lastIndexOf("_"));
-            } else {
-                locale = "";
+            if (locale == null) {
+                return null;
             }
         }
     }
     public String translate(String tkey, Object[] args) {
         String translation = translate(tkey);
-        Locale locale = LocalizedString.getLocale(translationLocale);
         if (log.isDebugEnabled()) {
-            log.debug("Formatting " + translation + " " + Arrays.asList(args) + " (" + locale + ")");
+            log.debug("Formatting " + translation + " " + Arrays.asList(args) + " (" + translationLocale + ")");
         }
         if (translation == null) return tkey;
-        MessageFormat message = new MessageFormat(translation, locale);
+        MessageFormat message = new MessageFormat(translation, translationLocale);
         return message.format(args, new StringBuffer(), null).toString();
     }
 
