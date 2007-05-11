@@ -2,6 +2,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:cloud method="delegate" authenticate="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
+<mm:locale language="${locale}">
 <div class="applicationMenubar" style="white-space: nowrap">
   <mm:hasrank value="didactor-anonymous">
     <div class="menuItemApplicationMenubar login">
@@ -13,8 +14,14 @@
           <input type="hidden" name="command"       value="login" />
           <input type="hidden" name="provider"       value="${provider}" />
           <input type="hidden" name="education"       value="${education}" />
-          <di:translate key="core.username" /> <input id="loginUsername" type="text" size="20" name="username" value="${newusername}" />
-          <di:translate key="core.password" /><input id="loginPassword" type="password" size="20" name="password" value="${newpassword}" />
+          <mm:fieldlist nodetype="people" fields="username">
+            <mm:fieldinfo type="guiname" />
+          </mm:fieldlist>
+          <input id="loginUsername" type="text" size="20" name="username" value="${newusername}" />
+          <mm:fieldlist nodetype="people" fields="password">
+            <mm:fieldinfo type="guiname" />
+          </mm:fieldlist>
+          <input id="loginPassword" type="password" size="20" name="password" value="${newpassword}" />
           <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
         </p>
       </form>
@@ -130,4 +137,5 @@ function printThis() {
 }
 //-->
 </script>
+</mm:locale>
 </mm:cloud>
