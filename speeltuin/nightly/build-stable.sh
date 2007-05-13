@@ -23,8 +23,8 @@ version=`date '+%Y-%m-%d'`
 revision=MMBase-1_8
 
 #release:
-#version=MMBase-1_8_3
-#revision=MMBase-1_8_3_Final
+#version=MMBase-1_8_4
+#revision=MMBase-1_8_4_Final
 
 # STABLE branch
 stablebuilddir="/home/nightly/builds/stable/${version}"
