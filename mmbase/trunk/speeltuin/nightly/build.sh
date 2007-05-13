@@ -56,7 +56,7 @@ ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHA
 
 cd maven-site
 echo Creating site `pwd`.
-${MAVEN} multiproject:site >> ${builddir}/messages.org 2>> ${builddir}/errors.log
+${MAVEN} multiproject:site >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 
 echo Copying todays artifacts
