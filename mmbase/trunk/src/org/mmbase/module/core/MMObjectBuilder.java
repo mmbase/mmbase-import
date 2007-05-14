@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.407 2007-03-20 16:18:34 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.408 2007-05-14 14:46:40 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1074,18 +1074,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
-     * or the string-form of an integer value (the number field of an object node).
-     * Retrieves the node from directly the storage, not using the node cache.
-     * @param key The value to search for
-     * @return <code>null</code> if the node does not exist or the key is invalid, or a
-     *       <code>MMObjectNode</code> containing the contents of the requested node.
-     */
-    public MMObjectNode getHardNode(String key) {
-        return getNode(key, false);
-    }
-
-    /**
      * Retrieves a node based on it's number (a unique key), retrieving the node
      * from the node cache if possible.
      * @param number The number of the node to search for
@@ -1097,25 +1085,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Retrieves a node based on it's number (a unique key), directly from
-     * the storage, not using the node cache.
-     * @param number The number of the node to search for
-     * @return <code>null</code> if the node does not exist or the key is invalid, or a
-     *  <code>MMObjectNode</code> containign the contents of the requested node.
-     */
-    public MMObjectNode getHardNode(int number) {
-        return getNode(number, false);
-    }
-
-    /**
      * Create a new temporary node and put it in the temporary _exist
      * node space
      */
-    public MMObjectNode getNewTmpNode(String owner,String key) {
-        MMObjectNode node = null;
-        node = getNewNode(owner);
-        node.storeValue(TMP_FIELD_NUMBER, key);
-        temporaryNodes.put(key, node);
+    MMObjectNode getNewTmpNode(String owner,String key) {
+        MMObjectNode node = getNewNode(owner);
+        putTmpNode(key, node);
         return node;
     }
 
@@ -1124,7 +1099,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param key  The (temporary) key under which to store the node
      * @param node The node to store
      */
-    public void putTmpNode(String key, MMObjectNode node) {
+    static void putTmpNode(String key, MMObjectNode node) {
         node.storeValue(TMP_FIELD_NUMBER, key);
         temporaryNodes.put(key, node);
     }
@@ -1167,10 +1142,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get nodes from the temporary node space
      * @param key  The (temporary) key to use under which the node is stored
      */
-    public MMObjectNode getTmpNode(String key) {
-        MMObjectNode node = null;
-        node = temporaryNodes.get(key);
-        if (node == null && log.isDebugEnabled()) {
+    static MMObjectNode getTmpNode(String key) {
+        MMObjectNode node = temporaryNodes.get(key);
+        if (node == null && log.isTraceEnabled()) {
             log.trace("getTmpNode(): node not found " + key);
         }
         return node;
@@ -1180,12 +1154,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Remove a node from the temporary node space
      * @param key  The (temporary) key under which the node is stored
      */
-    public void removeTmpNode(String key) {
-        MMObjectNode node;
-        node=temporaryNodes.remove(key);
+    static void removeTmpNode(String key) {
+        MMObjectNode node = temporaryNodes.remove(key);
         if (node == null) {
-        log.debug("removeTmpNode: node with "+key+" didn't exists");
-    }
+            log.debug("removeTmpNode: node with " + key + " didn't exists");
+        }
     }
 
     /**
@@ -2470,9 +2443,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
 
     protected String getHTML(String body) {
-        String rtn="";
+        String rtn = "";
         if (body != null) {
-            StringObject obj=new StringObject(body);
+            StringObject obj = new StringObject(body);
             // escape ampersand first
             obj.replace("&", "&amp;");
 
@@ -2484,26 +2457,26 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             obj.replace("\"", "&quot;");
             obj.replace("'", "&#39;");
 
-            String alinea=getInitParameter("html.alinea");
-            String endofline=getInitParameter("html.endofline");
+            String alinea    = getInitParameter("html.alinea");
+            String endofline = getInitParameter("html.endofline");
 
             if (alinea != null) {
-                obj.replace("\r\n\r\n",alinea);
-                obj.replace("\n\n",alinea);
+                obj.replace("\r\n\r\n", alinea);
+                obj.replace("\n\n",    alinea);
             } else {
                 obj.replace("\r\n\r\n", DEFAULT_ALINEA);
                 obj.replace("\n\n", DEFAULT_ALINEA);
             }
 
             if (endofline != null) {
-                obj.replace("\r\n",endofline);
-                obj.replace("\n",endofline);
+                obj.replace("\r\n", endofline);
+                obj.replace("\n",  endofline);
             } else {
                 obj.replace("\r\n", DEFAULT_EOL);
                 obj.replace("\n", DEFAULT_EOL);
             }
 
-            rtn=obj.toString();
+            rtn = obj.toString();
         }
         return rtn;
     }
@@ -2514,7 +2487,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param body text to convert
      * @return the convert text
      */
-    protected String getWAP( String body ) {
+    protected static String getWAP( String body ) {
         String result = "";
         if( body != null ) {
             StringObject obj=new StringObject(body);
@@ -2534,7 +2507,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param body text to convert
      * @return the URLEncoded text
      */
-    protected String getURLEncode(String body) {
+    protected static String getURLEncode(String body) {
         String rtn="";
         if (body != null) {
             rtn = URLEncoder.encode(body); // UTF8?
@@ -2726,7 +2699,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param m the name of the maintainer
      */
     public void setMaintainer(String m) {
-        maintainer=m;
+        maintainer = m;
         update();
     }
 
@@ -2735,16 +2708,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * becomed www.mmbase.org
      * @deprecated Has nothing to do with mmbase nodes. Should be in org.mmbase.util
      */
-    public String hostname_function(String url) {
+    public static String hostname_function(String url) {
         if (url.startsWith("http://")) {
-            url=url.substring(7);
+            url = url.substring(7);
         }
         if (url.startsWith("https://")) {
-            url=url.substring(8);
+            url = url.substring(8);
         }
         int pos=url.indexOf("/");
-        if (pos!=-1) {
-            url=url.substring(0,pos);
+        if (pos != -1) {
+            url = url.substring(0,pos);
         }
         return url;
     }
@@ -2757,7 +2730,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param width the maximum width to wrap at
      * @return the wrapped tekst
      */
-    public String wrap(String text, int width) {
+    public static String wrap(String text, int width) {
         StringBuilder dst = new StringBuilder();
         StringTokenizer tok = new StringTokenizer(text," \n\r",true);
         int pos = 0;
@@ -2795,17 +2768,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * of the created substring.
      * @return the substring
      */
-    private String substring(String value,int len,String filler) {
+    private static String substring(String value,int len,String filler) {
         if (filler == null) {
-            if (value.length()>len) {
-                return value.substring(0,len);
+            if (value.length() > len) {
+                return value.substring(0, len);
             } else {
                 return value;
             }
         } else {
             int len2 = filler.length();
-            if ((value.length()+len2)>len) {
-                return value.substring(0,(len-len2))+filler;
+            if ((value.length() + len2) > len) {
+                return value.substring(0, (len - len2)) + filler;
             } else {
                 return value;
             }
