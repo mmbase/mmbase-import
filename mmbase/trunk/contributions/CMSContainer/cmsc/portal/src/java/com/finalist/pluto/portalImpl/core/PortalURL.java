@@ -269,6 +269,23 @@ public class PortalURL {
 		return "";
 	}
 
+	   public String getPort(PortalEnvironment env, boolean secure) {
+	       int port = 80;
+	        if (env == null) {
+	            if (secure) {
+	                port = 443;
+	            }
+	        }
+	        else {
+	            port = env.getRequest().getServerPort();
+	        }
+	        
+	        if ((!secure && port != 80) || (secure && port != 443)) {
+	            return ":" + port;
+	        }
+	        return "";
+	    }
+	
 	public String toString() {
 		return toString(null, null);
 	}
@@ -288,7 +305,8 @@ public class PortalURL {
       if(host != null) {
          url.append(secure ? SECURE_PROTOCOL : INSECURE_PROTOCOL);
          url.append(host);
-    }
+         url.append(getPort(environment, secure));
+      }
       url.append(getBasePortalURL(environment));
 
 		String global = getGlobalNavigationAsString();
