@@ -134,7 +134,7 @@ public class EcardPortlet extends ContentChannelPortlet {
           RelationUtil.createRelation(ecard, image, "posrel");     
           
           String url = getPageUrl(request, Integer.parseInt(pageId), ecardWindow, mailkey, ecard.getStringValue("number"), galleryId);
-          sendEmail(request, cloud, toName, toEmail, url);             
+          sendEmail(request, cloud, toName, toEmail, url, fromName);             
           response.setRenderParameter("emailsent", "true");         
           response.setRenderParameter("ecardId", ecard.getStringValue("number"));
       }
@@ -163,19 +163,23 @@ public class EcardPortlet extends ContentChannelPortlet {
        return account;
    }
 
-   private void sendEmail(ActionRequest request, Cloud cloud, String toName, String toEmail, String url) {
+   private void sendEmail(ActionRequest request, Cloud cloud, String toName, String toEmail, String url, String fromName) {
        PortletPreferences preferences = request.getPreferences();
        String senderEmail = preferences.getValue(SENDER_EMAIL, null);          
        String senderName = preferences.getValue(SENDER_NAME, null);
        String subject = preferences.getValue(EMAIL_SUBJECT, null);
        String bodyBefore = preferences.getValue(EMAIL_BODY_BEFORE, null);
+       bodyBefore = bodyBefore.replace("#TO#", toName);
+       bodyBefore = bodyBefore.replace("#FROM#", fromName);
        String bodyAfter = preferences.getValue(EMAIL_BODY_AFTER, null);       
        
        if ( senderEmail != null && subject != null) {
           StringBuffer body = new StringBuffer();
           body.append(bodyBefore);
           body.append("\n");
+          body.append("\n");
           body.append(url);
+          body.append("\n");
           body.append("\n");
           body.append(bodyAfter);
           EmailUtil.send(cloud, toName, toEmail, senderName, senderEmail, subject, body.toString());
