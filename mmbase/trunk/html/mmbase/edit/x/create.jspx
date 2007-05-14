@@ -13,7 +13,7 @@
     <!-- 
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.13 2006-07-14 14:48:22 michiel Exp $
+         $Id: create.jspx,v 1.14 2007-05-14 15:08:16 michiel Exp $
     -->
     <mm:include page="head.jspx" />
     <body>
@@ -32,7 +32,7 @@
 
         </h1>
         <mm:form id="createform">
-          <input type="hidden" name="nodemager" value="${nodemanager}" />
+          <input type="hidden" name="nodemanager" value="${nodemanager}" />
           <input type="hidden" name="submitted" value="submitted" />
           <table summary="fields of new node of type ${nodemanager}">
             <mm:fieldlist type="edit" nodetype="$nodemanager">
