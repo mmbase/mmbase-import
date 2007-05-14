@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.51 2006-11-11 13:56:32 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.52 2007-05-14 14:46:40 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -118,12 +118,13 @@ public class TemporaryNodeManager {
      */
     public MMObjectNode getNode(String owner, String key) {
         MMObjectBuilder bul = mmbase.getBuilder("object");
-        MMObjectNode node = bul.getTmpNode(getTmpKey(owner, key));
+        String tmpKey = getTmpKey(owner, key);
+        MMObjectNode node = bul.getTmpNode(tmpKey);
         // fallback to normal nodes
         if (node == null) {
             log.debug("getNode tmp not node found " + key);
             node = bul.getNode(key);
-            if(node == null) throw new RuntimeException("Node not found !! (key = '" + key + "')");
+            if(node == null) throw new RuntimeException("Node not found !! (key = '" + key + "' nor tmpKey = " + tmpKey + ")");
         }
         return node;
     }
@@ -132,15 +133,15 @@ public class TemporaryNodeManager {
      * @javadoc
      */
     public String getObject(String owner, String key, String dbkey) {
-        MMObjectBuilder bul = mmbase.getBuilder("object");
-        MMObjectNode node = bul.getTmpNode(getTmpKey(owner, key));
+        MMObjectNode node = MMObjectBuilder.getTmpNode(getTmpKey(owner, key));
         if (node == null) {
             log.debug("getObject not tmp node found " + key);
-            node = bul.getHardNode(dbkey);
+            MMObjectBuilder bul = mmbase.getBuilder("object");
+            node = bul.getNode(dbkey, false);
             if (node == null) {
                 log.warn("Node not found in database " + dbkey);
             } else {
-                bul.putTmpNode(getTmpKey(owner, key), node);
+                MMObjectBuilder.putTmpNode(getTmpKey(owner, key), node);
             }
         }
         if (node != null) {
