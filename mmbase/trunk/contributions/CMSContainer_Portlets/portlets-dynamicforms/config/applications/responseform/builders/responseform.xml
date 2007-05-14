@@ -448,7 +448,6 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>confirmation</name>
 				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
