@@ -105,19 +105,19 @@ function openRepositoryWithChannel() {
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.emailBodyBefore" />:</td>
 		<td>
-			<textarea name="emailBodyBefore"><c:out value="${emailBodyBefore}"/></textarea>
+			<textarea name="emailBodyBefore" rows="6"><c:out value="${emailBodyBefore}"/></textarea>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.emailBodyAfter" />:</td>
 		<td>
-			<textarea name="emailBodyAfter"><c:out value="${emailBodyAfter}"/></textarea>
+			<textarea name="emailBodyAfter" rows="6"><c:out value="${emailBodyAfter}"/></textarea>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.confirmation" />:</td>
 		<td>
-			<textarea name="confirmation"><c:out value="${confirmation}"/></textarea>
+			<textarea name="confirmation" rows="6"><c:out value="${confirmation}"/></textarea>
 		</td>
 	</tr>	
 	
