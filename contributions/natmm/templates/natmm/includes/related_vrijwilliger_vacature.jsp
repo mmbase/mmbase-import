@@ -12,7 +12,6 @@ al.add("functieinhoud");
 al.add("functieomvang"); 
 al.add("duur"); 
 al.add("afdeling"); 
-al.add("functieeisen"); 
 al.add("opleidingseisen"); 
 al.add("competenties"); 
 al.add("salarisschaal");
@@ -25,11 +24,10 @@ aLabels.add("Functienaam vrijwilliger");
 aLabels.add("embargo"); 
 aLabels.add("verloopdatum"); 
 aLabels.add("omschrijving");    
-aLabels.add("Wat houdt de vrijwilligersfunctie in?"); 
+aLabels.add("Wat verwachten wij van de vrijwilliger?"); 
 aLabels.add("Functieomvang"); 
 aLabels.add("Duur"); 
 aLabels.add("Standplaats"); 
-aLabels.add("Wat verwachten wij van de vrijwilliger?"); 
 aLabels.add("opleidingseisen"); 
 aLabels.add("Extra opmerkingen"); 
 aLabels.add("Wat bieden wij?");
@@ -104,7 +102,7 @@ if(verloopdatum.longValue()<nowSec) {
          <mm:first>
             <tr>
          		<td valign="top">
-         			<span class="colortitle">Functieprofiel</span>
+         			<span class="colortitle">Vrijwilligersprofiel</span>
          		</td>
          		<td valign="top">	
          			&nbsp;&nbsp;|&nbsp;&nbsp;
