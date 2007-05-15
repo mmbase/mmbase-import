@@ -11,7 +11,6 @@ package com.finalist.portlets.ecard;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -46,30 +45,30 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public class EcardPortlet extends ContentChannelPortlet {
 
-   private static final String EMAIL_BODY_AFTER = "emailBodyAfter";
-   private static final String EMAIL_BODY_BEFORE = "emailBodyBefore";
-   private static final String EMAIL_SUBJECT = "emailSubject";
-   private static final String SENDER_NAME = "senderName";
-   private static final String SENDER_EMAIL = "senderEmail";
-   private static final String ECARD_WINDOW = "ecardWindow";
-   private static final String GALLERY_ID = "galleryId";
-   private static final String PAGE_ID = "pageId";
-   private static final String ELEMENT_ID = "elementId";
-   private static final String ERRORMESSAGES = "errormessages";
-   private static final String PARAMETER_MAP = "parameterMap";
-   private static final String VIEW_ECARD_INVALID = "view.ecard.invalid";
-   private static final String SEND_NEWSLETTER = "sendNewsletter";
-   private static final String FROM_EMAIL = "fromEmail";
-   private static final String TO_EMAIL = "toEmail";
-   private static final String FROM_NAME = "fromName";
-   private static final String TO_NAME = "toName";
-   private static final String TEXT_BODY = "textBody";
-   private static final String SELGALLERY = "selgallery";
-   private static final int TEXTAREA_MAXLENGTH = 1024;  
-   private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
-         
+   protected static final String ERRORMESSAGES = "errormessages";
+   protected static final String PARAMETER_MAP = "parameterMap";
+
+   protected static final  String EMAIL_BODY_AFTER = "emailBodyAfter";
+   protected static final  String EMAIL_BODY_BEFORE = "emailBodyBefore";
+   protected static final  String EMAIL_SUBJECT = "emailSubject";
+   protected static final  String SENDER_NAME = "senderName";
+   protected static final  String SENDER_EMAIL = "senderEmail";
+   protected static final  String ECARD_WINDOW = "ecardWindow";
+   protected static final  String GALLERY_ID = "galleryId";
+   protected static final  String PAGE_ID = "pageId";
+
+   protected static final  String VIEW_ECARD_INVALID = "view.ecard.invalid";
+   protected static final  String FROM_EMAIL = "fromEmail";
+   protected static final  String TO_EMAIL = "toEmail";
+   protected static final  String FROM_NAME = "fromName";
+   protected static final  String TO_NAME = "toName";
+   protected static final  String TEXT_BODY = "textBody";
+   protected static final  String SELGALLERY = "selgallery";
+   protected static final  int TEXTAREA_MAXLENGTH = 1024;  
+   protected static final  String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
+
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-      Map<String, String> errorMessages = new Hashtable<String, String>();  
+      Map<String, String> errorMessages = new HashMap<String, String>();  
       Map<String, String> parameterMap = new HashMap<String, String>();
       // elementId represents the image number
       String elementId = request.getParameter(ELEMENT_ID);
@@ -86,8 +85,6 @@ public class EcardPortlet extends ContentChannelPortlet {
       parameterMap.put(TO_NAME, toName);
       String textBody = request.getParameter(TEXT_BODY);
       parameterMap.put(TEXT_BODY, textBody);
-      boolean sendNewsletter = (request.getParameter(SEND_NEWSLETTER) != null) ? true : false;
-      parameterMap.put(SEND_NEWSLETTER, request.getParameter(SEND_NEWSLETTER));
        
       if (StringUtil.isEmptyOrWhitespace(elementId) || StringUtil.isEmptyOrWhitespace(galleryId)) {
          errorMessages.put("noimage", "view.ecard.noimage");
@@ -126,7 +123,6 @@ public class EcardPortlet extends ContentChannelPortlet {
           ecard.setStringValue("toemail", toEmail);
           ecard.setStringValue("toname", toName);
           ecard.setStringValue("body", textBody);
-          ecard.setBooleanValue("sendnewsletter", sendNewsletter);
           String mailkey = getMailKey();
           ecard.setStringValue("mailkey", mailkey);
           ecard.commit();
@@ -186,9 +182,7 @@ public class EcardPortlet extends ContentChannelPortlet {
        }
    }
 
-   private String getPageUrl(ActionRequest request, int pageid, String portletWindowName, String mailkey, String ecardId, String galleryId)
-    throws IOException {
-       
+   private String getPageUrl(ActionRequest request, int pageid, String portletWindowName, String mailkey, String ecardId, String galleryId) {
       HttpServletRequest servletRequest = (HttpServletRequest) request;
       String link = SiteManagement.getPath(pageid, !ServerUtil.useServerName());
       String host = null;
@@ -220,17 +214,17 @@ public class EcardPortlet extends ContentChannelPortlet {
            request.setAttribute(SELGALLERY, parameter);
       }      
       if (portletSession.getAttribute(ERRORMESSAGES) != null) {
-         Hashtable errormessages = (Hashtable)portletSession.getAttribute(ERRORMESSAGES);
+         Map<String,String> errormessages = (Map<String,String>) portletSession.getAttribute(ERRORMESSAGES);
          portletSession.removeAttribute(ERRORMESSAGES);
          request.setAttribute(ERRORMESSAGES, errormessages);
       }  
       if (portletSession.getAttribute(PARAMETER_MAP) != null) {
-         Map parameterMap = (HashMap)portletSession.getAttribute(PARAMETER_MAP);
+         Map<String,String> parameterMap = (Map<String,String>) portletSession.getAttribute(PARAMETER_MAP);
          portletSession.removeAttribute(PARAMETER_MAP);    
-            Iterator keyIterator = parameterMap.keySet().iterator();
+         Iterator<String> keyIterator = parameterMap.keySet().iterator();
          while (keyIterator.hasNext()) {
-            String keyValue = (String)keyIterator.next(); 
-            String entryValue = (String)parameterMap.get(keyValue);              
+            String keyValue = keyIterator.next(); 
+            String entryValue = parameterMap.get(keyValue);              
             request.setAttribute(keyValue, entryValue);
          }                    
       }
