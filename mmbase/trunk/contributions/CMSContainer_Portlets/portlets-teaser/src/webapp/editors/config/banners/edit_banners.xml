@@ -13,4 +13,5 @@
 	<list include="config/contentelement/search_banners_posrel_contentelement.xml" />
 	<list include="config/page/search_contentelement_posrel_page.xml" />
 	<list include="config/urls/search_contentelement_posrel_urls.xml" />
+	<list include="config/attachments/search_contentelement_posrel_attachments.xml" />
 </form-schema>
