@@ -1,10 +1,12 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><mm:content postprocessor="none" expires="0">
+%>
 <%-- no reducespace: it messes with the textarea --%>
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
+  
+  <mm:content postprocessor="none" expires="0" language="${language}">
 
   <mm:import externid="so" />
   <mm:import externid="sf" />
@@ -519,8 +521,9 @@
           <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
           
         </mm:notpresent>
+      </mm:content>
     </mm:cloud>
     
-  </mm:content>
+
   
 
