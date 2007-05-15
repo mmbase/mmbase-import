@@ -61,7 +61,7 @@ img
 
 /* header */
 #header
-{	
+{	 
 	background-image: url('../gfx/background_header.gif');
 	background-repeat: repeat-x;
 	height: 32px;
@@ -432,6 +432,7 @@ ul.shortcuts li.language			{	background-image: url('../gfx/icons/language.png');
 ul.shortcuts li.clear				{	background-image: url('../gfx/icons/clear.png');}
 ul.shortcuts li.visitor				{	background-image: url('../gfx/icons/visitor.png');}
 ul.shortcuts li.messageoftheday	{	background-image: url('../gfx/icons/messageoftheday.png');}
+ul.shortcuts li.admindashboard	{	background-image: url('../gfx/icons/admindashboard.png');}
 
 
 div.side_block div.body,
