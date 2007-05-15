@@ -4,4 +4,6 @@
 <div class="editor dashboard">
 	<iframe src="system/memory.jsp" frameborder="0" scrolling="no"></iframe>
 	<iframe src="system/version.jsp" frameborder="0" scrolling="no"></iframe>
+	<iframe src="system/libs.jsp" frameborder="0" scrolling="no"></iframe>
+	<iframe src="system/java_os.jsp" frameborder="0" scrolling="no"></iframe>
 </div>

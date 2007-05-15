@@ -23,7 +23,7 @@
 			</div>
 			
 			<ul class="shortcuts">
-               <li class="users">
+             <li class="users">
 					<a href="../usermanagement/userlist.jsp" target="rightpane"><fmt:message key="admin.users" /></a>
 				</li>
                <li class="properties">
@@ -49,6 +49,9 @@
 				</li>
                <li class="clear">
 					<a href="resetsitecache.jsp" target="rightpane"><fmt:message key="admin.resetsitecache" /></a>
+				</li>
+             <li class="admindashboard">
+					<a href="../admindashboard" target="rightpane"><fmt:message key="admin.admindashboard" /></a>
 				</li>
          </ul>
 			

@@ -13,13 +13,15 @@ public class VersionTag extends SimpleTagSupport {
    private static String TYPE_APPLICATION = "application";
    private static String TYPE_CMSC = "cmsc";
    private static String TYPE_MMBASE = "mmbase";
+   private static String TYPE_LIBS = "libs";
 
    private String type = TYPE_APPLICATION;
+   private String var;
       
       
 	public void doTag() throws IOException {
 		PageContext ctx = (PageContext) getJspContext();
-        String version = null;
+        Object version = null;
         
         if(type.equalsIgnoreCase(TYPE_APPLICATION)) {
            version = VersionUtil.getApplicationVersion(ctx.getServletContext());
@@ -30,16 +32,26 @@ public class VersionTag extends SimpleTagSupport {
         else if(type.equalsIgnoreCase(TYPE_MMBASE)) {
            version = VersionUtil.getMmbaseVersion(ctx.getServletContext());
         }
+        else if(type.equalsIgnoreCase(TYPE_LIBS)) {
+           version = VersionUtil.getLibVersions(ctx.getServletContext());
+        }
         else {
            throw new IllegalArgumentException("No type not found, see tld for list of types.");
         }
-        ctx.getOut().write(version);
+        
+        if(var == null) {
+           ctx.getOut().write(version.toString());
+        }
+        else {
+           ctx.setAttribute(var, version);
+        }
 	}
-
 
    public void setType(String type) {
       this.type = type;
    }
-   
-   
+
+   public void setVar(String var) {
+      this.var = var;
+   }
 }
