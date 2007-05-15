@@ -179,7 +179,7 @@ public class PortalErrorServlet extends PortalServlet {
         Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
         Throwable exception = (Throwable) request.getAttribute(ERROR_EXCEPTION);
         if (statusCode == 500) {
-            String version = VersionUtil.getVersion(config.getServletContext());
+            String version = VersionUtil.getApplicationVersion(config.getServletContext());
             // prepare error ticket
             long ticket = System.currentTimeMillis();
 
