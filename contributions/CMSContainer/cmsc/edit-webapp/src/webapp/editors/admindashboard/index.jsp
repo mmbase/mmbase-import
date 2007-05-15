@@ -9,13 +9,17 @@
 </head>
 
 <body>
+
 <mm:cloud jspvar="cloud" loginpage="../login.jsp">
+
 	<mm:hasrank minvalue="administrator">
 
    <%@include file="system/index.jsp" %>
 
-	<mm:haspage page="/editors/admin/">
-	   <%@include file="publish/index.jsp" %>
+	<mm:haspage page="/editors/admindashboard/publish">
+	
+ 	   <%@include file="publish/index.jsp" %>
+	
 	</mm:haspage>
 	
 	</mm:hasrank>
