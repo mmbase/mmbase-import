@@ -208,6 +208,7 @@
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/java">
             <include name="**/*.properties" />
+            <include name="**/*.xsd" />
             <include name="**/*.xml" />
             <exclude name="**/*.java"/>
           </fileset>
