@@ -30,7 +30,6 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
     // These parameters are set with the different setXyz() methods
     // they may not be manipulated by this class, because that will
     // mess up in case we have tagpooling enabled.
-    private String locale;
     private String debug;
     private String key;
 
@@ -46,13 +45,6 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
             log.debug("set key to [" + key + "]");
         }
         this.key = key;
-    }
-
-    public void setSetlocale(String locale) {
-        if (log.isDebugEnabled()) {
-            log.debug("set locale to [" + locale + "]");
-        }
-        this.locale = locale;
     }
 
     public void setDebug(String value) {
@@ -80,76 +72,55 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
        this.sArg4 = value;
     }
 
-    private String translateLocale = "";
     private String translateDebug  = "";
 
 
-    protected CharSequence getTranslation() {
+    protected CharSequence getTranslation() { 
         return new CharSequence() {
                 protected String get() {
-                    
-                    TranslateTable.init();
-                    
-                    if (log.isDebugEnabled()) {                        
-                        log.debug("Getting translation table for locale '" + translateLocale + "'");
-                    }
-
-                    TranslateTable tt = new TranslateTable(org.mmbase.util.LocalizedString.getLocale(translateLocale));
-                    String translation = "";
-                    
-                    if (key != null) {
-                        translation = tt.translate(key, new Object[] {sArg0, sArg1, sArg2, sArg3, sArg4});
-                        if (log.isDebugEnabled()) {
-                            log.debug("Translating '" + key + "' to '" + translation + "' " + tt.translate(key));
+                    try {
+                        TranslateTable.init();
+                        
+                        if (log.isDebugEnabled()) {                        
+                            log.debug("Getting translation table for locale '" + getLocale() + "'");
                         }
-                    } else {
-                        return "";
-                    }
-                    
-                    if (translation == null || "".equals(translation)) {
+                        
+                        TranslateTable tt = new TranslateTable(getLocale());
+                        String translation = "";
+                        
+                        if (key != null) {
+                            translation = tt.translate(key, new Object[] {sArg0, sArg1, sArg2, sArg3, sArg4});
+                            if (log.isDebugEnabled()) {
+                                log.debug("Translating '" + key + "' to '" + translation + "' " + tt.translate(key));
+                            }
+                        } else {
+                            return "";
+                        }
+                        
+                        if (translation == null || "".equals(translation)) {
+                            if ("true".equals(translateDebug)) {
+                                translation = "???[" + key + "]???";
+                            }
+                        }
+                        
+                        // Save some debugging information about the translation id's that are
+                        // used on this page.
                         if ("true".equals(translateDebug)) {
-                            translation = "???[" + key + "]???";
+                            List usedTranslations = (List)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
+                            if (usedTranslations == null) {
+                                usedTranslations = new ArrayList();
+                            }
+                            if (!usedTranslations.contains(key)) {
+                                usedTranslations.add(key);
+                                pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
+                            }
                         }
+                        
+                        return translation;
+                    } catch (JspTagException jte ) {
+                        log.warn(jte.getMessage(), jte);
+                        return key + "[" + jte.getMessage() + "]";
                     }
-                    
-                    // Save some debugging information about the translation id's that are
-                    // used on this page.
-                    if ("true".equals(translateDebug)) {
-                        List usedTranslations = (List)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
-                        if (usedTranslations == null) {
-                            usedTranslations = new ArrayList();
-                        }
-                        if (!usedTranslations.contains(key)) {
-                            usedTranslations.add(key);
-                            pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
-                        }
-                    }
-                    
-                    //Arguments like arg0="John" arg1="eats" arg2="an apple"
-                    // FOLLOWING IS DEPRECATED, only remaining for backwards compatibility.
-                    // you can indicate {0} {1} in stead of {$$$} etc. 
-                    // This is because MessageFormat is used now (in {@link
-                    // TranslateTable#translate(String Object[])})
-
-                    // How now can you change the order??? It is not garanteed that in every language you must 
-                    // express such things in the same order.
-                    if(sArg0 != null){
-                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg0);
-                    }
-                    if(sArg1 != null){
-                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg1);
-                    }
-                    if(sArg2 != null){
-                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg2);
-                    }
-                    if(sArg3 != null){
-                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg3);
-                    }
-                    if(sArg4 != null){
-                        translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg4);
-                    }
-                    
-                    return translation;
                 }
                 public char charAt(int index) {
                     return get().charAt(index);
@@ -176,30 +147,8 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
 
 
     public int doStartTag() throws JspTagException {
-        translateLocale = "";
         translateDebug  = "";
         
-        if (locale == null) {
-            // If no locale is given in the tag, then we look it up in the page context
-            translateLocale = (String)pageContext.getAttribute("t_locale");
-            if (translateLocale == null) {
-                // compatibility with other tags, like mm: and fmt:
-                Locale loc = (Locale) pageContext.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request", PageContext.REQUEST_SCOPE);
-                if (loc != null) {
-                    translateLocale = loc.toString();
-                }
-            }
-            if (translateLocale == null) {
-                translateLocale = "";
-            }
-        } else {
-            // If a locale is given in the tag, then we put it in the page context
-            pageContext.setAttribute("t_locale", locale);
-            // compatibility with other tags, like mm: and fmt:
-            Locale loc = new Locale(locale);
-            pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.locale.request", loc, PageContext.REQUEST_SCOPE);
-            translateLocale = locale;
-        }
         if (debug == null) {
             // if no debug is given in the tag, then we look it up in the page context
             translateDebug = (String)pageContext.getAttribute("t_debug");
@@ -225,7 +174,6 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
         return helper.doAfterBody();
     }
     public void release() {
-        locale = null;
         key = null;
         debug = null;
     }
