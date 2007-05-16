@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.11 2006-11-22 14:47:38 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.12 2007-05-16 23:24:49 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -152,7 +152,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
                                 if (! originalPageContextValues.containsKey(key)) {
                                     originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
                                 }
-                                pageContext.removeAttribute(key);
+                                pageContext.removeAttribute(key, SCOPE);
                             }
                         }
                     };
@@ -161,7 +161,9 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     protected void mirrorPut(String key, Object value) {
-        log.debug("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext);
+        if (log.isDebugEnabled()) {
+            log.debug("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext);
+        }
         if (isELIgnored) {
             log.debug("EL IGNORED!");
             return;
