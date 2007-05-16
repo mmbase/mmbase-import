@@ -42,6 +42,6 @@
       <field name="enddate" ftype="date"><prompt>eind datum _____________________</prompt></field>
       <list include="config/projecttypes/add_projecttypes_posrel_ml.xml" />
       <list include="config/items/add_items_posrel_ml.xml" />
-      <list include="config/organisatie/zoek_project_readmore_organisatie.xml" />
+      <list include="config/organisatie/zoek_project_readmore_organisatie_ml.xml" />
   </form-schema>
 </wizard-schema>
