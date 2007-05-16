@@ -96,7 +96,7 @@
      <td colspan="21">
         <table cellpadding="3" cellspacing="0" border="1"  class="content">
         <tr class="cv">
-           <td style="width:14%;"><a href="cv_text.jsp" target="_blank"><img src="media/print.gif" border="0" title="print"></a></td>
+           <td style="width:14%;"><a href="cv_text.jsp?language=<%=language%>" target="_blank"><img src="media/print.gif" border="0" title="print"></a></td>
            <td class="def" style="width:1%;"></td>
            <form name="selectform" method="post" action="">
               <td class="def" style="width:55%;vertical-align:middle;" colspan="2">
@@ -251,11 +251,11 @@
                         + LocaleUtil.getField(thisProject,"titel",language)
                         + (hasToggle?"</span>":"") %>
                     </td>
-                    <mm:relatednodes type="organisatie" path="readmore,organisatie">
-                       <td class="def" style="width:30%;">
-                         <%=(hasToggle?"<span onClick='toggle("+projectID+");'>":"")%><mm:field name="titel" /><%=(hasToggle?"</span>":"")%>
-                       </td>
-                    </mm:relatednodes>
+                    <td class="def" style="width:30%;">
+                       <mm:relatednodes type="organisatie" path="readmore,organisatie" jspvar="dummy">
+                         <%=(hasToggle?"<span onClick='toggle("+projectID+");'>":"")%><%= LocaleUtil.getField(dummy,"naam",language, "") %><%=(hasToggle?"</span>":"")%>
+                       </mm:relatednodes>
+                    </td>
                  </tr>
                  <% if (hasToggle) {  %>
                     <tr id="toggle_div<%=projectID %>" style="display:none">
@@ -280,9 +280,9 @@
                          <mm:related path="posrel1,items,posrel2,images" orderby="posrel1.pos,posrel2.pos" directions="DOWN,DOWN">
                          <mm:field name="images.number" jspvar="dummy" vartype="String" write="false">
                                <% if(imagesList.equals("")) {
-                                    imagesList = dummy; 
+                                    imagesList = dummy;
                                   } else {
-                                    imagesList = imagesList + "," + dummy;
+                                    imagesList = dummy + "," + imagesList;
                                   }
                                %>
                             </mm:field
@@ -291,7 +291,7 @@
                                   ><mm:field name="number" jspvar="imageID" vartype="String"><% 
                                   String jsString = "javascript:launchCenter('/vanham/slideshow.jsp?i="
                                      + imagesList + "&language=" + language
-                                     + "', 'center', 550, 740, 'resizable=1');"; 
+                                     + "', 'center', 784, 784, 'resizable=1');setTimeout('newwin.focus();',250);"; 
                                   %><div style="position:relative;left:185px;top:7px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><% 
                                   %><a href="javascript:void(0);" onclick="<%= jsString %>"  alt="<bean:message bundle="<%= "VANHAM." + language %>" key="cv.click.to.enlarge" />"><img src="media/zoom.gif" border="0" /></a><%
                                   %></div></div><%

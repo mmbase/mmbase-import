@@ -17,6 +17,8 @@ String emailId = request.getParameter("e");
 String nameId = request.getParameter("n");
 String textId = request.getParameter("d");
 
+boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
+
 String thisLanguage = "?language=nl";
 String otherLanguage = "?language=eng";
 String otherLanguageName = "en";
@@ -50,12 +52,12 @@ if(queryString!=null&&!queryString.equals("")) {
     </title>
     <link rel="stylesheet" type="text/css" href="css/website.css">
     <style>
-    td { 
+    td {
        width: 30px;
        height: 30px;
        font-size: 140%;
        text-align: center;
-    } 
+    }
     </style>
     <meta http-equiv="imagetoolbar" content="no" />
     <mm:node number="home" jspvar="dummy">
