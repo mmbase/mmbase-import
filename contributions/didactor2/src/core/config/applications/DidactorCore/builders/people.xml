@@ -46,7 +46,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minLength value="1" />
+        <minLength value="1" enforce="onchange" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -105,7 +105,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
+        <minLength value="1" enforce="onchange" />
         <maxLength value="255" />
       </datatype>
     </field>
