@@ -19,11 +19,10 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content postprocessor="none" type="text/html">
 <mm:cloud method="asis">
-  <mm:import externid="provider" />
-  <mm:import externid="education" />
+  <mm:import externid="provider" from="request" />
+  <mm:import externid="education" from="request" />
   <mm:import externid="class" />
   <mm:import externid="user" vartype="integer" />
-  <jsp:directive.include file="globalLang.jspx"  />
   <mm:isgreaterthan referid="user" value="0">
     <mm:remove referid="userdisabled"/>
 
