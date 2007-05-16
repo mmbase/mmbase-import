@@ -1,4 +1,9 @@
-<component name="assessment" templatepath="assessment" templatebar="provider" barposition="200">
+<component 
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+
+    name="assessment" templatepath="assessment" templatebar="provider" barposition="200">
 
   <scope name="component" referid="component"/>
 

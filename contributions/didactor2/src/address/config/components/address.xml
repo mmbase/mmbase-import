@@ -1,4 +1,9 @@
-<component name="address" templatepath="address" templatebar="provider" barposition="30">
+<component
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+
+    name="address" templatepath="address" templatebar="provider" barposition="30">
   <scope name="component" referid="component">
   </scope>
   <scope name="providers" referid="provider">
