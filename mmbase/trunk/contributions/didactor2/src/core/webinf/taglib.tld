@@ -26,11 +26,6 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>setlocale</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
       <name>debug</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
