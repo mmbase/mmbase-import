@@ -22,23 +22,22 @@ import java.util.*;
 
 /**
  * @javadoc
- * @javadoc
  */
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
  
-    private static Map components = new Hashtable(); // why is this synchronized
+    private static Map<String, Component> components = new HashMap<String, Component>();
 
-    private List interestedComponents = new Vector();    // why is this synchronized
+    private List<Component> interestedComponents = new ArrayList<Component>();
     private MMObjectNode node;
 
     /** Save the settings for this component */
-    private Map settings = new HashMap();
+    private Map<String, Setting> settings = new HashMap<String, Setting>();
 
     /** A list of all possible setting scopes */
-    private List scopes = new Vector();                  // why is this synchronized
+    private List<String> scopes = new ArrayList<String>();
 
-    private Map scopesReferid = new HashMap();
+    private Map<String, String> scopesReferid = new HashMap<String, String>();
 
     /** The string indicating the path for templates of this component */
     private String templatepath = null;
@@ -60,20 +59,14 @@ public abstract class Component {
      * Retrieve a component from the registry.
      */
     public static Component getComponent(String name) {
-        return (Component)components.get(name.toLowerCase());
+        return components.get(name.toLowerCase());
     }
 
     public static Component[] getComponents() {
-        Component[] comps = new Component[components.size()];
-        int cnt = 0;
-        for (Iterator e = components.values().iterator(); e.hasNext(); ) {
-            comps[cnt] = (Component)e.next();
-            cnt++;
-        }
         if (log.isDebugEnabled()) {
-            log.debug("Returning " + comps.length + " components");
+            log.debug("Returning " + components.size() + " components");
         }
-        return comps;
+        return components.values().toArray(new Component[] {});
     }
 
     public void setNode(MMObjectNode node) {
@@ -100,12 +93,12 @@ public abstract class Component {
         log.debug("Reading component configuration from file '" + configFile + "'");
         try {                
             if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
-                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, false, Component.class); // there is no DTD!
-                Node componentNode = doc.getDocumentElement();
+                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, true, Component.class);
+                Element componentNode = (Element) doc.getDocumentElement();
                 this.templatepath = getAttribute(componentNode, "templatepath");
                 this.templatebar = getAttribute(componentNode, "templatebar");
                 try {
-                    this.barposition = Integer.parseInt(getAttribute(componentNode, "barposition"));
+                    this.barposition = Integer.parseInt(componentNode.getAttribute("barposition"));
                 } catch (Exception e) {
                     log.warn(e);
                 }
@@ -114,7 +107,7 @@ public abstract class Component {
 
                 for (int i = 0; i < childNodes.getLength(); i++) {
                     if (childNodes.item(i).getNodeName().equals("scope")) {
-                        Node scope = childNodes.item(i);
+                        Element scope = (Element) childNodes.item(i);
                         String scopeName = getAttribute(scope, "name");
                         String scopeReferid = getAttribute(scope, "referid");
                         log.debug("Scope name: " + scopeName);
@@ -123,13 +116,17 @@ public abstract class Component {
                         NodeList childNodes2  = scope.getChildNodes();
                         for (int j = 0; j < childNodes2.getLength(); j++) {
                             if ("setting".equals(childNodes2.item(j).getNodeName())) {
-                                Node settingNode = childNodes2.item(j);
+                                Element settingNode = (Element) childNodes2.item(j);
                                 String settingName = getAttribute(settingNode, "name");
                                 String settingRef = getAttribute(settingNode, "ref");
                                 if (settingName == null && settingRef != null) {
-                                    Setting setting = (Setting)settings.get(settingRef);
-                                    setting.addScope(scopeName);
-                                    log.debug("Added scope '" + scopeName + "' for setting '" + settingRef + "'");
+                                    Setting setting = settings.get(settingRef);
+                                    if (setting != null) {
+                                        setting.addScope(scopeName);
+                                        log.debug("Added scope '" + scopeName + "' for setting '" + settingRef + "'");
+                                    } else {
+                                        log.warn("Referring to unknown setting " + settingRef);
+                                    }
                                 } else if (settingName != null) {
                                     String settingType = getAttribute(settingNode, "type");
                                     String settingDefault = getAttribute(settingNode, "default");
@@ -149,6 +146,7 @@ public abstract class Component {
                                         }
                                         setting.setDomain(domains.toArray(new String[] {}));
                                     }
+                                    setting.canBeEmpty(settingNode.getAttribute("canbeempty").equals("true"));
                                     setting.setDefault(settingDefault);
                                     setting.addScope(scopeName);
                                     settings.put(settingName, setting);
@@ -292,16 +290,15 @@ public abstract class Component {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving value for setting '" + settingName + "', with in context: " + context.keySet());
         }
-        Setting setting = (Setting) settings.get(settingName);
+        Setting setting = settings.get(settingName);
         if (setting == null) {
             throw new RuntimeException("Setting '" + settingName + "' is not defined for component '" + getName() + "'");
         }
-        List scope = setting.getScope();
+        List<String> scope = setting.getScope();
         Object retval = null;
         
-        for (int i = 0; i < scope.size(); i++) { // 
-            String scopeName    = (String)scope.get(i);
-            String scopeReferId = (String)scopesReferid.get(scopeName);
+        for (String scopeName : scope) {
+            String scopeReferId = scopesReferid.get(scopeName);
             if (log.isDebugEnabled()) {
                 log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
             }
@@ -342,13 +339,14 @@ public abstract class Component {
      * @param id The number of the node representing this object to get the component setting value for
      */
     public Object getObjectSetting(String settingName, int id, Cloud cloud) {
-        org.mmbase.bridge.NodeList settingNodes = null;
+
         Object defaultValue = null;
-        Setting setting = (Setting)settings.get(settingName);
+        Setting setting = settings.get(settingName);
         if (setting == null) {
             throw new RuntimeException("Setting with name '" + settingName + "' is not defined for component '" + getName() + "'");
         }
 
+        org.mmbase.bridge.NodeList settingNodes;
         if (id == node.getNumber()) {
             // direct setting to this component
             settingNodes = cloud.getNode(id).getRelatedNodes("settings");
@@ -357,6 +355,7 @@ public abstract class Component {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
             if (settingrel.size() == 0) {
+                // This is not a setting of this component itself, defaultVAlue is left to fall back.
                 return null;
             }
             if (settingrel.size() > 1) {
@@ -370,9 +369,10 @@ public abstract class Component {
             return defaultValue;
         }
 
-        for (int i = 0; i < settingNodes.size(); i++) {
-            if (settingNodes.getNode(i).getStringValue("name").equals(settingName)) {
-                return setting.cast(settingNodes.getNode(i).getStringValue("value"));
+        for (org.mmbase.bridge.NodeIterator i = settingNodes.nodeIterator(); i.hasNext();) {
+            org.mmbase.bridge.Node sn = i.nextNode();
+            if (sn.getStringValue("name").equals(settingName)) {
+                return setting.cast(sn.getStringValue("value"));
             }
         }
 
@@ -389,7 +389,7 @@ public abstract class Component {
      * the domain of the datatype of the setting.
      */
     public void setObjectSetting(String settingName, int id, Cloud cloud, String newValue) {
-        Setting setting = (Setting)settings.get(settingName);
+        Setting setting = settings.get(settingName);
         if (setting == null) {
             throw new RuntimeException("Setting with name '" + settingName + "' is not defined for component '" + getName() + "'");
         }
@@ -405,8 +405,8 @@ public abstract class Component {
             newValue = "" + setting.cast(newValue);
             String[] domain = setting.getDomain();
             boolean valid = false;
-            for (int i=0; i<domain.length; i++) {
-                if (domain[i].equals(newValue)) {
+            for (String d : setting.getDomain()) {
+                if (d.equals(newValue)) {
                     valid = true;
                     break;
                 }
@@ -436,8 +436,8 @@ public abstract class Component {
 
         org.mmbase.bridge.NodeList settingNodes = baseNode.getRelatedNodes("settings");
 
-        for (int i =0; i < settingNodes.size(); i++) {
-            org.mmbase.bridge.Node settingNode = settingNodes.getNode(i);
+        for (org.mmbase.bridge.NodeIterator i = settingNodes.nodeIterator(); i.hasNext();) {
+            org.mmbase.bridge.Node settingNode = i.nextNode();
             if (settingNode.getStringValue("name").equals(settingName)) {
                 settingNode.setValue("value", newValue);
                 settingNode.commit();
@@ -462,8 +462,10 @@ public abstract class Component {
      * @param userid The number of the node representing this user
      */
     public Object getUserSetting(String settingname, String userid, Cloud cloud) {
-        log.debug("getUserSetting(" + settingname + ", " + userid + ", " + cloud + ")");
-        Setting setting = (Setting)settings.get(settingname);
+        if (log.isDebugEnabled()) {
+            log.debug("getUserSetting(" + settingname + ", " + userid + ", " + cloud + ")");
+        }
+        Setting setting = settings.get(settingname);
         if (setting == null) {
             throw new RuntimeException("Setting with name '" + settingname + "' is not defined for component '" + getName() + "'");
         }
@@ -479,13 +481,19 @@ public abstract class Component {
         }
         org.mmbase.bridge.Node settingRelNode = settingrel.getNode(0);
         org.mmbase.bridge.NodeList settings = settingRelNode.getRelatedNodes("settings");
-        for (int i=0; i<settings.size(); i++) {
-            if (settings.getNode(i).getStringValue("name").equals(settingname)) {
-                log.debug("Returning database value: " + settings.getNode(i).getStringValue("value"));
-                return setting.cast(settings.getNode(i).getStringValue("value"));
+        
+        for (org.mmbase.bridge.NodeIterator i = settings.nodeIterator(); i.hasNext();) {
+            org.mmbase.bridge.Node settingNode = i.nextNode();
+            if (settingNode.getStringValue("name").equals(settingname)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Returning database value: " + settingNode.getStringValue("value"));
+                }
+                return setting.cast(settingNode.getStringValue("value"));
             }
         }
-        log.debug("Returning default value: " + setting.getDefault());
+        if (log.isDebugEnabled()) {
+            log.debug("Returning default value: " + setting.getDefault());
+        }
         return setting.getDefault();
     }
 
@@ -513,19 +521,16 @@ public abstract class Component {
     }
 
 
-    public Map getSettings() {
+    public Map<String, Setting> getSettings() {
         return settings;
     }
 
     /**
      * Return a list of settings that are settable on a given scope
-     * @todo should return List
      */
-    public List getSettings(String scope) {
-        List result = new ArrayList();
-        Iterator i = settings.values().iterator();
-        while (i.hasNext()) {
-            Setting s = (Setting)i.next();
+    public List<Setting> getSettings(String scope) {
+        List<Setting> result = new ArrayList<Setting>();
+        for (Setting s : settings.values()) {
             if (s.getScope().contains(scope)) {
                 result.add(s);
             }
@@ -536,7 +541,7 @@ public abstract class Component {
     /**
      * @javadoc
      */
-    public List getScopes() {
+    public List<String> getScopes() {
         return scopes;
     }
 
@@ -553,8 +558,9 @@ public abstract class Component {
         private final int type;
         private String[] domain;
         private Object defaultValue;
-        private final List scope = new ArrayList();
+        private final List<String> scope = new ArrayList<String>();
         private final String prompt;
+        private boolean canBeEmpty = true;
 
         public Setting(String name, String type, String prompt) {
             this.name = name;
@@ -574,8 +580,21 @@ public abstract class Component {
         public void setDefault(String defaultValue) {
             this.defaultValue = cast(defaultValue);
         }
+        /**
+         * If a setting can not be empty, then the empty string will be interpreted as
+         * <code>null</code>, ('not set')
+         */
+        public boolean canBeEmpty() {
+            return canBeEmpty;
+        }
+        public void canBeEmpty(boolean c) {
+            canBeEmpty = c;
+        }
 
         public Object cast(String value) {
+            if (! canBeEmpty() && "".equals(value)) {
+                return null;
+            }
             switch (this.type) {
             case TYPE_BOOLEAN:
                 if ("true".equals(value) || "on".equals(value)) {
@@ -603,7 +622,7 @@ public abstract class Component {
             scope.add(scopeName);
         }
 
-        public List getScope() {
+        public List<String> getScope() {
             return scope;
         }
 
