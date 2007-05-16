@@ -42,31 +42,31 @@ select {
 }
 .cv {
    background-color: #FFFF00;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .cv_sub {
    background-color: #E0E0E0;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .webwork {
    background-color: #FF6600;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .contact {
    background-color: #00CCFF;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .vh {
    background-color: #FFFFFF;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .nl {
    background-color: #4040FF;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 .en {
    background-color: #FF00FF;
-   border: solid  1px #000000; 
+   border: solid 1px #000000; 
 }
 a:link {		color: #333333; text-decoration: none; }
 a:visited { color: #333333; text-decoration: none; }

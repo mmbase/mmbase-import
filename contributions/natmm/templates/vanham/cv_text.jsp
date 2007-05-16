@@ -82,11 +82,11 @@
               <td>
                  <%= LocaleUtil.getField(thisProject,"titel",language) %>
               </td>
-              <mm:relatednodes type="organisatie" path="readmore,organisatie">
-                 <td>
-                   <%= subject %> <mm:field name="titel" />
-                 </td>
-              </mm:relatednodes>
+              <td>
+                 <mm:relatednodes type="organisatie" path="readmore,organisatie" jspvar="dummy">
+                    <%= subject %> <%= LocaleUtil.getField(dummy,"naam",language, "") %>
+                 </mm:relatednodes>
+              </td>
            </tr>
            <tr>
               <td colspan="3" style="padding-bottom:10px;">
