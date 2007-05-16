@@ -2,14 +2,14 @@
   This template shows all people in the addressbooks: all students that
   are related to those classes that we are in.
 -->
-<mm:content postprocessor="reducespace" expires="0"
-            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
-            xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
-            xmlns:jsp="http://java.sun.com/JSP/Page"
-            >
-  <mm:cloud method="delegate" jspvar="cloud">
 
-    <jsp:directive.include file="/shared/setImports.jsp" />
+<mm:cloud 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"    
+    method="delegate" jspvar="cloud">  
+  <jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:content postprocessor="none" expires="0" language="${language}" >
     
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
@@ -372,5 +372,6 @@
     }
 </script>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</mm:cloud>
 </mm:content>
+</mm:cloud>
+
