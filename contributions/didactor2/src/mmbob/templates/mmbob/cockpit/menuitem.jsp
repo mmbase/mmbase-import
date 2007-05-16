@@ -5,16 +5,16 @@
 <mm:import externid="scope">none</mm:import>
 <%-- mmbob is only valid in the 'education' scope --%>
 <mm:compare referid="scope" value="education">
-  <mm:cloud method="delegate" jspvar="cloud">
+  <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <jsp:directive.include file="/mmbob/check.jsp" />
-  <mm:import id="template" reset="true"><mm:treefile page="/mmbob/index.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+  <mm:treefile id="template" page="/mmbob/index.jsp" objectlist="$includePath" referids="$referids" write="false" />
   <mm:compare referid="type" value="div">
     <mm:present referid="classforum">
       <mm:node number="$classforum" notfound="skip">
         <div class="menuSeperator"> </div>
         <div class="menuItem" id="menuMMBob1">
-          <mm:link page="$template" referids="classforum@forumid">
+          <mm:link referid="template" referids="classforum@forumid">
             <a href="${_}" class="menubar"><di:translate key="mmbob.groupforum" /></a>
           </mm:link>
         </div>
@@ -27,7 +27,7 @@
             <mm:node number="$educationforum">
               <div class="menuSeperator"> </div>
               <div class="menuItem" id="menuMMBob2">
-                <mm:link page="$template" referids="educationforum@forumid">
+                <mm:link referid="template" referids="educationforum@forumid">
                   <a href="${_}" class="menubar"><di:translate key="mmbob.educationforum" /></a>
                 </mm:link>
               </div>
@@ -42,7 +42,7 @@
               <mm:node number="$educationforum_coaches">
                 <div class="menuSeperator"> </div>
                 <div class="menuItem" id="menuMMBob3">
-                  <mm:link page="$template" referids="educationforum_coaches@forumid">
+                  <mm:link referid="template" referids="educationforum_coaches@forumid">
                     <a href="${_}" class="menubar"><di:translate key="mmbob.educationforum_coaches" /></a>
                   </mm:link>
                 </div>
@@ -57,15 +57,15 @@
   <mm:compare referid="type" value="option">
     <mm:present referid="class">
       <mm:node number="$class" notfound="skip">
-        <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>'>
+        <option value='<mm:url referid="template" referids="classforum@forumid"  />'>
           <di:translate key="mmbob.groupforum" />
         </option>
       </mm:node>
     </mm:present>
     <mm:present referid="education">
       <mm:node number="$education" notfound="skip">
-        <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>'>
-          <di:translate key="mmbob.educationforum" />
+        <option value='<mm:url referid="template" referids="educationforum@forumid" />'>
+        <di:translate key="mmbob.educationforum" />
         </option>
       </mm:node>
     </mm:present>
