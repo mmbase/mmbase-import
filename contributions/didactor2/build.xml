@@ -384,7 +384,7 @@
     <if>
       <available file="src/${component}/templates/editwizards/data/config/" />
       <then>
-        <echo message="Merging wizards of '${component}" />
+        <echo message="Merging wizards of '${component}'" />
         <foreach target="mergewizards" param="file">
           <path>
             <fileset dir="src/${component}/templates/editwizards/data/config/">
