@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.2 2007-05-16 13:54:25 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.3 2007-05-16 15:30:43 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -118,7 +118,9 @@ public class ProviderFilter implements Filter, MMBaseStarter {
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws java.io.IOException, ServletException {
         if (mmbase == null) {
-            // if mmbase not yet running. Things not using mmbase can work, otherwise this may give 503.
+            // if mmbase not yet running. Things not using mmbase can work, otherwise this may give
+            // 503.
+            log.warn("NO MMBASE member");
             filterChain.doFilter(request, response);
             return;
         }
@@ -220,14 +222,22 @@ public class ProviderFilter implements Filter, MMBaseStarter {
             attributes.put("referids", "class?,workgroup?");
 
             providerCache.put(key, attributes);
-            log.debug("Found attributes for " + key + " " + attributes);
 
+            if (log.isDebugEnabled()) {
+                log.debug("Found attributes for " + key + " " + attributes);
+            }
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace("Found attributes for " + key + " " + attributes);
+            }
         }
 
         // copy all attributes to the request.
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
+        assert request.getAttribute("provider") != null : "attributes" + attributes; 
+
         filterChain.doFilter(request, response);
     }
 
