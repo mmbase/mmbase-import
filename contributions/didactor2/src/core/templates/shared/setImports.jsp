@@ -13,10 +13,8 @@
       the servername
   - template include path (into variable $includePath)
 --%>
-
 <jsp:directive.include file="findUser.jspx" />
 <jsp:directive.include file="findProvider.jspx" />
-
 <%--
   Step 6: Based on the student and the education, try to find the class.
 --%>
@@ -25,8 +23,8 @@
   <mm:isgreaterthan referid="user" value="0">
     <mm:present referid="education">
       <mm:listcontainer path="people,classes,educations" fields="people.number,educations.number,classes.number">
-        <mm:constraint field="people.number"     operator="EQUAL" referid="user" />
-        <mm:constraint field="educations.number" operator="EQUAL" referid="education" />
+        <mm:constraint field="people.number"     referid="user" />
+        <mm:constraint field="educations.number" referid="education" />
           <mm:list>
             <mm:remove referid="class"/>
             <mm:field name="classes.number" id="class" write="false" />
@@ -36,15 +34,13 @@
   </mm:isgreaterthan>
 </mm:isempty>
 
-<mm:import externid="workgroup" />
-
 
 <%--
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
   to make sure that this user may log in. 
 --%>
 <mm:import escape="trimmer" id="validatemessage">
-  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids, user" />
+  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids,user" />
 </mm:import>
 
 <mm:isnotempty referid="validatemessage">
