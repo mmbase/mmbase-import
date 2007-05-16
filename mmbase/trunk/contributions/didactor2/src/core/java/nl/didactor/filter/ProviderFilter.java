@@ -14,6 +14,7 @@ import javax.servlet.http.*;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.servlet.*;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.1 2007-05-08 12:30:41 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.2 2007-05-16 13:54:25 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -33,6 +34,9 @@ public class ProviderFilter implements Filter, MMBaseStarter {
 
     private static Map<String, Map<String, Object>> providerCache = new HashMap<String, Map<String, Object>>();
 
+    public static void clearCache() {
+        providerCache.clear();
+    }
 
     /**
      * Initializes the filter
@@ -59,53 +63,51 @@ public class ProviderFilter implements Filter, MMBaseStarter {
     }
 
 
-    protected Node findProvider(NodeList providers, String providerUrl) {
-        NodeIterator ni = providers.nodeIterator();
+    protected Node selectByRelatedUrl(NodeList nodes, String url) {
+        log.debug("Select  for " + url);
+        NodeIterator ni = nodes.nodeIterator();
         while (ni.hasNext()) {
             Node suggestion = ni.nextNode();
             NodeList urls = suggestion.getRelatedNodes("urls");
             NodeIterator ui = urls.nodeIterator();
             while (ui.hasNext()) {
-                Node url = ui.nextNode();
-                String u = url.getStringValue("url");
-                if (u.equals(providerUrl)) {
+                Node urlNode = ui.nextNode();
+                String u = urlNode.getStringValue("url");
+                if (u.equals(url)) {
+                    log.debug("found "  + suggestion.getNumber());
                     return suggestion;
                 }
             }
         }
         return null;
     }
-    protected class Provider {
-        public Node node;
-        Provider(Node p) { node = p; }
-    }
-    protected Node findEducation(Provider provider, String providerUrl) {
-        if (provider.node != null) { 
-            //
-        } else {
-            /*
-            NodeIterator ni = providers.nodeIterator();
-            while (ni.hasNext()) {
-                Node suggestion = ni.nextNode();
-                NodeList educations = suggestion.getRelatedNodes("educations");
-                NodeIterator ei = educationsnodeIterator();
-                while (ei.hasNext()) {
-                    Node education = ei.nextNode();
-                    NodeList urls = education.getRelatedNodes("urs", "related", "both");
-                    NodeIterator ui = urls.nodeIterator();
-                    while (ui.hasNext()) {
-                        Node url = ui.nextNode();
-                        String u = url.getStringValue("url");
-                        if (u.equals(providerUrl)) {
-                            return suggestion;
-                        }
-                    }
-                }
+
+    protected Locale findLocale(Node provider, Node education) {
+        Locale locale;
+        {
+            String ls = provider.getStringValue("locale");
+            if (ls == null || "".equals(ls)) {
+                locale = provider.getCloud().getCloudContext().getDefaultLocale();
+            } else {
+                locale = LocalizedString.getLocale(ls);
             }
-            */
         }
-        return null;
+
+        String variant = provider.getStringValue("path");
+        if (variant != null && (! "".equals(variant)) && education != null) {
+            String educationPath = education.getStringValue("path");
+            if (educationPath != null && (! "".equals(educationPath))) {
+                variant += "_" + educationPath;
+            }
+        }
+        if (variant != null && ! "".equals(variant)) {
+            return new Locale(locale.getLanguage(), locale.getCountry(), variant);
+        } else {
+            return locale;
+        }
+
     }
+
 
     /**
      * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the 
@@ -121,7 +123,7 @@ public class ProviderFilter implements Filter, MMBaseStarter {
             return;
         }
         HttpServletRequest req = (HttpServletRequest) request;
-        String serverName = request.getServerName();
+        String serverName = req.getServerName();
         String contextPath = req.getContextPath();
 
         String educationParameter = req.getParameter("education");
@@ -130,14 +132,18 @@ public class ProviderFilter implements Filter, MMBaseStarter {
         String key = serverName + contextPath + ':' + educationParameter + ':' + providerParameter;
         Map<String, Object> attributes = providerCache.get(key);
         if (attributes == null) {
+
+            String[] urls = {"http://" + serverName + contextPath, 
+                             "http://" + serverName, 
+                            //serverName cannot alone consitute a valid URL, but this was the only
+                            //implemention in previous versions of Didactor.
+                             serverName};
+
             attributes = new HashMap<String, Object>();
 
-
-            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-
+            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");            
+            Node provider = null;            
             {
-                Node provider = null;            
-                
                 if (cloud.hasNode(providerParameter)) {
                     // explicitely stated provider on the URL.
                     // Don't know if that should be maintained.
@@ -151,33 +157,71 @@ public class ProviderFilter implements Filter, MMBaseStarter {
                         provider = providers.getNode(0);
                     } else {
                         // which are we going to use?
-                        provider = findProvider(providers, "http://" + serverName + contextPath);
-                        if (provider == null) {
-                            provider = findProvider(providers, "http://" + serverName);
+                        for (String u : urls) {
+                            provider = selectByRelatedUrl(providers, u);
+                            if (provider != null) break;
                         }
-                        if (provider == null) {
-                            //serverName cannot alone consitute a valid URL, but this was the only
-                            //implemention in previous versions of Didactor.
-                            provider = findProvider(providers, serverName);
-                        }
+
                         // no matching URL object directly related to provider.
                         // Try via education object too.
-                    }
-                    
-                    if (provider != null) {
-                        attributes.put("provider", provider.getNumber());
-                    } else {
-                        log.warn("No provider found for " + key);
-                        attributes.put("provider", null);
+                    }                    
+                }
+            }
+            Node education = null;                
+            {
+                NodeList educations = provider != null ? 
+                    provider.getRelatedNodes("educations") :
+                    cloud.getNodeManager("educations").getList(null, null, null);
+                
+                for (String u : urls) {
+                    education = selectByRelatedUrl(educations, u);
+                    if (education != null) break;
+                }                    
+
+
+                if (education == null && provider != null) {
+                    NodeList eds = provider.getRelatedNodes("educations");
+                    if (eds.size() > 0) {
+                        education = eds.nodeIterator().nextNode();
+                    }   
+                }
+                if (education != null) {
+                    log.debug("Found education " + education.getNumber());
+                    attributes.put("education", "" + education.getNumber()); 
+                } else {
+                    log.warn("No education found for " + key);
+                    attributes.put("education", null);
+                }
+                // try determining provider if education found, but not yet an education
+                if (provider == null && education != null) {
+                    NodeList providers = education.getRelatedNodes("providers");
+                    if (providers.size() > 0) {
+                        provider = providers.nodeIterator().nextNode();
                     }
                 }
             }
 
-            {
-                Node education = null;
+            if (provider != null) {
+                log.debug("Found provider " + provider.getNumber());
+                attributes.put("provider", "" + provider.getNumber());                
+            } else {
+                log.warn("No provider found for " + key);
+                attributes.put("provider", null);
             }
+            Locale locale = findLocale(provider, education);
+            attributes.put("javax.servlet.jsp.jstl.fmt.locale.request", locale);
+            attributes.put("language", locale.toString());
+
+            if (education != null) {
+                attributes.put("includePath", provider.getNumber() + "," + education.getNumber());
+            } else {
+                attributes.put("includePath", "" + provider.getNumber());
+            }
+            attributes.put("referids", "class?,workgroup?");
 
             providerCache.put(key, attributes);
+            log.debug("Found attributes for " + key + " " + attributes);
+
         }
 
         // copy all attributes to the request.
