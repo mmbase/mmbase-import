@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.7.2.2 2006-11-22 14:52:10 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.7.2.3 2007-05-16 23:22:56 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -94,6 +94,7 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;
+        log.debug("Setting jspvar");
         // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
         if (vartype == WriterHelper.TYPE_STRING) {
             // string is final, the wrapped version cannot be string..
@@ -129,7 +130,7 @@ public  class BasicBacking extends AbstractMap  implements Backing {
                                     if (! originalPageContextValues.containsKey(key)) {
                                         originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
                                     }
-                                    pageContext.removeAttribute(key);
+                                    pageContext.removeAttribute(key, SCOPE);
                                 }
                             }
                         };
