@@ -30,7 +30,12 @@
     - domain, one of a list of (string) options.
     You can specify a default value
 -->
-<component name="core" templatepath="" templatebar="" barposition="10">
+<component 
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+    name="core" templatepath="" templatebar="" barposition="10">
+
   <scope name="component" referid="component">
     <!-- Some example settings with different types 
     <setting name="integersetting" type="integer" default="0" />
@@ -57,9 +62,9 @@
     <setting ref="domainsetting" />
     <setting ref="booleansetting" />
     -->
-    <setting name="personfields" type="string" default="firstname,suffix,lastname" />
-    <setting name="personorderfield" type="string" default="lastname" />
-    <setting name="admin_personfields" type="string" default="firstname,suffix,lastname" />
+    <setting name="personfields" type="string" default="firstname,suffix,lastname" canbeempty="false" />
+    <setting name="personorderfield" type="string" default="lastname" canbeempty="false" />
+    <setting name="admin_personfields" type="string" default="firstname,suffix,lastname"  canbeempty="false" />
   </scope>
   <scope name="classes" referid="class">
     <!-- reference back on class level to settings defined on component level
