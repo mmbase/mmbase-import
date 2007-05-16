@@ -2,7 +2,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="java.util.*"
 %>
-<mm:content postprocessor="reducespace" expires="0">
+<mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
 
@@ -173,6 +173,14 @@
     openOnly('div'+opennumber,'img'+opennumber);
   }
 
+  function addParameter(href, parameter) {
+    if (href.indexOf('?') > 0) {
+       return  href + '&' + parameter;
+    } else {
+       return  href + '?' + parameter;
+    }
+  }
+
   function openContent( type, number ) {
 
     if (document.getElementById('content-'+currentnumber)) {
@@ -189,26 +197,26 @@
    //    note that document.content is not supported by mozilla!
    //    so use frames['content'] instead
 
-        frames['content'].location.href='<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&edu='+number;
+        frames['content'].location.href = addParameter('<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>', 'edu='+number);
         break;
       case "learnblocks":
       case "htmlpages":
-        frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href= addParameter('<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
       case "tests":
-        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href= addParameter('<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>', 'learnobject='+number);
         break;
       case "pages":
-        frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href= addParameter('<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
       case "flashpages":
-        frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href= addParameter('<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
     }
     frames['content'].scrollTop = '0px';
     document.body.scrollTop = '0px';
     if (document.getElementById('content-'+currentnumber)) {
-      document.getElementById('content-'+currentnumber).className = "selectedContent";
+    document.getElementById('content-'+currentnumber).className = "selectedContent";
     }
 
   }
