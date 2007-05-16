@@ -57,8 +57,9 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class ResponseFormPortlet extends ContentPortlet {
 
-    protected static final String ACTION_PARAM = "action";
-    protected static final String CONTENTELEMENT = "contentelement";
+    protected static final String PARAMETER_MAP = "parameterMap";
+    protected static final String ERRORMESSAGES = "errormessages";
+
     private static final int DEFAULT_MAXFILESIZE = 2;  // default file size in Meg
     private static final long MEGABYTE = 1024 * 1024;  // 1 Meg
     private static final String FIELD_PREFIX = "field_";
@@ -146,13 +147,13 @@ public class ResponseFormPortlet extends ContentPortlet {
 	                	}        
 	                    else {
 	                    	// if the responseform email has been sent, send also the email to the user
-	                    	sendUserEmail(responseForm, userEmailAddress, emailData);                      	
+	                    	sendUserEmail(responseForm, userEmailAddress, emailData, request);                      	
 	                    }                    	
 	                } 
             	}
                 if (errorMessages.size() > 0) {
-                	request.getPortletSession().setAttribute("errormessages", errorMessages);
-                	request.getPortletSession().setAttribute("parameterMap", parameterMap);  
+                	request.getPortletSession().setAttribute(ERRORMESSAGES, errorMessages);
+                	request.getPortletSession().setAttribute(PARAMETER_MAP, parameterMap);  
                 }
                 else {                	
                 	request.getPortletSession().setAttribute("confirm", "confirm");
@@ -210,7 +211,7 @@ public class ResponseFormPortlet extends ContentPortlet {
     	}		
 	}
 
-	private void sendUserEmail(Node responseform, String userEmailAddress,String responseformData) { 			
+	protected void sendUserEmail(Node responseform, String userEmailAddress,String responseformData, ActionRequest request) { 			
     	String userEmailSubject = responseform.getStringValue("useremailsubject");
         String userEmailSender = responseform.getStringValue("useremailsender");
         String userEmailSenderName = responseform.getStringValue("useremailsendername");
@@ -292,18 +293,18 @@ public class ResponseFormPortlet extends ContentPortlet {
         		portletSession.removeAttribute("confirm");
             	request.setAttribute("confirm", confirm);
         	}        	
-        	if (portletSession.getAttribute("errormessages") != null) {
-        		Hashtable errormessages = (Hashtable)portletSession.getAttribute("errormessages");
-        		portletSession.removeAttribute("errormessages");
-            	request.setAttribute("errormessages", errormessages);
+        	if (portletSession.getAttribute(ERRORMESSAGES) != null) {
+        		Map<String,String> errormessages = (Map<String,String>) portletSession.getAttribute(ERRORMESSAGES);
+        		portletSession.removeAttribute(ERRORMESSAGES);
+            	request.setAttribute(ERRORMESSAGES, errormessages);
         	}        	
-        	if (portletSession.getAttribute("parameterMap") != null) {
-        		Map parameterMap = (HashMap)portletSession.getAttribute("parameterMap");
-        		portletSession.removeAttribute("parameterMap");    
-            	Iterator keyIterator = parameterMap.keySet().iterator();
+        	if (portletSession.getAttribute(PARAMETER_MAP) != null) {
+        		Map<String,String> parameterMap = (Map<String,String>) portletSession.getAttribute(PARAMETER_MAP);
+        		portletSession.removeAttribute(PARAMETER_MAP);
+            	Iterator<String> keyIterator = parameterMap.keySet().iterator();
 	        	while (keyIterator.hasNext()) {
-	    			String keyValue = (String)keyIterator.next(); 
-	    			String entryValue = (String)parameterMap.get(keyValue);	    			
+	    			String keyValue = keyIterator.next(); 
+	    			String entryValue = parameterMap.get(keyValue);	    			
 	    			request.setAttribute(keyValue, entryValue);
 	    		}    	            	
         	}
@@ -330,7 +331,7 @@ public class ResponseFormPortlet extends ContentPortlet {
     }    
      
     private DataSource processUserRequest(ActionRequest request, Map<String, String> errorMessages, Map<String, String> parameterMap) {
-    	List fileItems = null;
+    	List<FileItem> fileItems = null;
     	DataSource attachment = null;
         try {
         	DiskFileItemFactory factory = new DiskFileItemFactory();            
@@ -341,9 +342,9 @@ public class ResponseFormPortlet extends ContentPortlet {
         	errorMessages.put("sendemail", "view.error.sendemail");
         }
         if (fileItems != null ) { 
-	        Iterator itFileItems = fileItems.iterator();
+	        Iterator<FileItem> itFileItems = fileItems.iterator();
 	        while (itFileItems.hasNext()) {
-	           FileItem fileItem = (FileItem) itFileItems.next();           
+	           FileItem fileItem = itFileItems.next();           
 	           if(fileItem.isFormField()) {          	   
 	        	   parameterMap.put(fileItem.getFieldName(), fileItem.getString());
 	           }
