@@ -38,7 +38,7 @@
         <mm:import id="posterid" reset="true"><mm:write referid="dummy"/></mm:import>
       </di:hasrole>
 
-      <iframe width="100%" height="100%" name="content" frameborder="0" src="<mm:treefile page="/mmbob/start.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>&forumid=<mm:write referid="forumid"/>"></iframe>
+      <iframe width="100%" height="100%" name="content" frameborder="0" src="<mm:treefile page="/mmbob/start.jsp" objectlist="$includePath" referids="$referids,forumid" escapeamps="false"/>"></iframe>
 
       <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
     </div>
