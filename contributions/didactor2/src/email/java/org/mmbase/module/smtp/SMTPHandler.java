@@ -33,17 +33,18 @@ import nl.didactor.mail.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.21 2007-05-08 12:03:08 michiel Exp $
+ * @version $Id: SMTPHandler.java,v 1.22 2007-05-16 11:33:18 michiel Exp $
  */
 public class SMTPHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
+
     private boolean running = true;
     private final java.net.Socket socket;
     private BufferedReader reader = null;
     private BufferedWriter writer = null;
 
     private final Cloud cloud;
-    private final Map properties;
+    private final Map<String, String> properties;
 
     /** State indicating we sent our '220' initial session instantiation message, and are now waiting for a HELO */
     private final int STATE_HELO = 1;
@@ -63,17 +64,25 @@ public class SMTPHandler implements Runnable {
     /** The current state of this handler */
     private int state = 0;
 
-    /** Vector containing Node objects for all mailboxes of the receipients */
-    private final List mailboxes = new Vector(); // why is this synchronized
 
-    /** Vector containing Node objects for all receipients (in some configurations this
-     *  can equal the 'mailboxes' vector */
-    private final List users = new Vector(); // why is this synchronized?
+    private class MailBox {
+        public final Node box;  // mailbox object (mails are related to this node) Can be the user
+                                // node itself.
+        public final Node user; 
+        MailBox(Node b, Node u) {
+            box = b; user = u;
+        }
+    }
+
+    /** 
+     * List containing Node objects for all mailboxes of the receipients 
+     */
+    private final List<MailBox> mailboxes = new ArrayList<MailBox>(); 
 
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
-    public SMTPHandler(java.net.Socket socket, Map properties, Cloud cloud) {
+    public SMTPHandler(java.net.Socket socket, Map<String, String> properties, Cloud cloud) {
         this.socket = socket;
         this.properties = properties;
         this.cloud = cloud;
@@ -91,7 +100,7 @@ public class SMTPHandler implements Runnable {
             reader = new BufferedReader(new InputStreamReader(is));  // which encoding?
             writer = new BufferedWriter(new OutputStreamWriter(os)); // which encoding?
         } catch (IOException e) {
-            log.error("Exception while initializing inputstream to incoming SMTP connection: " + e);
+            log.error("Exception while initializing inputstream to incoming SMTP connection: " + e.getMessage(), e);
             return;
         }
 
@@ -126,24 +135,28 @@ public class SMTPHandler implements Runnable {
      * </ul>
      */
     private void parseLine(String line) throws IOException {
-        log.debug("SMTP INCOMING: " + line);
-        if (line.toUpperCase().startsWith("QUIT")) {
+        if (log.isDebugEnabled()) {
+            log.debug("SMTP INCOMING: " + line);
+        }
+
+        String uLine = line.toUpperCase();
+
+        if (uLine.startsWith("QUIT")) {
             state = STATE_FINISHED;
             writer.write("221 Goodbye.\r\n");
             writer.flush();
             return;
         }
 
-        if (line.toUpperCase().startsWith("RSET")) {
+        if (uLine.startsWith("RSET")) {
             state = STATE_MAILFROM;
             mailboxes.clear();
-            users.clear();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
         }
 
-        if (line.toUpperCase().startsWith("HELO")) {
+        if (uLine.startsWith("HELO")) {
             if (state > STATE_HELO) {
                 writer.write("503 5.0.0 " + properties.get("hostname") + "Duplicate HELO/EHLO\r\n");
                 writer.flush();
@@ -155,7 +168,7 @@ public class SMTPHandler implements Runnable {
             return;
         }
 
-        if (line.toUpperCase().startsWith("MAIL FROM:")){
+        if (uLine.startsWith("MAIL FROM:")){
             if (state < STATE_MAILFROM) {
                 writer.write("503 That's not nice! Polite people say HELO first\r\n");
                 writer.flush();
@@ -173,7 +186,7 @@ public class SMTPHandler implements Runnable {
             return;
         }
 
-        if (line.toUpperCase().startsWith("RCPT TO:")) {
+        if (uLine.startsWith("RCPT TO:")) {
             log.debug(line);
             if (state < STATE_RCPTTO) {
                 writer.write("503 You should say MAIL FROM first\r\n");
@@ -185,37 +198,37 @@ public class SMTPHandler implements Runnable {
                 String address = line.substring(7, line.length());
                 String recepient[] = parseAddress(address);
                 if (recepient.length != 2) {
-                    log.info("Can't parse address " + address);
+                    log.service("Can't parse address " + address);
                     writer.write("553 This user format is unknown here\r\n");// 
                     writer.flush();
                     return;
                 }
                 String username = recepient[0];
                 String domain = recepient[1];
-                String domains = (String)properties.get("domains");
+                String domains = properties.get("domains");
                 log.service("Incoming mail for " + username + " @ "+domain);
                 for (StringTokenizer st = new StringTokenizer(domains, ","); st.hasMoreTokens();) {
                     if (domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
-                        if (!addMailbox(username)) {
-                            log.info("Mail for " + username + " rejected: no mailbox");
+                        if (! addMailbox(username)) {
+                            log.service("Mail for " + username + " rejected: no mailbox");
                             writer.write("550 User not found: " + username + "\r\n");
                             writer.flush();
                             return;
                         }
-                        log.info("Mail for " + username + " accepted");
+                        log.service("Mail for " + username + " accepted");
                         writer.write("250 Yeah, that user lives here. Bring on the data!\r\n");
                         writer.flush();
                         return;
                     } 
                 }
-                log.info("Mail for domain " + domain + " not accepted, not one of " + domains);
+                log.service("Mail for domain " + domain + " not accepted, not one of " + domains);
                 writer.write("553 We do not accept mail for domain '" + domain + "'\r\n");
                 writer.flush();
             }
             return;
         }
 
-        if (line.toUpperCase().startsWith("DATA")) {
+        if (uLine.startsWith("DATA")) {
             if (state < STATE_RCPTTO) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
@@ -233,7 +246,7 @@ public class SMTPHandler implements Runnable {
                 char[] last5chars = new char[endchars.length];
                 int currentpos = 0;
                 int c;
-                StringBuffer data = new StringBuffer();
+                StringBuilder data = new StringBuilder();
                 boolean isreading = true;
                 while (isreading) {
                     while ((c = reader.read()) == -1) {
@@ -329,7 +342,7 @@ public class SMTPHandler implements Runnable {
     protected void nodeSetHeader(Node node, String fieldName, Address[] values) {
         Field field = node.getNodeManager().getField(fieldName);
         long maxLength = ((org.mmbase.datatypes.StringDataType) field.getDataType()).getMaxLength();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (values != null) {
             log.debug("Using " + values.length + " values");
             for (int i = 0 ; i < values.length; i++) {
@@ -403,15 +416,14 @@ public class SMTPHandler implements Runnable {
             log.error("Cannot parse message data: [" + data + "]");
             return false;
         }
-        for (int i = 0; i < mailboxes.size(); i++) {
-            Node mailbox = (Node)mailboxes.get(i);
-            log.debug("Delivering to mailbox node " + mailbox.getNumber());
+        for (MailBox mailbox : mailboxes) {
+            log.debug("Delivering to mailbox node " + mailbox.box.getNumber());
             Node email = emailbuilder.createNode();
             if (properties.containsKey("emailbuilder.typefield")) {
                  email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
             }
             if (properties.containsKey("emailbuilder.headersfield")) {
-                StringBuffer headers = new StringBuffer();
+                StringBuilder headers = new StringBuilder();
                 try {
                     Enumeration e = message.getAllHeaderLines();
                     while (e.hasMoreElements()) {
@@ -419,16 +431,16 @@ public class SMTPHandler implements Runnable {
                         headers.append(header).append("\r\n");
                     }
                     log.debug("Using headers " + headers);
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.headersfield"), headers.toString());
+                    nodeSetHeader(email, properties.get("emailbuilder.headersfield"), headers.toString());
                 } catch (MessagingException me) {
                     log.warn(me);
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.headersfield"), headers.toString());
+                    nodeSetHeader(email, properties.get("emailbuilder.headersfield"), headers.toString());
                 }
             }
             if (properties.containsKey("emailbuilder.tofield")) {
                 try {
                     Address[] value = message.getRecipients(Message.RecipientType.TO);
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.tofield"), value);
+                    nodeSetHeader(email, properties.get("emailbuilder.tofield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -436,7 +448,7 @@ public class SMTPHandler implements Runnable {
             if (properties.containsKey("emailbuilder.ccfield")) {
                 try {
                     Address[] value = message.getRecipients(Message.RecipientType.CC);
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.ccfield"), value);
+                    nodeSetHeader(email, properties.get("emailbuilder.ccfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -444,7 +456,7 @@ public class SMTPHandler implements Runnable {
             if (properties.containsKey("emailbuilder.bccfield")) {
                 try {
                     Address[] value = message.getRecipients(Message.RecipientType.BCC);
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.bccfield"), value);
+                    nodeSetHeader(email, properties.get("emailbuilder.bccfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -453,7 +465,7 @@ public class SMTPHandler implements Runnable {
                 try {
                     String value = message.getHeader("From", ", ");
                     if (value == null) value = "";
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.fromfield"), value);
+                    nodeSetHeader(email, properties.get("emailbuilder.fromfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -462,7 +474,7 @@ public class SMTPHandler implements Runnable {
                 try {
                     String value = message.getSubject();
                     if (value == null) value = "(empty)";
-                    nodeSetHeader(email, (String)properties.get("emailbuilder.subjectfield"), value);
+                    nodeSetHeader(email, properties.get("emailbuilder.subjectfield"), value);
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -473,7 +485,7 @@ public class SMTPHandler implements Runnable {
                     if (d == null) {
                         d = new Date();
                     }
-                    email.setIntValue((String)properties.get("emailbuilder.datefield"), (int)(d.getTime() / 1000));
+                    email.setIntValue(properties.get("emailbuilder.datefield"), (int)(d.getTime() / 1000));
                 } catch (MessagingException e) {
                     log.service(e);
                 }
@@ -494,7 +506,7 @@ public class SMTPHandler implements Runnable {
                         log.debug("Non multipart mail, simply filling the body of the mail node with " + message);
                     }
                     if (message.getContent() != null) {
-                        nodeSetHeader(email, (String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
+                        nodeSetHeader(email, properties.get("emailbuilder.bodyfield"), "" + message.getContent());
                     }
                     try {
                         email.commit(); 
@@ -505,10 +517,9 @@ public class SMTPHandler implements Runnable {
                     // now parse the attachments
                     try {
                         log.debug("Extracting parts for message with mimetype " + message.getContentType());
-                        List attachmentsVector = extractPart(message, new ArrayList(), email);
+                        List<Node> attachmentsVector = extractPart(message, new ArrayList<Node>(), email);
                         email.commit();
-                        for (Iterator it = attachmentsVector.iterator(); it.hasNext();) {
-                            Node attachment = (Node) it.next();
+                        for (Node attachment : attachmentsVector) {
                             Relation rel = email.createRelation(attachment, cloud.getRelationManager("related"));
                             rel.commit();
                         }
@@ -519,17 +530,17 @@ public class SMTPHandler implements Runnable {
             } catch (Exception e) {
                 log.warn(e.getMessage(), e);
                 try {
-                    nodeSetHeader(email, (String) properties.get("emailbuilder.bodyfield"), "" + data);
+                    nodeSetHeader(email, properties.get("emailbuilder.bodyfield"), "" + data);
                     email.commit();
                 } catch (Exception ee) {
                     log.error(ee);
                 }
             }
-            Relation rel = mailbox.createRelation(email, cloud.getRelationManager("related"));
+            Relation rel = mailbox.box.createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
 
             //TODO: send to this user if he wants to
-            Node user = (Node)users.get(i);
+            Node user = mailbox.user;
             if (user.getBooleanValue("email-mayforward")) {
                 try {
                     String mailadres = user.getStringValue("email");
@@ -574,7 +585,7 @@ public class SMTPHandler implements Runnable {
      * @param mail Mail Node that describes the mail that is being dissected
      * @return The given attachments List, but wihth the currently extracted ones added.
      **/
-    private List extractPart(final Part p, final List attachments, final Node mail) throws Exception {
+    private List<Node> extractPart(final Part p, final List<Node> attachments, final Node mail) throws Exception {
 
         String disposition = p.getDisposition();
         if (disposition == null) {
@@ -606,7 +617,7 @@ public class SMTPHandler implements Runnable {
             log.debug("Found attachments with type: text/plain");
             String content = getContent(p);
 
-            String bodyField = (String)properties.get("emailbuilder.bodyfield");
+            String bodyField = properties.get("emailbuilder.bodyfield");
             if (content != null) {
                 int compareMimeType = compareMimeTypes(mimeType, mailMimeType);
                 String currentBody = mail.getStringValue(bodyField);
@@ -713,7 +724,7 @@ public class SMTPHandler implements Runnable {
      */
     private boolean addMailbox(String user) {
 
-        String usersbuilder = (String)properties.get("usersbuilder");
+        String usersbuilder = properties.get("usersbuilder");
         NodeManager manager = cloud.getNodeManager(usersbuilder);
         NodeList nodelist = manager.getList(properties.get("usersbuilder.accountfield") + " = '" + user + "'", null, null);
         if (nodelist.size() != 1) {
@@ -722,9 +733,9 @@ public class SMTPHandler implements Runnable {
         Node usernode = nodelist.getNode(0);
         if (properties.containsKey("mailboxbuilder")) {
             String where = null;
-            String mailboxbuilder = (String)properties.get("mailboxbuilder");
+            String mailboxbuilder = properties.get("mailboxbuilder");
             if (properties.containsKey("mailboxbuilder.where")) {
-                where = (String)properties.get("mailboxbuilder.where");
+                where = properties.get("mailboxbuilder.where");
             }
             nodelist = cloud.getList(
                 "" + usernode.getNumber(),              //startnodes
@@ -738,13 +749,12 @@ public class SMTPHandler implements Runnable {
             );
             if (nodelist.size() == 1) {
                 String number = nodelist.getNode(0).getStringValue(mailboxbuilder + ".number");
-                mailboxes.add(cloud.getNode(number));
-                users.add(usernode);
+                mailboxes.add(new MailBox(cloud.getNode(number), usernode));
                 return true;
             } else if (nodelist.size() == 0) {
                 String notfoundaction = "bounce";
                 if (properties.containsKey("mailboxbuilder.notfound")) {
-                    notfoundaction = (String)properties.get("mailboxbuilder.notfound");
+                    notfoundaction = properties.get("mailboxbuilder.notfound");
                 }
                 if ("bounce".equals(notfoundaction)) {
                     return false;
@@ -759,8 +769,7 @@ public class SMTPHandler implements Runnable {
                 return false;
             }
         } else {
-            mailboxes.add(usernode);
-            users.add(usernode);
+            mailboxes.add(new MailBox(usernode, usernode));
         }
         return false;
     }
