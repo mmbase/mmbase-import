@@ -415,8 +415,13 @@ public class ExcelWriter {
             eventFlyerList.add(new EventData(sParentNumber, nParentNode.getStringValue("titel"), ddn));
          }
          
-         if (nParentNode.getRelatedNodes("inschrijvingen").size()==0){
+         Node childEvent = cloud.getNode(nl7.getNode(i).getStringValue("evenement.number"));
+         int aanmeldingSize = childEvent.getRelatedNodes("inschrijvingen").size();
+         
+         if (aanmeldingSize==0) {
             llXlsData.add(new Label(3,counter,"geen aanmeldingen"));
+         } else {
+        	llXlsData.add(new Label(3,counter,String.valueOf(aanmeldingSize)));
          }
          counter++;
       }
