@@ -5,7 +5,7 @@
       orderby="field[@name='pos']"
       ordertype="number"
       hidecommand="move-up|move-down">
-   <title>categorie</title>
+   <title>materiaal (voor selectie in cv)</title>
    <item>
       <title></title>
       <description></description>
@@ -20,7 +20,7 @@
    </action>
    <command name="startwizard" inline="true" wizardname="config/pools/pools_ml" objectnumber="new"/>
    <command name="search" nodepath="pools" fields="name,description" orderby="name" age="-1">
-      <prompt>zoek categorie</prompt>
+      <prompt>zoek materiaal</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>name</search-fields>

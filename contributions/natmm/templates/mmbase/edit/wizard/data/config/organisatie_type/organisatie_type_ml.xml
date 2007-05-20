@@ -5,7 +5,13 @@
     <task-description>Use this wizard to edit a organisatietype.</task-description>
     <action include="config/organisatie_type/create_organisatie_type.xml" />
     <action include="config/organisatie_type/delete_organisatie_type.xml" />
-    <action include="config/organisatie_type/load_organisatie_type.xml" />
+    <action type="load">
+      <field name="naam" />
+      <field name="naam_eng" />
+      <field name="naam_fra" />
+      <field name="naam_de" />
+      <relation destination="organisatie" role="posrel" />
+    </action>
     <steps>
         <step form-schema="edit_organisatie_type" />
     </steps>
@@ -15,5 +21,6 @@
        <field name="naam_eng" dtrequired="0"><prompt>naam (en)</prompt></field>
        <field name="naam_fra" dtrequired="0"><prompt>naam (fr)</prompt></field>
        <field name="naam_de" dtrequired="0"><prompt>naam (de)</prompt></field>
+       <list include="config/organisatie/add_organisatie_posrel_ml.xml" />
     </form-schema>
 </wizard-schema>
