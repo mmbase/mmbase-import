@@ -51,6 +51,7 @@
     <relation destination="images" role="posrel" />
     <relation destination="link" role="posrel" />
     <relation destination="persoon" role="posrel" />
+    <relation destination="pools" role="posrel" />
   </action>
 	<lists>
 	</lists>
