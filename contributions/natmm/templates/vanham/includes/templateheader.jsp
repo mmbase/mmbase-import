@@ -4,7 +4,8 @@
 <%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" %>
 <%@page import="java.util.*,java.text.*,java.io.*,org.mmbase.bridge.*,org.mmbase.util.logging.Logger,nl.leocms.util.*,nl.leocms.util.tools.HtmlCleaner" %>
 <mm:import id="paginaID" externid="p" jspvar="paginaID" vartype="String">-1</mm:import>
-<mm:import externid="language" jspvar="language" vartype="String">nl</mm:import>
+<mm:import externid="language" jspvar="language" vartype="String"><%= 
+  (request.getHeader("Accept-Language").toUpperCase().indexOf("NL")>-1 ? "nl" : "eng") %></mm:import>
 <mm:import externid="material" jspvar="materialTypeID" vartype="String">-1</mm:import>
 <mm:import externid="orgtype" jspvar="organisationTypeID" vartype="String">-1</mm:import>
 <mm:import externid="locatie" jspvar="locatieID" vartype="String">-1</mm:import>

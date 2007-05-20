@@ -24,7 +24,7 @@
   <% String pageUrl = ph.createPaginaUrl(paginaID,request.getContextPath()); %>
   <script language="JavaScript" type="text/javascript">
     function clearForm() {
-      document.location = "<%= pageUrl %>"; 
+      document.location = "<%= pageUrl %>?language=<%=language%>"; 
       return false; 
     }
   </script>
@@ -291,7 +291,7 @@
                                   ><mm:field name="number" jspvar="imageID" vartype="String"><% 
                                   String jsString = "javascript:launchCenter('/vanham/slideshow.jsp?i="
                                      + imagesList + "&language=" + language
-                                     + "', 'center', 784, 784, 'resizable=1');setTimeout('newwin.focus();',250);"; 
+                                     + "', 'center', 784, 784, 'resizable=1,scrollbars=1');setTimeout('newwin.focus();',250);"; 
                                   %><div style="position:relative;left:185px;top:7px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><% 
                                   %><a href="javascript:void(0);" onclick="<%= jsString %>"  alt="<bean:message bundle="<%= "VANHAM." + language %>" key="cv.click.to.enlarge" />"><img src="media/zoom.gif" border="0" /></a><%
                                   %></div></div><%
