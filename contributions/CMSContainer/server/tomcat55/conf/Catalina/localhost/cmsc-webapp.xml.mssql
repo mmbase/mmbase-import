@@ -20,11 +20,9 @@
 		mail.debug				The initial debug mode. Default is false.
 	-->
 	<Resource name="mail/Session" auth="Container" type="javax.mail.Session"
-		factory="org.apache.naming.factory.MailSessionFactory" 
 		mail.smtp.host="MISSING.MAILSERVER" />
 
 	<Resource name="jdbc/cmsc" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.commons.dbcp.BasicDataSourceFactory" 
 		removeAbandoned="true" 
 		removeAbandonedTimeout="60"
 		logAbandoned="true" 
