@@ -355,15 +355,12 @@ public class EventNotifier implements Runnable {
       log.info("Started updateEventDB");
       String logMessage =  "\n<br>Started updateEventDB " + new Date();
 
-      // use liveUrl to make sure that notifications are only send from live server
-      boolean isProduction = false;
-      String liveUrls = "";
-      for(int i=0; i<NatMMConfig.liveUrl.length; i++) {
-         isProduction = isProduction || (requestUrl.indexOf(NatMMConfig.liveUrl[i])>-1);
-         if(!liveUrls.equals("")) { liveUrls += ", "; }
-         liveUrls += "'" + NatMMConfig.liveUrl[i] + "'";
-      }
-      if(isProduction) {
+      Boolean isProduction = new Boolean("@natmmconfig.is.production@");
+      
+      if(isProduction.booleanValue()) {
+         logMessage += "\n<br>Site is production; reminder emails are send";
+         log.info("Site is production; reminder emails are send");            
+         
          logMessage += notifyParticipants(cloud);
          logMessage += lessThanMin(cloud);
          logMessage += isFullyBooked(cloud);
@@ -374,8 +371,8 @@ public class EventNotifier implements Runnable {
          }
          logMessage += groupEventConfirmationPeriodExpired(cloud);
       } else {
-         logMessage += "\n<br>'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send";
-         log.info("'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send");
+         logMessage += "\n<br>Site is no production, therefore no reminder emails send";
+         log.info("Site is no production, therefore no reminder emails send");
       }
 
       updateAppAttributes(cloud);
