@@ -147,7 +147,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 	                	}        
 	                    else {
 	                    	// if the responseform email has been sent, send also the email to the user
-	                    	sendUserEmail(responseForm, userEmailAddress, emailData, request);                      	
+	                    	sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);                      	
 	                    }                    	
 	                } 
             	}
@@ -211,7 +211,7 @@ public class ResponseFormPortlet extends ContentPortlet {
     	}		
 	}
 
-	protected void sendUserEmail(Node responseform, String userEmailAddress,String responseformData, ActionRequest request) { 			
+	protected void sendUserEmail(Node responseform, String userEmailAddress,String responseformData, Map<String,String> parameterMap) { 			
     	String userEmailSubject = responseform.getStringValue("useremailsubject");
         String userEmailSender = responseform.getStringValue("useremailsender");
         String userEmailSenderName = responseform.getStringValue("useremailsendername");
