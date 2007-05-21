@@ -63,14 +63,14 @@ public abstract class TreePasteForm extends ActionForm {
        Node destChannel = cloud.getNode(this.destPasteChannel);
        boolean isAllowed = isAllowed(cloud, destChannel);
        if (!isAllowed) {
-          errors.add("destPasteChannel", new ActionError("navigation.paste.insufficient_rights"));
+          errors.add("destPasteChannel", new ActionMessage("navigation.paste.insufficient_rights"));
        }
        else {
            if (isMoveAction()) {
                Node sourceChannel = cloud.getNode(this.sourcePasteChannel);
                boolean isAllowed2 = isAllowed(cloud, sourceChannel);
                if (!isAllowed2) {
-                  errors.add("sourcePasteChannel", new ActionError("navigation.paste.insufficient_rights"));
+                  errors.add("sourcePasteChannel", new ActionMessage("navigation.paste.insufficient_rights"));
                }
            }
        }
