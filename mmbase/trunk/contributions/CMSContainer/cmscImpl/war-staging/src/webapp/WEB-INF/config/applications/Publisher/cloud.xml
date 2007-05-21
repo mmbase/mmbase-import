@@ -18,13 +18,13 @@
       <name>staging.server</name>
       <username>admin</username>
       <password>admin2k</password>
-      <rmiurl>rmi://localhost:1111/staging</rmiurl>
+      <rmiurl>rmi://localhost:1111/cmsc-staging</rmiurl>
    </node>
    <node number="2" owner="admin" alias="cloud.remote">
       <name>live.server</name>
       <username>admin</username>
       <password>admin2k</password>
-      <rmiurl>rmi://localhost:1111/live</rmiurl>
+      <rmiurl>rmi://localhost:1111/cmsc-live</rmiurl>
    </node>
 </cloud>
 
