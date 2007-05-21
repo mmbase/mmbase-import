@@ -1,11 +1,9 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="globals.jsp" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="attachmentinfo.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-</head>
+<cmscedit:head title="attachmentinfo.title" />
 <body>
     <div class="tabs">
         <div class="tab_active">
@@ -23,6 +21,7 @@
 				<mm:node number="${param.objectnumber}">
 			        <div style="float:left; padding:5px;">
 			            <h1><mm:field name="filename"/></h1>
+			            
 			           	<fmt:message key="attachmentinfo.titlefield" />: <b><mm:field name="title"/></b><br/>
 			           	<fmt:message key="attachmentinfo.description" />: <mm:field name="description"/><br/>
 			           	<br/>

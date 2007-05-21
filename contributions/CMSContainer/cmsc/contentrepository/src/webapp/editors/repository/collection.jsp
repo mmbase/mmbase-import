@@ -3,15 +3,10 @@
 <%@page import="com.finalist.cmsc.repository.RepositoryUtil" %>
 <%@page import="com.finalist.cmsc.security.*" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-	<head>
-		<title><fmt:message key="collection.title" /></title>
-		<link rel="stylesheet" type="text/css" href="../css/main.css" />
-		<script src="../utils/window.js" type="text/javascript"></script>
-		<script src="../utils/rowhover.js" type="text/javascript"></script>
-	    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-	</head>
-	<body>
+<cmscedit:head title="collection.title" />
+<body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
       <mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write referid="parentchannel"/>&direction=down</mm:import>

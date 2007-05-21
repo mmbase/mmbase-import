@@ -1,22 +1,16 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
-<html:html xhtml="true">
-   <head>
-      <link href="../css/main.css" type="text/css" rel="stylesheet"/>
-      <title><fmt:message key="search.title" /></title>
-      <script src="content.js"type="text/javascript" ></script>
-      <script src="search.js"type="text/javascript" ></script>
-      <script src="../utils/window.js" type="text/javascript"></script>
-      <script src="../utils/rowhover.js" type="text/javascript"></script>
-	  <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-   </head>
-   <body>
-
-
 <%@ page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
                  java.util.ArrayList"%>
+<mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html:html xhtml="true">
+<cmscedit:head title="search.title">
+      <script src="content.js"type="text/javascript" ></script>
+      <script src="search.js"type="text/javascript" ></script>
+</cmscedit:head>
+<body>
 <mm:import id="searchinit"><c:url value='/editors/repository/SearchInitAction.do'/></mm:import>
 <mm:import externid="action">search</mm:import><%-- either: search, link, of select --%>
 <mm:import externid="mode" id="mode">basic</mm:import>
@@ -116,13 +110,12 @@
                   <td></td>
                   <td><b><fmt:message key="searchform.users" /></b></td>
                   <td></td>
-                  <td><b>
+                  <td>
                      <mm:compare referid="contenttypes" value="contentelement" inverse="true">
                         <fmt:message key="searchform.searchfor">
                            <fmt:param><mm:nodeinfo nodetype="${contenttypes}" type="guitype"/></fmt:param>
                         </fmt:message>
                      </mm:compare>
-                     </b>
                   </td>
                </tr>
                <tr valign="top">
@@ -150,7 +143,7 @@
                      <mm:compare referid="contenttypes" value="contentelement" inverse="true">
                         <table>
                            <mm:fieldlist nodetype="${contenttypes}">
-                              <!-- check if the field is from contentelement -->
+                              <%-- check if the field is from contentelement --%>
                               <% boolean showField = true; %>
                               <mm:fieldinfo type="name" id="fname">
                                   <mm:fieldlist nodetype="contentelement">
@@ -276,7 +269,7 @@
 						<a href="<c:url value='/editors/repository/select/SelectorChannel.do' />"
 							target="selectChannel" onclick="openPopupWindow('selectChannel', 340, 400)">
 								<img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="searchform.select.channel" />"/></a>
-                        <a href="#" onClick="selectChannel('', '');" ><img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="searchform.clear.channel.button" />"></a>
+                        <a href="#" onClick="selectChannel('', '');" ><img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="searchform.clear.channel.button" />" /></a>
                      </mm:present>
                   </td>
                   <td>
@@ -293,8 +286,8 @@
                   </td>
                </tr>
             </mm:compare>
-   </html:form>
          </table>
+	   </html:form>
    </div>
 
 
@@ -379,7 +372,7 @@
 		                    <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
 		                 	<mm:param name="returnurl" value="/editors/repository/SearchAction.do${geturl}" />
 		                </mm:url>">
-		                   <img src="../gfx/icons/page_edit.png" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
+		                   <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="searchform.icon.edit.title" />" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
 					</c:if>
 		            <mm:compare referid="action" value="link">
 		               <input type="checkbox" value="<mm:field name="number" />" name="link_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
@@ -402,7 +395,7 @@
 		            </mm:compare>
 		            <a href="#" onclick="showItem(<mm:field name="number" />);" ><img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" /></a>
 		            <mm:field name="number"  write="false" id="nodenumber">
-		               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
+		               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blank"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
 		            </mm:field>
 		            <mm:compare referid="action" value="search">
 			            <mm:haspage page="/editors/versioning">
@@ -454,6 +447,7 @@
                </td>
 		         <td style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
 		         <td width="60"><mm:field name="number"/></td>
+					<%-- 
 					<td width="10" style="white-space: nowrap;">
 						<c:set var="status" value="waiting"/>
 						<mm:relatednodes type="workflowitem">
@@ -466,6 +460,7 @@
 						</c:if>
 						<img src="../gfx/icons/status_${status}.png" alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" />
 					</td>
+					 --%>
 		      </tr>
 
          </mm:node>

@@ -3,12 +3,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-	<script type="text/javascript" src="../utils/transparent_png.js" ></script>
-	
-<title><fmt:message key="user.title" /></title>
-</head>
+<cmscedit:head title="user.title" />
 <mm:cloud jspvar="cloud" loginpage="../login.jsp">
 <body style="overflow: auto">
     <div class="tabs">
@@ -23,14 +18,15 @@
 
 	<div class="editor">
 		<div class="body">
-		<p>
 	 		<mm:node number="${param.number}" jspvar="channel">
-				<br/>
-				<b><fmt:message key="rights.content.userson" /> 
-				<c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
-				<c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
-				</b>:	
-				<br/>
+				<p>
+					<br/>
+					<b><fmt:message key="rights.content.userson" /> 
+					<c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
+					<c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
+					</b>:	
+					<br/>
+				</p>
 				<div style="padding: 5px">
 					<table class="compact">
 						<mm:listnodes type="mmbaseusers" jspvar="user" orderby="username">
@@ -61,7 +57,6 @@
 					</table>
 				</div>
 			</mm:node>
-		</p>
 		</div>
 		<div class="side_block_end"></div>
 	</div>	

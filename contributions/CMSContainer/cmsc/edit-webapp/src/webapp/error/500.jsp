@@ -19,7 +19,7 @@
 %>
 <%
 	// $Name: not supported by cvs2svn $ will be expanded when checked out with an explicit tagname. For Example "cvs co -r first"
-	String version = com.finalist.util.version.VersionUtil.getVersion(this.getServletConfig().getServletContext());
+	String version = com.finalist.util.version.VersionUtil.getApplicationVersion(this.getServletConfig().getServletContext());
 	// prepare error ticket
 	long ticket = System.currentTimeMillis();
 

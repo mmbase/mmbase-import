@@ -3,15 +3,10 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-  <title><fmt:message key="unlinkcreation.title" /></title>
-  <link href="../css/main.css" type="text/css" rel="stylesheet" />
-  
+<cmscedit:head title="unlinkcreation.title">
   <script src="content.js" type="text/javascript"></script>
-  <script src="../utils/window.js" type="text/javascript"></script>
-</head>
+</cmscedit:head>
 <body>
-
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <div class="tabs">
     <div class="tab_active">
@@ -22,11 +17,8 @@
         </div>
     </div>
 </div>
-
 <div class="editor">
 	<div class="body">
-
-
 <mm:import externid="content" vartype="Node"/>
 <mm:import externid="creationchannel" vartype="Node"/>
 <mm:import externid="contentchannels" vartype="List"/>

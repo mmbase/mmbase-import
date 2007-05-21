@@ -3,10 +3,7 @@
 <fmt:setBundle basename="cmsc-reactions" scope="request" />
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="reactioninfo.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-</head>
+<cmscedit:head title="reactioninfo.title" />
 <body>
     <div class="tabs">
         <div class="tab_active">

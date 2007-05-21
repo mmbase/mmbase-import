@@ -1,18 +1,16 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="bannerglobals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-    <mm:import externid="rows" jspvar="nodeList" vartype="List" />
-    <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
-    <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html:html xhtml="true">
-    <head>
-    <head>
-    <%@include file="includes/head.jsp"%>
-    </head>
-    </head>
-    <body>
-
+<mm:import externid="rows" jspvar="nodeList" vartype="List" />
+<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html:html xhtml="true">
+   	<cmscedit:head title="customer.title">
+	    <script src="../repository/search.js" type="text/javascript"></script>
+	    <script src="../repository/content.js" type="text/javascript"></script>
+   	</cmscedit:head>
+<body>
     <mm:import externid="action">search</mm:import>
     <%-- either: search of select --%>
 
@@ -64,6 +62,6 @@
     </c:if> <c:if test="${not empty rows}">
         <%@include file="includes/searchpages.jsp"%>
     </c:if></div>
-    </body>
-    </html:html>
+</body>
+</html:html>
 </mm:content>

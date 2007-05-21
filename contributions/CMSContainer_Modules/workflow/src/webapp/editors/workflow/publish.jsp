@@ -9,14 +9,13 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <head>
-	<title><fmt:message key="${resourceName}.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
+<cmscedit:head title="${resourceName}.title">
 	<script>
 	function select(wizard) {
 		document.location.href="ChooseWizardAction.do?parentPage=${parentPage}&wizard="+wizard;
 	}
 	</script>
-</head>
+</cmscedit:head>
 <body>
     <div class="tabs">
         <div class="tab_active">

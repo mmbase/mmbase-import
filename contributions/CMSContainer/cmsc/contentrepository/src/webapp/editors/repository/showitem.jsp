@@ -6,19 +6,12 @@
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
    <mm:import externid="objectnumber" vartype="Integer" required="true"/>
    <mm:node number="$objectnumber">
-         <head>
-            <title><fmt:message key="showitem.title"><fmt:param><mm:field name="title" /></fmt:param></fmt:message></title>
-			<link href="../css/main.css" type="text/css" rel="stylesheet" />
-         </head>
-         <body>
-         
-		<div class="side_block_green" style="width:100%">
-			<!-- bovenste balkje -->
-			<div class="header">
-				<div class="title"><mm:nodeinfo type="guitype"/>: <mm:field name="title" /></div>
-				<div class="header_end"></div>
-			</div>
-	      <div class="body">
+   <c:set var="showitemTitle"><fmt:message key="showitem.title"><fmt:param><mm:field name="title" /></fmt:param></fmt:message></c:set>
+<cmscedit:head title="${showitemTitle}" titleMode="plain"/>
+<body>
+	<c:set var="sideblockTitle"><mm:nodeinfo type="guitype"/>: <mm:field name="title" /></c:set>
+	<cmscedit:sideblock title="${sideblockTitle}" titleMode="plain"
+		 titleClass="side_block_green" titleStyle="width: 100%">         
             <table class="listcontent">
                <mm:field name="number">
                <tr>
@@ -105,11 +98,8 @@
 	               <a href="#" onClick="window.close()"><fmt:message key="showitem.close" /></a>
 				</li>
 			</ul>
-			</div>
-			<div class="side_block_end"></div>
-		</div>
-            
-         </body>
+	</cmscedit:sideblock>            
+   </body>
    </mm:node>
 </mm:cloud>
 </html:html>

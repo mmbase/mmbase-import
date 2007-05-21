@@ -1,25 +1,17 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-
-<%@include file="../globals.jsp"%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="../globals.jsp"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-	<head>
-	<title><fmt:message key="selector.title" /></title>
-	<link href="../../css/main.css" type="text/css" rel="stylesheet" />
+<cmscedit:head title="selector.title" ajax="true">
 	<script type="text/javascript" src="../ccp.js"></script>
 	<script type="text/javascript" src="../../utils/cookies.js"></script>
 
 	<link href="../../utils/ajaxtree/ajaxtree.css" type="text/css" rel="stylesheet" />
 	<link href="../../utils/ajaxtree/addressbar.css" type="text/css" rel="stylesheet" />
 
-	<script type="text/javascript" src="../../js/prototype.js"></script>
-	<script type="text/javascript" src="../../js/scriptaculous/scriptaculous.js"></script>
 	<script type="text/javascript" src="../../utils/ajaxtree/ajaxtree.js"></script>
 	<script type="text/javascript" src="../../utils/ajaxtree/addressbar.js"></script>
-	<script type="text/javascript" src="../../utils/window.js"></script>
-    <script type="text/javascript" src="../../utils/transparent_png.js" ></script>
-
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
@@ -45,9 +37,6 @@
 		
 	</script>
 	<style type="text/css">
-		body {
-			behavior: url(../../css/hover.htc);
-		}
 		.tooltip {
 			position: absolute;
 			display: none;
@@ -59,19 +48,14 @@
 			width: 80%
 		}
 	</style>
-	</head>
-	<body style="overflow: auto" onload="loadFunction();">
+</cmscedit:head>
+<body style="overflow: auto" onload="loadFunction();">
 	
 <div id="left">
-   <div class="side_block" style="width: 241px;">
-      <div class="header">
-         <div class="title"><fmt:message key="selector.title" /></div>
-         <div class="header_end"></div>
-      </div>
+	<cmscedit:sideblock title="selector.title" titleStyle="width: 241px;">
 		<ul class="shortcuts">
 			<li class="search"><a href="../SearchInitAction.do?action=select" target="selectcontent"><fmt:message key="selector.searchcontent" /></a></li>
 		</ul>
-			
 		<mm:import externid="channel" from="request" />
 		<mm:node referid="channel">
 			<mm:field name="path" id="channelPath" write="false" />
@@ -97,8 +81,7 @@
 			<div style="float: left" id="tree_div"><fmt:message key="selector.loading" /></div>
 			<jsp:include page="../../usermanagement/role_legend.jsp"/>
 		</div>
-      <div class="side_block_end"></div>
-   </div>
+	</cmscedit:sideblock>
 </div>
 
 	</body>

@@ -2,13 +2,8 @@
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="pagewizard.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-	<script type="text/javascript" src="../utils/window.js"></script>
-    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-
-	<script>
+<cmscedit:head title="pagewizard.title">
+	<script type="text/javascript">
 	var picking = '';
 	var mode = '';
 	
@@ -86,7 +81,7 @@
 		return true;
 	}
 	</script>
-</head>
+</cmscedit:head>
 <body>
     <div class="tabs">
         <div class="tab_active">

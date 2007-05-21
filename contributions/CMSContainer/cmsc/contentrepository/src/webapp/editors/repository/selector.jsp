@@ -4,21 +4,15 @@
 <%@page import="com.finalist.cmsc.repository.RepositoryUtil" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-	<head>
-	<title><fmt:message key="selector.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
+<cmscedit:head title="selector.title" ajax="true">
 	<script type="text/javascript" src="ccp.js"></script>
 	<script type="text/javascript" src="../utils/cookies.js"></script>
 
 	<link href="../utils/ajaxtree/ajaxtree.css" type="text/css" rel="stylesheet" />
 	<link href="../utils/ajaxtree/addressbar.css" type="text/css" rel="stylesheet" />
 
-	<script type="text/javascript" src="../js/prototype.js"></script>
-	<script type="text/javascript" src="../js/scriptaculous/scriptaculous.js"></script>
 	<script type="text/javascript" src="../utils/ajaxtree/ajaxtree.js"></script>
 	<script type="text/javascript" src="../utils/ajaxtree/addressbar.js"></script>
-	<script type="text/javascript" src="../utils/window.js"></script>
-    <script type="text/javascript" src="../utils/transparent_png.js" ></script>
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../utils/ajaxtree/images/';
@@ -65,22 +59,18 @@
 			width: 80%
 		}
 	</style>
-
-	</head>
-	<body style="overflow: auto" onload="loadFunction();">
+</cmscedit:head>
+<body style="overflow: auto" onload="loadFunction();">
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
 
 	<div id="left">
- 		<div class="side_block" style="width: 241px;">
-			<div class="header">
-				<div class="title"><fmt:message key="selector.search.header" /></div>
-				<div class="header_end"></div>
-			</div>
+		<cmscedit:sideblock title="selector.search.header" titleStyle="width: 241px;" bodyClass="body_table">
 			<div class="search_form">
 	      		<form action="SearchAction.do" name="searchForm" method="post" target="content">
 				<input type="text" name="title" value="<fmt:message key="selector.search.term" />" onfocus="clearDefaultSearchText('<fmt:message key="selector.search.term" />');"/>
 				</form>
 			</div>
+		
 			<div class="search_form_options">
 				<a href="javascript:document.forms['searchForm'].submit()" class="button"><fmt:message key="selector.search.search" /></a>
 			</div>
@@ -91,8 +81,7 @@
 					<a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
 						<fmt:message key="selector.recyclebin" />
 					</a>
-					<mm:import id="trashchannel" jspvar="trashchannel"><%= RepositoryUtil.ALIAS_TRASH %></mm:import>
-					<mm:node number="$trashchannel">
+					<mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
 						(<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
 					</mm:node>
 				</li>
@@ -101,17 +90,10 @@
 				<li class="attachements"><a href="<mm:url page="../resources/AttachmentInitAction.do"/>" target="content"><fmt:message key="selector.attachments" /></a></li>
 				<li class="urls"><a href="<mm:url page="../resources/UrlInitAction.do"/>" target="content"><fmt:message key="selector.urls" /></a></li>
 			</ul>
-			<div class="side_block_end"></div>
-		</div>
-		
-		<div class="side_block_gray" style="width: 241px;">
-			<!-- bovenste balkje -->
-			<div class="header">
-				<div class="title"><fmt:message key="selector.title" /></div>
-				<div class="header_end"></div>
-			</div>
+		</cmscedit:sideblock>
+		<cmscedit:sideblock title="selector.title" titleClass="side_block_gray" bodyClass="body_table"
+			titleStyle="width: 241px;">
 			<div class="search_form">
-			
 				<c:if test="${not empty param.channel}">
 	 				<mm:node number="${param.channel}">
 						<mm:field name="path" jspvar="channelPath" write="false" />
@@ -120,7 +102,6 @@
 				<html:form action="/editors/repository/QuickSearchAction" target="bottompane" styleId="addressBarForm">
 					<html:text property="path" value="${channelPath}" styleId="addressbar"/>
 				</html:form>
-
 			</div>
 			<div class="search_form_options">
 				<a href="#" class="button" onclick="getElementById('addressBarForm').submit()"> <fmt:message key="selector.search" /> </a>
@@ -145,11 +126,9 @@
 				<html:hidden property="sourcePasteChannel" />
 				<html:hidden property="destPasteChannel" />
 			</html:form>
-			<!-- einde block -->
-			<div class="side_block_end"></div>
-		</div>
+		</cmscedit:sideblock>
 	</div>
 </mm:cloud>
-	</body>
+</body>
 </html:html>
 </mm:content>

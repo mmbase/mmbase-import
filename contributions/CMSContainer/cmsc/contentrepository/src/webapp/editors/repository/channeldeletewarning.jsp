@@ -3,14 +3,10 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-	<head>
-		<title><fmt:message key="channeldelete.title" /></title>
-		<link href="../css/main.css" type="text/css" rel="stylesheet" />
-		<script src="content.js" type="text/javascript"></script>
-		<script src="../utils/window.js" type="text/javascript"></script>
-	</head>
-	<body>
-
+<cmscedit:head title="channeldelete.title">
+	<script src="content.js" type="text/javascript"></script>
+</cmscedit:head>
+<body>
 	<mm:cloud jspvar="cloud" rank="basic user" method='http'>
 		<mm:import externid="number" id="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true" />
 

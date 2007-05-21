@@ -2,9 +2,7 @@
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="pagewizard.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
+<cmscedit:head title="pagewizard.title">
 	<script>
 		function pickContent(type) {
 			var form = document.forms["CreateContentForm"];
@@ -12,7 +10,7 @@
 			form.submit();
 		}
 	</script>
-</head>
+</cmscedit:head>
 <body>
     <div class="tabs">
         <div class="tab_active">

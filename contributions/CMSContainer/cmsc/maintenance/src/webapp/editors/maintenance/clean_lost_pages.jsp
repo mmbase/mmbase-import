@@ -1,3 +1,7 @@
+<%-- 
+Info http://jira.finalist.com/browse/NIJ-855
+ --%>
+
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="../globals.jsp" %>
 <%int deleted = -1;%>

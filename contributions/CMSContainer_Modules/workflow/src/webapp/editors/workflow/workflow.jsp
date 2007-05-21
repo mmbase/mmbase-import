@@ -1,27 +1,17 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-   <title><fmt:message key="dashboard.title" /></title>
-   <link rel="stylesheet" type="text/css" href="../css/main.css" />
-   <script src="../utils/rowhover.js" type="text/javascript"></script>
+<cmscedit:head title="workflow.title">
    <script src="workflow.js" type="text/javascript"></script>
    <style>
    		table.centerData td {text-align: center;}
    </style>
-</head>
+</cmscedit:head>
 <body>
 <div id="left">
-	<!-- Zoek block -->
-	<div class="side_block">
-		<!-- bovenste balkje -->
-		<div class="header">
-			<div class="title"><fmt:message key="workflow.status.header" /></div>
-			<div class="header_end"></div>
-		</div>
-		<div class="body">
+	<cmscedit:sideblock title="workflow.status.header">
 		<mm:import externid="statusInfo" required="true" />
 
 		<table class="centerData">
@@ -66,10 +56,7 @@
             </tr>
 			</tbody>
 		</table>
-		</div>
-		<!-- einde block -->
-		<div class="side_block_end"></div>
-	</div>
+	</cmscedit:sideblock>
 </div>
 
 <div id="content">
