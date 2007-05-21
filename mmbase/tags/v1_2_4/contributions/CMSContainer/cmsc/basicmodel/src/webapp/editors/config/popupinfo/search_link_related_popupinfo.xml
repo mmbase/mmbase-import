@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="related" destination="popupinfo" minoccurs="0" maxoccurs="1" >
+	<title xml:lang="nl">Popup</title>
+	<title xml:lang="en">Popup</title>
+
+	<item>
+		<field name="windowname" dtrequired="true" dtmaxlength="40" dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+			<prompt xml:lang="en">Windowname</prompt>
+			<prompt xml:lang="nl">Vensternaam</prompt>
+		</field>
+		<field name="resizable" ftype="enum">
+			<prompt xml:lang="en">Resizable</prompt>
+			<prompt xml:lang="nl">Formaat wijzigen</prompt>
+			<optionlist select="boolean" />
+		</field>
+		<field name="scrollbars" ftype="enum">
+			<prompt xml:lang="en">Scrollbars</prompt>
+			<prompt xml:lang="nl">Schuifbalken</prompt>
+			<optionlist select="boolean" />
+		</field>
+		<field name="statusbar" ftype="enum">
+			<prompt xml:lang="en">Statusbar</prompt>
+			<prompt xml:lang="nl">Statusbalk</prompt>
+			<optionlist select="boolean" />
+		</field>
+		<field name="toolbars" ftype="enum">
+			<prompt xml:lang="en">Toolbars</prompt>
+			<prompt xml:lang="nl">Werkbalken</prompt>
+			<optionlist select="boolean" />
+		</field>
+		<field name="width">
+			<prompt xml:lang="en">Width</prompt>
+			<prompt xml:lang="nl">Breedte</prompt>
+		</field>
+		<field name="height">
+			<prompt xml:lang="en">Height</prompt>
+			<prompt xml:lang="nl">Hoogte</prompt>
+		</field>
+		<field name="left">
+			<prompt xml:lang="en">Left</prompt>
+			<prompt xml:lang="nl">Links</prompt>
+		</field>
+		<field name="top">
+			<prompt xml:lang="en">Top</prompt>
+			<prompt xml:lang="nl">Boven</prompt>
+		</field>
+	</item>
+
+	<command name="insert" objectnumber="new">
+		<prompt xml:lang="en">New</prompt>
+		<prompt xml:lang="nl">Nieuw</prompt>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="popupinfo" role="related">
+			<object type="popupinfo"></object>
+		</relation>
+	</action>
+</list>
