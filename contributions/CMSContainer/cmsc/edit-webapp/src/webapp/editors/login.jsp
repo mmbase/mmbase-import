@@ -5,14 +5,9 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-   <title><fmt:message key="login.title" /></title>
-   <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/editors/css/main.css'/>" />
-   <link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
-   <link rel="shortcut icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
+<cmscedit:head title="login.title">
    <style type="text/css">
       body {
-         behavior: url(./css/hover.htc);
          margin: 100px;
          text-align: center;
       }
@@ -35,8 +30,7 @@ function setFocusOnFirstInput() {
     }
 }
 </script>
-   
-</head>	
+</cmscedit:head>
 <body onload="setFocusOnFirstInput()">
    <script type="text/javascript">
    <!--
@@ -44,11 +38,8 @@ function setFocusOnFirstInput() {
    top.location.href=location.href
    // -->
    </script>
-   <div class="side_block">
-      <div class="header">
-         <div class="title"><fmt:message key="login.title" /></div>
-         <div class="header_end"></div>
-      </div>
+
+	<cmscedit:sideblock title="login.title">
       &nbsp;
 <!-- restricted url: <mm:write referid="referrer" />  -->
       <form method="post" action="<mm:url page='/editors/' />" target="_top">
@@ -78,8 +69,7 @@ function setFocusOnFirstInput() {
             </mm:write>
          </table>
       </form>
-      <div class="side_block_end"></div>
-   </div>
+`	</cmscedit:sideblock>
 </body>
 </html:html>
 </mm:content>

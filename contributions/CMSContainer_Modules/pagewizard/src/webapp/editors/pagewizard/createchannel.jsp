@@ -2,11 +2,7 @@
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="pagewizard.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-	<script type="text/javascript" src="../utils/transparent_png.js" ></script>
-
+<cmscedit:head title="pagewizard.title">
 	<script>
 		function checkCompleteNew() {
 			var form = document.forms["CreateChannelForm"];
@@ -27,7 +23,7 @@
 			return false;
 		}
 	</script>
-</head>
+</cmscedit:head>
 <body>
     <div class="tabs">
         <div class="tab_active">

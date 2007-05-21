@@ -4,13 +4,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="maintenance.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-
-	<script type="text/javascript" src="../utils/transparent_png.js" ></script>
-</head>
-
+<cmscedit:head title="maintenance.title" />
 <body>
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 

@@ -2,10 +2,10 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <cmsc:protected>
 <c:set var="clientLocale" value="${pageContext.request.locale}" />
-	<script type="text/javascript" src="<cmsc:staticurl page='/editors/utils/window.js' />"></script>
-	<script type="text/javascript" src="<cmsc:staticurl page='/editors/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<cmsc:staticurl page='/js/window.js' />"></script>
+	<script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
 	<script type="text/javascript" src="<cmsc:staticurl page='/editors/site/portletediting.js.jsp'/>"></script>
-	<script type="text/javascript" src="<cmsc:staticurl page='/editors/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<cmsc:staticurl page='/js/scriptaculous/scriptaculous.js'/>"></script>
 	<script type="text/javascript">
 		_editor_url = '<cmsc:staticurl page="/mmbase/edit/wizard/xinha/" />';
 		_editor_lang = '<c:out value="${clientLocale.language}" />';

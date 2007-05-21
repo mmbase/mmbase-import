@@ -3,20 +3,15 @@
 <mm:import externid="bottomurl" from="parameters"/>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-   <head>
-      <title><fmt:message key="topmenu.title" /></title>
-      <script type="text/javascript" src="topmenu.js"></script>
-      <link rel="stylesheet" type="text/css" href="css/main.css" />
-     <style type="text/css">
-        body { behavior: url(./css/hover.htc);}
-     </style>
-   </head>
-   <body onload="initMenu();">
+<cmscedit:head title="topmenu.title">
+   <script type="text/javascript" src="topmenu.js"></script>
+</cmscedit:head>
+<body onload="initMenu();">
       <mm:cloud loginpage="login.jsp" rank="basic user">
 
          <div id="header">
 	         <div class="title_image">
-	            <img src="gfx/logo_editors.png"/>
+	            <img src="gfx/logo_editors.png" alt="Editors logo"/>
             </div>
             <div class="title">
                <fmt:message key="editors.title" />

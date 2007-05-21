@@ -118,7 +118,7 @@ function fillIframe(div, left) {
 }
 
 function writeDocument(doc, div, parentdocument) {
-	var javascriptWindow = "<cmsc:staticurl page='/editors/utils/window.js' />";
+	var javascriptWindow = "<cmsc:staticurl page='/js/window.js' />";
 	var cssPortaledit = "<cmsc:staticurl page='/editors/site/portaledit.css' />";
     html = "<html>\n";
     html += "<head>\n";

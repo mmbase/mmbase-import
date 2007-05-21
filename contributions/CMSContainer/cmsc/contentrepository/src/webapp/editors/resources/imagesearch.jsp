@@ -6,31 +6,25 @@
 <mm:import externid="mode" id="mode">search</mm:import>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-   <head>
-	  <link href="../css/main.css" type="text/css" rel="stylesheet" />
-      <title><fmt:message key="images.title" /></title>
-
-      <script src="../repository/search.js"type="text/javascript" ></script>
-      <script src="../repository/content.js"type="text/javascript" ></script>
-      <script src="../utils/window.js" type="text/javascript"></script>
-      <script src="../utils/rowhover.js" type="text/javascript"></script>
-      <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-		<script type="text/javascript">
-			function selectElement(element, title, src, width, height, description) {
-				
-				if(window.top.opener != undefined) {
-					window.top.opener.selectElement(element, title, src, width, height, description);
-					window.top.close();
-				}
-			}
+<cmscedit:head title="images.title">
+	<script src="../repository/search.js"type="text/javascript" ></script>
+	<script src="../repository/content.js"type="text/javascript" ></script>
+	<script type="text/javascript">
+		function selectElement(element, title, src, width, height, description) {
 			
-			function showInfo(objectnumber) {
-				openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
-            }
-		</script>
-   </head>
-   <body onload="alphaImages()">
-      <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
+			if(window.top.opener != undefined) {
+				window.top.opener.selectElement(element, title, src, width, height, description);
+				window.top.close();
+			}
+		}
+		
+		function showInfo(objectnumber) {
+			openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
+        }
+	</script>
+</cmscedit:head>
+<body>
+<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">search</mm:import><%-- either: search of select --%>
 
       <div class="tabs">
@@ -97,17 +91,17 @@
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                                      <mm:param name="returnurl" value="<%="../editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
                                                   </mm:url>">
-                    	          <img src="../gfx/icons/page_edit.png" title="<fmt:message key="imagesearch.icon.edit" />" /></a>
+                    	          <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="imagesearch.icon.edit" />" title="<fmt:message key="imagesearch.icon.edit" />" /></a>
 							  <mm:hasrank minvalue="administrator">
 	        		                <a href="<mm:url page="DeleteSecondaryContentAction.do" >
 	                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
 	                                                     <mm:param name="returnurl" value="<%="/editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
 	                                                  </mm:url>">
-	                              <img src="../gfx/icons/delete.png" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
+	                              <img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
 		                     </mm:hasrank>
 	                     </c:if>
                           <a href="javascript:showInfo(<mm:field name="number" />)">
-                              <img src="../gfx/icons/info.png" title="<fmt:message key="imagesearch.icon.info" />" /></a>
+                              <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
                        </td>
                        <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
@@ -125,9 +119,9 @@
 <c:if test="${resultCount > 0}">
 	<%@include file="../repository/searchpages.jsp" %>
 </c:if>	
-</mm:cloud>
 </div>
 </div>	
-   </body>
+</mm:cloud>
+</body>
 </html:html>
 </mm:content>

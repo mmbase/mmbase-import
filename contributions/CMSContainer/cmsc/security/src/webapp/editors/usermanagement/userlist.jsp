@@ -3,21 +3,11 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-	<script type="text/javascript" src="../utils/transparent_png.js" ></script>
-<title><fmt:message key="userlist.title" /></title>
-</head>
+<cmscedit:head title="userlist.title" />
 <body>
 <mm:cloud loginpage="../login.jsp" rank="administrator" jspvar="cloud">
 <div style="float: left">
-	<div class="side_block_gray" >
-		<!-- bovenste balkje -->
-		<div class="header">
-			<div class="title"><fmt:message key="userlist.groups" /></div>
-			<div class="header_end"></div>
-		</div>
-		
+<cmscedit:sideblock title="userlist.groups" titleClass="side_block_gray">
 		<ul class="shortcuts">
             <li class="usergroupnew">
 				<a href="GroupInitAction.do"><fmt:message key="userlist.newgroup" /></a>
@@ -52,20 +42,12 @@
 				</tr>
 			</mm:listnodes>
 		</table>
-
-		<!-- einde block -->
-		<div class="side_block_end"></div>
-	</div>
+	</cmscedit:sideblock>
 </div>
 
 <div style="float: left;padding-left: 5px">
-	<div class="side_block_green" style="float: left">
-		<!-- bovenste balkje -->
-		<div class="header">
-			<div class="title"><fmt:message key="userlist.users" /></div>
-			<div class="header_end"></div>
-		</div>
-
+<cmscedit:sideblock title="userlist.users" 
+	titleClass="side_block_green" titleStyle="float: left">
 		<ul class="shortcuts">
             <li class="usernew">
 				<a href="UserInitAction.do"><fmt:message key="userlist.newuser" /></a>
@@ -94,9 +76,7 @@
 				</mm:compare>
 			</mm:listnodes>
 		</table>
-		<!-- einde block -->
-		<div class="side_block_end"></div>
-	</div>
+</cmscedit:sideblock>
 </div>
 </mm:cloud>
 </body>

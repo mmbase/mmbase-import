@@ -5,30 +5,24 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-   <head>
- 	  <link href="../css/main.css" type="text/css" rel="stylesheet" />
-      <title><fmt:message key="attachments.title" /></title>
-      <script src="../repository/search.js"type="text/javascript" ></script>
-      <script src="../repository/content.js"type="text/javascript" ></script>
-      <script src="../utils/window.js" type="text/javascript"></script>
-      <script src="../utils/rowhover.js" type="text/javascript"></script>
-      <script type="text/javascript" src="../utils/transparent_png.js" ></script>
-
-		<script type="text/javascript">
-			function selectElement(element, title, src) {
-				if(window.top.opener != undefined) {
-					window.top.opener.selectElement(element, title, src);
-					window.top.close();
-				}
+<cmscedit:head title="attachments.title">
+	<script src="../repository/search.js"type="text/javascript" ></script>
+	<script src="../repository/content.js"type="text/javascript" ></script>
+	<script type="text/javascript">
+		function selectElement(element, title, src) {
+			if(window.top.opener != undefined) {
+				window.top.opener.selectElement(element, title, src);
+				window.top.close();
 			}
-			
-			function showInfo(objectnumber) {
-				openPopupWindow('attachmentinfo', '500', '500', 'attachmentinfo.jsp?objectnumber='+objectnumber);
-            }
-		</script>
-   </head>
-   <body>
-      <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
+		}
+		
+		function showInfo(objectnumber) {
+			openPopupWindow('attachmentinfo', '500', '500', 'attachmentinfo.jsp?objectnumber='+objectnumber);
+        }
+	</script>
+</cmscedit:head>
+<body>
+  <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 
 <mm:import externid="action">search</mm:import><%-- either: search of select --%>
 
@@ -51,19 +45,16 @@
 
      <div class="editor" style="height:500px">
       <div class="body">
-
          <mm:import id="searchinit"><c:url value='/editors/resources/AttachmentInitAction.do'/></mm:import>
          <html:form action="/editors/resources/AttachmentAction" method="post">
 			<html:hidden property="action" value="${action}"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
-
 <mm:import id="contenttypes" jspvar="contenttypes">attachments</mm:import>
 <%@include file="attachmentform.jsp" %>
-
          </html:form>
-</div>
+	  </div>
 
 <div class="ruler_green"><div><fmt:message key="attachments.results" /></div></div>
 
@@ -92,17 +83,17 @@
                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                          <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
                                       </mm:url>">
-                              <img src="../gfx/icons/page_edit.png" title="<fmt:message key="attachmentsearch.icon.edit" />" /></a>
+                              <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="attachmentsearch.icon.edit" />" title="<fmt:message key="attachmentsearch.icon.edit" />" /></a>
 						      <mm:hasrank minvalue="administrator">
 	                            <a href="<mm:url page="DeleteSecondaryContentAction.do" >
                                             <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                             <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
                                          </mm:url>">
-	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
+	                            <img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
 	                          </mm:hasrank>
 	                       </c:if>
 	                       <a href="javascript:showInfo(<mm:field name="number" />)">
-	                              <img src="../gfx/icons/info.png" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
+	                              <img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
                          </td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
 	                     <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
@@ -118,8 +109,10 @@
 </c:if>
 <c:if test="${resultCount > 0}">
 	<%@include file="../repository/searchpages.jsp" %>
-</c:if>	
+</c:if>
+</div>
+</div>	
 </mm:cloud>
-   </body>
+</body>
 </html:html>
 </mm:content>
