@@ -517,6 +517,16 @@ public class RubriekHelper {
       rubriekNode.delete(true);
    }
    
+   /**
+    * Returns the content elements associated with this rubriek by creatierubriek relation.
+    *
+    * @param rubriekNode
+    * @return NodeList related content elements
+    */
+   public NodeList getContentElements(Node rubriekNode) {
+	   return rubriekNode.getRelatedNodes("contentelement", "creatierubriek", "SOURCE");
+   }
+   
    /** gets the root rubriek number 
      */
    public String getRootRubriek() {
