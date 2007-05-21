@@ -42,9 +42,9 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
       KnownVisitorModule.setInstance(this);
    }
 
-   public void justLoggedIn(HttpServletRequest request, NtlmPasswordAuthentication ntlm) {
+   public void justLoggedIn(HttpServletRequest request, String username) {
       NtlmVisitor visitor = new NtlmVisitor();
-      visitor.setIdentifier(ntlm.getUsername());
+      visitor.setIdentifier(username);
       readLdapInfo(visitor);
       request.getSession().setAttribute(NtlmKnownVisitorModule.SESSION_ATTRIBUTE, visitor);
    }
