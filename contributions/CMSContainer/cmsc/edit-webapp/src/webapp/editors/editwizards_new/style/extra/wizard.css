@@ -268,7 +268,6 @@ div.page_buttons div.button:hover div.button_body a.bottombutton-disabled
 	color: gray;
 	font-size: 13px;	
 	display: block;
-	border: 10px solid red;
 }
 
 div.ruler1,
@@ -285,7 +284,7 @@ div.ruler17
 	background-position: left top;
 	background-repeat: no-repeat;	
 	
-	width: 99%;			
+	width: 100%;			
 }
 
 div.ruler1 div,
@@ -325,7 +324,7 @@ div.ruler18
 	background-position: left top;
 	background-repeat: no-repeat;	
 	
-	width: 99%;			
+	width: 100%;			
 }
 
 div.ruler2 div,
@@ -365,7 +364,7 @@ div.ruler19
 	background-position: left top;
 	background-repeat: no-repeat;
 	
-	width: 99%;
+	width: 100%;
 }
 
 div.ruler3 div,
@@ -405,7 +404,7 @@ div.ruler20
 	background-position: left top;
 	background-repeat: no-repeat;
 	
-	width: 99%;
+	width: 100%;
 }
 
 div.ruler4 div,
@@ -439,7 +438,7 @@ table.contentlist
 	border-width: 0px;
 	color: #313728;
 	font-size: 11px;
-	margin: 20px;
+	width: 99%;
 }
 table.itemcontent {
     font-size: 11px;

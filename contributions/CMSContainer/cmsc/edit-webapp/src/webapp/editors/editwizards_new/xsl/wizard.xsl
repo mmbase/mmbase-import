@@ -12,6 +12,7 @@
   extension-element-prefixes="node date">
 
    <!-- Import original stylesheet -->
+   <xsl:import href="templatesi18n:xsl/prompts-cmsc.xsl"/>
    <xsl:import href="ew:xsl/wizard.xsl"/>
 <!-- <xsl:include href="wizard-simple.xsl"/> -->
    <xsl:include href="wizard-workflow.xsl"/>
@@ -28,8 +29,6 @@
   <xsl:param name="EDITOR">false</xsl:param>
   <xsl:param name="CHIEFEDITOR">false</xsl:param>
   <xsl:param name="WEBMASTER">false</xsl:param>
-  
-  <xsl:variable name="REASON-RIGHTS">U heeft geen rechten op  de rubriek waartoe dit object behoort.</xsl:variable>
 
 <!--
   END
@@ -66,6 +65,12 @@
         //  -->
         ]]></xsl:text>
     </script>
+  </xsl:template>
+
+  <xsl:template name="style">  
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/layout/wizard.css"/>  
+ 
+    <xsl:call-template name="stylehtml"/> 
   </xsl:template>
 
   <xsl:template name="colorstyle">
@@ -248,7 +253,7 @@
   </xsl:template>
 
   <xsl:template name="prompt_errormesg">
-    <br></br>
+    <br />
     <span id="errormesg_{@fieldname}" class="notvalid"></span>
   </xsl:template>
   
@@ -336,11 +341,15 @@
   </xsl:template>
   
   <xsl:template name="listtable">
+    <tr class="item{position()}">
+      <!-- 
+        I know this really shouldn't be here (the style attribute)
+        but since we need to do more fixes anyway I'll leave it
+        here until the structure is changed.
+      -->
+      <td colspan="2" style="padding: 15px;">
     <table class="contentlist">
       <tr>  
-        <xsl:attribute name="class">
-          item<xsl:value-of select="position()"/>
-        </xsl:attribute>                     
         <!-- NEW button -->
         <!-- REMOVE NEW AND SEARCH WHEN READONLY -->
         <xsl:if test="$READONLY=&apos;false&apos;">    
@@ -354,9 +363,12 @@
         <!-- END -->
       </tr>
     </table>
+      </td>
+    </tr>
+    
     <!-- List of items -->
     <tr class="itemcanvas">
-      <td/>
+      <td></td>
       <td>       
         <xsl:call-template name="listitems"/>
         <xsl:variable name="INPUTREADONLY" select="'true'" /> 
@@ -644,8 +656,6 @@
   </xsl:template>
 
 <!-- OVERRIDE PROMPTS.XSL
-  The prompts.xsl can not be extended, bacause that will break 
-  the i18n prompts support.
 -->
 
   <xsl:template name="prompt_remove">
@@ -661,11 +671,11 @@
   </xsl:template>
   
   <xsl:template name="prompt_new">
-    nieuw
+    <xsl:value-of select="$prompt_new_link" />
   </xsl:template>
   
-  <xsl:template name="prompt_search">  
-    zoeken
+  <xsl:template name="prompt_search">
+    <xsl:value-of select="$prompt_search_link" />
     <xsl:choose>
       <xsl:when test="prompt!=''">
         <xsl:attribute name="alt">
@@ -690,7 +700,7 @@
           <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
-      bewerken
+      <xsl:value-of select="$prompt_edit_link" />
   </xsl:template>
   
   <xsl:template name="prompt_add_wizard">
@@ -702,9 +712,8 @@
           <xsl:attribute name="title"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
-    nieuw
+      <xsl:value-of select="$prompt_new_link" />
   </xsl:template>
-
 
 <!-- END OVERRIDE PROMPTS.XSL -->
   
