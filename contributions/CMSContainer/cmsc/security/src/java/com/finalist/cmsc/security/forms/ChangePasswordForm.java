@@ -2,17 +2,13 @@ package com.finalist.cmsc.security.forms;
 
 import java.util.HashMap;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
 
 import com.finalist.cmsc.struts.MMBaseAction;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Form bean for the ChangePasswordForm page.
@@ -30,20 +26,20 @@ public class ChangePasswordForm extends ActionForm {
       ActionErrors errors = new ActionErrors();
 
       if (getPassword() == null || getPassword().trim().length() == 0) {
-         errors.add("password", new ActionError("error.password.incorrect"));
+         errors.add("password", new ActionMessage("error.password.incorrect"));
       }
       if (getNewpassword() == null || getNewpassword().trim().length() < 5 || getNewpassword().trim().length() > 15) {
-         errors.add("newpassword", new ActionError("error.password.invalid"));
+         errors.add("newpassword", new ActionMessage("error.password.invalid"));
       }
       if (getConfirmnewpassword() == null || getConfirmnewpassword().trim().length() < 5 || getConfirmnewpassword().trim().length() > 15) {
-         errors.add("confirmnewpassword", new ActionError("error.password.invalid"));
+         errors.add("confirmnewpassword", new ActionMessage("error.password.invalid"));
       }
       if (!getConfirmnewpassword().equals(getNewpassword())) {
-         errors.add("newpassword", new ActionError("error.password.nomatch"));
+         errors.add("newpassword", new ActionMessage("error.password.nomatch"));
       }
       if (errors.size() == 0) {
          if (getPassword().equals(getNewpassword())) {
-            errors.add("newpassword", new ActionError("error.newpassword.incorrect"));
+            errors.add("newpassword", new ActionMessage("error.newpassword.incorrect"));
          }
          else {
              try {
@@ -54,7 +50,7 @@ public class ChangePasswordForm extends ActionForm {
              ContextProvider.getCloudContext(ContextProvider.getDefaultCloudContextName()).getCloud("mmbase","name/password", user);
              }
              catch(java.lang.SecurityException se) {
-                 errors.add("password", new ActionError("error.password.incorrect")); 
+                 errors.add("password", new ActionMessage("error.password.incorrect")); 
              }
           }
 

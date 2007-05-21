@@ -2,9 +2,7 @@ package com.finalist.cmsc.security.forms;
 
 import java.util.*;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionError;
+import org.apache.struts.action.*;
 import org.mmbase.bridge.NodeList;
 
 import com.finalist.cmsc.struts.MMBaseAction;
@@ -52,45 +50,45 @@ public class UserForm extends MMBaseForm {
 
       if (getId() == -1) {
          if (getUsername() == null || getUsername().length() < 3 || getUsername().length() > 15) {
-            errors.add("username", new ActionError("error.username.invalid"));
+            errors.add("username", new ActionMessage("error.username.invalid"));
          }
          else {
             String user = getUsername();
             NodeList list = MMBaseAction.getCloudFromSession(request).getNodeManager("user").getList("username='"+user+"'",null,null);
             if (list.size()!=0) {
-               errors.add("username", new ActionError("error.username.alreadyexists"));
+               errors.add("username", new ActionMessage("error.username.alreadyexists"));
             }
          }
          if (getPassword() == null || getPassword().length() < 5 || getPassword().length() > 15) {
-            errors.add("password", new ActionError("error.password.invalid"));
+            errors.add("password", new ActionMessage("error.password.invalid"));
          }
          if (getPassword2() == null || getPassword2().length() < 5 || getPassword2().length() > 15) {
-            errors.add("password2", new ActionError("error.password.invalid"));
+            errors.add("password2", new ActionMessage("error.password.invalid"));
          }
          if (errors.size() <= 0) {
             if (!getPassword().equals(getPassword2())) {
-               errors.add("password", new ActionError("error.password.nomatch"));
+               errors.add("password", new ActionMessage("error.password.nomatch"));
             }
          }
       }
       else {
          if (getPassword() != null && getPassword().length() > 0) {
             if (getPassword() == null || getPassword().length() < 5 || getPassword().length() > 15) {
-               errors.add("password", new ActionError("error.password.invalid"));
+               errors.add("password", new ActionMessage("error.password.invalid"));
             }
             if (getPassword2() == null || getPassword2().length() < 5 || getPassword2().length() > 15) {
-               errors.add("password2", new ActionError("error.password.invalid"));
+               errors.add("password2", new ActionMessage("error.password.invalid"));
             }
             if (errors.size() <= 0) {
                if (!getPassword().equals(getPassword2())) {
-                  errors.add("password", new ActionError("error.password.nomatch"));
+                  errors.add("password", new ActionMessage("error.password.nomatch"));
                }
             }
          }
       }
 
       if (getEmail() == null || getEmail().length() == 0) {
-         errors.add("email", new ActionError("error.email.empty"));
+         errors.add("email", new ActionMessage("error.email.empty"));
       }
 
       return errors;
