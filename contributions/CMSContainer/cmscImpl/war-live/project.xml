@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
-    <artifactId>cmsc-webapp-live</artifactId>
+    <artifactId>cmsc-live</artifactId>
     <name>Custom CMS Container live web application</name>
     <shortDescription>CMS Container live web application</shortDescription>
 	<dependencies>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-webapp</artifactId>
+         <version>${cmsc.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+	
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-basicmodel</artifactId>
@@ -27,6 +34,12 @@
 		</dependency>
 		<dependency>
 			<groupId>finalist</groupId>
+			<artifactId>cmsc-maintenance</artifactId>
+			<version>${cmsc.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
 			<artifactId>cmsc-portal</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
@@ -35,12 +48,6 @@
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-portlets</artifactId>
 			<version>${cmsc.version}</version>
-			<type>mmbase-module</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-publish-remote</artifactId>
-			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
    		<dependency>
@@ -105,6 +112,19 @@
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
+		
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-publish-remote</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-publish-cleaner</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
 		
 		<dependency>
 			<groupId>mmapps</groupId>

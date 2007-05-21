@@ -20,11 +20,9 @@
 		mail.debug				The initial debug mode. Default is false.
 	-->
 	<Resource name="mail/Session" auth="Container" type="javax.mail.Session"
-		factory="org.apache.naming.factory.MailSessionFactory" 
 		mail.smtp.host="MISSING.MAILSERVER" />
 
 	<Resource name="jdbc/cmsc" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.commons.dbcp.BasicDataSourceFactory" 
 		removeAbandoned="true" 
 		removeAbandonedTimeout="60"
 		logAbandoned="true" 
@@ -34,7 +32,7 @@
 		username="cmsc" 
 		password="cmsc"
 		driverClassName="com.mysql.jdbc.Driver" 
-		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
 	<!-- zeroDateTimeBehavior=convertToNull 
 		Datetimes with all-zero components ('0000-00-00 ...') - These values can not be represented reliably
@@ -67,7 +65,7 @@
 
 	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
 	<Environment name="mmbase/mmbaseroot/datasource" value="jdbc/cmsc" type="java.lang.String" />
-	<Environment name="mmbase/mmbaseroot/basename" value="staging" type="java.lang.String" />
+<!--	<Environment name="mmbase/mmbaseroot/basename" value="staging" type="java.lang.String" /> -->
 	
 	<Environment name="mmbase/imaging/ImageConvertClass"
 		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
@@ -76,7 +74,7 @@
 
 	<Environment name="mmbase/rmmci/port" value="1111" type="java.lang.String" />
 	<Environment name="mmbase/rmmci/stubport" value="1112" type="java.lang.String" />
-	<Environment name="mmbase/rmmci/bindname" value="staging" type="java.lang.String" />
+	<Environment name="mmbase/rmmci/bindname" value="cmsc-staging" type="java.lang.String" />
 	<!-- if RMIRegistryServer is not set RemoteMMCI looks for a RMIRegistryServer
 		on the host defined in the mmbaseroot.xml module. -->
 	<!-- <Environment name="mmbase/rmmci/RMIRegistryServer" value="localhost" type="java.lang.String" /> -->
@@ -87,5 +85,7 @@
 	<Environment name="server/LiveOrStaging" value="staging" type="java.lang.String" />
 	<!-- This entry defines whether this server includes the servername to lookup portal pages. -->
 	<Environment name="server/useServerName" value="false" type="java.lang.String" />
+	<!--  Contains value 'true' or 'false' to indicate whether or not this is the production system -->
+	<Environment name="server/production" value="false" type="java.lang.String" />	
 
 </Context>
