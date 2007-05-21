@@ -2,8 +2,7 @@
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
-	<title><fmt:message key="pagewizard.title" /></title>
+<cmscedit:head title="pagewizard.title">
 	<c:if test="${param.action != 'cancel'}">
 		<mm:cloud>
 			<mm:node number="${param.ewnodelastedited}">
@@ -11,7 +10,6 @@
 			</mm:node>
 		</mm:cloud>
 	</c:if>
-	
 	<script>
 		function loaded() {
 			<c:if test="${param.action != 'cancel'}">
@@ -20,7 +18,7 @@
 			window.close();
 		}
 	</script>
-</head>
+</cmscedit:head>
 <body onload="loaded()">
 
 </body>

@@ -3,24 +3,15 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-  <title><fmt:message key="group.title" /></title>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-  <script src="../utils/selectbox.js" type="text/javascript"></script>
-</head>
+<cmscedit:head title="group.title">
+	<script src="../../js/selectbox.js" type="text/javascript"></script>
+	<style>
+		input.select { font-height: 4px;}
+	</style>
+</cmscedit:head>
 <body style="overflow: auto">
 <mm:cloud jspvar="cloud" loginpage="../login.jsp" rank='administrator'>
-<style>
-	input.select { font-height: 4px;}
-</style>
-
-<div class="content_block_pink">
-<div class="header">
-   <div class="title"><fmt:message key="group.title" /></div>
-   <div class="header_end"></div>
-</div>
-		<div style="clear:both; height:10px;"></div>
-         
+<cmscedit:contentblock title="group.title" titleClass="content_block_pink">
 	<html:form action="/editors/usermanagement/GroupAction" 
 		 onsubmit="return selectboxesOnSubmit('users', 'members');">
 		<html:hidden property="id" />
@@ -73,9 +64,7 @@
 			<html:submit style="width:90"><fmt:message key="group.submit"/></html:submit>
 		</div>
 	</html:form>
-	
-<div class="side_block_end"></div>
-</div>	
+	</cmscedit:contentblock>	
 </mm:cloud>
 </body>
 </html:html>

@@ -1,12 +1,6 @@
 <%@include file="globals.jsp" %>
 <html>
-<head>
-   <title>Footer</title>
-   <link rel="stylesheet" type="text/css" href="./css/main.css" />
-   <style type="text/css">
-      body { behavior: url(./css/hover.htc);}
-   </style>
-</head>
+<cmscedit:head title="Footer" titleMode="plain"/>
 <body>
    <div id="footer">
       <br />

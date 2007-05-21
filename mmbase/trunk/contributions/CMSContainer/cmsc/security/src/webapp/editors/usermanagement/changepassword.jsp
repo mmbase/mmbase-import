@@ -3,11 +3,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<link rel="stylesheet" type="text/css" href="../css/main.css" />
-<title><fmt:message key="changepassword.title" /></title>
-</head>
-
+<cmscedit:head title="changepassword.title" />
 
 <c:choose>
 <c:when test="${param.succeeded}">
@@ -15,9 +11,8 @@
       </body>
 </c:when>
 <c:otherwise>
-<body>
-<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-
+	<body>
+	<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
       <div class="tabs">
          <!-- actieve TAB -->
          <div class="tab_active">

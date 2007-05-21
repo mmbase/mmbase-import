@@ -1,34 +1,25 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="globals.jsp"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-   <title><fmt:message key="publish.title" /></title>
-   <link rel="stylesheet" type="text/css" href="../css/main.css" />
-</head>
+<cmscedit:head title="publish.title" />
 <body>
-   <div class="side_block">
-      <!-- bovenste balkje -->
-      <div class="header">
-         <div class="title"><fmt:message key="publish.title" /></div>
-         <div class="header_end"></div>
-      </div>
-      <div class="body">
-          <p>
-              <fmt:message key="publish.help" />
+	<cmscedit:sideblock title="publish.title">
+      <p>
+          <fmt:message key="publish.help" />
 
-              <c:if test="${not empty errors}">
+          <c:if test="${not empty errors}">
 
-                 <c:forEach var="error" items="${errors}">
-                    <p><img src="../gfx/icons/error.png" alt="!"/> ${error}</p>
-                 </c:forEach>
+             <c:forEach var="error" items="${errors}">
+                <p><img src="../gfx/icons/error.png" alt="!"/> ${error}</p>
+             </c:forEach>
 
-              </c:if>
-          </p>
-         <c:choose>
-            <c:when test="${(empty param.doit) or (not empty errors)}">
-               <c:url var="actionUrl" value="/editors/publish-remote/PublishBuilderAction.do"/>
+          </c:if>
+      </p>
+     <c:choose>
+        <c:when test="${(empty param.doit) or (not empty errors)}">
+           <c:url var="actionUrl" value="/editors/publish-remote/PublishBuilderAction.do"/>
          <form action="${actionUrl}" method="post">
             <table>
                <tr>
@@ -64,16 +55,12 @@
             <fmt:message key="publish.form.submit" var="inputValue"/>
             <input type="submit" value="${inputValue}"/>
          </form>
-            </c:when>
-            <c:otherwise>
-               <fmt:message key="publish.succesfull"/>
-            </c:otherwise>
-            </c:choose>
-         </div>
-      <!-- einde block -->
-      <div class="side_block_end"></div>
-   </div>
-
+        </c:when>
+        <c:otherwise>
+           <fmt:message key="publish.succesfull"/>
+        </c:otherwise>
+        </c:choose>
+	</cmscedit:sideblock>
 </body>
 </html:html>
 </mm:content>

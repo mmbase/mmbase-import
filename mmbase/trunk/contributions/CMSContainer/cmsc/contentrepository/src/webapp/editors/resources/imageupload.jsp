@@ -1,18 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@page import="com.finalist.util.http.BulkUploadUtil"%>
 <%@page import="java.util.List"%> 
-<html>
-<head>
-<link href="../css/main.css" type="text/css" rel="stylesheet" />
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload images</title>
+<mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html:html xhtml="true">
+<cmscedit:head title="images.upload.title">
   <script src="../repository/search.js"type="text/javascript" ></script>
-  <script src="../utils/rowhover.js" type="text/javascript"></script>
-  <script src="../utils/window.js" type="text/javascript"></script>
-  <script type="text/javascript" src="../utils/transparent_png.js" ></script>
   <script language="javascript" type="text/javascript">
     function upload() {
         var f=document.forms[0];
@@ -33,7 +27,7 @@
           
     var blockSelect = false;
   </script>
-</head>
+</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
       <div class="tabs">
@@ -55,7 +49,7 @@
       
       <div class="editor" style="height:500px">
           <div class="body">
-              <form action="" enctype="multipart/form-data" method="POST">
+              <form action="" enctype="multipart/form-data" method="post">
           		<input type="hidden" name="uploadAction" value="${param.uploadAction}"/>
                     <table border="0">
                        <tr>
@@ -168,4 +162,5 @@
       </div>
 </mm:cloud>
 </body>
-</html>
+</html:html>
+</mm:content>

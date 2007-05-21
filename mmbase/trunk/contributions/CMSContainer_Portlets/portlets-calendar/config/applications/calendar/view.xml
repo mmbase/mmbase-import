@@ -3,6 +3,6 @@
 	<node number="102341" owner="default">
 		<title>event</title>
 		<description>Event</description>
-		<resource>calendar/basic.jsp</resource>
+		<resource>calendar/list.jsp</resource>
 	</node>
 </view>

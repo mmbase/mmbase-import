@@ -6,17 +6,13 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-	<title><fmt:message key="contentroles.title" /></title>
-</head>
+<cmscedit:head title="contentroles.title">
+	<style>
+		input.select { font-height: 4px;}
+	</style>
+</cmscedit:head>
 <body style="overflow: auto">
-
-
 <mm:cloud jspvar="cloud" rank='administrator'>
-<style>
-	input.select { font-height: 4px;}
-</style>
 
 <html:form action="/editors/usermanagement/ContentRolesAction">
 <input type="hidden" name="savetree" id="savetree" value="true">

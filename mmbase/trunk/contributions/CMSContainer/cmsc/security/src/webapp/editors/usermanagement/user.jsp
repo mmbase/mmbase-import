@@ -3,22 +3,15 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<head>
-	<link href="../css/main.css" type="text/css" rel="stylesheet" />
-<title><fmt:message key="user.title" /></title>
-</head>
-<body style="overflow: auto">
-<mm:cloud jspvar="cloud" loginpage="../login.jsp" rank='administrator'>
+<cmscedit:head title="user.title">
 	<style>
-	input.select { font-height: 4px;}
-</style>
-<div class="content_block_pink">
-<div class="header">
-   <div class="title"><fmt:message key="user.title" /></div>
-   <div class="header_end"></div>
-</div>
-		<div style="clear:both; height:10px;"></div>
-
+		input.select { font-height: 4px;}
+	</style>
+</cmscedit:head>
+<body style="overflow: auto">
+<cmscedit:contentblock title="user.title" titleClass="content_block_pink">
+<mm:cloud loginpage="../login.jsp" rank='administrator'>
+	<mm:cloudinfo type="user" id="cloudusername" write="false" />
 	<html:form action="/editors/usermanagement/UserAction">
 		<html:hidden property="id" />
 		<div id="user">
@@ -100,10 +93,10 @@
 						<fmt:message key="user.rank.admin" />
 					</logic:equal> 
 					<logic:notEqual property="username" name="UserForm" value="admin">
-						<logic:equal name="UserForm" property="username" value="<%= cloud.getUser().getIdentifier() %>">
+						<logic:equal name="UserForm" property="username" value="${cloudusername}">
 							<fmt:message key="user.rank.admin" />
 						</logic:equal> 
-						<logic:notEqual property="username" name="UserForm" value="<%= cloud.getUser().getIdentifier() %>">
+						<logic:notEqual property="username" name="UserForm" value="${cloudusername}">
 							<html:select property="rank" size="1">
 								<html:optionsCollection label="description" value="value"
 									property="ranks" name="UserForm" />
@@ -119,10 +112,10 @@
 						<fmt:message key="user.status.active" />
 					</logic:equal> 
 					<logic:notEqual property="username" name="UserForm" value="admin">
-						<logic:equal name="UserForm" property="username" value="<%= cloud.getUser().getIdentifier() %>">
+						<logic:equal name="UserForm" property="username" value="${cloudusername}">
 							<fmt:message key="user.status.active" />
 						</logic:equal> 
-						<logic:notEqual property="username" name="UserForm" value="<%= cloud.getUser().getIdentifier() %>">
+						<logic:notEqual property="username" name="UserForm" value="${cloudusername}">
 							<html:select property="status" size="1">
 								<html:optionsCollection label="description" value="value"
 									property="statuses" name="UserForm" />
@@ -140,11 +133,8 @@
 			<html:submit style="width:90"><fmt:message key="user.submit"/></html:submit>
 		</div>
 	</html:form>
-
-<div class="side_block_end"></div>
-</div>	
-	
 </mm:cloud>
+</cmscedit:contentblock>	
 </body>
 </html:html>
 </mm:content>
