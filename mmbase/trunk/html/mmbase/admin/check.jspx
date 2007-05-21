@@ -6,6 +6,9 @@
       @since MMBase-1.8.5
   -->
   <mm:content expires="0" type="text/plain">
+    <jsp:scriptlet>
+      try {
+    </jsp:scriptlet>
     <mm:cloud>
       <mm:listnodescontainer type="object" cachepolicy="never">
         <mm:maxnumber value="1" />
@@ -14,6 +17,10 @@
         </mm:listnodes>
       </mm:listnodescontainer>
     </mm:cloud>
+    <jsp:scriptlet>
+      } catch (Throwable t) {
+      }
+    </jsp:scriptlet>
     <mm:notpresent referid="ok">ERROR</mm:notpresent>
   </mm:content>
 </jsp:root>
