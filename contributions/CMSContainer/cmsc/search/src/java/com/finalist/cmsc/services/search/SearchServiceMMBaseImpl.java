@@ -108,15 +108,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
             Integer portletId = page.getPortlet(portletWindowName);
             Portlet portlet = SiteManagement.getPortlet(portletId);
             if (portlet != null) {
-                // CMSC-410
-                // return evaluateContentTypes(portletId, content) && evaluateArchive(portlet, content);
-                return evaluateArchive(portlet, content);
+                return evaluateContentTypes(portletId, content) && evaluateArchive(portlet, content);
             }
         }
         return true;
     }
 
-    // CMSC-410
     private boolean evaluateContentTypes(Integer portletId, Node content) {
         List<String> nodeManagerNames = SiteManagement.getContentTypes(portletId.toString());
         if (!nodeManagerNames.isEmpty()) {
