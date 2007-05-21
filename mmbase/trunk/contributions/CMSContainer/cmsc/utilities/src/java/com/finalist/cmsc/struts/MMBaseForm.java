@@ -19,8 +19,9 @@ import org.apache.struts.action.ActionForm;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-@SuppressWarnings("serial")
 public class MMBaseForm  extends ActionForm {
+
+    private static final long serialVersionUID = 4264517673164742392L;
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(MMBaseForm.class.getName());
@@ -34,7 +35,15 @@ public class MMBaseForm  extends ActionForm {
     public void setId(int nodeNumber) {
         this.id = nodeNumber;
     }
+    
+    public void setNumber(int nodeNumber) {
+        this.id = nodeNumber;
+    }
 
+    public int getNumber() {
+        return id;
+    }
+    
     protected String convertToString(Date input) {
         if (input != null) {
             return DateFormat.getDateInstance().format(input);
