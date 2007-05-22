@@ -6,8 +6,8 @@
 <div class="applicationMenubar" style="white-space: nowrap">
   <mm:hasrank value="didactor-anonymous">
     <div class="menuItemApplicationMenubar login">
-      <mm:treefile page="education/index.jsp" objectlist="$includePath" referids="$referids"
-                   id="startpagepage" write="false" />
+      <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
+                   id="startpage" write="false" />
       <form method="post" action="${startpage}">
         <p>
           <input type="hidden" name="authenticate"  value="plain"  />
