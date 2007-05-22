@@ -21,7 +21,11 @@
 <mm:import externid="year"        required="true" />
 <mm:import externid="day"         required="true" />
 <mm:import externid="month"       required="true" />
-<mm:import externid="back"        required="true" />
+
+<mm:import externid="back" />
+
+<mm:time id="date" time="$year-$month-$day" write="false" />
+
 <mm:import externid="status"/>
 
 
@@ -53,20 +57,17 @@
 <div class="mainContent">
 
   <div class="contentHeader">
-    <mm:write referid="day"/>/<mm:write referid="month"/>/<mm:write referid="year"/>
+    <mm:time referid="date" format=":FULL" />
   </div>
 
   <div class="contentSubHeader">
     <mm:list nodes="$user" path="people,invitationrel,items" constraints="invitationrel.status=1 AND items.number=$currentitem" max="1">
       <mm:first>
-    <a href="<mm:treefile page="/agenda/deleteagendaitem.jsp" objectlist="$includePath" referids="$referids">
+    <a href="<mm:treefile page="/agenda/deleteagendaitem.jsp" objectlist="$includePath" referids="$referids,year,month,day">
                <mm:param name="ids"><mm:write referid="currentitem"/></mm:param>
                <mm:param name="callerpage"><mm:write referid="callerpage"/></mm:param>
-               <mm:param name="year"><mm:write referid="year"/></mm:param>
-               <mm:param name="month"><mm:write referid="month"/></mm:param>
-               <mm:param name="day"><mm:write referid="day"/></mm:param>
              </mm:treefile>">
-      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.deleteagendaitem" />" alt="<di:translate key="agenda.deleteagendaitem" />"/></a>
+      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" />" border="0" title="<di:translate key="agenda.deleteagendaitem" />" alt="<di:translate key="agenda.deleteagendaitem" />"/></a>
       </mm:first>
     </mm:list>
   </div>
@@ -81,48 +82,46 @@
 	<br/>
 
         <table class="Font">
-        <mm:fieldlist nodetype="items" fields="title,body">
-
- 	      <tr>
-	      <th><mm:fieldinfo type="guiname"/></th>
-	      <td><mm:fieldinfo type="value"/></td>
-	      </tr>
-
-	    </mm:fieldlist>
-
-
-        <mm:relatednodes type="mmevents">
-
-  	      <mm:fieldlist nodetype="mmevents" fields="start,stop">
-
-	      <tr>
-	      <th><mm:fieldinfo type="guiname"/></th>
-	      <td><mm:fieldinfo type="value"><mm:time format="d/M/yyyy HH:mm:ss"/></mm:fieldinfo></td>
-	      </tr>
-	      </mm:fieldlist>
-
-        </mm:relatednodes>
-
-	    <tr>
-   	    <mm:fieldlist nodetype="items" fields="repeatinterval">
- 	      <tr>
-	      <th><mm:fieldinfo type="guiname"/></th>
-	      <td>
-	          <mm:import id="interval"><mm:field name="repeatinterval"/></mm:import>
-	          <mm:compare referid="interval" value="0">geen</mm:compare>
-	          <mm:compare referid="interval" value="1">dagelijks</mm:compare>
-	          <mm:compare referid="interval" value="7">wekelijks</mm:compare>
-	      </td>
-	      </tr>
-	    </mm:fieldlist>
-	    </tr>
-   	    <mm:fieldlist nodetype="items" fields="repeatuntil">
- 	      <tr>
-	      <th><mm:fieldinfo type="guiname"/></th>
-	      <td><mm:fieldinfo type="value" options="date" /></td>
-	      </tr>
-	    </mm:fieldlist>
-
+          <mm:fieldlist nodetype="items" fields="title,body">
+            <tr>
+              <th><mm:fieldinfo type="guiname"/></th>
+              <td><mm:fieldinfo type="value"/></td>
+            </tr>
+            
+          </mm:fieldlist>
+        
+        
+          <mm:listrelations role="eventrel">
+            
+            <mm:fieldlist fields="start,stop">            
+              <tr>
+                <th><mm:fieldinfo type="guiname"/></th>
+                <td><mm:fieldinfo type="guivalue" /></td>
+              </tr>
+            </mm:fieldlist>
+          </mm:listrelations>
+          
+          <tr>
+            <mm:fieldlist nodetype="items" fields="repeatinterval">
+              <tr>
+                <th><mm:fieldinfo type="guiname"/></th>
+                <td>
+                  <mm:import id="interval"><mm:field name="repeatinterval"/></mm:import>
+                  <!-- TODO THIS IS NOT i18n. It _SUCKS_ -->
+                  <mm:compare referid="interval" value="0">geen</mm:compare>
+                  <mm:compare referid="interval" value="1">dagelijks</mm:compare>
+                  <mm:compare referid="interval" value="7">wekelijks</mm:compare>
+                </td>
+              </tr>
+            </mm:fieldlist>
+          </tr>
+          <mm:fieldlist nodetype="items" fields="repeatuntil">
+            <tr>
+              <th><mm:fieldinfo type="guiname"/></th>
+              <td><mm:fieldinfo type="value" options="date" /></td>
+            </tr>
+          </mm:fieldlist>
+          
 <%-- this is an invitation to $user --%>
       <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status=1 AND people.number!=$user" max="1">
       <mm:first>
