@@ -20,21 +20,22 @@
   <fieldlist>
     <field name="start">
       <descriptions>
-        <description xml:lang="en">Start time of the vent</description>
+        <description xml:lang="en">Start time of the event</description>
         <description xml:lang="nl">Starttijd</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Start</guiname>
         <guiname xml:lang="nl">Begin</guiname>
         <guiname xml:lang="eo">Starto</guiname>
+        <guiname xml:lang="ro">Start</guiname>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="time" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="now" />
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="this hour" />
       </datatype>
     </field>
 
@@ -47,6 +48,7 @@
         <guiname xml:lang="en">End</guiname>
         <guiname xml:lang="nl">Einde</guiname>
         <guiname xml:lang="eo">Fino</guiname>
+        <guiname xml:lang="ro">Sfarit</guiname>
       </gui>
       <editor>
         <positions>
@@ -54,7 +56,7 @@
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="now + 1 hour" />
+        <default value="this hour + 1 hour" />
       </datatype>
     </field>
 
