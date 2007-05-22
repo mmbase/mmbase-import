@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <builder xmlns="http://www.mmbase.org/xmlns/builder" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          extends="object" maintainer="didactor.nl" 
@@ -24,16 +24,17 @@
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="fr">Titre</guiname>
         <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="ro">Titlu</guiname>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line" />        
-      <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
     </field>
     
     <field  name="body">
@@ -41,11 +42,12 @@
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="fr">Texte</guiname>
         <guiname xml:lang="en">Text</guiname>
+        <guiname xml:lang="ro">Text</guiname>
       </gui>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field" />        
-      <db>
-        <type state="persistent" size="65535" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field">
+        <required value="true" />
+        <maxLength value="65535" />
+      </datatype>
     </field>
     
     <field name="repeatinterval">
@@ -66,16 +68,20 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="0" />
         <enumeration>
           <entry value="0" display="Nooit" xml:lang="nl" />
           <entry value="0" display="Never"  xml:lang="en"  />
           <entry value="0" display="Jamais"  xml:lang="fr"  />
+          <entry value="0" display="Niciodata"  xml:lang="ro"  />
           <entry value="1" display="Iedere dag" xml:lang="nl" />
           <entry value="1" display="Every day"  xml:lang="en"  />
           <entry value="1" display="Tous les jours"  xml:lang="fr"  />
+          <entry value="1" display="Zilnic"  xml:lang="ro"  />
           <entry value="7" display="Elke week" xml:lang="nl" />
           <entry value="7" display="Every week"  xml:lang="en"  />
           <entry value="7" display="Touts les semaines"  xml:lang="fr"  />
+          <entry value="7" display="Saptamanal"  xml:lang="ro"  />
         </enumeration>
       </datatype>
     </field>
@@ -87,6 +93,7 @@
       <gui>
         <guiname xml:lang="nl">Einddatum</guiname>
         <guiname xml:lang="en">End-date</guiname>
+        <guiname xml:lang="ro">Data sfarsit</guiname>
       </gui>
       <editor>
         <positions>
