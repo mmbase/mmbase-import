@@ -3,7 +3,6 @@
 --%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
@@ -120,7 +119,7 @@
    	    <mm:fieldlist nodetype="items" fields="repeatuntil">
  	      <tr>
 	      <th><mm:fieldinfo type="guiname"/></th>
-	      <td><mm:fieldinfo type="value" options="date"><mm:time format="d/M/yyyy"/></mm:fieldinfo></td>
+	      <td><mm:fieldinfo type="value" options="date" /></td>
 	      </tr>
 	    </mm:fieldlist>
 
