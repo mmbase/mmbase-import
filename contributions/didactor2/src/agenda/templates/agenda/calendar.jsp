@@ -34,10 +34,10 @@ this stylesheet can be overridden in the same manner as other parts of the site.
       var year = date.substring(0,4);
       var month = date.substring(4,6)-0;
       var day = date.substring(6,8)-0;
-     var newhref = '<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>&year='+year+
+      var newhref = addParameter('<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>', 'year='+year + 
           '&month='+month+
           '&day='+day+
-	  '&calmonth='+<mm:write referid="calmonth"/>;
+	  '&calmonth='+<mm:write referid="calmonth"/>);
       document.location.href = newhref;
     }
 
