@@ -1,0 +1,240 @@
+<!--
+    This jsp is too big.
+-->
+<!-- expires is set so renaming a folder does not show the old name -->
+<mm:content 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    postprocessor="reducespace" expires="0">
+  <mm:cloud method="delegate">
+    <mm:import externid="callerpage" required="true" />
+    <mm:import externid="typeof"     required="true" />    
+
+    <mm:import externid="year"       required="true" />
+    <mm:import externid="month"      required="true" />
+    <mm:import externid="day"        required="true" />
+
+    <mm:time id="date" time="$year-$month-$day" write="false" />
+    
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    <jsp:directive.include file="header.jspx" />
+    
+    <mm:import externid="create" />
+    <mm:import externid="back" />
+
+    <mm:import externid="classname"/>
+    <mm:import externid="workgroupname"/>
+
+    <jsp:directive.include file="find.currentagenda.jspx" />
+
+
+    <!-- Check if the back button is pressed -->
+    <mm:present referid="back">
+      <mm:redirect referids="$referids,currentagenda,typeof,year,day,month" page="$callerpage" />
+    </mm:present>              
+    
+    <div class="rows">
+      
+      <div class="navigationbar">
+        <div class="titlebar">
+          <mm:compare referid="typeof" value="1">
+            <img src="${mm:treefile('/agenda/gfx/icon_agenda_item_person.gif', pageContext, includePath)}" 
+                 border="0" 
+                 title="${di:translate(pageContext, 'agenda.addpersonalagendaitem')}"
+                 alt="${di:translate(pageContext, 'agenda.addpersonalagendaitem')}"
+                 />
+            <di:translate key="agenda.addpersonalagendaitem" />
+          </mm:compare>
+          <mm:compare referid="typeof" value="2">
+            <img src="${mm:treefile('/agenda/gfx/icon_agenda_item_class.gif', pageContext, includePath)}"
+                 border="0" 
+                 title="${di:translate(pageContext, 'agenda.addclassagendaitem')}"
+                 alt="${di:translate(pageContext, 'agenda.addclassagendaitem')}"
+                 />
+            <di:translate key="agenda.addclassagendaitem" />
+          </mm:compare>
+          <mm:compare referid="typeof" value="3">
+            <img src="${mm:treefile('agenda/gfx/icon_agenda_item_workgroup.gif', pageContext, includePath)}"
+                 border="0" 
+                 title="${di:translate(pageContext, 'agenda.addworkgroupagendaitem')}"
+                 alt="${di:translate(pageContext, 'agenda.addworkgroupagendaitem')}"
+                 />
+            <di:translate key="agenda.addworkgroupagendaitem" />
+          </mm:compare>
+        </div>
+      </div>
+      
+      <div class="folders">
+        <div class="folderHeader"><jsp:text> </jsp:text></div>
+        <div class="folderBody"><jsp:text> </jsp:text></div>
+      </div>
+      
+      <div class="mainContent">
+        
+        <div class="contentHeader">
+          <mm:time referid="date" format=":FULL" />
+        </div>
+        
+        <div class="contentBodywit">
+          
+          <!-- Show the form -->
+          <mm:form name="addagendaitem">
+
+            <mm:node id="transactionagenda" number="$currentagenda" /> <!-- place agenda in transaction -->
+            <table class="Font">
+              
+              <!-- Only valid for making items in the personal scope -->
+              <mm:notpresent referid="myclasses">
+                <mm:notpresent referid="myworkgroups">
+                  <tr>
+                    <td/>
+                    <td>
+                      <di:translate key="agenda.personal_agenda_of" /> 
+                      <mm:node number="$user">
+                        <di:person />
+                      </mm:node>
+                    </td>
+                  </tr>
+                </mm:notpresent>
+              </mm:notpresent>
+              
+              <!-- Only valid for making items in the class scope -->
+              <mm:present referid="myclasses">
+                <tr>
+                  <td><di:translate key="agenda.class" /></td>
+                  <td>
+                    <select name="classname">
+                      <mm:listnodes referid="myclasses">
+                        <option><mm:field name="name"/></option>
+                      </mm:listnodes>
+                    </select>
+                  </td>                  
+                </tr>
+              </mm:present>
+              
+              <!-- Only valid for making items in the workgroup scope -->
+              <mm:present referid="myworkgroups">
+                <tr>
+                  <td><di:translate key="agenda.workgroup" /></td>
+                  <td>
+                    <select name="workgroupname">
+                      <mm:listnodes referid="myworkgroups">
+                        <option><mm:field name="name"/></option>
+                      </mm:listnodes>
+                    </select>
+                  </td>
+                </tr>
+              </mm:present>
+              
+              <!-- create personal invitation -->
+              <mm:compare referid="typeof" value="4">
+                <tr>
+                  <td><di:translate key="agenda.recipient" /></td>
+                  <td>
+                    <select name="recipient">
+                      <mm:list nodes="$user" path="people1,classes,people2" constraints="people2.number != people1.number" fields="people2.number" distinct="true" orderby="people2.lastname,people2.firstname">
+                        <option value="${_node.people2}"><di:person element="people2" /></option>
+                      </mm:list>
+                    </select>
+                  </td>
+                </tr>
+              </mm:compare>
+              
+
+              <mm:createnode type="items" id="myitems">
+                <mm:fieldlist fields="title,body">
+                  <tr>
+                    <td><mm:fieldinfo type="guiname"/></td>
+                    <td>
+                      <mm:fieldinfo type="input"/>
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </mm:createnode>
+              <mm:createrelation role="eventrel" source="transactionagenda" destination="myitems" id="myeventrel">
+                <mm:notpresent referid="create">
+                  <mm:setfield name="start"><mm:time time="$year-$month-$day 9:00" /></mm:setfield>
+                  <mm:setfield name="stop"><mm:time time="$year-$month-$day 10:00" /></mm:setfield>
+                </mm:notpresent>
+                <mm:fieldlist fields="start,stop">
+                  <tr>
+                    <td><mm:fieldinfo type="guiname"/></td>
+                    <td>
+                      <mm:fieldinfo type="input"/>
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </mm:createrelation>
+              <mm:node referid="myitems">
+                <mm:fieldlist fields="repeatinterval,repeatuntil">
+                  <tr>
+                    <td><mm:fieldinfo type="guiname"/></td>
+                    <td>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </mm:node>
+              
+            </table>
+            
+            <input type="hidden" name="callerpage" value="${callerpage}" />
+            <input type="hidden" name="currentagenda" value="${currentagenda}" />
+            <input type="hidden" name="typeof" value="${typeof}" />
+            <input type="hidden" name="day" value="${day}" />
+            <input type="hidden" name="month" value="${month}" />
+            <!-- class="formbutton", duh, wtf else -->
+            <input class="formbutton" type="submit" name="create" 
+                   value="${di:translate(pageContext, 'agenda.create')}" />
+            <input class="formbutton" type="submit" name="back" 
+                   value="${di:translate(pageContext, 'agenda.back')}" />
+            
+            <mm:valid>
+              <mm:present referid="create">
+                <c:choose>
+                  <c:when test="${myeventrel.start gt myeventrel.stop}">
+                    <h1><di:translate key="agenda.starttimelessthanendtime" /></h1>
+                  </c:when>
+                  <c:otherwise>
+                    <mm:node id="transactionuser" number="$user" />
+                    <mm:createrelation role="invitationrel" source="myitems" destination="user">
+                      <mm:setfield name="status">1</mm:setfield>
+                    </mm:createrelation>
+                    
+                    <!-- link to recipient, if we have one -->
+                    <mm:present referid="recipient">
+                      <mm:node number="$recipient" id="myrecipient">
+                        <mm:createrelation role="invitationrel" source="myitems" destination="myrecipient">
+                          <mm:setfield name="status">0</mm:setfield> <!-- pending  ack / decline -->
+                        </mm:createrelation>
+                        <mm:relatednodes type="agendas" max="1">
+                          <mm:node id="recipientagend" />
+                          <mm:createrelation role="related" source="recipientagenda" destination="myitems"/>
+                        </mm:relatednodes>
+                      </mm:node>
+                    </mm:present>
+                    <mm:commit />
+                    
+                    <mm:redirect referids="$referids,currentagenda,typeof,year,day,month" page="$callerpage"/>        
+
+                  </c:otherwise>
+                </c:choose>
+              </mm:present>
+            </mm:valid>            
+            
+          </mm:form>
+
+        </div>
+      </div>
+    </div>
+    
+    <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+    
+  </mm:cloud>
+</mm:content>
+
