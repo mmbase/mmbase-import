@@ -9,6 +9,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
+
     <mm:import externid="callerpage" required="true" />
     <mm:import externid="typeof"     required="true" />    
 
@@ -17,6 +18,8 @@
     <mm:import externid="day"        required="true" />
 
     <mm:time id="date" time="$year-$month-$day" write="false" />
+
+    <mm:import externid="mode">add</mm:import><!-- can also be 'edit', for an existing node -->
     
     <jsp:directive.include file="/shared/setImports.jsp" />
     <jsp:directive.include file="header.jspx" />
@@ -80,7 +83,7 @@
         <div class="contentBodywit">
           
           <!-- Show the form -->
-          <mm:form name="addagendaitem">
+          <mm:form name="${mode}agendaitem">
 
             <mm:node id="transactionagenda" number="$currentagenda" /> <!-- place agenda in transaction -->
             <table class="Font">
@@ -142,8 +145,22 @@
                 </tr>
               </mm:compare>
               
+              <c:choose>
+                <c:when test="${mode eq 'add'}">
+                  <mm:createnode type="items" id="myitems" />
+                  <mm:createrelation role="eventrel" source="transactionagenda" destination="myitems" id="myeventrel" />
+                </c:when>
+                <c:otherwise>
+                  <mm:import externid="currentitem" required="true" />
+                  <mm:node referid="currentitem" id="myitems">
+                    <mm:listrelations role="eventrel" max="1">
+                      <mm:node id="myeventrel" />
+                    </mm:listrelations>
+                  </mm:node>
+                </c:otherwise>
+              </c:choose>
 
-              <mm:createnode type="items" id="myitems">
+              <mm:node referid="myitems">
                 <mm:fieldlist fields="title,body">
                   <tr>
                     <td><mm:fieldinfo type="guiname"/></td>
@@ -153,8 +170,8 @@
                     </td>
                   </tr>
                 </mm:fieldlist>
-              </mm:createnode>
-              <mm:createrelation role="eventrel" source="transactionagenda" destination="myitems" id="myeventrel">
+              </mm:node>
+              <mm:node referid="myeventrel">
                 <mm:notpresent referid="create">
                   <mm:setfield name="start"><mm:time time="$year-$month-$day 9:00" /></mm:setfield>
                   <mm:setfield name="stop"><mm:time time="$year-$month-$day 10:00" /></mm:setfield>
@@ -168,7 +185,7 @@
                     </td>
                   </tr>
                 </mm:fieldlist>
-              </mm:createrelation>
+              </mm:node>
               <mm:node referid="myitems">
                 <mm:fieldlist fields="repeatinterval,repeatuntil">
                   <tr>
@@ -190,7 +207,7 @@
             <input type="hidden" name="month" value="${month}" />
             <!-- class="formbutton", duh, wtf else -->
             <input class="formbutton" type="submit" name="create" 
-                   value="${di:translate(pageContext, 'agenda.create')}" />
+                   value="${mode eq 'add' ? di:translate(pageContext, 'agenda.create') : di:translate(pageContext, 'agenda.save')}" />
             <input class="formbutton" type="submit" name="back" 
                    value="${di:translate(pageContext, 'agenda.back')}" />
             

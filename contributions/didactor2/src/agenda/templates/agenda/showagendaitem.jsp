@@ -17,11 +17,11 @@
   </mm:param>
 </mm:treeinclude>
 
-<mm:import externid="currentitem"/>
-<mm:import externid="year"/>
-<mm:import externid="day"/>
-<mm:import externid="month"/>
-<mm:import externid="back"/>
+<mm:import externid="currentitem" required="true" />
+<mm:import externid="year"        required="true" />
+<mm:import externid="day"         required="true" />
+<mm:import externid="month"       required="true" />
+<mm:import externid="back"        required="true" />
 <mm:import externid="status"/>
 
 
