@@ -89,21 +89,16 @@
         <mm:import jspvar="itemNumber"><mm:field name="number"/></mm:import>
         <mm:remove referid="link"/>
         <mm:import id="link">
-          <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
+          <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids,year,month,day">
                      <mm:param name="currentitem"><mm:field name="number"/></mm:param>
                      <mm:param name="callerpage">/agenda/index.jsp</mm:param>
-                     <mm:param name="day"><mm:write referid="day"/></mm:param>
-                     <mm:param name="month"><mm:write referid="month"/></mm:param>
-                     <mm:param name="year"><mm:write referid="year"/></mm:param>
                    </mm:treefile>">
         </mm:import>
         <mm:import id="editlink" reset="true">
-          <a href="<mm:treefile page="/agenda/editagendaitem.jsp" objectlist="$includePath" referids="$referids">
+          <a href="<mm:treefile page="/agenda/addagendaitem.jspx" objectlist="$includePath" referids="$referids,year,month,day">
                      <mm:param name="currentitem"><mm:field name="number"/></mm:param>
                      <mm:param name="callerpage">/agenda/index.jsp</mm:param>
-                     <mm:param name="day"><mm:write referid="day"/></mm:param>
-                     <mm:param name="month"><mm:write referid="month"/></mm:param>
-                     <mm:param name="year"><mm:write referid="year"/></mm:param>
+                     <mm:param name="mode">edit</mm:param>
                      <mm:param name="typeof"><%= typeoflinked.get(itemNumber) %></mm:param>
                    </mm:treefile>">
         </mm:import>
