@@ -6,12 +6,12 @@
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
 
-  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+  <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="extraheader">
       <title><di:translate key="education.learnenvironmenttitle" /></title>
       <script src="js/browser_version.js"></script>
     </mm:param>
-  </mm:treeinclude>
+  </mm:include>
 
   <mm:hasnode number="component.drm">
     <mm:treeinclude page="/drm/testlicense.jsp" objectlist="$includePath" referids="$referids "/>
@@ -173,13 +173,6 @@
     openOnly('div'+opennumber,'img'+opennumber);
   }
 
-  function addParameter(href, parameter) {
-    if (href.indexOf('?') > 0) {
-       return  href + '&' + parameter;
-    } else {
-       return  href + '?' + parameter;
-    }
-  }
 
   function openContent( type, number ) {
 
