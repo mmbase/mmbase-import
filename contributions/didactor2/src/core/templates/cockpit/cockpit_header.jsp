@@ -12,6 +12,9 @@
     <mm:link page="/core/js/sarissa/sarissa.js">
       <script src="${_}"><!-- Help IE --></script>
     </mm:link>    
+    <mm:link page="/core/js/utils.js">
+      <script src="${_}"><!-- Help IE --></script>
+    </mm:link>    
     <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}" />
   </head>
   <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
