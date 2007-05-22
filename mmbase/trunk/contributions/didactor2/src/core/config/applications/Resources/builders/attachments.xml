@@ -34,6 +34,7 @@
         <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
+        <guiname xml:lang="ro">Titlu</guiname>
       </gui>
       <editor>
         <positions>
@@ -138,6 +139,7 @@
         <guiname xml:lang="en">File</guiname>
         <guiname xml:lang="nl">Bestand</guiname>
         <guiname xml:lang="eo">Dosiero</guiname>
+        <guiname xml:lang="ro">Fisier</guiname>
       </gui>
       <db>
         <type state="persistent" size="16777215" notnull="true" key="false">BINARY</type>
@@ -159,7 +161,6 @@
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="now" />
         <!-- cannot use 'created', because it is read-only -->
         <getprocessor type="*">
           <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
