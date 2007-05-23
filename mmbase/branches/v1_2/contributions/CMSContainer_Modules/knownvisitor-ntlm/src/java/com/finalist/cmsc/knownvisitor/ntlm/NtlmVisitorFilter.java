@@ -107,10 +107,11 @@ public class NtlmVisitorFilter implements Filter {
             return true;
          }
          else {
-            if (msg == null) {
-               tryToStartAuthentication(resp);
-            }
-            else { 
+// de volgende 4 regels zijn tijdelijk uitgezet!
+//            if (msg == null) {
+//               tryToStartAuthentication(resp);
+//            }
+//            else { 
                String alternativeLogin = req.getParameter("ntlm_alternative_login");
                if(alternativeLogin != null) {
                   if(tryAlternativeLogin(req, resp)) {
@@ -119,7 +120,8 @@ public class NtlmVisitorFilter implements Filter {
                }
    
                tryToStartAlternativeLogin(req, resp);
-            }
+// de volgende regel is tijdelijk uitgezet!
+//            }
          }
       }
 
@@ -127,10 +129,12 @@ public class NtlmVisitorFilter implements Filter {
    }
 
    private String getCookieValue(Cookie[] cookies, String cookieName) {
-      for(int i=0; i<cookies.length; i++) {
-         Cookie cookie = cookies[i];
-         if (cookieName.equals(cookie.getName())) {
-            return(cookie.getValue());
+      if(cookies != null) {
+         for(int i=0; i<cookies.length; i++) {
+            Cookie cookie = cookies[i];
+            if (cookieName.equals(cookie.getName())) {
+               return(cookie.getValue());
+            }
          }
       }
       return null;
