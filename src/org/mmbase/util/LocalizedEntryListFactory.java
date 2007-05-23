@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.1 2007-05-23 13:24:48 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.2 2007-05-23 13:26:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -132,7 +132,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             Locale loc = locale;
             loc = LocalizedString.degrade(loc, locale);
             while (loc != null && local == null) {
-                local = localized.get(loc);
+                local = (LocalizedEntry) localized.get(loc);
                 loc = LocalizedString.degrade(loc, locale);
             }
             if (local == null) {
@@ -262,17 +262,17 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     {
                         Locale orgLocale = useLocale;
                         
-                        LocalizedEntry loc = localized.get(useLocale);
+                        LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
                         while (loc == null && useLocale != null) {
                             useLocale = LocalizedString.degrade(useLocale, orgLocale);
                             if (log.isDebugEnabled()) {
                                 log.debug("Degraded to " + useLocale);
                             }
-                            loc = localized.get(useLocale);
+                            loc = (LocalizedEntry) localized.get(useLocale);
                         }
                         if (loc == null) {
                             useLocale = orgLocale;
-                            loc = localized.get(LocalizedString.getDefault());
+                            loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
                         }
 
                         if (loc == null) {
