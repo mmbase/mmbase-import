@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Xml.java,v 1.20 2007-05-23 14:21:11 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -63,7 +63,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      */
     public static String XMLAttributeEscape(String att, char quot) {
         if (att == null) return "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         char[] data = att.toCharArray();
         char c;
         for (char element : data) {
@@ -89,7 +89,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      */
     public static String XMLAttributeEscape(String att) {
         if (att == null) return "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         char[] data = att.toCharArray();
         char c;
         for (char element : data) {
@@ -121,15 +121,15 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      **/
     public static String XMLEscape(String xml){
         if (xml == null) return "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         XMLEscape(xml, sb);
         return sb.toString();
     }
 
     /**
-     * @since MMBase-1.8
+     * @since MMBase-1.9
      */
-    public static void XMLEscape(String xml, StringBuffer sb) {
+    public static void XMLEscape(String xml, StringBuilder sb) {
         char[] data = xml.toCharArray();
         char c;
         for (char element : data) {
@@ -150,6 +150,14 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 sb.append(c);
             }
         }
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public static void XMLEscape(String xml, StringBuffer sb) {
+        StringBuilder s = new StringBuilder();
+        XMLEscape(xml, s);
+        sb.append(s.toString());
     }
 
     private static String removeNewlines(String incoming) {

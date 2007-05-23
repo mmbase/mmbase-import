@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.8 2007-02-21 16:26:43 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.9 2007-05-23 14:23:26 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -50,7 +50,7 @@ public class BinaryHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        StringBuffer show = new StringBuffer();
+        StringBuilder show = new StringBuilder();
         if (node != null) {
             Function gui = node.getFunction("gui");
             Parameters args = gui.createParameters();
@@ -108,7 +108,7 @@ public class BinaryHandler extends AbstractTypeHandler {
                     form.setValid(false);
                 }
                 if (errors) {
-                    StringBuffer show = new StringBuffer("<div id=\"");
+                    StringBuilder show = new StringBuilder("<div id=\"");
                     show.append(prefixError(field.getName()));
                     show.append("\" class=\"mm_check_error\">");
                     Locale locale =  tag.getLocale();

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.49 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: DateHandler.java,v 1.50 2007-05-23 14:23:26 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -71,7 +71,7 @@ public class DateHandler extends AbstractTypeHandler {
                     doTime = time;
                 }
             }
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             if (doDate) {
                 buf.append("yyyy-MM-dd");
             }
@@ -101,7 +101,7 @@ public class DateHandler extends AbstractTypeHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
@@ -153,12 +153,10 @@ public class DateHandler extends AbstractTypeHandler {
 
 
         Locale locale = tag.getLocale();
-        List parsed = dateTimePattern.getList(locale);
+        List<String> parsed = dateTimePattern.getList(locale);
 
-        Iterator parsedPattern = parsed.iterator();
         boolean first = true;
-        while(parsedPattern.hasNext()) {
-            String pattern = (String) parsedPattern.next();
+        for (String pattern : parsed) {
             if (pattern.length() < 1) continue;
             char firstChar = pattern.charAt(0);
             if (firstChar ==  '\'') {
