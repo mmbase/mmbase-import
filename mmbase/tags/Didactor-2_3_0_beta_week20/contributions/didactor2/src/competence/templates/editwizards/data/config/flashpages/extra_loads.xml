@@ -1,0 +1,2 @@
+        <relation destination="competencies" role="needcomp" />
+        <relation destination="competencies" role="developcomp" />

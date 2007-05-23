@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+  <title xml:lang="nl">LINK EDITOR</title>
+  <title xml:lang="en">URL EDITOR</title>
+
+  <action type="create">
+    <object type="urls">
+      <field name="showtitle">1</field>
+      <field name="url">http://</field>
+    </object>
+  </action>
+
+  <action type="load">
+    &extra_loads;
+  </action>
+
+  <action type="delete" />
+
+  <lists>
+    <optionlist include="config/option_list/boolean.xml" />
+  </lists>
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Link invoeren</title>
+    <title xml:lang="en">Enter URL</title>
+
+    <field name="url" >
+      <description xml:lang="nl">Voer hier een nieuwe link (URL) in of wijzig een bestaande.</description>
+      <description xml:lang="en">Enter a new URL, or change an existing one.</description>
+    </field>
+
+    <field name="name" >
+      <description xml:lang="nl">Voer hier een naam in voor deze link of wijzig een bestaande. De naam wordt gebruikt om een link af te beelden.</description>
+      <description xml:lang="en">Enter the name for the URL or change an exising one. The name is used to display the URL.</description>
+    </field>
+    <field name="showtitle" ftype="enum">
+      <optionlist select="boolean" />
+    </field>
+
+    <field name="description" ftype="text" rows="4" >
+      <description xml:lang="nl">Geef een duidelijke omschrijving van de link</description>
+      <description xml:lang="en">Description of the URL</description>
+    </field>
+  </form-schema>
+
+  &extra_schemas;
+</wizard-schema>
