@@ -86,9 +86,10 @@ static public class StatusComparator implements Comparator {
                                  </c:when>
                                  <c:otherwise>
                                  <mm:hasrank minvalue="basic user">
+	                                 <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTasklist" write="false" />
                                      <a href="<mm:url page="../WizardInitAction.do">
 									 <mm:param name="objectnumber" value="${elementnumber}"/>
-				       				 <mm:param name="returnurl" value="/nijmegen-staging/editors/taskmanagement/tasklist.jsp"/>
+				       				 <mm:param name="returnurl" value="${returnTasklist}"/>
 								   	 </mm:url>" target="rightpane"><img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/></a> ${elementtitel}
 								 </mm:hasrank>
                                  </c:otherwise>
@@ -99,10 +100,11 @@ static public class StatusComparator implements Comparator {
                              <td>
                              <mm:hasrank minvalue="basic user">
                              	<mm:field name="number" jspvar="number" write="false"/>
+                                 <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTaskedit" write="false" />
                                  <a href="<mm:url page="/editors/WizardInitAction.do">
   											 <mm:param name="objectnumber" value="${number}"/>
 	 										 <mm:param name="contenttype" value="task"/>
-						       				 <mm:param name="returnurl" value="/nijmegen-staging/editors/taskmanagement/tasklist.jsp"/>
+						       				 <mm:param name="returnurl" value="${returnTaskedit}"/>
 										   	 </mm:url>" target="rightpane"><img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a> <mm:field name="description" />
 							 </mm:hasrank>
                              </td>
