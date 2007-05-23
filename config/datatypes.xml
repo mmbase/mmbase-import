@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.45.2.2 2007-03-23 13:46:54 andre Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.45.2.3 2007-05-23 15:06:35 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -298,6 +298,7 @@
     <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
     <pattern xml:lang="en" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="en-US" value="MMMM dd yyyy HH:mm" />
+    <pattern xml:lang="fr" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="de" value=":FULL" />
 
     <getprocessor type="string">
@@ -353,6 +354,7 @@
       <pattern xml:lang="nl"    value="dd MMMM yyyy" />
       <pattern xml:lang="en-US" value="MMMM dd yyyy" />
       <pattern xml:lang="en"    value="dd MMMM yyyy" />
+      <pattern xml:lang="fr" value="dd MMMM yyyy" />
 
       <specialization id="20th-century">
         <description xml:lang="en">
