@@ -7,11 +7,19 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
 
     <mm:import externid="callerpage" required="true" />
     <mm:import externid="typeof"     required="true" />    
+    <!--
+        typeof:
+        1: personal
+        2: class
+        3: workgroup
+        4: invitation
+    -->
 
     <mm:import externid="year"       required="true" />
     <mm:import externid="month"      required="true" />
@@ -42,9 +50,12 @@
       
       <div class="navigationbar">
         <div class="titlebar">
+          <!--
+          and yet for for more overly verbose code, 
+          Actually following 25 lines only print an icon and a title 
+          -->
           <mm:compare referid="typeof" value="1">
             <img src="${mm:treefile('/agenda/gfx/icon_agenda_item_person.gif', pageContext, includePath)}" 
-                 border="0" 
                  title="${di:translate(pageContext, 'agenda.addpersonalagendaitem')}"
                  alt="${di:translate(pageContext, 'agenda.addpersonalagendaitem')}"
                  />
@@ -52,7 +63,6 @@
           </mm:compare>
           <mm:compare referid="typeof" value="2">
             <img src="${mm:treefile('/agenda/gfx/icon_agenda_item_class.gif', pageContext, includePath)}"
-                 border="0" 
                  title="${di:translate(pageContext, 'agenda.addclassagendaitem')}"
                  alt="${di:translate(pageContext, 'agenda.addclassagendaitem')}"
                  />
@@ -60,7 +70,6 @@
           </mm:compare>
           <mm:compare referid="typeof" value="3">
             <img src="${mm:treefile('agenda/gfx/icon_agenda_item_workgroup.gif', pageContext, includePath)}"
-                 border="0" 
                  title="${di:translate(pageContext, 'agenda.addworkgroupagendaitem')}"
                  alt="${di:translate(pageContext, 'agenda.addworkgroupagendaitem')}"
                  />
@@ -85,7 +94,8 @@
           <!-- Show the form -->
           <mm:form name="${mode}agendaitem">
 
-            <mm:node id="transactionagenda" number="$currentagenda" /> <!-- place agenda in transaction -->
+            <!-- place agenda in transaction -->
+            <mm:node id="transactionagenda" number="$currentagenda" commitonclose="false" />
             <table class="Font">
               
               <!-- Only valid for making items in the personal scope -->
@@ -95,6 +105,7 @@
                     <td/>
                     <td>
                       <di:translate key="agenda.personal_agenda_of" /> 
+                      <jsp:text> </jsp:text>
                       <mm:node number="$user">
                         <di:person />
                       </mm:node>
@@ -105,44 +116,61 @@
               
               <!-- Only valid for making items in the class scope -->
               <mm:present referid="myclasses">
-                <tr>
-                  <td><di:translate key="agenda.class" /></td>
-                  <td>
-                    <select name="classname">
-                      <mm:listnodes referid="myclasses">
-                        <option><mm:field name="name"/></option>
-                      </mm:listnodes>
-                    </select>
-                  </td>                  
-                </tr>
+                <c:if test="${fn:length(myclasses) gt 0}">
+                  <tr>
+                    <td><di:translate key="agenda.class" /></td>
+                    <td>
+                      <select name="classname">
+                        <mm:listnodes referid="myclasses">
+                          <option><mm:field name="name"/></option>
+                        </mm:listnodes>
+                      </select>
+                    </td>                  
+                  </tr>
+                </c:if>
               </mm:present>
               
               <!-- Only valid for making items in the workgroup scope -->
               <mm:present referid="myworkgroups">
-                <tr>
-                  <td><di:translate key="agenda.workgroup" /></td>
-                  <td>
-                    <select name="workgroupname">
-                      <mm:listnodes referid="myworkgroups">
-                        <option><mm:field name="name"/></option>
-                      </mm:listnodes>
-                    </select>
-                  </td>
-                </tr>
+                <c:if test="${fn:length(myworkgroups) gt 0}">
+                  <tr>
+                    <td><di:translate key="agenda.workgroup" /></td>
+                    <td>
+                      <select name="workgroupname">
+                        <mm:listnodes referid="myworkgroups">
+                          <option><mm:field name="name"/></option>
+                        </mm:listnodes>
+                      </select>
+                    </td>
+                  </tr>
+                </c:if>
               </mm:present>
               
               <!-- create personal invitation -->
               <mm:compare referid="typeof" value="4">
-                <tr>
-                  <td><di:translate key="agenda.recipient" /></td>
-                  <td>
-                    <select name="recipient">
-                      <mm:list nodes="$user" path="people1,classes,people2" constraints="people2.number != people1.number" fields="people2.number" distinct="true" orderby="people2.lastname,people2.firstname">
-                        <option value="${_node.people2}"><di:person element="people2" /></option>
-                      </mm:list>
-                    </select>
-                  </td>
-                </tr>
+                <mm:node referid="user">
+                  <mm:relatednodescontainer path="classes,people" element="people">
+                    <di:getsetting component="core" setting="personorderfield" vartype="list" write="false">
+                      <mm:stringlist referid="_">
+                        <mm:sortorder field="$_" />
+                      </mm:stringlist>
+                    </di:getsetting>
+                    <mm:size>
+                      <mm:isgreaterthan value="0">
+                        <tr>
+                          <td><di:translate key="agenda.recipient" /></td>
+                          <td>
+                            <select name="recipient">
+                              <mm:relatednodes>
+                                <option value="${_node}"><di:person  /></option>
+                              </mm:relatednodes>
+                            </select>
+                          </td>
+                        </tr>
+                      </mm:isgreaterthan>
+                    </mm:size>
+                  </mm:relatednodescontainer>
+                </mm:node>
               </mm:compare>
               
               <c:choose>
@@ -152,7 +180,7 @@
                 </c:when>
                 <c:otherwise>
                   <mm:import externid="currentitem" required="true" />
-                  <mm:node referid="currentitem" id="myitems">
+                  <mm:node referid="currentitem" id="myitems" commitonclose="false">
                     <mm:listrelations role="eventrel" max="1">
                       <mm:node id="myeventrel" />
                     </mm:listrelations>
@@ -160,7 +188,7 @@
                 </c:otherwise>
               </c:choose>
 
-              <mm:node referid="myitems">
+              <mm:node referid="myitems" commitonclose="false">
                 <mm:fieldlist fields="title,body">
                   <tr>
                     <td><mm:fieldinfo type="guiname"/></td>
@@ -186,7 +214,7 @@
                   </tr>
                 </mm:fieldlist>
               </mm:node>
-              <mm:node referid="myitems">
+              <mm:node referid="myitems" commitonclose="false">
                 <mm:fieldlist fields="repeatinterval,repeatuntil">
                   <tr>
                     <td><mm:fieldinfo type="guiname"/></td>
@@ -204,7 +232,9 @@
             <input type="hidden" name="currentagenda" value="${currentagenda}" />
             <input type="hidden" name="typeof" value="${typeof}" />
             <input type="hidden" name="day" value="${day}" />
+            <input type="hidden" name="year" value="${year}" />
             <input type="hidden" name="month" value="${month}" />
+            <input type="hidden" name="mode" value="${mode}" />
             <!-- class="formbutton", duh, wtf else -->
             <input class="formbutton" type="submit" name="create" 
                    value="${mode eq 'add' ? di:translate(pageContext, 'agenda.create') : di:translate(pageContext, 'agenda.save')}" />
@@ -214,9 +244,11 @@
             <mm:valid>
               <mm:present referid="create">
                 <c:choose>
+
                   <c:when test="${myeventrel.start gt myeventrel.stop}">
                     <h1><di:translate key="agenda.starttimelessthanendtime" /></h1>
                   </c:when>
+
                   <c:otherwise>
                     <mm:node id="transactionuser" number="$user" />
                     <mm:createrelation role="invitationrel" source="myitems" destination="user">
@@ -235,6 +267,7 @@
                         </mm:relatednodes>
                       </mm:node>
                     </mm:present>
+
                     <mm:commit />
                     
                     <mm:redirect referids="$referids,currentagenda,typeof,year,day,month" page="$callerpage"/>        
