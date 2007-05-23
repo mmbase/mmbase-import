@@ -2,20 +2,20 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="delegate" >
 <%@include file="/shared/setImports.jsp" %>
 <%@ page import="java.util.Calendar"%>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="agenda.calendar" /></title>
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" />" />
   </mm:param>
 </mm:treeinclude>
 
 <div class="rows">
   <div class="navigationbar">
     <div class="titlebar">
-      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.calendar" />" alt="<di:translate key="agenda.calendar" />"/>
+      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" />" title="<di:translate key="agenda.calendar" />" alt="<di:translate key="agenda.calendar" />"/>
       <di:translate key="agenda.calendar" />
     </div>
   </div>
@@ -43,8 +43,8 @@
         <di:translate key="agenda.appointments" />
       </div>
       <div class="contentSubHeader">    
-        <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.viewcurrentagenda" />" alt="<di:translate key="agenda.viewcurrentagenda" />" border="0"></a>
-        <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
+        <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" />" title="<di:translate key="agenda.viewcurrentagenda" />" alt="<di:translate key="agenda.viewcurrentagenda" />" border="0"></a>
+        <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" />">
       </div>
       <div class="contentBody">
         <table class="listTable">
