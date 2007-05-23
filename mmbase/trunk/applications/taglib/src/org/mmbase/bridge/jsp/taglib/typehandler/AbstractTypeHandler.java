@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.50 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.51 2007-05-23 14:23:26 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -116,7 +116,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return null;
     }
 
-    protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
+    protected StringBuilder addExtraAttributes(StringBuilder buf) throws JspTagException {
         String options = tag.getOptions();
         if (options != null) {
             int i = options.indexOf("extra:");
@@ -144,7 +144,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuffer show =  new StringBuffer("<input type=\"text\" class=\"small " + getClasses(field) + "\" size=\"80\" ");
+        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(field) + "\" size=\"80\" ");
         addExtraAttributes(show);
         Object value = getFieldValue(node, field, ! search);
         show.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -248,7 +248,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 form.setValid(false);
             }
             if (errors) {
-                StringBuffer show = new StringBuffer("<div id=\"");
+                StringBuilder show = new StringBuilder("<div id=\"");
                 show.append(prefixError(field.getName()));
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
