@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.32.2.1 2007-04-20 12:12:36 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.32.2.2 2007-05-23 14:45:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -441,7 +442,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        Iterator iFields = builder.getFields().iterator();
+        // http://www.mmbase.org/jira/browse/MMB-1435, 
+        // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
+        // right order, which is import for microsoft JDBC.
+        Iterator iFields = builder.getFields(NodeManager.ORDER_CREATE).iterator();
         while (iFields.hasNext()) {
             CoreField field = (CoreField) iFields.next();
             if (field.inStorage()) {
