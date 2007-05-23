@@ -33,6 +33,7 @@
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line" >
         <required value="true" />
+        <minLength value="1" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -45,7 +46,7 @@
         <guiname xml:lang="ro">Text</guiname>
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field">
-        <required value="true" />
+        <minLength value="1" />
         <maxLength value="65535" />
       </datatype>
     </field>
