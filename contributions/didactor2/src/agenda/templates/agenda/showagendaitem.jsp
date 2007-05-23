@@ -5,6 +5,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
+
 <mm:cloud method="delegate" jspvar="cloud">
 
 <mm:import externid="callerpage">/agenda/index.jsp</mm:import>
@@ -106,11 +107,7 @@
               <tr>
                 <th><mm:fieldinfo type="guiname"/></th>
                 <td>
-                  <mm:import id="interval"><mm:field name="repeatinterval"/></mm:import>
-                  <!-- TODO THIS IS NOT i18n. It _SUCKS_ -->
-                  <mm:compare referid="interval" value="0">geen</mm:compare>
-                  <mm:compare referid="interval" value="1">dagelijks</mm:compare>
-                  <mm:compare referid="interval" value="7">wekelijks</mm:compare>
+                  <mm:fieldinfo type="guivalue" />
                 </td>
               </tr>
             </mm:fieldlist>
@@ -122,13 +119,13 @@
             </tr>
           </mm:fieldlist>
           
-<%-- this is an invitation to $user --%>
-      <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status=1 AND people.number!=$user" max="1">
-      <mm:first>
-	<mm:import reset="true" id="okbutton">1</mm:import>
-	<mm:import id="sendername"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></mm:import>
-      </mm:first>
-      </mm:list>
+          <%-- this is an invitation to $user --%>
+          <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status=1 AND people.number!=$user" max="1">
+            <mm:first>
+              <mm:import reset="true" id="okbutton">1</mm:import>
+              <mm:import id="sendername"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></mm:import>
+            </mm:first>
+          </mm:list>
  
       <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status!=1 AND people.number=$user" max="1">
 	    <tr>
