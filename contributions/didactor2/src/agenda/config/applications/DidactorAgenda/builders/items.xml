@@ -102,6 +102,8 @@
       </editor>
       <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="today + 1 year" />
+        <minInclusive value="yesterday" enforce="change" />
+        <maxInclusive value="today + 25 year" enforce="change" />
       </datatype>
     </field>
   </fieldlist>
