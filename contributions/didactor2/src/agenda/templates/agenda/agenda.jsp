@@ -132,14 +132,14 @@
         <di:cell>
           <mm:relatednodes type="agendas" max="1">
             <mm:write escape="none" referid="link"/><mm:write referid="agendaname"/></a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; <!-- WTF -->
             <mm:write escape="none" referid="editlink"/><di:translate key="agenda.edit" /></a>
           </mm:relatednodes>
         </di:cell>
         <di:cell><mm:write escape="none" referid="link"/><mm:field name="title"/></a></di:cell>
         <mm:listrelations role="eventrel" max="1">
-          <di:cell><mm:write escape="none" referid="link"/><mm:field name="start"><mm:time format="HH:mm:ss"/></mm:field></a></di:cell>
-          <di:cell><mm:write escape="none" referid="link"/><mm:field name="stop"><mm:time format="HH:mm:ss"/></mm:field></a></di:cell>
+          <di:cell><mm:write escape="none" referid="link"/><mm:field name="start"><mm:time format=":.SHORT"/></mm:field></a></di:cell>
+          <di:cell><mm:write escape="none" referid="link"/><mm:field name="stop"><mm:time format=":.SHORT"/></mm:field></a></di:cell>
         </mm:listrelations>
       </di:row>
 
