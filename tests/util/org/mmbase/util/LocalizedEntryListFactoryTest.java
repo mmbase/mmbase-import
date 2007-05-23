@@ -18,12 +18,13 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.1 2006-04-10 15:01:47 michiel Exp $
+ * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.2 2007-05-23 13:12:15 michiel Exp $
  */
 public class LocalizedEntryListFactoryTest extends TestCase {
 
     public static final Locale NL = new Locale("nl");
     public static final Locale BE = new Locale("nl", "BE");
+    public static final Locale BE_VAR = new Locale("nl", "BE", "a_b");
     public static final Locale EN = new Locale("en", "GB");
     public static final Locale DK = new Locale("dk");
     public static final Locale EO = new Locale("eo");
@@ -43,7 +44,9 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         }
         {
             List col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "saluut")});
-            //assertEquals(col, fact.get(BE));  FAILS!
+            assertEquals(col, fact.get(BE));  
+            assertEquals(col, fact.get(BE_VAR));  
+            
         }
         {
             Collection col  = Arrays.asList(new Object[] { new Entry("a", "hello"), new Entry("b", "hi")});
@@ -152,6 +155,5 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals(new Integer(3),  fact.castKey("error"));
         assertEquals("blabla",        fact.castKey("blabla"));
     }
-
 
 }
