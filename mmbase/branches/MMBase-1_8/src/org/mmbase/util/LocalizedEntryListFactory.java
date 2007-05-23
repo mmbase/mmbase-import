@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.39 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.1 2007-05-23 13:24:48 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -129,9 +129,19 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         }
         LocalizedEntry local = (LocalizedEntry) localized.get(locale);
         if (local == null) {
-            local = new LocalizedEntry();
-            local.entries.addAll(bundles);
-            local.unusedKeys.addAll(fallBack);
+            Locale loc = locale;
+            loc = LocalizedString.degrade(loc, locale);
+            while (loc != null && local == null) {
+                local = localized.get(loc);
+                loc = LocalizedString.degrade(loc, locale);
+            }
+            if (local == null) {
+                local = new LocalizedEntry();
+                local.entries.addAll(bundles);
+                local.unusedKeys.addAll(fallBack);
+            } else {
+                local = (LocalizedEntry) local.clone();
+            }
             localized.put(locale, local);
         }
 
@@ -250,9 +260,19 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     private Map.Entry next = null;
 
                     {
-                        LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
+                        Locale orgLocale = useLocale;
+                        
+                        LocalizedEntry loc = localized.get(useLocale);
+                        while (loc == null && useLocale != null) {
+                            useLocale = LocalizedString.degrade(useLocale, orgLocale);
+                            if (log.isDebugEnabled()) {
+                                log.debug("Degraded to " + useLocale);
+                            }
+                            loc = localized.get(useLocale);
+                        }
                         if (loc == null) {
-                            loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
+                            useLocale = orgLocale;
+                            loc = localized.get(LocalizedString.getDefault());
                         }
 
                         if (loc == null) {
