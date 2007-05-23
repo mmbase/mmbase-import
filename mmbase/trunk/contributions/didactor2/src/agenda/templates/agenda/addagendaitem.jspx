@@ -201,8 +201,10 @@
               </mm:node>
               <mm:node referid="myeventrel">
                 <mm:notpresent referid="create">
-                  <mm:setfield name="start"><mm:time time="$year-$month-$day 9:00" /></mm:setfield>
-                  <mm:setfield name="stop"><mm:time time="$year-$month-$day 10:00" /></mm:setfield>
+                  <c:if test="${mode eq 'create'}">
+                    <mm:setfield name="start"><mm:time time="$year-$month-$day 9:00" /></mm:setfield>
+                    <mm:setfield name="stop"><mm:time time="$year-$month-$day 10:00" /></mm:setfield>
+                  </c:if>
                 </mm:notpresent>
                 <mm:fieldlist fields="start,stop">
                   <tr>
