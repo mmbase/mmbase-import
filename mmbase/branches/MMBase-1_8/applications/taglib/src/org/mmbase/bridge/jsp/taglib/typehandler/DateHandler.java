@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.47 2006-07-08 13:04:47 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.47.2.1 2007-05-23 14:40:11 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -325,6 +325,7 @@ public class DateHandler extends AbstractTypeHandler {
         List parsed = dateTimePattern.getList(locale);
         Iterator parsedPattern = parsed.iterator();
         boolean first = true;
+        int maxField = Calendar.ERA;
         while(parsedPattern.hasNext()) {
             String pattern = (String) parsedPattern.next();
             if (pattern.length() < 1) continue;
@@ -346,12 +347,20 @@ public class DateHandler extends AbstractTypeHandler {
                         cal = null;
                     } else {
                         if (cal != null) {
-                            cal.set(element.getField(), value - element.getOffset());
+                            int f = element.getField();
+                            if (f > maxField) maxField = f;
+                            cal.set(f, value - element.getOffset());
                         }
                     }
                 }
             } catch (java.lang.NumberFormatException e) {
                 throw new TaglibException("Not a valid number (" + e.toString() + ") in field " + fieldName, e);
+            }
+        }
+        if (cal != null) {
+            // set all less significant fields to 0;
+            for (int f = maxField; f <= Calendar.MILLISECOND; f++) {
+                cal.set(f, 0);
             }
         }
 
