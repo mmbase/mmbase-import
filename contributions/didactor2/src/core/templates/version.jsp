@@ -1,13 +1,13 @@
 <html>
-<head>
-<title>Build Version.</title>
-</head>
-<body>
-<br/><br/><br/>
-<b>Didactor version:</b> 2.1.0 <br/>
-<b>CVS version:</b> head <br/>
-<b>Build name:</b> ${war.name}<br/>
-<b>Build date:</b> ${war.time}<br/>
-<b>Components:</b> ${components}<br/>
-</body>
+  <head>
+    <title>Didactor version.</title>
+    <link rel="stylesheet" href="mmbase/style/css/mmbase.css" type="text/css" />
+  </head>
+  <body>
+    <p><b>Didactor version:</b> 2.3.0</p>
+    <p><b>CVS version:</b> $Name: not supported by cvs2svn $ </p>
+    <p><b>Build name:</b> ${war.name}</p>
+    <p><b>Build date:</b> ${war.time}</p>
+    <p><b>Components:</b> ${components}</p>
+  </body>
 </html>
