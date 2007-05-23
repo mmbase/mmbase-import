@@ -461,14 +461,14 @@
    <target name="war" depends="info,webapp">
      <property name="tag"         value="$Name: not supported by cvs2svn $" />
      <if>
-       <equals arg1="${tag}" arg2="$Name: not supported by cvs2svn $" />
-         <then>
-           <tstamp />
-           <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
-         </then>
-         <else>
-           <property name="war.name.postfix"         value="${tag}" />
-         </else>
+       <contains string="${tag}" substring="Name:  $" />
+       <then>
+         <tstamp />
+         <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
+       </then>
+       <else>
+         <property name="war.name.postfix"         value="${tag}" />
+       </else>
      </if>
 
      <jar destfile="${war.dir}/${war.name}${war.name.postfix}.war"
