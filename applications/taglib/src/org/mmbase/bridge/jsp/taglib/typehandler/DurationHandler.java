@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: DurationHandler.java,v 1.8 2007-05-23 14:23:26 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
@@ -62,7 +62,7 @@ public class DurationHandler extends AbstractTypeHandler {
             currentHours   = help / 60;
         }
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("<input type=\"hidden\" class=\"" + getClasses(field) + "\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");

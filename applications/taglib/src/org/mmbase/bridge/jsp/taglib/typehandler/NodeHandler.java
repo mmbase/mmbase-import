@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.37 2006-04-18 21:30:30 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.38 2007-05-23 14:23:26 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -87,7 +87,7 @@ public class NodeHandler extends AbstractTypeHandler {
         if(useLegacy(node, field) &&
            // backwards compatibility. super should deal correctly with enumerations, also for node-fields
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             // yippee! the gui was the same a an builder!
             buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");

@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.17 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: XmlHandler.java,v 1.18 2007-05-23 14:23:26 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -50,7 +50,7 @@ public class XmlHandler extends StringHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         if(! search) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
             buffer.append("<textarea class=\"big " + getClasses(field) + "\"  rows=\"10\" cols=\"80\" ");

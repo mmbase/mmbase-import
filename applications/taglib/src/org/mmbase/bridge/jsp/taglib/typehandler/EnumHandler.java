@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.38 2006-06-06 17:47:43 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.39 2007-05-23 14:23:26 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -132,7 +132,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
