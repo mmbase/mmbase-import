@@ -149,20 +149,23 @@
 
 
       <tr>
-         <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-            <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
-<mm:isnotempty referid="dummyposterid">
-            <mm:list nodes="$dummyposterid" path="posters,people,images">
-               <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
-                           <mm:param name="contact"><mm:field name="people.number"/></mm:param>
-                        </mm:treefile>" target="_top">
-                  <mm:node element="images">
-                     <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                  </mm:node>
-               </a>
-            </mm:list>
-</mm:isnotempty>
-            <p />
+         <td class="${tdvar}" valign="top" align="left">
+           <mm:field name="posterid">
+             <mm:isnotempty>
+               <mm:node number="${_}">
+                 <mm:relatednodes type="people">
+                   <mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids,_node@contact" write="false">
+                     <a href="${_}" target="_top">
+                       <mm:relatednodes type="images">
+                         <mm:image template="s(80x80)" mode="img" />
+                       </mm:relatednodes>
+                     </a>
+                   </mm:treefile>
+                 </mm:relatednodes>
+               </mm:node>
+             </mm:isnotempty>
+           </mm:field>
+           <p /> <!-- wtf -->
 
 
          <mm:field name="guest">
