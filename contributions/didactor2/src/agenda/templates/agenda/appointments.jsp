@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
@@ -18,37 +19,24 @@
       <di:translate key="agenda.calendar" />
     </div>
   </div>
-  <%
-    Calendar cal = Calendar.getInstance();
-    int day = cal.get( Calendar.DATE );
-    int month = cal.get( Calendar.MONTH ) + 1;
-    int year = cal.get( Calendar.YEAR );
-  %>
-  <mm:import externid="year">-1</mm:import>
-  <mm:import externid="month">-1</mm:import>
-  <mm:import externid="day">-1</mm:import>
-  <mm:compare referid="year" value="-1">
-   <mm:remove referid="month"/>
-   <mm:remove referid="day"/>
-   <mm:remove referid="year"/>
-    <mm:import id="year"><%=year%></mm:import>
-    <mm:import id="month"><%=month%></mm:import>
-    <mm:import id="day"><%=day%></mm:import>
-  </mm:compare>
+
+  <mm:import externid="year"><mm:time time="now" format="yyyy" /></mm:import>
+  <mm:import externid="month"><mm:time time="now" format="MM" /></mm:import>
+  <mm:import externid="day"><mm:time time="now" format="dd" /></mm:import>
+
+  <mm:time id="date" time="$year-$month-$day" write="false" />
+
   <div class="folders">
     <div class="folderHeader">
       <di:translate key="agenda.calendar" />
     </div>
     <div class="folderCalendarBody">
-      <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids">
-        <mm:param name="year"><mm:write referid="year"/></mm:param>
-        <mm:param name="month"><mm:write referid="month"/></mm:param>
-        <mm:param name="day"><mm:write referid="day"/></mm:param>
-      </mm:treeinclude>
+      <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids,year,month,day" />
     </div>
   </div>
-  
-  <form action="<mm:treefile page="/agenda/deleteagendaitem.jsp" objectlist="$includePath" referids="$referids"/>" method="post">
+
+  <mm:treefile page="/agenda/deleteagendaitem.jsp" objectlist="$includePath" referids="$referids" write="false" id="post" />
+  <form action="${post}" method="post">
     <input type="hidden" name="callerpage" value="/agenda/appointments.jsp" />
     <div class="mainContent">
       <div class="contentHeader">
@@ -67,102 +55,105 @@
             <th class="listHeader"><di:translate key="agenda.date" /></th>
             <th class="listHeader"><di:translate key="agenda.status" /></th>
           </tr>
-          <%
-            String yesterday = ""+((cal.getTimeInMillis() / 1000L) - 2*24*60*60); // show yesterdays too
-            String constraints = "eventrel.start > "+yesterday+" OR eventrel.stop > "+yesterday;
-          %>
-          <mm:list nodes="$user" path="people,invitationrel,items,eventrel,agendas" constraints="<%= constraints %>" orderby="eventrel.start,eventrel.stop" fields="items.number,invitationrel.status,eventrel.number" distinct="true">
-            <mm:import id="itemnumber"><mm:field name="items.number"/></mm:import>
-            <mm:import id="mystatus" reset="true"><mm:field name="invitationrel.status"/></mm:import>
-            <mm:import id="eventrel"><mm:field name="eventrel.number"/></mm:import>
-            <mm:node referid="eventrel">
-              <mm:fieldlist nodetype="eventrel" fields="start">
-                <mm:import id="invday" reset="true"><mm:fieldinfo type="value"><mm:time format="dd"/></mm:fieldinfo></mm:import>
-                <mm:import id="invmonth" reset="true"><mm:fieldinfo type="value"><mm:time format="MM"/></mm:fieldinfo></mm:import>
-                <mm:import id="invyear" reset="true"><mm:fieldinfo type="value"><mm:time format="yyyy"/></mm:fieldinfo></mm:import>
-              </mm:fieldlist>
-            </mm:node>
-       
-            <mm:list nodes="$itemnumber" path="items,invitationrel,people" constraints="$user != [people.number]" fields="invitationrel.status">
-              <mm:import id="hisstatus" reset="true"><mm:field name="invitationrel.status"/></mm:import>
-              <tr>
-                <td class="listItem">
-                  <mm:compare referid="mystatus" value="1">
-                    <input type="checkbox" name="ids" value="<mm:write referid="itemnumber"/>">
-                  </mm:compare>
-                </td>
-                <td colspan="4" class="listItem">
-                  <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
-                    <mm:param name="currentitem"><mm:write referid="itemnumber"/></mm:param>
-                    <mm:param name="callerpage"><%= request.getRequestURL().toString() %></mm:param>
-                    <mm:param name="day"><mm:write referid="invday"/></mm:param>
-                    <mm:param name="year"><mm:write referid="invyear"/></mm:param>
-                    <mm:param name="month"><mm:write referid="invmonth"/></mm:param>
-                   </mm:treefile>"><mm:field name="items.title"/></a>
-                </td>
-              </tr>
-              <tr>
-                <td class="listItem">
-                </td>
-                <td class="listItem">
-                  <mm:compare referid="mystatus" value="1">
-                    <di:translate key="agenda.sentto" />
-                  </mm:compare>
-                  <mm:compare referid="hisstatus" value="1">
-                    <di:translate key="agenda.recievedfrom" />
-                  </mm:compare>
-                </td>
-                <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
-            
-                <mm:node referid="eventrel">
-                  <mm:fieldlist nodetype="eventrel" fields="start">
-                    <td class="listItem"><mm:fieldinfo type="value"><mm:time format="dd/MM/yyyy"/></mm:fieldinfo></td>
-                  </mm:fieldlist>
+          <mm:time id="yesterday" time="yesterday" write="false" />
+          <mm:node referid="user">
+            <mm:relatedcontainer path="invitationrel,items,eventrel,agendas" 
+                                 fields="eventrel.start,invitationrel.status"
+                                 >
+              <mm:sortorder field="eventrel.start" />
+              <mm:sortorder field="eventrel.stop" />
+              <mm:composite operator="OR">
+                <mm:constraint field="eventrel.start" operator=">" value="${yesterday}" />
+                <mm:constraint field="eventrel.stop" operator=">" value="${yesterday}" />
+              </mm:composite>
+              <mm:related id="agendas">
+                <mm:field name="eventrel.start">
+                  <mm:import id="invday" reset="true"><mm:time format="dd"/></mm:import>
+                  <mm:import id="invmonth" reset="true"><mm:time format="MM"/></mm:import>
+                  <mm:import id="invyear" reset="true"><mm:time format="yyyy"/></mm:import>                
+                </mm:field>
+                <mm:node element="items" id="item">
+                  <mm:relatedcontainer  path="invitationrel,people" fields="invitationrel.status">
+                    <mm:constraint field="people.number" operator="!=" value="$user" />
+                    <mm:related id="people">
+                      <tr>
+                        <td class="listItem">
+                          <c:if test="${_node.invitationrel.status eq 1}">
+                            <input type="checkbox" name="ids" value="${_node.items}" />
+                          </c:if>
+                        </td>
+                        <td colspan="4" class="listItem">
+                          <mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids,invday@day,invyear@year,invmonth@month" write="false">
+                            <mm:param name="currentitem">${_node.items}</mm:param>
+                            <mm:param name="callerpage"><%= request.getRequestURL().toString() %></mm:param>
+                            <a href="${_}"><mm:field node="item" name="title"/></a>
+                          </mm:treefile>                        
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="listItem">
+                        </td>
+                        <td class="listItem">
+                          <c:if test="${agendas.invitationrel.status eq 1}">
+                            <di:translate key="agenda.sentto" />
+                          </c:if>
+                          <c:if test="${people.invitationrel.status eq 1}">
+                            <di:translate key="agenda.recievedfrom" />
+                          </c:if>
+                        </td>
+                        <td class="listItem"><di:person element="people" /></td>
+                        
+                        <mm:field node="agendas" name="eventrel.start">
+                          <mm:time format=":FULL" />
+                        </mm:field>
+                        
+                        <td class="listItem">
+                          <mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids,item@currenitem" write="false">
+                            <mm:param name="callerpage"><%= request.getRequestURL().toString() %></mm:param>
+                            <a href="${_}">
+                              <c:if test="${agendas.invitationrel.status eq 1}">
+                                <c:if test="${people.invitationrel.status eq 2}">
+                                  <di:translate key="agenda.accepted" />
+                                </c:if>
+                                <c:if test="${people.invitationrel.status eq 3}">
+                                  <di:translate key="agenda.declined" />
+                                </c:if>
+                                <c:if test="${people.invitationrel.status lt 2}">
+                                  <di:translate key="agenda.accepted" />
+                                </c:if>
+                              </c:if>
+                              <c:if test="${people.invitationrel.status eq 1}">
+                                <c:if test="${agendas.invitationrel.status eq 2}">
+                                  <di:translate key="agenda.accepted" />
+                                </c:if>
+                                <c:if test="${agendas.invitationrel.status eq 3}">
+                                  <di:translate key="agenda.declined" />
+                                </c:if>
+                                <c:if test="${agendas.invitationrel.status lt 2}">
+                                  <di:translate key="agenda.accepted" />
+                                </c:if>
+                              </c:if>
+                            </a>
+                          </mm:treefile>                          
+                        </td>
+                      </tr>                   
+                    </mm:related>
+                  </mm:relatedcontainer>
                 </mm:node>
-            
-                <td class="listItem">
-                  <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
-                    <mm:param name="callerpage"><%= request.getRequestURL().toString() %></mm:param>
-                    <mm:param name="currentitem"><mm:write referid="itemnumber"/></mm:param>
-                    </mm:treefile>">
-                    <mm:compare referid="mystatus" value="1">
-                      <mm:compare referid="hisstatus" value="2">
-                        <di:translate key="agenda.accepted" />
-                      </mm:compare>
-                      <mm:compare referid="hisstatus" value="3">
-                        <di:translate key="agenda.declined" />
-                      </mm:compare>
-                      <mm:islessthan referid="hisstatus" value="2">
-                        <di:translate key="agenda.accepted" />
-                      </mm:islessthan>
-                    </mm:compare>
-                    <mm:compare referid="hisstatus" value="1">
-                      <mm:compare referid="mystatus" value="2">
-                        <di:translate key="agenda.accepted" />
-                      </mm:compare>
-                      <mm:compare referid="mystatus" value="3">
-                        <di:translate key="agenda.declined" />
-                      </mm:compare>
-                      <mm:islessthan referid="mystatus" value="2">
-                        <di:translate key="agenda.accepted" />
-                      </mm:islessthan>
-                    </mm:compare>
-                  </a>
-                </td>
-              </tr>                    
-            </mm:list>
-          </mm:list>
+              </mm:related>
+            </mm:relatedcontainer>
+          </mm:node>
         </table>
         <script type="text/javascript">
           function selectAllClicked(frm, newState) {
-            if (frm.elements['ids'].length) {
-              for(var count=0; count < frm.elements['ids'].length; count++) {
-                var box = frm.elements['ids'][count];
-                box.checked=newState;
-              }
-            } else {
-              frm.elements['ids'].checked=newState;
-            }
+          if (frm.elements['ids'].length) {
+          for(var count=0; count < frm.elements['ids'].length; count++) {
+          var box = frm.elements['ids'][count];
+          box.checked=newState;
+          }
+          } else {
+          frm.elements['ids'].checked=newState;
+          }
           }
         </script>
       </div>
