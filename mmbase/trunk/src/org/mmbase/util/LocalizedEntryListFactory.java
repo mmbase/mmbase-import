@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.45 2007-04-16 08:39:04 nklasens Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.46 2007-05-23 13:14:36 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -121,15 +121,25 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * @return List of currently unused keys for this locale.
      */
 
-    protected List add(Locale locale, Object entry) {
+    protected List<Serializable> add(Locale locale, Object entry) {
         if (locale == null) {
             locale = LocalizedString.getDefault();
         }
         LocalizedEntry local = localized.get(locale);
         if (local == null) {
-            local = new LocalizedEntry();
-            local.entries.addAll(bundles);
-            local.unusedKeys.addAll(fallBack);
+            Locale loc = locale;
+            loc = LocalizedString.degrade(loc, locale);
+            while (loc != null && local == null) {
+                local = localized.get(loc);
+                loc = LocalizedString.degrade(loc, locale);
+            }
+            if (local == null) {
+                local = new LocalizedEntry();
+                local.entries.addAll(bundles);
+                local.unusedKeys.addAll(fallBack);
+            } else {
+                local = (LocalizedEntry) local.clone();
+            }
             localized.put(locale, local);
         }
 
@@ -234,140 +244,153 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
             public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
-                return new ListIterator() {
-                    int   i = -1;
-                    Locale useLocale = locale;
-                    Cloud useCloud = cloud;
-                    {
-                        if (useLocale == null) {
-                            useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
+                return new ListIterator<Map.Entry<C, String>>() {
+                        int   i = -1;
+                        Locale useLocale = locale;
+                        Cloud useCloud = cloud;
+                        
+                        {
+                            if (useLocale == null) {
+                                useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
+                            }
+                            log.debug("using locale " + useLocale);
                         }
-                        log.debug("using locale " + useLocale);
-                    }
-                    private ChainedIterator iterator = new ChainedIterator();
-                    private Iterator subIterator = null;
-                    private Map.Entry<C, String> next = null;
+                        private ChainedIterator iterator = new ChainedIterator();
+                        private Iterator<Map.Entry<C, String>> subIterator = null;
+                        private Map.Entry<C, String> next = null;
+                        
+                        {
+                            Locale orgLocale = useLocale;
 
-                    {
-                        LocalizedEntry loc = localized.get(useLocale);
-                        if (loc == null) {
-                            loc = localized.get(LocalizedString.getDefault());
-                        }
-
-                        if (loc == null) {
-                            iterator.addIterator(bundles.iterator());
-                            iterator.addIterator(fallBack.iterator());
-                        } else {
-                            iterator.addIterator(loc.entries.iterator());
-                            iterator.addIterator(loc.unusedKeys.iterator());
-                        }
-
-                        findNext();
-                        while (i < index) next();
-                    }
-                    protected void findNext() {
-                        next = null;
-                        i++;
-                        while(next == null && iterator.hasNext()) {
-                            Object candidate = iterator.next();
-                            if (candidate instanceof Map.Entry) {
-                                next = (Map.Entry) candidate;
-                            } else if (candidate instanceof Bundle) {
-                                subIterator = ((Bundle) candidate).get(useLocale).iterator();
-                                if (subIterator.hasNext()) {
-                                    break;
-                                } else {
-                                    subIterator = null;
+                            LocalizedEntry loc = localized.get(useLocale);
+                            while (loc == null && useLocale != null) {
+                                useLocale = LocalizedString.degrade(useLocale, orgLocale);
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Degraded to " + useLocale);
                                 }
-                            } else if (candidate instanceof DocumentSerializable) {
-                                Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
-                                try {
-                                    if (useCloud == null) {
-                                        useCloud = getCloud(useLocale);
-                                        if (useCloud == null) {
-                                            if (log.isDebugEnabled()) {
-                                                log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
-                                            }
-                                            continue;
-                                        }
-                                    }
-                                    Query query = QueryReader.parseQuery(element, useCloud, null).query;
-                                    final org.mmbase.bridge.NodeList list = query.getList();
-                                    subIterator = new Iterator() {
-                                            final NodeIterator nodeIterator = list.nodeIterator();
-                                            public boolean hasNext() {
-                                                return nodeIterator.hasNext();
-                                            }
-                                            public Object next() {
-                                                org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                return new Entry(next, next.getFunctionValue("gui", null));
-                                            }
-                                            public void remove() {
-                                                throw new UnsupportedOperationException();
-                                            }
-                                        };
+                                loc = localized.get(useLocale);
+                            }
+                            if (loc == null) {
+                                useLocale = orgLocale;
+                                loc = localized.get(LocalizedString.getDefault());
+                            }
+
+                            if (loc == null) {
+
+                                iterator.addIterator(bundles.iterator());
+                                iterator.addIterator(fallBack.iterator());
+                            } else {
+                                iterator.addIterator(loc.entries.iterator());
+                                iterator.addIterator(loc.unusedKeys.iterator());
+                            }
+                            
+                            findNext();
+                            while (i < index) next();
+                        }
+                        
+                        protected void findNext() {
+                            next = null;
+                            i++;
+                            while(next == null && iterator.hasNext()) {
+                                Object candidate = iterator.next();
+                                if (candidate instanceof Map.Entry) {
+                                    next = (Map.Entry) candidate;
+                                } else if (candidate instanceof Bundle) {
+                                    subIterator = ((Bundle) candidate).get(useLocale).iterator();
                                     if (subIterator.hasNext()) {
                                         break;
                                     } else {
                                         subIterator = null;
                                     }
-                                } catch (Exception e) {
-                                    log.error(e.getMessage(), e);
+                                } else if (candidate instanceof DocumentSerializable) {
+                                    Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
+                                    try {
+                                        if (useCloud == null) {
+                                            useCloud = getCloud(useLocale);
+                                            if (useCloud == null) {
+                                                if (log.isDebugEnabled()) {
+                                                    log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
+                                                }
+                                                continue;
+                                            }
+                                        }
+                                        Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                        final org.mmbase.bridge.NodeList list = query.getList();
+                                        subIterator = new Iterator() {
+                                                final NodeIterator nodeIterator = list.nodeIterator();
+                                                public boolean hasNext() {
+                                                    return nodeIterator.hasNext();
+                                                }
+                                                public Object next() {
+                                                    org.mmbase.bridge.Node next = nodeIterator.nextNode();
+                                                    return new Entry(next, next.getFunctionValue("gui", null));
+                                                }
+                                                public void remove() {
+                                                    throw new UnsupportedOperationException();
+                                                }
+                                            };
+                                        if (subIterator.hasNext()) {
+                                            break;
+                                        } else {
+                                            subIterator = null;
+                                        }
+                                    } catch (Exception e) {
+                                        log.error(e.getMessage(), e);
+                                    }
+                                } else {
+                                    next = new Entry(candidate, candidate);
+                                }
+                            }
+                        }
+                        
+                        public boolean hasNext() {
+                            return next != null || subIterator != null;
+                        }
+                        public Map.Entry<C, String> next() {
+                            Map.Entry<C, String> res;
+                            if (subIterator != null) {
+                                res = (Map.Entry) subIterator.next();
+                                Object key = res.getKey();
+                                if (key != null && key instanceof SortedBundle.ValueWrapper) {
+                                    res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
+                                }
+                                if (!subIterator.hasNext()) {
+                                    subIterator = null;
+                                    findNext();
                                 }
                             } else {
-                                next = new Entry(candidate, candidate);
-                            }
-                        }
-                    }
-
-                    public boolean hasNext() {
-                        return next != null || subIterator != null;
-                    }
-                    public Object next() {
-                        Map.Entry res;
-                        if (subIterator != null) {
-                            res = (Map.Entry) subIterator.next();
-                            Object key = res.getKey();
-                            if (key != null && key instanceof SortedBundle.ValueWrapper) {
-                                res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
-                            }
-                            if (!subIterator.hasNext()) {
-                                subIterator = null;
+                                res = next;
                                 findNext();
                             }
-                        } else {
-                            res = next;
-                            findNext();
+                            return res;
                         }
-                        return res;
-                    }
-                    public int nextIndex() {
-                        return i;
-                    }
-                    public int previousIndex() {
-                        return i - 1;
-                    }
-                    public boolean hasPrevious() {
-                        // TODO
-                        throw new UnsupportedOperationException();
-                    }
-                    public Object previous() {
-                        // TODO
-                        throw new UnsupportedOperationException();
-                    }
-                    // this is why we hate java:
-
-
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                    public void add(Object o) {
-                        throw new UnsupportedOperationException();
-                    }
-                    public void set(Object o) {
-                        throw new UnsupportedOperationException();
-                    }
-                };
+                        public int nextIndex() {
+                            return i;
+                        }
+                        public int previousIndex() {
+                            return i - 1;
+                        }
+                        public boolean hasPrevious() {
+                            // TODO
+                            throw new UnsupportedOperationException();
+                        }
+                        public Map.Entry<C, String> previous() {
+                            // TODO
+                            throw new UnsupportedOperationException();
+                        }
+                        // this is why we hate java:
+                        
+                        
+                        public void remove() {
+                            throw new UnsupportedOperationException();
+                        }
+                        public void add(Map.Entry<C, String> o) {
+                            throw new UnsupportedOperationException();
+                        }
+                        public void set(Map.Entry<C, String> o) {
+                            throw new UnsupportedOperationException();
+                        }
+                    };
             }
         };
     }
@@ -521,9 +544,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 String display = entryElement.getAttribute("display");
                 if (display.equals("")) display = value;
                 Object key = wrapperDefault != null ? Casting.toType(wrapperDefault, null, value) : value;
-                if (key instanceof java.io.Serializable) {
-                    log.debug("Added " + key + "/" + display + " for " + locale);
-                    add(locale, (java.io.Serializable) key, display);
+                if (key instanceof Serializable) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Added " + key + "/" + display + " for " + locale);
+                    }
+                    add(locale, (Serializable) key, display);
                 } else {
                     log.error("key " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
                 }
