@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.26 2007-04-16 08:39:04 nklasens Exp $
+ * @version $Id: SortedBundle.java,v 1.27 2007-05-23 13:21:18 michiel Exp $
  */
 public class SortedBundle {
 
@@ -143,25 +143,10 @@ public class SortedBundle {
                 bundle = ResourceBundle.getBundle(baseName, locale, loader);
             }
             if (comparator == null && wrapper != null && ! Comparable.class.isAssignableFrom(wrapper)) {
-                if (wrapper.equals(Boolean.class)) { 
-                    // happens in Java < 1.5, because Boolean is no Comparable then.
-                    comparator = new Comparator<Object>() {
-                            public int compare(Object o1, Object o2) {
-                                if (o1 instanceof Boolean && o2 instanceof Boolean) {
-                                    return 
-                                        o1.equals(Boolean.FALSE) ?
-                                        (o2.equals(Boolean.FALSE) ? 0 : -1) :
-                                        (o2.equals(Boolean.TRUE) ?  1 : 0);
-                                }
-                                return o1.hashCode() - o2.hashCode();
-                            }
-                        };
-                } else {
-                    throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
-                }
+                throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
             }
 
-            m = new TreeMap<Object,Object>(comparator);
+            m = new TreeMap<Object, Object>(comparator);
 
             Enumeration<String> keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
@@ -269,13 +254,13 @@ public class SortedBundle {
      * Returns a (serializable) Map representing all accessible static public members of given class (so, all constants).
      * @since MMBase-1.8
      */
-    public static HashMap<String,Object> getConstantsProvider(Class<?> clazz) {
+    public static HashMap<String, Object> getConstantsProvider(Class<?> clazz) {
         if (clazz == null) return null;
-        HashMap<String,Object> map  = new HashMap<String,Object>();
+        HashMap<String, Object> map  = new HashMap<String, Object>();
         fillConstantsProvider(clazz, map);
         return map;
     }
-    private static void fillConstantsProvider(Class<?> clazz, Map<String,Object> map) {
+    private static void fillConstantsProvider(Class<?> clazz, Map<String, Object> map) {
         while(clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field constant : fields) {
