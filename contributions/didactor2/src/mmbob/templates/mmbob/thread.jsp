@@ -168,20 +168,15 @@
            <p /> <!-- wtf -->
 
 
-         <mm:field name="guest">
-         <mm:compare value="true" inverse="true">
-<%-- hh            Level : <mm:field name="level" /><br /> --%>
-            <di:translate key="mmbob.numberofposts" /> : <mm:field name="accountpostcount" /><br />
-<%-- hh            Geslacht : <mm:field name="gender" /><br />
-      Lokatie : <mm:field name="location" /><br /> --%>
-      <di:translate key="mmbob.membersince" /> : <mm:field name="firstlogin"><mm:time format="${timeFormat}" /></mm:field><br />
-      <di:translate key="mmbob.lastvisit" /> : <mm:field name="lastseen"><mm:time format="${timeFormat}" /> </mm:field><br />
-      </mm:compare>
-      <mm:compare value="true">
-      </mm:compare>
-      </mm:field>
-      <br /><br /><br /><br /><br />
-      </td>
+           <mm:field name="guest">
+             <mm:compare value="true" inverse="true">
+               <di:translate key="mmbob.numberofposts" /> : <mm:field name="accountpostcount" /><br />
+               <di:translate key="mmbob.membersince" /> : <mm:field name="firstlogin"><mm:time format="${timeFormat}" /></mm:field><br />
+               <di:translate key="mmbob.lastvisit" /> : <mm:field name="lastseen"><mm:time format="${timeFormat}" /> </mm:field><br />
+             </mm:compare>
+           </mm:field>
+           <br /><br /><br /><br /><br /><!-- wtf, wtf -->
+         </td>
 
 
       <td class="<mm:write referid="tdvar" />" valign="top" align="left">
