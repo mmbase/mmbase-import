@@ -31,18 +31,16 @@
     </relation>
     <relation destination="mmevents" role="related" />
     <relation destination="workgroups" role="related" />
+    <relation destination="educations" role="classrel" />
   </action>
   
   <action type="delete" />
   
-  
   <form-schema id="step1">
     <title xml:lang="nl">Klas Invoeren</title>
     <title xml:lang="en">Enter class</title>
-    <field name="name" dtminlength="1">
-      <prompt xml:lang="nl">Klas naam</prompt>
-      <prompt xml:lang="en">Class name</prompt>
-    </field>
+    <field name="name" dtminlength="1" />
+
     <list destination="mmevents" role="related" minoccurs="1" maxoccurs="*" ordertype="number" orderby="field[@name='start']">
       <title xml:lang="nl">Looptijd van de klas</title>
       <title xml:lang="en">Runtime of the class</title>
@@ -65,8 +63,39 @@
     </list>
     
     <list destination="news" extends="config/news/news-list.xml" />
+    
+    <list destination="educations" role="classrel" minoccurs="0" maxoccurs="1">
+      <title xml:lang="nl">Opleiding</title>
+      <title xml:lang="en">Education</title>
+      <item>
+        <field name="name" ftype="data" />
+        <field ftype="startwizard" inline="true" wizardname="config/education/educations" />
+      </item>
+      
+      <action type="create">
+        <relation destinationtype="eductions" role="classrel" />
+      </action>
+      <command name="search" nodepath="educations" fields="name" age="-1" orderby="name" directions="up" >
+        <prompt xml:lang="nl">Zoeken naar opleidinngen</prompt>
+        <prompt xml:lang="en">Search for educations</prompt>
+        <search-filter>
+          <name xml:lang="nl">Bevat</name>
+          <name xml:lang="en">Contains</name>
+          <search-fields>name,intro</search-fields>
+        </search-filter>        
+      </command>
+    </list>
+    
+  </form-schema>
+  <form-schema id="people">
+    <title xml:lang="nl">Gerelateerde personen</title>
+    <title xml:lang="en">Related people</title>
     <list destination="people" extends="config/people/people-list.xml" />
-    <list destination="workgroups" extends="config/workgroup/workgroups-list.xml" />
   </form-schema>
 
+  <form-schema id="workgroups">
+    <title xml:lang="nl">Gerelateerde werkgroepen</title>
+    <title xml:lang="en">Related workgroups</title>
+    <list destination="workgroups" extends="config/workgroup/workgroups-list.xml" />
+  </form-schema>
 </wizard-schema>
