@@ -625,7 +625,11 @@ while(events.size()>0&&iEventCtr<pageSize) {
             ><mm:field name="evenement.number" jspvar="dummy" vartype="String" write="false"><%
                parent_number = dummy;
             %></mm:field
-            ></mm:related
+            ><mm:field name="evenement.titel" jspvar="dummy" vartype="String" write="false"><%
+               titel = dummy;
+            %></mm:field
+            >
+            </mm:related
       ></mm:compare
       ><mm:compare value="parent"
          ><mm:related path="partrel,evenement" searchdir="destination" max="1"><%
