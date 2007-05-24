@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title xml:lang="nl">Hoamepage elementen editor</title>
+  <title xml:lang="nl">Homepage elementen editor</title>
 
   <action type="load">
     <relation  role="blockposrel" >
@@ -35,12 +35,10 @@
       <prompt>Y-positie van dit homepage-element</prompt>
       <description>Y-positie van dit homepage-element (hoe hoger het nummer hoe verder naar onder)</description>
     </field>
-    <field name="name" dttype="string" dtminlength="2">
-      <prompt>Naam</prompt>
+    <field name="name" dttype="string">
       <description>Naam zoals die in het menu moet verschijnen</description>
     </field>
     <field name="description" ftype="text" rows="4" dttype="string" dtminlength="2">
-      <prompt>Omschrijving</prompt>
       <description>Naam zoals die in het menu moet verschijnen</description>
     </field>
     <field name="display" ftype="enum">
