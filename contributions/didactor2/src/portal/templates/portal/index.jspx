@@ -28,7 +28,7 @@
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:treefile>
         <mm:treefile page="/portal/style/print.css"  objectlist="$includePath" write="false">
-          <link href="${_}" rel="alternate stylesheet" title="Print-vriendelijk" type="text/css" media="screen" /> 
+          <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" /> 
           <link href="${_}" rel="stylesheet" type="text/css"  media="print"/> 
         </mm:treefile>
         <mm:haspage page="/mmbase/style/css/mmxf.css">
@@ -39,9 +39,9 @@
       </head>
       <body class="portal">
 
-        <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
+        <mm:treeinclude debug="html" page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
         
-        <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">
+        <mm:treeinclude debug="html" page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">
           <mm:param name="escapeamps">true</mm:param>
         </mm:treeinclude>
 
