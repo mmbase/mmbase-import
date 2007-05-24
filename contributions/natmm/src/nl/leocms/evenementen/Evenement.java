@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.10 $, $Date: 2006-10-06 10:07:17 $
+ * @version $Revision: 1.11 $, $Date: 2007-05-24 11:19:54 $
  *
  */
 
@@ -535,7 +535,13 @@ public class Evenement extends DoubleDateNode {
       }
       return events;
    }
-
+   
+   /**
+    * Find parent for child, if there is a parent.
+    *
+    * @param sEvent String
+    * @return String
+    */
    public static String findParentNumber(String sEvent) {
       Cloud cloud = CloudFactory.getCloud();
       Node thisEvent = cloud.getNode(sEvent);
