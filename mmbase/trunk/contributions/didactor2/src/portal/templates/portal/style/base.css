@@ -25,38 +25,49 @@ div.menu table {
 
 div.column div.menu *, 
 div.column div.menu {
-  background-color: #fb6704; /*#e2641b;*/
+  background-color: transparent; 
   color: black;
   font-family: Arial Black, Arial, Verdana,sans-serif;  
 }
 
-div.column div.menu table.rounded { 
+table.rounded { 
   border-spacing: 0;
   border-collapse: collapse;
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
-div.column div.menu table.rounded td {
-  background-color: #fb6704;
+table.rounded td {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
   border: none;
 }
-
-div.column div.menu table.rounded tr.top,
-div.column div.menu table.rounded tr.bottom {  
+table.rounded td img {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  border: none;
+}
+table.rounded tr.top,
+table.rounded tr.bottom {  
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
   font-size: 3pt;
 }
 
-div.column div.menu table.rounded td.left,
-div.column div.menu table.rounded td.right {
-  background-color: transparent;
+table.rounded td.left,
+table.rounded td.right {
+  background-color: transparent !important;
   font-size: 3pt;
   width: 0.1%;
-
 }
+
+
+div.menu table.rounded td { 
+  background-color: #fb6704;
+}
+
 div.column div.menu ul { 
-  padding-top: 2ex;
+  padding-top: 0ex;
+  padding-bottom: 0ex;
   padding-left: 0ex;
   list-style-type: none;
 }
