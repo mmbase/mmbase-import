@@ -7,6 +7,7 @@
   <!--
     xmlns:mm-rich="urn:jsptagdir:/WEB-INF/tags/mm/rich"     
   -->
+  <mm:param name="xml-mode" value="xml" />
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:import externid="article" required="true" />
@@ -21,7 +22,7 @@
           <mm:field name="intro" escape="p-ommit-surrounding,links"  />
         </p>
       </div>
-      <mm-rich:body popupwidth="800" time="100" />
+      <mm-rich:body popupwidth="800" time="0" />
     </mm:node>
     <mm:link>
       <a class="navigate" href="${_}">&lt;&lt;</a>
