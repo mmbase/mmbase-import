@@ -710,7 +710,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                </td>
                <td colspan="5">
                   <mm:compare referid="sticket_office" value="website"
-                     ><img src="<%= nl.leocms.applications.NatMMConfig.liveUrl[0] %>editors/img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
+                     ><img src="../img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
                   </mm:compare
                   ><mm:remove referid="hascomma" 
                   /><mm:field name="gender" jspvar="sGender" vartype="String" write="false"
