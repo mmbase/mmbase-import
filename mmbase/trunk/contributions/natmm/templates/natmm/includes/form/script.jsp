@@ -167,17 +167,23 @@ function toHex(n) {
 var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
 function toUtf(s) {
-  var s = utf8(s);
-  var c;
-  var enc = "";
-  for (var i= 0; i<s.length; i++) {
-    if (okURIchars.indexOf(s.charAt(i))==-1)
-      enc += "%"+toHex(s.charCodeAt(i));
-    else
-      enc += s.charAt(i);
-  }
-  return enc;
+
+   var enc = "";
+   
+   if (typeof(s) == 'string') {
+      var s = utf8(s);
+      var c;
+      
+      for (var i= 0; i<s.length; i++) {
+         if (okURIchars.indexOf(s.charAt(i))==-1)
+            enc += "%"+toHex(s.charCodeAt(i));
+         else
+            enc += s.charAt(i);
+      } 
+   }
+   return enc;
 }
+
 <%= "//-->" %>
 </script><%
 } %>
