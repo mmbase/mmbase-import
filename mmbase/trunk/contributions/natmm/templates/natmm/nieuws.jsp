@@ -77,9 +77,11 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
          </jsp:include>
       </td><%
    } else {  // *** show the dossiers if there are dossiers related to this page
-      %><td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
+      %>
 	      <% if (isNaardermeer.equals("true")) { %>			
-   			<img src="media/trans.gif" height="216" width="1">
+   			<td style="vertical-align:top;width:75%;padding-left:10px;padding-right:10px;">
+		  <% } else { %>
+		    <td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
 		  <% } %>	
 			  <br/>
          <%@include file="includes/page_intro.jsp" %>
