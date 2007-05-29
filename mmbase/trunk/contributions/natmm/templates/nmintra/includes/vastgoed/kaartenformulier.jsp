@@ -562,7 +562,7 @@ formulier.">
 		
 		<html:link 
         page="/nmintra/includes/vastgoed/KaartenAction.eb?shopping_cart">
-        terug...
+        TERUG NAAR KART...
 </html:link>
 
 		</td>

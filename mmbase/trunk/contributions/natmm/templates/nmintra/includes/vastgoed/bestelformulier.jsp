@@ -55,7 +55,7 @@ indexId="i">
 <html:link 
         page="/nmintra/includes/vastgoed/KaartenInitAction.eb" 
         paramId="number" paramName="i">
-        terug
+        update
 </html:link>
 
 </td>
