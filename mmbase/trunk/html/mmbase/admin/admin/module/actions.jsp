@@ -1,75 +1,61 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
-<%@page import="java.util.*" %>
-<%@include file="../../settings.jsp" %>
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
-<% String module = request.getParameter("module"); %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<html xmlns="http://www.w3.org/TR/xhtml">
-<head>
-<title>Administrate Module <%=module%></title>
-<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
-<meta http-equiv="pragma" value="no-cache" />
-<meta http-equiv="expires" value="0" />
-</head>
-<body class="basic" >
-<table summary="module actions">
+<%@ page import="org.mmbase.bridge.*,java.util.*" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
+<mm:import externid="module"   jspvar="module" />
+<mm:import externid="property" jspvar="property" />
+<mm:import externid="value"    jspvar="value" />
+<mm:import externid="cmd"      jspvar="cmd" />
+<mm:import externid="action" />
+<div
+  class="component ${requestScope.className}"
+  id="${requestScope.componentId}">
+
 <%
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
-   String cmd = request.getParameter("cmd");
-   String msg="";
-   if (cmd!=null) {
-    try {
-        Hashtable params=new Hashtable();
-        params.put("MODULE",module);
-        params.put("CLOUD", cloud);
-        if (cmd.equals("MODULE-SETPROPERTY")) {
-            String property=request.getParameter("property").trim();
-            if (property.length()==0) {
-                throw new Exception("Property name should be specified");
-            }
-            params.put("PROPERTYNAME",request.getParameter("property"));
-            params.put("VALUE",request.getParameter("value"));
-        }
-        mmAdmin.process(cmd,module,params,request,response);
-//        msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
-    } catch (Exception e ) {
-        msg="<p> Error: "+e.getMessage()+"</p>";
-    }
-   }
+//String cmd = request.getParameter("cmd");
+String msg="";
+if (cmd != null) {
+	try {
+		Hashtable params = new Hashtable();
+		params.put("MODULE", module);
+		params.put("CLOUD", cloud);
+		if (cmd.equals("MODULE-SETPROPERTY")) {
+			if (property.length()==0) {
+				throw new Exception("Property name should be specified");
+			}
+			
+			params.put("PROPERTYNAME", property);
+			params.put("VALUE", value);
+		}
+		mmAdmin.process(cmd,module,params,request,response);
+		msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+	} catch (Exception e ) {
+		msg="<p> Error: "+e.getMessage()+"</p>";
+	}
+}
 %>
-<tr>
- <th class="header" colspan="5">Description of <%=module%></th>
-</tr>
-<tr>
- <td class="multidata" colspan="5">
-        <p><%=mmAdmin.getInfo("MODULEDESCRIPTION-"+module,request,response)%></p>
-        <%=msg%>&nbsp;
- </td>
-</tr>
 
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th class="header">Setting</th>
-  <th class="header" colspan="3">Value</th>
-  <th class="navigate" >Change</th>
-</tr>
-<tr>
- <td class="data">Class</td>
- <td class="data" colspan="3"><%=mmAdmin.getInfo("MODULECLASSFILE-"+module,request,response)%></td>
- <td class="linkdata" >
-    Not Available
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th class="header">Property</th>
-  <th class="header" colspan="3">Value</th>
-  <th class="navigate">Change</th>
+<mm:notpresent referid="action">
+  <h3>Administrate Module ${module}</h3>
+  <table summary="module actions" border="0" cellspacing="0" cellpadding="3">
+  <caption>
+	Description of <%= module %><br />
+	<%= mmAdmin.getInfo("MODULEDESCRIPTION-"+module,request,response) %>
+	<%= msg %>
+  </caption>
+  <tr>
+	<th>Setting</th>
+	<th>Value</th>
+	<th class="center">Change</th>
+  </tr><tr>
+	<td>Class</td>
+	<td><%= mmAdmin.getInfo("MODULECLASSFILE-"+module,request,response) %></td>
+	<td class="center">Not Available</td>
+  </tr><tr>
+	<th>Property</th>
+	<th>Value</th>
+	<th class="center">Change</th>
 </tr>
 <%
    java.util.Map params = new java.util.Hashtable();
@@ -79,48 +65,107 @@
         Node prop=props.getNode(i);
 %>
 <tr>
- <td class="data"><%=prop.getStringValue("item1")%></td>
- <td class="data" colspan="3"><%=prop.getStringValue("item2")%>&nbsp;</td>
- <td class="navigate">
-    <a href="<mm:url page="<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
-</td>
-</tr>
-
-<%  } %>
-
-<tr>
- <td class="data">add new</td>
- <td class="data" colspan="3">&nbsp;</td>
- <td class="navigate">
-    <a href="<mm:url page="<%="newproperty.jsp?module="+module%>"/>"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add" border="0" /></a>
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-  <form action="<mm:url page="result.jsp"/>" method="POST">
-<tr>
-<th class="header">Action</th>
-  <th class="header" colspan="3">Path</th>
-  <th class="navigate">Confirm</th>
-</tr>
-<tr>
- <td class="data">Save</td>
- <td class="data" colspan="3"><input name="path" value="/tmp/<%=module%>.xml" size="80" /></td>
- <td class="linkdata" >
-   <input type="hidden" name="module" value="<%=module%>" />
+   <td><%= prop.getStringValue("item1") %></td>
+   <td><%= prop.getStringValue("item2") %></td>
+   <td class="center">
+	 <mm:link page="modules-actions" referids="module">
+	   <mm:param name="property"><%= prop.getStringValue("item1") %></mm:param>
+	   <mm:param name="action">alter</mm:param>
+	   <a href="${_}"><img src="<mm:url page="/mmbase/style/images/edit.png" />" alt="change" /></a>
+	 </mm:link>
+   </td>
+  </tr>
+  <%  
+  }  
+  %>
+  <tr>
+   <td>add new</td>
+   <td>&nbsp;</td>
+   <td class="center">
+	 <mm:link page="modules-actions" referids="module">
+	   <mm:param name="action">add</mm:param>
+	   <a href="${_}"><img src="<mm:url page="/mmbase/style/images/create.png" />" alt="add" /></a>
+	 </mm:link>
+   </td>
+  </tr>
+  </table>
+  
+  <form action="<mm:url page="result.jsp" />" method="post">
+  <table border="0" cellspacing="0" cellpadding="3">
+  <caption>
+	Save configuration of <%= module %>
+  </caption>
+  <tr>
+	<th>Action</th>
+	<th>Path</th>
+	<th class="center">Confirm</th>
+  </tr><tr>
+   <td>Save</td>
+   <td><input name="path" value="/tmp/${module}.xml" size="62" /></td>
+   <td class="center">
    <input type="hidden" name="cmd" value="MODULESAVE" />
-   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
- </td>
-</tr>
+	 <input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" />
+   </td>
+  </tr>
+  </table>
   </form>
+</mm:notpresent>
 
-<tr><td>&nbsp;</td></tr>
+<mm:present referid="action">
+  <mm:compare referid="action" value="add">
+	<h3>Administrate Module ${module}, New Property</h3>
+	
+	<form action="<mm:url page="actions.jsp" referids="module" />" method="post">
+	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
+	<tr>
+	  <th>Property</th>
+	  <th>Value</th>
+	  <th class="center">Create</th>
+	</tr><tr>
+	  <td><input type="text" name="property" size="12" value="" /></td>
+	  <td><input type="text" name="value" size="62" value="" /></td>
+	  <td class="center">
+		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
+		<input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="Create" />
+	  </td>
+	</tr>
+	</table>
+	</form>
+  </mm:compare>
+  
+  <mm:compare referid="action" value="alter">
+	<h3>Administrate Module ${module}, Property ${property}</h3>
+	
+	<% 
+	//Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+	String val = mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
+	%>
+	<mm:link page="modules-actions" referids="module,property"><form action="${_}" method="post"></mm:link>
+	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
+	<tr>
+	  <th>Property</th>
+	  <th>Value</th>
+	  <th class="center">Change</th>
+	</tr>
+	<tr>
+	  <td><%= property %></td>
+	  <td><input type="text" name="value" size="62" value="<%= val %>" /></td>
+	  <td class="center">
+		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
+		<input type="image" src="<mm:url page="/mmbase/style/images/edit.png" />" alt="Change" />
+	  </td>
+	</tr>
+	</table>
+    </form>
+  </mm:compare><%-- /action = alter --%>
+</mm:present><%-- /action --%>
 
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="../modules.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
-<td class="data" colspan="4">Return to Module Overview</td>
-</tr>
-</table>
-</body></html>
+<p>
+  <mm:link page="modules">
+	<a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+  </mm:link>
+  Return to Module Overview
+</p>
+
+</div>
 </mm:cloud>
