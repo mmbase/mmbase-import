@@ -13,7 +13,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>MMBase Administration<mm:present referid="block"> | <mm:write referid="block" /></mm:present></title>
-  <mm:link page="css/admin.css">
+  <mm:link page="/mmbase/admin/css/admin.css">
     <link rel="stylesheet" href="${_}" type="text/css" />
   </mm:link>
   <mm:link page="/mmbase/style/images/favicon.ico">
@@ -24,14 +24,14 @@
 <body>
 <div id="outerheader">
   <div id="header">
-	<div id="logo"><a href="."><img src="../style/logo.png" alt="MMBase" width="40" height="50" /></a></div>
-	<div id="head">
-	  <h1>MMBase Administration</h1>
-	  <p>
-		You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
-		<a href="logout.jsp">logout</a>
-	  </p>
-	</div>
+    <div id="logo"><a href="."><mm:link page="/mmbase/style/logo.png"><img src="${_}" alt="MMBase" width="40" height="50" /></mm:link></a></div>
+    <div id="head">
+      <h1>MMBase Administration</h1>
+      <p>
+        You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
+        <a href="logout.jsp">logout</a>
+      </p>
+    </div>
   </div>
 </div>
 <div id="wrap">
@@ -47,13 +47,11 @@
       <mm:compare referid="category" value="${cat.name}">
         
         <c:forEach var="subcat" items="${cat.blocks}">
-		  <mm:first><ul></mm:first>
-		  <mm:link referids="category">
-			<mm:param name="component">${subcat.component.name}</mm:param>
-			<mm:param name="block">${subcat.name}</mm:param>
-			<li><a title="${subcat.description}" href="${_}">${subcat.name}</a></li>
-		  </mm:link>
-		  <mm:last></ul></mm:last>
+          <mm:first><ul></mm:first>
+          <mm:link page="${subcat.name}" component="${subcat.component.name}">
+            <li><a title="${subcat.description}" href="${_}">${subcat.name}</a></li>
+          </mm:link>
+          <mm:last></ul></mm:last>
         </c:forEach>
         
       </mm:compare>    
@@ -67,8 +65,8 @@
 <div id="content">
   <div class="padder">
   <mm:present referid="component">
-	<h2 class="top"><mm:write referid="block" /></h2>
-	<mm:component name="$component" block="$block" />
+    <h2 class="top"><mm:write referid="block" /></h2>
+    <mm:component name="$component" block="$block" />
   </mm:present>
   </div>
 </div>
