@@ -193,7 +193,7 @@ long toTime = (cal.getTime().getTime()/1000);
 					 <option value="Activiteitstype" <% if (listtype.equals("Activiteitstype")) {%> selected <% } %>>Activiteitstype</option>
 					 <option value="Provincie / Natuurgebied" <% if (listtype.equals("Provincie / Natuurgebied")) {%> selected <% } %>>Provincie / Natuurgebied</option>
 					 <option value="Bestelwijze" <% if (listtype.equals("Bestelwijze")) {%> selected <% } %>>Bestelwijze</option>
-                                         <option value="Afdelingen (BCs)" <% if (listtype.equals("Afdelingen (BCs)")) {%> selected <% } %>>Afdelingen (BCs)</option>
+                     <option value="Afdelingen" <% if (listtype.equals("Afdelingen")) {%> selected <% } %>>Afdelingen</option>
 				 </select>
 			 </td>
 			 <td>
@@ -218,7 +218,7 @@ long toTime = (cal.getTime().getTime()/1000);
       </div>
 
       <%
-  	} else if ( listtype.equals("Afdelingen (BCs)") ) {
+  	} else if ( listtype.equals("Afdelingen") ) {
   	   %>
 
 	   <jsp:useBean id="extrastats" scope="session" class="nl.leocms.evenementen.stats.ExtraStats" />
