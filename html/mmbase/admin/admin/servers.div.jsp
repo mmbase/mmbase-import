@@ -1,6 +1,6 @@
 <%@ page import="org.mmbase.bridge.*,org.mmbase.module.core.MMBase" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase">
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="server" />
 <div
   class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
