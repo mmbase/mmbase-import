@@ -60,6 +60,14 @@
       name="ReactionForm"
       type="nl.leocms.forms.ReactionForm"
     />
+    <form-bean
+      name="BestelForm"
+      type="nl.leocms.vastgoed.BestelForm"
+    />
+    <form-bean
+      name="KaartenForm"
+      type="nl.leocms.vastgoed.KaartenForm"
+    />
     <!--
          If you have non XDoclet forms, define them in a file called struts-forms.xml and
          place it in your merge directory.
@@ -520,6 +528,54 @@
         redirect="true"
       />
     </action>
+    <!-- ========== Action Mapping : vastgoed =================================== -->
+    <action
+      path="/nmintra/includes/vastgoed/BestelAction"
+      type="nl.leocms.vastgoed.BestelAction"
+      name="BestelForm"
+      scope="session"
+      validate="false"
+    >
+      <forward
+        name="send"
+        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
+      />
+      <forward
+        name="back"
+        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
+      />
+      <forward
+        name="delete"
+        path="/nmintra/includes/vastgoed/bestelformulier.jsp"
+      />
+    </action>
+    
+    <action
+      path="/nmintra/includes/vastgoed/KaartenAction"
+      type="nl.leocms.vastgoed.KaartenAction"
+      name="KaartenForm"
+      scope="request"
+      validate="false"
+    >
+      <forward
+        name="success"
+        path="/nmintra/includes/vastgoed/bestelformulier.jsp"
+      />
+    </action>
+     
+    <action
+      path="/nmintra/includes/vastgoed/KaartenInitAction"
+      type="nl.leocms.vastgoed.KaartenInitAction"
+      name="KaartenForm"
+      scope="request"
+      validate="false"
+    >
+      <forward
+        name="success"
+        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
+      />
+    </action> 
+  
     <!-- If you have non XDoclet actions, define them in a file called struts-actions.xml and place it in your merge directory. -->
   </action-mappings>
   
