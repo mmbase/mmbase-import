@@ -51,8 +51,26 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Information about the installed modules</description>
-    <body jsp="/mmbase/admin/admin/modules.jsp">
-
+    <body jsp="/mmbase/admin/admin/modules.div.jsp" />
+  </block>
+  
+  <block name="modules-actions" 
+         mimetype="text/html">
+    <description xml:lang="en">View, edit or add module properties</description>
+    <body jsp="/mmbase/admin/admin/module/actions.jsp">
+      <param name="module"   type="String" />
+      <param name="cmd"      type="String" />
+      <param name="action"   type="String" />
+      <param name="property" type="String" />
+      <param name="value"    type="String" />
+    </body>
+  </block>
+  
+  <block name="modules-newproperty"
+         mimetype="text/html">
+    <description xml:lang="en">Add a propertie to the selected module</description>
+    <body jsp="/mmbase/admin/admin/module/newproperty.jsp">
+      <param name="module" type="String" />
     </body>
   </block>
   
@@ -65,11 +83,12 @@
     </body>
   </block>
   
-  <block name="applications-action" 
+  <block name="applications-actions" 
          mimetype="text/html">
     <description xml:lang="en">Shows the application installation page and actions that can be taken</description>
     <body jsp="/mmbase/admin/admin/application/actions.jsp">
       <param name="application" type="String" />
+      <param name="app" type="String" />
       <param name="cmd" type="String" />
       <param name="path" type="String" />
     </body>
