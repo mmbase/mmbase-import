@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.59 2007-02-02 20:36:08 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.60 2007-05-29 17:17:13 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -53,7 +53,7 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         if(! search) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             try {
                 Object v = getFieldValue(node, field, true);
                 String value = org.mmbase.util.Casting.toString(v);
