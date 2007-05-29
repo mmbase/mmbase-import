@@ -2,6 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="application" />
+<mm:import externid="app" />
 <div
   class="component ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
@@ -68,8 +69,9 @@
      </td>
      <td class="center">
        <mm:islessthan referid="installedversion" value="$version">
-         <mm:link page="applications-action" referids="application">
+         <mm:link page="applications-actions" referids="application">
            <mm:param name="cmd" value="LOAD" />
+           <mm:param name="app"><mm:write referid="application" /></mm:param>
            <a href="${_}"><img src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" /></a>
          </mm:link>
        </mm:islessthan>
@@ -77,7 +79,7 @@
     </tr>
   </table>
 
-  <mm:link page="applications-action" referids="application" component="core">
+  <mm:link page="applications-actions" referids="application" component="core">
     <form action="${_}" method="post">
   </mm:link>
     <input name="cmd" type="hidden" value="SAVE" />
