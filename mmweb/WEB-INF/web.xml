@@ -96,6 +96,11 @@
     <url-pattern>/mmbase/attachments/*</url-pattern>
   </servlet-mapping>
 
+  <mime-mapping>
+    <extension>mmbase-module</extension>
+    <mime-type>application/java-archive</mime-type>
+  </mime-mapping>
+
   <welcome-file-list>
     <!-- index.jsp is the default -->
     <welcome-file>index.jsp</welcome-file>
