@@ -23,14 +23,24 @@ public class ExtraStats {
 
    public int iTotal = 0;
 
-   private String getEvenementen(Cloud cloud, String evenementenTypeNumber, String sNodepath, String evenementTimeConstraint, String afdelingenConstraint){
+   /**
+     * @description This gets evenementenNumbers for Individuele boekingen as well as Groepsboekingen given a certain startNode.
+     * This startNode can for example be an evenementType or an inschrijvingsCategorie.
+	 * @param cloud
+	 * @param startNode
+	 * @param sNodepath
+	 * @param evenementTimeConstraint
+	 * @param afdelingenConstraint
+	 * @return
+	 */
+	private String getEvenementenNumbersForStartNode(Cloud cloud, String startNode, String sNodepath, String evenementTimeConstraint, String afdelingenConstraint){
 	   
       StringBuffer events = new StringBuffer();
       
       // *** child events ***
       // First, get the parents with the afdelingenConstraint
       // Second, use the children of those parents with the evenementTimeConstraint
-      NodeList nlParentEvenementenAfdeling = cloud.getList(evenementenTypeNumber,sNodepath,"evenement.number",afdelingenConstraint,null,null,null,false);
+      NodeList nlParentEvenementenAfdeling = cloud.getList(startNode,sNodepath,"evenement.number",afdelingenConstraint,null,null,null,false);
       StringBuffer parents = new StringBuffer();
       
       for (int j = 0; j < nlParentEvenementenAfdeling.size(); j++ ){
@@ -52,8 +62,8 @@ public class ExtraStats {
       
       // *** parent events ***
       // Simply use the events with the afdelingenConstraint AND the evenementTimeConstraint
-      String parentConstraints = afdelingenConstraint + " AND " + afdelingenConstraint;
-      NodeList nlParentEvenementen = cloud.getList(evenementenTypeNumber,sNodepath,"evenement.number",parentConstraints,null,null,null,false);
+      String parentConstraints = afdelingenConstraint + " AND " + evenementTimeConstraint;
+      NodeList nlParentEvenementen = cloud.getList(startNode,sNodepath,"evenement.number",parentConstraints,null,null,null,false);
       
       for (int j = 0; j < nlParentEvenementen.size(); j++ ){
          Node nParentEvenement = nlParentEvenementen.getNode(j);
@@ -145,14 +155,102 @@ public class ExtraStats {
      }
      return tmNames;
    }
-
-   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, TreeMap evenementenTypes){
-      return getStatistics(cloud, fromTime, toTime, period, afdelingName, statstype, evenementenTypes, true); // zero's rows not showed
+   
+   private TreeMap getRegios(Cloud cloud, String constraint) {
+	   TreeMap regioMap = new TreeMap();
+       String regioConstraint = "afdelingen.naam LIKE '%" + constraint + "%'";
+       NodeList nlRegios = cloud.getList("","afdelingen","afdelingen.number,afdelingen.naam",regioConstraint,null,null,null,false);
+       for (int jj = 0; jj < nlRegios.size(); jj++ ) {
+          Node regio = nlRegios.getNode(jj);
+          String afName = regio.getStringValue("afdelingen.naam");
+          String afNumber = regio.getStringValue("afdelingen.number");
+          if (!regioMap.containsKey(afName)) {
+            regioMap.put(afName, afNumber);
+          }
+       }
+       return regioMap;
    }
    
+   private String getRegiosNumbers(TreeMap regioMap) {
+	   StringBuffer regiosNumbers = new StringBuffer();
+       Set regioSet = regioMap.entrySet();
+       Iterator regioSetIterator = regioSet.iterator();
+       while (regioSetIterator.hasNext()) {
+         Map.Entry regio = (Map.Entry)regioSetIterator.next();
+         String regioNumber = (String) regio.getValue();
+         regiosNumbers.append(",").append(regioNumber);
+       }
+       if(regiosNumbers.length()>0) {
+     	  // remove the unnecessary "," at the beginning
+    	   regiosNumbers.deleteCharAt(0);
+       }
+       return regiosNumbers.toString();
+   }
    
    /**
-    * @description Gets stats for all rows (evenementenTypes) in this column (statstype).
+     * @description Get the afdelingen sorted by regio, afdeling.
+	 * @param regiosNumbers
+	 * @param cloud
+	 * @return NodeList nlAfdelingen
+	 */
+	private NodeList getAfdelingen(String regiosNumbers, Cloud cloud) {
+	 NodeList nlAfdelingen = cloud.getList(regiosNumbers,"afdelingen2,readmore,afdelingen","afdelingen.number,afdelingen.naam",null,"afdelingen2.naam,afdelingen.naam",null,null,false);
+	 return nlAfdelingen;
+   }
+   
+   private ArrayList getAfdelingenList(NodeList nlAfdelingen) {
+	 ArrayList afdelingenList = new ArrayList();
+		 for (int jj = 0; jj < nlAfdelingen.size(); jj++ ) {
+	    Node afdeling = nlAfdelingen.getNode(jj);
+	    String af = afdeling.getStringValue("afdelingen.naam");
+	    if (!afdelingenList.contains(af)) {
+	      afdelingenList.add(af);
+	    }
+	 }
+	 return afdelingenList;
+   }
+   
+   /**
+     * @description This maps afdelingen to their regio names. This map is used to look up the regio of the afdelingen.
+	 * @param NodeList nlAfdelingen
+	 * @return TreeMap afdelingenMap
+	 */
+	private TreeMap getAfdelingenMap(NodeList nlAfdelingen) {
+	 TreeMap afdelingenMap = new TreeMap();
+	 for (int jj = 0; jj < nlAfdelingen.size(); jj++ ) {
+	    Node afdeling = nlAfdelingen.getNode(jj);
+	    String regio = afdeling.getStringValue("afdelingen2.naam");
+	    String af = afdeling.getStringValue("afdelingen.naam");
+	    if (!afdelingenMap.containsKey(af)) {
+	      afdelingenMap.put(af,regio);
+	    }
+	 }
+	 return afdelingenMap;
+   }
+	
+	private TreeMap getInschrijvingsCategorieen(Cloud cloud) {
+	     TreeMap tmNames = new TreeMap();
+	     iTotal = 0;
+
+	     // *** put names on tsNames ***
+	     String sStatName = "";
+	     String sNumber = "";
+	     
+	     NodeList nlInschrijvingsCategorie = cloud.getList("","inschrijvings_categorie","inschrijvings_categorie.name,inschrijvings_categorie.number",null,"inschrijvings_categorie.name",null,null,false);
+	     for (int j = 0; j < nlInschrijvingsCategorie.size(); j++ ){
+	       Node nInschrijvingsCategorie = nlInschrijvingsCategorie.getNode(j);
+	       sStatName = nInschrijvingsCategorie.getStringValue("inschrijvings_categorie.name");
+	       sNumber = nInschrijvingsCategorie.getStringValue("inschrijvings_categorie.number");
+	       if (!tmNames.containsKey(sStatName)) {
+	         tmNames.put(sStatName, sNumber);
+	       }
+	     }
+	     return tmNames;
+	}
+	
+   /**
+    * @description Gets stats for all rows (from collection) in this column (statstype).
+    * The collection can contain for example evenementTypes of inschrijvingsCategorieen.
     * 
 	* @param cloud
 	* @param fromTime
@@ -160,54 +258,81 @@ public class ExtraStats {
 	* @param period
 	* @param afdelingName
 	* @param statstype
-	* @param evenementenTypes
+	* @param collection
 	* @param removeZeros
 	* @return TreeMap
 	*/
-   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, TreeMap evenementenTypes, boolean removeZeros){
+   private TreeMap getStatisticsForCollection(Cloud cloud, String pathToEvenement, String evenementTimeConstraint, String afdelingName, String statstype, TreeMap collection, boolean removeZeros){
       TreeMap tmStatistics = new TreeMap();
+      
+      String constraintPathToAfdelingen = ",related,natuurgebieden,posrel,afdelingen";
+      pathToEvenement += constraintPathToAfdelingen;
+      afdelingName = filterAfdelingName(afdelingName);
+      String afdelingenConstraint = "afdelingen.naam LIKE '%"+afdelingName+"%'";
+
+      // *** count total for tmNames ***
+      String evenementenNumbers = null;
+      String key = null;
+      Set set = collection.entrySet();
+      Iterator iterator = set.iterator();
+      while (iterator.hasNext()) {
+        Map.Entry entry = (Map.Entry)iterator.next();
+        key = (String) entry.getKey();
+        String number = (String)collection.get(key);
+        evenementenNumbers = getEvenementenNumbersForStartNode(cloud, number, pathToEvenement, evenementTimeConstraint, afdelingenConstraint);
+        tmStatistics = updateTmStatistics(tmStatistics, cloud, evenementenNumbers, evenementTimeConstraint, statstype, key, removeZeros);
+      }
+
+      return tmStatistics;
+   }
+   
+   /**
+     * @description Key can be for example inschrijvingsCategorie or evenementType.
+	 * @param tmStatistics
+	 * @param cloud
+	 * @param evenementenNumbers
+	 * @param evenementTimeConstraint
+	 * @param statstype
+	 * @param key
+	 * @param removeZeros
+	 * @return
+	 */
+	private TreeMap updateTmStatistics(TreeMap tmStatistics, Cloud cloud, String evenementenNumbers, String evenementTimeConstraint, String statstype, String key, boolean removeZeros){
+      
+	    if(!removeZeros||!evenementenNumbers.equals("")) {
+	      int iResultCounts = 0;
+	      if(!evenementenNumbers.equals("")){
+	    	  iResultCounts = getCounts(cloud,evenementenNumbers,evenementTimeConstraint,statstype);
+	      }
+	      if(!removeZeros||iResultCounts!=0) {
+	        iTotal += iResultCounts;
+	        tmStatistics.put(key,new Integer(iResultCounts));
+	      }
+	    }
+
+      return tmStatistics;
+      
+   }
+   
+   private String filterAfdelingName(String afdelingName) {
+	   
+	   // should work well with for example "BC 's Graveland"
+       // do the right kind of escaping of an apostrophe:
+       // The single quote can be escaped using it twice for every single occurence:
+       // "name='aaa''bbb'" (if we want to find the string aaa'bbb)
+       // see: http://mmbase.nl/development/api/1.6/org/mmbase/bridge/NodeManager.html#getList(java.lang.String,%20java.lang.String,%20java.lang.String)
+       afdelingName = afdelingName.replaceAll("'","''");
+       
+       return afdelingName;
+       
+   }
+   
+   private String getEvenementTimeConstraint(long fromTime, long toTime, int period){
 
       String evenementTimeConstraint =  "evenement.begindatum > " + fromTime;
       if (period>0) evenementTimeConstraint += " AND evenement.einddatum < " + toTime;
 
-      // *** count total for tmNames ***
-      String evenementenNumbers = null;
-      String evenementenType = null;
-      Set evenementenTypesSet = evenementenTypes.entrySet();
-      Iterator evenementenTypesSetIterator = evenementenTypesSet.iterator();
-      while (evenementenTypesSetIterator.hasNext()) {
-        Map.Entry evenementenTypeEntry = (Map.Entry)evenementenTypesSetIterator.next();
-        evenementenType = (String) evenementenTypeEntry.getKey();
-        String evenementenTypeNumber = (String)evenementenTypes.get(evenementenType);
-        
-        String pathToEvenement = "evenement_type,related,evenement";
-        String constraintPathToAfdelingen = ",related,natuurgebieden,posrel,afdelingen";
-
-        pathToEvenement += constraintPathToAfdelingen;
-        
-        // should work well with "BC 's Graveland"
-        // do the right kind of escaping of an apostrophe:
-        // The single quote can be escaped using it twice for every single occurence:
-        // "name='aaa''bbb'" (if we want to find the string aaa'bbb)
-        // see: http://mmbase.nl/development/api/1.6/org/mmbase/bridge/NodeManager.html#getList(java.lang.String,%20java.lang.String,%20java.lang.String)
-        afdelingName = afdelingName.replaceAll("'","''");
-        String afdelingenConstraint = "afdelingen.naam LIKE '%"+afdelingName+"%'";
-
-        evenementenNumbers = getEvenementen(cloud, evenementenTypeNumber, pathToEvenement, evenementTimeConstraint, afdelingenConstraint);
-
-        if(!removeZeros||!evenementenNumbers.equals("")) {
-          int iResultCounts = 0;
-          if(!evenementenNumbers.equals("")){
-        	  iResultCounts = getCounts(cloud,evenementenNumbers,evenementTimeConstraint,statstype);
-          }
-          if(!removeZeros||iResultCounts!=0) {
-            iTotal += iResultCounts;
-            tmStatistics.put(evenementenType,new Integer(iResultCounts));
-          }
-        }
-      }
-
-      return tmStatistics;
+      return evenementTimeConstraint;
    }
 
    private String nowDate() {
@@ -242,10 +367,9 @@ public class ExtraStats {
       return dateString;
    }
 
-
    public String write(Cloud cloud, long fromTime, long toTime, int period) throws IOException, WriteException {
 
-      String listtype = "Afdelingen (BCs)";
+      String listtype = "Afdelingen";
 
       ArrayList alStatsTypes = new ArrayList();
       alStatsTypes.add("activiteiten");
@@ -265,34 +389,45 @@ public class ExtraStats {
       if(nl.isEmpty()) {*/
 
          WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
-
-
-         ArrayList afdelingenList = new ArrayList();
-         String afdelingenConstraint = "afdelingen.naam LIKE '%BC%'";
-         NodeList nlAfdelingen = cloud.getList("","afdelingen","afdelingen.number,afdelingen.naam",afdelingenConstraint,null,null,null,false);
-         for (int jj = 0; jj < nlAfdelingen.size(); jj++ ) {
-            Node afdeling = nlAfdelingen.getNode(jj);
-            String af = afdeling.getStringValue("afdelingen.naam");
-            if (!afdelingenList.contains(af)) {
-              afdelingenList.add(af);
-            }
-         }
+        
+         TreeMap regioMap = getRegios(cloud,"Regio");
+         TreeMap extraOrdinaryRegioMap = getRegios(cloud,"Comm., Fondsenw., Ledens.");
+         regioMap.putAll(extraOrdinaryRegioMap);
+         String regiosNumbers = getRegiosNumbers(regioMap);
+         NodeList nlAfdelingen = getAfdelingen(regiosNumbers,cloud);
+         ArrayList afdelingen = new ArrayList(); // will be filled with AfdelingBean's to make the totals sheet
+         ArrayList afdelingenList = getAfdelingenList(nlAfdelingen); // names
+         TreeMap afdelingenMap = getAfdelingenMap(nlAfdelingen); // regionName - afdelingName
+         
+         ArrayList boekingenTypeList = new ArrayList();
+         boekingenTypeList.add("Individuele boekingen");
+         boekingenTypeList.add("Groepsboekingen");
+         
+         TreeMap rows = new TreeMap();
+         TreeMap evenementenTypes = getEvenementenTypes(cloud, false);
+         TreeMap inschrijvingsCategorieen = getInschrijvingsCategorieen(cloud);
+         String evenementTimeConstraint = getEvenementTimeConstraint(fromTime, toTime, period);
+         String pathToEvenement = "";
+         String pathToEvenementFromEvenementType = "evenement_type,related,evenement";
+         String pathToEvenementFromInschrijvingsCategorie = "inschrijvings_categorie,related,inschrijvingen,posrel,evenement";
+         
+         WritableCellFormat wrappedText = new WritableCellFormat(WritableWorkbook.ARIAL_10_PT);
+         wrappedText.setWrap(true);
          
          /* 
           * 
-          * TODO: NMCMS-108
-          * 
-          * A sheet for each 
-          * 1. BC BezoekersCentrum
-          * 2. RE RegioEenheid
+          * A sheet for each of a set of afdelingingen from all regio's.
           * 
           * */
+         Collections.reverse(afdelingenList);
          for (Iterator ait = afdelingenList.iterator();ait.hasNext();) {
+        	 
+           AfdelingBean afdeling = new AfdelingBean();
 
            String afdelingName = (String)ait.next();
-           WritableSheet sheet = workbook.createSheet(afdelingName, 0);
-           WritableCellFormat wrappedText = new WritableCellFormat(WritableWorkbook.ARIAL_10_PT);
-           wrappedText.setWrap(true);
+           // excell does not accept sheetName's with a "/".
+           String sheetName = afdelingName.replaceAll("/", " ");
+           WritableSheet sheet = workbook.createSheet(sheetName, 0);
 
            // set columns width
            sheet.setColumnView(0,50);
@@ -303,85 +438,112 @@ public class ExtraStats {
            sheet.setColumnView(5,20);
 
            // add static labels
-           Label staticLabel = new Label(0,0,"BEHEEREENHEID/BEZOEKERSCENTRUM:");
+           int currentExcelRow = 0;
+           Label staticLabel = new Label(0,currentExcelRow,"REGIO:");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(1,0,afdelingName);
+           staticLabel = new Label(1,currentExcelRow,(String)afdelingenMap.get(afdelingName));
            sheet.addCell(staticLabel);
-           staticLabel = new Label(0,1,"DATUM:");
+           
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(1,1,sDate);
+           
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"BEHEEREENHEID/BEZOEKERSCENTRUM:");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(0,2,"PERIODE:");
+           staticLabel = new Label(1,currentExcelRow,afdelingName);
            sheet.addCell(staticLabel);
-           staticLabel = new Label(1,2,getStatsperiod(fromTime,toTime,period));
+           
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"DATUM:");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(0,3,"");
+           staticLabel = new Label(1,currentExcelRow,sDate);
            sheet.addCell(staticLabel);
-           staticLabel = new Label(0,4,"EXCURSIETYPE");
+
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"PERIODE:");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(1,4,"AANTAL");
+           staticLabel = new Label(1,currentExcelRow,getStatsperiod(fromTime,toTime,period));
            sheet.addCell(staticLabel);
-           staticLabel = new Label(4,4,"BATEN");
+
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(5,4,"Geschat % leden dat deelneemt");
+
+           currentExcelRow++;
+           staticLabel = new Label(0,currentExcelRow,"EXCURSIETYPE");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(1,5,"Excursies");
+           staticLabel = new Label(1,currentExcelRow,"AANTAL");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(2,5,"Inschrijvingen");
+           staticLabel = new Label(4,currentExcelRow,"BATEN");
            sheet.addCell(staticLabel);
-           staticLabel = new Label(3,5,"Deelnemers");
+           staticLabel = new Label(5,currentExcelRow,"Geschat % leden dat deelneemt");
+           sheet.addCell(staticLabel);
+
+           currentExcelRow++;
+           staticLabel = new Label(1,currentExcelRow,"Excursies");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(2,currentExcelRow,"Inschrijvingen");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(3,currentExcelRow,"Deelnemers");
            sheet.addCell(staticLabel);
 
            ExtraStats os = new ExtraStats();
 
-           int currentRow = 6;
-
-           ArrayList boekingenTypeList = new ArrayList();
-           boekingenTypeList.add("Individuele boekingen");
-           boekingenTypeList.add("Groepsboekingen");
-           
            /*
             * 
             * Loop through boekingenTypes
-            * TODO: boekingenType "Groepsboekingen" should not show rows of evenementenTypes, but rows of inschrijvings_categorie.
+            * NB:
+            * boekingenType "Individuele boekingen" shows rows of evenementen_type
+            * boekingenType "Groepsboekingen" shows rows of inschrijvings_categorie
             * 
             * */
            for (Iterator bit = boekingenTypeList.iterator();bit.hasNext();) {
 
              String boekingenTypeName = (String)bit.next();
+             boolean isIndividueleBoekingenType = boekingenTypeName.equals("Individuele boekingen");
              boolean isGroepsBoekingenType = boekingenTypeName.equals("Groepsboekingen");
+             
              // put a label with the boekingenType above the list of evenementenTypes
-             staticLabel = new Label(0,currentRow,boekingenTypeName);
+             currentExcelRow++;
+             staticLabel = new Label(0,currentExcelRow,boekingenTypeName);
              sheet.addCell(staticLabel);
-             currentRow++;
-
-             TreeMap evenementenTypes = getEvenementenTypes(cloud, isGroepsBoekingenType);
-
+             
+             currentExcelRow++;
              int maxRow = 0;
-             int[] total = new int[] {0,0,0,0,0};
+             int[] thisBoekingenTypeTotal = new int[] {0,0,0,0,0};
              Map deelnemers = new HashMap();
              jxl.write.Number nValue = null;
 
-             int j = 1; // *** columns ***
+             int columnNo = 1; // *** columns ***
              Iterator columnsIterator = alStatsTypes.iterator();
              while (columnsIterator.hasNext()) {
             	 
                String sStatsType = (String)columnsIterator.next();
-               
-               // Gets stats for all rows (evenementenTypes) in this column (statstype).
+
+               if(isIndividueleBoekingenType){
+            	   pathToEvenement = pathToEvenementFromEvenementType;
+            	   rows = evenementenTypes;
+               } else if(isGroepsBoekingenType) {
+            	   pathToEvenement = pathToEvenementFromInschrijvingsCategorie;
+            	   rows = inschrijvingsCategorieen;
+               }
+               // Gets stats for all rows (collection of for example evenementenTypes or inschrijvingenCategorieen) in this column (statstype).
                // Do not remove zero's
-               TreeMap tmAllStats = os.getStatistics(cloud,fromTime,toTime,period,afdelingName,sStatsType,evenementenTypes,false);
-               Set set = tmAllStats.entrySet();
-               Iterator rowIterator = set.iterator();
-               int k = currentRow; // *** rows ***
+               TreeMap tmAllStats = os.getStatisticsForCollection(cloud,pathToEvenement,evenementTimeConstraint,afdelingName,sStatsType,rows,false);
+               
+               Set tmAllStatsSet = tmAllStats.entrySet();
+               Iterator rowIterator = tmAllStatsSet.iterator();
+               
+               int rowNo = currentExcelRow; // *** rows ***
                while (rowIterator.hasNext()){
             	   
                  Map.Entry row = (Map.Entry)rowIterator.next();
                  
                  String sListTypeName = (String) row.getKey();
 
-                 if (j==1) { // print name of event types
-                   Label lListTypeName = new Label(0,k,sListTypeName,wrappedText);
+                 if (columnNo==1) { // print name of event types
+                   Label lListTypeName = new Label(0,rowNo,sListTypeName,wrappedText);
                    sheet.addCell(lListTypeName);
                  }
 
@@ -408,30 +570,166 @@ public class ExtraStats {
 		                    value = 0;
 	                 }
 	
-	                 total[j-1] += value;
-	                 nValue = new jxl.write.Number(j, k, value);
+	                 thisBoekingenTypeTotal[columnNo-1] += value;
+	                 nValue = new jxl.write.Number(columnNo, rowNo, value);
 	                 sheet.addCell(nValue);
 	             //}
-                 k++;
+                 rowNo++;
             }
                
             // print TOTAL
-            if (j==1) {
-               staticLabel = new Label(0,k,"TOTAAL");
+            if (columnNo==1) {
+               staticLabel = new Label(0,rowNo,"TOTAAL");
                sheet.addCell(staticLabel);
              }
-             nValue = new jxl.write.Number(j, k, total[j-1]);
+             nValue = new jxl.write.Number(columnNo, rowNo, thisBoekingenTypeTotal[columnNo-1]);
              sheet.addCell(nValue);
-             maxRow = (k>maxRow) ? k : maxRow;
-             j++;
+             maxRow = (rowNo>maxRow) ? rowNo : maxRow;
+             
+             // for totals sheet
+             if(isIndividueleBoekingenType){
+            	 afdeling.setIndividueleBoekingenTotal(thisBoekingenTypeTotal);
+             } else if(isGroepsBoekingenType) {
+            	 afdeling.setGroepsBoekingenTotal(thisBoekingenTypeTotal);
+             }
+             
+             columnNo++;
            }
-           currentRow =  maxRow + 2; //  add an extra empty row between categories
+           currentExcelRow = maxRow + 2; //  add an extra empty row between boekingenTypes
+           
          }
+        
+        // for totals sheet
+        afdeling.setAfdelingName(afdelingName);
+        afdeling.setRegioName((String)afdelingenMap.get(afdelingName));
+        afdelingen.add(afdeling);
 
        }
+         
+         // CREATE TOTALEN SHEET
+	     WritableSheet sheet = workbook.createSheet("Totalen", 0);
+	
+	     // set columns width
+	     int currentExcelColumn = 0;
+	     sheet.setColumnView(currentExcelColumn,30);
+	     currentExcelColumn++;
+	     sheet.setColumnView(currentExcelColumn,30);
+	     for (int i = 0; i < 5; i++) {
+	    	 currentExcelColumn++;
+		     sheet.setColumnView(currentExcelColumn,10);
+		 }
+	     currentExcelColumn++;
+	     sheet.setColumnView(currentExcelColumn,5);
+	     for (int i = 0; i < 5; i++) {
+	    	 currentExcelColumn++;
+		     sheet.setColumnView(currentExcelColumn,10);
+		 }
+	     
+	     // add static labels
+         int currentExcelRow = 0;
+         Label staticLabel = new Label(0,currentExcelRow,"TOTALEN");
+         sheet.addCell(staticLabel);
+         
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"");
+         sheet.addCell(staticLabel);
+         
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"DATUM:");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(1,currentExcelRow,sDate);
+         sheet.addCell(staticLabel);
 
-       workbook.write();
-       workbook.close();
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"PERIODE:");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(1,currentExcelRow,getStatsperiod(fromTime,toTime,period));
+         sheet.addCell(staticLabel);
+
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"");
+         sheet.addCell(staticLabel);
+         
+         currentExcelRow++;
+         staticLabel = new Label(2,currentExcelRow,"INDIVIDUELE BOEKINGEN");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(6,currentExcelRow,"GROEPSBOEKINGEN");
+         sheet.addCell(staticLabel);
+         
+         currentExcelRow++;
+         staticLabel = new Label(2,currentExcelRow,"AANTAL");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(5,currentExcelRow,"BATEN");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(6,currentExcelRow,"% leden");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(8,currentExcelRow,"AANTAL");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(11,currentExcelRow,"BATEN");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(12,currentExcelRow,"% leden");
+         sheet.addCell(staticLabel);
+
+         currentExcelRow++;
+         staticLabel = new Label(2,currentExcelRow,"Excursies");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(3,currentExcelRow,"Inschrijvingen");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(4,currentExcelRow,"Deelnemers");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(8,currentExcelRow,"Excursies");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(9,currentExcelRow,"Inschrijvingen");
+         sheet.addCell(staticLabel);
+         staticLabel = new Label(10,currentExcelRow,"Deelnemers");
+         sheet.addCell(staticLabel);
+         
+         jxl.write.Number nValue = null;
+         int[] individueleBoekingenGrandTotal = new int[] {0,0,0,0,0};
+         int[] groepsBoekingenGrandTotal = new int[] {0,0,0,0,0};
+         Collections.reverse(afdelingen);
+         for (Iterator iter = afdelingen.iterator(); iter.hasNext();) {
+			AfdelingBean afdeling = (AfdelingBean) iter.next();
+			
+			currentExcelRow++;
+			staticLabel = new Label(0,currentExcelRow,afdeling.getAfdelingName());
+	        sheet.addCell(staticLabel);
+	        staticLabel = new Label(1,currentExcelRow,afdeling.getRegioName());
+	        sheet.addCell(staticLabel);
+            
+            for (int i = 0; i < 5; i++) {
+            	nValue = new jxl.write.Number(i+2, currentExcelRow, afdeling.getIndividueleBoekingenTotal()[i]);
+                sheet.addCell(nValue);
+                individueleBoekingenGrandTotal[i] += afdeling.getIndividueleBoekingenTotal()[i];
+	   		}
+            
+            for (int i = 0; i < 5; i++) {
+            	nValue = new jxl.write.Number(i+8, currentExcelRow, afdeling.getGroepsBoekingenTotal()[i]);
+                sheet.addCell(nValue);
+                groepsBoekingenGrandTotal[i] += afdeling.getGroepsBoekingenTotal()[i];
+	   		}
+		 }
+         
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"");
+         sheet.addCell(staticLabel);
+         
+         currentExcelRow++;
+         staticLabel = new Label(0,currentExcelRow,"GRAND TOTAL");
+         sheet.addCell(staticLabel);
+         
+         for (int i = 0; i < 5; i++) {
+         	 nValue = new jxl.write.Number(i+2, currentExcelRow, individueleBoekingenGrandTotal[i]);
+             sheet.addCell(nValue);
+	   	 }
+         
+         for (int i = 0; i < 5; i++) {
+	     	 nValue = new jxl.write.Number(i+8, currentExcelRow, groepsBoekingenGrandTotal[i]);
+	         sheet.addCell(nValue);
+   		 }
+
+		 workbook.write();
+		 workbook.close();
 
          String sFile = NatMMConfig.tempDir + fileName;
          File f = new File(sFile);
@@ -459,4 +757,5 @@ public class ExtraStats {
       }*/
       return sAttachmentId;
    }
+   
 }
