@@ -4,6 +4,7 @@
 <mm:import externid="module"   jspvar="module" />
 <mm:import externid="property" jspvar="property" />
 <mm:import externid="value"    jspvar="value" />
+<mm:import externid="path"     jspvar="path" />
 <mm:import externid="cmd"      jspvar="cmd" />
 <mm:import externid="action" />
 <div
@@ -12,29 +13,96 @@
 
 <%
 Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-
-//String cmd = request.getParameter("cmd");
-String msg="";
-if (cmd != null) {
-	try {
-		Hashtable params = new Hashtable();
-		params.put("MODULE", module);
-		params.put("CLOUD", cloud);
-		if (cmd.equals("MODULE-SETPROPERTY")) {
-			if (property.length()==0) {
-				throw new Exception("Property name should be specified");
-			}
-			
-			params.put("PROPERTYNAME", property);
-			params.put("VALUE", value);
-		}
-		mmAdmin.process(cmd,module,params,request,response);
-		msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
-	} catch (Exception e ) {
-		msg="<p> Error: "+e.getMessage()+"</p>";
-	}
-}
+	String msg="";
 %>
+
+<mm:present referid="cmd">cmd: <mm:write referid="cmd" />
+  <mm:compare referid="cmd" value="MODULE-SETPROPERTY">
+	<%
+	if (cmd != null) {
+		try {
+			Hashtable params = new Hashtable();
+			params.put("MODULE", module);
+			params.put("CLOUD", cloud);
+			if (cmd.equals("MODULE-SETPROPERTY")) {
+				if (property.length()==0) {
+					throw new Exception("Property name should be specified");
+				}
+				
+				params.put("PROPERTYNAME", property);
+				params.put("VALUE", value);
+			}
+			mmAdmin.process(cmd,module,params,request,response);
+			msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+		} catch (Exception e ) {
+			msg="<p> Error: "+e.getMessage()+"</p>";
+		}
+	}
+	%>
+  </mm:compare>
+  <mm:compare referid="cmd" value="MODULESAVE">
+    <%
+    try {
+        Hashtable params=new Hashtable();
+        params.put("module",module);
+        params.put("PATH", path);
+        mmAdmin.process(cmd,module,params,request,response);
+        msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+    } catch (Exception e ) {
+        msg="<p> Error: "+e.getMessage()+"</p>";
+    }
+    %>
+  </mm:compare>
+</mm:present><%-- /cmd --%>
+
+<mm:present referid="action">
+  <mm:compare referid="action" value="alter">
+	<h3>Administrate Module ${module}, Property ${property}</h3>
+	
+	<% 
+	//Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+	String val = mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
+	%>
+	<mm:link page="modules-actions" referids="module,property"><form action="${_}" method="post"></mm:link>
+	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
+	<tr>
+	  <th>Property</th>
+	  <th>Value</th>
+	  <th class="center">Change</th>
+	</tr>
+	<tr>
+	  <td><%= property %></td>
+	  <td><input type="text" name="value" size="62" value="<%= val %>" /></td>
+	  <td class="center">
+		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
+		<input type="image" src="<mm:url page="/mmbase/style/images/edit.png" />" alt="Change" />
+	  </td>
+	</tr>
+	</table>
+    </form>
+  </mm:compare><%-- /action = alter --%>
+  
+  <mm:compare referid="action" value="add">
+	<h3>Administrate Module ${module}, New Property</h3>
+	
+	<form action="<mm:url page="actions.jsp" referids="module" />" method="post">
+	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
+	<tr>
+	  <th>Property</th>
+	  <th>Value</th>
+	  <th class="center">Create</th>
+	</tr><tr>
+	  <td><input type="text" name="property" size="12" value="" /></td>
+	  <td><input type="text" name="value" size="62" value="" /></td>
+	  <td class="center">
+		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
+		<input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="Create" />
+	  </td>
+	</tr>
+	</table>
+	</form>
+  </mm:compare><%-- /action = add --%>
+</mm:present><%-- /action --%>
 
 <mm:notpresent referid="action">
   <h3>Administrate Module ${module}</h3>
@@ -90,7 +158,7 @@ if (cmd != null) {
   </tr>
   </table>
   
-  <form action="<mm:url page="result.jsp" />" method="post">
+  <mm:link page="modules-actions" referids="module"><form action="${_}" method="post"></mm:link>
   <table border="0" cellspacing="0" cellpadding="3">
   <caption>
 	Save configuration of <%= module %>
@@ -103,62 +171,13 @@ if (cmd != null) {
    <td>Save</td>
    <td><input name="path" value="/tmp/${module}.xml" size="62" /></td>
    <td class="center">
-   <input type="hidden" name="cmd" value="MODULESAVE" />
+     <input type="hidden" name="cmd" value="MODULESAVE" />
 	 <input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" />
    </td>
   </tr>
   </table>
   </form>
 </mm:notpresent>
-
-<mm:present referid="action">
-  <mm:compare referid="action" value="add">
-	<h3>Administrate Module ${module}, New Property</h3>
-	
-	<form action="<mm:url page="actions.jsp" referids="module" />" method="post">
-	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
-	<tr>
-	  <th>Property</th>
-	  <th>Value</th>
-	  <th class="center">Create</th>
-	</tr><tr>
-	  <td><input type="text" name="property" size="12" value="" /></td>
-	  <td><input type="text" name="value" size="62" value="" /></td>
-	  <td class="center">
-		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
-		<input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="Create" />
-	  </td>
-	</tr>
-	</table>
-	</form>
-  </mm:compare>
-  
-  <mm:compare referid="action" value="alter">
-	<h3>Administrate Module ${module}, Property ${property}</h3>
-	
-	<% 
-	//Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-	String val = mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
-	%>
-	<mm:link page="modules-actions" referids="module,property"><form action="${_}" method="post"></mm:link>
-	<table summary="module property data" border="0" cellspacing="0" cellpadding="3">
-	<tr>
-	  <th>Property</th>
-	  <th>Value</th>
-	  <th class="center">Change</th>
-	</tr>
-	<tr>
-	  <td><%= property %></td>
-	  <td><input type="text" name="value" size="62" value="<%= val %>" /></td>
-	  <td class="center">
-		<input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
-		<input type="image" src="<mm:url page="/mmbase/style/images/edit.png" />" alt="Change" />
-	  </td>
-	</tr>
-	</table>
-    </form>
-  </mm:compare><%-- /action = alter --%>
-</mm:present><%-- /action --%>
 
 <p>
   <mm:link page="modules">
