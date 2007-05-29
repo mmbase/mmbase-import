@@ -1235,31 +1235,31 @@ The var to write it to.
 			<description>Labels such as 'category=sport'.</description>
 			<name>lable</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The type of the measurement.</description>
 			<name>type</name>
 			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The url where the link refers to. Used for clickin measurements and others.</description>
 			<name>externalUrl</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The landcode. Asumes 'nl' if no landcode is given.</description>
 			<name>landCode</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The name of the customer that is incorporated in the measurement code.</description>
 			<name>customerName</name>
 			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The name of the site that is incorporated in the measurement code.</description>
@@ -1271,13 +1271,13 @@ The var to write it to.
 			<description>The name of the counter. The current location is taken (replacing the '/' for a '.') if no countername is given.</description>
 			<name>counterName</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<description>The urltext, only used when a link is generated (e.g. clickin and clickout measurements).</description>
 			<name>urlText</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>	
 	<tag>
