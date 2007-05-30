@@ -333,7 +333,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       %>
       <tr><td class="fieldname" style="<%= fNStyle %>">behandeld door</td>
           <td>
-          <mm:list nodes="<%= parent_number %>" path="evenement,posrel,inschrijvingen,schrijver,users" fields="users.number" distinct="true">
+          <mm:list nodes="<%= nodenr %>" path="evenement,posrel,inschrijvingen,schrijver,users" fields="users.number" distinct="true">
                <mm:node element="users">
                <mm:first><table class="formcontent"></mm:first>
                <tr>
@@ -385,7 +385,7 @@ DoubleDateNode ddn = new DoubleDateNode();
          <% if(isExtendedAct) {  %>
             <% if(actionId.indexOf("printdates")==-1) { 
                 %><td>deelnemers&nbsp;&nbsp;</td><% } %>
-            <td>aantal&nbsp;plaatsen&nbsp;op&nbsp;boot</td>
+            <td>aantal&nbsp;plaatsen</td>
          <% } %>
          <% if(actionId.indexOf("printdates")==-1) { 
              %><td>aanmeldingen</td><% } %>
