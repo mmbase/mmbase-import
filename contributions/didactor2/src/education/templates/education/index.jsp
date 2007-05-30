@@ -22,16 +22,16 @@
   <mm:import jspvar="educationNumber" externid="education" from="this" />
   <mm:import externid="fb_madetest"/>
   
-  <%
-  // We are using it to show only one node in the tree
-  // For cross-education references  
-  %>
+  <!--
+  We are using it to show only one node in the tree
+  For cross-education references  
+  -->
 
   <mm:import externid="the_only_node_to_show"/>
   <mm:import externid="return_to"/>
   <mm:import externid="return_to_type"/>
   <%
-  HashSet hsetThePath = null;
+  Set hsetThePath = null;
   %>
   <%
    //Tracing the route
@@ -73,11 +73,14 @@
      </mm:related>
    </mm:node>
    
-
+   <mm:import externid="reset" />
+   <mm:present referid="reset">
+     <jsp:scriptlet>session.setAttribute("educationBookmarks", null);</jsp:scriptlet>
+   </mm:present>
 
 <%
     if (educationNumber != null && educationNumber.length() > 0) {
-        session.setAttribute("lasteducation",educationNumber);
+        session.setAttribute("lasteducation", educationNumber);
     }
     else {
         educationNumber = (String) session.getAttribute("lasteducation");
@@ -403,19 +406,21 @@ catch(err){};
                            <mm:compare referid="showsubtree" value="true">
 
                               <mm:grow>
-                                 <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
+                                <mm:depth>
+                                  <div id="div${previousnumber}" class="lbLevel${_}">
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
-                                       <script type="text/javascript">
-                                          document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
-                                       </script>
+                                      <script type="text/javascript">
+                                        document.getElementById("img${previousnumber}").setAttribute("haschildren", 1);
+                                      </script>
                                     </mm:compare>
                                     <mm:onshrink>
                                        </div>
-                                    </mm:onshrink>
+                                   </mm:onshrink>
+                                 </mm:depth>
                               </mm:grow>
 
                               <mm:remove referid="previousnumber"/>
-                              <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+                              <mm:field id="previousnumber" name="number" write="false" />
 
                               <%-- determine if we may show this learnobject and its children --%>
                               <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="${previousnumber}" /></mm:import>
