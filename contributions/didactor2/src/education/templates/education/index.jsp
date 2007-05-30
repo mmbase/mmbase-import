@@ -7,6 +7,7 @@
   <jsp:directive.include file="/shared/setImports.jsp" />
 
   <mm:include page="/cockpit/cockpit_header.jsp">
+    <mm:param name="reset" />
     <mm:param name="extraheader">
       <title><di:translate key="education.learnenvironmenttitle" /></title>
       <script src="js/browser_version.js"></script>
