@@ -30,12 +30,20 @@
       <di:translate key="agenda.calendar" />
     </div>
     <div class="folderCalendarBody">
-      <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids,year,month,day" />
-      <p/>
-      <mm:list nodes="$user" path="people1,invitationrel1,items,invitationrel2,people2" 
-               constraints="[people1.number] != [people2.number] AND [invitationrel1.status] <= 0" max="1">
-        <a href="<mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate key="agenda.newappointments" /></a>
-      </mm:list>
+      <p>
+        <mm:treeinclude page="/agenda/calendar.jspx" objectlist="$includePath" referids="$referids,year,month,day" />
+      </p>
+      <mm:node number="$user">
+        <mm:relatednodescontainer path="invitationrel,people">
+          <mm:constraint field="invitationrel.status" operator="LESS_EQUAL" value="0" />
+          <mm:constraint field="people.number" operator="EQUAL" inverse="true" value="$user" />
+          <mm:relatednodes max="1">
+            <mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids" write="false">
+              <a href="${_}"><di:translate key="agenda.newappointments" /></a>
+            </mm:treefile>
+          </mm:relatednodes>
+        </mm:relatednodescontainer>
+      </mm:node>
     </div>
   </div>
 
