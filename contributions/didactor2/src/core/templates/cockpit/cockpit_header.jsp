@@ -20,8 +20,9 @@
   <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
 
    <div class="">
+     <mm:import externid="reset" />
       <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath"
-                      referids="$referids"/>
+                      referids="$referids,reset?"/>
       <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids"
                       />
       <mm:treeinclude page="/cockpit/educationbar.jsp" objectlist="$includePath" referids="$referids" />
