@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.42 2007-05-30 08:19:22 michiel Exp $
+  $Id: build.xml,v 1.43 2007-05-30 08:45:54 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -228,6 +228,8 @@
           <include name="*.jar"/>
           <include name="*.zip"/>
         </fileset>
+        <pathelement location="${xalan.jar}" />
+        <pathelement location="${serializer.jar}" />
       </classpath>
       <arg value="${documentation.docbook.fo.stylesheet}" />
       <arg value="${documentation.xml-source.dir}" />
