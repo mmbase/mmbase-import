@@ -440,18 +440,26 @@ public class CSVReader implements Runnable {
     private TreeMap getEmails(String emailFile){
       log.info("getEmails " + emailFile);
       TreeMap emails = new TreeMap();
-      String [] emailEndTag = { "%X400:", "%CCMAIL:", "\"" };
+      String separator = ";";
+      
       try {
         BufferedReader dataFileReader = getBufferedReader(emailFile);
         String nextLine = dataFileReader.readLine();
 
         while(nextLine!=null) {
-          nextLine += "\"";
-          String alias = getValue(nextLine,"Mailbox,",",");
-          String email = "";
-          for(int i=0; i<emailEndTag.length && email.equals(""); i++) {
-            email = getValue(nextLine,"SMTP:",emailEndTag[i]);
-          }
+        	String alias = "";
+        	String email = "";
+        	String[] tokens = nextLine.split(separator);
+        	if (tokens.length < 4) {
+        		log.warn("email file row contains less then expected tokens.");
+        	} else {
+        		alias = tokens[0];
+        		if (tokens[2].indexOf("@") != -1) {
+        			email = tokens[2];
+        		}
+        	}
+        	log.info("alias: " + alias + "| email: " + email);
+        	
           if(!alias.equals("")&&!email.equals("")) { // use uppercase on alias for searching
             if(email.length()>64) {
               log.warn("email address " + email + " for alias " + alias + " is longer than 255 characters, therefore it will be truncated.");
