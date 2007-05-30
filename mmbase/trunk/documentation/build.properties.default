@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.14 2007-03-23 15:34:27 michiel Exp $
+# $Id: build.properties.default,v 1.15 2007-05-30 07:38:11 andre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -27,7 +27,8 @@ documentation.build.dir=${basedir}/build
 # --------------------------------------------------
 
 # ---- Default Sourceforge Mirror ----
-sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
+# http://downloads.sourceforge.net/docbook/docbook-xsl-1.72.0.tar.gz
+sourceforge.loc=http://downloads.sourceforge.net
 # ---- Strange url needed to get around sun's download system ----
 sundownload.loc=http://java.sun.com/Download5?protocol=HTTP%20download&amp;platform=zip&amp;domain-checked=&amp;document=download&amp;mirror=http&amp;referer=
 
