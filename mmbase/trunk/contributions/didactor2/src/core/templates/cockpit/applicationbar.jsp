@@ -3,7 +3,7 @@
 %><mm:cloud method="delegate" authenticate="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <mm:locale language="${locale}">
-<div class="applicationMenubar" style="white-space: nowrap">
+<div class="applicationMenubar">
   <mm:hasrank value="didactor-anonymous">
     <div class="menuItemApplicationMenubar login">
       <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
@@ -36,7 +36,10 @@
   </mm:hasrank>
   <mm:hasrank minvalue="basic user">
     <div class="menuItemApplicationMenubar">
-      <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="provider?,education?"/>" class="menubar"><di:translate key="core.home" /></a>
+      <mm:import externid="reset" />
+      <mm:treefile page="/index.jsp" objectlist="$includePath" referids="reset?" write="false"> 
+        <a title="${di:translate(pageContext,'core.home')}" href="${_}" class="menubar"><di:translate key="core.home" /></a>
+      </mm:treefile>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
