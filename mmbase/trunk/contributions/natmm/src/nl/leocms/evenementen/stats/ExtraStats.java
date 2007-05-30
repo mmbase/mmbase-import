@@ -653,7 +653,7 @@ public class ExtraStats {
          currentExcelRow++;
          staticLabel = new Label(2,currentExcelRow,"INDIVIDUELE BOEKINGEN");
          sheet.addCell(staticLabel);
-         staticLabel = new Label(6,currentExcelRow,"GROEPSBOEKINGEN");
+         staticLabel = new Label(8,currentExcelRow,"GROEPSBOEKINGEN");
          sheet.addCell(staticLabel);
          
          currentExcelRow++;
