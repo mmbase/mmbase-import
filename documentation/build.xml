@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.41 2006-12-07 17:58:33 michiel Exp $
+  $Id: build.xml,v 1.42 2007-05-30 08:19:22 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -175,6 +175,8 @@
           <include name="*.zip"/>
           <exclude name="mmbase.jar"/>
         </fileset>
+        <pathelement location="${xalan.jar}" />
+        <pathelement location="${serializer.jar}" />
       </classpath>
       <arg value="${documentation.build.dir}/docbook2xhtml.xslt" />
       <arg value="${documentation.xml-source.dir}" />
@@ -323,14 +325,13 @@
       <param name="expandedfile" value="${fop.exp}"/>
     </antcall>
 
-    <!--
-    <echo message="jai" />
-    <antcall target="downloadbz2">
-      <param name="sourcefile" value="${jai.loc}"/>
-      <param name="destfile" value="${jai.home}"/>
-      <param name="destdir" value="${jai.home}"/>
+    <echo message="xalan" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${xalan.loc}"/>
+      <param name="destfile" value="${xalan.dest}"/>
+      <param name="expandedfile" value="${xalan.jar}"/>
     </antcall>
-    -->
+
   </target>
   <!--
   <target name="testsrc">
@@ -460,6 +461,8 @@
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
+        <pathelement location="${xalan.jar}" />
+        <pathelement location="${serializer.jar}" />
       </classpath>
       <arg value="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt" />
       <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
