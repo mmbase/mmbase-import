@@ -458,7 +458,6 @@ public class CSVReader implements Runnable {
         			email = tokens[2];
         		}
         	}
-        	log.info("alias: " + alias + "| email: " + email);
         	
           if(!alias.equals("")&&!email.equals("")) { // use uppercase on alias for searching
             if(email.length()>64) {
