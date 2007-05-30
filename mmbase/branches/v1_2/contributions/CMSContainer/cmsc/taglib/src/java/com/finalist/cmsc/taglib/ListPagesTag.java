@@ -40,7 +40,7 @@ public class ListPagesTag extends AbstractListTag<Page> {
             pages = new ArrayList<Page>(SiteManagement.getSites());
 		}
         if (pages != null ) {
-            if (MODE_MENU.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+            if (MODE_MENU.equalsIgnoreCase(mode)) {
                 for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
                     Page page = iter.next();
                     if (!page.isInmenu()) {
@@ -48,7 +48,7 @@ public class ListPagesTag extends AbstractListTag<Page> {
                     }
                 }
             }
-            if (MODE_HIDDEN.equalsIgnoreCase(mode) || MODE_ALL.equalsIgnoreCase(mode)) {
+            if (MODE_HIDDEN.equalsIgnoreCase(mode)) {
                 for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
                     Page page = iter.next();
                     if (page.isInmenu()) {
