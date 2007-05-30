@@ -31,19 +31,21 @@ public class ApplicationHelper {
    boolean isInstalledNatMM;
    boolean isInstalledNatNH;
    boolean isInstalledNMIntra;
+   boolean isInstalledVanHam;
    
    
    public ApplicationHelper(Cloud cloud) {
       this.cloud = cloud;
       this.isInstalledNatMM = isInstalled("NatMM");
       this.isInstalledNatNH = isInstalled("NatNH");
-      this.isInstalledNMIntra = isInstalled("NMIntra");
+      this.isInstalledNMIntra = isInstalled("NMIntra");      
+      this.isInstalledNMIntra = isInstalled("VanHam");
    }
 	
-	public boolean isInstalled(String sApplication) {
-		NodeManager versionManager = cloud.getNodeManager("versions");
-		return (versionManager.getList("type='application' AND name='" + sApplication + "'", null, null).size()>0);
-	}
+   public boolean isInstalled(String sApplication) {
+      NodeManager versionManager = cloud.getNodeManager("versions");
+      return (versionManager.getList("type='application' AND name='" + sApplication + "'", null, null).size()>0);
+   }
 	
    /**
     * Returns all "meaningfull" content types (typedefs/names) for the installed application.
@@ -68,6 +70,11 @@ public class ApplicationHelper {
       if(isInstalledNMIntra) {
         for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
           contentTypes.add(NMIntraConfig.CONTENTELEMENTS[f]);
+        }
+      }
+      if(isInstalledVanHam) {
+        for(int f = 0; f < VanHamConfig.CONTENTELEMENTS.length; f++) {
+          contentTypes.add(VanHamConfig.CONTENTELEMENTS[f]);
         }
       }
       if(addContainers) {
@@ -104,7 +111,7 @@ public class ApplicationHelper {
       return containerTypes;
    }
    
-	 public HashMap pathsFromPageToElements() {
+   public HashMap pathsFromPageToElements() {
 	
       HashMap pathsFromPageToElements = new HashMap();
       // todo: create a more generic version for this piece of code
@@ -127,6 +134,13 @@ public class ApplicationHelper {
           pathsFromPageToElements.put(
             NMIntraConfig.OBJECTS[f],
             NMIntraConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
+        }
+      }
+      if(isInstalledVanHam) {
+        for(int f = 0; f < NMIntraConfig.OBJECTS.length; f++) {
+          pathsFromPageToElements.put(
+            VanHamConfig.OBJECTS[f],
+            VanHamConfig.PATHS_FROM_PAGE_TO_OBJECTS[f]);
         }
       }
       if(pathsFromPageToElements.size()==0) {
