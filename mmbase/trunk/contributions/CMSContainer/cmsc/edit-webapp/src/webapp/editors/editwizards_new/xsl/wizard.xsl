@@ -34,6 +34,15 @@
   END
 -->
 
+
+
+<!-- CMSC-446: fix for date picker, so it won't always popup when pressing enter in an input -->
+  <xsl:template name="date-picker">
+    <img class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'internal_{@fieldname}',event);return false;"/>
+  </xsl:template>
+  
+
+
   <xsl:variable name="htmlareadir"><xsl:value-of select="$ew_context" />/mmbase/edit/wizard/xinha/</xsl:variable>
 
   <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator();  xinha_init(); initPopCalendar();</xsl:variable>
