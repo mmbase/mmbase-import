@@ -132,6 +132,13 @@ table.font {
   border-bottom: #FFFFFF 1px solid
 }
 
+.applicationMenubar, 
+.providerMenubar, 
+.educationMenubar { 
+
+  white-space: nowrap;
+}
+
 .applicationMenubar {
   text-align: right;
   padding: 0.5em 0.9em 0.8em 0em;
@@ -190,7 +197,6 @@ input.search {
   height: 1.9em;
   position: relative;
   padding: 0em 0em 0.1em 0.5em;
-  white-space: nowrap;
   background-color: #ED6F2C
 }
 
@@ -264,6 +270,10 @@ input.search {
   margin: 0px;
   float: left;
   padding: 0.3em 1.5em 0.1em 0.5em
+}
+
+.menuSeperator:first-child { 
+  background-image: none;
 }
 
 .menuItemApplicationMenubar {
@@ -414,7 +424,7 @@ a.users:hover {
   border-top: 6px solid #FF801A
 }
 
-.titlefield2 {
+.titlefield2 { 
   font-size: 1em;
   font-weight: bold;
   color: #000000;
@@ -455,7 +465,15 @@ a.users:hover {
   font-weight: bold;
   color: #000000;
   height: 1.4em;
-  padding: 0em 0em 0em 0em
+  padding: 0px 0px 0px 0px;
+}
+.titlebar img { 
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  padding: 0em 0em 0em 0em;
+  float: left;
+  border: none;
+  z-index: 20;
 }
 
 .pathbar {
@@ -549,6 +567,12 @@ a.path:hover {
   z-index: 8;
   background-color: #FFFFFF;
   padding: 0.5em 0.1em 0em 0.1em
+}
+.folderCalendarBody p {
+  margin-top: 0px;
+}
+.calDaySpacing { 
+  width: 1ex;
 }
 
 /* ###### treelevel ###### */
@@ -940,4 +964,14 @@ a.forumlist:active {
 
 blockquote {
   border-left: 1px;
+}
+
+img.pos2rel.image-inline { 
+  float: none !important;
+}
+img.pos2rel.image-left { 
+  float: left  !important; 
+}
+img.pos2rel.image-right { 
+  float: right !important;
 }
