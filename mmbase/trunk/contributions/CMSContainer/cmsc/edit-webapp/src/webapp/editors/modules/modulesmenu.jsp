@@ -68,6 +68,11 @@
                   <a href="<cmsc:property key="egemmail.beheer.path"/>" target="_blank"><fmt:message key="modules.egemmail.admin" /></a>
                </li>
             </mm:haspage>
+            <mm:haspage page="/editors/language-redirect">
+	            <li class="guestbook">
+						<a href="../language-redirect/test.jsp" target="rightpane">Taal afhankelijkheden</a>
+					</li>
+				</mm:haspage>
          </ul>
 			
 		</cmscedit:sideblock>
