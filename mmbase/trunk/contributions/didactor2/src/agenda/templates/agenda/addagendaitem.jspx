@@ -175,7 +175,7 @@
               
               <c:choose>
                 <c:when test="${mode eq 'add'}">
-                  <mm:createnode type="items" id="myitems" />
+                  <mm:createnode type="items" id="myitems" commitonclose="false" />
                   <mm:createrelation role="eventrel" source="transactionagenda" destination="myitems" id="myeventrel" />
                 </c:when>
                 <c:otherwise>
