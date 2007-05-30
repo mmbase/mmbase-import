@@ -51,14 +51,17 @@
                   + "&#149; Vraag: " + textId + "<br><br>"
              %></HTML></mm:setfield
           ></mm:createnode
-         ><tr>
-          <td class="def" style="width:690px;padding-top:26px;padding-bottom:14px;">
-            <div align="left">
-              <h3><bean:message bundle="<%= "VANHAM." + language %>" key="contact.ok.title" /></h3>
-              <bean:message bundle="<%= "VANHAM." + language %>" key="contact.ok.message" />
-            </div>
-          </td>
-        </tr>
+          ><mm:node referid="websitemail"
+	  	><mm:field name="mail(oneshotkeep)"
+	  /></mm:node>
+	  <tr>
+            <td class="def" style="width:690px;padding-top:26px;padding-bottom:14px;">
+              <div align="left">
+                <h3><bean:message bundle="<%= "VANHAM." + language %>" key="contact.ok.title" /></h3>
+                <bean:message bundle="<%= "VANHAM." + language %>" key="contact.ok.message" />
+              </div>
+            </td>
+          </tr>
         <% 
        } else { 
         %>
