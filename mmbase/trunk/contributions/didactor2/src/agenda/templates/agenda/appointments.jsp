@@ -31,7 +31,7 @@
       <di:translate key="agenda.calendar" />
     </div>
     <div class="folderCalendarBody">
-      <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids,year,month,day" />
+      <mm:treeinclude page="/agenda/calendar.jspx" objectlist="$includePath" referids="$referids,year,month,day" />
     </div>
   </div>
 
