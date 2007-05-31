@@ -101,6 +101,22 @@
         <translation language="nl" value="Nick naam is al in gebruik. Kies een andere." />
         <translation language="df" value="Nick name is allready in use. Please try another one." />
     </keyword>
+    <keyword name="Nick_empty">
+        <translation language="nl" value="Nick naam is leeg maar verplicht. Kies een nick naam." />
+        <translation language="df" value="Nick name is mandatory but empty. Choose a nick name." />
+    </keyword>
+    <keyword name="Firstname_invalid">
+        <translation language="nl" value="De voornaam is niet geldig" />
+        <translation language="df" value="Firstname invalid" />
+    </keyword>
+    <keyword name="Surname_invalid">
+        <translation language="nl" value="De voornaam is niet geldig" />
+        <translation language="df" value="Firstname invalid" />
+    </keyword>
+    <keyword name="Email_invalid">
+        <translation language="nl" value="Het email adres is niet geldig." />
+        <translation language="df" value="Email invalid" />
+    </keyword>
     <keyword name="Test">
         <translation language="nl" value="Test" />
         <translation language="df" value="Test" />
@@ -345,6 +361,14 @@
     <keyword name="Account">
         <translation language="nl" value="Account" />
         <translation language="df" value="Account" />
+    </keyword>
+    <keyword name="ShowFullName">
+        <translation language="nl" value="Volledige naam tonen" />
+        <translation language="df" value="Show full name" />
+    </keyword>
+    <keyword name="ShareProfile">
+        <translation language="nl" value="Profiel zichtbaar maken" />
+        <translation language="df" value="Make profile visible" />
     </keyword>
     <keyword name="problem_missing_topic">
         <translation language="nl" value="** probleem leeg onderwerp, aub invullen **" />
@@ -813,9 +837,21 @@
         <translation language="nl" value="Ja, verwijderen " />
         <translation language="df" value="Yes, delete" />
     </keyword>
+    <keyword name="Yes">
+        <translation language="nl" value="ja" />
+        <translation language="df" value="yes" />
+    </keyword>
+    <keyword name="No">
+        <translation language="nl" value="nee" />
+        <translation language="df" value="no" />
+    </keyword>
     <keyword name="Female">
         <translation language="nl" value="Vrouw" />
         <translation language="df" value="Female" />
+    </keyword>
+    <keyword name="Unknown">
+        <translation language="nl" value="Onbekend" />
+        <translation language="df" value="Unknown" />
     </keyword>
     <keyword name="messages">
         <translation language="nl" value="berichten" />
