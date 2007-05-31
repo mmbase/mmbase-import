@@ -1787,7 +1787,7 @@ public class Forum {
         }
         return ForumManager.getReplyOnEachPage();
     }
-
+    
     private void readFieldaliases() {
         if (config != null) {
             Iterator i = config.getFieldaliases();

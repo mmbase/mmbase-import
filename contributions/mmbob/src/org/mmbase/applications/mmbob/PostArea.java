@@ -39,7 +39,6 @@ public class PostArea {
     private int id;
     private final Forum parent;
     private Hashtable moderators = new Hashtable(); // synchronized?
-    private String moderatorsline;
     private Vector postthreads = null;
     private final Map nameCache = new Hashtable(); // synchronized?
     private boolean firstcachecall = true;
@@ -471,7 +470,6 @@ public class PostArea {
                     if (p != null && p.getNumber() == mp.getId()) {
                         rel.delete();
                         moderators.remove(mp.getNick());
-                        moderatorsline = null;
                     }
                 }
             }
@@ -493,7 +491,6 @@ public class PostArea {
             rel.setStringValue("role", "moderator");
             rel.commit();
             moderators.put(mp.getNick(), mp);
-            moderatorsline = null;
         } else {
             log.error("Forum can't load relation nodemanager postareas/posters/rolerel");
             return false;
@@ -503,24 +500,37 @@ public class PostArea {
 
     /**
      * get the moderators line in html
+     * the moderators that want to share their profile are added as a link
+     * of the moderators that don't want to show their full name only the nick is exposed. 
      * @param baseurl
+     * @param isGuest thue if the currenty loggedin user is a guest 
      * @return moderatorsline in html
      */
-    public String getModeratorsLine(String baseurl) {
-        if (moderatorsline != null) return moderatorsline;
-        moderatorsline = "";
+    public String getModeratorsLine(String baseurl, boolean isGuest) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
         Enumeration e = moderators.elements();
         while (e.hasMoreElements()) {
             Poster p = (Poster) e.nextElement();
-            if (!moderatorsline.equals("")) moderatorsline += ",";
-            if (baseurl.equals("")) {
-                moderatorsline += p.getNick();
+            if(!first){
+                sb.append(",");
+            }
+            first = false;
+            
+            if (baseurl == null || baseurl.equals("") ||  ! p.isShareProfile() || isGuest) {
+                sb.append(p.getIdentifier());
             } else {
-                moderatorsline += "<a href=\"" + baseurl + "?forumid=" + parent.getId() + "&postareaid=" + getId() + "&posterid="
-                        + p.getId() + "\">" + p.getNick() + "</a>";
+                sb.append("<a href=\"");
+                sb.append(baseurl);
+                sb.append("?forumid=" + parent.getId());
+                sb.append("&postaraid=" + getId());
+                sb.append("&posterid=" + p.getId());
+                sb.append("\">");
+                sb.append(p.getIdentifier());
+                sb.append("</a>");
             }
         }
-        return moderatorsline;
+        return sb.toString();
     }
 
     /**

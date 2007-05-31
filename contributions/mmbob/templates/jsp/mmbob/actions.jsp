@@ -159,13 +159,15 @@
 
             <mm:compare value="editposter" referid="action">
                 <mm:import id="firstname" externid="newfirstname" />
+                <mm:import id="showfullname" externid="newshowfullname" />
+                <mm:import id="shareprofile" externid="newshareprofile" />
                 <mm:import id="lastname" externid="newlastname" />
                 <mm:import id="email" externid="newemail" />
                 <mm:import id="gender" externid="newgender" />
                 <mm:import id="location" externid="newlocation" />
                 <mm:import id="newpassword" externid="newpassword" />
                 <mm:import id="newconfirmpassword" externid="newconfirmpassword" />
-                <mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
+                <mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword,showfullname,shareprofile"/></mm:import>
                 <mm:write referid="feedback" session="feedback_message"/>
 
                 <mm:compare referid="feedback" value="passwordchanged">

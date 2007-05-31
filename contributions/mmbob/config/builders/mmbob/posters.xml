@@ -197,5 +197,29 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
+    <field name="showname">
+        <descriptions>
+            <description xml:lang="nl">Toon je volledige naam of alleen je nickname</description>
+            <description xml:lang="en">Show your full name or just your nickname</description>
+        </descriptions>
+      <gui>
+        <guiname xml:lang="nl">volledige naam tonem</guiname>
+        <guiname xml:lang="en">show full name</guiname>
+      </gui>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="shareprofile">
+        <descriptions>
+            <description xml:lang="nl">Maak je profiel toegangkelijk voor ingelogde gebruikers.</description>
+            <description xml:lang="en">Make your profile accessible for logged in users</description>
+        </descriptions>
+      <gui>
+        <guiname xml:lang="nl">profiel delen</guiname>
+        <guiname xml:lang="en">share profile</guiname>
+      </gui>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
   </fieldlist>
 </builder>

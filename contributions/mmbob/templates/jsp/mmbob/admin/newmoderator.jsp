@@ -62,19 +62,21 @@
 
     <tr><th align="left" width="25%"><mm:write referid="mlg.Current_moderators" /></th><td colspan="2" align="left">
           <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+            <mm:field name="identifier" /><br />
           </mm:nodelistfunction>
     <p />
     </td></tr>
     <tr><th align="left"><mm:write referid="mlg.Possible_moderators" /></th><td colspan="2" align="left">
-          <mm:import externid="searchkey">*</mm:import>
-                  <form action="<mm:url page="newmoderator.jsp" referids="forumid,postareaid" />" method="post">
-                        search <input name="searchkey" size="20" value="<mm:write referid="searchkey" />" />
+          <mm:import externid="searchkey" >*</mm:import>
+              <mm:link page="newmoderator.jsp" referids="forumid,postareaid" >
+                  <form action="${_}" method="post">
+                        search <input name="searchkey" size="20" value="${searchkey}" />
                   </form>
+              </mm:link>
           <form action="<mm:url page="newmoderator.jsp" referids="forumid,postareaid" />" method="post">
           <select name="newmoderator">
-          <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid,searchkey">
-                <option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+          <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid,searchkey" id="nm">
+                <option value="${nm.posterid}"><mm:field name="identifier" /></option>
           </mm:nodelistfunction>
         </select>
     </td></tr>

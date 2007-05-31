@@ -53,7 +53,9 @@ public class Poster {
     private ArrayList signatures;
     private ArrayList bookmarked = new ArrayList();
     private ArrayList remotehosts;
-    private String mailbody = "";;
+    private String mailbody = "";
+    private boolean showFullName = false;
+    private boolean shareProfile = false;
     private ProfileInfo profileinfo = null;
     private static final int STATE_ACTIVE = 0;
     private static final int STATE_DISABLED = 1;
@@ -85,6 +87,8 @@ public class Poster {
         gender = node.getStringValue(prefix + "gender");
         firstlogin = node.getIntValue(prefix + "firstlogin");
         lastsessionend = node.getIntValue(prefix + "lastseen");
+        showFullName = node.getBooleanValue(prefix + "showname");
+        shareProfile = node.getBooleanValue(prefix + "shareProfile");
 
         /*
          * if (firstlogin == -1) { node.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
@@ -183,7 +187,7 @@ public class Poster {
     }
 
     /**
-     * @return the mickname or the account if there is no nick
+     * @return the nick name or the account if there is no nick
      */
     public String getNick() {
         ProfileEntry pe = getProfileValue("nick");
@@ -487,6 +491,8 @@ public class Poster {
         node.setValue("gender", gender);
         node.setValue("location", location);
         node.setValue("password", password);
+        node.setBooleanValue("showname", showFullName);
+        node.setBooleanValue("shareprofile", shareProfile);
         readImages();
         ForumManager.syncNode(node, ForumManager.FASTSYNC);
     }
@@ -985,6 +991,43 @@ public class Poster {
 
     public Forum getParent() {
         return parent;
+    }
+
+    public void setShowFullname(boolean boolean1) {
+        showFullName = boolean1;
+    }
+
+    public void setShareProfile(boolean boolean1) {
+        shareProfile = boolean1;
+    }
+
+    public boolean isShareProfile() {
+        return shareProfile;
+    }
+
+    public boolean isShowFullName() {
+        return showFullName;
+    }
+    
+    /**
+     * utility method to deterimin the full name to show in the interface. when isShowFullname is false
+     * this method returns an empty string.
+     * @return
+     */
+    public String getFullName(){
+        if(isShowFullName()){
+            return getFirstName() + " " + getLastName();
+        }else{
+            return "";
+        }
+    }
+    
+    public String getIdentifier(){
+        if(isShowFullName()){
+            return getNick() + " (" + getFullName() + ")";
+        }else{
+            return getNick();
+        }
     }
 
 }

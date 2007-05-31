@@ -63,9 +63,19 @@
     </mm:compare>
   </tr>
 
-<mm:nodelistfunction set="mmbob" name="getPosters" referids="forumid,searchkey,page,pagesize">
+<mm:nodelistfunction set="mmbob" name="getPosters" referids="forumid,searchkey,page,pagesize" id="p">
   <tr>
-    <td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a></td>
+    <td>
+        <c:choose>
+            <c:when test="${p.shareprofile == 'true' && posterid != '-1'}">
+                <a href="profile.jsp?forumid=${forumid}&posterid=${posterid}&pathtype=allposters_poster">${p.identifier}</a>
+            </c:when>
+            <c:otherwise>${p.identifier} </c:otherwise>
+        </c:choose>
+        <%--
+        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a>
+        --%>
+    </td>
     <td><mm:field name="location" /></td>
     <td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td>
     <mm:compare referid="isadministrator" value="true">

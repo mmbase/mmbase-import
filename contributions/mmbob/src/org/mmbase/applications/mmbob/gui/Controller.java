@@ -78,7 +78,7 @@ public class Controller {
                     map.put("lastposter", area.getLastPoster());
                     map.put("lastposttime", new Integer(area.getLastPostTime()));
                     map.put("lastsubject", area.getLastSubject());
-                    map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                    map.put("moderators", area.getModeratorsLine("profile.jsp", activeid == -1));
                     map.put("lastposternumber", new Integer(area.getLastPosterNumber()));
                     map.put("lastpostnumber", new Integer(area.getLastPostNumber()));
                     map.put("lastpostthreadnumber", new Integer(area.getLastPostThreadNumber()));
@@ -140,7 +140,7 @@ public class Controller {
                     map.put("lastposter", area.getLastPoster());
                     map.put("lastposttime", new Integer(area.getLastPostTime()));
                     map.put("lastsubject", area.getLastSubject());
-                    map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                    map.put("moderators", area.getModeratorsLine("profile.jsp", activeid == -1));
                     map.put("lastposternumber", new Integer(area.getLastPosterNumber()));
                     map.put("lastpostnumber", new Integer(area.getLastPostNumber()));
                     map.put("lastpostthreadnumber", new Integer(area.getLastPostThreadNumber()));
@@ -187,7 +187,7 @@ public class Controller {
                         map.put("lastposter", area.getLastPoster());
                         map.put("lastposttime", new Integer(area.getLastPostTime()));
                         map.put("lastsubject", area.getLastSubject());
-                        map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                        map.put("moderators", area.getModeratorsLine("profile.jsp", activeid == -1));
                         map.put("lastposternumber", new Integer(area.getLastPosterNumber()));
                         map.put("lastpostnumber", new Integer(area.getLastPostNumber()));
                         map.put("lastpostthreadnumber", new Integer(area.getLastPostThreadNumber()));
@@ -578,11 +578,12 @@ public class Controller {
                 while (e.hasMoreElements()) {
                     Poster poster = (Poster) e.nextElement();
                     HashMap map = new HashMap();
-                    map.put("id", new Integer(poster.getId()));
-                    map.put("account", poster.getAccount());
-                    map.put("nick", poster.getNick());
-                    map.put("firstname", poster.getFirstName());
-                    map.put("lastname", poster.getLastName());
+//                    map.put("id", new Integer(poster.getId()));
+//                    map.put("account", poster.getAccount());
+//                    map.put("nick", poster.getNick());
+//                    map.put("firstname", poster.getFirstName());
+//                    map.put("lastname", poster.getLastName());
+                    addPosterInfo(map, poster);
                     list.add(map);
                 }
             }
@@ -606,11 +607,12 @@ public class Controller {
             while (e.hasMoreElements()) {
                 Poster poster = (Poster) e.nextElement();
                 HashMap map = new HashMap();
-                map.put("id", new Integer(poster.getId()));
-                map.put("account", poster.getAccount());
-                map.put("nick", poster.getNick());
-                map.put("firstname", poster.getFirstName());
-                map.put("lastname", poster.getLastName());
+//                map.put("id", new Integer(poster.getId()));
+//                map.put("account", poster.getAccount());
+//                map.put("nick", poster.getNick());
+//                map.put("firstname", poster.getFirstName());
+//                map.put("lastname", poster.getLastName());
+                addPosterInfo(map, poster);
                 list.add(map);
             }
         }
@@ -631,17 +633,18 @@ public class Controller {
             while (e.hasMoreElements()) {
                 Poster poster = (Poster) e.nextElement();
                 HashMap map = new HashMap();
-                map.put("id", new Integer(poster.getId()));
-                map.put("account", poster.getAccount());
-                map.put("nick", poster.getNick());
-                map.put("firstname", poster.getFirstName());
-                map.put("lastname", poster.getLastName());
-                map.put("location", poster.getLocation());
-                map.put("level", poster.getLevel());
-                map.put("levelgui", poster.getLevelGui());
-                map.put("levelimage", poster.getLevelImage());
-                map.put("lastseen", new Integer(poster.getLastSeen()));
-                map.put("blocked", "" + poster.isBlocked());
+//                map.put("id", new Integer(poster.getId()));
+//                map.put("account", poster.getAccount());
+//                map.put("nick", poster.getNick());
+//                map.put("firstname", poster.getFirstName());
+//                map.put("lastname", poster.getLastName());
+//                map.put("location", poster.getLocation());
+//                map.put("level", poster.getLevel());
+//                map.put("levelgui", poster.getLevelGui());
+//                map.put("levelimage", poster.getLevelImage());
+//                map.put("lastseen", new Integer(poster.getLastSeen()));
+//                map.put("blocked", "" + poster.isBlocked());
+                  addPosterInfo(map, poster);
                 list.add(map);
             }
         }
@@ -668,17 +671,18 @@ public class Controller {
                         || lastname.indexOf(searchkey) != -1 || location.indexOf(searchkey) != -1) {
                     if (i > startpos) {
                         HashMap map = new HashMap();
-                        map.put("number", new Integer(poster.getId()));
-                        map.put("account", poster.getAccount());
-                        map.put("nick", poster.getNick());
-                        map.put("firstname", poster.getFirstName());
-                        map.put("lastname", poster.getLastName());
-                        map.put("location", poster.getLocation());
-                        map.put("level", poster.getLevel());
-                        map.put("levelgui", poster.getLevelGui());
-                        map.put("levelimage", poster.getLevelImage());
-                        map.put("blocked", "" + poster.isBlocked());
-                        map.put("lastseen", new Integer(poster.getLastSeen()));
+//                        map.put("number", new Integer(poster.getId()));
+//                        map.put("account", poster.getAccount());
+//                        map.put("nick", poster.getNick());
+//                        map.put("firstname", poster.getFirstName());
+//                        map.put("lastname", poster.getLastName());
+//                        map.put("location", poster.getLocation());
+//                        map.put("level", poster.getLevel());
+//                        map.put("levelgui", poster.getLevelGui());
+//                        map.put("levelimage", poster.getLevelImage());
+//                        map.put("blocked", "" + poster.isBlocked());
+//                        map.put("lastseen", new Integer(poster.getLastSeen()));
+                        addPosterInfo(map, poster);
                         if (page != 0) {
                             map.put("prevpage", new Integer(page - 1));
                         } else {
@@ -769,12 +773,8 @@ public class Controller {
                 Enumeration e = postArea.getNonModerators(searchkey);
                 while (e.hasMoreElements()) {
                     Poster poster = (Poster) e.nextElement();
-                    HashMap map = new HashMap();
-                    map.put("id", new Integer(poster.getId()));
-                    map.put("account", poster.getAccount());
-                    map.put("nick", poster.getNick());
-                    map.put("firstname", poster.getFirstName());
-                    map.put("lastname", poster.getLastName());
+                    Map map = new HashMap();
+                    addPosterInfo(map, poster);
                     list.add(map);
                 }
             }
@@ -797,11 +797,12 @@ public class Controller {
             while (e.hasMoreElements()) {
                 Poster poster = (Poster) e.nextElement();
                 HashMap map = new HashMap();
-                map.put("id", new Integer(poster.getId()));
-                map.put("account", poster.getAccount());
-                map.put("nick", poster.getNick());
-                map.put("firstname", poster.getFirstName());
-                map.put("lastname", poster.getLastName());
+//                map.put("id", new Integer(poster.getId()));
+//                map.put("account", poster.getAccount());
+//                map.put("nick", poster.getNick());
+//                map.put("firstname", poster.getFirstName());
+//                map.put("lastname", poster.getLastName());
+                addPosterInfo(map, poster);
                 list.add(map);
             }
         }
@@ -981,6 +982,10 @@ public class Controller {
         }
         return map;
     }
+    
+    public String getForumsConfigXMLDump(){
+        return ForumManager.getForumsConfigXMLDump();
+    }
 
     /**
      * Provide configuration info on a forum
@@ -1037,13 +1042,13 @@ public class Controller {
     /**
      * Provide info on a poster forum
      * 
-     * @param id MMBase node number of the forum
+     * @param forumId MMBase node number of the forum
      * @param posterid Id for poster we want (string/account field)
      * @return (map) representing info for the given poster
      */
-    public Map getPosterInfo(String id, String posterid) {
+    public Map getPosterInfo(String forumId, String posterid) {
         HashMap map = new HashMap();
-        Forum forum = ForumManager.getForum(id);
+        Forum forum = ForumManager.getForum(forumId);
         if (forum != null) {
             if (posterid != null) {
                 Poster poster = forum.getPoster(posterid);
@@ -1173,7 +1178,7 @@ public class Controller {
      * @return Feedback regarding the success of edit action
      */
     public String editPoster(String forumid, int posterid, String firstname, String lastname, String email, String gender, String location,
-            String newpassword, String newconfirmpassword) {
+            String newpassword, String newconfirmpassword, String showfullname, String shareprofile) {
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
             Poster poster = forum.getPoster(posterid);
@@ -1203,6 +1208,8 @@ public class Controller {
                 // set the rest of the fields
                 poster.setGender(gender);
                 poster.setLocation(location);
+                poster.setShowFullname(new Boolean(showfullname).booleanValue());
+                poster.setShareProfile(new Boolean(shareprofile).booleanValue());
                 poster.savePoster();
                 return "profilechanged";
             }
@@ -2440,7 +2447,7 @@ public class Controller {
     }
 
     /**
-     * 
+     * TODO:this method is the same as getActiveInfo. why?
      * @param node
      * @param poster
      */
@@ -2450,10 +2457,13 @@ public class Controller {
         map.put("nick", poster.getNick());
         map.put("firstname", poster.getFirstName());
         map.put("lastname", poster.getLastName());
+        map.put("identifier", poster.getIdentifier());
+        map.put("fullname", poster.getFullName());
         map.put("email", poster.getEmail());
         map.put("level", poster.getLevel());
         map.put("levelgui", poster.getLevelGui());
         map.put("levelimage", poster.getLevelImage());
+        map.put("blocked", "" + poster.isBlocked());
         map.put("location", poster.getLocation());
         map.put("gender", poster.getGender());
         map.put("avatar", new Integer(poster.getAvatar()));
@@ -2461,10 +2471,12 @@ public class Controller {
         map.put("firstlogin", new Integer(poster.getFirstLogin()));
         map.put("lastseen", new Integer(poster.getLastSeen()));
         map.put("signature", poster.getSignature());
+        map.put("showfullname", new Boolean(poster.isShowFullName()).toString());
+        map.put("shareprofile", new Boolean(poster.isShareProfile()).toString());
     }
 
     /**
-     * 
+     * TODO:this method is the same as getPosterInfo. why?
      * @param node
      * @param poster
      */
@@ -2474,6 +2486,8 @@ public class Controller {
         map.put("active_nick", poster.getNick());
         map.put("active_firstname", poster.getFirstName());
         map.put("active_lastname", poster.getLastName());
+        map.put("active_identifier", poster.getIdentifier());
+        map.put("active_fullname", poster.getFullName());
         map.put("active_email", poster.getEmail());
         map.put("active_level", poster.getLevel());
         map.put("active_levelgui", poster.getLevelGui());
@@ -2484,6 +2498,8 @@ public class Controller {
         map.put("active_lastseen", new Integer(poster.getLastSeen()));
         map.put("active_avatar", new Integer(poster.getAvatar()));
         map.put("active_postcount", new Integer(poster.getPostCount()));
+        map.put("active_showfullname", new Boolean(poster.isShowFullName()).toString());
+        map.put("active_shareprofile", new Boolean(poster.isShareProfile()).toString());
     }
 
     public boolean setRemoteAddress(String forumid, int posterid, String host) {
@@ -2899,5 +2915,4 @@ public class Controller {
         }
         return "true";
     }
-    
 }
