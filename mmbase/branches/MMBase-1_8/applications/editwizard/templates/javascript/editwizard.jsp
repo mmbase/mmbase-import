@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62.2.5 2007-03-20 16:22:16 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.6 2007-05-31 11:57:38 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -77,39 +77,6 @@ function doOnLoad_ew() {
     restoreScroll();
 }
 
-var req;
-
-function loadXMLDoc(url) {
-    req = false;
-    // branch for native XMLHttpRequest object
-    if(window.XMLHttpRequest && !(window.ActiveXObject)) {
-        try {
-            req = new XMLHttpRequest();
-        } catch(e) {
-            req = false;
-        }
-    // branch for IE/Windows ActiveX version
-    } else if(window.ActiveXObject) {
-        try {
-            req = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch(e) {
-            try {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch(e) {
-                req = false;
-            }
-        }
-    }
-    if(req) {
-        req.open("GET", url, true);
-        req.send("");
-    }
-}
-
-function heartbeat() {
-    loadXMLDoc("heartbeat.jsp");
-    setTimeout('heartbeat()',60*1000);
-}
 
 // function to initialize a custom element
 function initializeElement(elem, dttype, ftype) {
@@ -361,7 +328,7 @@ function doSaveOnly() {
 function isSaveInactive() {
     var savebut = document.getElementById("bottombutton-save");
     if(savebut != null) {
-	    return (savebut.getAttribute("inactive") == 'true');
+    	return (savebut.getAttribute("inactive") == 'true');
 	}
 	else {
 		return false;
@@ -371,7 +338,7 @@ function isSaveInactive() {
 function setSaveInactive(inactive) {
     var savebut = document.getElementById("bottombutton-save");
     if(savebut != null) {
-	    savebut.setAttribute("inactive", inactive);
+    	savebut.setAttribute("inactive", inactive);
 	}
 }
 
@@ -421,7 +388,7 @@ function resizeEditTable() {
 	        textareas[i].style.width = docWidth - 355;
 	     }
 	     else {
-	        textareas[i].style.width = docWidth - 100;
+        	textareas[i].style.width = docWidth -100;
 	     }
     }
 }
@@ -435,9 +402,8 @@ function isSubEditElement(element) {
 	}
 	else {
 		return isSubEditElement(element.parentNode);
-	}
+    }
 }
-
 
 function setParam(name, value) {
     if (value!="" && value!=null) return "&"+name+"="+value;

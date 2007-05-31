@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.31.2.1 2006-11-15 17:32:13 michiel Exp $
+    @version $Id: prompts.xsl,v 1.31.2.2 2007-05-31 11:57:38 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -124,7 +124,11 @@
   <xsl:template name="prompt_delete">
     <img src="{$mediadir}remove.gif" alt="{$tooltip_delete}" />
   </xsl:template>
+  <xsl:template name="prompt_unlink">
+    <img src="{$mediadir}unlink.gif" alt="{$tooltip_remove}" />
+  </xsl:template>
   <xsl:template name="prompt_delete_confirmation">Are you sure you want to delete this item?</xsl:template>
+  <xsl:template name="prompt_unlink_confirmation">Are you sure you want to unlink this item?</xsl:template>
 
   <!-- help button prompts and tooltips -->
   <xsl:variable name="tooltip_help">Help</xsl:variable>
@@ -180,6 +184,10 @@
   <!-- search : other filters -->
   <xsl:template name="prompt_search_list">Search</xsl:template>
   <xsl:template name="prompt_search_term">Terms</xsl:template>
+  <xsl:template name="prompt_search_page" >
+    <img src="{$mediadir}search_page.gif" border="0" alt="Search in cloud" />
+  </xsl:template>
+
   <xsl:template name="prompt_search">
     <img src="{$mediadir}search.gif" class="imgbutton">
       <xsl:choose>
@@ -187,16 +195,45 @@
           <xsl:attribute name="alt">
             <xsl:value-of select="prompt" />
           </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
           <xsl:attribute name="alt">
+            <xsl:value-of select="$tooltip_search" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
             <xsl:value-of select="$tooltip_search" />
           </xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
     </img>
   </xsl:template>
-  <xsl:variable name="tooltip_search">Search and add an item</xsl:variable>
+  <xsl:template name="prompt_search_all">
+    <img src="{$mediadir}search_all.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt!=''">
+          <xsl:attribute name="alt">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="prompt" />
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt">
+            <xsl:value-of select="$tooltip_search_all" />
+          </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="$tooltip_search_all" />
+          </xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img>
+  </xsl:template>
+  <xsl:variable name="tooltip_search">Search</xsl:variable>
+  <xsl:variable name="tooltip_search_all">Search and add an item</xsl:variable>
   <xsl:template name="prompt_search_title">Contains</xsl:template>
   <xsl:template name="prompt_search_number">Number is</xsl:template>
   <xsl:template name="prompt_search_owner">Owner is</xsl:template>

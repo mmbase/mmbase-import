@@ -7,16 +7,21 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43 2006-03-15 08:36:58 nklasens Exp $
+    @version $Id: list.xsl,v 1.43.2.1 2007-05-31 11:57:38 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
 
   <xsl:param name="deletable">false</xsl:param>
+  <xsl:param name="unlinkable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
+  <xsl:param name="newfromlist">-1</xsl:param>
 
   <xsl:param name="deleteprompt">
     <xsl:call-template name="prompt_delete_confirmation" />
+  </xsl:param>
+  <xsl:param name="unlinkprompt">
+    <xsl:call-template name="prompt_unlink_confirmation" />
   </xsl:param>
   <xsl:param name="deletedescription">
     <xsl:value-of select="$tooltip_delete" />
@@ -40,11 +45,23 @@
   <xsl:param name="distinct" />
   <xsl:param name="objecttype" />
 
+  <!-- how about using event handlers? -->
   <xsl:variable name="BodyOnLoad">window.focus();</xsl:variable>
 
   <xsl:template name="javascript">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script> 
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
+    </script>
+    <xsl:if test="$newfromlist != '-1'">
+      <script type="text/javascript" src="{$javascriptdir}newfromlist.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}&amp;newfromlist={$newfromlist}">
+	<xsl:comment>help IE</xsl:comment>
+      </script>
+    </xsl:if>
+    <script type="text/javascript">
+      setTimeout('heartbeat()',60*1000);
     </script>
   </xsl:template>
 
@@ -102,7 +119,7 @@
     </xsl:if>
     <tr class="buttoncanvas">
       <td>
-        <xsl:if test="$searchfields=&apos;&apos; and $creatable=&apos;true&apos;">
+        <xsl:if test="$searchfields='' and $creatable='true'">
           <br />
           <div width="100%" align="left">
             <xsl:if test="$createprompt">
@@ -141,12 +158,12 @@
     list.jsp post arguments)
   -->
   <xsl:template name="searchbox">
-    <xsl:if test="$searchfields!=&apos;&apos;">
+    <xsl:if test="$searchfields!=''">
       <tr class="searchcanvas">
         <td>
           <table class="searchcontent">
             <tr>
-              <xsl:if test="$creatable=&apos;true&apos;">
+              <xsl:if test="$creatable='true'">
                 <td>
 
                   <xsl:if test="$createprompt">
@@ -160,7 +177,7 @@
                 </td>
               </xsl:if>
               <td>
-                <form>
+                <form id="searchform">
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -185,9 +202,19 @@
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
-                    <a href="javascript:document.forms[0].submit();">
-                      <xsl:call-template name="prompt_search" />
-                    </a>
+                    <xsl:if test="$newfromlist = '-1'">
+                      <a href="javascript:document.forms[0].submit();">
+                        <xsl:call-template name="prompt_search" />
+                      </a>
+                    </xsl:if>
+                    <xsl:if test="$newfromlist != '-1'">
+                      <a href="javascript:document.forms[0].submit();">
+                        <xsl:call-template name="prompt_search" />
+                      </a>
+                      <a href="javascript:doMySearch(this);">
+                        <xsl:call-template name="prompt_search_all" />
+                      </a>
+                    </xsl:if>
                     <br />
                   <span class="subscript">
                     ( <xsl:call-template name="prompt_age" /> )
@@ -204,8 +231,8 @@
 
   <xsl:template name="search-age">
     <xsl:choose>
-      <xsl:when test="$searchagetype=&apos;none&apos;"></xsl:when>
-      <xsl:when test="$searchagetype=&apos;edit&apos;">
+      <xsl:when test="$searchagetype='none'"></xsl:when>
+      <xsl:when test="$searchagetype='edit'">
         <input
           type="text"
           name="age"
@@ -223,29 +250,29 @@
   </xsl:template>
 
   <xsl:template name="search-fields-default">
-    <xsl:if test="$objecttype=&apos;&apos;">
+    <xsl:if test="$objecttype=''">
       <option value="number">
-        <xsl:if test="$realsearchfield=&apos;number&apos;" >
+        <xsl:if test="$realsearchfield='number'" >
           <xsl:attribute name="selected">selected</xsl:attribute>
         </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="owner">
-        <xsl:if test="$realsearchfield=&apos;owner&apos;" >
+        <xsl:if test="$realsearchfield='owner'" >
           <xsl:attribute name="selected">selected</xsl:attribute>
         </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
       </option>
     </xsl:if>
-    <xsl:if test="$objecttype!=&apos;&apos;">
+    <xsl:if test="$objecttype!=''">
       <option value="{$objecttype}.number">
-        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.number&apos;)" >
+        <xsl:if test="$realsearchfield=concat($objecttype,'.number')" >
           <xsl:attribute name="selected">selected</xsl:attribute>
         </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="{$objecttype}.owner">
-        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.owner&apos;)" >
+        <xsl:if test="$realsearchfield=concat($objecttype,'.owner')" >
           <xsl:attribute name="selected">selected</xsl:attribute>
         </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
@@ -257,7 +284,10 @@
     <table class="listcontent">
       <xsl:if test="object[@number>0]">
         <tr class="listheader">
-          <xsl:if test="$deletable=&apos;true&apos;">
+          <xsl:if test="$deletable='true'">
+            <th/>
+          </xsl:if>
+          <xsl:if test="$unlinkable='true'">
             <th/>
           </xsl:if>
           <th>#</th>
@@ -285,11 +315,11 @@
 
   <xsl:template match="pages">
     <span class="pagenav">
-      <xsl:if test="page[@previous=&apos;true&apos;]">
+      <xsl:if test="page[@previous='true']">
         <a
           class="pagenav"
           title="{$tooltip_previous}{@currentpage-1}"
-          href="{$listpage}&amp;start={page[@previous=&apos;true&apos;]/@start}">
+          href="{$listpage}&amp;start={page[@previous='true']/@start}">
           <xsl:call-template name="prompt_previous" />
         </a>
         <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -297,11 +327,11 @@
 
       <xsl:apply-templates select="page" />
 
-      <xsl:if test="page[@next=&apos;true&apos;]">
+      <xsl:if test="page[@next='true']">
         <a
           class="pagenav"
           title="{$tooltip_next}{@currentpage+1}"
-          href="{$listpage}&amp;start={page[@next=&apos;true&apos;]/@start}">
+          href="{$listpage}&amp;start={page[@next='true']/@start}">
           <xsl:call-template name="prompt_next" />
         </a>
       </xsl:if>
@@ -315,36 +345,51 @@
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="page[@current=&apos;true&apos;]">
+  <xsl:template match="page[@current='true']">
     <xsl:value-of select="@number" />
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
   <xsl:template match="object">
     <tr>
-      <xsl:if test="@mayedit=&apos;true&apos;">
+      <xsl:if test="@mayedit='true'">
         <xsl:attribute name="class">itemrow</xsl:attribute>
         <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
         <xsl:attribute name="onMouseDown">objClick(this);</xsl:attribute>
         <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
         <xsl:attribute name="href"><xsl:value-of select="$wizardpage" />&amp;wizard=<xsl:value-of select="$wizard" />&amp;objectnumber=<xsl:value-of select="@number" />&amp;origin=<xsl:value-of select="$origin" /></xsl:attribute>
       </xsl:if>
-      <xsl:if test="@mayedit=&apos;false&apos;">
+      <xsl:if test="@mayedit='false'">
         <xsl:attribute name="class">itemrow-disabled</xsl:attribute>
       </xsl:if>
-      <xsl:if test="$deletable=&apos;true&apos;">
+      <xsl:if test="$deletable='true'">
         <td class="deletebutton">
-          <xsl:if test="@maydelete=&apos;true&apos;">
+          <xsl:if test="@maydelete='true'">
             <a
               href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"
               title="{$deletedescription}"
               onmousedown="cancelClick=true;"
-              onclick="return doDelete(&apos;{$deleteprompt}&apos;);">
+              onclick="return doDelete('{$deleteprompt}');">
               <xsl:call-template name="prompt_delete" />
             </a>
           </xsl:if>
         </td>
       </xsl:if>
+
+      <xsl:if test="$unlinkable='true'">
+        <td class="deletebutton">
+          <xsl:if test="@maylink='true'">
+            <a
+              href="{$unlinkpage}&amp;wizard={$wizard}&amp;objectnumber={@number}&amp;newfromlist={$newfromlist}&amp;origin={$origin}"
+              title="{$deletedescription}"
+              onmousedown="cancelClick=true;"
+              onclick="return doUnlink('{$unlinkprompt}');">
+              <xsl:call-template name="prompt_unlink" />
+            </a>
+          </xsl:if>
+        </td>
+      </xsl:if>
+
       <td class="number">
         <xsl:value-of select="@index" />
         <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>

@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.64.2.2 2006-09-14 13:02:13 pierre Exp $
+     * @version  $Id: list.jsp,v 1.64.2.3 2007-05-31 11:57:38 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -93,9 +93,12 @@ if (listConfig.age > -1) {
 
 
 boolean deletable = false;
+boolean unlinkable = false;
 boolean creatable = false;
 String deletedescription = "";
+String unlinkdescription = "";
 String deleteprompt = "";
+String unlinkprompt = "";
 String createprompt = "";
 org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
@@ -103,10 +106,13 @@ if (listConfig.wizard != null) {
     Wizard wiz = null;
     wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
+    unlinkable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']")!=null);
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
 
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
+    unlinkdescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='unlink']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
+    unlinkprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='unlink']/prompt", null, cloud);
     createprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='create']/prompt", null, cloud);
     titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
 
@@ -214,7 +220,12 @@ if (checkRelationRights) {
     }
 }
 
+// newform
+String newFromListParam = (String) listConfig.getAttributes().get("newfromlist");
+String[] newFromList = newFromListParam == null ? null : newFromListParam.split(",");
+
 for (int i=0; i < results.size(); i++) {
+
     Node item = results.getNode(i);
     org.w3c.dom.Node obj;
     if (listConfig.multilevel) {
@@ -267,6 +278,17 @@ for (int i=0; i < results.size(); i++) {
         Utils.setAttribute(obj, "maylink", "" + (toSource || toDestination));
     } else {
         Utils.setAttribute(obj, "maylink", "true");
+    }
+    if (newFromList == null) {
+        Utils.setAttribute(obj, "mayunlink", "false");
+    }  else {
+        RelationList rels = SearchUtil.findRelations(item, cloud.getNode(newFromList[0]), newFromList[1], null);
+        if (rels.size() == 1) {
+           Utils.setAttribute(obj, "mayunlink", "" + rels.getRelation(0).mayDelete());
+        } else {
+           Utils.setAttribute(obj, "mayunlink", "false");
+        }
+
     }
 
     Utils.setAttribute(obj, "mayedit", "" + item.mayWrite());
@@ -321,6 +343,7 @@ params.put("len",        String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
+params.put("unlinkable",  unlinkable +"");
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
@@ -330,7 +353,9 @@ if (originNodeNr != null) params.put("relationOriginNode",  originNodeNr);
 if (createDir != null) params.put("relationCreateDir",  createDir);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
+if (unlinkdescription!=null) params.put("unlinkdescription", unlinkdescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
+if (unlinkprompt!=null) params.put("unlinkprompt", unlinkprompt);
 if (createprompt!=null) params.put("createprompt", createprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
