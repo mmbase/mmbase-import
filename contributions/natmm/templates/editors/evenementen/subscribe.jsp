@@ -383,8 +383,6 @@ DoubleDateNode ddn = new DoubleDateNode();
       %> style="width:<% if(isExtendedAct) {  %>500px<% } else { %>300px<% } %>;margin-bottom:20px;">
    <tr <%= sHighLight %>><td>categorie&nbsp;&nbsp;</td><td>kosten&nbsp;&nbsp;</td>
          <% if(isExtendedAct) {  %>
-            <% if(actionId.indexOf("printdates")==-1) { 
-                %><td>deelnemers&nbsp;&nbsp;</td><% } %>
             <td>aantal&nbsp;plaatsen</td>
          <% } %>
          <% if(actionId.indexOf("printdates")==-1) { 
@@ -411,16 +409,17 @@ DoubleDateNode ddn = new DoubleDateNode();
             </mm:related>
             <% iTotalParticipants += iParticipantsInCat*iNumberPerParticipant; %>
             <tr <mm:even><%= sHighLight %></mm:even>><td style="width:130px;"><mm:field name="naam" /></td>
+                  <% // kosten %>
                <td><%= SubscribeAction.priceFormating(costs) %></td>
                <% 
                if(isExtendedAct) {
-                  if(actionId.indexOf("printdates")==-1) { 
-                     %><td style="text-align:center;"><%= iParticipantsInCat %></td><% 
-                  } %>
+                  // aantal plaatsen
+                  %>
                   <td style="text-align:center;"><%= iNumberPerParticipant %></td>
                   <% 
                }
                if(actionId.indexOf("printdates")==-1) { 
+            	   // aanmeldingen
                      %><td style="text-align:center;"><%= iParticipantsInCat*iNumberPerParticipant %></td><%
                } %>
             </tr>
@@ -470,7 +469,7 @@ DoubleDateNode ddn = new DoubleDateNode();
      %><tr>
          <td>TOTAAL</td>
          <td></td>
-         <% if(isExtendedAct) {  %><td></td><td></td><% } %>
+         <% if(isExtendedAct) {  %><td></td><% } %>
          <td style="text-align:center;"><%= iTotalParticipants  %></td>
       </tr><%
    } %>
