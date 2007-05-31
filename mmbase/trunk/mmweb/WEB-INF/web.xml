@@ -101,6 +101,11 @@
     <mime-type>application/java-archive</mime-type>
   </mime-mapping>
 
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>application/xml</mime-type>
+  </mime-mapping>
+
   <welcome-file-list>
     <!-- index.jsp is the default -->
     <welcome-file>index.jsp</welcome-file>
