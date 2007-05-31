@@ -51,7 +51,7 @@
       <builder version="0" maintainer="mmbase.org">teaser</builder>
       <builder version="0" maintainer="mmbase.org">template</builder>
       <builder version="0" maintainer="mmbase.org">vacature</builder>
-
+      
       <!-- objects NMIntra -->
       <builder version="0" maintainer="mmbase.org">community</builder>
       <builder version="0" maintainer="mmbase.org">companies</builder>
@@ -87,6 +87,7 @@
       <builder version="0" maintainer="mmbase.org">terms</builder>
       <builder version="0" maintainer="mmbase.org">topics</builder>
       <builder version="0" maintainer="mmbase.org">users</builder>
+      <builder version="0" maintainer="mmbase.org">vraagbaak</builder>      
    </neededbuilderlist>
    <neededreldeflist>
       <reldef source="altrel" target="altrel" direction="bidirectional" guisourcename="altrel" guitargetname="altrel" builder="altrel" />
@@ -114,6 +115,12 @@
       <relation from="artikel" to="paragraaf" type="posrel"/>
       <relation from="artikel" to="persoon" type="readmore"/>
       <relation from="artikel" to="contentblocks" type="readmore"/>
+      <relation from="vraagbaak" to="attachments" type="posrel"/>
+      <relation from="vraagbaak" to="images" type="posrel"/> 
+      <relation from="vraagbaak" to="items" type="readmore"/>
+      <relation from="vraagbaak" to="paragraaf" type="posrel"/>
+      <relation from="vraagbaak" to="persoon" type="readmore"/>
+      <relation from="vraagbaak" to="contentblocks" type="readmore"/>
       <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
       <relation from="contentblocks" to="attachments" type="readmore"/>
@@ -146,9 +153,11 @@
       <relation from="formulier" to="formulierveld" type="posrel"/>
       <relation from="formulierveld" to="formulierveldantwoord" type="posrel"/>
       <relation from="images" to="artikel" type="pos4rel"/>
+      <relation from="images" to="vraagbaak" type="pos4rel"/>
       <relation from="images" to="mmevents" type="related"/>
       <relation from="images" to="pagina" type="pos4rel"/> 
       <relation from="items" to="artikel" type="posrel"/>
+      <relation from="items" to="vraagbaak" type="posrel"/>      
       <relation from="items" to="attachments" type="posrel"/>
       <relation from="items" to="discounts" type="posrel"/>
       <relation from="items" to="formulier" type="posrel"/>
@@ -165,6 +174,7 @@
       <relation from="organisatie" to="organisatie_type" type="posrel"/>
       <relation from="pagina" to="ads" type="contentrel"/>
       <relation from="pagina" to="artikel" type="readmore"/>
+      <relation from="pagina" to="vraagbaak" type="readmore"/>
       <relation from="pagina" to="attachments" type="posrel"/> 
       <relation from="pagina" to="competencetypes" type="posrel"/> 
       <relation from="pagina" to="contentblocks" type="readmore"/> 
@@ -299,6 +309,7 @@
       <datasource builder="terms" path="NMIntra/terms.xml"/>
       <datasource builder="topics" path="NMIntra/topics.xml"/>
       <datasource builder="users" path="NMIntra/users.xml"/>
+      <datasource builder="artikel" path="NMIntra/vraagbaak.xml"/>      
    </datasourcelist>
    <relationsourcelist>
       <relationsource builder="childrel" path="NMIntra/childrel.xml"/>
