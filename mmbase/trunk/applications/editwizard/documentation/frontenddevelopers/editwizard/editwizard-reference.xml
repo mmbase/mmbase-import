@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.8 2007-05-31 15:25:40 michiel Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.9 2007-05-31 16:34:23 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -316,21 +316,17 @@
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>newfromlist</term>
+          <term>relationOriginNode</term>
           <listitem>
             <para>
               If this option is given, then you can besides searching in the given list, also search
               in the complete cloud. This can be useful if the presented list has an orgin. In this
               way you can add new entries to this list, without needing a wizard.
             </para>
-            <para>
-              The value of 'newfromlist' are three comma-seperated values like this.              
-            </para>
-            <programlisting format="linespecific">newfromlist=&lt;origin&gt;,&lt;role&gt;,&lt;nodetype&lt;</programlisting>
+            <programlisting format="linespecific">relationOriginNode=&lt;origin&gt;[&amp;relationRole=&lt;role&gt;][&amp;relationCreateDir=&lt;dir&gt;]</programlisting>
             <para>
               Where &lt;origin&gt; it the nodenumber to which a relation must be created,
-              &lt;role&gt; is the role of that relation and &lt;nodetype&gt; is the type of te nodes
-              that must be searched.
+              &lt;role&gt; is the role of that relation.
             </para>
             <para>(See also: the &lt;action type="unlink" /&gt;</para>
             <note><para>Available from MMBase 1.8.5 and up</para></note>

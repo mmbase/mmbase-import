@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.2 2007-04-23 15:22:09 michiel Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.3 2007-05-31 16:32:23 michiel Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -21,16 +21,17 @@
 
     Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, wizard, null, cloud);
     Node unlinkaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']");
-    String newFromListParam = (String) con.getAttributes().get("newfromlist");
-    String[] newFromList = newFromListParam == null ? null : newFromListParam.split(",");
+    String relationOriginNode = (String) con.getAttributes().get("relationOriginNode");
+    String relationRole = (String) con.getAttributes().get("relationRole");
+    String relationCreateDir = (String) con.getAttributes().get("relationCreateDir");
     if (unlinkaction != null) {
     // Ok. let's unlink this object.
         org.mmbase.bridge.Node n      = cloud.getNode(objectnumber);
-        org.mmbase.bridge.Node origin = cloud.getNode(newFromList[0]);
-        log.info("o bjectnumber " + n.getNumber() + " " + origin.getNumber() + " " + newFromList[1]);
+        org.mmbase.bridge.Node origin = cloud.getNode(relationOriginNode);
+        log.debug("objectnumber " + n.getNumber() + " " + origin.getNumber() + " " + relationOriginNode);
         
-        RelationList l = SearchUtil.findRelations(n, origin, newFromList[1], null);
-        log.info("" + l);
+        RelationList l = SearchUtil.findRelations(n, origin, relationRole, relationCreateDir);
+        log.debug("" + l);
         RelationIterator i = l.relationIterator();
         if (i.hasNext()) {
           Relation r = i.nextRelation();
