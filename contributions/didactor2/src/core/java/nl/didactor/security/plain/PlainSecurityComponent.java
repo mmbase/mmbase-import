@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.14 2007-04-30 13:25:12 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.15 2007-05-31 09:39:15 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -97,16 +97,21 @@ public class PlainSecurityComponent implements AuthenticationComponent {
             String onum = (String) session.getAttribute("didactor-plainlogin-userid");
             String app  = (String) session.getAttribute("didactor-plainlogin-application");
             if (onum != null) {
-                checkBuilder();
-                MMObjectNode user = users.getNode(onum);
-                if (user != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Found 'didactor-plainlogin-userid' in session user: " + user);
+                try {
+                    checkBuilder();
+                    MMObjectNode user = users.getNode(onum);
+                    if (user != null) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found 'didactor-plainlogin-userid' in session user: " + user);
+                        }
+                        return new UserContext(user, app == null ? "login" : app);
+                    } else {
+                        log.debug("Could not find user object number " + onum);
+                        session.removeAttribute("didactor-plainlogin-userid");
                     }
-                    return new UserContext(user, app == null ? "login" : app);
-                } else {
-                    log.debug("Could not find user object number " + onum);
-                    session.removeAttribute("didactor-plainlogin-userid");
+                } catch (Throwable t) {
+                    log.warn("Something went wrong during checking session " + t, t);
+                    return null;
                 }
 
             } else {
