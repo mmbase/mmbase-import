@@ -33,12 +33,11 @@
 
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
-<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
-<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-<mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
-<mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
-<mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
+    <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+    <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+    <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+    <mm:import id="active_identifier"><mm:field name="active_identifier" /></mm:import>
+    <mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
 </mm:nodefunction>
 <mm:nodefunction set="mmbob" name="getPosting" referids="forumid,postareaid,postthreadid,postingid,posterid,imagecontext">
     <mm:field name="maychange" id="maychange" write="false" />
@@ -56,11 +55,13 @@
     </mm:url>" method="post" name="posting">
     <tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
         <mm:compare referid="posterid" value="-1" inverse="true">
-        <mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
-        <input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
+            <mm:write referid="active_identifier" />
+            <mm:write referid="active_nick" >
+                <input name="poster" type="hidden" value="${_}" >
+            </mm:write>
         </mm:compare>
         <mm:compare referid="posterid" value="-1">
-        <input name="poster" size="32" value="gast" >
+            <input name="poster" size="32" value="gast" >
         </mm:compare>
     </td></tr>
     <tr><th width="150"><mm:write referid="mlg.Topic"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>

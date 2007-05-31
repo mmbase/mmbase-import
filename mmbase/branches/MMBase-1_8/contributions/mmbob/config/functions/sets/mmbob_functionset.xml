@@ -242,6 +242,8 @@
             <field name="gender" type="String" description="Gender of the active poster" />
             <field name="firstlogin" type="int" description="Firstlogin time of the active poster" />
             <field name="avatar" type="int" description="MMBase node (image) of the avatar of the active poster" />
+            <field name="showfullname" type="String" description="Should the full name be displayed, or only the nickname?"/>
+            <field name="shareprofile" type="String" description="Can other users (that are logged in) see this user's profile?"/>
         </return>
     </function>
 
@@ -992,6 +994,8 @@
         <param name="location" type="String" description="New location of the poster" />
         <param name="newpassword" type="String" description="New Password for the poster" />
         <param name="newconfirmpassword" type="String" description="New Confirm Password for the new poster" />
+        <param name="showfullname" type="String" description="Should the full name be displayed, or only the nickname?"/>
+        <param name="shareprofile" type="String" description="Can other users (that are logged in) see this user's profile?"/>
         <return type="String">
             <field name="feedback" type="String" description="Feedback of the edit action" />
         </return>
@@ -1405,12 +1409,12 @@
         <param name="forumid" type="String" required="true" description="MMBase node number of the forum" />
         <return type="Boolean"/>
     </function>
-    
+
     <function name="setForumProperty">
-    	<description>Sets a forum property and saves the config when poster is administrator to the given forum</description>
-    	<type>Class</type>
-    	<class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
-    	<method>setForumProperty</method>
+        <description>Sets a forum property and saves the config when poster is administrator to the given forum</description>
+        <type>Class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>setForumProperty</method>
         <param name="forumid" type="Integer" required="true" description="MMBase node number of the forum" />
         <param name="posterid" type="Integer" required="true" description="the current user" />
         <param name="propertyname" type="String" required="true"  />
@@ -1418,15 +1422,22 @@
     </function>
 
     <function name="setGlobalProperty">
-    	<description>Sets a global property and saves the config when poster is administrator to the given forum</description>
-    	<type>Class</type>
-    	<class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
-    	<method>setGlobalProperty</method>
+        <description>Sets a global property and saves the config when poster is administrator to the given forum</description>
+        <type>Class</type>
+        <class>org.mmbase.applications.mmbob.gui.PropertiesController</class>
+        <method>setGlobalProperty</method>
         <param name="forumid" type="Integer" required="true" description="MMBase node number of the forum" />
         <param name="posterid" type="Integer" required="true" description="the current user" />
         <param name="propertyname" type="String" required="true"  />
         <param name="propertyvalue" type="String" required="true" description="MMBase node number of the forum" />
     </function>
 
+    <function name="getForumsConfigXMLDump">
+        <description>Retreve the complete forum configuration as an xml file (String)</description>
+        <type>Class</type>
+        <class>org.mmbase.applications.mmbob.gui.Controller</class>
+        <method>getForumsConfigXMLDump</method>
+        <return type="String"/>
+    </function>
 
 </functionset>

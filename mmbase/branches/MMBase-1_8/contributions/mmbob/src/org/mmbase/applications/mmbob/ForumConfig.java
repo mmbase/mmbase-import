@@ -10,13 +10,13 @@
 
 package org.mmbase.applications.mmbob;
 
-import org.w3c.dom.*;
-
 import java.util.*;
 
-import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * forumManager ToDo: Write docs!
@@ -32,6 +32,10 @@ public class ForumConfig {
     private String accountcreationtype, accountremovaltype;
     private String loginsystemtype, loginmodetype, logoutmodetype;
     private String guestreadmodetype, guestwritemodetype, threadstartlevel;
+    /**
+     * This when this is false, first and last name are hidden. only the nick name is shown
+     * if there is no nick, the account is shown 
+     */
     private String id = "unkown";
     private String xsltpostingsodd = "xslt/posting2xhtmlDark.xslt";
     private String xsltpostingseven = "xslt/posting2xhtmlLight.xslt";
@@ -60,6 +64,9 @@ public class ForumConfig {
     private int quotasoftwarning = 60;
     private int quotawarning = 80;
     
+    /**
+     * properties key value sets that can be edited in the web interface of the forum.
+     */
     private Map properties = new HashMap(); 
 
     public ForumConfig(DocumentReader forumConfigReader, Element n) {
@@ -169,7 +176,7 @@ public class ForumConfig {
             if (inttemp != null) {
                 speedposttime = (Integer.valueOf(inttemp)).intValue();
             }
-
+            
             String stmp = getAttributeValue(reader, forum, "replyoneachpage", "value");
             if (stmp != null) {
                 if (stmp.equals("true")) {
@@ -713,4 +720,6 @@ public class ForumConfig {
     public Iterator getPropertyNames(){
         return properties.keySet().iterator();
     }
+    
+    
 }

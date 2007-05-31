@@ -103,7 +103,7 @@
                         <br />
                         <b><mm:write referid="mlg.Moderators"/></b> :
                         <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-                            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+                            <mm:field name="identifier" /><br />
                         </mm:nodelistfunction>
                     </th>
                 </tr>

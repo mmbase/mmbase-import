@@ -44,6 +44,10 @@ public class ForumsConfig {
     private String logoutmodetype = "open";
     private String guestreadmodetype = "open";
     private String guestwritemodetype = "open";
+    /**
+     * This when this is false, first and last name are hidden. only the nick name is shown
+     * if there is no nick, the account is shown 
+     */
     private String threadstartlevel = "all";
     private String navigationmethod = "list";
     private boolean replyoneachpage = false;
@@ -495,6 +499,13 @@ public class ForumsConfig {
         return null;
     }
 
+    /**
+     * @param reader
+     * @param n
+     * @param itemname
+     * @param attribute
+     * @return the value of of the attribute of the given element or null
+     */
     private String getAttributeValue(DocumentReader reader, Element n, String itemname, String attribute) {
         for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
             Element n2 = (Element) ns2.next();
@@ -650,6 +661,18 @@ public class ForumsConfig {
      **/
     public void save() {
 
+        String body = writeConfigToXml();
+        try {
+            Writer wr = ResourceLoader.getConfigurationRoot().getWriter("mmbob/mmbob.xml");
+            wr.write(body);
+            wr.flush();
+            wr.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String writeConfigToXml() {
         // /TODO: OOOH NOOOO!
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE mmbobconfig PUBLIC \"-//MMBase/DTD mmbob config 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd\">\n";
@@ -762,7 +785,7 @@ public class ForumsConfig {
                 body += "\t\t\t<logoutmode type=\"" + forum.getLogoutModeType() + "\" guiedit=\"" + forum.getGuiEdit("logoutmode")
                         + "\" />\n";
             }
-
+            
             if (forum.getGuiEdit("guestreadmode") == null || forum.getGuiEdit("guestreadmode").equals("true")) {
                 body += "\t\t\t<guestreadmode type=\"" + forum.getGuestReadModeType() + "\" />\n";
             } else {
@@ -776,6 +799,7 @@ public class ForumsConfig {
                 body += "\t\t\t<guestwritemode type=\"" + forum.getGuestWriteModeType() + "\" guiedit=\""
                         + forum.getGuiEdit("guestwritemode") + "\" />\n";
             }
+            
 
             Iterator pi = forum.getProfileDefs();
             if (pi != null) {
@@ -825,14 +849,7 @@ public class ForumsConfig {
         }
         body += "\t</forums>\n";
         body += "</mmbobconfig>\n";
-        try {
-            Writer wr = ResourceLoader.getConfigurationRoot().getWriter("mmbob/mmbob.xml");
-            wr.write(body);
-            wr.flush();
-            wr.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return body;
     }
 
     public int getPostBodyMaxSize() {
@@ -1031,7 +1048,7 @@ public class ForumsConfig {
     public boolean getReplyOnEachPage() {
         return replyoneachpage;
     }
-
+    
     /**
      * returns true if a posting subject that is too long should be truncated.
      * @return

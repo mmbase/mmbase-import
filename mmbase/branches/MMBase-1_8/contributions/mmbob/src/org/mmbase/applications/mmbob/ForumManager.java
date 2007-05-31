@@ -731,5 +731,8 @@ public class ForumManager {
     public static boolean truncateSubject() {
         return config.truncateSubject();
     }
-
+    
+    public static String getForumsConfigXMLDump(){
+        return config.writeConfigToXml();
+    }
 }
