@@ -80,6 +80,7 @@
     <available file="${build.dir}/mmbase" property="mmbase.distro.expanded.exists"/>
   </target>
   <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
+    <mkdir dir="${download.dir}" />
     <get src="${mmbase.distro}" dest="${mmbase.dest}" verbose="on" />
   </target>
 
