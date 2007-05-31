@@ -18,6 +18,7 @@ if(twoColumns) {
 <div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
+    <a name="top">
     <%@include file="includes/back_print.jsp" %>
     
     <div align="right">
@@ -33,14 +34,35 @@ if(twoColumns) {
       String startnodeId = articleId;
       String articlePath = "artikel";
       String articleOrderby = "";
+      String vraagPath = "vraagbaak";
+      String vraagOrderby = "";
       if(articleId.equals("-1")) { 
       startnodeId = paginaID;
       articlePath = "pagina,contentrel,artikel";
       articleOrderby = "contentrel.pos";
+      vraagPath = "pagina,contentrel,vraagbaak";
+      vraagOrderby = "contentrel.pos";
+      
       }
       %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
          ><%@include file="includes/relatedarticle.jsp" 
       %></mm:list>
+      
+      <%-- import vraagbaaks --%>
+      <% String currentVraag = ""; %>
+      <mm:list nodes="<%= startnodeId %>"  path="<%= vraagPath %>" orderby="<%= vraagOrderby %>"
+         >
+         <mm:node element="vraagbaak" id="this_vraagbaak">  
+         <mm:field name="number" jspvar="dummy" vartype="String" write="false" ><% currentVraag = dummy; %></mm:field>
+         <jsp:include page="includes/relatedvraagbaak.jsp">
+         	<jsp:param name="v" value="<%=currentVraag%>"/>
+         </jsp:include>
+         </mm:node>
+     </mm:list>
+      
+      
+      
+      
       <mm:node number="<%= paginaID %>">
          <%@include file="includes/relatedcompetencies.jsp" %>
       </mm:node>
