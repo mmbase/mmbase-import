@@ -24,25 +24,29 @@ public class ExtraStats {
    public int iTotal = 0;
    public static String BOEKINGEN_TYPE_INDIVIDUELE_BOEKINGEN = "Individuele boekingen";
    public static String BOEKINGEN_TYPE_GROEPSBOEKINGEN = "Groepsboekingen";
+   
+   // the fact this String ends with a "z" is good, then it occurs as a last row.
+   public static String INSCHRIJVINGS_CATEGORIE_NIET_INGEDEELD = "zonder aanmeldingscategorie";
 
    /**
      * @description This gets evenementenNumbers for Individuele boekingen as well as Groepsboekingen given a certain startNode.
      * This startNode can for example be an evenementType or an inschrijvingsCategorie.
+     * The constraint is usually afdelingenConstraint. Except in the case of "zonder aanmeldingscategorie".
 	 * @param cloud
 	 * @param startNode
 	 * @param sNodepath
 	 * @param evenementTimeConstraint
-	 * @param afdelingenConstraint
+	 * @param constraint
 	 * @return
 	 */
-	private String getEvenementenNumbersForStartNode(Cloud cloud, String startNode, String sNodepath, String evenementTimeConstraint, String afdelingenConstraint){
+	private String getEvenementenNumbersForStartNode(Cloud cloud, String startNode, String sNodepath, String evenementTimeConstraint, String constraint){
 	   
       StringBuffer events = new StringBuffer();
       
       // *** child events ***
-      // First, get the parents with the afdelingenConstraint
+      // First, get the parents with the constraint
       // Second, use the children of those parents with the evenementTimeConstraint
-      NodeList nlParentEvenementenAfdeling = cloud.getList(startNode,sNodepath,"evenement.number",afdelingenConstraint,null,null,null,false);
+      NodeList nlParentEvenementenAfdeling = cloud.getList(startNode,sNodepath,"evenement.number",constraint,null,null,null,false);
       StringBuffer parents = new StringBuffer();
       
       for (int j = 0; j < nlParentEvenementenAfdeling.size(); j++ ){
@@ -63,8 +67,8 @@ public class ExtraStats {
       }
       
       // *** parent events ***
-      // Simply use the events with the afdelingenConstraint AND the evenementTimeConstraint
-      String parentConstraints = afdelingenConstraint + " AND " + evenementTimeConstraint;
+      // Simply use the events with the constraint AND the evenementTimeConstraint
+      String parentConstraints = constraint + " AND " + evenementTimeConstraint;
       NodeList nlParentEvenementen = cloud.getList(startNode,sNodepath,"evenement.number",parentConstraints,null,null,null,false);
       
       for (int j = 0; j < nlParentEvenementen.size(); j++ ){
@@ -169,7 +173,7 @@ public class ExtraStats {
    
    private TreeMap getRegios(Cloud cloud, String constraint) {
 	   TreeMap regioMap = new TreeMap();
-       String regioConstraint = "afdelingen.naam LIKE '%" + constraint + "%'";
+       String regioConstraint = "afdelingen.naam LIKE '" + constraint + "%'"; // Regio X...
        NodeList nlRegios = cloud.getList("","afdelingen","afdelingen.number,afdelingen.naam",regioConstraint,null,null,null,false);
        for (int jj = 0; jj < nlRegios.size(); jj++ ) {
           Node regio = nlRegios.getNode(jj);
@@ -211,7 +215,7 @@ public class ExtraStats {
    
    private ArrayList getAfdelingenList(NodeList nlAfdelingen) {
 	 ArrayList afdelingenList = new ArrayList();
-		 for (int jj = 0; jj < nlAfdelingen.size(); jj++ ) {
+	 for (int jj = 0; jj < nlAfdelingen.size(); jj++ ) {
 	    Node afdeling = nlAfdelingen.getNode(jj);
 	    String af = afdeling.getStringValue("afdelingen.naam");
 	    if (!afdelingenList.contains(af)) {
@@ -256,6 +260,7 @@ public class ExtraStats {
 	         tmNames.put(sStatName, sNumber);
 	       }
 	     }
+	     tmNames.put(INSCHRIJVINGS_CATEGORIE_NIET_INGEDEELD, "");
 	     return tmNames;
 	}
 	
@@ -277,9 +282,8 @@ public class ExtraStats {
       TreeMap tmStatistics = new TreeMap();
       
       String constraintPathToAfdelingen = ",related,natuurgebieden,posrel,afdelingen";
-      pathToEvenement += constraintPathToAfdelingen;
       afdelingName = filterAfdelingName(afdelingName);
-      String afdelingenConstraint = "afdelingen.naam LIKE '%"+afdelingName+"%'";
+      String afdelingenConstraint = "afdelingen.naam='"+afdelingName+"'";
 
       // *** count total for tmNames ***
       String evenementenNumbers = null;
@@ -289,8 +293,20 @@ public class ExtraStats {
       while (iterator.hasNext()) {
         Map.Entry entry = (Map.Entry)iterator.next();
         key = (String) entry.getKey();
-        String number = (String)collection.get(key);
-        evenementenNumbers = getEvenementenNumbersForStartNode(cloud, number, pathToEvenement, evenementTimeConstraint, afdelingenConstraint);
+        if(key.equals(INSCHRIJVINGS_CATEGORIE_NIET_INGEDEELD)){
+        	// We are getting in fact totals of all groepsboekingen REGARDLESS inschrijvings_categorie.
+        	// When writing the values to the excel sheet we will SUBTRACT all the inschrijvingen WITH inschrijvings_categorie.
+        	String pathToEvenementForAllGroepsEvenementenNumbers = "deelnemers_categorie,posrel,evenement_type,related,evenement";
+        	pathToEvenementForAllGroepsEvenementenNumbers += constraintPathToAfdelingen;
+        	String constraint = afdelingenConstraint;
+        	constraint += " AND deelnemers_categorie.groepsactiviteit=1";
+        	evenementenNumbers = getEvenementenNumbersForStartNode(cloud, null, pathToEvenementForAllGroepsEvenementenNumbers, evenementTimeConstraint, constraint);
+        } else {
+	        String number = (String)collection.get(key);
+	        String pathToEvenementForEvenementenNumbers = pathToEvenement;
+	        pathToEvenementForEvenementenNumbers += constraintPathToAfdelingen;
+	        evenementenNumbers = getEvenementenNumbersForStartNode(cloud, number, pathToEvenementForEvenementenNumbers, evenementTimeConstraint, afdelingenConstraint);
+        }
         tmStatistics = updateTmStatistics(tmStatistics, cloud, evenementenNumbers, evenementTimeConstraint, statstype, key, removeZeros, boekingenTypeName);
       }
 
@@ -517,7 +533,14 @@ public class ExtraStats {
              
              // put a label with the boekingenType above the list of evenementenTypes
              currentExcelRow++;
-             staticLabel = new Label(0,currentExcelRow,boekingenTypeName);
+             String boekingenTypeLabel = boekingenTypeName + " ( per ";
+             if(isIndividueleBoekingenType){
+            	 boekingenTypeLabel += "evenementtype";
+             } else if(isGroepsBoekingenType) {
+            	 boekingenTypeLabel += "aanmeldingscategorie";
+             }
+             boekingenTypeLabel += " )";
+             staticLabel = new Label(0,currentExcelRow,boekingenTypeLabel);
              sheet.addCell(staticLabel);
              
              currentExcelRow++;
@@ -564,6 +587,12 @@ public class ExtraStats {
                  //if (sValue.intValue()!=0) {
                 	 
 	                 int value = sValue.intValue();
+	                 
+	                 //	If we have "zonder aanmeldingscategorie" we have to subtract the column totals from the values of this row.
+	                 // NB: it is assumed this is the last row of "Groepsboekingen". ( The sListTypeName starts with a "z". )
+	                 if(sListTypeName.equals(INSCHRIJVINGS_CATEGORIE_NIET_INGEDEELD)){
+	                	 value = value - thisBoekingenTypeTotal[columnNo-1];
+	                 }
 	
 	                 if(sStatsType.equals("opbrengst")) {
 	                   value = value/100;
@@ -606,7 +635,7 @@ public class ExtraStats {
              
              columnNo++;
            }
-           currentExcelRow = maxRow + 2; //  add an extra empty row between boekingenTypes
+           currentExcelRow = ++maxRow; //  add an empty row between boekingenTypes
            
          }
         
