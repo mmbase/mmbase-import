@@ -22,7 +22,7 @@
     &extra_loads;
   </action>
   
-  <action type="delete">
+  <action type="unlink">
 
   </action>
   
