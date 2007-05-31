@@ -2,21 +2,16 @@ package nl.leocms.vastgoed;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 
-public class ShoppingBasketImpl implements ShoppingBasket, Iterator {
+import org.mmbase.util.logging.*;
+
+public class ShoppingBasketImpl implements ShoppingBasket {
 
 	private  List items;
-	private  Iterator iterator;
-	
-//	static {
-//		items = new ArrayList();
-//		iterator = items.iterator();
-//	}
+	private static final Logger log = Logging.getLoggerInstance(ShoppingBasketImpl.class);
 	
 	public ShoppingBasketImpl() {
 		items = new ArrayList();
-		iterator = items.iterator();
 	}
 
 	/*
@@ -35,8 +30,8 @@ public class ShoppingBasketImpl implements ShoppingBasket, Iterator {
 			  Object object = items.get(Integer.parseInt(itemIndex));
 			  return object;
 		 } catch(Exception e) {
-			 //LOG HERE
 			 // no item with the passed index or index format wrong
+			 log.debug("Exception: getItem() no item with index: " + itemIndex);
 			 return null;
 		 } 
 	}
@@ -49,61 +44,16 @@ public class ShoppingBasketImpl implements ShoppingBasket, Iterator {
 			items.remove(Integer.parseInt(itemIndex));
 			return true;
 		} catch(Exception e) {
-			// LOG HERE
 			// error in removing item with passed index
+			log.debug("Exception: removeItem() error removing item with index: " + itemIndex);
 			return false;
 		}
 	}
-	
-	// struts iterate?
-	
-	public boolean hasNext() {
-		return iterator.hasNext();
+
+	// items list for iterate tag
+	public List getItems() {
+		return items;
 	}
-	
-    public Object next() {
-    	return iterator.next();
-    }
-    
-    public void remove() {
-    	iterator.remove();
-    }
-
-//	public Iterator getIterator() {
-//		return iterator;
-//	}
-//
-//	public void setIterator(Iterator iterator) {
-//		this.iterator = iterator;
-//	}
-
-//public Iterator iterator() {
-//	return iterator;
-//}
-	
-	
-	
-	
-	
-//	public Object get(int index) {
-//		return this.getItem(String.valueOf(index));
-//	}
-//	
-//	//
-//	public int size() {
-//		return items.size();
-//	}
-//	
-//	//
-//	public Iterator iterator() {
-//		return items.iterator();
-//	}
-//	
-//	public ListIterator listIterator() {
-//		return items.listIterator();
-//	}
-	
-	
 	
 	
 }

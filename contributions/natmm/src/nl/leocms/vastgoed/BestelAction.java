@@ -13,12 +13,11 @@ import com.finalist.mmbase.util.CloudFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 /**
 *
 * @author
-* @version $Id: BestelAction.java,v 1.1 2007-05-29 11:52:28 ieozden Exp $
+* @version $Id: BestelAction.java,v 1.2 2007-05-31 09:33:56 ieozden Exp $
 *
 * @struts:action name="BestelForm"
 *                path="/vastgoed/BestelAction"
@@ -32,39 +31,33 @@ import java.util.ArrayList;
 
 public class BestelAction  extends Action {
 	private static final Logger log = Logging.getLoggerInstance(BestelAction.class);
-//	private ShoppingBasket basket;
-	private ArrayList basket;
+	private ShoppingBasket basket;
 	
 	 public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	      log.info("BestelAction - execute()");
+	      log.debug("execute()");
 
 	      // shopping cart
 	      basket = ShoppingBasketHelper.getShoppingBasket(request);
 	      
-	      // delete
-	      log.debug ("BestelAction - before delete check");
+	      // checking if delete action requested
 	      String deleteAction = request.getParameter("delete");
-	      log.debug("BestelAction - deleteAction" + deleteAction);
 	      if (deleteAction != null) {
-	    	  log.info("BestelAction - inside delete");
+	    	  log.info("deleting cart item: " + deleteAction);
 	    	  
-	    	  // NEW CODE
-//	    	  basket.removeItem(deleteAction);
-	    	  //OLD CODE
-	    	  try {
-		    	  basket.remove(Integer.parseInt(deleteAction)); //throws 2 exceptions!!!
-		    	  } catch(Exception e) {
-		    		  log.debug("Exception in trying to remove by non-existing cart item index"); 
-		    	  }
+	    	  basket.removeItem(deleteAction);
 	    	  
-	    	  log.debug("BestelAction - deleted now mapping forward delete");
+	    	  // delete action returns to cart
+	    	  log.debug("deleted now mapping forward delete");
 	    	  return mapping.findForward("delete");
-	    	  
 	      }
 	      
+	      // processing the purchase and forwarding send 
+	      log.debug("processing purchase");
 	      
-	      log.debug("BestelAction - mapping forward back");
-	      return mapping.findForward("back");
+	      // process the shopping cart as a purchase
+	      
+	      log.debug("processed purchase now forwarding send");
+	      return mapping.findForward("send");
 	   }
 	   
 }
