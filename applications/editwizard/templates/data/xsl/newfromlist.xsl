@@ -6,7 +6,9 @@
 
   <xsl:import href="xsl/searchlist.xsl" />
 
-  <xsl:param name="newfromlist">-1</xsl:param>
+  <xsl:param name="relationOriginNode">-1</xsl:param>
+  <xsl:param name="relationRole"></xsl:param>
+  <xsl:param name="relationCreateDir"></xsl:param>
   
   <xsl:template name="javascript">
     <script type="text/javascript" src="{$javascriptdir}searchlist.js">
@@ -65,7 +67,7 @@
               type="button"
               name="ok"
               value="{$tooltip_end_search}"
-              onclick="doAddSubmit(&apos;{$newfromlist}&apos;);"
+              onclick="doAddSubmit('{$relationOriginNode}', '{$relationRole}', '{$relationCreateDir}');"
               class="button" />
           </td>
         </tr>
