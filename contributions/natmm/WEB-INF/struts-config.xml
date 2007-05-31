@@ -541,10 +541,6 @@
         path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
       />
       <forward
-        name="back"
-        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
-      />
-      <forward
         name="delete"
         path="/nmintra/includes/vastgoed/bestelformulier.jsp"
       />
