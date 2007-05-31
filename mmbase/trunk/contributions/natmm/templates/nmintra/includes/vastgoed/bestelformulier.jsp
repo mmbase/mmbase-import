@@ -41,7 +41,7 @@ Alternatief bezorgadres:<html:textarea property="bezorgadres"></html:textarea><b
 </tr>
 
 <logic:iterate id="item" name="vastgoed_shoppingbasket" type="nl.leocms.vastgoed.KaartenForm" scope="session" 
-indexId="i">
+indexId="i" property="items">
 
 
 <tr>

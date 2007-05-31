@@ -13,12 +13,11 @@ import com.finalist.mmbase.util.CloudFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 /**
 *
 * @author
-* @version $Id: KaartenAction.java,v 1.1 2007-05-29 11:52:28 ieozden Exp $
+* @version $Id: KaartenAction.java,v 1.2 2007-05-31 09:33:56 ieozden Exp $
 *
 * @struts:action name="KaartenForm"
 *                path="/vastgoed/KaartenAction"
@@ -30,55 +29,40 @@ import java.util.ArrayList;
 
 public class KaartenAction  extends Action {
 	private static final Logger log = Logging.getLoggerInstance(KaartenAction.class);
-//	private ShoppingBasket basket;
-	private ArrayList basket;
-	
-	
+	private ShoppingBasket basket;
+		
 	 public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	      log.info("KaartenAction - execute()");
+	      log.debug("execute()");
 	      
 	      // shopping cart
 	      basket = ShoppingBasketHelper.getShoppingBasket(request);
 	      
 	      // actionForm is passed from Struts
-	      // kaartenForm is the form acquired from the basket
+	      // basketForm is the form acquired from the basket
 	      KaartenForm actionForm = (KaartenForm) form;
-	      KaartenForm kaartenForm;
+	      KaartenForm basketForm;
 	      
-	      // shopping_cart param steps over the new item entry - goes direct to cart 
+	      // shopping_cart param means step over entering a new item - go direct to cart 
 	      if(request.getParameter("shopping_cart") == null) {
-	    	  log.debug("KaartenAction - create item - store into basket/ OR update");
+	    	  log.debug("create item and store into basket OR update existing item");
 	    	  //update or create
 	    	  String number = request.getParameter("number");
 	    	  if (!number.equals("null")) {
 	    		  // updating the existing kart item
-	    		  log.debug("KaartenAction - updating existing cart item " + number);
+	    		  log.debug("updating existing cart item: " + number);
 		    	  
-	    		  // NEW CODE
-//	    		  kaartenForm = (KaartenForm) basket.getItem(number);
-//	    		  if (kaartenForm != null) {
-//	    		   // populating parameters
-//	    			kaartenForm.copyValuesFrom(actionForm);
-//	    		  }
-	    		  //OLD CODE
-	    		  try {
-			    	kaartenForm = (KaartenForm) basket.get(Integer.parseInt(number)); //throws 2 exceptions!!!
-			    	kaartenForm.copyValuesFrom(actionForm);
-	    		  } catch(Exception e) {
-		    		  log.debug("Exception in trying to update by non-existing cart item index"); 
-		    	  }	
-	    		  
-	    		  
+	    		  basketForm = (KaartenForm) basket.getItem(number);
+	    		  if (basketForm != null) {
+	    		   // populating parameters
+	    			  basketForm.copyValuesFrom(actionForm);
+	    		  }
 	    	  } else {
-	    		  // adding out form as a new entry
-	    		  //NEW CODE
-//	    		  basket.addItem(form);
-	    		  //OLD CODE
-	    		  basket.add(form);
+	    		  // no shopping_cart param - adding the passed form as a new cart entry
+	    		  basket.addItem(form);
 	    	  }
-
 	      }
 	      
+	      // forwarding
 	      return mapping.findForward("success");
 	   }
 }
