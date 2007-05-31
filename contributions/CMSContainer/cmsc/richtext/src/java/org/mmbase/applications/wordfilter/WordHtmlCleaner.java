@@ -173,11 +173,16 @@ public class WordHtmlCleaner {
 
    private static String replaceParagraph(String text) {
 	  // remove <p></p> (empty paragraphs)
-      text = text.replaceAll("<\\s{0,1}[pP]{1}\\s{0,1}></\\s{0,1}[pP]{1}\\s{0,1}>", "");
+// CMSC-421: FP: Commented this out, because this is eating whitespace!
+//      text = text.replaceAll("<\\s{0,1}[pP]{1}\\s{0,1}></\\s{0,1}[pP]{1}\\s{0,1}>", "");
+      
       // remove all remaining <p>
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
+      
       // replace all remaining </p> with a <br><br>
-	      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br />");
+// CMSC-421: FP: Changed this to two newlines, because it was eating whitespace 
+	   text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br/><br/>");
+         
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
