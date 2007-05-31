@@ -166,6 +166,9 @@ public class WordHtmlCleaner {
       return xmlStr;
    }
 
+   /**
+    * CMSC-416: FP: Using the DOTALL pattern matcher parameter, will solve problems with linebreaks in hidden if blocks
+    */
    private static String removeHtmlIfComments(String text) {
       Pattern pattern = Pattern.compile("<!--\\[if.*?endif]-->",Pattern.DOTALL);
       Matcher matcher = pattern.matcher(text);
