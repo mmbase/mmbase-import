@@ -44,6 +44,32 @@ public class WordHtmlCleanerTest extends TestCase {
       doTestFilter("<p>test</p><p>test", "test<br/><br/>test");
    }
    
+   
+   /**
+    * CMSC-417: FWP, fixed the problem with the 'ugly' lists sometimes pasted from word,
+    * these lists are created by adding spaces and tabs before and behind the dots of the lists.
+    */
+   public void testFixLists() {
+      String input = "<p style=\"margin-left: 53.4pt; text-indent: -18pt;\" class=\"MsoNormal\"><!--[if !supportLists]--><span style=\"font-family: Wingdings;\">§<span style=\"font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n\r"+
+                     "</span></span><!--[endif]--><span>&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Een</p>"+
+                     "<p style=\"margin-left: 53.4pt; text-indent: -18pt;\" class=\"MsoNormal\"><!--[if !supportLists]--><span style=\"font-family: Wingdings;\">§<span style=\"font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+
+                     "</span></span><!--[endif]--><span>&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Twee</p>";
+      doTestFilter(input, "<ul><li>Een</li><li>Twee</li></ul>");
+   }
+   
+   public void testFixLists2() {
+       String input = "<p style=\"margin-left: 89.4pt; text-indent: -18pt;\" class=\"MsoNormal\"><!--[if !supportLists]--><span style=\"font-family: Symbol;\">·<span style=\"font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+
+                     "</span></span><!--[endif]-->Een</p>"+
+                     "<p style=\"margin-left: 89.4pt; text-indent: -18pt;\" class=\"MsoNormal\"><!--[if !supportLists]--><span style=\"font-family: Symbol;\">·<span style=\"font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+
+                     "</span></span><!--[endif]-->Twee</p>";
+      doTestFilter(input, "<ul><li>Een</li><li>Twee</li></ul>");
+   }
+   
+   public void testFixLists3() {
+      String input = "<ol><li>Een</li><li>Twee</li></ol>";
+      doTestFilter(input, "<ol><li>Een</li><li>Twee</li></ol>");
+   }
+   
    private void doTestFilter(String input, String expected) {
       String cleanedHtml = WordHtmlCleaner.cleanHtml(input);
       assertEquals(expected, cleanedHtml);
