@@ -62,11 +62,14 @@
                     <nobr>
                       &nbsp;
                       <mm:link referid="listjsp" referids="_node@startnodes">
-                        <mm:param name="wizard">config/people/people</mm:param>
+                        <mm:param name="wizard">config/people/people_unlink</mm:param>
                         <mm:param name="nodepath">roles,people</mm:param>
                         <mm:param name="orderby">people.lastname</mm:param>
                         <mm:param name="searchfields">people.firstname,people.suffix,people.lastname,people.username,people.externid</mm:param>
                         <mm:param name="search">yes</mm:param>
+                        <mm:param name="title">${_node.name}</mm:param>
+                        <mm:param name="relationRole">related</mm:param>
+                        <mm:param name="relationOriginNode">${_node}</mm:param>
                         <a href="${_}${forbidtemplate}"
                            title='<di:translate key="education.persons" />' target="text">
                         <mm:field name="name" />
