@@ -9,9 +9,12 @@
  */
 package org.mmbase.applications.wordfilter;
 
-import java.io.*;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -108,8 +111,9 @@ public class WordHtmlCleaner {
             // xmlbs removes the fonttags
 
             String xmlStr = fixWordpad(textStr);
-            xmlStr = removeHtmlIfComments(textStr);
-            xmlStr = fixLists(xmlStr);
+            xmlStr = fixBadLists(xmlStr);
+            xmlStr = fixNiceLists(xmlStr);
+            xmlStr = removeHtmlIfComments(xmlStr);
             xmlStr = fixBR(xmlStr);
             xmlStr = removeEmptyFonts(xmlStr);
             xmlStr = replaceParagraph(xmlStr);
@@ -118,28 +122,10 @@ public class WordHtmlCleaner {
             xmlStr = removeEmptyTags(xmlStr);
             xmlStr = fixEmptyAnchors(xmlStr);
             xmlStr = fixAnchors(xmlStr);
-
-            try {
-               xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr
-                     + "</body>", xmlbsDTD);
-               xmlbs.setRemoveEmptyTags(false); // Uitgezet omdat de <td/><td/> onterecht werd gemerged
-               xmlbs.process();
-               ByteArrayOutputStream bout = new ByteArrayOutputStream();
-               xmlbs.write(bout);
-               bout.flush();
-               xmlStr = bout.toString();
-
-               // to string and strip root node
-               xmlStr = xmlStr.substring(xmlStr.indexOf('>') + 1);
-               int i = xmlStr.lastIndexOf('<');
-               if (i != -1) {
-                  xmlStr = xmlStr.substring(0, i);
-               }
-            } catch (Throwable t) {
-               log.error(Logging.stackTrace(t));
-            }
+            xmlStr = niceHtml(xmlStr);
             xmlStr = fixEmptyAnchors(xmlStr);
             xmlStr = removeEmptyTags(xmlStr);
+            xmlStr = mergeLists(xmlStr);
 //            xmlStr = shrinkBR(xmlStr);
             log.debug("new value : " + xmlStr);
             return xmlStr;
@@ -151,8 +137,39 @@ public class WordHtmlCleaner {
       return "";
    }
 
+   private static String mergeLists(String text) {
+      text = text.replaceAll("</ul>(<br/>).*<ul>", "");
+      text = text.replaceAll("</ol>(<br/>).*<ol>", "");
+      return text;
+   }
+
+   private static String niceHtml(String xmlStr) {
+      try {
+         xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr
+               + "</body>", xmlbsDTD);
+         xmlbs.setRemoveEmptyTags(false); // Uitgezet omdat de <td/><td/> onterecht werd gemerged
+         xmlbs.process();
+         ByteArrayOutputStream bout = new ByteArrayOutputStream();
+         xmlbs.write(bout);
+         bout.flush();
+         xmlStr = bout.toString();
+
+         // to string and strip root node
+         xmlStr = xmlStr.substring(xmlStr.indexOf('>') + 1);
+         int i = xmlStr.lastIndexOf('<');
+         if (i != -1) {
+            xmlStr = xmlStr.substring(0, i);
+         }
+      } catch (Throwable t) {
+         log.error(Logging.stackTrace(t));
+      }
+      return xmlStr;
+   }
+
    private static String removeHtmlIfComments(String text) {
-      text = text.replaceAll("<!--\\[if.*endif]-->", "");
+      Pattern pattern = Pattern.compile("<!--\\[if.*?endif]-->",Pattern.DOTALL);
+      Matcher matcher = pattern.matcher(text);
+      text = matcher.replaceAll("");
       return text;
    }
 
@@ -235,7 +252,30 @@ public class WordHtmlCleaner {
       return xml;
    }
 
-   private static String fixLists(String xmlStr) {
+   
+   /**
+    * CMSC-417: FWP, this method fixes the problem with the 'ugly' lists sometimes pasted from word,
+    * these lists are created by adding spaces and tabs before and behind the dots of the lists.
+    */
+   private static String fixBadLists(String text) {
+      text = text.replaceAll("[งท]", "");
+      
+      int pos = -1;
+      while((pos = text.indexOf("<!--[if !supportLists", pos+1)) != -1) {
+         int endParagraph = text.indexOf("</p",pos+1);
+         if(endParagraph != -1) {
+            text = text.substring(0, endParagraph)+"</li></ul>"+text.substring(endParagraph);
+         }
+      }
+      
+      Pattern pattern = Pattern.compile("<!--\\[if !supportLists.*?endif]-->",Pattern.DOTALL);
+      Matcher matcher = pattern.matcher(text);
+      text = matcher.replaceAll("<ul><li>");
+      
+      return text;
+   }
+   
+   private static String fixNiceLists(String xmlStr) {
       String xml = "";
       int begin = 0;
       int end = 0;
