@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.7 2006-11-16 08:31:14 michiel Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.8 2007-05-31 15:25:40 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -315,6 +315,27 @@
             <para>System parameter, see the description at the wizard.jsp reference page for more info</para>
           </listitem>
         </varlistentry>
+        <varlistentry>
+          <term>newfromlist</term>
+          <listitem>
+            <para>
+              If this option is given, then you can besides searching in the given list, also search
+              in the complete cloud. This can be useful if the presented list has an orgin. In this
+              way you can add new entries to this list, without needing a wizard.
+            </para>
+            <para>
+              The value of 'newfromlist' are three comma-seperated values like this.              
+            </para>
+            <programlisting format="linespecific">newfromlist=&lt;origin&gt;,&lt;role&gt;,&lt;nodetype&lt;</programlisting>
+            <para>
+              Where &lt;origin&gt; it the nodenumber to which a relation must be created,
+              &lt;role&gt; is the role of that relation and &lt;nodetype&gt; is the type of te nodes
+              that must be searched.
+            </para>
+            <para>(See also: the &lt;action type="unlink" /&gt;</para>
+            <note><para>Available from MMBase 1.8.5 and up</para></note>
+          </listitem>
+        </varlistentry>
       </variablelist>
       <example>
         <title>How to use list.jsp to list objects</title>
@@ -492,6 +513,17 @@
 &rf-action-add;
 &rf-action-create;
 &rf-action-delete;
+<section id="action-unlink">
+	<title>action type="unlink"</title>
+	<formalpara>
+		<title>Syntax</title>
+		<para><programlisting><![CDATA[<action type="unlink" />]]></programlisting></para>
+	</formalpara>
+	<formalpara>
+		<title>Usage</title>
+		<para>This tag defines that a list-page also has 'unlink' icons (the inverse of 'newfromlist')</para>
+	</formalpara>
+</section>
 &rf-action-load;
 &rf-form-schema;
 &rf-item;
