@@ -215,7 +215,7 @@ public class SearchUtil {
      * @param source 
      * @param destination
      * @param role
-     * @since MMBase-1.8.4
+     * @since MMBase-1.8.5
      */
     public static RelationList findRelations(Node source, Node destination, String role, String searchDir) {
         
