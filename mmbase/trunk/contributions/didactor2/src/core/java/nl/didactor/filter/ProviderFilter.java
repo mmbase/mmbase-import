@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.3 2007-05-16 15:30:43 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.4 2007-05-31 13:29:48 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -120,7 +120,7 @@ public class ProviderFilter implements Filter, MMBaseStarter {
         if (mmbase == null) {
             // if mmbase not yet running. Things not using mmbase can work, otherwise this may give
             // 503.
-            log.warn("NO MMBASE member");
+            log.debug("NO MMBASE member");
             filterChain.doFilter(request, response);
             return;
         }
@@ -213,6 +213,7 @@ public class ProviderFilter implements Filter, MMBaseStarter {
             Locale locale = findLocale(provider, education);
             attributes.put("javax.servlet.jsp.jstl.fmt.locale.request", locale);
             attributes.put("language", locale.toString());
+            attributes.put("locale", locale);
 
             if (education != null) {
                 attributes.put("includePath", provider.getNumber() + "," + education.getNumber());
