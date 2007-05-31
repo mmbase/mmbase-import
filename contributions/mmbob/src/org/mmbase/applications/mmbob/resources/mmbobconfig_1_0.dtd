@@ -4,12 +4,19 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (properties*,generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,maxpostsize?,avatars?,email?,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
+<!ELEMENT forums (properties*,generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,
+                  accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,maxpostsize?,
+                  avatars?,email?,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,
+                  postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,
+                  replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (properties*,alias*,generatedata*,accountcreation*,accountremoval*,loginsystem,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstart*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation,postarea*)>
+<!ELEMENT forum (properties*,alias*,generatedata*,accountcreation*,accountremoval*,loginsystem,loginmode*,
+                 logoutmode*,guestreadmode*,guestwritemode*,threadstart*,profileentry*,avatars*,email*,layout*,
+                 contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,
+                 speedposttime?,replyoneachpage?,navigation,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
@@ -72,7 +79,6 @@
 <!ELEMENT guestreadmode (#PCDATA)>
 <!ATTLIST guestreadmode type CDATA #IMPLIED>
 <!ATTLIST guestreadmode guiedit (true|false) #IMPLIED>
-
 
 <!ELEMENT threadstart (#PCDATA)>
 <!ATTLIST threadstart level CDATA #IMPLIED>
