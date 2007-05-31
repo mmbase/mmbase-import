@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.68 2007-04-23 14:51:56 michiel Exp $
+     * @version  $Id: list.jsp,v 1.69 2007-05-31 16:32:23 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -221,8 +221,6 @@ if (checkRelationRights) {
 }
 
 // newform
-String newFromListParam = (String) listConfig.getAttributes().get("newfromlist");
-String[] newFromList = newFromListParam == null ? null : newFromListParam.split(",");
 
 for (int i=0; i < results.size(); i++) {
 
@@ -279,10 +277,10 @@ for (int i=0; i < results.size(); i++) {
     } else {
         Utils.setAttribute(obj, "maylink", "true");
     }
-    if (newFromList == null) {
+    if (originNodeNr == null) {
         Utils.setAttribute(obj, "mayunlink", "false");
     }  else {
-        RelationList rels = SearchUtil.findRelations(item, cloud.getNode(newFromList[0]), newFromList[1], null);
+        RelationList rels = SearchUtil.findRelations(item, cloud.getNode(originNodeNr), roleStr, createDir);
         if (rels.size() == 1) {
            Utils.setAttribute(obj, "mayunlink", "" + rels.getRelation(0).mayDelete());
         } else {
