@@ -70,6 +70,17 @@ public class WordHtmlCleanerTest extends TestCase {
       doTestFilter(input, "<ol><li>Een</li><li>Twee</li></ol>");
    }
    
+   /**
+    * CMSC-416: FP: Problems with linebreaks in hidden if blocks
+    */
+   public void testLinebreaksInHtmlIfComments() {
+      doTestFilter("te<!--[if !supportLineBreaknewLine]-->x<!--[endif]-->st", "test");
+   }
+
+   public void testLinebreaksInHtmlIfComments2() {
+      doTestFilter("te<!--[if !supportLineBreaknewLine]-->\r\n<!--[endif]-->st", "test");
+   }
+   
    private void doTestFilter(String input, String expected) {
       String cleanedHtml = WordHtmlCleaner.cleanHtml(input);
       assertEquals(expected, cleanedHtml);
