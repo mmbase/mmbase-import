@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.88 2007-04-30 13:20:22 michiel Exp $
+ * @version $Id: Queries.java,v 1.89 2007-05-31 10:08:03 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -213,17 +213,17 @@ abstract public class Queries {
     public static int getOperator(String s) {
         String op = s.toUpperCase();
         // first: determine operator:
-        if (op.equals("<") || op.equals("LESS")) {
+        if (op.equals("<") || op.equals("LESS") || op.equals("LT")) {
             return FieldCompareConstraint.LESS;
-        } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
+        } else if (op.equals("<=") || op.equals("LESS_EQUAL") || op.equals("LE")) {
             return FieldCompareConstraint.LESS_EQUAL;
-        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
+        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("") || op.equals("EQ")) {
             return FieldCompareConstraint.EQUAL;
-        } else if (op.equals("!=") || op.equals("NOT_EQUAL")) {
+        } else if (op.equals("!=") || op.equals("NOT_EQUAL") || op.equals("NE")) {
             return FieldCompareConstraint.NOT_EQUAL;
-        } else if (op.equals(">") || op.equals("GREATER")) {
+        } else if (op.equals(">") || op.equals("GREATER") || op.equals("GT")) {
             return FieldCompareConstraint.GREATER;
-        } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
+        } else if (op.equals(">=") || op.equals("GREATER_EQUAL") || op.equals("GE")) {
             return FieldCompareConstraint.GREATER_EQUAL;
         } else if (op.equals("LIKE")) {
             return FieldCompareConstraint.LIKE;
