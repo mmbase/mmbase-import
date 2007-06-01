@@ -27,7 +27,7 @@ if(depth!=1){
             <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="learnblocks" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" />' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" /></a></nobr></td>
+            <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/learnblocks/learnblocks-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" />' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" /></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -46,7 +46,7 @@ if(depth!=1){
             <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="pages" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/pages/pages-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" />' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" /></a></nobr></td>
+            <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/pages/pages-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" />' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %> <di:translate key="education.aanmaken" /></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -65,7 +65,7 @@ if(depth!=1){
             <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="tests" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
+            <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/tests/tests-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -84,7 +84,7 @@ if(depth!=1){
             <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="flashpages" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/flashpages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
+            <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/flashpages/flashpages-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -108,7 +108,7 @@ if(depth!=1){
                <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
             </mm:compare>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/htmlpages/htmlpages-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
+            <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/htmlpages/htmlpages-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
    </mm:compare>
