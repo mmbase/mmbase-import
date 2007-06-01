@@ -3,19 +3,19 @@
 <optionlist name="layout">
   <option id="0">
     <prompt xml:lang="nl">Tekst boven</prompt>
-    <prompt xml:lang="en">Tekst up</prompt>.
+    <prompt xml:lang="en">Text up</prompt>.
   </option>
   <option id="1">
     <prompt xml:lang="nl">Tekst onder</prompt>
-    <prompt xml:lang="en">Tekst down</prompt>
+    <prompt xml:lang="en">Text down</prompt>
   </option>
   <option id="2">
     <prompt xml:lang="nl">Tekst links</prompt>
-    <prompt xml:lang="en">Tekst left</prompt>
+    <prompt xml:lang="en">Text left</prompt>
   </option>
   <option id="3">
     <prompt xml:lang="nl">Tekst rechts</prompt>
-    <prompt xml:lang="en">Tekst right</prompt>
+    <prompt xml:lang="en">Text right</prompt>
   </option>
 </optionlist>
 
