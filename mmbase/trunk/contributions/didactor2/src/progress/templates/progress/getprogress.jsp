@@ -1,6 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %>
 <mm:cloud method="delegate">
 
@@ -17,7 +18,7 @@
    <%-- find user's copybook --%>
    <jsp:directive.include file="find_copybook.jsp" />
 
-   
+   <mm:present referid="copybookNo">
    <os:cache time="${empty copybookNo ? 600 : 0}" key="progress-${education}-${student}-${copybookNo}">
      <%-- performance of this is very bad if no copybook DIDACTOR-50 
           So caching it some time, to increase responsiveness.
@@ -53,6 +54,10 @@
 
      </mm:node>
    </os:cache>
+   </mm:present>
+   <mm:notpresent referid="copybookNo">
+     0
+   </mm:notpresent>
 
 </mm:node>
 
