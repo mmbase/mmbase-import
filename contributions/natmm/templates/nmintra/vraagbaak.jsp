@@ -44,7 +44,18 @@ if(twoColumns) {
       vraagOrderby = "contentrel.pos";
       
       }
-      %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
+      %>
+      <%-- list of raagbaaks --%>
+      <p> <b>Inhoud:</b>
+      <mm:list nodes="<%= startnodeId %>"  path="<%= vraagPath %>" orderby="<%= vraagOrderby %>"
+         >
+         <mm:node element="vraagbaak">  
+          <li/> <a href="<%= ph.createPaginaUrl(startnodeId,request.getContextPath()) %>#<mm:field name="number"/>"><mm:field name="titel"/></a>
+         </mm:node>
+         </mm:list>
+      </p><br/>
+      
+      <mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
          ><%@include file="includes/relatedarticle.jsp" 
       %></mm:list>
       
@@ -54,8 +65,10 @@ if(twoColumns) {
          >
          <mm:node element="vraagbaak" id="this_vraagbaak">  
          <mm:field name="number" jspvar="dummy" vartype="String" write="false" ><% currentVraag = dummy; %></mm:field>
+         <a name="<%=currentVraag%>">
          <jsp:include page="includes/relatedvraagbaak.jsp">
          	<jsp:param name="v" value="<%=currentVraag%>"/>
+         	<jsp:param name="c" value="<%=startnodeId%>"/>
          </jsp:include>
          </mm:node>
      </mm:list>
@@ -73,8 +86,6 @@ if(twoColumns) {
 </div>
 </td>
 
-
-
 <% 
 if(twoColumns) { 
    // *********************************** right bar *******************************
@@ -83,6 +94,11 @@ if(twoColumns) {
          
    %><td style="padding-left:10px;">
    <div class="rightcolumn" id="rightcolumn">
+   
+   <p>
+   <%@include file="includes/contentblock_letterindex.jsp" %>
+   </p><br/>
+   
    <mm:list nodes="<%= paginaID %>" path="pagina,readmore,contentblocks" orderby="readmore.pos">
       <mm:node element="contentblocks">
          <%@include file="includes/contentblockdetails.jsp" %>
