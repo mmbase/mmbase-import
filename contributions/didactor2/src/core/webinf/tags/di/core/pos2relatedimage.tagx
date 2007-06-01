@@ -7,7 +7,6 @@
   <mm:node>
     <mm:related path="pos2rel,images" max="1" fields="pos2rel.pos1,pos2rel.pos2" id="rel">
       <mm:node element="images">
-        ${rel.pos2rel.pos1}
         <mm:import id="html"> 
           <c:choose>
             <c:when test="${rel.pos2rel.pos1 eq 1}">
