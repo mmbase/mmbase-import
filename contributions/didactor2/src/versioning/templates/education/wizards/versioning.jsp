@@ -14,11 +14,11 @@
 <html>
 <head>
 <title>File manager</title>
-   <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/layout/list.css" objectlist="$includePath" referids="$referids" />" />
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
+   <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" />' />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/layout/list.css" objectlist="$includePath"  />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/color/list.css" objectlist="$includePath" />" />
 </head>
-<script type="text/javascript" src="<mm:treefile page="/editwizards/javascript/list.js" objectlist="$includePath" referids="$referids"/>"></script>
+<script type="text/javascript" src="<mm:treefile page="/mmbase/edit/wizard/javascript/list.js" objectlist="$includePath" /></script>
 <body>
 
 <mm:import externid="nodeid" jspvar="nodeId" vartype="String">-1</mm:import>
@@ -60,7 +60,7 @@
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=delete&archiveid=<mm:field name="number"/>'
                         onclick="return doDelete('<di:translate key="versioning.versioningdeletewarning" />');">
-                           <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
+                           <img border="0" src="<%= request.getContextPath() %>/mmbase/edit/wizard/media/remove.gif"/>
                      </a>
                   </td>
 
