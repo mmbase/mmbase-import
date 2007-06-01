@@ -158,6 +158,7 @@ String paymentCondition = "";
 
 int iMinNumber = 0;
 int iMaxNumber = 9999;
+int curAantalDeelnemers = 0;
 
 String sHighLight = "style=\"background-color:#729DC2;\"";
 %>
@@ -223,7 +224,9 @@ DoubleDateNode ddn = new DoubleDateNode();
    try { iMinNumber = parentEvent.getIntValue("min_aantal_deelnemers"); } catch (Exception e) { }
    if(iMinNumber==-1) iMinNumber = 0;
    try { iMaxNumber = parentEvent.getIntValue("max_aantal_deelnemers"); } catch (Exception e) { }
-   if(iMaxNumber==-1) iMaxNumber = 9999; 
+   if(iMaxNumber==-1) iMaxNumber = 9999;
+   try { curAantalDeelnemers = parentEvent.getIntValue("cur_aantal_deelnemers"); } catch (Exception e) { }
+   if(curAantalDeelnemers==-1) curAantalDeelnemers = 0;
 
    addressIsRequired = parentEvent.getStringValue("adres_verplicht").equals("1");
 
@@ -383,6 +386,8 @@ DoubleDateNode ddn = new DoubleDateNode();
       %> style="width:<% if(isExtendedAct) {  %>500px<% } else { %>300px<% } %>;margin-bottom:20px;">
    <tr <%= sHighLight %>><td>categorie&nbsp;&nbsp;</td><td>kosten&nbsp;&nbsp;</td>
          <% if(isExtendedAct) {  %>
+         	<% if(actionId.indexOf("printdates")==-1) { 
+                %><td>deelnemers&nbsp;&nbsp;</td><% } %>
             <td>aantal&nbsp;plaatsen</td>
          <% } %>
          <% if(actionId.indexOf("printdates")==-1) { 
@@ -413,8 +418,11 @@ DoubleDateNode ddn = new DoubleDateNode();
                <td><%= SubscribeAction.priceFormating(costs) %></td>
                <% 
                if(isExtendedAct) {
-                  // aantal plaatsen
-                  %>
+                  if(actionId.indexOf("printdates")==-1) { 
+                	  // deelnemers
+                     %><td style="text-align:center;"><%= iParticipantsInCat %></td><% 
+                  } 
+                  // aantal plaatsen %>
                   <td style="text-align:center;"><%= iNumberPerParticipant %></td>
                   <% 
                }
@@ -432,6 +440,8 @@ DoubleDateNode ddn = new DoubleDateNode();
    </mm:related>
    <% 
    // inschrijving related to this_event that do not have a deelnemers_categorie
+   // it is meant no deelnemers_categorie attached to the deelnemer
+   // this can be reproduced by deleting the deelnemers_categorie relation attached to the deelnemer, or the whole deelnemers_categorie
    if(!isGroupExcursion) {
       int iParticipantsWithoutCat = 0;
          
@@ -452,13 +462,17 @@ DoubleDateNode ddn = new DoubleDateNode();
       if(iParticipantsWithoutCat>0) { 
          %>
          <tr><td style="width:130px;">Zonder categorie</td>
+         	<% // kosten %>
             <td><%=  SubscribeAction.priceFormating("-1") %></td>
             <% if(isExtendedAct) {  %>
                <% if(actionId.indexOf("printdates")==-1) { 
+            	   // deelnemers
                   %><td style="text-align:center;"><%= iParticipantsWithoutCat %></td><% } %>
-               <td style="text-align:center;"></td>
+                  <% // aantal plaatsen %>
+                  <td style="text-align:center;"></td>
             <% } %>
             <% if(actionId.indexOf("printdates")==-1) { 
+            	// aanmeldingen
                %><td style="text-align:center;"><%= iParticipantsWithoutCat %></td><% } %>      
          </tr>
          <%
@@ -469,7 +483,12 @@ DoubleDateNode ddn = new DoubleDateNode();
      %><tr>
          <td>TOTAAL</td>
          <td></td>
-         <% if(isExtendedAct) {  %><td></td><% } %>
+         <% if(isExtendedAct) {  %>
+         	<% // deelnemers %>
+         	<td></td>
+         	<% // aantal plaatsen %>
+         	<td></td>
+         <% } %>
          <td style="text-align:center;"><%= iTotalParticipants  %></td>
       </tr><%
    } %>
@@ -854,7 +873,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                      </a><%
                   } %>
                </td>
-               <td colspan="8">   
+               <td colspan="8">
                   <mm:list nodes="<%= snumber %>" path="inschrijvingen,daterel,bevestigings_teksten">
                      <mm:node element="bevestigings_teksten">
                         <mm:field name="titel" />
