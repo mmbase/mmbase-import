@@ -16,5 +16,6 @@
    <field name="reageer" ftype="enum"><prompt>stippellijn tussen paragrafen</prompt><optionlist select="ja_nee"/></field>
    <list include="config/paragraaf/zoek_vraagbaak_posrel_paragraaf.xml" />
    <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
-
+   <list include="config/pools/zoek_vraagbaak_posrel_pools.xml" />
+   <list include="config/persoon/zoek_vraagbaak_related_persoon.xml" />   
 </form-schema>
