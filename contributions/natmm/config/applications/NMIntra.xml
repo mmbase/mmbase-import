@@ -119,7 +119,7 @@
       <relation from="vraagbaak" to="images" type="posrel"/> 
       <relation from="vraagbaak" to="items" type="readmore"/>
       <relation from="vraagbaak" to="paragraaf" type="posrel"/>
-      <relation from="vraagbaak" to="persoon" type="readmore"/>
+      <relation from="vraagbaak" to="persoon" type="related"/>
       <relation from="vraagbaak" to="contentblocks" type="readmore"/>
       <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
