@@ -4,7 +4,7 @@
 
 <mm:treefile id="wizardjsp" write="false" escapeamps="false"
              page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="language?,templates">
-  <mm:param name="referrer">/education/wizards/ok.jsp</mm:param>
+  <mm:param name="referrer">/education/wizards/ok.jsp?reload=true</mm:param>
   <mm:param name="loginmethod">delegate</mm:param>
 </mm:treefile>
 
