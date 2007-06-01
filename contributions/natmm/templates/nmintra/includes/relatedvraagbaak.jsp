@@ -3,6 +3,7 @@
 
 <% 
 String vraagId=request.getParameter("v");
+String callingNode=request.getParameter("c");
 String printAction=request.getParameter("pst");
 boolean printView = ((printAction != null) && (printAction.indexOf("print") != -1));
 // needed to support images in paragraph include
@@ -57,7 +58,7 @@ if (printView) { %>
   
   
   <% if (!printView) { %>
-  	<p><a href="#top">link to top</a></p><br/>
+  	<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">link to top</a></p><br/>
   <% } %>	
 
 </mm:node>
