@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.64.2.4 2007-05-31 16:29:50 michiel Exp $
+     * @version  $Id: list.jsp,v 1.64.2.5 2007-06-01 09:28:20 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -277,6 +277,7 @@ for (int i=0; i < results.size(); i++) {
     } else {
         Utils.setAttribute(obj, "maylink", "true");
     }
+    if (popupId == null) { // not a searchlist
     if (originNodeNr == null) {
         Utils.setAttribute(obj, "mayunlink", "false");
     }  else {
@@ -287,6 +288,7 @@ for (int i=0; i < results.size(); i++) {
            Utils.setAttribute(obj, "mayunlink", "false");
         }
 
+    }
     }
 
     Utils.setAttribute(obj, "mayedit", "" + item.mayWrite());
