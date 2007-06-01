@@ -120,6 +120,7 @@
       <relation from="vraagbaak" to="items" type="readmore"/>
       <relation from="vraagbaak" to="paragraaf" type="posrel"/>
       <relation from="vraagbaak" to="persoon" type="related"/>
+      <relation from="vraagbaak" to="terms" type="related"/>      
       <relation from="vraagbaak" to="contentblocks" type="readmore"/>
       <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
@@ -196,7 +197,7 @@
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="rolerel"/>
       <relation from="pagina" to="teaser" type="rolerel"/>
-		  <relation from="pagina" to="terms" type="contentrel"/>
+		<relation from="pagina" to="terms" type="contentrel"/>
       <relation from="pagina" to="users" type="rolerel"/>
       <relation from="paginatemplate" to="editwizards" type="related"/> 
       <relation from="paragraaf" to="attachments" type="posrel"/> 
