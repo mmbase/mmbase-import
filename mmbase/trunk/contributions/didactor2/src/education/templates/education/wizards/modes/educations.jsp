@@ -150,19 +150,23 @@
                   </table>
                   </mm:node>
 
+                  <mm:relatednodes path="posrel,learnblocks" element="posrel" orderby="posrel.pos" directions="down" max="1">
+                    <mm:field name="pos" id="maxpos" />
+                  </mm:relatednodes>
+
                   <%// create new learnblock item %>
                   <table border="0" cellpadding="0" cellspacing="0">
-                     <tr>
-                        <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
-                        <mm:isgreaterthan referid="number_of_learnblocks" value="0">
-                           <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
-                        </mm:isgreaterthan>
-                        <mm:islessthan    referid="number_of_learnblocks" value="1">
-                           <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
-                        </mm:islessthan>
-                        <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=eduname %>' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
-                     </tr>
+                    <tr>
+                      <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+                      <mm:isgreaterthan referid="number_of_learnblocks" value="0">
+                        <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                      </mm:isgreaterthan>
+                      <mm:islessthan    referid="number_of_learnblocks" value="1">
+                        <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                      </mm:islessthan>
+                      <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
+                      <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=eduname %>&newpos=${maxpos + 1}' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
+                    </tr>
                   </table>
 
 
@@ -170,8 +174,11 @@
                   <%
                      int iLearnblockCounter = 0;
                   %>
-                  <mm:relatednodes role="posrel" orderby="posrel.pos" directions="up"
+
+                  <mm:relatednodes role="posrel" orderby="posrel.pos" 
+                                   directions="up"
                                    searchdir="destination" type="learnobjects">
+
                     <%@include file="whichimage.jsp"%>
                     <mm:nodeinfo type="type" id="this_node_type">
                       <mm:import id="mark_error" reset="true"></mm:import>
@@ -233,7 +240,6 @@
                     
                     <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
                     <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
-                      
                       <mm:param name="startnode"><mm:field name="number" /></mm:param>
                       <mm:param name="depth">10</mm:param>
                       <mm:last>
