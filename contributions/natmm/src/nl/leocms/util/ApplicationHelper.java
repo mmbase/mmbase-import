@@ -39,7 +39,7 @@ public class ApplicationHelper {
       this.isInstalledNatMM = isInstalled("NatMM");
       this.isInstalledNatNH = isInstalled("NatNH");
       this.isInstalledNMIntra = isInstalled("NMIntra");      
-      this.isInstalledNMIntra = isInstalled("VanHam");
+      this.isInstalledVanHam = isInstalled("VanHam");
    }
 	
    public boolean isInstalled(String sApplication) {
