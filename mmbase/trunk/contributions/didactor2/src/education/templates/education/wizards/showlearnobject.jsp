@@ -32,7 +32,7 @@
                <td>
                  <nobr>
                  
-                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+                   <a href='<mm:write referid="wizardjsp"/>&amp;lwizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&amp;objectnumber=<mm:field name="number" />&amp;origin=<mm:field name="number" />&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                    <mm:present referid="pdfurl">
                      <mm:compare referid="objecttype" value="pages">
                        <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
@@ -43,10 +43,10 @@
                    </mm:present>
                    <mm:field write="false" name="number" id="node_number" />
                    <mm:node number="component.metadata" notfound="skip">
-                     <a href='metaedit.jsp?number=<mm:write referid="node_number" />' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' title='<%= sAltText %>' alt='<%= sAltText %>'></a>
+                     <a href='metaedit.jsp?number=<mm:write referid="node_number" />' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' title='<%= sAltText %>' alt='<%= sAltText %>' /></a>
                    </mm:node>
                    <mm:node number="component.versioning" notfound="skip">
-                     <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img src="gfx/versions.gif" border="0"></a>
+                     <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img src="gfx/versions.gif" border="0" /></a>
                    </mm:node>
                    <mm:remove referid="node_number" />
                 </nobr>
@@ -90,23 +90,23 @@
                   <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
                </mm:compare>
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_<%= learnobjects2_number %>"/></td>
-               <td>&nbsp;<nobr>
+               <td> <nobr>
                
-                 <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+                 <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&amp;objectnumber=<mm:field name="number" />&amp;origin=<mm:field name="number"/>&amp;path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                  <mm:present referid="pdfurl">
                    <mm:compare referid="objecttype" value="pages">
-                     <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                     <a href='<mm:write referid="pdfurl"/>&amp;number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
                    </mm:compare>
                    <mm:compare referid="objecttype" value="learnblocks">
-                     <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                     <a href='<mm:write referid="pdfurl"/>&amp;number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
                    </mm:compare>
                  </mm:present>
                  <mm:field write="false" name="number" id="node_number" />
                  <mm:node number="component.metadata" notfound="skip">
-                   <a href='metaedit.jsp?number=<mm:write referid="node_number" />' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' title='<%= sAltText %>' alt='<%= sAltText %>'></a>
+                   <a href='metaedit.jsp?number=<mm:write referid="node_number" />' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' title='<%= sAltText %>' alt='<%= sAltText %>' /></a>
                  </mm:node>
                  <mm:node number="component.versioning" notfound="skip">
-                   <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img id="img_<mm:field name="number"/>" src="gfx/versions.gif" border="0"></a>
+                   <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img id="img_<mm:field name="number"/>" src="gfx/versions.gif" border="0" /></a>
                  </mm:node>
                  <mm:remove referid="node_number" />
                </nobr></td>
