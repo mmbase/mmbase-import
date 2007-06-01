@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="pagina">
+   <title>pagina (begrippenlijst)</title>
+   <description>
+      <![CDATA[
+	   <h1>Begrippenlijst pagina</h1>
+	   ]]>
+   </description>
+   <action include="config/pagina/create_pagina.xml"/>
+   <action include="config/pagina/delete_pagina.xml"/>
+   <action type="load">
+     <field name="titel"/>
+   </action>
+   <steps>
+      <step form-schema="edit_pagina"/>
+   </steps>
+   <form-schema id="edit_pagina">
+      <field name="titel" ftype="data"><prompt>titel</prompt></field>
+      </form-schema> 
+</wizard-schema>
