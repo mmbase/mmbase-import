@@ -55,9 +55,7 @@
      </mm:node>
    </os:cache>
    </mm:present>
-   <mm:notpresent referid="copybookNo">
-     0
-   </mm:notpresent>
+   <mm:notpresent referid="copybookNo">-1</mm:notpresent>
 
 </mm:node>
 
