@@ -6,9 +6,7 @@
     version="2.0">
   <jsp:directive.tag description="Displays the current node as a person, taking into account the setting ofWether a certain component is available for the current object. Component is defined by either name or node number. Works like an mm-nodereferrer tag." />
   <jsp:directive.attribute name="element"    /> 
-
   <mm:import externid="education" from="request" /> 
-
   <mm:cloud>
     <mm:node element="${element}">
       <mm:import id="p">

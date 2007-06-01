@@ -9,17 +9,17 @@
   <mm:node>
     <mm:relatednodescontainer role="settingrel" type="components">
       <c:choose>
-	<c:when test="${empty name}">
-	  <mm:constraint field="number" value="${number}"/>
-	</c:when>
-	<c:otherwise>
-	  <mm:constraint field="name" value="${name}"/>
-	</c:otherwise>
+        <c:when test="${empty name}">
+          <mm:constraint field="number" value="${number}"/>
+        </c:when>
+        <c:otherwise>
+          <mm:constraint field="name" value="${name}"/>
+        </c:otherwise>
       </c:choose>
       <mm:size>
-	<mm:compare value="0" inverse="true">
-	  <jsp:doBody />
-	</mm:compare>
+        <mm:compare value="0" inverse="true">
+          <jsp:doBody />
+        </mm:compare>
       </mm:size>
     </mm:relatednodescontainer>
   </mm:node>
