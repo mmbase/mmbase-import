@@ -99,7 +99,9 @@ if(!artikelID.equals("-1")) {
             </tr>
          </table>
          <%
-         if(memberid==null) {
+         // disabled with 1==2 &&
+         // http://jira.finalist.com/browse/NMCMS-218
+         if( 1==2 && memberid==null ) {
       
             %><table class="dotline"><tr><td height="3"></td></tr></table>
             <div style="margin:5px 0px 5px 0px">
