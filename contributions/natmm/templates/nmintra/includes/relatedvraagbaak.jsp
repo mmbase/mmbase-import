@@ -28,7 +28,13 @@ if (printView) { %>
 	   /></div></mm:compare
 	></mm:field>
   </td>
-  <td width="20%">status:  category here!
+  <td width="20%">
+  status:
+	<mm:relatednodes type="pools" max="1">
+    <mm:field name="name"/>
+    </mm:relatednodes>
+    
+    
   </td>
   <td width="5%">
   <% if (!printView) { %>
@@ -42,7 +48,12 @@ if (printView) { %>
   </td>
   </tr>
   <tr>
-  <td colspan="3">medewerker
+  <td colspan="3">
+  medewerker:
+  	<mm:relatednodes type="persoon" max="1">
+    <a href="smoelenboek.jsp?employee=<mm:field name="number"/>"><mm:field name="titel"/></a>
+    </mm:relatednodes>
+    
   </td>
   </tr>
   </table>
