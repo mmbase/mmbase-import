@@ -12,7 +12,9 @@
 
   <action type="create">
     <object type="learnblocks">
-      <relation destination="$origin" role="posrel" createdir="source"/>
+      <relation destination="$origin" role="posrel" createdir="source">
+        <field name="pos">$newpos</field>
+      </relation>
       <field name="showtitle">1</field>
     </object>
   </action>
@@ -65,7 +67,7 @@
       <optionlist select="boolean" />
     </field>
 
-    <field name="intro" ftype="${wizards.pages.text.ftype}" dtminlength="0">
+    <field name="intro" ftype="html" dtminlength="0">
       <prompt xml:lang="nl">Tekst</prompt>
       <prompt xml:lang="en">Text</prompt>
     </field>
