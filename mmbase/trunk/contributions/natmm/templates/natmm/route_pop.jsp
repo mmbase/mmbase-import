@@ -1,4 +1,5 @@
 <%@include file="includes/top0.jsp" %>
+<% boolean loggingForRoutePopEnabled = false; %>
 <% boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1); %>
 <mm:cloud jspvar="cloud">
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>
@@ -99,9 +100,8 @@ if(!artikelID.equals("-1")) {
             </tr>
          </table>
          <%
-         // disabled with 1==2 &&
          // http://jira.finalist.com/browse/NMCMS-218
-         if( 1==2 && memberid==null ) {
+         if( loggingForRoutePopEnabled && memberid==null ) {
       
             %><table class="dotline"><tr><td height="3"></td></tr></table>
             <div style="margin:5px 0px 5px 0px">
