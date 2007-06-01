@@ -36,7 +36,7 @@
   <!-- related nodes -->
   <cache name="RelatedNodesCache">
     <status>active</status>
-    <size>300</size>
+    <size>15000</size>
   </cache>
 
   <!-- relation nodes -->
