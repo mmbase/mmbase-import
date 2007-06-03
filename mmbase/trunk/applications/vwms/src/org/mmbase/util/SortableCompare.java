@@ -18,7 +18,7 @@ package org.mmbase.util;
  *
  * @deprecated Use java.util.Comparator
  * @author Rico Jansen
- * @version $Id: SortableCompare.java,v 1.9 2005-10-05 12:42:56 michiel Exp $
+ * @version $Id: SortableCompare.java,v 1.1 2007-06-03 12:21:45 nklasens Exp $
  */
 public class SortableCompare implements CompareInterface {
 
