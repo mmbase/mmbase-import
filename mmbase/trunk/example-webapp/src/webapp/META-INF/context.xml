@@ -13,7 +13,6 @@
 	 <Resource name="mail/Session"
 			auth="Container"
 			type="javax.mail.Session"
-			factory="org.apache.naming.factory.MailSessionFactory"
 			mail.smtp.host="mailserver.yourdomain.com" />
 
 	<!-- Database settings -->
@@ -21,7 +20,6 @@
 	 <Resource name="jdbc/MMBase"
 			auth="Container"
 			type="javax.sql.DataSource"
-			factory="org.apache.commons.dbcp.BasicDataSourceFactory"
 			removeAbandoned="true"
 			removeAbandonedTimeout="60"
 			logAbandoned="true"
