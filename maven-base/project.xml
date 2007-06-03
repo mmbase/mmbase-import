@@ -303,6 +303,13 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
+            <resource>
+                <targetPath>META-INF</targetPath>
+                <directory>META-INF</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                </excludes>
+            </resource>
 <!-- This does not work the same way as the ant build does.
 	We have to change more in the build to get it working -->
             <resource>
@@ -312,7 +319,6 @@ See http://www.MMBase.org/license
                     <exclude>"**/CVS"</exclude>
                 </excludes>
             </resource>
-
         </resources>
         <!-- Unit test cases -->
         <unitTestSourceDirectory>${basedir}/tests</unitTestSourceDirectory>
