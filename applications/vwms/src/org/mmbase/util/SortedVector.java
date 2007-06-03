@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Todo: Remove duplicate code for the binary search
  * @deprecated You can use java.util.SortedSet (implementations of that), or Collections.sort(), if duplicate entries are essential (but how should they be sorted then?)
  * @author Rico Jansen
- * @version $Id: SortedVector.java,v 1.11 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: SortedVector.java,v 1.1 2007-06-03 12:21:45 nklasens Exp $
  */
 public class SortedVector extends java.util.Vector {
 

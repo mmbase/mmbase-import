@@ -15,7 +15,7 @@ import java.util.*;
  * @javadoc
  * @deprecated this interface is not implemented or referenced
  * @author vpro
- * @version $Id: PlaylistsInterface.java,v 1.8 2004-10-04 15:02:10 pierre Exp $
+ * @version $Id: PlaylistsInterface.java,v 1.1 2007-06-03 12:21:45 nklasens Exp $
  */
 public interface PlaylistsInterface {
     public void init();
