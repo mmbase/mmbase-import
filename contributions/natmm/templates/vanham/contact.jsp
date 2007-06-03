@@ -40,7 +40,7 @@
            </form>
          <% 
       } else if(emailId!=null&&!emailId.equals("")&&emailId.indexOf("@")>1){
-         %><mm:createnode type="email"
+         %><mm:createnode type="email" id="websitemail"
               ><mm:setfield name="subject">Vraag om informatie van de website</mm:setfield
               ><mm:setfield name="from"><%= emailId %></mm:setfield
               ><mm:setfield name="to"><%= defaultEmailAddress %></mm:setfield
