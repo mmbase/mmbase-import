@@ -1,5 +1,5 @@
 DESCRIPTION:
-Store/read favorites for users.
+Store and read favorite pages for users.
 
 
 
