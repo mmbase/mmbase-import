@@ -3,12 +3,14 @@
 <mm:import externid="showcode">false</mm:import>
 
 <mm:treefile id="wizardjsp" write="false" escapeamps="false"
-             page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="language?,templates">
+             page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="templates">
+  <mm:param name="language">${locale.language}</mm:param>
   <mm:param name="referrer">/education/wizards/ok.jsp?reload=true</mm:param>
   <mm:param name="loginmethod">delegate</mm:param>
 </mm:treefile>
 
-<mm:treefile id="listjsp" page="/mmbase/edit/wizard/jsp/list.jsp" objectlist="$includePath" referids="language?,templates" write="false" escapeamps="false">
+<mm:treefile id="listjsp" page="/mmbase/edit/wizard/jsp/list.jsp" objectlist="$includePath" referids="templates" write="false" escapeamps="false">
+  <mm:param name="language">${locale.language}</mm:param>
   <mm:param name="loginmethod">delegate</mm:param>
 </mm:treefile>
 
