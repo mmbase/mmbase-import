@@ -42,12 +42,7 @@
 			<version>${mmbase.version}</version>
 			<type>jar</type>
 		</dependency>
-        <dependency>
-            <groupId>mmapps</groupId>
-            <artifactId>remotepublishing</artifactId>
-            <version>1.0.11</version>
-            <type>jar</type>
-        </dependency>        
+     
 	</dependencies>
 </project>
 
