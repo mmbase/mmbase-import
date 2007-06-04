@@ -29,12 +29,12 @@
       A simple one-step person editor. First-name, last-name and related articles.
       </td></tr>
       <tr><td>
-      <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=lib/createimage&nodepath=images&fields=title,handle" /> " >Images</a>
+      <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=lib/createimage&nodepath=images" /> " >Images</a>
       </td><td>
       You can also upload images with an editwizard. Here is shown how this can be done.
       </td></tr>
       <tr><td>
-      <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=../samples/news&nodepath=news&fields=title,date,owner&search=yes" />" >News</a>
+      <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=../samples/news&nodepath=news&search=yes" />" >News</a>
       </td><td>
       An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
       </td></tr>
@@ -43,14 +43,19 @@
 	  <mm:param name="wizard">../samples/news_origin</mm:param>
 	  <mm:param name="startnodes">default.mags</mm:param>
 	  <mm:param name="origin">default.mags</mm:param>
-	  <mm:param name="newfromlist">default.mags,posrel,news</mm:param>
-	  <mm:param name="nodepath">mags,news</mm:param>
-	  <mm:param name="orderby">news.number</mm:param>
+    <mm:param name="relationRole">posrel</mm:param>
+    <mm:param name="relationOriginNode">default.mags</mm:param>
+	  <mm:param name="nodepath">mags,posrel,news</mm:param>
+	  <mm:param name="orderby">posrel.pos</mm:param>
 	  <mm:param name="directions">down</mm:param>
 	  <mm:param name="search">yes</mm:param>
 	  </mm:url>">News (with origin = default.mags)</a>
 	  </td>
-	  <td>Only shows the news articles related to a specific node (the magazine, of course)</td></tr>
+    <td>
+      Only shows the news articles related to a specific node (the magazine, of course). This also
+      shows the 'new from list' functionality (new in MMBase- 1.8.5).
+    </td>
+  </tr>
 	   </table>
     <hr />
     <a class="navigate" href="../"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a><br />
