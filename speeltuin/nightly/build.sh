@@ -50,7 +50,7 @@ echo update ${CVS} -d -P -D ${cvsversion}
 ${CVS} update -d -P -D ${cvsversion}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 echo Starting nightly build
-${MAVEN} jar:install >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+${MAVEN} jar:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 ${MAVEN} all:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
