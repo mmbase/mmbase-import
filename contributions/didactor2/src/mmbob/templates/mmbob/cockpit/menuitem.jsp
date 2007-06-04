@@ -36,7 +36,7 @@
         </c:if>
       </di:settingvalue>
       <di:settingvalue number="${education}" name="coaches">
-        <di:hasrole role="teacher,systemadministrator">
+        <di:hasrole role="coach,teacher,systemadministrator">
           <c:if test="${_ eq 'on'}">
             <mm:present referid="educationforum_coaches">
               <mm:node number="$educationforum_coaches">
