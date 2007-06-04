@@ -10,7 +10,7 @@
   </mm:link>
   <mm:remove from="session" referid="path" />
   <mm:import externid="education_topmenu_course" />
-  <mm:link page="modes/${mode}.jsp" referids="education_topmenu_course">
+  <mm:link page="modes/${mode}.jsp" referids="education_topmenu_course?">
     <script type="text/javascript">
         function reloadMode() {
             var xmlhttp =  new XMLHttpRequest();
