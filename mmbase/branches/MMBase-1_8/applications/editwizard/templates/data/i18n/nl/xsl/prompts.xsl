@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.20.2.3 2007-05-31 11:57:38 michiel Exp $
+  @version $Id: prompts.xsl,v 1.20.2.4 2007-06-04 10:51:59 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -142,6 +142,7 @@
   <xsl:call-template name="prompt_search_age" >
     <xsl:with-param name="age" select="$age" />
   </xsl:call-template>
+  <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   <xsl:value-of select="$title" disable-output-escaping="yes"  />
   <xsl:if test="$searchvalue" >
     - zoek op <xsl:value-of select="$searchvalue" />
