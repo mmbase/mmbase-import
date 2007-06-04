@@ -31,7 +31,7 @@ echo generating version, and some directories
 
 version=`date '+%Y-%m-%d'`
 
-cvsversion=${version}
+cvsversion=`date '+%Y-%m-%d %H:%M'`
 dir=${version}
 
 #version="MMBase-1.8.1.final"
@@ -45,12 +45,15 @@ cd ${BUILD_HOME}/nightly-build/cvs/mmbase
 
 echo Cleaning
 ${MAVEN} multiproject:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
+${MAVEN} clean:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
 
-echo update ${CVS} -d -P -D ${cvsversion}
-${CVS} update -d -P -D ${cvsversion}  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+echo ${CVS} update -d -P -D "'"${cvsversion}"'"
+${CVS} update -d -P -D "'"${cvsversion}"'"  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 echo Starting nightly build
+echo jar:install-snapshot
 ${MAVEN} jar:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+echo all:install-snapshot
 ${MAVEN} all:install-snapshot >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
