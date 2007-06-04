@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.408 2007-05-14 14:46:40 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.409 2007-06-04 15:02:31 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1088,7 +1088,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Create a new temporary node and put it in the temporary _exist
      * node space
      */
-    MMObjectNode getNewTmpNode(String owner,String key) {
+    protected MMObjectNode getNewTmpNode(String owner,String key) {
         MMObjectNode node = getNewNode(owner);
         putTmpNode(key, node);
         return node;
@@ -1142,7 +1142,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get nodes from the temporary node space
      * @param key  The (temporary) key to use under which the node is stored
      */
-    static MMObjectNode getTmpNode(String key) {
+    static protected MMObjectNode getTmpNode(String key) {
         MMObjectNode node = temporaryNodes.get(key);
         if (node == null && log.isTraceEnabled()) {
             log.trace("getTmpNode(): node not found " + key);
@@ -1971,7 +1971,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This method can be overriden to make an even smarter search possible.
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
-        File dir = new File(documentRoot+path);
+        File dir = new File(documentRoot + path);
         if (version != null) nodeNumber += "." + version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
         if ((matches == null) || (matches.length == 0)) {
