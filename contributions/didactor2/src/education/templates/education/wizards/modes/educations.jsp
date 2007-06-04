@@ -74,24 +74,12 @@
             </tr>
          </table>
 
-         <%
-            String sEducationID = null;
-            if(request.getParameter("education_topmenu_course") != null)
-            {
-               sEducationID = (String) request.getParameter("education_topmenu_course");
-            }
-            else
-            {
-               if (hsetEducationsForUser.iterator().hasNext())
-               {
-                  sEducationID = "" + ((org.mmbase.bridge.Node) hsetEducationsForUser.iterator().next()).getNumber();
-               }
-            }
-         %>
+         <mm:import id="educationId" externid="education_topmenu_course"><jsp:expression>((org.mmbase.bridge.Node) hsetEducationsForUser.iterator().next()).getNumber()</jsp:expression></mm:import>
+
 
          <mm:isgreaterthan referid="number_of_educations" value="0">
             <%// -------------------------------------------- The Education starts from here -------------------------------------------- %>
-            <mm:node number="<%= sEducationID %>">
+            <mm:node number="${educationId}">
                <%@include file="whichimage.jsp"%>
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
@@ -109,13 +97,13 @@
                            <a href="<mm:write referid="pdfurl"/>&amp;number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
                          </mm:present>
                          <mm:node number="component.metadata" notfound="skip">
-                           <a href="metaedit.jsp?number=<%=sEducationID%>" target="text"><img id="img_<%= sEducationID %>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>" /></a>
+                           <a href="metaedit.jsp?number=${educationId}" target="text"><img id="img_${educationId}" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>" /></a>
                          </mm:node>
                          <mm:node number="component.drm" notfound="skip">
-                           <a target="text" href="<mm:write referid="wizardjsp"/>&amp;wizard=educationslicense&amp;objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a>
+                           <a target="text" href="<mm:write referid="wizardjsp"/>&amp;wizard=educationslicense&amp;objectnumber=${educationId}" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a>
                          </mm:node>
                          <mm:node number="component.versioning" notfound="skip">
-                           <a href="versioning.jsp?nodeid=<%=sEducationID%>" target="text"><img src="gfx/versions.gif" border="0" /></a>
+                           <a href="versioning.jsp?nodeid=${educationId}" target="text"><img src="gfx/versions.gif" border="0" /></a>
                          </mm:node>
                        </nobr>
                      </td>
@@ -136,7 +124,7 @@
                         <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
                         <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td><nobr> <a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="<di:translate key="register.registrations" />" target="text"><di:translate key="register.registrations" /></a></nobr></td>
+                        <td><nobr> <a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid">${educationId}</mm:param></mm:treefile>" title="<di:translate key="register.registrations" />" target="text"><di:translate key="register.registrations" /></a></nobr></td>
                      </tr>
                   </table>
                   </mm:node>
@@ -148,7 +136,7 @@
                         <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
                         <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td><nobr> <a href="<mm:treefile write="true" page="/portal/wizards/index.jspx" referids="language,$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="<di:translate key="portal.portal" />" target="text"><di:translate key="portal.portal" /></a></nobr></td>
+                        <td><nobr> <a href="<mm:treefile write="true" page="/portal/wizards/index.jspx" referids="language,$referids" objectlist="$includePath"><mm:param name="educationid">${educationId}</mm:param></mm:treefile>" title="<di:translate key="portal.portal" />" target="text"><di:translate key="portal.portal" /></a></nobr></td>
                      </tr>
                   </table>
                   </mm:node>
@@ -168,8 +156,18 @@
                         <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                       </mm:islessthan>
                       <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                      <td><nobr> <a href='<mm:write referid="wizardjsp"/>&amp;wizard=config/learnblocks/learnblocks-origin&amp;objectnumber=new&amp;origin=<mm:field name="number"/>&amp;path=<%=eduname %>&amp;newpos=${maxpos + 1}' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
-                    </tr>
+                      <mm:link referid="wizardjsp" referids="_node@origin">
+                        <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
+                        <mm:param name="objectnumber">new</mm:param>
+                        <mm:param name="newpos">${maxpos + 1}</mm:param>
+                        <td>
+                          <nobr> 
+                            <a href="${_}" title="${di:translate(pageContext, 'education.createnewlearnblockdescription')}" target="text">
+                            <di:translate key="education.createnewlearnblock" /></a>
+                          </nobr>
+                        </td>
+                      </mm:link>
+                      </tr>
                   </table>
 
 
