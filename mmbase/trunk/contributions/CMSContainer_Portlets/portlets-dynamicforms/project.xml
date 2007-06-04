@@ -61,6 +61,15 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>         
         </dependency>
+      <dependency>
+         <groupId>poi</groupId>
+         <artifactId>poi-scratchpad</artifactId>
+         <version>2.5.1-final-20040804</version>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+
 	</dependencies>
 </project>
 
