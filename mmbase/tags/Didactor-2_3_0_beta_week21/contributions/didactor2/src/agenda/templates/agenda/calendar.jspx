@@ -1,0 +1,94 @@
+<!--
+    This piece of code renders the (little) calendar, click on a date to go to the agenda of this date.
+    It uses its own stylesheet (at /providers/mediators/courses/agenda/css/calendar.css),
+    this stylesheet can be overridden in the same manner as other parts of the site.
+-->
+<mm:content 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:cal="http://www.eo.nl/calendar/1.3"
+    xmlns:st="http://www.dynasol.com/simpletags/1.1.3" 
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    postprocessor="reducespace" expires="0">
+  <mm:cloud method="delegate">
+    <jsp:directive.include file="/shared/setImports.jsp" />
+    
+    <mm:import externid="calmonth">0</mm:import>
+
+    <script type="text/javascript">
+      function moveMonth(direction) {
+      var href = '<mm:url referids="$referids" />';
+      document.location.href = addParameter(href, 'calmonth=' + direction);
+    }
+
+    function selectDate(date) {
+      date = '' + date;
+      var year = date.substring(0, 4);
+      var month = date.substring(4, 6) - 0;
+      var day = date.substring(6, 8)-0;
+      var newhref = addParameter('<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>', 'year='+year + 
+          '&amp;month='+month+
+          '&amp;day='+day+
+          '&amp;calmonth='+${calmonth});
+          document.location.href = newhref;
+     }
+  </script>
+
+  <mm:time id="time" time="today ${calmonth lt 0 ? '' : '+'} ${calmonth} month" write="false" />
+  <mm:import externid="year"><mm:time referid="time" format="yyyy" /></mm:import>
+  <mm:import externid="month"><mm:time referid="time" format="MM" /></mm:import>
+  <mm:import externid="day"><mm:time referid="time" format="dd" /></mm:import>
+  <mm:time referid="time" format="yyyyMMdd" id="cal" write="false" />
+
+  <cal:calendar view="month" language="${language}"  date="${cal}">
+    <di:usercalwriter /> 
+    
+    <table class="cal" cellspacing="0">
+      <caption>
+        <a href="javascript:moveMonth(${calmonth} - 1)">&lt;&lt;</a>
+        <b>
+          <mm:time referid="time" format="MMMM yyyy" />
+        </b>
+        <a href="javascript:moveMonth(${calmonth} + 1)">&gt;&gt;</a>
+      </caption>
+      <tr>
+        <th />
+        <th><di:translate key="agenda.sunday" /></th>
+        <th><di:translate key="agenda.monday" /></th>
+        <th><di:translate key="agenda.tuesday" /></th>
+        <th><di:translate key="agenda.wednesday" /></th>
+        <th><di:translate key="agenda.thursday" /></th>
+        <th><di:translate key="agenda.friday" /></th>
+        <th><di:translate key="agenda.saturday" /></th>
+        <th />
+      </tr>
+      <st:dataset name="week">
+        <tr>
+          <td class="calDaySpacing" />
+          <st:dataset name="day">
+            <mm:remove referid="class"/>
+            <st:isnotset name="dayinmonth">
+              <st:isset name="dayitems"><mm:import id="class">calDayNotThisMonthHighlight</mm:import></st:isset>
+              <st:isnotset name="dayitems"><mm:import id="class">calDayNotThisMonth</mm:import></st:isnotset>
+            </st:isnotset>
+            <st:isset name="dayinmonth">
+              <st:isset name="dayitems"><mm:import id="class">calDayThisMonthHighlight</mm:import></st:isset>
+              <st:isnotset name="dayitems"><mm:import id="class">calDayThisMonth</mm:import></st:isnotset>
+            </st:isset>
+            <st:isset name="currentday">
+              <mm:import id="class" reset="true">calToday <mm:write referid="class"/></mm:import>
+            </st:isset>
+            <st:data variable="stdate" name="date" />
+            <td onclick="selectDate(${stdate})"  class="${class}" >
+              <st:data name="dayofmonth"/>
+            </td>
+          </st:dataset>
+          <td class="calDaySpacing" />
+        </tr>
+      </st:dataset>
+    </table>
+  </cal:calendar>
+  </mm:cloud>
+</mm:content>
+

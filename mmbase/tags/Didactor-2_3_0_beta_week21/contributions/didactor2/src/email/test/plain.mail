@@ -1,0 +1,9 @@
+Subject: $(DATA) Simple text/plain mail $(CURRENTDATE)
+Content-Type: text/plain
+X-Header-Test: test
+From: foo@bar.nl
+
+ab 
+cd
+ef              
+www.mmbase.org
