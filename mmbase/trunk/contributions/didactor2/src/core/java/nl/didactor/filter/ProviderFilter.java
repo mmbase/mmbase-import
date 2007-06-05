@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.5 2007-06-05 08:56:22 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.6 2007-06-05 09:01:52 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -219,10 +219,15 @@ public class ProviderFilter implements Filter, MMBaseStarter {
             attributes.put("locale", locale);
 
             if (provider == null) {
-                HttpServletResponse res = (HttpServletResponse) response;
-                request.setAttribute("org.mmbase.servlet.error.message", "No provider found for '" + key + "'");
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "No provider found for '" + key + "'");
+                if (req.getServletPath().startsWith("/mmbase")) {
+                    filterChain.doFilter(request, response);
+                } else {
+                    HttpServletResponse res = (HttpServletResponse) response;
+                    request.setAttribute("org.mmbase.servlet.error.message", "No provider found for '" + key + "'");
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "No provider found for '" + key + "'");
+                }
                 return;
+                    
             }
 
             if (education != null) {
