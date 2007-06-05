@@ -22,7 +22,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 
-import java.util.Enumeration;
+import java.util.*;
 
 
 public class LinkToChannelAction extends MMBaseFormlessAction {
@@ -84,26 +84,27 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
             else {
                 RepositoryUtil.removeContentFromChannel(objectNode, channelNode);
             }
-            if (!Workflow.hasWorkflow(channelNode)) {
-               Workflow.create(channelNode, "");
-            }
-
+            List<Node> linkedNodes = new ArrayList<Node>();
+            linkedNodes.add(objectNode);
+            Workflow.create(channelNode, "", linkedNodes);
         }
         else {
            // Link them all.
-
+            List<Node> linkedNodes = new ArrayList<Node>();
+            
            Enumeration<String> parameters = request.getParameterNames();
            while (parameters.hasMoreElements()) {
               String parameter = parameters.nextElement();
 
               if (parameter.startsWith("link_")) {
                  String link = request.getParameter(parameter);
-                 if (!Workflow.hasWorkflow(channelNode)) {
-                    Workflow.create(channelNode, "");
-                 }
-                 RepositoryUtil.addContentToChannel(cloud.getNode(link), channelnumber);
+                 Node contentNode = cloud.getNode(link);
+                 linkedNodes.add(contentNode);
+                 RepositoryUtil.addContentToChannel(contentNode, channelnumber);
               }
            }
+           
+           Workflow.create(channelNode, "", linkedNodes);
         }
 
         String returnurl = request.getParameter("returnurl");

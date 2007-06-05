@@ -115,9 +115,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>4</input>
-					<list>-1</list>
-					<search>-1</search>
+					<input>7</input>
+					<list>7</list>
+					<search>7</search>
 				</positions>
 			</editor>
 			<datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -137,9 +137,9 @@
 			</gui>
 			<editor>
 				<positions>
-					<input>5</input>
-					<list>-1</list>
-					<search>-1</search>
+					<input>8</input>
+					<list>8</list>
+					<search>8</search>
 				</positions>
 			</editor>
 			<datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -154,19 +154,19 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Gewijzigd door</guiname>
-				<guiname xml:lang="en">Lastmodifier</guiname>
+				<guiname xml:lang="nl">Aangemaakt door</guiname>
+				<guiname xml:lang="en">Creator</guiname>
 			</gui>
 			<editor>
 				<positions>
-					<input>8</input>
-					<list>-1</list>
-					<search>-1</search>
+					<input>9</input>
+					<list>9</list>
+					<search>9</search>
 				</positions>
 			</editor>
-			<datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
-				<name>lastmodifier</name>
+				<name>creator</name>
 				<type key="false" notnull="false" size="1024" state="system">STRING</type>
 			</db>
 		</field>
@@ -176,19 +176,19 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Aangemaakt door</guiname>
-				<guiname xml:lang="en">Creator</guiname>
+				<guiname xml:lang="nl">Gewijzigd door</guiname>
+				<guiname xml:lang="en">Lastmodifier</guiname>
 			</gui>
 			<editor>
 				<positions>
-					<input>9</input>
-					<list>-1</list>
-					<search>-1</search>
+					<input>10</input>
+					<list>10</list>
+					<search>10</search>
 				</positions>
 			</editor>
-			<datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
-				<name>creator</name>
+				<name>lastmodifier</name>
 				<type key="false" notnull="false" size="1024" state="system">STRING</type>
 			</db>
 		</field>

@@ -38,7 +38,6 @@ import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.security.forms.RolesInfo;
-import com.finalist.cmsc.services.workflow.Workflow;
 
 public class RepositoryUtil {
 
@@ -319,9 +318,6 @@ public class RepositoryUtil {
      */
     public static void reorderContent(Cloud cloud, String parentNode, String children) {
         Node parent = cloud.getNode(parentNode);
-       if (!Workflow.hasWorkflow(parent)) {
-          Workflow.create(parent, "");
-       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
@@ -332,18 +328,12 @@ public class RepositoryUtil {
      */
     public static void reorderContent(Cloud cloud, String parentNode, String[] children) {
         Node parent = cloud.getNode(parentNode);
-       if (!Workflow.hasWorkflow(parent)) {
-          Workflow.create(parent, "");
-       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
 
     public static void reorderContent(Cloud cloud, String parentNode, String[] children, int offset) {
         Node parent = cloud.getNode(parentNode);
-       if (!Workflow.hasWorkflow(parent)) {
-          Workflow.create(parent, "");
-       }
         RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT, offset);
     }
 

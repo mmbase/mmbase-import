@@ -73,7 +73,7 @@ public class ServerUtil {
 		   result = (String) env.lookup(contextSetting);
 	   }
 	   catch (NamingException ne) {
-		   log.debug("Error looking up context setting", ne);		   
+		   log.debug("Error looking up context setting '" + contextSetting + "'", ne);		   
 	   }
 	   
 	   return result;

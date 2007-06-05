@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.repository.forms;
 
 import java.net.URLEncoder;
-import java.util.Locale;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,13 +70,13 @@ public class MoveContentToChannelAction extends MMBaseAction {
          }
    
          
-         if (!Workflow.hasWorkflow(channelNode)) {
-            Workflow.create(channelNode, resources.getMessage(locale, "content.movetochannel.workflow.message", elementNode.getStringValue("title"), channelNode.getStringValue("name"), newChannelNode.getStringValue("name")));
-         }
-         if (!Workflow.hasWorkflow(newChannelNode)) {
-            Workflow.create(newChannelNode, resources.getMessage(locale, "content.movetochannel.workflow.message", elementNode.getStringValue("title"), channelNode.getStringValue("name"), newChannelNode.getStringValue("name")));
-         }
-         message = resources.getMessage(locale, "content.movetochannel.success", newChannelNode.getStringValue("name"));
+         String remark = resources.getMessage(locale, "content.movetochannel.workflow.message", elementNode.getStringValue("title"), channelNode.getStringValue("name"), newChannelNode.getStringValue("name"));
+         List<Node> nodes = new ArrayList<Node>();
+         nodes.add(elementNode);
+         Workflow.create(channelNode, remark, nodes);
+         Workflow.create(newChannelNode, remark, nodes);
+
+        message = resources.getMessage(locale, "content.movetochannel.success", newChannelNode.getStringValue("name"));
       }
       else {
          message = resources.getMessage(locale, "content.movetochannel.failed", newChannelNode.getStringValue("name"));

@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.*;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.WorkflowException;
 import com.finalist.cmsc.services.workflow.Workflow;
 
@@ -36,15 +37,12 @@ public class LinkWorkflow extends RepositoryWorkflow {
     }
 
     @Override
-    public Node createFor(Node node, String remark) {
-        return createFor(null, node, remark);
-    }
-
-    public Node createFor(Node content, Node channel, String remark) {
-        Node wfItem = createFor(TYPE_LINK, remark, Workflow.STATUS_FINISHED);
-        if (content != null) {
-            RelationUtil.createRelation(wfItem, content, WORKFLOWREL);
+    public Node createFor(Node channel, String remark) {
+        Node wfItem = getWorkflowNode(channel, TYPE_LINK);
+        if (wfItem == null) {
+            wfItem = createFor(TYPE_LINK, remark, Workflow.STATUS_FINISHED);
         }
+        
         if (channel != null) {
             RelationUtil.createRelation(wfItem, channel, WORKFLOWREL);
         }
@@ -52,7 +50,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
         List<Node> users = getUsersWithRights(channel, Role.EDITOR);
         changeUserRelations(wfItem, users);
 
-       log.debug("Link Workflow " + wfItem.getNumber() + " created for content " + (content != null ? content.getNumber() : ""));
+       log.debug("Link Workflow " + wfItem.getNumber() + " created for contentchannel " + (channel != null ? channel.getNumber() : ""));
         return wfItem;
      }
 
@@ -117,7 +115,25 @@ public class LinkWorkflow extends RepositoryWorkflow {
         else {
             channel = getLinkChannel(node);
         }
-       publish(channel, false, TYPE_LINK, publishNumbers);
+       publish(channel, TYPE_LINK, publishNumbers);
+    }
+
+    protected void publishInternal(Node wf, Node node) {
+        NodeList nodes = getAllWorkflowNodes(wf);
+        if (nodes.size() == 1) {
+            if (nodes.getNode(0).getNumber() != node.getNumber()) {
+                Publish.publish(node);
+            }
+        }
+        else {
+            for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
+                Node nodeItem = iterator.next();
+                if (nodeItem.getNumber() == node.getNumber()) {
+                    iterator.remove();
+                }
+            }
+            Publish.publish(node, nodes);
+        }
     }
 
     public void complete(Node contentNode) {
@@ -127,7 +143,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
     public boolean hasWorkflow(Node node) {
         return hasWorkflow(node, TYPE_LINK);
     }
-
+    
    @Override
    public boolean isWorkflowElement(Node node, boolean isWorkflowItem) {
        if (isWorkflowItem) {
@@ -136,6 +152,11 @@ public class LinkWorkflow extends RepositoryWorkflow {
       return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node);
    }
 
+   @Override
+   protected Node getWorkflowNode(Node node) {
+       return getWorkflowNode(node, TYPE_LINK);
+   }
+   
     @Override
     public UserRole getUserRole(Node node) {
         Node channel;

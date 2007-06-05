@@ -49,7 +49,7 @@ public class ContentWorkflow extends RepositoryWorkflow {
           }
        }
     }
-
+    
     public void finishWriting(Node node, String remark) {
         Node wfItem;
         Node content;
@@ -124,7 +124,7 @@ public class ContentWorkflow extends RepositoryWorkflow {
         else {
             content = getContentNode(node);
         }
-        publish(content, false, TYPE_CONTENT, publishNumbers);
+        publish(content, TYPE_CONTENT, publishNumbers);
     }
     
     public void complete(Node contentNode) {
@@ -146,6 +146,11 @@ public class ContentWorkflow extends RepositoryWorkflow {
 
     public boolean hasWorkflow(Node node) {
         return hasWorkflow(node, TYPE_CONTENT);
+    }
+    
+    @Override
+    protected Node getWorkflowNode(Node node) {
+        return getWorkflowNode(node, TYPE_CONTENT);
     }
 
     @Override

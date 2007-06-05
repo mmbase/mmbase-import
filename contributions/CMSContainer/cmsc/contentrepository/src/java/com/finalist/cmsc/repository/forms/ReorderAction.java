@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.repository.forms;
 
+import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.util.StringUtil;
@@ -16,8 +18,10 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
@@ -35,6 +39,16 @@ public class ReorderAction extends MMBaseFormlessAction {
                     String ids = request.getParameter("ids");
                     ids = reverseIds(ids);
                     RepositoryUtil.reorderContent(cloud, parent, ids);
+                    Node parentNode = cloud.getNode(parent);
+
+                    List<Node> nodes = new ArrayList<Node>();
+                    StringTokenizer tokenizer = new StringTokenizer(ids, ",");
+                    while (tokenizer.hasMoreTokens()) {
+                        String nodeId = tokenizer.nextToken();
+                        Node contentNode = cloud.getNode(nodeId);
+                        nodes.add(contentNode);
+                    }
+                    Workflow.create(parentNode, "", nodes);
                 }
                 String returnurl = request.getParameter("returnurl");
                 if(returnurl != null) {
@@ -52,6 +66,14 @@ public class ReorderAction extends MMBaseFormlessAction {
                    ids = reverseIds(ids).split(",");
                 }
                 RepositoryUtil.reorderContent(cloud, parent, ids, Integer.parseInt(offsetStr));
+                Node parentNode = cloud.getNode(parent);
+                
+                List<Node> nodes = new ArrayList<Node>();
+                for (String nodeId : ids) {
+                    Node contentNode = cloud.getNode(nodeId);
+                    nodes.add(contentNode);
+                }
+                Workflow.create(parentNode, "", nodes);
                 return null;
             }
          }
