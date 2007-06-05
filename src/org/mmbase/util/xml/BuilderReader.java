@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.4 2006-11-27 20:48:03 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.5 2007-06-05 13:05:35 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -273,6 +273,7 @@ public class BuilderReader extends DocumentReader {
         Element element = getElementByPath("builder.datatypes");
         if (element != null) {
             DataTypeReader.readDataTypes(element, collector);
+            log.info("Datatypes for this builder " + collector);
         }
         return collector.getDataTypes();
     }
@@ -477,24 +478,8 @@ public class BuilderReader extends DocumentReader {
                             }
                         };
                 }
-                if (! (function instanceof NodeFunction)) {
-                    // if it contains a 'node' parameter, it can be wrapped into a node-function,
-                    // and be available on nodes of this builder.
-                    Parameters test = function.createParameters();
-                    if (test.containsParameter(Parameter.NODE)) {
-                        final Function f = function;
-                        function = new NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
-                                protected Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
-                                    if (parameters == null) parameters = createParameters();
-                                    parameters.set(Parameter.NODE, node);
-                                    return f.getFunctionValue(parameters);
-                                }
-                                public  Object getFunctionValue(Parameters parameters) {
-                                    return f.getFunctionValue(parameters);
-                                }
-                            };
-                    }
-                }
+                NodeFunction nf = NodeFunction.wrap(function);
+                if (nf != null) function = nf;
 
                 results.add(function);
             } catch (Throwable e) {
@@ -589,7 +574,7 @@ public class BuilderReader extends DocumentReader {
      * Determine a data type instance based on the given gui element
      * @todo  'guitype' may become deprecated in favour of the 'datatype' element
      * @param builder the MMObjectBuilder to which the field belongs
-     * @param collector The DataTypeCollector of the bulider.
+     * @param collector The DataTypeCollector of the builder.
      * @param fieldName the name of the field (used in log messages)
      * @param field     The 'field' element of the builder xml
      * @param type      The database type of the field
@@ -698,7 +683,7 @@ public class BuilderReader extends DocumentReader {
             } else {
                 requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
                 if (requestedBaseDataType == null) {
-                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + (builder == null ?  "NULL" : builder.getTableName()) + "'");
+                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + (builder == null ?  "NULL" : builder.getTableName()) + "'. Collector: " + collector, new Exception());
                     requestedBaseDataType = baseDataType;
                 }
             }
