@@ -111,7 +111,9 @@ public class ThreadUtil {
             String methodName = stack[0].getMethodName();
             return ("java.lang.Object".equals(className) && "wait".equals(methodName))
                     || ("java.lang.Thread".equals(className) && "sleep".equals(methodName))
-                    || ("java.net.PlainSocketImpl".equals(className) && "socketAccept".equals(methodName));
+                    || ("java.net.PlainSocketImpl".equals(className) && "socketAccept".equals(methodName))
+                    || ("sun.misc.Unsafe".equals(className) && "park".equals(methodName));
+
         }
         return true;
     }
