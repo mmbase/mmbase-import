@@ -91,7 +91,7 @@ public class ResourcesUtil {
             try {
                 url += "/" + URLEncoder.encode(title, "utf-8");
                 // Apache webserver fails to pass the request to tomcat when / or \ is in the url (escaped or not)
-                url = url.replaceAll("%2F|%5C", "");
+                url = url.replaceAll("%2F|%5C|%25", "");
             }
             catch (UnsupportedEncodingException e) {
                 // then don't add the title to be on the save side
