@@ -294,8 +294,8 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
-        <password value="true" />
         <maxLength value="255" />
+        <password value="true" />
       </datatype>
     </field>
 
