@@ -8,7 +8,7 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.8 2007-05-08 12:03:08 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.9 2007-06-05 07:30:06 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
@@ -42,7 +42,6 @@ public class SMTPModule extends org.mmbase.module.Module {
         if (checkProperties()) {
             listener = new SMTPListener(properties);
             listener.start();
-            log.info("SMTP module listening on port " + properties.get("port"));
         } else {
             log.error("SMTP module not started due to errors");
         }
