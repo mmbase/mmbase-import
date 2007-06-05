@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.409 2007-06-04 15:02:31 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.410 2007-06-05 15:06:48 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -262,7 +262,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             public String getFunctionValue(Node node, Parameters parameters) {
                 String val = node.getStringValue(parameters.getString(Parameter.FIELD));
                 Number wrappos = (Number) parameters.get("length");
-                return wrap(val, wrappos.intValue());
+                return MMObjectBuilder.this.wrap(val, wrappos.intValue());
             }
         };
     {
