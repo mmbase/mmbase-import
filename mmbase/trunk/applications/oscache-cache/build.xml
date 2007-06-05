@@ -10,7 +10,7 @@
   <property name="project.config.jar.includes"   value="**" />
 
   <property name="project.jars.dir"        value="build" />
-  <property name="project.jars.includes"   value="oscache-2.3.2.jar" />
+  <property name="project.jars.includes"   value="oscache-2.4.jar" />
 
   <import file="../buildbase-include.xml" />
 
