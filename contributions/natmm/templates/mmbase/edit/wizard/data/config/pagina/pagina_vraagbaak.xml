@@ -54,6 +54,9 @@
          <relation destination="persoon" role="related">
             <object />
          </relation>
+         <relation destination="terms" role="related">
+            <object />
+         </relation>         
       </object>
     </relation>
    </action>
