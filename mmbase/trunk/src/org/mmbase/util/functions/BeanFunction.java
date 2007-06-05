@@ -27,12 +27,23 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: BeanFunction.java,v 1.15 2007-06-05 13:27:29 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
 public class BeanFunction extends AbstractFunction<Object> {
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static abstract class Producer {
+        public abstract Object getInstance();
+        public String toString() {
+            return getClass().getName();
+        }
+    }
+
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a
@@ -63,19 +74,38 @@ public class BeanFunction extends AbstractFunction<Object> {
         }
     };
 
+
     /**
      * Gives back a Function object based on the 'bean' concept.
-     * Called from {@link FunctionFactory}
+     * @since MMBase-1.8.5
      */
-    public static Function getFunction(Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
-        String key = claz.getName() + '.' + name;
+    public static Function getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        String key = claz.getName() + '.' + name + '.' + producer;
         BeanFunction result = beanFunctionCache.get(key);
         if (result == null) {
-            result = new BeanFunction(claz, name);
+            result = new BeanFunction(claz, name, producer);
             beanFunctionCache.put(key, result);
         }
         return result;
     }
+    /**
+     * Called from {@link FunctionFactory}
+     */
+    public static Function getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        return getFunction(claz, name, new Producer() {
+                public Object getInstance()  {
+                    try {
+                        return  claz.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                public String toString() {
+                    return "";
+                }
+            });
+    }
+
 
     /* ================================================================================
        Instance methods
@@ -85,50 +115,54 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * This class of the bean
      */
-    private Class  claz   = null;
+    private final Class  claz;
 
     /**
      * @since MMBase-1.9
      */
-    private Object bean   = null;
+    private Object bean = null;
 
     /**
      * The method corresponding to the function called in getFunctionValue.
      */
-    private Method method = null;
+    private final Method method;
 
     /**
      * A list of all found setter methods. This list 1-1 corresponds with getParameterDefinition. Every Parameter belongs to a setter method.
      */
     private List<Method> setMethods = new ArrayList<Method>();
 
-
+    private final Producer producer;
 
     /**
      * The constructor! Performs reflection to fill 'method' and 'setMethods' members.
      */
-    private  BeanFunction(Class claz, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+    private  BeanFunction(Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
         super(name, null, null);
         this.claz = claz;
+        this.producer = producer;
 
+        Method candMethod = null;
         // Finding the  methods to be used.
         for (Method m : claz.getMethods()) {
             String methodName = m.getName();
             if (methodName.equals(name) && m.getParameterTypes().length == 0) {
-                method = m;
+                candMethod = m;
                 break;
             }
         }
 
-        if (method == null) {
+        if (candMethod == null) {
             throw new IllegalArgumentException("The class " + claz + " does not have method " + name + " (with no argument)");
         }
+
+        method = candMethod;
 
         // Now finding the parameters.
 
 
         // need a sample instance to get the default values from.
-        Object sampleInstance = claz.newInstance();
+        Object sampleInstance = producer.getInstance();
 
         List<Parameter> parameters = new ArrayList<Parameter>();
         for (Method m : claz.getMethods()) {
@@ -170,9 +204,16 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * @since MMBase-1.9
      */
-    public BeanFunction(Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
-        this(bean.getClass(), name);
+    public BeanFunction(final Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+        this(bean.getClass(), name, new Producer() { public Object getInstance() { return bean; }});
         this.bean = bean;
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected Producer getProducer() {
+        return producer;
     }
 
 
@@ -182,7 +223,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public Object getFunctionValue(Parameters parameters) {
         try {
-            Object b = bean == null ? claz.newInstance() : bean;
+            Object b = getProducer().getInstance();
             Iterator<?> i = parameters.iterator();
             Iterator<Method> j = setMethods.iterator();
             while(i.hasNext() && j.hasNext()) {
