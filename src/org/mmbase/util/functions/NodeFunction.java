@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.28 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.29 2007-06-05 13:27:29 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -199,6 +199,39 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      */
     public  R getFunctionValue(Parameters parameters) {
         return  getFunctionValue(getNode(parameters), parameters);
+    }
+
+    /**
+     * Tries to convert a certain Function object into a NodeFunction object.
+     * @return <code>function</code> if that was already a NodeFunction, <code>null</code> if it
+     * could not be wrapped (No {@link Parameter#NODE} parameter), or a new NodeFunction object
+     * wrapping <code>function</code>
+     * 
+     * @since MMBase-1.8.5
+     */
+    public static <S> NodeFunction<S> wrap(Function<S> function) {
+        if (function instanceof NodeFunction) {
+            return (NodeFunction) function;
+        } else {
+            // if it contains a 'node' parameter, it can be wrapped into a node-function,
+            // and be available on nodes of this builder.
+            Parameters test = function.createParameters();
+            if (test.containsParameter(Parameter.NODE)) {
+                final Function<S> f = function;
+                return new NodeFunction<S>(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
+                        protected S getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+                            if (parameters == null) parameters = createParameters();
+                            parameters.set(Parameter.NODE, node);
+                            return f.getFunctionValue(parameters);
+                        }
+                        public  S getFunctionValue(Parameters parameters) {
+                            return f.getFunctionValue(parameters);
+                        }
+                    };
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
