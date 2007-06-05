@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class SearchUtil {
 
@@ -40,6 +40,14 @@ public class SearchUtil {
    public final static String sNatuurgebiedenConstraint = "natuurgebieden.bron!=''";
    public String articleConstraint(long nowSec, int quarterOfAnHour) {
       return "(artikel.embargo < '" + (nowSec+quarterOfAnHour) + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+   }
+   private static boolean articleMatchesConstraint(long embargo, String use_verloopdatum, long verloopdatum, long nowSec, int quarterOfAnHour) {
+      if ((embargo < (nowSec+quarterOfAnHour) ) 
+         && (use_verloopdatum == "0" || verloopdatum > nowSec )) {
+         return true; 
+         } else { 
+         return false;
+         }
    }
 
    public String getConstraint(String objecttype, long nowSec, int quarterOfAnHour) {
@@ -342,8 +350,17 @@ public class SearchUtil {
                         hsetNodes.add(docNumber);
                       }
                     } else {
-                       hsetPagesNodes.add(paginaNumber);
-                       hsetNodes.add(docNumber);
+                       //FIX FOR NMCMS-230
+                       //verloopdatum filter for articles
+                       PaginaHelper ph = new PaginaHelper(cloud);
+                       String sConstraints = (new nl.leocms.util.tools.SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
+                       Node foundNode = cloud.getNode(docNumber);
+                       boolean test = articleMatchesConstraint(foundNode.getLongValue("embargo"), foundNode.getStringValue("use_verloopdatum"), foundNode.getLongValue("verloopdatum"), nowSec, quarterOfAnHour);
+                       if (test) {
+                          hsetPagesNodes.add(paginaNumber);
+                          hsetNodes.add(docNumber);
+                       }
+                       
                     }
                   }
                 }
