@@ -10,15 +10,22 @@
 
 	<mm:haspage page="/editors/maintenance/">
 		<mm:hasrank minvalue="administrator">
+		<%-- <cmscedit:sideblock title="maintenance.title">  --%>
 		<div class="side_block">
 			<!-- bovenste balkje -->
 			<div class="header">
 				<div class="title"><fmt:message key="maintenance.title" /></div>
 				<div class="header_end"></div>
 			</div>
-			
+			<div class="body">
 			<ul class="shortcuts">
 
+
+            <li class="advancedpublish">
+               <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
+               <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
+            </li>
+			<%-- <cmsc:hasfeature name="rmmci">  --%>
 			<mm:haspage page="/editors/publish-remote">
                <li class="advancedpublish">
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
@@ -49,7 +56,7 @@
 	               </li>
 
                <% } %>
-
+			<%--  </cmsc:hasfeature>  --%>
             </mm:haspage>
 <%--
             <cmsc:hasfeature name="luceusmodule">
@@ -73,9 +80,10 @@
             </mm:haspage>
  --%>
          </ul>
-			
-			<div class="side_block_end"></div>
+         </div>
+         	<div class="side_block_end"></div>
 		</div>
+		<%-- </cmscedit:sideblock>  --%>
 		</mm:hasrank>
 	</mm:haspage>
 </mm:cloud>
