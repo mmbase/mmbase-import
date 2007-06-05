@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.4 2007-05-31 13:29:48 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.5 2007-06-05 08:56:22 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -203,17 +203,27 @@ public class ProviderFilter implements Filter, MMBaseStarter {
                 }
             }
 
+            Locale locale; 
             if (provider != null) {
                 log.debug("Found provider " + provider.getNumber());
                 attributes.put("provider", "" + provider.getNumber());                
+                locale = findLocale(provider, education);
             } else {
                 log.warn("No provider found for " + key);
                 attributes.put("provider", null);
+                locale = cloud.getLocale();
             }
-            Locale locale = findLocale(provider, education);
+            
             attributes.put("javax.servlet.jsp.jstl.fmt.locale.request", locale);
             attributes.put("language", locale.toString());
             attributes.put("locale", locale);
+
+            if (provider == null) {
+                HttpServletResponse res = (HttpServletResponse) response;
+                request.setAttribute("org.mmbase.servlet.error.message", "No provider found for '" + key + "'");
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "No provider found for '" + key + "'");
+                return;
+            }
 
             if (education != null) {
                 attributes.put("includePath", provider.getNumber() + "," + education.getNumber());
