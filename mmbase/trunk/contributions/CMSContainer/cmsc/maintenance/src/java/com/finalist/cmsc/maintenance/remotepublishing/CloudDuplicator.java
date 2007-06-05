@@ -156,7 +156,7 @@ public class CloudDuplicator implements Runnable {
                   if (!PublishManager.isPublished(sourceCloudInfo, sourceNode.getNumber(), destinationCloudInfo)) {
                      addMessage("2: publish node number " +
                         sourceNode.getNumber());
-                        PublishManager.publishNode(sourceCloudInfo, sourceNode, destinationCloudInfo);
+                        PublishManager.createNodeAndRelations(sourceCloudInfo, sourceNode, destinationCloudInfo, true);
                   } else {
                      addMessage("2: skip publish node number " +
                         sourceNode.getNumber() + "(already published)");

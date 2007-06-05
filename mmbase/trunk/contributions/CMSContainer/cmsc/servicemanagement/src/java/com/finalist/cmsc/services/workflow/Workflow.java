@@ -32,6 +32,10 @@ public class Workflow {
         return cService.create(node, remark);
     }
 
+    public static Node create(Node node, String remark, List<Node> nodeList) {
+        return cService.create(node, remark, nodeList);
+    }
+    
     public static void finish(Node node, String remark) {
         cService.finish(node, remark);
     }

@@ -34,6 +34,11 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
     public void publish(Node node) {
         getPublisher(node).publish(node);
     }
+    
+    @Override
+    public void publish(Node node, NodeList nodes) {
+        getPublisher(node).publish(node, nodes);
+    }
 
     @Override
     public void remove(Node node) {
