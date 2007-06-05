@@ -68,7 +68,7 @@ if (printView) { %>
     </mm:related>
   
   
-  <% if (!printView) { %>
+  <% if (!printView && callingNode != null) { %>
   	<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">link to top</a></p><br/>
   <% } %>	
 
