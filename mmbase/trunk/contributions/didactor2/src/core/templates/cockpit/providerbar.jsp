@@ -34,7 +34,7 @@ keepalive();
   TreeMap tm = new TreeMap();
 %>
 
-<div class="providerMenubar" style="white-space: nowrap">
+<div class="providerMenubar">
 <mm:hasrank minvalue="basic user">
   <mm:node referid="provider">
     <mm:relatednodes role="settingrel" type="components">
