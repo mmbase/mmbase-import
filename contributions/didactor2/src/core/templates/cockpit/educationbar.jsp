@@ -5,7 +5,7 @@
 
 <mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
 <%@include file="/shared/setImports.jsp" %>
-<div class="educationMenubar" style="white-space: nowrap">
+<div class="educationMenubar">
 <mm:isgreaterthan referid="user" value="0">
 
   <mm:present referid="education">
