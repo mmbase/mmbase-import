@@ -47,6 +47,7 @@
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />      
       <list include="config/pools/zoek_vraagbaak_posrel_pools.xml" />
       <list include="config/persoon/zoek_vraagbaak_related_persoon.xml" />
+      <list include="config/terms/zoek_vraagbaak_related_terms.xml" />
 
    </form-schema>
 </wizard-schema>

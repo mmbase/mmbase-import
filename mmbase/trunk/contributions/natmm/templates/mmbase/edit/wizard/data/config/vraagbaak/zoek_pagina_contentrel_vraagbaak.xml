@@ -14,7 +14,8 @@
 		<list include="config/paragraaf/zoek_vraagbaak_posrel_paragraaf.xml" />
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
       <list include="config/pools/zoek_vraagbaak_posrel_pools.xml" />
-      <list include="config/persoon/zoek_vraagbaak_related_persoon.xml" />         
+      <list include="config/persoon/zoek_vraagbaak_related_persoon.xml" />    
+      <list include="config/terms/zoek_vraagbaak_related_terms.xml" />       
    </item>
    <command name="search" nodepath="vraagbaak" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek vraagbaak</prompt>

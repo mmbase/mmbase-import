@@ -11,11 +11,33 @@
    <action include="config/pagina/delete_pagina.xml"/>
    <action type="load">
      <field name="titel"/>
+     <field name="kortetitel"/>
+     <field name="titel_fra"/>
+     <field name="titel_eng"/>
+     <field name="titel_de"/>
+     <field name="titel_zichtbaar"/>
+     <field name="omschrijving"/>
+     <field name="bron"/>
+     <field name="metatags"/>
+     <field name="creatiedatum"/>
+     <field name="datumlaatstewijziging"/>
+     <field name="embargo"/>
+     <field name="verloopdatum"/>
+     <field name="reageer"/>
+     <field name="status"/>
    </action>
+   <lists>
+      <optionlist include="config/option_lists/ja_nee.xml" />
+   </lists>   
    <steps>
       <step form-schema="edit_pagina"/>
    </steps>
    <form-schema id="edit_pagina">
       <field name="titel" ftype="data"><prompt>titel</prompt></field>
-      </form-schema> 
+      <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
+      <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
+      <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
+      <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
+      <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
+   </form-schema> 
 </wizard-schema>
