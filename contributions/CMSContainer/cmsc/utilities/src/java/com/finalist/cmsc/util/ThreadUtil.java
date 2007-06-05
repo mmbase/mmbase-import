@@ -13,7 +13,7 @@ import java.util.*;
 
 
 public class ThreadUtil {
-
+    
     private ThreadUtil() {
         // utility
     }
@@ -38,6 +38,95 @@ public class ThreadUtil {
     
     public static Set<Thread> getAllThreads() {
         return Thread.getAllStackTraces().keySet();
+    }
+    
+    public static Map<Thread, StackTraceElement[]> getActiveThreads() {
+        Map<Thread, StackTraceElement[]> all = Thread.getAllStackTraces();
+        filterActiveThread(all);
+        return all;
+    }
+
+    public static void filterActiveThread(Map<Thread, StackTraceElement[]> all) {
+        for (Iterator<StackTraceElement[]> iterator = all.values().iterator(); iterator.hasNext();) {
+            StackTraceElement[] stack  = iterator.next();
+            if (isWaiting(stack)) {
+                iterator.remove();
+            }
+        }
+    }
+    
+    public static Map<String,Map<Thread, StackTraceElement[]>> getThreadsByApplication() {
+        Map<Thread, StackTraceElement[]> all = Thread.getAllStackTraces();
+        return sortByApplication(all);
+    }
+    
+    public static Map<String,Map<Thread, StackTraceElement[]>> getActiveThreadsByApplication() {
+        Map<Thread, StackTraceElement[]> all = getActiveThreads();
+        return sortByApplication(all);
+    }
+
+    public static Map<String, Map<Thread, StackTraceElement[]>> sortByApplication(
+            Map<Thread, StackTraceElement[]> all) {
+        Map<String,Map<Thread, StackTraceElement[]>> applications = 
+                new HashMap<String,Map<Thread, StackTraceElement[]>>();
+        
+        for (Map.Entry<Thread, StackTraceElement[]> entry : all.entrySet()) {
+            String application = "Application";
+            String threadname = entry.getKey().getName();
+            if (threadname.startsWith("VM ") || threadname.startsWith("JDWP ")
+                    || threadname.startsWith("CompilerThread") || threadname.startsWith("Timer")
+                    || threadname.startsWith("GC ")
+                    || threadname.equals("Reference Handler") || threadname.equals("Finalizer")
+                    || threadname.equals("Signal Dispatcher") || threadname.equals("Low Memory Detector")) {
+                application = "Java";
+            }
+            if (threadname.startsWith("RMI ")) {
+                application = "RMI";
+            }
+            if (threadname.startsWith("MMBase") || threadname.startsWith("ImageConvert")
+                    || threadname.startsWith("ModuleProbe") || threadname.startsWith("MMServers")
+                    || threadname.startsWith("JOBTHREAD") || threadname.startsWith("emailexpireprobe")) {
+                application = "MMBase";
+            }
+            if (threadname.startsWith("ContainerBackgroundProcessor")) {
+                application = "Tomcat";
+            }
+            if (threadname.startsWith("TP-") || threadname.startsWith("http-")) {
+                application = "TomcatRequests";
+            }
+            Map<Thread, StackTraceElement[]> applicationThreads = applications.get(application);
+            if (applicationThreads == null) {
+                applicationThreads = new HashMap<Thread, StackTraceElement[]>();
+                applications.put(application, applicationThreads);
+            }
+            applicationThreads.put(entry.getKey(), entry.getValue());
+        }
+        
+        return applications;
+    }
+
+    public static boolean isWaiting(StackTraceElement[] stack) {
+        if (stack != null && stack.length > 0) {
+            String className = stack[0].getClassName();
+            String methodName = stack[0].getMethodName();
+            return ("java.lang.Object".equals(className) && "wait".equals(methodName))
+                    || ("java.lang.Thread".equals(className) && "sleep".equals(methodName))
+                    || ("java.net.PlainSocketImpl".equals(className) && "socketAccept".equals(methodName));
+        }
+        return true;
+    }
+
+    public static String printStackTrace(Thread thread, StackTraceElement[] trace) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(thread + "\n");
+        for (int i=0; i < trace.length; i++)
+            sb.append("\tat " + trace[i] + "\n");
+        return sb.toString();
+    }
+    
+    public static void interrupt(String name) {
+        Thread thr = getThreadByName(name);
+        thr.interrupt();
     }
     
     public static ThreadGroup getRootThreadGroup() {
