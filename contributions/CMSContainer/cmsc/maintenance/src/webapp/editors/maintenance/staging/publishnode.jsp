@@ -31,10 +31,10 @@ if (cloud1 != null && !"".equals(cloud1)) {
     CloudInfo remoteCloudInfo = CloudInfo.getCloudInfo(remoteCloud);
 
 	if (!PublishManager.isPublished(localCloudInfo, node)) {
-		PublishManager.publishNode(localCloudInfo, node, remoteCloudInfo);
+		PublishManager.createNodeAndRelations(localCloudInfo, node, remoteCloudInfo);
 	}
 	else {
-		PublishManager.updatePublishedNodes(localCloudInfo, node);
+		PublishManager.updateNodesAndRelations(localCloudInfo, node);
 	}
 }
 %>

@@ -20,9 +20,11 @@ import com.finalist.cmsc.services.Service;
 import com.finalist.cmsc.services.Properties;
 
 public abstract class WorkflowService extends Service {
-   protected boolean acceptedStepEnabled;
+    protected boolean acceptedStepEnabled;
 
-   public abstract Node create(Node node, String remark);
+    public abstract Node create(Node node, String remark);
+   
+    public abstract Node create(Node node, String remark, List<Node> nodeList);
 
     public abstract void finish(Node node, String remark);
 

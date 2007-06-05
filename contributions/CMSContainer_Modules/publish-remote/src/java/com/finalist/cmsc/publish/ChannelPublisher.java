@@ -1,7 +1,9 @@
 package com.finalist.cmsc.publish;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
+import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.util.PublishUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 
@@ -14,14 +16,28 @@ public class ChannelPublisher extends Publisher{
       super(cloud);
    }
 
+   @Override
    public boolean isPublishable(Node node) {
       return RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node);
    }
 
+   @Override
    public void publish(Node node) {
       PublishUtil.publishOrUpdateNode(cloud, node.getNumber());
    }
 
+   @Override
+   public void publish(Node channel, NodeList contentnodes) {
+       List<Integer> relatedNodes = new ArrayList<Integer>();
+       for (Iterator<Node> iterator = contentnodes.iterator(); iterator.hasNext();) {
+           Node content = iterator.next();
+           if (PublishManager.isPublished(content)) {
+               relatedNodes.add(content.getNumber());
+           }
+       }
+       PublishUtil.publishOrUpdateRelations(cloud, channel.getNumber(), relatedNodes);
+   }
+   
     @Override
     public void remove(Node node) {
         PublishUtil.removeFromQueue(node);

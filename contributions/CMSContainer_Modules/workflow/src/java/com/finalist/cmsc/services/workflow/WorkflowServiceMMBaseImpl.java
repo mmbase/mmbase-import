@@ -28,8 +28,12 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
 
    public Node create(Node node, String remark){
         return getManager(node).createFor(node, remark);
-    }
+   }
 
+   public Node create(Node node, String remark, List<Node> nodeList) {
+       return getManager(node).createFor(node, remark, nodeList);
+   }
+   
     public void finish(Node node, String remark){
         getManager(node).finishWriting(node, remark);
     }

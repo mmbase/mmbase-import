@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.publish;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 
 import com.finalist.cmsc.services.ServiceManager;
 
@@ -28,6 +29,9 @@ public class Publish {
         cService.publish(node);
     }
 
+    public static void publish(Node node, NodeList nodes) {
+        cService.publish(node, nodes);
+    }
 
     public static boolean isPublishable(Node node) {
         return cService.isPublishable(node);
@@ -40,7 +44,6 @@ public class Publish {
     public static void unpublish(Node node) {
         cService.unpublish(node);
     }
-
 
     public static int getLiveNumber(Node node) {
         return cService.getLiveNumber(node);

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.publish;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 
 import com.finalist.cmsc.services.Service;
 
@@ -20,6 +21,8 @@ public abstract class PublishService extends Service {
 
     public abstract void publish(Node node);
 
+    public abstract void publish(Node node, NodeList nodes);
+    
     public abstract boolean isPublishable(Node node);
 
     public abstract void remove(Node node);
