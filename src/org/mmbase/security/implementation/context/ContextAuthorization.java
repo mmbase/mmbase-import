@@ -15,11 +15,11 @@ import org.mmbase.storage.search.*;
 import java.util.*;
 
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
 
 import javax.xml.xpath.*;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.45 2007-04-09 19:09:51 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.46 2007-06-06 11:35:47 nklasens Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -520,7 +520,7 @@ public class ContextAuthorization extends Authorization {
 
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
-            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
+            MMBase mmb = MMBase.getMMBase();
             builder =  mmb.getMMObject("typedef");
             if(builder == null) {
                 String msg = "builder 'typedef' not found";
