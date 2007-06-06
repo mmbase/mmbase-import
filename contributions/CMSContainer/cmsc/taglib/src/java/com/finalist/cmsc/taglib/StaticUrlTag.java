@@ -15,7 +15,10 @@ import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag;
 
 public class StaticUrlTag extends UrlTag {
 
-    protected void doAfterBodySetValue() throws JspTagException {
-       helper.setValue(getUrl(escapeAmps.getBoolean(this, true), encode.getBoolean(this, false)));
+    @Override
+    public int doStartTag() throws JspTagException {
+        setEncode("false");
+        return super.doStartTag();
     }
+
 }
