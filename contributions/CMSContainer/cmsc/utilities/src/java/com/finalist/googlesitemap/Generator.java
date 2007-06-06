@@ -86,7 +86,7 @@ public class Generator {
             String loc = model.getLocation(root);
             if (loc != null) {
                 String lastmodStr = lastmod;
-                Date lastmodDate = model.getLastMdified(root);
+                Date lastmodDate = model.getLastModified(root);
                 if (lastmodDate != null) {
                     lastmodStr = dateTimeFormatter.format(lastmodDate);
                 }
