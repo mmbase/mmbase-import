@@ -22,9 +22,13 @@
 				<div class="title"><fmt:message key="maintenance.title" /></div>
 				<div class="header_end"></div>
 			</div>
-			
+			<div class="body">
 			<ul class="shortcuts">
 
+            <li class="advancedpublish">
+               <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
+               <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
+            </li>
 			<mm:haspage page="/editors/publish-remote">
                <li class="advancedpublish">
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
@@ -79,7 +83,7 @@
             </mm:haspage>
  --%>
          </ul>
-			
+         </div>
 			<div class="side_block_end"></div>
 		</div>
 		</mm:hasrank>

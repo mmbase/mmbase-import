@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.publish;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 
 @SuppressWarnings("unused")
 public class DummyPublishService extends PublishService {
@@ -28,7 +29,12 @@ public class DummyPublishService extends PublishService {
     public void publish(Node node) {
         // nothing
     }
-
+    
+    @Override
+    public void publish(Node node, NodeList nodes) {
+        // nothing
+    }
+    
     @Override
     public void remove(Node node) {
         // nothing

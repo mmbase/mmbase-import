@@ -58,11 +58,11 @@
 			<%
 			if (!PublishManager.isPublished(localCloudInfo,node)) { 
 				%><mm:present referid="publishall"><%
-					PublishManager.publishNode(localCloudInfo, node, remoteCloudInfo);
+					PublishManager.createNodeAndRelations(localCloudInfo, node, remoteCloudInfo);
 				%></mm:present><%
 			}
 			else {
-				PublishManager.updatePublishedNodes(localCloudInfo, node);
+				PublishManager.updateNodesAndRelations(localCloudInfo, node);
 			}
 			%>
 			<mm:field name="number" /> <br />

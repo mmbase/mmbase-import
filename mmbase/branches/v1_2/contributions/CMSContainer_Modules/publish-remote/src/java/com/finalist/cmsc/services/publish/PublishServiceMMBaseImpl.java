@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.publish;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.remotepublishing.PublishListener;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
@@ -34,6 +33,11 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
     @Override
     public void publish(Node node) {
         getPublisher(node).publish(node);
+    }
+    
+    @Override
+    public void publish(Node node, NodeList nodes) {
+        getPublisher(node).publish(node, nodes);
     }
 
     @Override

@@ -29,6 +29,12 @@ public class DummyWorkflowService extends WorkflowService {
     }
 
     @Override
+    public Node create(Node node, String remark, List<Node> nodes) {
+        // nothing
+        return null;
+    }
+    
+    @Override
     public void finish(Node node, String remark) {
         // nothing
     }

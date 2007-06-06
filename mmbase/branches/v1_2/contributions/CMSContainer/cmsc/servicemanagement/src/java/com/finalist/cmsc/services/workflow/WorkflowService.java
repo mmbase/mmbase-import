@@ -24,6 +24,8 @@ public abstract class WorkflowService extends Service {
 
    public abstract Node create(Node node, String remark);
 
+    public abstract Node create(Node node, String remark, List<Node> nodeList);
+
     public abstract void finish(Node node, String remark);
 
     public abstract void accept(Node node, String remark);

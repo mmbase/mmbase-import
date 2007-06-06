@@ -2,6 +2,8 @@ package com.finalist.cmsc.workflow;
 
 import java.util.*;
 
+import net.sf.mmapps.commons.bridge.RelationUtil;
+
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
@@ -52,7 +54,7 @@ public abstract class WorkflowManager {
 
    public static NodeManager getManager(Cloud cloud) {
        return cloud.getNodeManager(WORKFLOW_MANAGER_NAME);
-    }
+   }
    
    protected NodeManager getManager() {
       return cloud.getNodeManager(WORKFLOW_MANAGER_NAME);
@@ -122,6 +124,41 @@ public abstract class WorkflowManager {
    public abstract void complete(Node node);
    public abstract UserRole getUserRole(Node node);
 
+   /**
+    * Retrieve the workflowitem related to a contentelement.
+    * @param node node in workflow
+    * @return workflow item
+    */
+   protected abstract Node getWorkflowNode(Node node);
+
+
+   public Node createFor(Node node, String remark, List<Node> nodeList) {
+       Node wfItem = getWorkflowNode(node);
+       if (wfItem == null) {
+           wfItem = createFor(node, remark);
+       }
+       
+       if (!nodeList.isEmpty()) {
+           Set<Integer> workflowNodeNumber = new HashSet<Integer>();
+           NodeList workflowNodes = getAllWorkflowNodes(wfItem);
+           for (Iterator<Node> iterator = workflowNodes.iterator(); iterator.hasNext();) {
+               Node workflowNode = iterator.next();
+               workflowNodeNumber.add(workflowNode.getNumber());
+           }
+           
+           for (Node nodeItem : nodeList) {
+               if (!workflowNodeNumber.contains(nodeItem.getNumber())) {
+                   RelationUtil.createRelation(wfItem, nodeItem, WORKFLOWREL);
+               }
+           }
+       }
+       return wfItem;
+   }
+
+   protected NodeList getAllWorkflowNodes(Node wfItem) {
+        NodeList workflowNodes = wfItem.getRelatedNodes("object", WORKFLOWREL, DESTINATION);
+        return workflowNodes;
+   }
 
    public void remove(Node node) {
        if (hasWorkflow(node, TYPE_ALL)) {
@@ -180,11 +217,11 @@ public abstract class WorkflowManager {
        }
        return isStatusFinished(wfItem);
    }
-   
+
    protected boolean isStatusPublished(Node wfItem) {
        return wfItem.getStringValue(STATUS_FIELD).equals(STATUS_PUBLISHED);
    }
-   
+
    protected Node createFor(String type, String remark) {
        return createFor(type, remark, STATUS_DRAFT);
    }
@@ -280,7 +317,7 @@ public abstract class WorkflowManager {
         }
     }
 
-    protected void publish(Node node, boolean skiptest, String type, List<Integer> publishNumbers) throws WorkflowException {
+    protected void publish(Node node, String type, List<Integer> publishNumbers) throws WorkflowException {
         if (isWorkflowElement(node, false) && hasWorkflow(node, type)) {
             Node wf = getWorkflowNode(node, type);
             if (wf != null) {
@@ -293,9 +330,9 @@ public abstract class WorkflowManager {
 	                List<Node> errors = new ArrayList<Node>();
                 	log.debug("Got valid workflowtype: " + wf.getNodeManager().getName()
                     	    + ", checking relations");
-                	if (skiptest || isReadyToPublish(node, errors, publishNumbers)) {
+                	if (isReadyToPublish(node, errors, publishNumbers)) {
                 	    changeWorkflow(wf, STATUS_PUBLISHED, "");
-                	    Publish.publish(node);
+                	    publishInternal(wf, node);
                 	}
                 	else {
                     	throw new WorkflowException(
@@ -308,6 +345,10 @@ public abstract class WorkflowManager {
                 log.error("Node to publish is not a proper workflowtype! " + node.getNumber());
             }
         }
+    }
+
+    protected void publishInternal(Node wf, Node node) {
+        Publish.publish(node);
     }
     
     public List<Node> isReadyToPublish(Node node, List<Integer> publishNumbers) {

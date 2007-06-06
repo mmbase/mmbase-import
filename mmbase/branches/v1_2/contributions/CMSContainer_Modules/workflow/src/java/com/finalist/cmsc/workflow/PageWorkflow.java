@@ -127,7 +127,7 @@ public class PageWorkflow extends WorkflowManager {
         else {
             page = getPageNode(node);
         }
-        publish(page, false, TYPE_PAGE, publishNumbers);
+        publish(page, TYPE_PAGE, publishNumbers);
     }
 
     
@@ -154,6 +154,11 @@ public class PageWorkflow extends WorkflowManager {
 
     public boolean hasWorkflow(Node node) {
         return hasWorkflow(node, TYPE_PAGE);
+    }
+    
+    @Override
+    protected Node getWorkflowNode(Node node) {
+        return getWorkflowNode(node, TYPE_PAGE);
     }
 
     @Override
