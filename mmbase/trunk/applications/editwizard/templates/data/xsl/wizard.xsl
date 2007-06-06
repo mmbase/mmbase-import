@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.173 2007-05-03 14:52:41 michiel Exp $
+    @version $Id: wizard.xsl,v 1.174 2007-06-06 11:39:58 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -111,7 +111,7 @@
                 '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
                 '<xsl:value-of select="$day_sat"/>');
     </script>
-    <script language="javascript" src="{$javascriptdir}datepicker.js">
+    <script type="text/javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
   </xsl:template>
@@ -894,7 +894,7 @@
   </xsl:template>
 
   <xsl:template name="date-picker">
-    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}',event);return false;"/>
+    <img class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'internal_{@fieldname}',event);return false;"/>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-date">
