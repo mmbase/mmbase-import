@@ -9,7 +9,6 @@
 	<classpathentry kind="src" path="thirdparty/pager-taglib/src/java"/>
 	<classpathentry kind="src" path="cmsc/portlets/src/java"/>
 	<classpathentry kind="src" path="cmsc/taglib/src/java"/>
-	<classpathentry kind="src" path="cmsc/basicmodel/src/java"/>
 	<classpathentry kind="src" path="cmsc/edit-webapp/src/java"/>
 	<classpathentry kind="src" path="cmsc/security/src/java"/>
 	<classpathentry kind="src" path="cmsc/sitemanagement/src/java"/>
@@ -27,10 +26,10 @@
 	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
-	<classpathentry sourcepath="C:/projects/MMBase/ehcache-constructs-0.6-src/src" kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar" sourcepath="C:/projects/MMBase/ehcache-constructs-0.6-src/src"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
-	<classpathentry sourcepath="D:/download/jakarta-taglibs-src-20060314/jakarta-taglibs/standard-1.0/src" kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar" sourcepath="D:/download/jakarta-taglibs-src-20060314/jakarta-taglibs/standard-1.0/src"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar"/>
