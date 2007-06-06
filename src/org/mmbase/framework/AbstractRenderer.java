@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * request and response.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.6 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: AbstractRenderer.java,v 1.7 2007-06-06 08:51:08 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -28,6 +28,10 @@ abstract public class AbstractRenderer implements Renderer {
     protected final Type type;
     private final Block parent;
 
+    public AbstractRenderer(Type t, Block p) {
+        type = t;
+        parent = p;
+    }
     public AbstractRenderer(String t, Block p) {
         type = Type.valueOf(t);
         parent = p;
