@@ -30,9 +30,9 @@
 	</licenses>
 	<issueTrackingUrl>http://jira.finalist.com</issueTrackingUrl>
 	<repository>
-		<connection>scm:cvs:pserver:guest@192.168.0.4:/server/cvs/data:cmsc</connection>
-		<developerConnection>scm:cvs:pserver:${maven.username}@192.168.0.4:/server/cvs/data:cmsc</developerConnection>
-		<url>http://intranet.finalist.com/cgi-bin/viewcvs.cgi/</url>
+		<connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</connection>
+		<developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</developerConnection>
+		<url>http://cvs.mmbase.org/viewcvs/contributions/CMSContainer</url>
 	</repository>
 	<developers>
 		<developer>
@@ -193,7 +193,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.3.6.1</version>
+			<version>1.3.7</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
