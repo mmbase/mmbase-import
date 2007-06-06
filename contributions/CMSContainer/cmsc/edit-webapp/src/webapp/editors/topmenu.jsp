@@ -4,6 +4,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <cmscedit:head title="topmenu.title">
+   <link href="<cmsc:staticurl page='/editors/css/topmenu.css'/>" type="text/css" rel="stylesheet" />
    <script type="text/javascript" src="topmenu.js"></script>
 </cmscedit:head>
 <body onload="initMenu();">
