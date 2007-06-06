@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.154 2007-04-03 10:35:32 andre Exp $
+ * @version $Id: MMAdmin.java,v 1.155 2007-06-06 11:35:47 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -131,8 +131,7 @@ public class MMAdmin extends ProcessorModule {
             kioskmode = true;
             log.info("*** Server started in kiosk mode ***");
         }
-        mmb = (MMBase)getModule("MMBASEROOT");
-
+        mmb = MMBase.getMMBase();
 
         new MMAdminProbe(this, mmb);
     }

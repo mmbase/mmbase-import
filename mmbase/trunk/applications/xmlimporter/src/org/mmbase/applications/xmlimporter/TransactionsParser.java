@@ -30,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.10 2006-11-11 13:57:53 michiel Exp $
+ * @version $Id: TransactionsParser.java,v 1.11 2007-06-06 11:35:47 nklasens Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -170,7 +170,7 @@ public class TransactionsParser extends DefaultHandler {
      */
     public TransactionsParser(UserTransactionInfo uti) {
         this.uti = uti;
-        mmbase = (MMBase)Module.getModule("MMBASEROOT");
+        mmbase = MMBase.getMMBase();
         transactionHandler = (TransactionHandler)TransactionHandler.getModule("transactionhandler");
         //upload = (Upload)Module.getModule("upload");
         dtdDirectory = MMBaseContext.getConfigPath() + File.separator + "dtd" + File.separator;
