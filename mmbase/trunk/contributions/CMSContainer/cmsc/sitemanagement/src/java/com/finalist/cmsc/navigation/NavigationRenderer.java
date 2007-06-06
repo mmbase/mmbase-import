@@ -19,7 +19,8 @@ import com.finalist.util.module.ModuleUtil;
  */
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
-    private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+   private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+   private static final String FEATURE_RSSFEED = "rssfeed";
     private static final String FEATURE_WORKFLOW = "workflowitem";
     
 	private String target = null;
@@ -106,6 +107,13 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
                 String labelPageNew = JstlUtil.getMessage(request, "site.page.new");
                 element.addOption(createOption("new.png", labelPageNew,
                         getUrl("PageCreate.do?parentpage=" + parentNode.getNumber()), target));
+
+                if(ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
+                   String labelRssNew = JstlUtil.getMessage(request, "site.rss.new");
+                   element.addOption(createOption("rss_new.png", labelRssNew,
+                         getUrl("../rssfeed/RssFeedCreate.do?parentpage=" + parentNode.getNumber()), target));
+                }
+                
                 if (NavigationUtil.getChildCount(parentNode) >= 2) {
                     String labelPageReorder = JstlUtil.getMessage(request, "site.page.reorder");
                     element.addOption(createOption("reorder.png", labelPageReorder, 
