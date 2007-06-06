@@ -20,6 +20,7 @@
 
       <!-- relations NMIntra -->
       <builder version="0" maintainer="mmbase.org">discountrel</builder>
+      <builder version="0" maintainer="mmbase.org">thema_plot_kaart_imgrel</builder>
 
       <!-- objects NatMM -->
       <builder version="0" maintainer="mmbase.org">ads</builder>
@@ -85,6 +86,7 @@
       <builder version="0" maintainer="mmbase.org">responses</builder>
       <builder version="0" maintainer="mmbase.org">style</builder> <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">terms</builder>
+      <builder version="0" maintainer="mmbase.org">thema_plot_kaart</builder>
       <builder version="0" maintainer="mmbase.org">topics</builder>
       <builder version="0" maintainer="mmbase.org">users</builder>
       <builder version="0" maintainer="mmbase.org">vraagbaak</builder>      
@@ -235,7 +237,8 @@
       <relation from="terms" to="projects" type="posrel"/>
       <relation from="terms" to="terms" type="rolerel"/>
       <relation from="terms" to="terms" type="synonymrel"/>
-	    <relation from="topics" to="pools" type="posrel" />
+      <relation from="thema_plot_kaart" to="images" type="thema_plot_kaart_imgrel"/>
+      <relation from="topics" to="pools" type="posrel" />
       <relation from="topics" to="keywords" type="posrel" />
       <relation from="users" to="medewerkers" type="related"/> 
       <relation from="users" to="menu" type="gebruikt"/>
@@ -308,9 +311,10 @@
       <datasource builder="responses" path="NMIntra/responses.xml"/>
       <datasource builder="style" path="NMIntra/style.xml"/>  <!-- should be removed after migration -->
       <datasource builder="terms" path="NMIntra/terms.xml"/>
+      <datasource builder="thema_plot_kaart" path="NMIntra/thema_plot_kaart.xml"/>
       <datasource builder="topics" path="NMIntra/topics.xml"/>
       <datasource builder="users" path="NMIntra/users.xml"/>
-      <datasource builder="artikel" path="NMIntra/vraagbaak.xml"/>      
+      <datasource builder="vraagbaak" path="NMIntra/vraagbaak.xml"/>
    </datasourcelist>
    <relationsourcelist>
       <relationsource builder="childrel" path="NMIntra/childrel.xml"/>
@@ -323,6 +327,7 @@
       <relationsource builder="posrel" path="NMIntra/posrel.xml"/>
       <relationsource builder="readmore" path="NMIntra/readmore.xml"/>
       <relationsource builder="rolerel" path="NMIntra/rolerel.xml"/>
+      <relationsource builder="thema_plot_kaart_imgrel" path="NMIntra/rel/thema_plot_kaart_imgrel.xml"/>
     </relationsourcelist>
     <contextsourcelist>
         <contextsource type="full" goal="backup" path=""/>
