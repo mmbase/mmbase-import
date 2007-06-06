@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.20 2007-04-13 13:21:05 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.21 2007-06-06 08:51:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -46,18 +46,41 @@ public class JspRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
+    private static class Status {
+        public int code = 200;
+        public String mesg = null;
+    }
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
-            GenericResponseWrapper respw = new GenericResponseWrapper(response);
+            final Status status = new Status();
+            GenericResponseWrapper respw = new GenericResponseWrapper(response) {
+                    public void setStatus(int s) {
+                        status.code = s;
+                    }
+                    public void sendError(int s) throws IOException {
+                        status.code = s;
+                    }
+                    public void sendError(int s, String m) throws IOException {
+                        status.code = s;
+                        status.mesg = m;
+                    }
+                };
             String url = getFramework().getInternalUrl(getPath(), this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
+            log.debug("Rendering " + url + " status " + status.code);
             requestDispatcher.include(request, respw);
-            w.write(respw.toString());
+            log.debug("Status " + status.code);
+            if (status.code != 200) {
+                ErrorRenderer error = new ErrorRenderer(getType(), getBlock(), url, status.code, status.mesg);
+                error.render(blockParameters, frameworkParameters, w, state);
+            } else {
+                w.write(respw.toString());
+            }
         } catch (ServletException se) {
             throw new FrameworkException(se.getMessage(), se);
         } catch (IOException ioe) {
