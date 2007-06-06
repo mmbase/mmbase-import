@@ -24,7 +24,7 @@ public interface SitemapModel {
 
     String getLocation(Object root);
 
-    Date getLastMdified(Object root);
+    Date getLastModified(Object root);
 
     String getChangeFrequency(Object root);
 

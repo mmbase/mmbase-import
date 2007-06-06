@@ -59,7 +59,7 @@ public class FileSitemapModel implements SitemapModel {
         return null;
     }
 
-    public Date getLastMdified(Object root) {
+    public Date getLastModified(Object root) {
         if (root instanceof File) {
             return new Date( ((File) root).lastModified() );
         }
