@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloud;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.security.Rank;
 import org.mmbase.security.UserContext;
 import org.mmbase.security.BasicUser;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.2 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.3 2007-06-06 11:35:48 nklasens Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -115,7 +116,7 @@ public class Authenticate extends Authentication {
     
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if(builder == null) {
-            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
+            org.mmbase.module.core.MMBase mmb = MMBase.getMMBase();
             builder =  (UserBuilder) mmb.getMMObject("mmbaseusers");
             if(builder == null) {
                 String msg = "builder mmbaseusers not found";
