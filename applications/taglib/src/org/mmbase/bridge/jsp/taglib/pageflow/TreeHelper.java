@@ -16,6 +16,7 @@ import java.util.Stack;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpSession;
 import org.mmbase.bridge.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
@@ -29,7 +30,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.16 2007-06-07 12:22:21 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.17 2007-06-07 12:35:46 michiel Exp $
  */
 
 public class TreeHelper {
@@ -294,9 +295,22 @@ public class TreeHelper {
      * @param middle the path already evaluated (this is not used in current code).
      * @return the smartpath
      */
-    private String getSmartPath(String objectnumber, String middle, HttpSession session) throws JspTagException {
-        // should use getFunctionValue
-        return (String)cloud.getNode(objectnumber).getValue("smartpath(" + htmlroot + "," + middle + "," + getVersion(objectnumber, session) + ")");
+    private String getSmartPath(String objectNumber, String middle, HttpSession session) throws JspTagException {
+        Node n = cloud.getNode(objectNumber);
+        String version = getVersion(objectNumber, session);
+        Function f = n.getFunction("smartpath");
+        Parameters params = f.createParameters();
+        params.set("root", MMBaseContext.getHtmlRoot());
+        params.set("path", middle);
+        params.set("version", version);
+        /*
+        params.set("nodeNumber", objectNumber);
+        params.set("loader", htmlRoot);
+        */
+        if (log.isDebugEnabled()) {
+            log.debug("Using " + params);
+        }
+        return (String) f.getFunctionValue(params);
     }
     
     /**
