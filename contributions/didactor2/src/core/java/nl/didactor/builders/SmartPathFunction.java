@@ -9,11 +9,12 @@ import org.mmbase.util.logging.*;
 /**
  * This builder implements the 'getSmartPath()' method (used by 
  * TreeInclude / Leafinclude) by using values in the fields that
- * are specified in the builder XML file. Only the getSmartPath()
- * method is implemented, extending classes should call the 
- * {@link #setSmartpathFields setSmartpathFields()} method.
+ * are specified in the builder XML file.
+ *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @since Didactor-2.3
+ * @version $Id: SmartPathFunction.java,v 1.2 2007-06-07 17:04:50 michiel Exp $
  */
 public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction {
     protected static Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -36,6 +37,7 @@ public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction 
     }
 
     /**
+     * @TODO Make it work in a WAR (so don't use java.io.File)
      */
     public String smartpath() {
         if (log.isDebugEnabled()) {
