@@ -1,6 +1,8 @@
 package nl.didactor.builders;
 
 import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -14,7 +16,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since Didactor-2.3
- * @version $Id: SmartPathFunction.java,v 1.2 2007-06-07 17:04:50 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.3 2007-06-07 21:27:25 michiel Exp $
  */
 public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction {
     protected static Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -37,11 +39,10 @@ public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction 
     }
 
     /**
-     * @TODO Make it work in a WAR (so don't use java.io.File)
      */
     public String smartpath() {
         if (log.isDebugEnabled()) {
-            log.debug("starting getSmartPath(" + documentRoot + "," + path + "," + nodeNumber + "," + version + ")");
+            log.debug("starting getSmartPath(" + webRoot + "," + path + "," + nodeNumber + "," + version + ")");
         }
         if (spFieldNames == null || spFieldNames.length == 0) {
             return super.smartpath();
@@ -50,54 +51,50 @@ public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction 
             log.debug("Path is '" + path + "', smartpath-prefix is '" + spPathPrefix + "'");
         }
         if (path == null) path = "";
-        if (!spPathPrefix.equals("") && (path.equals("") || path.equals(File.separator))) {
+        if (!spPathPrefix.equals("") && (path.equals("") || path.equals("/"))) {
             path = spPathPrefix;
         }
-        File dir = new File(documentRoot + path);
-        if (version != null) nodeNumber += "." + version;
-	
-        MMObjectNode node = parent.getNode(nodeNumber);
+        ResourceLoader child = webRoot.getChildResourceLoader(path);
+
+        String n = nodeNumber;
+        if (version != null) n += "\\." + version;       
+        MMObjectNode node = parent.getNode(n);
+
         String magName = null;
         if (log.isDebugEnabled()) {
-            log.debug("Going to test " + spFieldNames.length + " fieldnames");
+            log.debug("Going to test with fields " + spFieldNames);
         }
         if (node == null) {
             throw new RuntimeException("No node with number " + nodeNumber + " found");
         }
 
-        for (int i=0; i<spFieldNames.length; i++) {
-            magName = (String)node.getValue(spFieldNames[i]);
-            log.debug(spFieldNames[i] + " = '" + magName + "'");
+        for (String spFieldName : spFieldNames) {
+            magName = (String) node.getValue(spFieldName);
+            if (log.isDebugEnabled()) {
+                log.debug(spFieldName + " = '" + magName + "'");
+            }
             if (magName != null && !"".equals(magName)) {
-                log.debug("Got a not-null one!");
+                log.debug("Got a not-null one! ('" + magName + "')");
                 break;
             }
         }
 
-        if (magName == null)
+        if (magName == null) {
             return null;
-
-        String[] matches = dir.list(new ExactFileMatcher(magName));
-        
-        if ((matches == null) || (matches.length <= 0))
-            return null;
-        log.debug("Matching path: " + matches[0]);
-        return path + matches[0] + File.separator;
-    }
-
-    /**
-     * FilenameFilter that matches only files that exactly match the
-     * given filename. 
-     */
-    private class ExactFileMatcher implements java.io.FilenameFilter {
-        private String filename = "";
-        
-        public ExactFileMatcher(String filename) {
-            this.filename = filename;
         }
 
-        public boolean accept(File dir, String pathname) {
-            return pathname.equals(filename); 
+        Set<String> s = child.getChildContexts(Pattern.compile(".*/" + magName), false);
+
+        if (s.size() == 0) {
+            log.debug("Not found " + magName + " in " + child);
+            return null;
         }
+
+        String result = path + s.iterator().next() + "/";
+        if (log.isDebugEnabled()) {
+            log.debug("Matching path: " + s + " -> " + result);
+        }
+        return result;
     }
+
 }
