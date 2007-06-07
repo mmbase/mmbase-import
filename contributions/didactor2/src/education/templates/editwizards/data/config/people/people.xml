@@ -29,6 +29,7 @@
 
   <lists>
     <optionlist include="config/option_list/enabled.xml" />
+    <optionlist include="config/option_list/gender.xml" />
   </lists>
 
   <form-schema id="step1">
@@ -38,6 +39,9 @@
     <field name="initials" />
     <field name="suffix" ftype="line" />
     <field name="lastname" />
+    <field name="gender" ftype="enum">
+      <optionlist select="gender" />        
+    </field>
     <field name="address" />
     <field name="zipcode" />
     <field name="city" />
