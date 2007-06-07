@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.15.2.1 2007-06-07 13:52:24 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -42,21 +43,26 @@ public class TreeIncludeTag extends IncludeTag {
 
     protected String getPage() throws JspTagException {        
         String orgPage = super.getPage();
-        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving page '" + treePage + "'");
+        try {
+            String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving page '" + treePage + "'");
+            }
+            
+            if (treePage == null || "".equals(treePage)) {
+                throw new JspTagException("Could not find page " + orgPage);
+            }
+            
+            return treePage;
+        } catch (java.io.IOException ioe) {
+            throw new TaglibException(ioe);
         }
-
-        if (treePage == null || "".equals(treePage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-
-        return treePage;
     }
 
     public void doAfterBodySetValue() throws JspTagException {
         // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
         th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
     
         // Let IncludeTag do the rest of the work
         includePage();

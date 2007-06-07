@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.15 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: LeafFileTag.java,v 1.15.2.1 2007-06-07 13:52:24 michiel Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -50,20 +51,26 @@ public class LeafFileTag extends UrlTag {
     }    
     protected String getPage() throws JspTagException {
         String orgPage  = super.getPage();
-        String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving page '" + leafPage + "'");
-        }
+        try {
+            String leafPage = th.findLeafFile(orgPage, objectList.getString(this), pageContext.getSession());
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving page '" + leafPage + "'");
+            }
+            
 
-        if (leafPage == null || "".equals(leafPage)) {
-            throw new JspTagException("Could not find page " + orgPage);
+            if (leafPage == null || "".equals(leafPage)) {
+                throw new JspTagException("Could not find page " + orgPage);
+            }
+            
+            return leafPage;
+        } catch (java.io.IOException ioe) {
+            throw new TaglibException (ioe);
         }
-
-        return leafPage;
     }
 
     public int doEndTag() throws JspTagException {
         th.setCloud(getCloudVar());        
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         int retval = super.doEndTag();
         return retval;
     }
