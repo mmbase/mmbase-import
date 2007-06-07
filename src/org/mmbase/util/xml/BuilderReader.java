@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.87 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.88 2007-06-07 16:06:51 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -269,7 +269,7 @@ public class BuilderReader extends DocumentReader {
      * @return Returns the data-types of the given collector after adding the ones which are configured
      * @since MMBase-1.8
      */
-    public Map getDataTypes(DataTypeCollector collector) {
+    public Map<String, BasicDataType<?>> getDataTypes(DataTypeCollector collector) {
         Element element = getElementByPath("builder.datatypes");
         if (element != null) {
             DataTypeReader.readDataTypes(element, collector);
@@ -428,7 +428,7 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function> getFunctions(MMObjectBuilder builder) {
+    public Set<Function> getFunctions(final MMObjectBuilder builder) {
         Map<String, Function> results = new HashMap<String, Function>();
         for (Element functionElement : getChildElements("builder.functionlist","function")) {
             try {
@@ -438,7 +438,7 @@ public class BuilderReader extends DocumentReader {
 
                 Function function;
                 log.service("Using " + functionClass);
-                Class claz = Class.forName(functionClass);
+                final Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
                     if (!providerKey.equals("")) {
                         log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
@@ -464,7 +464,19 @@ public class BuilderReader extends DocumentReader {
                         continue;
                     } else {
                         if (method.getParameterTypes().length == 0) {
-                            function = BeanFunction.getFunction(claz, providerKey);
+                            function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
+                                    public Object getInstance() {
+                                        try {
+                                            return BeanFunction.getInstance(claz, builder);
+                                        } catch (Exception e) {
+                                            log.error(e.getMessage(), e);
+                                            return null;
+                                        }
+                                    }
+                                    public String toString() {
+                                        return "" + claz.getName() + "." + builder.getTableName();
+                                    }
+                                });
                         } else {
                             if (method.getClass().isInstance(builder)) {
                                 function = MethodFunction.getFunction(method, providerKey, builder);
@@ -495,24 +507,9 @@ public class BuilderReader extends DocumentReader {
                     cf.addFunction(function);
                     function = cf;
                 }
-                if (! (function instanceof NodeFunction)) {
-                    // if it contains a 'node' parameter, it can be wrapped into a node-function,
-                    // and be available on nodes of this builder.
-                    Parameters test = function.createParameters();
-                    if (test.containsParameter(Parameter.NODE)) {
-                        final Function f = function;
-                        function = new NodeFunction<Object>(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
-                                protected Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
-                                    if (parameters == null) parameters = createParameters();
-                                    parameters.set(Parameter.NODE, node);
-                                    return f.getFunctionValue(parameters);
-                                }
-                                public  Object getFunctionValue(Parameters parameters) {
-                                    return f.getFunctionValue(parameters);
-                                }
-                            };
-                    }
-                }
+
+                NodeFunction nf = NodeFunction.wrap(function);
+                if (nf != null) function = nf;
 
                 results.put(functionName, function);
                 log.debug("functions are now: " + results);
