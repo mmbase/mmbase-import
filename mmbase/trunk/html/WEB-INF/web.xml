@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id: web.xml,v 1.34 2007-05-29 17:37:00 michiel Exp $
+  $Id: web.xml,v 1.35 2007-06-07 12:03:28 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -51,6 +51,14 @@
   <context-param>
     <param-name>mmbase.taglib.url.makerelative</param-name>
     <param-value>false</param-value>
+  </context-param>
+
+  <!--
+      To avoid accidental recursing mm:include (and extended tags) don't work below a certain level (defaults to 50).
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.max_include_level</param-name>
+    <param-value>50</param-value>
   </context-param>
 
   <!--
