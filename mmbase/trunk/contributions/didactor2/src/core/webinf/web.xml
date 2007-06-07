@@ -14,6 +14,11 @@
     <param-value>true</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>mmbase.taglib.smartpath_backwards_compatible</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
   <filter>
     <filter-name>Didactor Filter</filter-name>
     <display-name>Didactor</display-name>
