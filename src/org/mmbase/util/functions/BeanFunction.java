@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.15 2007-06-05 13:27:29 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.16 2007-06-07 12:30:39 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -79,7 +79,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      * Gives back a Function object based on the 'bean' concept.
      * @since MMBase-1.8.5
      */
-    public static Function getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name + '.' + producer;
         BeanFunction result = beanFunctionCache.get(key);
         if (result == null) {
@@ -91,7 +91,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * Called from {@link FunctionFactory}
      */
-    public static Function getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         return getFunction(claz, name, new Producer() {
                 public Object getInstance()  {
                     try {
@@ -212,7 +212,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * @since MMBase-1.8.5
      */
-    protected Producer getProducer() {
+    public Producer getProducer() {
         return producer;
     }
 
