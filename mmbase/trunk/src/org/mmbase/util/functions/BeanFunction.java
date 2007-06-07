@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.16 2007-06-07 12:30:39 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.17 2007-06-07 16:05:49 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -104,6 +104,32 @@ public class BeanFunction extends AbstractFunction<Object> {
                     return "";
                 }
             });
+    }
+    /**
+     * Utitily function to create an instance of a certain class. Two constructors are tried, a one
+     * argument one, and if that fails, simply newInstance is used.
+     * @since MMBase-1.8.5
+     */
+    public static Object getInstance(final Class claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Class c = constructorArgument.getClass();
+        while (c != null) {
+            try {            
+                Constructor con = claz.getConstructor(new Class[] {c});
+                return con.newInstance(new Object[] {constructorArgument});
+            } catch (NoSuchMethodException e) {
+                c = c.getSuperclass();
+            }
+        }
+        Class[] interfaces = constructorArgument.getClass().getInterfaces();
+        for (int i = 0; i < interfaces.length; i++) {
+            try {            
+                Constructor con = claz.getConstructor(new Class[] {interfaces[i]});
+                return con.newInstance(new Object[] {constructorArgument});
+            } catch (NoSuchMethodException e) {
+            }
+
+        }
+        return claz.newInstance();
     }
 
 

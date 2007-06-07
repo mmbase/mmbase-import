@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.1 2007-06-05 13:09:04 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.2 2007-06-07 16:05:37 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -78,12 +78,15 @@ public class BeanFunction extends AbstractFunction {
      * Gives back a Function object based on the 'bean' concept.
      * @since MMBase-1.8.5
      */
-    public static Function getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name + '.' + producer;
         BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
             result = new BeanFunction(claz, name, producer);
+            log.info("Created new function " + result);
             beanFunctionCache.put(key, result);
+        } else {
+            log.info("Found in cache " + result);
         }
         return result;
     }
@@ -103,6 +106,33 @@ public class BeanFunction extends AbstractFunction {
                     return "";
                 }
             });
+    }
+
+    /**
+     * Utitily function to create an instance of a certain class. Two constructors are tried, a one
+     * argument one, and if that fails, simply newInstance is used.
+     * @since MMBase-1.8.5
+     */
+    public static Object getInstance(final Class claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Class c = constructorArgument.getClass();
+        while (c != null) {
+            try {            
+                Constructor con = claz.getConstructor(new Class[] {c});
+                return con.newInstance(new Object[] {constructorArgument});
+            } catch (NoSuchMethodException e) {
+                c = c.getSuperclass();
+            }
+        }
+        Class[] interfaces = constructorArgument.getClass().getInterfaces();
+        for (int i = 0; i < interfaces.length; i++) {
+            try {            
+                Constructor con = claz.getConstructor(new Class[] {interfaces[i]});
+                return con.newInstance(new Object[] {constructorArgument});
+            } catch (NoSuchMethodException e) {
+            }
+
+        }
+        return claz.newInstance();
     }
 
     /* ================================================================================
@@ -127,7 +157,7 @@ public class BeanFunction extends AbstractFunction {
     private final List   setMethods = new ArrayList();
     
 
-    private Producer producer;
+    private final Producer producer;
 
 
 
@@ -162,6 +192,7 @@ public class BeanFunction extends AbstractFunction {
 
         // need a sample instance to get the default values from.
         Object sampleInstance = producer.getInstance();
+        if (sampleInstance == null) throw new RuntimeException("Producer " + producer + " did not produce an instance");
 
         List parameters = new ArrayList();
         for (int i = 0 ; i < methods.length; i++) {
@@ -204,7 +235,7 @@ public class BeanFunction extends AbstractFunction {
     /**
      * @since MMBase-1.8.5
      */
-    protected Producer getProducer() {
+    public Producer getProducer() {
         return producer;
     }
 
