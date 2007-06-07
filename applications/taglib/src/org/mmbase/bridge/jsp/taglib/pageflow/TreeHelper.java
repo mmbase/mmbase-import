@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.15 2007-06-07 12:03:03 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.16 2007-06-07 12:22:21 michiel Exp $
  */
 
 public class TreeHelper {
@@ -85,6 +85,10 @@ public class TreeHelper {
      * @param prefix The path that was already established by previous calls to getLeafFile, deeper in the recursion tree.
      */
     protected String getLeafFile(String prefix, String objectlist, String includePage, boolean maySmartpath, HttpSession session) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("Finding leaf-file for " + prefix + " " + includePage + " " + objectlist);
+        }
+
         if (objectlist.equals("")) {
             String nudePage = includePage;
             if (nudePage.indexOf('?') != -1) {
@@ -238,6 +242,7 @@ public class TreeHelper {
             if ((new File(pathTest)).isFile()) {
                 // Make sure that the path is correctly encoded, if it contains spaces these must be
                 // changed into '%20' etc.
+                log.debug("" + pathTest + " is a file");
                 return encodedPath(concatpath(path, includePage));
             }
         }
