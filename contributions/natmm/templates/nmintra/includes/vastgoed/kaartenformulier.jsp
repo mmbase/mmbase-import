@@ -1,100 +1,94 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
+<mm:cloud>
 
 <html>
 <head>
 <title>bestelformulier plotopdrachten</title>
 
+
+<bean:define id="natGebMap" property="natGebMap" name="KaartenForm" type="java.util.Map" />
+<bean:define id="gebiedMap" property="gebiedMap" name="KaartenForm" type="java.util.Map" />
+<bean:define id="selKaartMap" property="selKaartMap" name="KaartenForm" type="java.util.Map" />
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 arr_NatGeb = new Array
 (
-	new Array
-	(
-		new Array("Harger- en Pettemerpolder", 1),
-		new Array("Loterijlanden", 2),
-		new Array("Nijenburg", 3),
-		new Array("Weidse Polder", 4),
-		new Array("etc.......", 5)
-	),
-	new Array
-	(
-		new Array("Kadelanden", 1),
-		new Array("Nieuwkoopse plassen", 2),
-		new Array("etc.......", 3)		
-	),
-	new Array
-	(
-		new Array("Beekbergerwoud", 1),
-		new Array("Hoeve Delle", 2),
-		new Array("Loenense Hooilanden", 3),
-		new Array("etc.......", 4)
-	),
-	new Array
-	(
-		new Array("Ankeveense plassen", 1),
-		new Array("Loosdrechtse plassen", 2),
-		new Array("Tienhovense plassen", 3),
-		new Array("etc.......", 4)
-	),
-	new Array
-	(
-		new Array("Chaamse Beek", 1),
-		new Array("Markdal", 2),
-		new Array("Oosterheide", 3),
-		new Array("etc.......", 4)
-	),
-		
-	new Array
-	(
-		new Array("Genhoes", 1),
-		new Array("Geuldal", 2),
-		new Array("Gulpdal", 3),
-		new Array("Sint-Pietersberg", 4),
-		new Array("etc.......", 5)
-	)
+ <%
+      Set firstKeySet = natGebMap.keySet();
+      Iterator firstIterator = firstKeySet.iterator();
+      while (firstIterator.hasNext()) {
+     	out.println("new Array (");    
+         String firstKey = (String) firstIterator.next();
+         Map valuesMap = (TreeMap) natGebMap.get(firstKey);
+         Set valuesKeySet = valuesMap.keySet();
+         Iterator valuesIterator = valuesKeySet.iterator();
+         int index = 0;
+         while (valuesIterator.hasNext()) {
+         	index++;
+         	String valuesKey = (String) valuesIterator.next();
+         	Boolean isSelected = (Boolean) valuesMap.get(valuesKey);
+         	
+         	out.print("new Array('" + valuesKey + "', " + index + ", " + isSelected + ")");
+            if (valuesIterator.hasNext()) {
+         		out.println(",");
+        	}
+         } 
+         out.print(" ) ");
+         if (firstIterator.hasNext()) {
+         	out.println(",");
+         }
+      }   
+%>
 );
-
 
 arr_Areaal = new Array
 (
-	new Array
-	(
-		new Array("Noordenveld", 1),
-		new Array("Waddengebied", 2),
-		new Array("Zuid-Drenthe", 3),
-		new Array("de Wieden", 4),
-		new Array("Salland", 5),
-		new Array("Twente", 6),
-		new Array("etc.....", 7)
-	),
-	new Array
-	(
-		new Array("Groningen/Friesland/Drenthe", 1),
-		new Array("Overijssel en Flevoland", 2),
-		new Array("Gelderland", 3),
-		new Array("Noord-Holland en Utrecht", 4),
-		new Array("Zuid-Holland en Zeeland", 5),
-		new Array("Noord-Brabant en Limburg", 6)
-	),
-	new Array
-	(
-		new Array("Groningen", 1),
-		new Array("Friesland", 2),
-		new Array("Drenthe", 3),
-		new Array("Overijssel", 4),
-		new Array("Flevoland", 5),
-		new Array("Gelderland", 6),
-		new Array("Utrecht", 7),
-		new Array("Noord-Holland", 8),
-		new Array("Zuid-Holland", 9),
-		new Array("Zeeland", 10),
-		new Array("Noord-Brabant", 11)
-	)
-
+ <%
+      firstKeySet = gebiedMap.keySet();
+      firstIterator = firstKeySet.iterator();
+      while (firstIterator.hasNext()) {
+     	out.println("new Array (");    
+         String firstKey = (String) firstIterator.next();
+         Map valuesMap = (TreeMap) gebiedMap.get(firstKey);
+         Set valuesKeySet = valuesMap.keySet();
+         Iterator valuesIterator = valuesKeySet.iterator();
+         int index = 0;
+         while (valuesIterator.hasNext()) {
+         	index++;
+         	String valuesKey = (String) valuesIterator.next();
+         	Boolean isSelected = (Boolean) valuesMap.get(valuesKey);
+         	
+         	out.print("new Array('" + valuesKey + "', " + index + ", " + isSelected + ")");
+            if (valuesIterator.hasNext()) {
+         		out.println(",");
+        	}
+         } 
+         out.print(" ) ");
+         if (firstIterator.hasNext()) {
+         	out.println(",");
+         }
+      }   
+%>
 );
 
+-->
+</script>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+function jsc_ClearArea(selectCtrl)
+{
+	var i;
+	// leeg de lijst
+	for (i = selectCtrl.options.length; i >= 0; i--)
+		{
+			selectCtrl.options[i] = null; 
+		}
+}
 
 function jsc_VulSelectUitArray(selectCtrl, itemArray)
 {
@@ -117,10 +111,10 @@ function jsc_VulSelectUitArray(selectCtrl, itemArray)
 		// nieuwe items toevoegen
 		for (i = 0; i < itemArray.length; i++)
 		{
-			selectCtrl.options[j] = new Option(itemArray[i][0]);
-			if (itemArray[i][1] != null)
+			selectCtrl.options[j] = new Option(itemArray[i][0], itemArray[i][0], true, itemArray[i][2]);
+			if (itemArray[i][0] != null)
 				{
-					selectCtrl.options[j].value = itemArray[i][1]; 
+					selectCtrl.options[j].value = itemArray[i][0]; 
 				}
 			j++;
 		}
@@ -139,54 +133,120 @@ function jsc_GeefInfo(id_DIV)
 function small_window(NaamPagina) {
 var newWindow;
 var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=screen.availWidth,height=screen.availHeight, top='+(20)+',left='+(20);
-
-newWindow = window.open(NaamPagina, "Add_from_Src_to_Dest", props);
+var fullLink;
+for (var i = 0; i < document.forms[0].sel_Kaart.length; i++) {
+	if (document.forms[0].sel_Kaart[i].selected) {
+		var kartNode = document.forms[0].sel_Kaart[i].value;
+		fullLink = NaamPagina + "?node=" + kartNode;
+		var windowName = kartNode;
+		newWindow = window.open(fullLink, windowName, props);
+	}
+}
 newWindow.focus();
 }
 
+function jsc_defaultOptie() {
+  <logic:equal name="KaartenForm" property="rad_Gebied" value="Natuurgebied(en)">
+  	jsc_optie0();
+  </logic:equal>
+    <logic:equal name="KaartenForm" property="rad_Gebied" value="Eenheid">
+  	jsc_optie1();
+  </logic:equal>
+    <logic:equal name="KaartenForm" property="rad_Gebied" value="Nederland">
+  	jsc_optie2();
+  </logic:equal>
+  <logic:equal name="KaartenForm" property="rad_Gebied" value="Coordinaten">
+  	jsc_optie3();
+  </logic:equal>
+}
+
+var imagesNat = new Array();
+var imagesEen = new Array();
+var imagesNede = new Array();
+var imagesCoor = new Array();
 
 function jsc_optie0()
 {
+jsc_VulSelectUitArray(document.forms[0].sel_NatGeb, arr_NatGeb[document.forms[0].sel_Beheereenheden.selectedIndex]);
+//jsc_ClearArea(document.forms[0].sel_Areaal);
+
+<% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied(en)"); %>
+
 document.forms[0].sel_Kaart.length=0;
-document.forms[0].sel_Kaart[0] =new Option("deze lijst afh. van bovenstaande selectie", "0", true, false);
-document.forms[0].sel_Kaart[1] =new Option("Aankoopgebiedenkaart", "Aankoopgebiedenkaart", true, false);
-document.forms[0].sel_Kaart[2] =new Option("Natuurtype Huidig", "Natuurtype Huidig", true, false);
-document.forms[0].sel_Kaart[3] =new Option("Natuurtype Gewenst", "Natuurtype Gewenst", true, false);
-document.forms[0].sel_Kaart[4] =new Option("Kadastrale kaart", "Kadastrale kaart", true, false);
-document.forms[0].sel_Kaart[5] =new Option("Topografie kleur", "Topografie kleur", true, false);
-document.forms[0].sel_Kaart[6] =new Option("Vak en Afdelingen kaart", "Vak en Afdelingen kaart", true, false);
-document.forms[0].sel_Kaart[7] =new Option("etc......", "0", true, false);
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied(en)'">
+	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
+	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=fieldName%>", true, <%= kartTypes.contains(fieldName)%>);
+	</mm:field>
+	</mm:field>
+	//
+// APPLY TO ALL !!!
+		imagesNat[<mm:index/>-1] = "http://localhost:8080/natmm-intranet/nmintra/media/vastgoed/Nicolao%20Visscher.jpg";  //this will come from the DB 
+</mm:listnodes>
 }
 
 function jsc_optie1()
 {
+jsc_VulSelectUitArray(document.forms[0].sel_Areaal, arr_Areaal[document.forms[0].sel_gebieden.selectedIndex]);
+//jsc_ClearArea(document.forms[0].sel_NatGeb);
+
+<% kartTypes = (ArrayList) selKaartMap.get("Eenheid"); %>
+
 document.forms[0].sel_Kaart.length=0;
-document.forms[0].sel_Kaart[0] =new Option("deze lijst afh. van bovenstaande selectie", "0", true, false);
-document.forms[0].sel_Kaart[1] =new Option("Aankoopgebiedenkaart", "0", true, false);
-document.forms[0].sel_Kaart[2] =new Option("Top 250 met EHS", "0", true, false);
-document.forms[0].sel_Kaart[3] =new Option("Natuurgebieden kaart", "0", true, false);
-document.forms[0].sel_Kaart[4] =new Option("Invloedsferenkaart", "0", true, false);
-document.forms[0].sel_Kaart[5] =new Option("etc......", "0", true, false);
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Eenheid'">
+	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
+	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=fieldName%>", true, <%= kartTypes.contains(fieldName)%>);
+	</mm:field>
+	</mm:field>
+</mm:listnodes>
 }
 
 function jsc_optie2()
 {
+<% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
+
 document.forms[0].sel_Kaart.length=0;
-document.forms[0].sel_Kaart[0] =new Option("deze lijst afh. van bovenstaande selectie", "0", true, false);
-document.forms[0].sel_Kaart[1] =new Option("Top 250 met EHS", "0", true, false);
-document.forms[0].sel_Kaart[2] =new Option("Natuurgebieden kaart", "0", true, false);
-document.forms[0].sel_Kaart[3] =new Option("Invloedsferenkaart", "0", true, false);
-document.forms[0].sel_Kaart[4] =new Option("etc......", "0", true, false);
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Nederland'">
+	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
+	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(fieldName)%>);
+	</mm:field>
+	</mm:field>
+</mm:listnodes>
 }
 
 function jsc_optie3()
 {
+<% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
+
 document.forms[0].sel_Kaart.length=0;
-document.forms[0].sel_Kaart[0] =new Option("deze lijst afh. van bovenstaande selectie", "0", true, false);
-document.forms[0].sel_Kaart[1] =new Option("Aankoopgebiedenkaart", "0", true, false);
-document.forms[0].sel_Kaart[2] =new Option("Natuurtype Huidig", "0", true, false);
-document.forms[0].sel_Kaart[3] =new Option("Natuurtype Gewenst", "0", true, false);
-document.forms[0].sel_Kaart[4] =new Option("etc......", "0", true, false);
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Coordinaten'">
+	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
+	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(fieldName)%>);
+	</mm:field>
+	</mm:field>
+</mm:listnodes>
+}
+
+function jsc_setPicture(selectedIndex) {
+	// use Natuurgebied(en)
+	if(document.forms[0].rad_Gebied[0].checked) {
+		document.getElementById("kartPicture").src=imagesNat[selectedIndex]; 
+ 	}
+ 	// use Eenheid
+	if(document.forms[0].rad_Gebied[1].checked) {
+		document.getElementById("kartPicture").src=imagesEen[selectedIndex]; 
+ 	}
+ 	// use Nederland
+	if(document.forms[0].rad_Gebied[2].checked) {
+		document.getElementById("kartPicture").src=imagesNede[selectedIndex]; 
+ 	}
+ 	// use Coordinaten
+	if(document.forms[0].rad_Gebied[3].checked) {
+		document.getElementById("kartPicture").src=imagesCoor[selectedIndex]; 
+ 	} 	
 }
 
 -->
@@ -231,7 +291,7 @@ DIV.Schermuitleg
 </style>
 </head>
 
-<body onload="jsc_optie0();">
+<body onload="jsc_defaultOptie(); jsc_VulSelectUitArray(document.forms[0].sel_NatGeb, arr_NatGeb[document.forms[0].sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.forms[0].sel_Areaal, arr_Areaal[document.forms[0].sel_gebieden.selectedIndex]);">
 <html:form action="/nmintra/includes/vastgoed/KaartenAction" method="GET">
 
 	<table>
@@ -254,9 +314,9 @@ formulier.">
 	<table width ="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="natuurgebied" onclick="jsc_optie0();"/>
+				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();"/>
 			</td>
-			<td width="220">natuurgebied(en):</td>
+			<td width="220">Natuurgebied(en):</td>
 
 			<td>&nbsp;</td>
 		</tr>
@@ -293,7 +353,7 @@ formulier.">
 	<table width ="500"  bgcolor="#CCCC99" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied"value="regio" onclick="jsc_optie1();"/>
+				<html:radio property="rad_Gebied"value="Eenheid" onclick="jsc_optie1();"/>
 
 			</td>
 			<td width="220">Eenheid / Regio / Provincie:</td>
@@ -312,8 +372,8 @@ formulier.">
 			<td height="70" valign="top">
 				<html:select style="width:100%;" property="sel_gebieden" onclick="jsc_VulSelectUitArray(this.form.sel_Areaal, arr_Areaal[this.selectedIndex]);">
 					<html:option value="Eenheid">Eenheid</html:option>
-					<html:option value="Regio">Regio</html:option>
 					<html:option value="Provincie">Provincie</html:option>
+					<html:option value="Regio">Regio</html:option>
 				</html:select>
 			</td>
 		</tr>
@@ -329,7 +389,7 @@ formulier.">
 	<table width ="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
 		<tr>
 			<td width="20" height="20" valign="top">
-				<html:radio property="rad_Gebied" value="nederland" onclick="jsc_optie2();"/>
+				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();"/>
 			</td>
 
 			<td width="220" valign="top">Nederland:</td>
@@ -344,7 +404,7 @@ formulier.">
 	<table width="500" bgcolor="#CCCC99" border="0" cellspacing="0">	
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="coordinaten" onclick="jsc_optie3();"/>
+				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();"/>
 			</td>
 			<td colspan="4">coördinaten:&nbsp;</td>
 			<td>&nbsp;</td>
@@ -400,11 +460,12 @@ formulier.">
 		<tr>
 			<td width="96" align="left">kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
 			<td width="139">
-				<img style="cursor:pointer" src="../../media/vastgoed/Nicolao%20Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" onClick="javascript:small_window('kaart_popup.jsp');">
+				<img id="kartPicture" style="cursor:pointer" src="../../media/vastgoed/Nicolao%20Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
+					onClick="javascript:small_window('kaart_popup.jsp');">
 
 			</td>
 			<td width="249">
-				<html:select style="width:100%;" property="sel_Kaart" size="6" multiple="multiple">
+				<html:select style="width:100%;" property="sel_Kaart" size="6" multiple="multiple" onclick="jsc_setPicture(this.selectedIndex);">
 				</html:select>
 			</td>
 		</tr>
@@ -536,7 +597,7 @@ formulier.">
 		<tr>
 			<td></td>
 			<td colspan="2">
-        		<textarea style="width:486px;" name="textfield" rows="5"></textarea>
+        		<html:textarea property="opmerkingen" style="width:486px;" rows="5"></html:textarea>
       		</td>
 			<td></td>
 
@@ -578,3 +639,4 @@ formulier.">
 
 </body>
 </html>
+</mm:cloud>
