@@ -1,15 +1,29 @@
 package nl.leocms.vastgoed;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import org.apache.struts.action.ActionForm;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
+import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.1 2007-05-29 11:52:28 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.2 2007-06-07 15:31:24 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
 
 public class KaartenForm extends ActionForm{
+   private static final Logger log = Logging.getLoggerInstance(KaartenForm.class);
+   
 	private String aantal;
 	private String rad_Schaal;
 	private String schaal;
@@ -25,18 +39,93 @@ public class KaartenForm extends ActionForm{
 	private String linksY;
 	private String rechtsX;
 	private String rechtsY;
-	
+   private String opmerkingen;
+   //data structures
+   private Map natGebMap;
+   private Map gebiedMap;
+   private Map selKaartMap;
+   // constants
+   // these keys should be same in jsp templates and java forms and classes 
+   private static String natuurgebiedKey = "Natuurgebied(en)"; 
+   private static String eenheidKey = "Eenheid";
+   private static String nederlandKey = "Nederland";
+   private static String coordinatenKey = "Coordinaten";
 	
 	public KaartenForm() {
+      //init for first load
 		aantal="1";
 		rad_Schaal = "schaal";
 		schaal = "1:5000";
 		formaat = "A4";
 		rad_Gevouwen = "gevouwen";
-		rad_Gebied = "natuurgebied";
-	}
+		rad_Gebied = natuurgebiedKey;
+      //
+      resetMaps();
+   }
+   
+
 	
-	
+   //this is to use private values to set booleans in maps. making ready for jsp
+	public void updateMapValues(){
+      resetMaps();
+
+      //
+      if (rad_Gebied.equals(natuurgebiedKey)) {
+         try {
+            Map targetMap = (TreeMap) natGebMap.get(sel_Beheereenheden);
+            for(int i = 0; i < sel_NatGeb.length; i++) {
+               Set keySet = targetMap.keySet();
+               Iterator keysIterator = keySet.iterator();
+               if (targetMap.containsKey(sel_NatGeb[i])) {
+                  targetMap.put(sel_NatGeb[i], new Boolean(true));
+               }
+            }       
+         } catch (Exception e) {
+            log.debug("updateMapValues - no entry for key: " + sel_Beheereenheden);
+         }
+      }
+      
+      if (rad_Gebied.equals(eenheidKey)) {
+      try {
+         Map targetMap = (TreeMap) gebiedMap.get(sel_gebieden);
+         for(int i = 0; i < sel_Areaal.length; i++) {        
+            Set keySet = targetMap.keySet();
+            Iterator keysIterator = keySet.iterator();
+            if (targetMap.containsKey(sel_Areaal[i])) {
+               targetMap.put(sel_Areaal[i], new Boolean(true));
+            }
+         }       
+      } catch (Exception e) {
+         log.debug("updateMapValues - no entry for key: " + sel_gebieden);
+      }
+      }
+      
+      if (!rad_Gebied.equals(coordinatenKey)) {
+         linksX = "";
+         linksY = "";
+         rechtsX = "";
+         rechtsY = "";
+      }
+      
+      // the kart type selection map to be filled with values from last for submit. under the corresponding kart type key
+      if (sel_Kaart != null) {
+         for(int i = 0; i < sel_Kaart.length; i++) {
+            String kartType = sel_Kaart[i];
+            if (rad_Gebied.equals(natuurgebiedKey)) {
+               ((ArrayList) selKaartMap.get(natuurgebiedKey)).add(kartType);
+            }
+            if (rad_Gebied.equals(eenheidKey)) {
+               ((ArrayList) selKaartMap.get(eenheidKey)).add(kartType);
+            }
+            if (rad_Gebied.equals(nederlandKey)) {
+               ((ArrayList) selKaartMap.get(nederlandKey)).add(kartType);
+            }
+            if (rad_Gebied.equals(coordinatenKey)) {
+               ((ArrayList) selKaartMap.get(coordinatenKey)).add(kartType);
+            }
+         }
+      }
+   }
 	
 
 	// Shopping Cart Getters
@@ -66,7 +155,17 @@ public class KaartenForm extends ActionForm{
 	}
 	
 	public String getKaartType() {
-		return this.rad_Gebied;
+		String kartType  = rad_Gebied;
+      if (kartType.equals(natuurgebiedKey)) {
+         kartType += "";
+      } else if (kartType.equals(eenheidKey)) {
+         kartType += "";
+      } else if (kartType.equals(coordinatenKey)) {
+         kartType += " (" + linksX + ":" + linksY + " " + rechtsX + ":" + rechtsY + ")";
+      }
+      
+      return kartType;
+      
 	}
 
 	// getters and setters
@@ -204,5 +303,130 @@ public class KaartenForm extends ActionForm{
 		this.linksY = copyForm.getLinksY();
 		this.rechtsX = copyForm.getRechtsX();
 		this.rechtsY = copyForm.getRechtsY();
+      this.opmerkingen = copyForm.getOpmerkingen();
 	}
+
+   private void resetMaps() {
+      natGebMap = new TreeMap();
+      Map dummy = new TreeMap();
+      dummy.put("Harger- en Pettemerpolder", new Boolean(false));
+      dummy.put("Loterijlanden", new Boolean(false));
+      dummy.put("Nijenburg", new Boolean(false));
+      dummy.put("Weidse Polder", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("Kennemerland", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Kadelanden", new Boolean(false));
+      dummy.put("Nieuwkoopse plassen", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("Nieuwkoop", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Beekbergerwoud", new Boolean(false));
+      dummy.put("Hoeve Delle", new Boolean(false));
+      dummy.put("Loenense Hooilanden", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("Oost-Veluwe", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Ankeveense plassen", new Boolean(false));
+      dummy.put("Loosdrechtse plassen", new Boolean(false));
+      dummy.put("Tienhovense plassen", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("Vechtplassen", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Chaamse Beek", new Boolean(false));
+      dummy.put("Markdal", new Boolean(false));
+      dummy.put("Oosterheide", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("West-Brabant", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Genhoes", new Boolean(false));
+      dummy.put("Geuldal", new Boolean(false));
+      dummy.put("Gulpdal", new Boolean(false));
+      dummy.put("Sint-Pietersberg", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      natGebMap.put("Zuid-Limburg", dummy);
+      
+      // gebied map (area)
+      gebiedMap = new TreeMap();
+      dummy = new TreeMap();
+      dummy.put("Noordenveld", new Boolean(false));
+      dummy.put("Waddengebied", new Boolean(false));
+      dummy.put("Zuid-Drenthe", new Boolean(false));
+      dummy.put("de Wieden", new Boolean(false));
+      dummy.put("Salland", new Boolean(false));
+      dummy.put("Twente", new Boolean(false));
+      dummy.put("etc.", new Boolean(false));
+      gebiedMap.put("Eenheid", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
+      dummy.put("Overijssel en Flevoland", new Boolean(false));
+      dummy.put("Gelderland", new Boolean(false));
+      dummy.put("Noord-Holland en Utrecht", new Boolean(false));
+      dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
+      dummy.put("Noord-Brabant en Limburg", new Boolean(false));
+      gebiedMap.put("Regio", dummy);
+      
+      dummy = new TreeMap();
+      dummy.put("Groningen", new Boolean(false));
+      dummy.put("Friesland", new Boolean(false));
+      dummy.put("Drenthe", new Boolean(false));
+      dummy.put("Overijssel", new Boolean(false));
+      dummy.put("Flevoland", new Boolean(false));
+      dummy.put("Gelderland", new Boolean(false));
+      dummy.put("Utrecht", new Boolean(false));
+      dummy.put("Noord-Holland", new Boolean(false));
+      dummy.put("Zuid-Holland", new Boolean(false));
+      dummy.put("Zeeland", new Boolean(false));
+      dummy.put("Noord-Brabant", new Boolean(false));
+      gebiedMap.put("Provincie", dummy);
+      
+      //kaart type
+      selKaartMap = new TreeMap();
+      selKaartMap.put(natuurgebiedKey, new ArrayList());
+      selKaartMap.put(eenheidKey, new ArrayList());
+      selKaartMap.put(nederlandKey, new ArrayList());
+      selKaartMap.put(coordinatenKey, new ArrayList());
+      
+   }
+
+
+   public Map getNatGebMap() {
+      return natGebMap;
+   }
+
+
+
+   public Map getGebiedMap() {
+      return gebiedMap;
+   }
+
+
+
+   public String getOpmerkingen() {
+      return opmerkingen;
+   }
+
+
+
+   public void setOpmerkingen(String opmerkingen) {
+      this.opmerkingen = opmerkingen;
+   }
+
+
+
+   public Map getSelKaartMap() {
+      return selKaartMap;
+   }
+
+
+
+   public void setGebiedMap(Map gebiedMap) {
+      this.gebiedMap = gebiedMap;
+   }
 }
