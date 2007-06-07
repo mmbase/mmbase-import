@@ -42,6 +42,7 @@ public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServlet
 	  if (basketForm != null) {
 		// populating parameter values
 		actionForm.copyValuesFrom(basketForm);
+      actionForm.updateMapValues();
 	  }
   }
 	  log.debug("forwarding...");
