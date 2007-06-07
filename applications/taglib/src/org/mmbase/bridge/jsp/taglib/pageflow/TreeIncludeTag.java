@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.20 2007-06-07 12:03:03 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.21 2007-06-07 13:23:24 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -48,21 +48,26 @@ public class TreeIncludeTag extends IncludeTag {
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
         th.setCloud(getCloudVar());
-        
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
 
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, true);
+        try {
+            if (referid != Attribute.NULL) {
+                if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+                
+                Object o = getObject(getReferid());
+                if (o instanceof Url) {
+                    Url u = (Url) getObject(getReferid());
+                    extraParameters.addAll(u.params);
+                    url = new Url(this, u, parameters, true);
+                } else {
+                    url = new Url(this, th.findTreeFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
+                }
             } else {
-                url = new Url(this, th.findTreeFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
+                String leafPage = th.findTreeFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
+                url = new Url(this, leafPage , getComponent(), parameters, true);
             }
-        } else {
-            String leafPage = th.findTreeFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
-            url = new Url(this, leafPage , getComponent(), parameters, true);
+        } catch (java.io.IOException ioe) {
+            throw new TaglibException(ioe);
         }
 
         if (getId() != null) {
