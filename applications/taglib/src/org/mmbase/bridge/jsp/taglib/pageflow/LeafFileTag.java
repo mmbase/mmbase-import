@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.21 2007-03-30 14:40:55 johannes Exp $
+ * @version $Id: LeafFileTag.java,v 1.22 2007-06-07 12:03:03 michiel Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -47,8 +47,10 @@ public class LeafFileTag extends UrlTag {
     }
     
     public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
-        log.info("leaffile starttag: " + getPage());
+        if (log.isDebugEnabled()) {
+            log.debug("starttag " + getId());
+            log.debug("leaffile starttag: " + getPage());
+        }
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
@@ -75,7 +77,9 @@ public class LeafFileTag extends UrlTag {
         }
 
         url.setLegacy();
-        log.info("leaffile end of starttag: " + url.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("leaffile end of starttag: " + url.toString());
+        }
         return EVAL_BODY_BUFFERED;
     }
 
