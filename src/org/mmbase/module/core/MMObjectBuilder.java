@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.411 2007-06-07 12:35:02 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.412 2007-06-07 13:22:06 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -358,7 +358,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Determines whether a builder is virtual (data is not stored in the storage layer).
      */
-    protected boolean virtual=false;
+    protected boolean virtual = false;
 
     /**
      *  Set of remote observers, which are notified when a node of this type changes
@@ -1964,10 +1964,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * @deprecated
+     * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
-        log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
+        if (log.isDebugEnabled()) {
+            log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
+        }
         File dir = new File(documentRoot + path);
         if (version != null) nodeNumber += "." + version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
