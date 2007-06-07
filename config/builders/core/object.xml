@@ -62,6 +62,7 @@
         <guiname xml:lang="it">Oggetto</guiname>
         <guiname xml:lang="ro">Numar</guiname>
         <guiname xml:lang="bg">Номер</guiname>
+
         <guiname xml:lang="zh">号</guiname>
         <guiname xml:lang="ja">数</guiname><!-- 'kazu', I found 6 other possibilities ... , suuzi, suu-->
         <guiname xml:lang="x-tokipona">nanpa ijo</guiname>
@@ -155,5 +156,11 @@
     </field>
 
   </fieldlist>
+
+  <functionlist>
+    <function name="smartpath">
+      <class>org.mmbase.module.core.SmartPathFunction</class>
+    </function>
+  </functionlist>
 
 </builder>
