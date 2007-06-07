@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.19 2007-03-30 14:47:08 johannes Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.20 2007-06-07 12:03:03 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -41,7 +41,9 @@ public class TreeIncludeTag extends IncludeTag {
     private TreeHelper th = new TreeHelper();
 
     public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
+        if (log.isDebugEnabled()) {
+            log.debug("Starttag " + getId());
+        }
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
@@ -69,6 +71,9 @@ public class TreeIncludeTag extends IncludeTag {
         }
 
         url.setLegacy();
+        if (log.isDebugEnabled()) {
+            log.debug("URL " + url);
+        }
         return EVAL_BODY_BUFFERED;
     }
 

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.19 2007-03-30 14:47:08 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.20 2007-06-07 12:03:03 michiel Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
@@ -59,6 +59,9 @@ public class LeafIncludeTag extends IncludeTag {
             }
         } else {
             String leafPage = th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
+            if (log.isDebugEnabled()) {
+                log.debug("Found " + leafPage + " from " + getPage());
+            }
             url = new Url(this, leafPage , getComponent(), parameters, true);
         }
 

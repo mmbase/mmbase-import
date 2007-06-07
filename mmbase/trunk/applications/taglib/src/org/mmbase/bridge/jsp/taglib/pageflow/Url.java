@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.21 2007-03-30 20:46:32 michiel Exp $;
+ * @version $Id: Url.java,v 1.22 2007-06-07 12:03:03 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -107,12 +107,13 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
     public String getLegacy(boolean writeamp) throws JspTagException {
-        Map m = new HashMap();
+        Map<String, Object> m = new HashMap<String, Object>();
         for (Map.Entry<String, ?> entry : params) {
             m.put(entry.getKey(), entry.getValue());
         }
-        pageLog.service("getting legacy: " + page);
-        return BasicFramework.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        String res = BasicFramework.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        pageLog.service("getting legacy: " + page + " -> " + res);
+        return res;
       }
     
     /**
@@ -153,11 +154,13 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             } else {
                 block = component.getBlock(page);
             }
-            if (block == null) {
-                log.debug("There is no block " + page + " in component " + component);
-                // could give error here if component was explicit?
-            } else {
-                log.debug("found block " + block);
+            if (log.isDebugEnabled()) {
+                if (block == null) {
+                    log.debug("There is no block " + page + " in component " + component);
+                    // could give error here if component was explicit?
+                } else {
+                    log.debug("found block " + block);
+                }
             }
         } else {
             log.debug("No component");
@@ -182,10 +185,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             log.debug("not a block");
             // no component, this is a normal 'link'. no compoments, so no block can be guessed.
             if (internal) {
-                log.warn("Creating internal url link to page: " + page);
+                log.debug("Creating internal url link to page: " + page);
                 result = framework.getInternalUrl(page, (Renderer)null, component, new Parameters(params), frameworkParams).toString();
             } else {
-                log.warn("Creating normal url link to page: " + page);
+                log.debug("Creating normal url link to page: " + page);
                 result = framework.getUrl(page, component, new Parameters(params), frameworkParams, writeamp).toString();
             }
         }
