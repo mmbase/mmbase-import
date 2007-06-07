@@ -32,7 +32,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.19 2007-06-07 13:23:24 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.20 2007-06-07 13:51:53 michiel Exp $
  */
 
 public class TreeHelper {
@@ -304,7 +304,9 @@ public class TreeHelper {
         Parameters params = f.createParameters();
         params.set("root", MMBaseContext.getHtmlRoot());
         params.set("path", middle);
-        params.set("version", version);
+        if (! version.equals("")) {
+            params.set("version", version);
+        }
         params.set("nodeNumber", objectNumber);
         params.set("loader",   ResourceLoader.getWebRoot());
         params.set("backwardsCompatible",  backwardsCompatible);
