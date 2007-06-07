@@ -260,6 +260,16 @@
       <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
+    <field name="gender">
+      <gui>
+        <guiname xml:lang="en">Gender</guiname>
+        <guiname xml:lang="nl">Geslacht</guiname>
+        <guiname xml:lang="eo">Genro</guiname>
+        <guiname xml:lang="fr">Genre</guiname>
+      </gui>
+      <datatype base="gender" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
     <field name="username">
       <gui>
         <guiname xml:lang="nl">Gebruikersnaam</guiname>
