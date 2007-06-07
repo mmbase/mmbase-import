@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.15 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: FunctionProvider.java,v 1.16 2007-06-07 15:23:56 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
@@ -67,12 +67,14 @@ public abstract class FunctionProvider {
     /**
      * Adds a function to the FunctionProvider. So, you can implement any function and add it to the
      * provider, to make it provide this function too.
+     * @return The function previously assigned with this name or <code>null</code> if no such function.
      */
-    public void addFunction(Function function) {
-        Object oldValue = functions.put(function.getName(), function);
+    public Function addFunction(Function function) {
+        Function oldValue = functions.put(function.getName(), function);
         if (oldValue != null) {
             log.debug("Replaced " + oldValue + " by " + function);
         }
+        return oldValue;
     }
 
     /**
