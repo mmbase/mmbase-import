@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.6 2007-06-07 13:41:09 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.7 2007-06-07 13:45:23 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2072,7 +2072,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @deprecated Plug in new {@link #SmartPathFunction} .This method will be finalized in MMBase 1.9 and removed afterwards.
      */
-    public final String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         //backwards compatibilty
         File dir = new File(documentRoot+path);
         if (version != null) nodeNumber += "." + version;
