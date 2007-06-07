@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.5 2007-06-05 13:05:35 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.6 2007-06-07 16:07:07 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -437,7 +437,7 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public Set getFunctions() {
+    public Set getFunctions(final MMObjectBuilder buil) {
         Set results = new HashSet();
         for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
@@ -448,7 +448,7 @@ public class BuilderReader extends DocumentReader {
 
                 Function function;
                 log.service("Using " + functionClass);
-                Class claz = Class.forName(functionClass);
+                final Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
                     if (!providerKey.equals("")) {
                         log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
@@ -468,7 +468,19 @@ public class BuilderReader extends DocumentReader {
                         log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
                         continue;
                     }
-                    function = BeanFunction.getFunction(claz, providerKey);
+                    function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
+                            public Object getInstance() {
+                                try {
+                                    return BeanFunction.getInstance(claz, buil);
+                                } catch (Exception e) {
+                                    log.error(e.getMessage(), e);
+                                    return null;
+                                }
+                            }
+                            public String toString() {
+                                return "" + claz.getName() + "." + buil.getTableName();
+                            }
+                        });
                 }
                 if (! functionName.equals("") && ! function.getName().equals(functionName)) {
                     log.service("Wrapping " + function.getName() + " to " + functionName);
@@ -481,6 +493,7 @@ public class BuilderReader extends DocumentReader {
                 NodeFunction nf = NodeFunction.wrap(function);
                 if (nf != null) function = nf;
 
+                log.info("Found new function " + function + " for builder " + buil.getTableName());
                 results.add(function);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
