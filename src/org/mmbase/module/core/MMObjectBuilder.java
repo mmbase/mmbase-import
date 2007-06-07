@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.7 2007-06-07 13:45:23 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.8 2007-06-07 16:08:08 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -369,7 +369,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                         }
                 });
             smartPathFunction = NodeFunction.wrap(bf);
-            log.info("using  smart path function " + smartPathFunction + " with producer " + bf.getProducer());
+            log.debug("Using smartpath function " + smartPathFunction + " with producer " + bf.getProducer());
             addFunction(smartPathFunction);
         } catch (Exception e) {
             log.error("smartpath" + e, e);
