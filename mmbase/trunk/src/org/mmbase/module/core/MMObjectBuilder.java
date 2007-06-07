@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.412 2007-06-07 13:22:06 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.413 2007-06-07 17:06:04 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -332,25 +332,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         addFunction(infoFunction);
     }
 
-    protected NodeFunction smartPathFunction;
-    { 
-        final int id = super.hashCode(); // a unique id for every builder instance. (tableName not yet initalized)
-        try {
-            BeanFunction bf = BeanFunction.getFunction(SmartPathFunction.class, "smartpath", new BeanFunction.Producer() {
-                        public Object getInstance() {
-                            return new SmartPathFunction(MMObjectBuilder.this);
-                        }
-                        public String toString() {
-                            return "" + id;
-                        }
-                });
-            smartPathFunction = NodeFunction.wrap(bf);
-            log.service("Using  smart path function " + smartPathFunction + " with producer " + bf.getProducer());
-            addFunction(smartPathFunction);
-        } catch (Exception e) {
-            log.error("smartpath" + e, e);
-        }
-    }
 
     // contains the builder's field definitions
     protected final Map<String, CoreField> fields = new HashMap<String, CoreField>();
@@ -1966,7 +1947,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.
      */
-    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+    public final String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         if (log.isDebugEnabled()) {
             log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
         }
