@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.72 2007-03-30 14:40:55 johannes Exp $
+ * @version $Id: IncludeTag.java,v 1.73 2007-06-07 12:03:03 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -50,6 +50,8 @@ public class IncludeTag extends UrlTag {
 
     public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
     public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
+
+    protected static int MAX_INCLUDE_LEVEL = -1;
 
 
     protected Attribute debugType = Attribute.NULL;
@@ -106,7 +108,9 @@ public class IncludeTag extends UrlTag {
     
 
     public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
+        if (log.isDebugEnabled()) {
+            log.debug("starttag " + getId());
+        }  
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
@@ -233,17 +237,17 @@ public class IncludeTag extends UrlTag {
      */
     protected void handleResponse(int code, String result, String url) throws JspTagException {
 
-        String page;
+        String output;
         switch(code) {
         case 200:
-            page = result;
+            output = result;
             break;
         default:
         case 404:
             switch(Notfound.get(notFound, this)) {
             case Notfound.SKIP:
             case Notfound.PROVIDENULL:
-                page = "";
+                output = "";
                 break;
             case Notfound.THROW:
                 if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
@@ -252,11 +256,11 @@ public class IncludeTag extends UrlTag {
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
                 if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
-                page = result;
+                output = result;
             }
             break;
         }
-        helper.setValue(debugStart(url) + page + debugEnd(url));
+        helper.setValue(debugStart(url) + output + debugEnd(url));
     }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
@@ -390,6 +394,16 @@ public class IncludeTag extends UrlTag {
      * Includes another page in the current page.
      */
     protected void includePage() throws JspTagException {
+        if (MAX_INCLUDE_LEVEL == -1) {
+            String s =  pageContext.getServletContext().getInitParameter("mmbase.taglib.max_include_level");
+            if (s != null && ! "".equals(s)) {
+                MAX_INCLUDE_LEVEL = Integer.parseInt(s);
+            }
+            if (MAX_INCLUDE_LEVEL == -1) {
+                MAX_INCLUDE_LEVEL = 50;
+            }
+        }
+
         try {
             String gotUrl = url == null ? null : url.get(false);
             if (gotUrl == null) {
@@ -460,23 +474,27 @@ public class IncludeTag extends UrlTag {
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
+                request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
 
                 if (log.isDebugEnabled()) {
                     log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
                 }
 
-                if (getCite()) {
-                    cite(bodyContent, includedServlet, request);
+                if (includeLevel < MAX_INCLUDE_LEVEL) {
+                    if (getCite()) {
+                        cite(bodyContent, includedServlet, request);
+                    } else {
+                        internal(bodyContent, includedServlet, request, response);
+                    }
                 } else {
-                    internal(bodyContent, includedServlet, request, response);
+                    log.error("TOO DEEP mm:include recursion (" + includedServlet + ")");
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
                 if (includeLevel == 0) {
                     request.removeAttribute(INCLUDE_LEVEL_KEY);
                 } else {
-                    request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
+                    request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
                 }
 
             } else { // really absolute
