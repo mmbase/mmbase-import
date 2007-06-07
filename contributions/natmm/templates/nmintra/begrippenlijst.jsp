@@ -14,7 +14,7 @@ if ((passedLetter != null) && (passedLetter.matches("[A-Z]"))) {
 indexLetter = passedLetter;
 }
 
-String indexConstraint = "left(name,1) ='" + indexLetter + "' order by name";
+String indexConstraint = "left(word,1) ='" + indexLetter + "' order by word";
 %>
 <script>
 function ShowHideLayer(divID) {
@@ -58,8 +58,8 @@ if(twoColumns) {
 
 <h3><%=indexLetter%></h3>
 
-    <mm:listnodes type="terms" constraints="<%=indexConstraint%>">
-    	<a href="javascript:ShowHideLayer(<mm:field name="number"/>)"><mm:field name="name"/></a>
+    <mm:listnodes type="vraagbaak_keywords" constraints="<%=indexConstraint%>">
+    	<a href="javascript:ShowHideLayer(<mm:field name="number"/>)"><mm:field name="word"/></a>
     	<br/>
     	
     	<div id ="<mm:field name="number"/>" style="display:none;">
