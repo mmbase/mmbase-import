@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.4 2007-06-05 15:10:01 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.5 2007-06-07 13:33:34 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -355,13 +355,33 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         addFunction(infoFunction);
     }
 
+
+    protected NodeFunction smartPathFunction;
+    { 
+        final int id = super.hashCode(); // a unique id for every builder instance. (tableName not yet initalized)
+        try {
+            BeanFunction bf = BeanFunction.getFunction(SmartPathFunction.class, "smartpath", new BeanFunction.Producer() {
+                        public Object getInstance() {
+                            return new SmartPathFunction(MMObjectBuilder.this);
+                        }
+                        public String toString() {
+                            return "" + id;
+                        }
+                });
+            smartPathFunction = NodeFunction.wrap(bf);
+            log.info("using  smart path function " + smartPathFunction + " with producer " + bf.getProducer());
+            addFunction(smartPathFunction);
+        } catch (Exception e) {
+            log.error("smartpath" + e, e);
+        }
+    }
     // contains the builder's field definitions
     protected final Map fields = new HashMap();
 
     /**
      * Determines whether a builder is virtual (data is not stored in the storage layer).
      */
-    protected boolean virtual=false;
+    protected boolean virtual = false;
 
     /**
      *  Set of remote observers, which are notified when a node of this type changes
@@ -1806,6 +1826,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     protected Function getFunction(MMObjectNode node, String functionName) {
+        log.info("Getting function " + functionName + " for " + node.getNumber() + " " + getTableName());
         Function function = getFunction(functionName);
         if (function instanceof NodeFunction) {
             return ((NodeFunction) function).newInstance(node);
@@ -1819,6 +1840,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     protected Collection getFunctions(MMObjectNode node) {
+        log.info("Getting functions for " + node.getNumber() + " " + getTableName());
         Collection builderFunctions = getFunctions();
         Collection nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
@@ -1897,20 +1919,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             } catch(Exception e) {
                 log.debug(Logging.stackTrace(e));
                 return e.toString();
-            }
-        } else if (function.equals("smartpath")) {
-            try {
-                String documentRoot = (String) arguments.get(0);
-                String path = (String) arguments.get(1);
-                String version = (String) arguments.get(2);
-                if (version != null) {
-                    if (version.equals("")) {
-                        version = null;
-                    }
-                }
-                return getSmartPath(documentRoot, path, "" + node.getNumber(), version);
-            } catch(Exception e) {
-                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
             }
         }
 
@@ -2058,19 +2066,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
-     * The system searches in a provided base path for a filename that matches the supplied number/alias of
-     * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
-     * @move maybe to a different SmartPathFunction class?
-     * @param documentRoot the root of the path to search
-     * @param path the subpath of the path to search
-     * @param nodeNumber the number or alias of the node to filter on
-     * @param version the version number (or <code>null</code> if not applicable) to filter on
-     * @return the found path as a <code>String</code>, or <code>null</code> if not found
-     * This method should be added to the bridge so jsp can make use of it.
-     * This method can be overriden to make an even smarter search possible.
+     * @deprecated Plug in new {@link #SmartPathFunction} .This method will be finalized in MMBase 1.9 and removed afterwards.
      */
-    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+    public final String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+        //backwards compatibilty
         File dir = new File(documentRoot+path);
         if (version != null) nodeNumber += "." + version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
@@ -2336,12 +2335,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
-    String tmp = null;
+        String tmp = null;
         if (singularNames != null) {
             tmp = (String)singularNames.get(lang);
             if (tmp == null) tmp = (String)singularNames.get(mmb.getLanguage());
             if (tmp == null) tmp = (String)singularNames.get("en");
-    }
+        }
         if (tmp == null) tmp = tableName;
         return tmp;
     }
