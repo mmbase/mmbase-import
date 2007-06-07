@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.3 2007-03-28 12:22:23 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.4 2007-06-07 16:07:47 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1185,7 +1185,7 @@ public class MMBase extends ProcessorModule {
                 parser.getDataTypes(builder.getDataTypeCollector());
                 builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
                 builder.getStorageConnector().addIndices(parser.getIndices(builder));
-                Iterator f = parser.getFunctions().iterator();
+                Iterator f = parser.getFunctions(builder).iterator();
                 while (f.hasNext()) {
                     Function func = (Function) f.next();
                     builder.addFunction(func);
