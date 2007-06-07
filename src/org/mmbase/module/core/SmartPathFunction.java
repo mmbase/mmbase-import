@@ -19,16 +19,11 @@ import org.mmbase.util.logging.*;
  * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
  * The system searches in a provided base path for a filename that matches the supplied number/alias of
  * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
- * @move maybe to a different SmartPathFunction class?
- * @param documentRoot the root of the path to search
- * @param path the subpath of the path to search
- * @param nodeNumber the number or alias of the node to filter on
- * @param version the version number (or <code>null</code> if not applicable) to filter on
- * @return the found path as a <code>String</code>, or <code>null</code> if not found
- * This method should be added to the bridge so jsp can make use of it.
- * This method can be overriden to make an even smarter search possible.
+ *
+ * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
+ * @version $Id: SmartPathFunction.java,v 1.2 2007-06-07 13:04:02 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -43,7 +38,9 @@ public class SmartPathFunction {
     public SmartPathFunction(MMObjectBuilder p) {
         parent = p;
     }
-
+    /**
+     * The number or alias of the node to filter on
+     */
     public void setNodeNumber(String nm) {
         log.debug("Setting " + nodeNumber);
         nodeNumber = nm;
@@ -54,11 +51,17 @@ public class SmartPathFunction {
             nodeNumber = "" + n.getNumber();
         }
     }
-
+    /**
+     * The version number (or <code>null</code> if not applicable) to filter on
+     */
     public void setVersion(String v) {
         version = v;
     }
 
+    /**
+     * the root of the path to search.
+     * @deprecated Use {@link #setLoader(ResourceLoder)}.
+     */
     public void setRoot(String r) {
         documentRoot = r;
     }
@@ -69,11 +72,15 @@ public class SmartPathFunction {
     public ResourceLoader getLoader() {
         return webRoot;
     }
-
+    /**
+     * The subpath of the path to search
+     */
     public void setPath(String p) {
         path = p;
     }
-    
+    /**
+     * The found path as a <code>String</code>, or <code>null</code> if not found    
+     */
     public String smartpath() {
         log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
         if (webRoot != null) {
