@@ -5,8 +5,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="educations" maintainer="didactor.nl" version="3" extends="object">
 
-  <class>nl.didactor.builders.SmartpathBuilder</class>
-
+  <class>nl.didactor.builders.DidactorBuilder</class>
   <searchage>-1</searchage>
 
   <names>
@@ -135,8 +134,14 @@
 
   </fieldlist>
   <functionlist>
+
     <function key="educationLocale" name="locale">
       <class>nl.didactor.builders.Functions</class>
     </function>
+
+    <function name="smartpath">
+      <class>nl.didactor.builders.SmartPathFunction</class>
+    </function>
+
   </functionlist>
 </builder>
