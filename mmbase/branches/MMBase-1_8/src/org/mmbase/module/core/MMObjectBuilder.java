@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.5 2007-06-07 13:33:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.6 2007-06-07 13:41:09 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1826,7 +1826,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     protected Function getFunction(MMObjectNode node, String functionName) {
-        log.info("Getting function " + functionName + " for " + node.getNumber() + " " + getTableName());
+        if (log.isDebugEnabled()) {
+            log.debug("Getting function " + functionName + " for " + node.getNumber() + " " + getTableName());
+        }
         Function function = getFunction(functionName);
         if (function instanceof NodeFunction) {
             return ((NodeFunction) function).newInstance(node);
@@ -1840,7 +1842,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     protected Collection getFunctions(MMObjectNode node) {
-        log.info("Getting functions for " + node.getNumber() + " " + getTableName());
+        if (log.isDebugEnabled()) {
+            log.debug("Getting functions for " + node.getNumber() + " " + getTableName());
+        }
         Collection builderFunctions = getFunctions();
         Collection nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
