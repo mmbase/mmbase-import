@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.22 2007-06-07 12:03:03 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.23 2007-06-07 13:23:24 michiel Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -55,22 +55,27 @@ public class LeafFileTag extends UrlTag {
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
         th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, false);
+        try {
+            if (referid != Attribute.NULL) {
+                if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+                
+                Object o = getObject(getReferid());
+                if (o instanceof Url) {
+                    Url u = (Url) getObject(getReferid());
+                    extraParameters.addAll(u.params);
+                    url = new Url(this, u, parameters, false);
+                } else {
+                    url = new Url(this,  th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
+                }
             } else {
-                url = new Url(this,  th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
+                url = new Url(this, th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
             }
-        } else {
-            url = new Url(this, th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
-        }
         
+        } catch ( java.io.IOException ioe) {
+            throw new TaglibException(ioe);
+        }
         if (getId() != null) {
             parameters.getWrapped(); // dereference this
             getContextProvider().getContextContainer().register(getId(), url); 
