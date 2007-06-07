@@ -5,8 +5,8 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="providers" maintainer="didactor.nl" version="2" extends="object">
 
-  <class>nl.didactor.builders.SmartpathBuilder</class>
-  <searchage>31</searchage>
+  <class>nl.didactor.builders.DidactorBuilder</class>
+  <searchage>-1</searchage>
 
   <names>
     <singular xml:lang="nl">Aanbieder</singular>
@@ -85,4 +85,11 @@
       </datatype>
     </field>
   </fieldlist>
+
+  <functionlist>
+    <function name="smartpath">
+      <class>nl.didactor.builders.SmartPathFunction</class>
+    </function>
+  </functionlist>
+
 </builder>
