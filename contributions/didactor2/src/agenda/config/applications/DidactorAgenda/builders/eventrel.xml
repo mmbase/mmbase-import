@@ -36,8 +36,8 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="this hour" />
-        <minInclusive value="today - 3 week" enforce="change" />
-        <maxInclusive value="today + 25 year" enforce="change" />
+        <minInclusive value="today - 3 week" enforce="onchange" />
+        <maxInclusive value="today + 25 year" enforce="onchange" />
       </datatype>
     </field>
 
@@ -59,8 +59,8 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="this hour + 1 hour" />
-        <minInclusive value="today - 3 week" enforce="change" />
-        <maxInclusive value="today + 25 year" enforce="change" />
+        <minInclusive value="today - 3 week" enforce="onchange" />
+        <maxInclusive value="today + 25 year" enforce="onchange" />
       </datatype>
     </field>
 
