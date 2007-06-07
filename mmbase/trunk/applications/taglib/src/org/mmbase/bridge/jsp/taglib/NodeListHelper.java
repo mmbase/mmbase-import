@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.36 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: NodeListHelper.java,v 1.37 2007-06-07 12:47:55 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -86,7 +86,7 @@ public class NodeListHelper implements ListProvider {
 
     /**
      * Data member to hold an iteration of the values to return.
-     * This variable is set in {@link #setReturnValues(BridgeList<Node>, boolean)}, which
+     * This variable is set in {@link #setReturnValues(BridgeList, boolean)}, which
      * should be called from {@link AbstractNodeListTag#doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
