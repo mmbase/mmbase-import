@@ -90,6 +90,7 @@
       <builder version="0" maintainer="mmbase.org">topics</builder>
       <builder version="0" maintainer="mmbase.org">users</builder>
       <builder version="0" maintainer="mmbase.org">vraagbaak</builder>      
+      <builder version="0" maintainer="mmbase.org">vraagbaak_keywords</builder>    
    </neededbuilderlist>
    <neededreldeflist>
       <reldef source="altrel" target="altrel" direction="bidirectional" guisourcename="altrel" guitargetname="altrel" builder="altrel" />
@@ -122,7 +123,7 @@
       <relation from="vraagbaak" to="items" type="readmore"/>
       <relation from="vraagbaak" to="paragraaf" type="posrel"/>
       <relation from="vraagbaak" to="persoon" type="related"/>
-      <relation from="vraagbaak" to="terms" type="related"/>      
+      <relation from="vraagbaak" to="vraagbaak_keywords" type="related"/>      
       <relation from="vraagbaak" to="contentblocks" type="readmore"/>
       <relation from="community" to="pools" type="related"/>
       <relation from="competencies" to="competencetypes" type="posrel"/>
@@ -315,6 +316,7 @@
       <datasource builder="topics" path="NMIntra/topics.xml"/>
       <datasource builder="users" path="NMIntra/users.xml"/>
       <datasource builder="vraagbaak" path="NMIntra/vraagbaak.xml"/>
+      <datasource builder="vraagbaak_keywords" path="NMIntra/vraagbaak_keywords.xml"/>     
    </datasourcelist>
    <relationsourcelist>
       <relationsource builder="childrel" path="NMIntra/childrel.xml"/>
