@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66.2.2 2007-03-15 10:53:16 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.3 2007-06-07 13:52:24 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -97,8 +97,8 @@ public class IncludeTag extends UrlTag {
     }
 
     public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
-            throw new JspTagException("No attribute 'page' or 'resource' was specified");
+        if (page == Attribute.NULL && resource == Attribute.NULL && referid == Attribute.NULL) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
         }
         return super.doStartTag();
     }
@@ -115,6 +115,9 @@ public class IncludeTag extends UrlTag {
         }
         try {
             URL includeURL = new URL(absoluteUrl);
+
+            log.service("Opening onnection with " + includeURL);
+
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 
@@ -184,6 +187,7 @@ public class IncludeTag extends UrlTag {
             } catch (java.net.ConnectException ce) {
                 result = "For " + includeURL + ": " + ce.getMessage();
                 responseCode = -1;
+                log.warn(result);
             }
 
             handleResponse(responseCode, result, absoluteUrl);
@@ -277,10 +281,12 @@ public class IncludeTag extends UrlTag {
 
         }
         // Orion bug fix.
-        req.getParameterMap();
+        //req.getParameterMap();
 
         HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
-
+        if (log.isTraceEnabled()) {
+            log.trace("Attributes " + Collections.list(req.getAttributeNames()) + " -> " + Collections.list(requestWrapper.getAttributeNames()));
+        }
         try {
             ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
@@ -302,7 +308,6 @@ public class IncludeTag extends UrlTag {
 
 
         } catch (Throwable e) {
-            log.error(relativeUrl + " " +  Logging.stackTrace(e));
             throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
         }
 

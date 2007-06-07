@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.18.2.1 2006-11-30 11:22:09 michiel Exp $
+ * @version $Id: TreeFileTag.java,v 1.18.2.2 2007-06-07 13:52:24 michiel Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -50,6 +51,7 @@ public class TreeFileTag extends UrlTag {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
         th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         super.doStartTag();
         helper.setValue(new Comparable() {
                             final TreeFileTag t = TreeFileTag.this;
@@ -74,16 +76,20 @@ public class TreeFileTag extends UrlTag {
 
     protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
-        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving page '" + treePage + "'");
+        try {
+            String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving page '" + treePage + "'");
+            }
+            
+            if (treePage == null || "".equals(treePage)) {
+                throw new JspTagException("Could not find page " + orgPage);
+            }
+            return treePage;
+        } catch (java.io.IOException ioe) {
+            throw new TaglibException(ioe);
         }
 
-        if (treePage == null || "".equals(treePage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-
-        return treePage;
     }
 
 
