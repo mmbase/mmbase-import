@@ -23,19 +23,19 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.4 2007-06-07 13:22:33 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.5 2007-06-07 14:00:20 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
 
-    private final MMObjectBuilder parent;
-    private String nodeNumber;
-    private String version;
-    private String path;
-    private String documentRoot;
-    private boolean backwardsCompatible = true;
+    protected final MMObjectBuilder parent;
+    protected String nodeNumber;
+    protected String version;
+    protected String path;
+    protected String documentRoot;
+    protected boolean backwardsCompatible = true;
 
-    private ResourceLoader webRoot = ResourceLoader.getWebRoot();
+    protected ResourceLoader webRoot = ResourceLoader.getWebRoot();
 
     public SmartPathFunction(MMObjectBuilder p) {
         parent = p;
