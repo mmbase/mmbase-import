@@ -23,9 +23,9 @@ import nl.didactor.component.BasicComponent;
 /**
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ComponentBuilder.java,v 1.12 2007-04-30 13:21:02 michiel Exp $
+ * @version $Id: ComponentBuilder.java,v 1.13 2007-06-07 16:09:48 michiel Exp $
  */
-public class ComponentBuilder extends AbstractSmartpathBuilder {
+public class ComponentBuilder extends DidactorBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(ComponentBuilder.class);
 
@@ -37,7 +37,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
 
         log.info("Registering didactor components");
         NodeSearchQuery query = new NodeSearchQuery(this);
-        List v = new ArrayList();
+        List<Component> v = new ArrayList<Component>();
 
         //register all components
         try {
@@ -57,11 +57,14 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
 
         // Make sure that all applications are correct.
         initApplications();
-
+        
         // Initialize all the components
-        for (int i=0; i<v.size(); i++) {
-            Component c = (Component)v.get(i);
-            c.init();
+        for (Component c : v) {
+            try {
+                c.init();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
         return true;
     }
