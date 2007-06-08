@@ -80,14 +80,21 @@ arr_Areaal = new Array
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-function jsc_ClearArea(selectCtrl)
+function jsc_ClearUnselectedOptions()
 {
+	var selectCtrlArray = new Array(document.forms[0].sel_NatGeb, document.forms[0].sel_Areaal);
+	var selectCtrl;
 	var i;
-	// leeg de lijst
-	for (i = selectCtrl.options.length; i >= 0; i--)
-		{
-			selectCtrl.options[i] = null; 
+	// for top two kart options, clear selection if the kart option is not applicable. more less confusion and more usability on user side
+	for (iCtrl = 0; iCtrl < selectCtrlArray.length; iCtrl++) {
+		selectCtrl = selectCtrlArray[iCtrl];
+		if (!document.forms[0].rad_Gebied[iCtrl].checked) {
+			for (i = 0; i < selectCtrl.options.length; i++)
+			{
+				selectCtrl.options[i].selected = false; 
+			}
 		}
+	}
 }
 
 function jsc_VulSelectUitArray(selectCtrl, itemArray)
@@ -168,7 +175,7 @@ var imagesCoor = new Array();
 function jsc_optie0()
 {
 jsc_VulSelectUitArray(document.forms[0].sel_NatGeb, arr_NatGeb[document.forms[0].sel_Beheereenheden.selectedIndex]);
-//jsc_ClearArea(document.forms[0].sel_Areaal);
+jsc_ClearUnselectedOptions();
 
 <% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied(en)"); %>
 
@@ -188,7 +195,7 @@ document.forms[0].sel_Kaart.length=0;
 function jsc_optie1()
 {
 jsc_VulSelectUitArray(document.forms[0].sel_Areaal, arr_Areaal[document.forms[0].sel_gebieden.selectedIndex]);
-//jsc_ClearArea(document.forms[0].sel_NatGeb);
+jsc_ClearUnselectedOptions();
 
 <% kartTypes = (ArrayList) selKaartMap.get("Eenheid"); %>
 
@@ -204,6 +211,7 @@ document.forms[0].sel_Kaart.length=0;
 
 function jsc_optie2()
 {
+jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
 document.forms[0].sel_Kaart.length=0;
@@ -218,6 +226,7 @@ document.forms[0].sel_Kaart.length=0;
 
 function jsc_optie3()
 {
+jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
 document.forms[0].sel_Kaart.length=0;

@@ -50,6 +50,7 @@
                   <td>
                   <%
                    	String[] kartNodes = item.getSel_Kaart();
+                   	if (kartNodes != null) {
                    	for (int iNodes = 0; iNodes < kartNodes.length; iNodes++) {
                    		String nodeNumber = kartNodes[iNodes];	
                   %>
@@ -60,6 +61,7 @@
                   	 if (iNodes != (kartNodes.length - 1)) {
                   	 	out.print(", ");
                   	 }
+                    } 
                    }
                    %>
                   </td>
