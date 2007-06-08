@@ -183,12 +183,18 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied(en)'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+	<mm:index jspvar="topIndex" write="false" vartype="Integer">
 		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesNat[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+	<mm:relatednodes type="images" max="1">
+		imagesNat[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
+	</mm:relatednodes>	
+	</mm:index>
 	</mm:field>
 	</mm:field>
-	//
-// APPLY TO ALL !!!
-		imagesNat[<mm:index/>-1] = "http://localhost:8080/natmm-intranet/nmintra/media/vastgoed/Nicolao%20Visscher.jpg";  //this will come from the DB 
+	<mm:relatednodes type="images" max="1">
+		imagesNat[<mm:index/>-1] = "<mm:image template="s(132x106)" />";  
+	</mm:relatednodes>	
 </mm:listnodes>
 }
 
@@ -203,7 +209,13 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Eenheid'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+	<mm:index jspvar="topIndex" write="false" vartype="Integer">
 		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesEen[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+	<mm:relatednodes type="images" max="1">
+		imagesEen[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
+	</mm:relatednodes>	
+	</mm:index>
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
@@ -218,7 +230,13 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Nederland'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
+	<mm:index jspvar="topIndex" write="false" vartype="Integer">
 		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesNede[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+	<mm:relatednodes type="images" max="1">
+		imagesNede[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
+	</mm:relatednodes>	
+	</mm:index>
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
@@ -233,7 +251,13 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Coordinaten'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+		<mm:index jspvar="topIndex" write="false" vartype="Integer">
+		document.forms[0].sel_Kaart[<%=topIndex%>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesCoor[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+	<mm:relatednodes type="images" max="1">
+		imagesCoor[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
+	</mm:relatednodes>	
+	</mm:index>
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
@@ -469,7 +493,7 @@ formulier.">
 		<tr>
 			<td width="96" align="left">kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
 			<td width="139">
-				<img id="kartPicture" style="cursor:pointer" src="../../media/vastgoed/Nicolao%20Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
+				<img id="kartPicture" style="cursor:pointer" src="../../media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
 					onClick="javascript:small_window('kaart_popup.jsp');">
 
 			</td>
