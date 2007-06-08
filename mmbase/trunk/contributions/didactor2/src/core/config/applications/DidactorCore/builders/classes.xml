@@ -56,11 +56,6 @@
         <guiname xml:lang="nl">Pad</guiname>
         <guiname xml:lang="en">Path</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>2</list>
-        </positions>
-      </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
         <maxLength value="255" />
