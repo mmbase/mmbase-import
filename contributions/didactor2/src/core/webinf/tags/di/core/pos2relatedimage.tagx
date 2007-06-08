@@ -16,19 +16,19 @@
               <mm:image mode="img" styleClass="pos2rel image-left" />
             </c:when>
             <c:when test="${rel.pos2rel.pos1 eq 3}">
-              <mm:import id="maxwidth">60</mm:import>
+              <mm:import id="maxwidth" vartype="integer">60</mm:import>
               <mm:image mode="img" styleClass="pos2rel image-right" template="s(${maxwidth})" />
             </c:when>
             <c:when test="${rel.pos2rel.pos1 eq 4}">
-              <mm:import id="maxwidth">60</mm:import>
+              <mm:import id="maxwidth" vartype="integer">60</mm:import>
               <mm:image mode="img" styleClass="pos2rel image-left" template="s(${maxwidth})" />
             </c:when>
             <c:when test="${rel.pos2rel.pos1 eq 5}">
-              <mm:import id="maxwidth">180</mm:import>
+              <mm:import id="maxwidth" vartype="integer">180</mm:import>
               <mm:image mode="img" styleClass="pos2rel image-right" template="s(${maxwidth})" />
             </c:when>
             <c:when test="${rel.pos2rel.pos1 eq 6}">
-              <mm:import id="maxwidth">180</mm:import>
+              <mm:import id="maxwidth" vartype="integer">180</mm:import>
               <mm:image mode="img" styleClass="pos2rel image-left" template="s(${maxwidth})" />
             </c:when>
             <c:when test="${rel.pos2rel.pos1 eq 7}">
@@ -42,9 +42,9 @@
             </c:otherwise>
           </c:choose>
         </mm:import>
-        <c:choose>
+        <c:choose>         
           <c:when test="${rel.pos2rel.pos2 eq 1 and (! empty maxwidth) and _node.width gt maxwidth}">
-            <mm:image template="s(800x800&lt;)">
+            <mm:image template="s(800x800&gt;)">
               <a href="${_}"
                  onclick="window.open(this.href, '${mm:escape('identifier', _node.title)}', 'width=${dimension.width + 20},height=${dimension.height + 20}'); return false;">
                 <mm:write escape="none" referid="html" />
