@@ -100,7 +100,7 @@ public abstract class Component {
                 try {
                     this.barposition = Integer.parseInt(componentNode.getAttribute("barposition"));
                 } catch (Exception e) {
-                    log.warn(e);
+                    log.debug(e);
                 }
 
                 NodeList childNodes = componentNode.getChildNodes();

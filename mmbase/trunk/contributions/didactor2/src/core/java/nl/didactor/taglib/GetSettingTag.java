@@ -21,7 +21,6 @@ public class GetSettingTag extends CloudReferrerTag implements Writer {
     private String setting;
 
     /**
-     * Set the value for the 'component' argument of the GetSetting tag
      * @param component Component value
      */
     public void setComponent(String component) {
@@ -29,7 +28,6 @@ public class GetSettingTag extends CloudReferrerTag implements Writer {
     }
 
     /**
-     * Set the value for the 'setting' argument of the GetSetting tag
      * @param setting Setting name
      */
     public void setSetting(String setting) {
