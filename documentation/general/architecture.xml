@@ -740,7 +740,8 @@
       <listitem>
         <para>favorites</para>
 
-        <para>Store and read the favorite pages for users. ???</para>
+        <para>gives visitors the ability to save and view favorite
+        pages</para>
       </listitem>
 
       <listitem>
@@ -786,7 +787,8 @@
       <listitem>
         <para>rating</para>
 
-        <para>Visitors can give a rating to a contentelement ???</para>
+        <para>visitors can give a rating to a contentelement, average ratings
+        as one to five stars.</para>
       </listitem>
 
       <listitem>
@@ -865,7 +867,9 @@
       <listitem>
         <para>email alerts</para>
 
-        <para>email alerts implementation ???</para>
+        <para>the visitors of the website can subscribe to changes on articles
+        on a page. The editors have editwizards by which they can configure
+        the texts of the emails.</para>
       </listitem>
 
       <listitem>
