@@ -1,6 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>  
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<jsp:scriptlet>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><jsp:scriptlet>
   String imageName = "";
   String sAltText = "";
 </jsp:scriptlet>
@@ -71,7 +71,7 @@
                         <mm:param name="relationRole">related</mm:param>
                         <mm:param name="relationOriginNode">${_node}</mm:param>
                         <a href="${_}${forbidtemplate}"
-                           title='<di:translate key="education.persons" />' target="text">
+                           title='${di:translate(pageContext, 'education.persons')}' target="text">
                         <mm:field name="name" />
                       </a>
                     </mm:link>
@@ -86,16 +86,45 @@
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/class/classes&nodepath=classes&orderby=name&fields=name&searchfields=name&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="education.classes" />" target="text"><di:translate key="education.classes" /></a></nobr></td>
+               <td>
+                 <mm:link referid="listjsp">
+                   <mm:param name="wizard">config/class/classes</mm:param>
+                   <mm:param name="nodepath">classes</mm:param>
+                   <mm:param name="search">yes</mm:param>
+                   <mm:param name="orderby">number</mm:param>
+                   <mm:param name="directions">down</mm:param>
+                   <nobr>
+                     &nbsp;
+                     <a href="${_}${forbidtemplate}"
+                        title="${di:translate(pageContext, 'education.classes')}"
+                        target="text">
+                       <di:translate key="education.classes" />
+                     </a>                     
+                   </nobr>
+                 </mm:link>
+               </td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/workgroup/workgroups&nodepath=workgroups&orderby=name&fields=name&searchfields=name&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="education.workgroups" />" target="text"><di:translate key="education.workgroups" /></a></nobr></td>
+               <td>
+                 <mm:link referid="listjsp">
+                   <mm:param name="wizard">config/workgroup/workgroups</mm:param>
+                   <mm:param name="nodepath">workgroups</mm:param>
+                   <mm:param name="search">yes</mm:param>
+                   <mm:param name="orderby">number</mm:param>
+                   <mm:param name="directions">down</mm:param>
+                   <nobr>&nbsp;
+                   <a href="${_}${forbidtemplate}"
+                      title="${di:translate(pageContext, 'education.workgroups')}"  target="text">
+                     <di:translate key="education.workgroups" />
+                   </a>
+                   </nobr>
+                 </mm:link>
+               </td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
