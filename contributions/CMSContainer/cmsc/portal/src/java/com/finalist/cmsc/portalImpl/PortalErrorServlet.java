@@ -11,13 +11,10 @@ package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
 import net.sf.mmapps.commons.util.HttpUtil;
 
@@ -25,8 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 
@@ -35,20 +33,12 @@ public class PortalErrorServlet extends PortalServlet {
 
     private static Log log = LogFactory.getLog(PortalErrorServlet.class);
 
-    /** the date + time long format */
-    private static final SimpleDateFormat DATE_TIME_FORMAT =
-       new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
     public static final String ERROR_STATUS_CODE = "javax.servlet.error.status_code";
-
     public static final String ERROR_EXCEPTION_TYPE = "javax.servlet.error.exception_type";
-
     public static final String ERROR_MESSAGE = "javax.servlet.error.message";
-
     public static final String ERROR_EXCEPTION = "javax.servlet.error.exception";
-
     public static final String ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
-
+    
     protected ServletConfig config;
 
     protected static final String[] vars = {
@@ -77,18 +67,13 @@ public class PortalErrorServlet extends PortalServlet {
                 Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
                 log.debug("===>getErrorScreen:'" + path + "'");
                 Site site = SiteManagement.getSiteFromPath(path);
+                Site errorPageSite = null;
                 if (site != null) {
                     if (SiteManagement.isNavigation(site.getUrlfragment() + PATH_SP + statusCode)) {
-                        logError(request);
-                        String redirectUrl = getErrorUrl(request, path, statusCode, site);
-                        response.sendRedirect(redirectUrl);
-                    }
-                    else {
-                        defaultError(request, response, statusCode);
+                        errorPageSite = site;
                     }
                 }
                 else {
-                    Site errorPageSite = null;
                     List<Site> sites = SiteManagement.getSites();
                     for (Site site2 : sites) {
                         if (SiteManagement.isNavigation(site2.getUrlfragment() + PATH_SP + statusCode)) {
@@ -96,15 +81,27 @@ public class PortalErrorServlet extends PortalServlet {
                             break;
                         }
                     }
-                    
-                    if(errorPageSite != null) {
+                }
+                if(errorPageSite != null) {
+                    String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
+                    ScreenFragment screen = getScreen(errorPagePath);
+                    if (screen != null) {
                         logError(request);
-                        String redirectUrl = getErrorUrl(request, path, statusCode, errorPageSite);
-                        response.sendRedirect(redirectUrl);
+                        
+                        HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPagePath);
+                        PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
+                        
+                        PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
+                        response.setContentType(CONTENT_TYPE);
+                        ScreenFragment oldScreen = registry.getScreen();
+                        registry.setScreen(screen);
+                        screen.service(request, response);
+                        
+                        registry.setScreen(oldScreen);
                     }
-                    else {
-                        defaultError(request, response, statusCode);
-                    }
+                }
+                else {
+                    defaultError(request, response, statusCode);
                 }
             } catch (Throwable t) {
                 log.fatal("Error processing", t);
@@ -114,28 +111,6 @@ public class PortalErrorServlet extends PortalServlet {
             basicErrorPage(request, response);
         }
         log.debug("===>PortalErrorServlet.doGet EXIT!");
-    }
-
-    private String getErrorUrl(HttpServletRequest request, String path, Integer statusCode, Site site) {
-        String host = null;
-        String link = null;
-        if(ServerUtil.useServerName()) {
-           host = site.getUrlfragment();
-           link = statusCode.toString();
-        }
-        else {
-            link = site.getUrlfragment() + PATH_SP + statusCode;
-        }
-        PortalURL u = new PortalURL(host, request, link);
-        
-        StringBuffer completePath = new StringBuffer(u.toString());
-        completePath.append("?");
-        completePath.append(statusCode);
-        completePath.append("=");
-        completePath.append(path);
-        
-        String redirectUrl = completePath.toString();
-        return redirectUrl;
     }
 
     private void defaultError(HttpServletRequest request, HttpServletResponse response,
@@ -165,16 +140,6 @@ public class PortalErrorServlet extends PortalServlet {
         out.println("</table></body></html>");
     }
 
-    /**
-     * Creates String.from given long according to dd-MM-yyyy HH:mm:ss
-     * 
-     * @param date the date to format
-     * @return Datestring
-     */
-    public static String getDateTimeString(long date) {
-        return DATE_TIME_FORMAT.format(new Date(date));
-    }
-
     public void logError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
         Throwable exception = (Throwable) request.getAttribute(ERROR_EXCEPTION);
@@ -195,5 +160,22 @@ public class PortalErrorServlet extends PortalServlet {
             // write errors to mmbase log
             log.error(ticket + ":\n" + msg);
         }
+    }
+    
+    
+    class ErrorHttpServletRequest extends HttpServletRequestWrapper {
+        
+        private String errorPagePath;
+
+        public ErrorHttpServletRequest(HttpServletRequest request, String errorPagePath) {
+            super(request);
+            this.errorPagePath = errorPagePath;            
+        }
+        
+        @Override
+        public String getServletPath() {
+            return errorPagePath;
+        }
+        
     }
 }
