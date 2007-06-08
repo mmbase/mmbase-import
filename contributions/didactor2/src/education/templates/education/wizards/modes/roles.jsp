@@ -12,6 +12,7 @@
   <mm:import id="editcontextname" >rollen</mm:import><!-- why is this in dutch -->
   <jsp:directive.include file="../roles_chk.jsp" />
 
+  <mm:import externid="e">${education}</mm:import>
   
   <mm:islessthan referid="rights" referid2="RIGHTS_RW">
     ${rights} &lt; ${RIGHTS_RW}
@@ -87,7 +88,7 @@
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td>
-                 <mm:link referid="listjsp">
+                 <mm:link referid="listjsp" referids="e@education">
                    <mm:param name="wizard">config/class/classes</mm:param>
                    <mm:param name="nodepath">classes</mm:param>
                    <mm:param name="search">yes</mm:param>
