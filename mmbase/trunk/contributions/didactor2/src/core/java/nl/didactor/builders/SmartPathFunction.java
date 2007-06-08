@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since Didactor-2.3
- * @version $Id: SmartPathFunction.java,v 1.3 2007-06-07 21:27:25 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.4 2007-06-08 09:24:34 michiel Exp $
  */
 public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction {
     protected static Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -40,12 +40,12 @@ public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction 
 
     /**
      */
-    public String smartpath() {
+    protected String getSmartPath() {
         if (log.isDebugEnabled()) {
             log.debug("starting getSmartPath(" + webRoot + "," + path + "," + nodeNumber + "," + version + ")");
         }
         if (spFieldNames == null || spFieldNames.length == 0) {
-            return super.smartpath();
+            return super.getSmartPath();
         }
         if (log.isDebugEnabled()) {
             log.debug("Path is '" + path + "', smartpath-prefix is '" + spPathPrefix + "'");
@@ -62,7 +62,7 @@ public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction 
 
         String magName = null;
         if (log.isDebugEnabled()) {
-            log.debug("Going to test with fields " + spFieldNames);
+            log.debug("Going to test with fields " + Arrays.asList(spFieldNames));
         }
         if (node == null) {
             throw new RuntimeException("No node with number " + nodeNumber + " found");
