@@ -1,53 +1,57 @@
 <%@ page import = "java.util.*" 
-%><%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector,org.mmbase.bridge.Node" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
 %><mm:cloud method="delegate" jspvar="cloud">
    <jsp:directive.include file="/shared/setImports.jsp" />
    <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
 
-   <%
-      //education-people connector
-      EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
-   %>
-
+   <mm:import externid="e" jspvar="chosen_education" vartype="string">${education}</mm:import>
    <style type="text/css">
-     .education_top_menu_selected {
+     .education_top_menu {
+       font-weight: bold;
+     }
+     .education_top_menu.selected {
        background:#888586;
-     }
-     .education_top_menu_nonselected {
-       background:#DEDEDE;
-     }
+       }
    </style>
 
    <mm:import externid="mode">components</mm:import>
-   <%
-      Set hsetEducations = null;
-   %>
-   <mm:node number="$user" jspvar="node">
+
+   <mm:node number="$user" >
      <mm:hasrank value="administrator">
-      <%
-         
-         hsetEducations = new HashSet(node.getCloud().getNodeManager("educations").getList(node.getCloud().getNodeManager("educations").createQuery()));
-      %>
+       <mm:listnodes type="educations" id="educations" />
      </mm:hasrank>
      <mm:hasrank value="administrator" inverse="true">
-      <%
-         hsetEducations = educationPeopleConnector.relatedEducations(node);
-      %>
+       <mm:nodelistfunction name="educations" id="educations" />
      </mm:hasrank>
    </mm:node>
 
+
+   <!-- Follows lots of code duplication, why not iterate over all modes or so? -->
+   
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a <mm:compare referid="mode" value="components">class="education_top_menu_selected"</mm:compare> href="?mode=components" style="font-weight:bold;"><di:translate key="education.educationmenucomponents" /></a>
+     <mm:link referids="e" page=".">
+       <mm:param name="mode">components</mm:param>       
+       <a class="${mode eq 'components' ? education_top_menu_selected : ''}"
+          href="${_}">
+         <di:translate key="education.educationmenucomponents" />
+       </a>
+     </mm:link>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a <mm:compare referid="mode" value="roles">class="education_top_menu_selected"</mm:compare> href="?mode=roles" style="font-weight:bold;"><di:translate key="education.educationmenupersons" /></a>
+     <mm:link page="." referids="e">
+       <mm:param name="mode">roles</mm:param>       
+       <a class="education_top_menu ${mode eq 'roles' ? 'selected' : ''}"
+          href="${_}"><di:translate key="education.educationmenupersons" /></a>
+     </mm:link>
+
    </mm:islessthan>
 
    <mm:node number="component.pop" notfound="skipbody">
@@ -56,7 +60,12 @@
        <mm:import id="editcontextname" reset="true">competentie</mm:import>
        <jsp:directive.include file="roles_chk.jsp" />
        <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-         <a <mm:compare referid="mode" value="competence">class="education_top_menu_selected"</mm:compare> href="?mode=competence" style="font-weight:bold;"><di:translate key="education.educationmenucompetence" /></a>
+         <mm:link page="." referids="e">
+           <mm:param name="mode">compentence</mm:param>       
+           <a class="education_top_menu ${mode eq 'compentence' ? 'selected' : ''}"
+              href="${_}">
+           <di:translate key="education.educationmenucompetence" /></a>
+         </mm:link>
        </mm:islessthan>
      </mm:relatednodes>
    </mm:node>
@@ -65,30 +74,40 @@
      <mm:import id="editcontextname" reset="true">metadata</mm:import>
      <jsp:directive.include file="roles_chk.jsp" />
      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-       <a <mm:compare referid="mode" value="metadata">class="education_top_menu_selected"</mm:compare> href="?mode=metadata" style="font-weight:bold;"><di:translate key="education.educationmenumetadata" /></a>
+       <mm:link page="." referids="e">
+         <mm:param name="mode">metadata</mm:param>       
+         <a class="education_top_menu ${mode eq 'metadata' ? 'selected' : ''}"
+            href="${_}">
+         <di:translate key="education.educationmenumetadata" /></a>
+       </mm:link>
      </mm:islessthan>
    </mm:node>
 
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a <mm:compare referid="mode" value="content_metadata">class="education_top_menu_selected"</mm:compare> href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
+     <mm:link page="." referids="e">
+       <mm:param name="mode">content_metadata</mm:param>       
+       <a class="education_top_menu ${mode eq 'content_metadata' ? 'selected' : ''}"
+          href="${_}">
+       <di:translate key="education.educationmenucontentmetadata" /></a>
+     </mm:link>          
    </mm:islessthan>
 
    
-   <%-- TODO, i think the filemanagent feature is intrinsically a bit stupid 
-   DIDACTOR-46
-   I temorpary switched it off for sites which dont' configure it.
-   Should device something better..
-   --%>
-   <% if (getServletContext().getInitParameter("filemanagementBaseDirectory") != null) { %>
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a <mm:compare referid="mode" value="filemanagement">class="education_top_menu_selected"</mm:compare> href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
+     <mm:link page="." referids="e">
+       <mm:param name="mode">filemanagement</mm:param>       
+       <a class="education_top_menu ${mode eq 'filemanagement' ? 'selected' : ''}"
+          href="${_}">
+          <di:translate key="education.educationmenufilemanagement" /></a>
+     </mm:link>
    </mm:islessthan>
-   <% } %>
    
+   <!-- this is stupid -->
+
    <mm:node number="component.virtualclassroom" notfound="skipbody">
      <mm:import id="editcontextname" reset="true">virtualclassroom</mm:import>
      <jsp:directive.include file="roles_chk.jsp" />
@@ -108,56 +127,45 @@
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a <mm:compare referid="mode" value="tests">class="education_top_menu_selected"</mm:compare> href="?mode=tests" style="font-weight:bold;"><di:translate key="education.educationmenutests" /></a>
+     <mm:link page="." referids="e">
+       <mm:param name="mode">tests</mm:param>
+       <a class="education_top_menu ${mode eq 'tests' ? 'selected' : ''}"
+          href="${_}">
+          <di:translate key="education.educationmenutests" /></a>
+     </mm:link>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <jsp:directive.include file="roles_chk.jsp" />
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <span <mm:compare referid="mode" value="educations">class="education_top_menu_selected"</mm:compare>>
-     <% if (hsetEducations.size() < 2) { %>
-       <a href="?mode=educations" style="font-weight:bold;"><di:translate key="education.educationmenueducations" /></a>
-     <% } else { %>
-       <span class="menu_font"><di:translate key="education.educationmenueducations" /></span>
-       <script>
-         function chooseEducation(eid) {
+     <span class="education_top_menu ${mode eq 'educations' ? 'selected' : ''}">
+       <mm:link page="." referids="e">
+         <mm:param name="mode">educations</mm:param>
+         <a href="${_}"><di:translate key="education.educationmenueducations" /></a>
+       </mm:link>
+       <c:if test="${fn:length(educations) ge 2}">
+         <script>
+           function chooseEducation(eid) {
            if (eid != 0) {
-             document.location.href = "?mode=educations&education_topmenu_course=" + eid;
+           document.location.href = "?mode=educations&e=" + eid;
            }
-         }
-       </script>
-       <style>
-         .navigationbar {
-           height: 25px;
-         }
-         .folders {
-           top: 30px;
-         }
-         .maincontent {
-           top: 30px;
-         }
-       </style>
-       <select name="course" id="course"
-               onchange="chooseEducation(this.value);">
-         <option value="0">--------</option>
-         <%
-         for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
-           Node sEducation = (Node) it.next();
-           %>
-           <option
-              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals("" + sEducation.getNumber()))) out.print(" selected=\"selected\" "); %>
-              value="<%=sEducation.getNumber()%>">
-                <mm:node number="<%="" + sEducation.getNumber()%>"><mm:field name="name"/></mm:node>
-           </option>
-           <%
-         }
-       %>
-       </select>
-       <!--
-       <img src="gfx/ga.gif" title="Ga" alt="Ga"
-            onclick="chooseEducation(document.getElementById('course').value)" />
-       -->
-     <% } %>
+           }
+         </script>
+         <select name="course" id="course"
+                 onchange="chooseEducation(this.value);">
+           <option value="0">--------</option>
+           <mm:listnodes referid="educations">
+             <c:choose>
+               <c:when test="${_node eq e}">
+                 <option selected="selected" value="${_node}"><mm:field name="name" /></option>
+               </c:when>
+               <c:otherwise>
+                 <option value="${_node}"><mm:field name="name" /></option>
+               </c:otherwise>
+             </c:choose>
+           </mm:listnodes>
+         </select>           
+       </c:if>
      </span>
   </mm:islessthan>
 </mm:cloud>
