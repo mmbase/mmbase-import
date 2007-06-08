@@ -42,7 +42,7 @@
                      <c:if test="${rank != 'none'}">
                         <tr>
                            <td>
-                              <img src="<cmsc:staticurl page="/editors/gfx/icons/type/empty.gif"/>" alt="<fmt:message key="role.${rank}" />" title="<fmt:message key="role.${rank}" />" align="top"/>
+                              <img src="<cmsc:staticurl page="/editors/gfx/icons/type/group_${rank}.png"/>" alt="<fmt:message key="role.${rank}" />" title="<fmt:message key="role.${rank}" />" align="top"/>
                               <font style="color: #999">(<fmt:message key="role.${rank}" />)</font>
                            </td>
                            <td>
