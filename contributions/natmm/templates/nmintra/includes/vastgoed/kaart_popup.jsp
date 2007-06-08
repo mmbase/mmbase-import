@@ -4,22 +4,12 @@
 <mm:cloud>
 <% 
 String nodeNumber = request.getParameter("node"); 
-String imageNode;
 String kartName = "";
 String kartType = "";
-String kartOpmerking = "";
 %>
 <mm:node number="<%=nodeNumber%>">
 	<mm:field name="naam" jspvar="name" write="false" vartype="String" ><% kartName = name; %></mm:field>
 	<mm:field name="type_gebied" jspvar="type" write="false" vartype="String" ><% kartType = type; %></mm:field>
-	<mm:field name="opmerking" jspvar="opmerking" write="false" vartype="String" ><% kartOpmerking = opmerking; %></mm:field>
-	
-	<%--
-	<mm:related>
-	</mm:related>
-	--%>
-</mm:node>
-
 
 <html>
 <head>
@@ -27,28 +17,18 @@ String kartOpmerking = "";
 </head>
 <body>
 
-
-
 Naam van de kaart: <b><%=kartName%></b> <a href="javascript:window.close()">close</a> 
 <br>
 Informatie betreffende de kaart uit het opmerkingen veld: <br/>
-<%=kartOpmerking%>
+<mm:field name="opmerking"/>
 <br/>
 
-<img src="../../media/vastgoed/Schelde.jpg" border="0">
-
-
-
-
-
-
-
-
-
-
-
-
-
+	<mm:relatednodes type="images" max="1">
+		<img src="<mm:image template="s(400x400)" />" border="0">
+	</mm:relatednodes>
+	
 </body>
 </html>
+
+</mm:node>
 </mm:cloud>
