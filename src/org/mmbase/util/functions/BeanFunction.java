@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.2 2007-06-07 16:05:37 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.3 2007-06-08 08:02:54 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -83,10 +83,10 @@ public class BeanFunction extends AbstractFunction {
         BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
             result = new BeanFunction(claz, name, producer);
-            log.info("Created new function " + result);
+            log.debug("Created new function " + result);
             beanFunctionCache.put(key, result);
         } else {
-            log.info("Found in cache " + result);
+            log.debug("Found in cache " + result);
         }
         return result;
     }
