@@ -193,6 +193,7 @@ document.forms[0].sel_Kaart.length=0;
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
+jsc_setPicture(null);
 }
 
 function jsc_optie1()
@@ -216,6 +217,7 @@ document.forms[0].sel_Kaart.length=0;
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
+jsc_setPicture(null);
 }
 
 function jsc_optie2()
@@ -237,6 +239,7 @@ document.forms[0].sel_Kaart.length=0;
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
+jsc_setPicture(null);
 }
 
 function jsc_optie3()
@@ -258,9 +261,11 @@ document.forms[0].sel_Kaart.length=0;
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
+jsc_setPicture(null);
 }
 
 function jsc_setPicture(selectedIndex) {
+	if (selectedIndex != null) {
 	// use Natuurgebied(en)
 	if(document.forms[0].rad_Gebied[0].checked) {
 		document.getElementById("kartPicture").src=imagesNat[selectedIndex]; 
@@ -276,7 +281,18 @@ function jsc_setPicture(selectedIndex) {
  	// use Coordinaten
 	if(document.forms[0].rad_Gebied[3].checked) {
 		document.getElementById("kartPicture").src=imagesCoor[selectedIndex]; 
+ 	}
+ 	} else {
+ 	// page load here. set to first selected
+ 	var iKaart = 0
+ 	while (iKaart < document.forms[0].sel_Kaart.length) {
+ 	if (document.forms[0].sel_Kaart[iKaart].selected) {
+ 		jsc_setPicture(iKaart);
+ 		}
+ 	iKaart++;
  	} 	
+ 	
+ 	}
 }
 
 -->
