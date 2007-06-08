@@ -176,7 +176,7 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied(en)'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=fieldName%>", true, <%= kartTypes.contains(fieldName)%>);
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
 	</mm:field>
 	</mm:field>
 	//
@@ -196,7 +196,7 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Eenheid'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=fieldName%>", true, <%= kartTypes.contains(fieldName)%>);
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
@@ -210,7 +210,7 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Nederland'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(fieldName)%>);
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
 	</mm:field>
 	</mm:field>
 </mm:listnodes>
@@ -224,7 +224,7 @@ document.forms[0].sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Coordinaten'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(fieldName)%>);
+		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
 	</mm:field>
 	</mm:field>
 </mm:listnodes>

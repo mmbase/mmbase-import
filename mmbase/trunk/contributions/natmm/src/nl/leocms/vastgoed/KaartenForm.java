@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.2 2007-06-07 15:31:24 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.3 2007-06-08 08:00:32 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -146,13 +146,14 @@ public class KaartenForm extends ActionForm{
 		return this.rad_Gevouwen;
 	}
 	
-	public String getKaartSoort() {
-		String kaartSoort = "";
-		for(int i=0; ((sel_Kaart != null) && (i<sel_Kaart.length)); i++) {
-			kaartSoort += (i!=0) ? ", " + sel_Kaart[i] :  sel_Kaart[i];
-		}
-		return kaartSoort;
-	}
+   //sel_Kaart will contain node numbers not kart names so has to be directly retrieved in jsp and processed with mm tags
+//	public String getKaartSoort() {
+//		String kaartSoort = "";
+//		for(int i=0; ((sel_Kaart != null) && (i<sel_Kaart.length)); i++) {
+//			kaartSoort += (i!=0) ? ", " + sel_Kaart[i] :  sel_Kaart[i];
+//		}
+//		return kaartSoort;
+//	}
 	
 	public String getKaartType() {
 		String kartType  = rad_Gebied;
