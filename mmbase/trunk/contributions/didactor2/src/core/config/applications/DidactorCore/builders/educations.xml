@@ -134,13 +134,17 @@
 
   </fieldlist>
   <functionlist>
-
+    
     <function key="educationLocale" name="locale">
       <class>nl.didactor.functions.Functions</class>
     </function>
 
     <function name="smartpath">
       <class>nl.didactor.functions.SmartPath</class>
+    </function>
+    
+    <function key="relatedPersons" name="persons">
+      <class>nl.didactor.component.education.utils.EducationPeopleConnector</class>
     </function>
 
   </functionlist>
