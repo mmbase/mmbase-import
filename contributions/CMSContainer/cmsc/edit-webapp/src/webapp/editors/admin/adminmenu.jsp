@@ -40,8 +40,45 @@
              <li class="admindashboard">
 					<a href="../admindashboard" target="rightpane"><fmt:message key="admin.admindashboard" /></a>
 				</li>
+
+            <cmsc:hasfeature name="luceusmodule">
+            <li class="luceus">
+               <a href="../luceus/fullindex.jsp" target="rightpane"><fmt:message key="modules.fullindex" /></a>
+            </li>
+            </cmsc:hasfeature>
+            <cmsc:hasfeature name="spidermodule">
+               <li class="luceus">
+                  <a href="../nijmegen/spiders.jsp" target="rightpane">Nijmegen indexering GNS etc.</a>
+               </li>
+            </cmsc:hasfeature>
+            <mm:haspage page="/editors/publish-remote">
+               <li class="advancedpublish">
+                  <c:url var="publishUrl" value="/editors/publish-remote/index.jsp"/>
+                  <a href="${publishUrl}" target="rightpane"><fmt:message key="modules.publish" /></a>
+               </li>
+            </mm:haspage>
+            <mm:haspage page="/editors/workflow">
+               <li class="workflow">
+                  <c:url var="workflowUrl" value="/editors/workflow/admin/WorkflowAdminAction.do"/>
+                  <a href="${workflowUrl}" target="rightpane"><fmt:message key="modules.workflow" /></a>
+               </li>
+            </mm:haspage>
+            <mm:haspage page="/editors/knownvisitor-ntlm">
+               <li class="visitor">
+                  <c:url var="visitorNtlmUrl" value="/editors/knownvisitor-ntlm/index.jsp"/>
+                  <a href="${visitorNtlmUrl}" target="rightpane"><fmt:message key="modules.knowvisitor-html" /></a>
+               </li>
+            </mm:haspage>
+            <mm:haspage page="/editors/messageoftheday">
+               <li class="messageoftheday">
+                  <c:url var="messageofthedayUrl" value="/editors/messageoftheday/index.jsp"/>
+                  <a href="${messageofthedayUrl}" target="rightpane"><fmt:message key="modules.messageoftheday" /></a>
+               </li>
+            </mm:haspage>  
+
 			</ul>
-		</cmscedit:sideblock>			
+		</cmscedit:sideblock>		
+      	
 	</mm:hasrank>
 </mm:haspage>
 </mm:cloud>
