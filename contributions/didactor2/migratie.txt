@@ -17,7 +17,7 @@ and restart Tomcat.
    To upgrade mmbob:
     alter table mmb_posters  modify password varchar(128);
     alter table mmb_posters add column state integer;
-    alter table mmb_posters add re state integer;
+    alter table mmb_posters add column state integer;
     alter table mmb_posters add column registrationdate datetime;
 
     alter table mmb_postings add column c_body blob;
@@ -29,6 +29,7 @@ and restart Tomcat.
     alter table mmb_postings add column enable_sig integer;
     alter table mmb_postings add column enable_bbcode integer;
     alter table mmb_postings add column enable_smilies integer;
+    alter table mmb_postings add column state integer;
 
     
 
@@ -95,6 +96,7 @@ and restart Tomcat.
 
      People has a new field:
        alter table mmb_people add gender int(11);
+       alter table mmb_contacts add gender int(11);
      
 
 2006-01-04
