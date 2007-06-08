@@ -19,7 +19,7 @@
 			validate="false">
 			<forward name="wizard" path="/mmbase/edit/wizard/jsp/wizard.jsp" redirect="false" />
 			<forward name="referrer" path="/editors/WizardCloseAction.do" redirect="false" />
-			<forward name="templates" path="/editors/editwizards/" redirect="false" />
+			<forward name="templates" path="/editors/editwizards_new/" redirect="false" />
 			<forward name="newtypes" path="/editors/editwizards/newtypes.jsp" redirect="false" />
 			<forward name="success" path="/editors/empty.html" redirect="false" />
 		</action>
@@ -31,7 +31,7 @@
 			validate="false">
 			<forward name="list" path="/mmbase/edit/wizard/jsp/list.jsp" redirect="false" />
 			<forward name="referrer" path="/editors/empty.html" redirect="false" />
-			<forward name="templates" path="/editors/editwizards/" redirect="false" />
+			<forward name="templates" path="/editors/editwizards_new/" redirect="false" />
 			<forward name="success" path="/editors/mpty.html" redirect="false" />
 		</action>
 	</action-mappings>
