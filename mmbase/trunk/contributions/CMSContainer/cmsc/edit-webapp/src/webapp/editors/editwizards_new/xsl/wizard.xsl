@@ -375,6 +375,26 @@
       </td>
     </tr>
     
+              
+   	<xsl:if test="@status=&apos;invalid&apos;">
+    <tr>
+      <td colspan="2">
+        <div class="messagebox_red">
+          <div class="box">
+            <div class="top"><div></div></div>						
+              <div class="body">
+                <xsl:call-template name="prompt_invalid_list">
+                  <xsl:with-param name="minoccurs" select="@minoccurs" />
+                  <xsl:with-param name="maxoccurs" select="@maxoccurs" />
+                </xsl:call-template>
+              </div>												
+            <div class="bottom"><div></div></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </xsl:if>
+    
     <!-- List of items -->
     <tr class="itemcanvas">
       <td></td>
@@ -392,9 +412,6 @@
           <xsl:with-param name="nodes" select="description"/>
         </xsl:call-template>
       </xsl:attribute>
-      <xsl:if test="@status=&apos;invalid&apos;">
-        <xsl:attribute name="class">notvalid</xsl:attribute>
-      </xsl:if>
       <xsl:call-template name="i18n">
         <xsl:with-param name="nodes" select="title"/>
       </xsl:call-template>
