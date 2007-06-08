@@ -223,7 +223,7 @@ input.search {
 }
 
 .progressMeter {
-  width: 8.8em;
+
   top: 0em;
   left: 7.1em;
   position: absolute;
@@ -974,4 +974,7 @@ img.pos2rel.image-left {
 }
 img.pos2rel.image-right { 
   float: right !important;
+}
+span.addressbook { 
+  display: block;
 }
