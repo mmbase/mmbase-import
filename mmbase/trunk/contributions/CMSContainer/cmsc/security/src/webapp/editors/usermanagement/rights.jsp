@@ -19,6 +19,40 @@
 	<div class="editor">
 		<div class="body">
 	 		<mm:node number="${param.number}" jspvar="channel">
+            <p>
+               <br/>
+               <b><fmt:message key="rights.content.groupson" /> 
+               <c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
+               <c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
+               </b>: 
+               <br/>
+            </p>
+            <div style="padding: 5px">
+               <table class="compact">
+                  <mm:listnodes type="mmbasegroups" jspvar="group" orderby="name">
+                     <c:choose>
+                        <c:when test="${mode == 'page'}">
+                           <c:set var="rank"><%=com.finalist.cmsc.navigation.NavigationUtil.getRole(group, channel).getRole().getName()%></c:set>
+                        </c:when>
+                        <c:otherwise>
+                           <c:set var="rank"><%=com.finalist.cmsc.repository.RepositoryUtil.getRole(group, channel).getRole().getName()%></c:set>
+                        </c:otherwise>
+                     </c:choose>
+                        
+                     <c:if test="${rank != 'none'}">
+                        <tr>
+                           <td>
+                              <img src="<cmsc:staticurl page="/editors/gfx/icons/type/empty.gif"/>" alt="<fmt:message key="role.${rank}" />" title="<fmt:message key="role.${rank}" />" align="top"/>
+                              <font style="color: #999">(<fmt:message key="role.${rank}" />)</font>
+                           </td>
+                           <td>
+                              <mm:field name="name"/>
+                           </td>
+                        </tr>
+                     </c:if>
+                  </mm:listnodes>
+               </table>
+            </div>
 				<p>
 					<br/>
 					<b><fmt:message key="rights.content.userson" /> 
