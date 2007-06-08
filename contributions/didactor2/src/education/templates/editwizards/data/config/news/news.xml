@@ -12,6 +12,7 @@
   
   <action type="load">
     <relation destinationtype="images" role="posrel" />
+    <relation destinationtype="images" role="pos2rel" />
     <relation destination="paragraphs" role="posrel">
       <object>
         <relation destination="attachments" role="posrel" />
@@ -39,7 +40,10 @@
     <field name="intro" />
     <field name="body" />
     <field name="date" />
+
     <list destination="images" extends="config/image/positionedimages.xml" />
+    <list include="config/image/add_images_pos2rel_position.xml" />
+
     <list destination="paragraphs"   extends="config/paragraphs/add_paragraphs_posrel.xml" />
   </form-schema>
 </wizard-schema>
