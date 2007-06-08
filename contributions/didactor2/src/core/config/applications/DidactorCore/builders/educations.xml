@@ -136,11 +136,11 @@
   <functionlist>
 
     <function key="educationLocale" name="locale">
-      <class>nl.didactor.builders.Functions</class>
+      <class>nl.didactor.functions.Functions</class>
     </function>
 
     <function name="smartpath">
-      <class>nl.didactor.builders.SmartPathFunction</class>
+      <class>nl.didactor.functions.SmartPath</class>
     </function>
 
   </functionlist>
