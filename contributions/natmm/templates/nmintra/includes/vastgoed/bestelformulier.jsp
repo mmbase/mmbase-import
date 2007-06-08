@@ -1,5 +1,7 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
+<mm:cloud>
 
 <html>
    <head>
@@ -45,7 +47,23 @@
                
                
                <tr>
-                  <td><%= item.getKaartSoort()%></td>
+                  <td>
+                  <%
+                   	String[] kartNodes = item.getSel_Kaart();
+                   	for (int iNodes = 0; iNodes < kartNodes.length; iNodes++) {
+                   		String nodeNumber = kartNodes[iNodes];	
+                  %>
+                  <mm:node number="<%=nodeNumber%>">
+                  	<mm:field name="naam"/>
+                  </mm:node>
+                  <% 			
+                  	 if (iNodes != (kartNodes.length - 1)) {
+                  	 	out.print(", ");
+                  	 }
+                   }
+                   %>
+                  </td>
+                  
                   <td><%= item.getKaartType()%></td>
                   <td><%= item.getSchaalOfFormaat()%></td>
                   <td><%= item.getAantal()%></td>
@@ -81,3 +99,5 @@
       
    </body>
 </html>
+
+</mm:cloud>
