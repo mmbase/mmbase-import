@@ -80,7 +80,7 @@ div.column div h1 {
   margin: 0 0 0 0;
   margin-top: 1ex;
   visibility: hidden;
-  clear: right;
+  clear: both;
 }
 
 .portal p, .portal h2, .portal ul { 
