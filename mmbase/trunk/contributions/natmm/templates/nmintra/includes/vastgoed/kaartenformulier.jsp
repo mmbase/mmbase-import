@@ -192,9 +192,6 @@ document.forms[0].sel_Kaart.length=0;
 	</mm:index>
 	</mm:field>
 	</mm:field>
-	<mm:relatednodes type="images" max="1">
-		imagesNat[<mm:index/>-1] = "<mm:image template="s(132x106)" />";  
-	</mm:relatednodes>	
 </mm:listnodes>
 }
 
