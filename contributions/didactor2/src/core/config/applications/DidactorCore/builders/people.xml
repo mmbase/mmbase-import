@@ -389,4 +389,11 @@
     </field>
 
   </fieldlist>
+
+  <functionlist>
+    <function key="relatedEducations" name="educations">
+      <class>nl.didactor.component.education.utils.EducationPeopleConnector</class>
+    </function>
+  </functionlist>
+
 </builder>
