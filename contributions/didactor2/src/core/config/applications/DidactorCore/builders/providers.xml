@@ -88,7 +88,7 @@
 
   <functionlist>
     <function name="smartpath">
-      <class>nl.didactor.builders.SmartPathFunction</class>
+      <class>nl.didactor.functions.SmartPath</class>
     </function>
   </functionlist>
 

@@ -28,6 +28,8 @@ import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 
 
 /**
+ * @javadoc
+ * @version $Id$
  * @author p.becic
  */
 public class EventTag extends CloudReferrerTag {
@@ -83,8 +85,7 @@ public class EventTag extends CloudReferrerTag {
                 if (sProvider != null) {
                     try {
                         provider = Integer.decode(sProvider);
-                    }
-                    catch (NumberFormatException nfe) {
+                    } catch (NumberFormatException nfe) {
                         return SKIP_BODY;
                     }
                 }
@@ -111,8 +112,7 @@ public class EventTag extends CloudReferrerTag {
                 Event event = new Event(username, sessionId, provider, education, classNumber, eventtype, eventvalue, note);
                 EventDispatcher.report(event, request, response);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             JspTagException e = new JspTagException(ex.getMessage());
             e.initCause(ex);
             throw e;

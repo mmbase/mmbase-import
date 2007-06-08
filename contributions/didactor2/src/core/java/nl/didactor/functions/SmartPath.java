@@ -1,4 +1,4 @@
-package nl.didactor.builders;
+package nl.didactor.functions;
 
 import java.io.*;
 import java.util.*;
@@ -16,15 +16,15 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since Didactor-2.3
- * @version $Id: SmartPathFunction.java,v 1.4 2007-06-08 09:24:34 michiel Exp $
+ * @version $Id: SmartPath.java,v 1.1 2007-06-08 12:20:31 michiel Exp $
  */
-public class SmartPathFunction extends org.mmbase.module.core.SmartPathFunction {
-    protected static Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
+public class SmartPath extends org.mmbase.module.core.SmartPathFunction {
+    protected static Logger log = Logging.getLoggerInstance(SmartPath.class);
 
     protected final String spFieldNames[];
     protected final String spPathPrefix;
 
-    public SmartPathFunction(MMObjectBuilder parent) {
+    public SmartPath(MMObjectBuilder parent) {
         super(parent);
         String spFieldName = parent.getInitParameter("smartpathfield");
 

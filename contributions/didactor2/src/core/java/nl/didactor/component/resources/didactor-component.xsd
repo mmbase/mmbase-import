@@ -33,6 +33,7 @@
                     </xsd:simpleType>
                   </xsd:attribute>
                   <xsd:attribute name="default" type="xsd:string" />
+                  <xsd:attribute name="prompt" type="xsd:string" />
                   <xsd:attribute name="canbeempty" type="xsd:boolean" default="true" />
                   <xsd:attribute name="ref" type="xsd:string" />
                 </xsd:complexType>
