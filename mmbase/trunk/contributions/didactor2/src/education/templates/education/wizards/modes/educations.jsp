@@ -59,7 +59,17 @@
             </mm:islessthan>
             
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td><nobr><a href="<mm:write referid="wizardjsp"/>&amp;wizard=config/education/educations-origin&amp;objectnumber=new&amp;origin=<mm:write referid="user"/>&amp;path=" title="<di:translate key="education.createneweducationdescription" />" target="text"><di:translate key="education.createneweducation" /></a></nobr></td>
+            <mm:link referid="wizardjsp" referids="user@origin">
+              <mm:param name="wizard">config/education/educations-origin</mm:param>
+              <mm:param name="objectnumber">new<</mm:param>
+              <mm:param name="path"></mm:param>
+              <td>
+                <nobr>
+                  <a href="${_}"
+                     title="${di:translate(pageContext, 'education.createneweducationdescription')}" 
+                     target="text"><di:translate key="education.createneweducation" /></a>
+              </nobr></td>
+            </mm:link>
           </tr>
         </table>
         
@@ -78,9 +88,9 @@
                 </td>
                 <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
                 <td>
-                       <nobr>
-                         <a href="<mm:write referid="wizardjsp"/>&amp;wizard=config/education/educations&amp;objectnumber=<mm:field name="number" />&amp;path=" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
-                         <mm:import id="eduname" jspvar="eduname"><mm:field name="name" /></mm:import>
+                  <nobr>
+                    <a href="<mm:write referid="wizardjsp"/>&amp;wizard=config/education/educations&amp;objectnumber=<mm:field name="number" />&amp;path=" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
+                    <mm:import id="eduname" jspvar="eduname"><mm:field name="name" /></mm:import>
                          <% session.setAttribute("eduname",eduname); %>
                          <mm:present referid="pdfurl">
                            <a href="<mm:write referid="pdfurl"/>&amp;number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
@@ -155,8 +165,8 @@
                             <di:translate key="education.createnewlearnblock" /></a>
                           </nobr>
                         </td>
-                      </mm:link>
-                      </tr>
+                      </mm:link>                      
+                    </tr>
                   </table>
 
 
