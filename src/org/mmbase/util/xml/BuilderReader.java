@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.88 2007-06-07 16:06:51 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.89 2007-06-11 12:32:45 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -437,7 +437,7 @@ public class BuilderReader extends DocumentReader {
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
 
                 Function function;
-                log.service("Using " + functionClass);
+                log.debug("Using " + functionClass);
                 final Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
                     if (!providerKey.equals("")) {
@@ -487,7 +487,7 @@ public class BuilderReader extends DocumentReader {
                     }
                 }
                 if (! functionName.equals("") && ! function.getName().equals(functionName)) {
-                    log.service("Wrapping " + function.getName() + " to " + functionName);
+                    log.debug("Wrapping " + function.getName() + " to " + functionName);
                     function = new WrappedFunction(function) {
                             public String getName() {
                                 return functionName;
