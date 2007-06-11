@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.208 2007-05-04 12:00:00 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.209 2007-06-11 14:57:56 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -559,14 +559,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 string = "byte array of size " + ((byte[])fieldValue).length;
             } else {
                 string = Casting.toString(fieldValue);
-                if (string.length()>200) string = string.substring(0, 200);
+                if (string.length() > 200) string = string.substring(0, 200);
             }
             log.debug("Setting " + fieldName + " to " +  string);
         }
 
         boolean changed =
             (! values.containsKey(fieldName)) ||
-            (originalValue == null ? fieldValue != null : ! originalValue.equals(fieldValue));
+            (originalValue == null ? fieldValue != null : ! Casting.equals(originalValue, fieldValue));
         if (! changed) return false;
 
         if (log.isDebugEnabled()) {
