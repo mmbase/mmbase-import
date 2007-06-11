@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,10 +16,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -65,7 +65,7 @@ public class DownloadThread extends Thread {
          download();
          zip();
       } catch (Exception e) {
-         exception = e;
+         exception = e; 
       }
       endTime = System.currentTimeMillis();
       updateNode();
@@ -130,11 +130,55 @@ public class DownloadThread extends Thread {
       for(File file:realFile.listFiles()) {
          
          if(includeFile(file.getName()) && file.isDirectory()) {
+        	
             zipFile(file, out, realPath.length());
          }
       }
       
       out.close();
+   }
+
+   private void fixFile(File file) throws IOException {
+	   String inputData = readFile(file);
+	   
+	   String outputData = fixFlash(inputData); 
+	   
+	   if(!outputData.equals(inputData)) {
+		   writeFile(file, outputData);
+	   }
+	}
+
+   private void writeFile(File file, String outputData) throws IOException {
+	   FileWriter writer = null;
+	   try {
+		   writer = new FileWriter(file);
+		   writer.write(outputData);
+		   writer.flush();
+	   }
+	   finally {
+		   if(writer != null) {
+			   writer.close();
+		   }
+	   }
+   }
+
+   private String readFile(File file) throws IOException {
+	   BufferedReader reader = null;
+	   try {
+		   reader = new BufferedReader (new FileReader (file));
+		   
+		   StringBuffer buffer = new StringBuffer();
+		   String line;
+		   while((line = reader.readLine()) != null) {
+			   buffer.append(line);
+		   }
+		   return buffer.toString();
+	   }
+	   finally {
+		   if(reader != null) {
+			   reader.close();
+		   }
+	   }
    }
 
    private boolean includeFile(String name) {
@@ -157,6 +201,9 @@ public class DownloadThread extends Thread {
             zipFile(file, out, trimLength);
          }
          else {
+        	 if(file.getName().endsWith(".html")) {
+        		 fixFile(file);
+        	 }
             FileInputStream fi = new FileInputStream(file);
             BufferedInputStream origin = new BufferedInputStream(fi, BUFFER);
             ZipEntry entry = new ZipEntry(file.getAbsolutePath().substring(trimLength));
@@ -266,6 +313,41 @@ public class DownloadThread extends Thread {
          result.append("\n");
       }
       return result.toString();
+   }
+   
+   public final static String fixFlash(String string) {
+	   int startIndex = 0;
+	   while((startIndex = string.indexOf("<object", startIndex)) != -1) {
+		   System.out.println("before >> "+string);
+		   int endIndex = string.indexOf("</object", startIndex);
+		   if(endIndex == -1) {
+			   endIndex = string.length();
+		   }
+		   
+		   int swfIndex[] = new int[2];
+		   swfIndex[0] = string.indexOf(".swf", startIndex);
+		   swfIndex[1] = string.indexOf(".swf", swfIndex[0]+1);
+		   
+		   String swfString[] = new String[2]; 
+		   int swfStart[] = new int[2];
+		   int swfEnd[] = new int[2];
+		   for(int count = 0; count < 2; count++) {
+			   swfStart[count] = string.lastIndexOf("\"",swfIndex[count])+1;
+			   swfEnd[count] = string.indexOf("\"",swfIndex[count]);
+			   swfString[count] = string.substring(swfStart[count], swfEnd[count]);
+		   }
+		   
+		   boolean embedFirst = string.lastIndexOf("embed", swfIndex[0]) > string.lastIndexOf("param", swfIndex[0]);
+		   int from = (embedFirst)?0:1;
+		   int to = (embedFirst)?1:0;
+
+		   string = string.substring(0, swfStart[to]) + swfString[from] + string.substring(swfEnd[to]);
+		   
+		   
+		   System.out.println("after >>> "+string);
+		   startIndex = string.indexOf("</object", startIndex);
+	   }
+      return string;
    }
 
    public boolean isDownloading() {
