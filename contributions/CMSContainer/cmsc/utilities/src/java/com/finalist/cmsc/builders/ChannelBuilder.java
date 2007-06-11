@@ -1,6 +1,5 @@
 package com.finalist.cmsc.builders;
 
-import net.sf.mmapps.commons.util.EncodingUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -111,21 +110,10 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
             String fragmentFieldname = getFragmentFieldnameForBuilder();
             if (StringUtil.isEmpty(objectNode.getStringValue(fragmentFieldname))) {
                 String name = objectNode.getStringValue(nameFieldname);
-                String pathFragment = convertToFragment(name);
+                String pathFragment = TreeUtil.convertToFragment(name);
                 objectNode.setValue(fragmentFieldname, pathFragment);
             }
         }
-    }
-
-    private String convertToFragment(String name) {
-        String pathFragment = EncodingUtil.convertNonAscii(name);
-        pathFragment = pathFragment.replaceAll("\\s", "_");        
-        while (pathFragment.length() > 1 && pathFragment.substring(0, 1).matches("[_.-]") ) {        	
-        	pathFragment = pathFragment.substring(1, pathFragment.length());        	
-        }
-        pathFragment = pathFragment.replaceAll("[^a-zA-Z_0-9_.-]", "");
-        pathFragment = pathFragment.toLowerCase();        
-        return pathFragment;
     }
 
    
