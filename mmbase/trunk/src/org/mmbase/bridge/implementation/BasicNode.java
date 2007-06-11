@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.220 2007-02-25 18:18:24 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.221 2007-06-11 14:56:30 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -279,7 +279,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected void setValueWithoutChecks(String fieldName, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
         if (TemporaryNodeManager.UNKNOWN == result) {
-            throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
+            throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + 
+                                      " of nodeManager '" + getNodeManager().getName() +"'");
         } else if (TemporaryNodeManager.INVALID_VALUE == result) {
             noderef.storeValue(fieldName, value); // commit() will throw that invalid.
         }
@@ -862,9 +863,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // Usually the temporaryNodes hashtable shall not be
         // too full.
         if (cloud instanceof Transaction) {
-            Map tnodes = MMObjectBuilder.temporaryNodes;
-            for (Iterator e = tnodes.values().iterator(); e.hasNext();) {
-                MMObjectNode mynode = (MMObjectNode)e.next();
+            Map<String, MMObjectNode> tnodes = MMObjectBuilder.temporaryNodes;
+            for (MMObjectNode mynode : tnodes.values()) {
                 if (mynode.getName().equals("oalias")){
                     String dest = mynode.getStringValue("_destination");
                     if ((account + "_" + temporaryNodeId).equals(dest)) {
