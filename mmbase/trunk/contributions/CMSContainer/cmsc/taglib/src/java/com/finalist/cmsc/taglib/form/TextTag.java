@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import net.sf.mmapps.commons.util.StringUtil;
 
 
@@ -47,7 +49,7 @@ public class TextTag extends SimpleTagSupport {
         }
         ctx.getOut().print("<input type=\"text\" " +
                             "name=\"" + var + "\" " +
-                            "value=\"" + inputValue + "\" />");
+                            "value=\"" + StringEscapeUtils.escapeHtml(inputValue) + "\" />");
     }
     
 }
