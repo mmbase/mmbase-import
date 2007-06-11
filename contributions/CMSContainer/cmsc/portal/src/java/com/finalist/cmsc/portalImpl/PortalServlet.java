@@ -130,7 +130,7 @@ public class PortalServlet extends HttpServlet {
 		log.debug("===>REQ spth='" + request.getServletPath() + "'");
 		log.debug("===>REQ qry='" + request.getQueryString() + "'");
 
-		PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
+		PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
 
 		PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
 		PortalURL currentURL = env.getRequestedPortalURL();
@@ -147,7 +147,7 @@ public class PortalServlet extends HttpServlet {
         }
         
 		PortalControlParameter control = new PortalControlParameter(currentURL);
-		PortletWindow actionWindow = getPortletWindowOfAction(reg, control);
+		PortletWindow actionWindow = getPortletWindowOfAction(registry, control);
 		if (actionWindow != null) {
 			log.debug("===>CONTROL='" + control.toString() + "'");
 			log.debug("===>WINDOW='" + actionWindow.toString() + "'");
@@ -179,7 +179,7 @@ public class PortalServlet extends HttpServlet {
             }
 			ScreenFragment screen = getScreen(path);
 			if (screen != null) {
-				reg.setScreen(screen);
+				registry.setScreen(screen);
 				log.debug("===>SERVICE");
 				screen.service(request, response);
 				log.debug("===>SERVICE DONE");
