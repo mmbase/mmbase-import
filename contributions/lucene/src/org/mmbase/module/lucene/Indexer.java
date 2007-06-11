@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.39 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: Indexer.java,v 1.40 2007-06-11 15:23:29 michiel Exp $
  **/
 public class Indexer {
 
@@ -270,7 +270,6 @@ public class Indexer {
             }
             if (klass.isAssignableFrom(indexDefinition.getClass())) {
                 Set<String> mains = new HashSet<String>();
-                mains.add(number); // at least the object itself must be tried, it may be 
                 IndexReader reader = null;
                 try {
                     reader = IndexReader.open(path);
@@ -286,8 +285,11 @@ public class Indexer {
                         String indexId = doc.get("indexId");
                         log.debug("Found main number " + main + " for subindex " + indexId + " in " + doc);
                         if (indexId != null && indexId.equals(indexDefinition.getId())) {
+                            log.debug("Deleted #" + i + " from " + indexId);
                             mains.add(main);
                             reader.deleteDocument(i);
+                        } else {
+                            log.debug("Retained #" + i + " from " + indexId + " (!= " + indexDefinition.getId());
                         }
                     }
                     docs.close();
