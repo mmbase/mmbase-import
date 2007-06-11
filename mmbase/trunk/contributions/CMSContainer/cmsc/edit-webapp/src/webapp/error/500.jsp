@@ -1,6 +1,7 @@
-<%@ page isErrorPage="true"%>
-<%@ include file="globals.jsp"%>
-<%@ page import="java.io.*,java.text.*"%>
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
+<%@page isErrorPage="true"%>
+<%@include file="globals.jsp"%>
+<%@page import="java.io.*,java.text.*"%>
 <%!
     Logger log = Logging.getLoggerInstance("ERROR-JSP");
 

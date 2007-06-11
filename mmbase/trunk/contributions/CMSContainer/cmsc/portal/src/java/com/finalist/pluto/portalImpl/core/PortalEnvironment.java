@@ -44,9 +44,13 @@ public class PortalEnvironment {
 		requestedPortalURL.analyzeRequestInformation();
 		portalControl = new PortalControlParameter(requestedPortalURL);
 
-		// set Environment in Request for later use
-		this.request.setAttribute(REQUEST_PORTALENV, this);
+		registerEnvironment();
 	}
+
+    public void registerEnvironment() {
+        // set Environment in Request for later use
+		this.request.setAttribute(REQUEST_PORTALENV, this);
+    }
 
 	public static PortalEnvironment getPortalEnvironment(HttpServletRequest request) {
 		return (PortalEnvironment) request.getAttribute(REQUEST_PORTALENV);
