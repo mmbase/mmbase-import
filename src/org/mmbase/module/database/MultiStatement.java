@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.19 2007-04-09 19:20:44 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.20 2007-06-11 12:29:03 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -194,7 +194,7 @@ public class MultiStatement implements Statement {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");
             s.close();            
-            parent.parent.replaceConnection(parent);
+            parent.getParent().replaceConnection(parent);
             s = parent.createStatement();
             // this would be more correct:
             //s = parent.createStatement(s.getResultSetType(), s.getResultSetConcurrency(), s.getResultSetHoldability()); 

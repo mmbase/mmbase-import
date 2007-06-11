@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.59 2007-02-24 21:57:52 nklasens Exp $
+ * @version $Id: MultiPool.java,v 1.60 2007-06-11 12:29:03 michiel Exp $
  */
 public class MultiPool {
 
@@ -169,7 +169,7 @@ public class MultiPool {
             con = DriverManager.getConnection(url, name, password);
         }
         databaseSupport.initConnection(con);
-        return new MultiConnection(this, con);
+        return new MultiConnectionImplementation(this, con);
     }
 
     /**
@@ -177,12 +177,18 @@ public class MultiPool {
      * @since MMBase-1.7.1
      */
     protected void replaceConnection(MultiConnection multiCon) throws SQLException {
+        Connection con;
         if (name.equals("url") && password.equals("url")) {
-            multiCon.con = DriverManager.getConnection(url);
+            con = DriverManager.getConnection(url);
         } else {
-            multiCon.con = DriverManager.getConnection(url, name, password);
+            con = DriverManager.getConnection(url, name, password);
         }
-        databaseSupport.initConnection(multiCon.con);
+        if (con == null) {
+            log.warn("Got no connection from driver with " + url);
+        } else {
+            multiCon.wrap(con);
+        }
+        databaseSupport.initConnection(multiCon.unwrap(Connection.class));
 
     }
 
@@ -277,7 +283,7 @@ public class MultiPool {
 
                 if (isClosed) {
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.lastSql);
+                    log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.getLastSQL());
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
@@ -311,7 +317,7 @@ public class MultiPool {
                     // ok, just wait
                 } else if (diff < maxLifeTime) {
                     // between 30 and 120 we putback 'zero' connections
-                    if (con.lastSql == null || con.lastSql.length() == 0) {
+                    if (con.getLastSQL() == null || con.getLastSQL().length() == 0) {
                         log.warn("null connection putBack " + Logging.stackTrace());
                         pool.add(con);
                         releaseCount++;
@@ -320,7 +326,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL. It took already " + (diff / 1000) + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
+                    log.warn("WILL KILL SQL. It took already " + (diff / 1000) + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.getLastSQL());
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
@@ -434,13 +440,13 @@ public class MultiPool {
                         if (con.isClosed()) {
                             log.debug("Connection " + con + " as closed an not in busypool, so it was removed from busyPool by checkTime");
                         } else {
-                            log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
+                            log.warn("Put back connection (" + con.getLastSQL() + ") was not in busyPool!!");
                         }
                     } catch (SQLException sqe) {
                         log.warn("Connection " + con + " not in busypool : " + sqe.getMessage());
                     }
                 } else {
-                    log.service("Connection " + con.lastSql + " was put back, but MMBase is shut down, so it was ignored.");
+                    log.service("Connection " + con.getLastSQL() + " was put back, but MMBase is shut down, so it was ignored.");
                 }
                 return;
             }
