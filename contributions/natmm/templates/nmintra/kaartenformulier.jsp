@@ -1,16 +1,81 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
-<mm:cloud>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+
 
 <html>
 <head>
-<title>bestelformulier plotopdrachten</title>
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 
+	<mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
+		<meta http-equiv="imagetoolbar" content="no">
+		<script language="javascript" src="scripts/launchcenter.js"></script>
+		<script language="javascript" src="scripts/cookies.js"></script>
+		<script language="javaScript" src="scripts/screensize.js"></script>
+      <script language="javaScript">
+      function resizeBlocks() {	
+      var MZ=(document.getElementById?true:false); 
+      var IE=(document.all?true:false);
+      var wHeight = 0;
+      var infoPageDiff = 87;
+      var navListDiff = 62;
+      <mm:notpresent referid="showprogramselect">
+        var smoelenBoekDiff = 378;
+      </mm:notpresent>
+      <mm:present referid="showprogramselect">
+        var smoelenBoekDiff = 414;
+      </mm:present>
+      var linkListDiff = 511;
+      var rightColumnDiff = 109;
+      var minHeight = 300;
+      if(IE){ 
+        wHeight = document.body.clientHeight;
+        if(wHeight>minHeight) {
+          if(document.all['infopage']!=null) { 
+            document.all['infopage'].style.height = (wHeight>infoPageDiff ? wHeight - infoPageDiff : 0); }
+          if(document.all['navlist']!=null) { 
+            document.all['navlist'].style.height = (wHeight>navListDiff ? wHeight - navListDiff : 0); }
+          if(document.all['smoelenboeklist']!=null) {
+            document.all['smoelenboeklist'].style.height = (wHeight>smoelenBoekDiff ? wHeight - smoelenBoekDiff : 0); }
+          if(document.all['rightcolumn']!=null) {
+            document.all['rightcolumn'].style.height = (wHeight>rightColumnDiff ? wHeight - rightColumnDiff : 0); }
+          if(document.all['linklist']!=null) {
+            document.all['linklist'].style.height = (wHeight>linkListDiff ? wHeight - linkListDiff : 0); }
+        }
+      } else if(MZ){
+        wHeight = window.innerHeight;
+        if(wHeight>minHeight) {
+          if(document.getElementById('infopage')!=null) {
+            document.getElementById('infopage').style.height= (wHeight>infoPageDiff ? wHeight - infoPageDiff : 0); }
+          if(document.getElementById('navlist')!=null) {
+            document.getElementById('navlist').style.height= (wHeight>navListDiff ? wHeight - navListDiff : 0); } 
+          if(document.getElementById('smoelenboeklist')!=null) {
+            document.getElementById('smoelenboeklist').style.height= (wHeight>smoelenBoekDiff ? wHeight - smoelenBoekDiff : 0); } 
+          if(document.getElementById('rightcolumn')!=null) {
+            document.getElementById('rightcolumn').style.height= (wHeight>rightColumnDiff ? wHeight - rightColumnDiff : 0); } 
+          if(document.getElementById('linklist')!=null) {
+            document.getElementById('linklist').style.height= (wHeight>linkListDiff ? wHeight - linkListDiff : 0); } 
+        }
+      }
+      return false;
+      }
+      -->
+      </script>
+      
+      
+<title>bestelformulier plotopdrachten</title>
 
 <bean:define id="natGebMap" property="natGebMap" name="KaartenForm" type="java.util.Map" />
 <bean:define id="gebiedMap" property="gebiedMap" name="KaartenForm" type="java.util.Map" />
 <bean:define id="selKaartMap" property="selKaartMap" name="KaartenForm" type="java.util.Map" />
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+<%@include file="includes/vastgoed/giveinfo.js" %>
+-->
+</script>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 arr_NatGeb = new Array
@@ -82,13 +147,13 @@ arr_Areaal = new Array
 
 function jsc_ClearUnselectedOptions()
 {
-	var selectCtrlArray = new Array(document.forms[0].sel_NatGeb, document.forms[0].sel_Areaal);
+	var selectCtrlArray = new Array(document.KaartenForm.sel_NatGeb, document.KaartenForm.sel_Areaal);
 	var selectCtrl;
 	var i;
 	// for top two kart options, clear selection if the kart option is not applicable. more less confusion and more usability on user side
 	for (iCtrl = 0; iCtrl < selectCtrlArray.length; iCtrl++) {
 		selectCtrl = selectCtrlArray[iCtrl];
-		if (!document.forms[0].rad_Gebied[iCtrl].checked) {
+		if (!document.KaartenForm.rad_Gebied[iCtrl].checked) {
 			for (i = 0; i < selectCtrl.options.length; i++)
 			{
 				selectCtrl.options[i].selected = false; 
@@ -141,9 +206,9 @@ function small_window(NaamPagina) {
 var newWindow;
 var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=screen.availWidth,height=screen.availHeight, top='+(20)+',left='+(20);
 var fullLink;
-for (var i = 0; i < document.forms[0].sel_Kaart.length; i++) {
-	if (document.forms[0].sel_Kaart[i].selected) {
-		var kartNode = document.forms[0].sel_Kaart[i].value;
+for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
+	if (document.KaartenForm.sel_Kaart[i].selected) {
+		var kartNode = document.KaartenForm.sel_Kaart[i].value;
 		fullLink = NaamPagina + "?node=" + kartNode;
 		var windowName = kartNode;
 		newWindow = window.open(fullLink, windowName, props);
@@ -174,18 +239,18 @@ var imagesCoor = new Array();
 
 function jsc_optie0()
 {
-jsc_VulSelectUitArray(document.forms[0].sel_NatGeb, arr_NatGeb[document.forms[0].sel_Beheereenheden.selectedIndex]);
+jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
 <% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied(en)"); %>
 
-document.forms[0].sel_Kaart.length=0;
+document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied(en)'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
-	imagesNat[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+		document.KaartenForm.sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesNat[<%=topIndex%>-1] = "media/vastgoed/Nicolao_Visscher.jpg";  
 	<mm:relatednodes type="images" max="1">
 		imagesNat[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
 	</mm:relatednodes>	
@@ -198,18 +263,18 @@ jsc_setPicture(null);
 
 function jsc_optie1()
 {
-jsc_VulSelectUitArray(document.forms[0].sel_Areaal, arr_Areaal[document.forms[0].sel_gebieden.selectedIndex]);
+jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
 <% kartTypes = (ArrayList) selKaartMap.get("Eenheid"); %>
 
-document.forms[0].sel_Kaart.length=0;
+document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Eenheid'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
-	imagesEen[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+		document.KaartenForm.sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesEen[<%=topIndex%>-1] = "media/vastgoed/Nicolao_Visscher.jpg";  
 	<mm:relatednodes type="images" max="1">
 		imagesEen[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
 	</mm:relatednodes>	
@@ -225,13 +290,13 @@ function jsc_optie2()
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
-document.forms[0].sel_Kaart.length=0;
+document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Nederland'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
-		document.forms[0].sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
-	imagesNede[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+		document.KaartenForm.sel_Kaart[<mm:index/>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesNede[<%=topIndex%>-1] = "media/vastgoed/Nicolao_Visscher.jpg";  
 	<mm:relatednodes type="images" max="1">
 		imagesNede[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
 	</mm:relatednodes>	
@@ -247,13 +312,13 @@ function jsc_optie3()
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
-document.forms[0].sel_Kaart.length=0;
+document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Coordinaten'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 		<mm:index jspvar="topIndex" write="false" vartype="Integer">
-		document.forms[0].sel_Kaart[<%=topIndex%>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
-	imagesCoor[<%=topIndex%>-1] = "../../media/vastgoed/Nicolao_Visscher.jpg";  
+		document.KaartenForm.sel_Kaart[<%=topIndex%>-1] =new Option("<%=fieldName%>", "<%=nodeNumber%>", true, <%= kartTypes.contains(nodeNumber)%>);
+	imagesCoor[<%=topIndex%>-1] = "media/vastgoed/Nicolao_Visscher.jpg";  
 	<mm:relatednodes type="images" max="1">
 		imagesCoor[<%=topIndex%>-1] = "<mm:image template="s(132x106)" />";  
 	</mm:relatednodes>	
@@ -267,26 +332,26 @@ jsc_setPicture(null);
 function jsc_setPicture(selectedIndex) {
 	if (selectedIndex != null) {
 	// use Natuurgebied(en)
-	if(document.forms[0].rad_Gebied[0].checked) {
+	if(document.KaartenForm.rad_Gebied[0].checked) {
 		document.getElementById("kartPicture").src=imagesNat[selectedIndex]; 
  	}
  	// use Eenheid
-	if(document.forms[0].rad_Gebied[1].checked) {
+	if(document.KaartenForm.rad_Gebied[1].checked) {
 		document.getElementById("kartPicture").src=imagesEen[selectedIndex]; 
  	}
  	// use Nederland
-	if(document.forms[0].rad_Gebied[2].checked) {
+	if(document.KaartenForm.rad_Gebied[2].checked) {
 		document.getElementById("kartPicture").src=imagesNede[selectedIndex]; 
  	}
  	// use Coordinaten
-	if(document.forms[0].rad_Gebied[3].checked) {
+	if(document.KaartenForm.rad_Gebied[3].checked) {
 		document.getElementById("kartPicture").src=imagesCoor[selectedIndex]; 
  	}
  	} else {
  	// page load here. set to first selected
  	var iKaart = 0
- 	while (iKaart < document.forms[0].sel_Kaart.length) {
- 	if (document.forms[0].sel_Kaart[iKaart].selected) {
+ 	while (iKaart < document.KaartenForm.sel_Kaart.length) {
+ 	if (document.KaartenForm.sel_Kaart[iKaart].selected) {
  		jsc_setPicture(iKaart);
  		}
  	iKaart++;
@@ -295,6 +360,11 @@ function jsc_setPicture(selectedIndex) {
  	}
 }
 
+//
+function doOnLoad() {
+	jsc_defaultOptie(); jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
+	setScreenSize();
+}
 -->
 </script>
 
@@ -314,7 +384,7 @@ DIV.Info
 	cursor: hand;
 	width: 29px;
 	height: 24px;
-	background-image: url(../../media/vastgoed/Info.png);
+	background-image: url(media/vastgoed/Info.png);
 }
 
 DIV.Schermuitleg 
@@ -337,7 +407,37 @@ DIV.Schermuitleg
 </style>
 </head>
 
-<body onload="jsc_defaultOptie(); jsc_VulSelectUitArray(document.forms[0].sel_NatGeb, arr_NatGeb[document.forms[0].sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.forms[0].sel_Areaal, arr_Areaal[document.forms[0].sel_gebieden.selectedIndex]);">
+<body onload="doOnLoad();">
+
+<%@include file="/editors/paginamanagement/flushlink.jsp" %>
+	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
+	   <%@include file="includes/searchbar.jsp" %>
+   	<tr>
+   		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
+   		<td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
+   		<td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
+   	</tr>
+	<tr>
+	   <td rowspan="2"><%@include file="includes/nav.jsp" %></td>
+
+	   
+
+<% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
+<td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+<% 
+if(twoColumns) { 
+   String rightBarTitle = "";
+   %><td><%@include file="includes/rightbartitle.jsp" %></td><%
+} %>
+</tr>
+<tr>
+<td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
+<div class="<%= infopageClass %>" id="infopage">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr><td style="padding:10px;padding-top:18px;">
+    <a name="top">
+    <%--%@include file="includes/back_print.jsp" %>--%>
+    
 <html:form action="/nmintra/includes/vastgoed/KaartenAction" method="GET">
 
 	<table>
@@ -346,8 +446,8 @@ DIV.Schermuitleg
 				Selecteer het(de) gebied(en) of geef de coördinaten:
 			</td>
 			<td align="right">	
-				<a href="#nowhere">
-					<img src="../../media/vastgoed/Info.png" width="29" height="24" border=0 
+				<a href="javascript:giveInfo(0);">
+					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Uitleg over dit invoer deel van het
 formulier.">
 
@@ -491,8 +591,8 @@ formulier.">
 				Selecteer de gewenste kaart(en):
 			</td>
 			<td align="right">	
-				<a href="#nowhere">
-					<img src="../../media/vastgoed/Info.png" width="29" height="24" border=0 
+				<a href="javascript:giveInfo(1);">
+					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Uitleg over dit invoer deel van het
 formulier.">
 
@@ -506,12 +606,12 @@ formulier.">
 		<tr>
 			<td width="96" align="left">kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
 			<td width="139">
-				<img id="kartPicture" style="cursor:pointer" src="../../media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
-					onClick="javascript:small_window('kaart_popup.jsp');">
+				<img id="kartPicture" style="cursor:pointer" src="media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
+					onClick="javascript:small_window('includes/vastgoed/kaart_popup.jsp');">
 
 			</td>
 			<td width="249">
-				<html:select style="width:100%;" property="sel_Kaart" size="6" multiple="multiple" onclick="jsc_setPicture(this.selectedIndex);">
+				<html:select style="width:100%;" property="sel_Kaart" size="6" multiple="multiple" onchange="jsc_setPicture(this.selectedIndex);">
 				</html:select>
 			</td>
 		</tr>
@@ -526,8 +626,8 @@ formulier.">
 				Geef de schaal of het formaat  en het aantal:
 			</td>
 			<td align="right">	
-				<a href="#nowhere">
-					<img src="../../media/vastgoed/Info.png" width="29" height="24" border=0 
+				<a href="javascript:giveInfo(2);">
+					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Uitleg over dit invoer deel van het
 formulier.">
 				</a>
@@ -622,9 +722,9 @@ formulier.">
 				Opmerkingen:
 			</td>
 			<td align="right">	
-				<a href="#nowhere">
+				<a href="javascript:giveInfo(3);">
 
-					<img src="../../media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
+					<img src="media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
 						alt="Uitleg over dit invoer deel van het
 formulier.">
 				</a>
@@ -659,7 +759,7 @@ formulier.">
 
 			<td>toevoegen aan mijn bestelling:&nbsp;</td>
 			<td align="right">
-			<input type="image" src="../../media/vastgoed/wwagen.jpg" name="send"/>
+			<input type="image" src="media/vastgoed/wwagen.jpg" name="send"/>
 			</td>
 			<td></td>
 		</tr>
@@ -683,6 +783,5 @@ formulier.">
  
 </html:form>
 
-</body>
-</html>
+<%@include file="includes/footer.jsp" %>
 </mm:cloud>
