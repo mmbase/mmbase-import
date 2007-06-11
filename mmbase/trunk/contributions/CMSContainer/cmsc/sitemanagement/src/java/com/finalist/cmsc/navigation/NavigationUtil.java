@@ -242,6 +242,15 @@ public class NavigationUtil {
         return TreeUtil.getChildren(parentNode, nodeManager, NAVREL);
      }
 
+    public static boolean hasChild(Node parentChannel, String fragment) {
+        return TreeUtil.hasChild(parentChannel, fragment, treeManagers, NAVREL, fragmentFieldnames);
+    }
+
+    public static Node getChild(Node parentChannel, String fragment) {
+        return TreeUtil.getChild(parentChannel, fragment, treeManagers, NAVREL, fragmentFieldnames);
+    }
+
+    
     public static void reorder(Cloud cloud, String parentNode, String children) {
         Node parent = cloud.getNode(parentNode);
        if (!Workflow.hasWorkflow(parent)) {
