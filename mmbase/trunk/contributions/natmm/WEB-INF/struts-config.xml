@@ -538,11 +538,11 @@
     >
       <forward
         name="send"
-        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
+        path="/nmintra/bestelformulier.jsp"
       />
       <forward
         name="delete"
-        path="/nmintra/includes/vastgoed/bestelformulier.jsp"
+        path="/nmintra/bestelformulier.jsp"
       />
     </action>
     
@@ -555,7 +555,7 @@
     >
       <forward
         name="success"
-        path="/nmintra/includes/vastgoed/bestelformulier.jsp"
+        path="/nmintra/bestelformulier.jsp"
       />
     </action>
      
@@ -568,7 +568,7 @@
     >
       <forward
         name="success"
-        path="/nmintra/includes/vastgoed/kaartenformulier.jsp"
+        path="/nmintra/kaartenformulier.jsp"
       />
     </action> 
   
