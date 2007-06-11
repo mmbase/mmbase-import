@@ -13,4 +13,8 @@
     <name>poll</name>
     <path>/META-INF/tags/mm/poll/poll.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>count</name>
+    <path>/META-INF/tags/mm/poll/count.tagx</path>
+  </tag-file>
 </taglib> 
