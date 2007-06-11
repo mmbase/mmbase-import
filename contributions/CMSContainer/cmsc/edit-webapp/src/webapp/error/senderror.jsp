@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="../globals.jsp"  %>
 <%@page import="com.finalist.cmsc.mmbase.EmailUtil"%>
 <%@page import="com.finalist.cmsc.mmbase.PropertiesUtil"%>
