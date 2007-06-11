@@ -16,7 +16,7 @@ import org.mmbase.util.ResourceLoader;
  * Module to convert excel menu information to CMSC specific data structure
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.1.2.1 $
  */
 public class MenuImportModule extends Module {
 	static Log log = LogFactory.getLog(MenuImportModule.class);
