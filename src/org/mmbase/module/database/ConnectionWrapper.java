@@ -10,16 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.module.database;
 
 import java.sql.*;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Wraps  a java.sql.Connection object. Extendsing this makes it possible to intercept calls.
+ * Wraps  a java.sql.Connection object. Extending this makes it possible to intercept calls.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionWrapper.java,v 1.2 2005-12-24 11:35:45 michiel Exp $
+ * @version $Id: ConnectionWrapper.java,v 1.3 2007-06-11 12:29:03 michiel Exp $
  * @since MMBase-1.8
  */
-public abstract class ConnectionWrapper implements Connection {
+public abstract class ConnectionWrapper { //implements Connection {
     /**
      * The wrapped connection
      */
@@ -290,6 +290,56 @@ public abstract class ConnectionWrapper implements Connection {
         return con.prepareCall(sql, type, concurrency, holdability);
     }
 
+    /*
+    public Clob createClob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public Blob createBlob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public NClob createNClob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public SQLXML createSQLXML() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    */
+    public boolean isValid(int i) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+   
+    /*
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        throw new UnsupportedOperationException();
+    }
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        throw new UnsupportedOperationException();
+    }
+    */
+
+    public String getClientInfo(String name) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public Properties getClientInfo() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    
+    public <T> T unwrap(Class<T> iface) {
+        return (T) con;
+    }
+
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface.isAssignableFrom(con.getClass());
+    }
 
 }
 
