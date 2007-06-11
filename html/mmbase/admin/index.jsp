@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>MMBase Administration<mm:present referid="block"> | <mm:write referid="block" /></mm:present></title>
+  <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
   <mm:link page="/mmbase/admin/css/admin.css">
     <link rel="stylesheet" href="${_}" type="text/css" />
   </mm:link>
@@ -26,7 +26,7 @@
   <div id="header">
     <div id="logo"><a href="."><mm:link page="/mmbase/style/logo.png"><img src="${_}" alt="MMBase" width="40" height="50" /></mm:link></a></div>
     <div id="head">
-      <h1>MMBase Administration</h1>
+      <h1>MMBase</h1>
       <p>
         You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
         <a href="logout.jsp">logout</a>
@@ -41,7 +41,7 @@
   <mm:param name="id">mmbase</mm:param>
   <mm:listfunction set="components" name="blockClassification">
     <mm:stringlist referid="_.subTypes" id="cat">
-      <mm:link id="link"><mm:param name="category">${cat.name}</mm:param></mm:link>
+      <mm:link page="/mmbase/admin/index.jsp" id="link"><mm:param name="category">${cat.name}</mm:param></mm:link>
       <li><a <mm:compare referid="category" value="${cat.name}">class="selected"</mm:compare>href="${link}">${cat.name}</a>
 
       <mm:compare referid="category" value="${cat.name}">
