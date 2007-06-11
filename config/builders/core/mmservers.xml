@@ -180,5 +180,11 @@
     </field>
 
   </fieldlist>
+  <indexlist>
+    <index name="mmserversUnique" unique="true">
+      <indexfield name="name" />
+      <indexfield name="host" />
+    </index>
+  </indexlist>
 
 </builder>
