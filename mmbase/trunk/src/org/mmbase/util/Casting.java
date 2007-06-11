@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.102 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: Casting.java,v 1.103 2007-06-11 14:57:56 michiel Exp $
  */
 
 import java.util.*;
@@ -113,6 +113,7 @@ public class Casting {
             return value == null || type.isInstance(value);
         }
     }
+
 
     /**
      * Tries to 'cast' an object for use with the provided class. E.g. if value is a String, but the
@@ -1086,6 +1087,19 @@ public class Casting {
      * @since MMBase-1.9
      */
     public static interface Unwrappable {
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static boolean equals(Object o1, Object o2) {
+        if (o1 == null) return o2 == null;
+
+        if (o1 instanceof org.w3c.dom.Node) {
+            return (o2 instanceof org.w3c.dom.Node && ((org.w3c.dom.Node) o1).isEqualNode((org.w3c.dom.Node) o2));
+        } else {
+            return o1.equals(o2);
+        }
     }
 
 }
