@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.46 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: FileWatcher.java,v 1.47 2007-06-11 12:34:06 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -455,7 +455,9 @@ public abstract class FileWatcher {
             if (! f.exists()) {
                 // file does not exist. A change will be triggered
                 // once the file comes into existence
-                log.debug("file :" + f.getAbsolutePath() + " did not exist (yet)");
+                if (log.isDebugEnabled()) {
+                    log.debug("file :" + f.getAbsolutePath() + " did not exist (yet)");
+                }
                 lm = -1;
             } else {
                 lm = f.lastModified();
