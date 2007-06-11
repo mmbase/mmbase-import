@@ -39,7 +39,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.6 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.7 2007-06-11 12:30:53 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -64,7 +64,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         } else if (w.equals("QUERIES")) {
             job = new Runnable() {
                     public void run() {
-                        statsLogger.service("" + org.mmbase.module.database.MultiConnection.queries);
+                        statsLogger.service("" + org.mmbase.module.database.MultiConnectionImplementation.queries);
                     }
                 };
         } else if (w.equals("JOBSPOOL")) {
