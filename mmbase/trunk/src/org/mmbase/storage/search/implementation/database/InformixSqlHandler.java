@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.30 2007-06-11 12:30:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -834,7 +834,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     private void closeInformix(MultiConnection activeConnection) {
-        Connection con = activeConnection.getRealConnection();
+        Connection con = activeConnection.unwrap(Connection.class);
         try {
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
