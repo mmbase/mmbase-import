@@ -12,9 +12,48 @@ package org.mmbase.storage.search;
 import org.mmbase.storage.search.FieldCompareConstraint;
 
 /**
+ * This class can solve the following.
+ 
+   = PROBLEM ==
+
+The following query will be fired upon the database when somebody
+tries to login:
+
+  8000ms:
+    SELECT otype,owner,number,firstname,account,lastname,email,description,password 
+    FROM vpro4_users users WHERE lowerEmail(email)='<USER>' AND lowerEmail(password)='<PASSWORD>'
+  
+The lower-function is slowing down the login-procedure, because the lower-function
+will force a sequential-scan. 
+ 
+So an functional index should be used to query the table, but informix can't put an index
+on a table with a function which is not variant; 
+  
+-= SOLUTION =- 
+
+Use a wrapper to facilitate the variant version of lower and use this to query the database. 
+Squirrel-the-database-client seems to have a problem with these kinds of queries; use the
+utility classes in cinema-importers -> importer -> CreateProcedure
+
+ - create an notvariant function of lower:
+   javac CreateProcedure.java && java -cp /usr/local/SQuirreL\ SQL\ Client/lib/ifxjdbc.jar:. CreateProcedure
+
+   CREATE FUNCTION lowerNotVariant(field VARCHAR(255)) 
+    RETURNING VARCHAR(255) WITH (NOT VARIANT); 
+          RETURN LOWER(field); 
+   END FUNCTION;
+  
+ - set an index on the field to be queried:  
+   CREATE INDEX vpro4_users_email_lower on vpro4_users(lowerNotVaraint(email));
+  
+ - now query the table with full-speed:
+ 
+   33ms: SELECT otype,owner,number,firstname,account,lastname,email,description,password 
+         FROM vpro4_users users WHERE lowerNotVariant(email)='<USER>' AND lowerNotVariant(password)='<PASSWORD>'
+README.txt (END) 
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionValueConstraint.java,v 1.3 2007-06-12 12:32:47 michiel Exp $
+ * @version $Id: FunctionValueConstraint.java,v 1.4 2007-06-12 12:34:38 michiel Exp $
  * @since MMBase-1.8.5
  */
 public interface FunctionValueConstraint extends FieldCompareConstraint {
