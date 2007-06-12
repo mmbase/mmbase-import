@@ -530,7 +530,7 @@
     </action>
     <!-- ========== Action Mapping : vastgoed =================================== -->
     <action
-      path="/nmintra/includes/vastgoed/BestelAction"
+      path="/nmintra/BestelAction"
       type="nl.leocms.vastgoed.BestelAction"
       name="BestelForm"
       scope="session"
@@ -547,7 +547,7 @@
     </action>
     
     <action
-      path="/nmintra/includes/vastgoed/KaartenAction"
+      path="/nmintra/KaartenAction"
       type="nl.leocms.vastgoed.KaartenAction"
       name="KaartenForm"
       scope="request"
