@@ -62,7 +62,7 @@ if(twoColumns) {
          <br/>
          
          <html:link 
-            page="/nmintra/includes/vastgoed/KaartenInitAction.eb">
+            page="/nmintra/KaartenInitAction.eb">
             purchase another map
          </html:link>
          <br/><br/>
@@ -110,7 +110,7 @@ if(twoColumns) {
                   <td>
                      
                      <html:link 
-                        page="/nmintra/includes/vastgoed/KaartenInitAction.eb" 
+                        page="/nmintra/KaartenInitAction.eb" 
                         paramId="number" paramName="i">
                         <img src="media/vastgoed/refresh.gif" border="0" alt="terug">
                      </html:link>
