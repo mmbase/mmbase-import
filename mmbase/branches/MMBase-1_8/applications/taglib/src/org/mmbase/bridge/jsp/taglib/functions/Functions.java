@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.functions;
 
 
-import org.mmbase.bridge.jsp.taglib.ContentTag;
-import org.mmbase.bridge.jsp.taglib.CloudTag;
+import org.mmbase.bridge.jsp.taglib.*;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -40,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.1 2007-04-26 19:36:32 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.2 2007-06-12 12:18:21 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -127,7 +126,7 @@ public class Functions {
     /**
      * @since MMBase-1.8.4
      */
-    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException {
+    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th =
             new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
         th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
@@ -135,7 +134,5 @@ public class Functions {
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
         return req.getContextPath() + (t.charAt(0) == '/' ? "" : "/") + t;
     }
-
-
 
 }
