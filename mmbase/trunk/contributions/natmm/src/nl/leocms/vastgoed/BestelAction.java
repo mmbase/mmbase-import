@@ -14,6 +14,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.applications.NMIntraConfig;
 
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.5 2007-06-12 07:06:24 evdberg Exp $
+ * @version $Id: BestelAction.java,v 1.6 2007-06-12 14:59:51 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -62,7 +63,11 @@ public class BestelAction  extends Action {
       BestelForm bestelForm = (BestelForm) form;
       StringBuffer messagePlain = new StringBuffer();
       StringBuffer messageHtml = new StringBuffer();
+      Cloud cloud = CloudFactory.getCloud();
+      // entry of this kart sale into DB
       
+      
+      // mail message: kart values for buyer 
       addLineToMessage(messagePlain, messageHtml, "BestelFormulier");
       addLineToMessage(messagePlain, messageHtml, "---------------");
       addLineToMessage(messagePlain, messageHtml, "Naam: " + bestelForm.getNaam());
@@ -73,28 +78,37 @@ public class BestelAction  extends Action {
       addLineToMessage(messagePlain, messageHtml, "Kaart");
       addLineToMessage(messagePlain, messageHtml, "---------------");
       ArrayList items = (ArrayList) basket.getItems();
+      // kart items
       for(int i = 0; (items != null) && (i < items.size()); i++) {
           KaartenForm item = (KaartenForm) items.get(i);
           addLineToMessage(messagePlain, messageHtml, "Item:");
-          
+          // kaartsoort string from nodenumbers in sel_Kaart
+          String kaartsoort = "";
+          String[] kartNodes = item.getSel_Kaart();
+          if (kartNodes != null) {
+            for (int iNodes = 0; iNodes < kartNodes.length; iNodes++) {
+                String nodeNumber = kartNodes[iNodes];  
+                Node currentNode = cloud.getNode(nodeNumber);
+                kaartsoort += currentNode.getValue("naam");
+                if (iNodes != (kartNodes.length - 1)) {
+                    kaartsoort += ", ";
+                }
+            } 
+          }
+          addLineToMessage(messagePlain, messageHtml, "kaartsoort: " + kaartsoort);
+          //other item elements
           addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
           addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
           addLineToMessage(messagePlain, messageHtml, "aantal: " + item.getAantal());
           addLineToMessage(messagePlain, messageHtml, "gerold of gevouwen: " + item.getGevouwenOfOpgerold());
           addLineToMessage(messagePlain, messageHtml, "");
-         
-          
-          
-          
-      }
-      
-      
-      //mail
-      Cloud cloud = CloudFactory.getCloud();
+            }
+
+      // send mail
       Node emailNode = cloud.getNodeManager("email").createNode();
-      emailNode.setValue("from", "vastgoed-test@finalist.com");
-      emailNode.setValue("to", "ibrahim@finalist.com");
-      emailNode.setValue("subject", "test vastgoed");
+      emailNode.setValue("from",NMIntraConfig.fromEmailAddress);
+      emailNode.setValue("to", NMIntraConfig.toEmailAddress);
+      emailNode.setValue("subject", "Nieuwe kaarten bestel - " + bestelForm.getNaam());
       emailNode.setValue("replyto", "");
       emailNode.setValue("body",
                       "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
@@ -107,13 +121,28 @@ public class BestelAction  extends Action {
                       + "</multipart>");
       emailNode.commit();
       emailNode.getValue("mail(oneshotkeep)");
-      
-      
       //
-      // here we should set basket to null !!!
+      emailNode.setValue("to", bestelForm.getEmail());
+      messagePlain = new StringBuffer("Please find attached your order details: \n\n").append(messagePlain);
+      messageHtml = new StringBuffer("Please find attached your order details: <br/><br/>").append(messageHtml);
+      emailNode.setValue("body",
+          "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
+             + messagePlain.toString()
+          + "</multipart>"
+          + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
+            + "<html>"
+               + messageHtml.toString()
+            + "</html>"
+          + "</multipart>");
+      emailNode.commit();
+      emailNode.getValue("mail(oneshotkeep)");
       
-      
-      
+      // here we reset basket and bestelforms
+      ShoppingBasketHelper.removeShoppingBasket(request);
+      bestelForm.setNaam(null);
+      bestelForm.setEmail(null);
+      bestelForm.setEendheid(null);
+      bestelForm.setBezorgadres(null);      
       
       log.debug("processed purchase now forwarding send");
       return mapping.findForward("send");

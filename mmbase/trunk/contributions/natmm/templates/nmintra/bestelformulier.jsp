@@ -3,8 +3,6 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-
-
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
@@ -30,7 +28,7 @@ if(twoColumns) {
       
       <h3>Mijn bestelling</h3>
       
-      <html:form action="/nmintra/includes/vastgoed/BestelAction" method="POST">
+      <html:form action="/nmintra/BestelAction" method="POST">
          
          <table>
          <tr>
@@ -78,10 +76,9 @@ if(twoColumns) {
                <td></td>
                <td></td>
             </tr>
-            
+           
             <logic:iterate id="item" name="vastgoed_shoppingbasket" type="nl.leocms.vastgoed.KaartenForm" scope="session" 
-                           indexId="i" property="items">
-               
+                           indexId="i" property="items">               
                
                <tr>
                   <td bgcolor="#dddddd">
@@ -119,7 +116,7 @@ if(twoColumns) {
                   <td>
                      
                      <html:link 
-                        page="/nmintra/includes/vastgoed/BestelAction.eb" 
+                        page="/nmintra/BestelAction.eb" 
                         paramId="delete" paramName="i">
                         <img src="media/vastgoed/remove.gif" border="0" alt="verwijderen">
                      </html:link>
@@ -133,11 +130,17 @@ if(twoColumns) {
          
          <br/>
          <input type="submit" name="send" value="verzenden"/>
-         
+          
       </html:form>
       
 
-
+<%
+if ((request.getParameter("send") != null) && (request.getParameter("send").equals("verzenden"))) {
+%>
+<div style="color:red;"><b>'NL:your order is processed'</b></div>
+<%
+}
+%>
 
 
 
