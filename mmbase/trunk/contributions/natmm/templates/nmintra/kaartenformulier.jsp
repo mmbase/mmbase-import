@@ -4,12 +4,15 @@
 <%@include file="includes/cacheparams.jsp" %>
 
 
+<% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
+<%@include file="includes/getresponse.jsp" %>
 <html>
-<head>
-<link rel="stylesheet" type="text/css" href="css/main.css">
-<link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
-
-	<mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+  <head>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+	  <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
+		<title><% 
+    if(isPreview) { %>PREVIEW: <% } 
+    %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
 			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
 		<meta http-equiv="imagetoolbar" content="no">
 		<script language="javascript" src="scripts/launchcenter.js"></script>
@@ -62,9 +65,18 @@
       }
       return false;
       }
-      -->
       </script>
-      
+      <% 
+      if(printPage) { 
+         %>
+         <style>
+            body {
+               overflow: auto;
+               background-color: #FFFFFF
+            }
+         </style>
+         <%
+      } %>      
       
 <title>bestelformulier plotopdrachten</title>
 
@@ -407,20 +419,35 @@ DIV.Schermuitleg
 </style>
 </head>
 
-<body onload="doOnLoad();">
-
-<%@include file="/editors/paginamanagement/flushlink.jsp" %>
+  <body <% 
+        if(!printPage) { 
+          %>onLoad="javascript:resizeBlocks();doOnLoad();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
+          >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
+        } else {
+          %>onLoad="self.print();"<% 
+        }
+        %>>
+  	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
 	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
+	<% 
+	if(!printPage) { 
+	   %>
 	   <%@include file="includes/searchbar.jsp" %>
    	<tr>
    		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
    		<td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
    		<td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
    	</tr>
+   	<% 
+	} 
+	%>
 	<tr>
-	   <td rowspan="2"><%@include file="includes/nav.jsp" %></td>
-
-	   
+		<% 
+	   if(!printPage) { 
+	      %><td rowspan="2"><%@include file="includes/nav.jsp" %></td><% 
+	   } 
+	   %>
+	<%@include file="includes/calendar.jsp" %>   
 
 <% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
 <td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
@@ -782,6 +809,26 @@ formulier.">
 <input type="hidden" name="number" value="<%=request.getParameter("number")%>"/>
  
 </html:form>
+
+<% 
+if(twoColumns) { 
+   // *********************************** right bar *******************************
+   String styleClass = "white";
+   String styleClassDark = "white";
+         
+   %><td style="padding-left:10px;">
+   <div class="rightcolumn" id="rightcolumn">
+   
+   <mm:list nodes="<%= paginaID %>" path="pagina,readmore,contentblocks" orderby="readmore.pos">
+      <mm:node element="contentblocks">
+         <%@include file="includes/contentblockdetails.jsp" %>
+      </mm:node>
+      <br/>
+   </mm:list>
+   </div>
+   </td><%
+} %>
+
 
 <%@include file="includes/footer.jsp" %>
 </mm:cloud>
