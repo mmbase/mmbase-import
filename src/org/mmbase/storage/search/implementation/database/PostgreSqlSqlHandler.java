@@ -36,7 +36,7 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.32 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.33 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -109,7 +109,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
 
     @Override
-    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE ");
         } else {
@@ -125,7 +125,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
     @Override
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
+    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
                 log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");
@@ -146,7 +146,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         }
     }
     /*
-    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
+    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" ~ ");
         } else {
@@ -163,7 +163,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * @javadoc
      */
     @Override
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -216,7 +216,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         }
 
         // SELECT
-        StringBuffer sbQuery = new StringBuffer("SELECT ");
+        StringBuilder sbQuery = new StringBuilder("SELECT ");
 
         // DISTINCT
         if (query.isDistinct()) {
@@ -251,10 +251,10 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * Optimizes postgresql queries by adding the ONLY keyword to a relation-table, provided that the
      * role was given (and therefor the selection only applies to the given table).
      *
-     * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
+     * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuilder, org.mmbase.storage.search.Step)
      */
     @Override
-    protected void appendTableName(StringBuffer sb, Step step) {
+    protected void appendTableName(StringBuilder sb, Step step) {
         if(step instanceof RelationStep) {
             RelationStep rs = (RelationStep) step;
             if (rs.getRole() != null) {

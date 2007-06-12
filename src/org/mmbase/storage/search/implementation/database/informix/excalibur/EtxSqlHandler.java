@@ -36,15 +36,13 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.9 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.10 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
 public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
 
-    /** Logger instance. */
-    private static Logger log
-    = Logging.getLoggerInstance(EtxSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(EtxSqlHandler.class);
 
     /**
      * The indexed fields, stored as {@link #BuilderField BuilderField}
@@ -63,7 +61,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
+    public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite)
     throws SearchQueryException {
         // Net effect of inverse setting with constraint inverse property.

@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.68 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.69 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -55,7 +55,7 @@ public class BasicSqlHandler implements SqlHandler {
             int offset = str.indexOf('\'');
             if (offset != -1) {
                 // At least one single quote found.
-                StringBuffer sb = new StringBuffer(str.length() + 4);
+                StringBuilder sb = new StringBuilder(str.length() + 4);
                 int start = 0;
                 do {
                     sb.append(str.substring(start, offset)).append("''");
@@ -117,12 +117,12 @@ public class BasicSqlHandler implements SqlHandler {
         return true;
     }
 
-    protected void appendDateValue(StringBuffer sb, Date value) {
+    protected void appendDateValue(StringBuilder sb, Date value) {
         int timeZoneOffset = MMBase.getMMBase().getStorageManagerFactory().getTimeZoneOffset(value.getTime());
         Date date = new Date(value.getTime() - timeZoneOffset);
         //Date date = new Date(value.getTime());
         //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date);
-        dateFormat.format(date, sb, dontcareFieldPosition);
+        sb.append(dateFormat.format(date, new StringBuffer(), dontcareFieldPosition));
     }
 
     /**
@@ -144,7 +144,7 @@ public class BasicSqlHandler implements SqlHandler {
      * @param fieldType The field type.
      */
     // TODO: elaborate javadoc, add to SqlHandler interface?
-    public void appendFieldValue(StringBuffer sb, Object value, boolean toLowerCase, int fieldType) {
+    public void appendFieldValue(StringBuilder sb, Object value, boolean toLowerCase, int fieldType) {
         if (fieldType == Field.TYPE_STRING || fieldType == Field.TYPE_XML) {
             // escape single quotes in string
             String stringValue = toSqlString((String) value);
@@ -206,7 +206,7 @@ public class BasicSqlHandler implements SqlHandler {
         }
 
         // SELECT
-        StringBuffer sbQuery = new StringBuffer("SELECT ");
+        StringBuilder sbQuery = new StringBuilder("SELECT ");
 
         // DISTINCT
         // Note that DISTINCT can be omitted for an aggregating query.
@@ -229,7 +229,7 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8
      */
-    protected void appendRelationConstraints(StringBuffer sbRelations, RelationStep relationStep, boolean multipleSteps) {
+    protected void appendRelationConstraints(StringBuilder sbRelations, RelationStep relationStep, boolean multipleSteps) {
 
         Step previousStep = relationStep.getPrevious();
         Step nextStep = relationStep.getNext();
@@ -340,19 +340,19 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
+    public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
 
         // Buffer expressions for included nodes, like
         // "x.number in (...)".
-        StringBuffer sbNodes = new StringBuffer();
+        StringBuilder sbNodes = new StringBuilder();
 
         // Buffer expressions for relations, like
         // "x.number = r.snumber AND y.number = r.dnumber".
-        StringBuffer sbRelations = new StringBuffer();
+        StringBuilder sbRelations = new StringBuilder();
 
         // Buffer fields to group by, like
         // "alias1, alias2, ..."
-        StringBuffer sbGroups = new StringBuffer();
+        StringBuilder sbGroups = new StringBuilder();
 
         boolean multipleSteps = query.getSteps().size() > 1;
 
@@ -495,7 +495,7 @@ public class BasicSqlHandler implements SqlHandler {
         }
 
         // Constraints
-        StringBuffer sbConstraints = new StringBuffer();
+        StringBuilder sbConstraints = new StringBuilder();
         sbConstraints.append(sbNodes); // Constraints by included nodes.
         if (sbConstraints.length() > 0 && sbRelations.length() > 0) {
             sbConstraints.append(" AND ");
@@ -548,7 +548,7 @@ public class BasicSqlHandler implements SqlHandler {
      * @param step
      * @since MMBase-1.8
      */
-    protected void appendTableName(StringBuffer sb, Step step) {
+    protected void appendTableName(StringBuilder sb, Step step) {
         // Tablename, prefixed with basename and underscore
         sb.append(MMBase.getMMBase().getBaseName()).
         append('_').
@@ -565,7 +565,7 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8
      */
-    protected void appendTableAlias(StringBuffer sb, Step step) {
+    protected void appendTableAlias(StringBuilder sb, Step step) {
         String tableAlias = step.getAlias();
         // Table alias (tablename when table alias not set).
         if (tableAlias != null) {
@@ -581,7 +581,7 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8
      */
-    protected StringBuffer appendSortOrderDirection(StringBuffer sb, SortOrder sortOrder) throws IllegalStateException {
+    protected StringBuilder appendSortOrderDirection(StringBuilder sb, SortOrder sortOrder) throws IllegalStateException {
         // Sort direction.
         switch (sortOrder.getDirection()) {
         case SortOrder.ORDER_ASCENDING:
@@ -599,7 +599,7 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8
      */
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps) {
          boolean uppered = false;
          if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
              sb.append("UPPER(");
@@ -619,14 +619,14 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8.2
      */
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
+    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         return appendSortOrderField(sb, sortOrder, multipleSteps);
     }
 
     /**
      * @since MMBase-1.8
      */
-    protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
+    protected StringBuilder appendSortOrders(StringBuilder sb, SearchQuery query) {
         boolean multipleSteps = query.getSteps().size() > 1;
         List<SortOrder> sortOrders = query.getSortOrders();
         if (sortOrders.size() > 0) {
@@ -650,7 +650,7 @@ public class BasicSqlHandler implements SqlHandler {
      *
      * @return The string buffer.
      */
-    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         sb.append(" LIKE ");
         return sb;
     }
@@ -658,7 +658,7 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @javadoc
      */
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case -1:
@@ -698,7 +698,7 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
+    public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite) {
 
         // Net effect of inverse setting with constraint inverse property.
@@ -961,7 +961,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        to be called on this handler, to generate the constraints in
      *        the composite.
      */
-    protected void appendCompositeConstraintToSql(StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query,
+    protected void appendCompositeConstraintToSql(StringBuilder sb, CompositeConstraint compositeConstraint, SearchQuery query,
                                                   boolean inverse, boolean inComposite, SqlHandler firstInChain)
         throws SearchQueryException {
 
@@ -1040,7 +1040,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        prefixed with the tablename or tablealias (e.g. like in "images.number"),
      *        <code>false</code> otherwise.
      */
-    protected void appendField(StringBuffer sb, SortOrder sortOrder, boolean includeTablePrefix) {
+    protected void appendField(StringBuilder sb, SortOrder sortOrder, boolean includeTablePrefix) {
         StepField field = sortOrder.getField();
         if (sortOrder instanceof DateSortOrder) {
             appendDateField(sb, field.getStep(), field.getFieldName(), includeTablePrefix, ((DateSortOrder)sortOrder).getPart());
@@ -1062,7 +1062,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
-    protected void appendField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
+    protected void appendField(StringBuilder sb, Step step, String fieldName, boolean includeTablePrefix) {
 
         String tableAlias = step.getAlias();
         if (includeTablePrefix) {
