@@ -17,6 +17,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.search.*;
@@ -33,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.60 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.61 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -130,6 +131,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
             // and rethrow as SearchQueryException.
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
+            }
+            if (con instanceof MultiConnection) {
+                log.debug("Calling check after exception");
+                try {
+                    ((MultiConnection) con).checkAfterException();
+                } catch (SQLException sqe) {
+                    log.debug(sqe);
+                }
+            } else {
+                log.debug("Not a multiconnection");
             }
             throw new SearchQueryException("Query '" + (sqlString == null ? "" + query.toString() : sqlString)  + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {

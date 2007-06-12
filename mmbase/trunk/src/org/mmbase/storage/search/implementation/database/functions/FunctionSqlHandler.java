@@ -17,7 +17,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * An SQL handle also recognizing 'FunctionValueConstraint's.
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionSqlHandler.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: FunctionSqlHandler.java,v 1.5 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -35,8 +35,7 @@ public class FunctionSqlHandler extends ChainedSqlHandler implements SqlHandler 
     }
     
     // javadoc is inherited
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint, SearchQuery query, boolean inverse, boolean inComposite)
-        throws SearchQueryException {
+    public void appendConstraintToSql(StringBuilder sb, Constraint constraint, SearchQuery query, boolean inverse, boolean inComposite) throws SearchQueryException {
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ constraint.isInverse();
 

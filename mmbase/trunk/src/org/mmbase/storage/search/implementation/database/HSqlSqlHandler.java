@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.10 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.11 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -55,7 +55,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @javadoc
      */
     @Override
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -100,7 +100,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // SELECT
-        StringBuffer sbQuery = new StringBuffer("SELECT ");
+        StringBuilder sbQuery = new StringBuilder("SELECT ");
 
 
 

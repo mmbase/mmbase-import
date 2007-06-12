@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.19 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.20 2007-06-12 10:59:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -84,7 +84,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     @Override
-    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
         } else {
@@ -94,7 +94,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     /*
-    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
+    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" REGEXP BINARY ");
         } else {
@@ -108,7 +108,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @javadoc
      */
     @Override
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -139,7 +139,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
     }
     @Override
-    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps) {
         if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
             sb.append("BINARY ");
         }
@@ -164,7 +164,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // SELECT
-        StringBuffer sbQuery = new StringBuffer("SELECT ");
+        StringBuilder sbQuery = new StringBuilder("SELECT ");
 
         // DISTINCT
         if (query.isDistinct()) {
