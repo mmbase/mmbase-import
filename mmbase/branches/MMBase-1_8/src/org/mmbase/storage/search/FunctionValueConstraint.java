@@ -14,7 +14,7 @@ import org.mmbase.storage.search.FieldCompareConstraint;
 /**
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionValueConstraint.java,v 1.2 2007-02-05 15:47:51 michiel Exp $
+ * @version $Id: FunctionValueConstraint.java,v 1.2.2.1 2007-06-12 12:32:22 michiel Exp $
  * @since MMBase-1.7
  */
 public interface FunctionValueConstraint extends FieldCompareConstraint {
