@@ -3,7 +3,6 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
@@ -162,7 +161,7 @@ function jsc_ClearUnselectedOptions()
 	var selectCtrlArray = new Array(document.KaartenForm.sel_NatGeb, document.KaartenForm.sel_Areaal);
 	var selectCtrl;
 	var i;
-	// for top two kart options, clear selection if the kart option is not applicable. more less confusion and more usability on user side
+	// for top two kart options, clear selection if the kart option is not applicable. for more usability
 	for (iCtrl = 0; iCtrl < selectCtrlArray.length; iCtrl++) {
 		selectCtrl = selectCtrlArray[iCtrl];
 		if (!document.KaartenForm.rad_Gebied[iCtrl].checked) {
@@ -465,7 +464,7 @@ if(twoColumns) {
     <a name="top">
     <%--%@include file="includes/back_print.jsp" %>--%>
     
-<html:form action="/nmintra/includes/vastgoed/KaartenAction" method="GET">
+<html:form action="/nmintra/KaartenAction" method="POST">
 
 	<table>
 		<tr>
@@ -795,7 +794,7 @@ formulier.">
 			<td>
 		
 		<html:link 
-        page="/nmintra/includes/vastgoed/KaartenAction.eb?shopping_cart">
+        page="/nmintra/KaartenAction.eb?shopping_cart">
         TERUG NAAR KART...
 </html:link>
 

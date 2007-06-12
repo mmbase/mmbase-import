@@ -17,4 +17,8 @@ public class ShoppingBasketHelper {
       return basket;
    }
    
+   public static void removeShoppingBasket(HttpServletRequest request) {
+       request.getSession().setAttribute(SHOPPING_BASKET_SESSION_KEY, new ShoppingBasketImpl());
+   }
+   
 }
