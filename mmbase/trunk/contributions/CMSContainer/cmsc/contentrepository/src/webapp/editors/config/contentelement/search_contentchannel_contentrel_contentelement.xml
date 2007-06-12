@@ -40,7 +40,7 @@
 
 	<action type="create">
 		<relation destinationtype="contentelement" role="contentrel">
-			<field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='contentrel' and @destination='contentelement' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
 		</relation>
 	</action>
 </list>
