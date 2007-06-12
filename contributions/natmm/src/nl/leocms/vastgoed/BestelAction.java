@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.4 2007-06-11 16:01:35 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.5 2007-06-12 07:06:24 evdberg Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -60,8 +60,8 @@ public class BestelAction  extends Action {
       
       // process the shopping cart as a purchase
       BestelForm bestelForm = (BestelForm) form;
-      StringBuilder messagePlain = new StringBuilder();
-      StringBuilder messageHtml = new StringBuilder();
+      StringBuffer messagePlain = new StringBuffer();
+      StringBuffer messageHtml = new StringBuffer();
       
       addLineToMessage(messagePlain, messageHtml, "BestelFormulier");
       addLineToMessage(messagePlain, messageHtml, "---------------");
@@ -120,7 +120,7 @@ public class BestelAction  extends Action {
    }
    
    //
-   private void addLineToMessage(StringBuilder messagePlain, StringBuilder messageHtml, String newLine) {
+   private void addLineToMessage(StringBuffer messagePlain, StringBuffer messageHtml, String newLine) {
        messagePlain.append(newLine + "\n");
        messageHtml.append(newLine + "<br/>");
     }
