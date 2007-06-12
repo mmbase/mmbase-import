@@ -38,7 +38,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25 2006-07-03 11:59:16 johannes Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.25.2.1 2007-06-12 11:00:46 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -534,8 +534,10 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 if (sbConstraints.length() > 0) {
                     // Combine constraints.
                     // if sbConstraints allready ends with " AND " before adding " AND "
-                    log.info("sbConstraints:" + sbConstraints);
-                    log.info("sbConstraints.length:" + sbConstraints.length());
+                    if (log.isDebugEnabled()) {
+                        log.debug("sbConstraints:" + sbConstraints);
+                        log.debug("sbConstraints.length:" + sbConstraints.length());
+                    }
 
                     // have to check if the constraint end with "AND ", sometimes it's not :-(
                     if (sbConstraints.length() >= 4) {
