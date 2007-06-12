@@ -302,6 +302,7 @@ public class RubriekHelper {
          rubriekUrl = getUrlPathToRootString(rubriek,"").toString();
          if (path.indexOf(rubriekUrl)>-1) {
              sortMap.put(new Integer(rubriekUrl.length()), rubriek);
+             //rubriekNodeList.add(rubriek); //commentout to switch to new approach fix
          }
       }
       TreeSet sortedKeys = new TreeSet(Collections.reverseOrder());
@@ -310,7 +311,7 @@ public class RubriekHelper {
       while(keysIterator.hasNext()) {
           Integer i = (Integer) keysIterator.next();
           Node sortedRubriek = (Node) sortMap.get(i);
-          rubriekNodeList.add(sortedRubriek);
+          rubriekNodeList.add(sortedRubriek);  //un-comment to switch to new approach fix
       }
       
       return rubriekNodeList;
