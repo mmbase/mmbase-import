@@ -290,17 +290,29 @@ public class RubriekHelper {
     public ArrayList getRubriekWithRubriekenUrlPath(String path, Node parentNode) {
       NodeList nl = cloud.getNodeManager("rubriek").getList(null, "number", "DOWN");  
       Iterator iter = nl.listIterator();
-      
+      // FIX FOR NMCMS-206
+      // matching rubrieks must be returned by reverse order of their length
+      // the longest rubriek we can find that matches the passed url, will be the first in the returned list
       ArrayList rubriekNodeList = new ArrayList();
+      TreeMap sortMap = new TreeMap();
       Node rubriek = null;
       String rubriekUrl;
       while (iter.hasNext()) {
          rubriek = (Node) iter.next();
          rubriekUrl = getUrlPathToRootString(rubriek,"").toString();
          if (path.indexOf(rubriekUrl)>-1) {
-            rubriekNodeList.add(rubriek);
+             sortMap.put(new Integer(rubriekUrl.length()), rubriek);
          }
       }
+      TreeSet sortedKeys = new TreeSet(Collections.reverseOrder());
+      sortedKeys.addAll(sortMap.keySet());
+      Iterator keysIterator = sortedKeys.iterator();
+      while(keysIterator.hasNext()) {
+          Integer i = (Integer) keysIterator.next();
+          Node sortedRubriek = (Node) sortMap.get(i);
+          rubriekNodeList.add(sortedRubriek);
+      }
+      
       return rubriekNodeList;
    }
    
