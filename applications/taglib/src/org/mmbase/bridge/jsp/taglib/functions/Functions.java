@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.18 2007-04-26 19:42:54 michiel Exp $
+ * @version $Id: Functions.java,v 1.19 2007-06-13 18:27:20 nklasens Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -125,7 +125,7 @@ public class Functions {
     /**
      * @since MMBase-1.8.4
      */
-    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException {
+    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th =
             new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
         th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
