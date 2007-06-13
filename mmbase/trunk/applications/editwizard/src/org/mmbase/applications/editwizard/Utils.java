@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.44 2007-04-09 19:13:31 michiel Exp $
+ * @version $Id: Utils.java,v 1.45 2007-06-13 20:54:26 nklasens Exp $
  */
 
 public class Utils {
@@ -240,7 +240,7 @@ public class Utils {
      * @param       params  params to be used. eg.: $username will be replaced by the values in the hashtable, if a 'username' key is in the hashtable.
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
-    public static String getText(Node node, String defaultvalue, Map params) {
+    public static String getText(Node node, String defaultvalue, Map<String,String> params) {
         return fillInParams(getText(node, defaultvalue), params);
     }
 
@@ -332,7 +332,7 @@ public class Utils {
      * @param       text    The text what should be placed in the textnode.
      * @param       params  optional params which should be used in a replace action.
      */
-    public static void storeText(Node node, String text, Map params) {
+    public static void storeText(Node node, String text, Map<String,String> params) {
         storeText(node, fillInParams(text, params));
     }
 
@@ -361,9 +361,9 @@ public class Utils {
      *
      * @return  Collection with the new nodes.
      */
-    public static Collection appendNodeList(NodeList list, Node dest) {
+    public static Collection<Node> appendNodeList(NodeList list, Node dest) {
 
-        Collection result = new ArrayList();
+        Collection<Node> result = new ArrayList<Node>();
         if (list == null) return result;
         Document ownerdoc = dest.getOwnerDocument();
         for (int i=0; i<list.getLength(); i++) {
@@ -431,7 +431,7 @@ public class Utils {
      * Same as above, but now you can supply a Vector with names which should NOT be copied.
      */
 
-    public static void copyAllAttributes(Node source, Node dest, List except) {
+    public static void copyAllAttributes(Node source, Node dest, List<String> except) {
         NamedNodeMap attrs = source.getAttributes();
         for (int i=0; i<attrs.getLength(); i++) {
             String attrname = attrs.item(i).getNodeName();
@@ -451,15 +451,19 @@ public class Utils {
      * @param       transformer     The transformer.
      * @param       params          The params to be placed. Standard name/value pairs.
      */
-    protected static void setStylesheetParams(Transformer transformer, Map params){
+    protected static void setStylesheetParams(Transformer transformer, Map<String,String> params, Cloud cloud){
         if (params==null) return;
 
-        Iterator i = params.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> i = params.entrySet().iterator();
         while (i.hasNext()){
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<String,String> entry = i.next();
             log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
-            transformer.setParameter((String) entry.getKey(), entry.getValue());
+            transformer.setParameter(entry.getKey(), entry.getValue());
         }
+        if (cloud != null) {
+            transformer.setParameter("cloud", cloud);
+        }
+
     }
 
 
@@ -472,7 +476,7 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map<String,String> params, Cloud cloud) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
         if (xslFile == null) throw new RuntimeException("No xslFile given");
         Source xsl;
@@ -493,7 +497,7 @@ public class Utils {
         Transformer transformer = cachedXslt.newTransformer();
         // Set any stylesheet parameters.
         if (params != null) {
-            setStylesheetParams(transformer, params);
+            setStylesheetParams(transformer, params, cloud);
         }
         if (log.isDebugEnabled()) log.trace("transforming: \n" + stringFormatted(node));
         transformer.transform(new DOMSource(node), result);
@@ -538,16 +542,16 @@ public class Utils {
 
     public static Node transformNode(Node node, URL xslFile, URIResolver uri) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node, xslFile, uri, res, null);
+        transformNode(node, xslFile, uri, res, null, null);
         return res.getNode();
     }
 
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map params) throws TransformerException {
+    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map<String,String> params, Cloud cloud) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node, xslFile, uri, res, params);
+        transformNode(node, xslFile, uri, res, params, cloud);
         return res.getNode();
     }
 
@@ -556,16 +560,16 @@ public class Utils {
      * same as above, but now the result is written to the writer.
      */
     public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out) throws TransformerException {
-        transformNode(node, xslFile, uri, out, null);
+        transformNode(node, xslFile, uri, out, null, null);
     }
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map<String,String> params, Cloud cloud) throws TransformerException {
         if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         StringWriter res = new StringWriter();
-        transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params);
+        transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params, cloud);
         if (log.isDebugEnabled()) log.trace("transformation result " + res.toString());
         try {
             out.write(res.toString());
@@ -575,9 +579,9 @@ public class Utils {
         //new StreamResult(out), null);
     }
 
-    public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+    public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map<String,String> params, Cloud cloud) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node, uri.resolveToURL(xslFile, null), uri, res, params);
+        transformNode(node, uri.resolveToURL(xslFile, null), uri, res, params, cloud);
         return res.getNode();
     }
 
@@ -613,7 +617,7 @@ public class Utils {
        any curly braces, the template is assumed to be a valid xpath (instead
        of plain data). Else the template is assumed to be a valid attribute template.
     */
-    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params) {
+    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map<String,String> params) {
         if (attributeTemplate == null) return null;
         StringBuffer result = new StringBuffer();
         String template = fillInParams(attributeTemplate, params);
@@ -682,14 +686,14 @@ public class Utils {
      * @param     params  the table with params (name/value pairs)
      * @return    The resulting string
      */
-    public static String fillInParams(String text, Map params) {
+    public static String fillInParams(String text, Map<String,String> params) {
         if (params == null) return text;
-        Iterator i = params.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<String,String> entry = i.next();
             // accept both $xxx and {$xxx}
-            text = multipleReplace(text, "{$" + entry.getKey() + "}", (String) entry.getValue());
-            text = multipleReplace(text, "$" + entry.getKey(), (String) entry.getValue());
+            text = multipleReplace(text, "{$" + entry.getKey() + "}", entry.getValue());
+            text = multipleReplace(text, "$" + entry.getKey(), entry.getValue());
         }
         return text;
     }
@@ -714,36 +718,4 @@ public class Utils {
         return text;
     }
 
-
-    /**
-     * (Not used) method to post (http-post) xml to a url.
-     *
-     * Since it is 'not used' I made i private for the moment.
-     *
-     * @param       xml     The main node which should be posted.
-     * @param       url     The destination url
-     * @return     The resulting string sent from the destination after sending.
-     */
-    private static String postXml(Node xml, String url) throws Exception {
-        String inputString = getXML(xml);
-
-        URL downeyjrURL = new URL(url);
-        HttpURLConnection c = (HttpURLConnection)(downeyjrURL.openConnection());
-        c.setDoOutput(true);
-        PrintWriter out = new PrintWriter(c.getOutputStream());
-        // Here's whether the parameter is set.
-        // TODO: replace in 1.4 with:
-        //        out.println("xml=" + URLEncoder.encode(inputString,"UTF-8"));
-        out.println("xml=" + URLEncoder.encode(inputString));
-        out.close();
-
-        BufferedReader in2 = new BufferedReader(new InputStreamReader(c.getInputStream()));
-
-        String outputstr = "";
-        String inputLine;
-        while((inputLine = in2.readLine()) != null)
-            outputstr += inputLine;
-        in2.close();
-        return outputstr;
-    }
 }

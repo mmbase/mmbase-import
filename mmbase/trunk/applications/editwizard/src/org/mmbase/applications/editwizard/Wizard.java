@@ -28,6 +28,7 @@ import java.util.regex.*;
 import org.w3c.dom.*;
 
 import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import java.util.*;
@@ -45,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.152 2006-11-28 12:39:26 michiel Exp $
+ * @version $Id: Wizard.java,v 1.153 2007-06-13 20:54:26 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -82,9 +83,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     // the editwizard context path
     private String context = null;
 
-    // schema / session data
-    private String name;
-
     // the result objectnumber (the number of the object after a commit)
     // this value is only assigned after COMMIT is called - otherwise it is null
     private String objectNumber;
@@ -116,12 +114,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private Document originalData;
 
     // not yet committed uploads are stored in these hashmaps
-    private Map binaries = new HashMap();
-    private Map binaryNames = new HashMap();
-    private Map binaryPaths = new HashMap();
+    private Map<String,byte[]> binaries = new HashMap<String,byte[]>();
+    private Map<String,String> binaryNames = new HashMap<String,String>();
+    private Map<String,String> binaryPaths = new HashMap<String,String>();
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    private Map variables = new HashMap();
+    private Map<String,String> variables = new HashMap<String,String>();
 
     // the constraints received from mmbase are stored + cached in this xmldom
     private Document constraints;
@@ -152,13 +150,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * This boolean tells the jsp that the wizard was committed, and changes may have been made
      */
     private boolean committed = false;
-
-
-    /**
-     *
-     */
-    private String popupId = "";
-    private boolean debug = false;
 
     /**
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
@@ -377,9 +368,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         wizardName = wizardConfig.wizard;
-        popupId = wizardConfig.popupId;
         dataId = wizardConfig.objectNumber;
-        debug = wizardConfig.debug;
 
         URL wizardSchemaFile;
         try {
@@ -519,29 +508,31 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
      */
-    public void writeHtmlForm(Writer out, String instanceName, Map externParams)
+    public void writeHtmlForm(Writer out, String instanceName, Map<String,String> externParams)
         throws WizardException, TransformerException {
         if (log.isDebugEnabled()) {
             log.debug("writeHtmlForm for " + instanceName);
         }
 
-        Node datastart = Utils.selectSingleNode(data, "/data/*");
-
         // Build the preHtml version of the form.
         Document preForm = getPreForm(instanceName);
         Validator.validate(preForm, schema);
 
-        Map params = new HashMap(variables);
+        Map<String,String> params = new HashMap<String,String>(variables);
         params.put("ew_context", context);
 
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer", referrer);
-        params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
         params.put("language", cloud.getLocale().getLanguage());
         params.put("timezone", timezone);
-        params.put("cloud", cloud);
+        try {
+            params.put("referrer_encoded", java.net.URLEncoder.encode(referrer, "UTF-8"));
+        }
+        catch (UnsupportedEncodingException e) {
+            log.debug("" + e.getMessage(), e);
+        }
 
         if (templatesDir != null) {
             params.put("templatedir", templatesDir);
@@ -551,7 +542,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             params.putAll(externParams);
         }
 
-        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params);
+        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params, cloud);
     }
 
     /**
@@ -560,7 +551,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @see #processRequest
      */
     private void storeValues(ServletRequest req) throws WizardException {
-        Enumeration list = req.getParameterNames();
+        Enumeration<String> list = req.getParameterNames();
         log.debug("Synchronizing editor data, using the request");
 
         String formEncoding = req.getCharacterEncoding();
@@ -573,7 +564,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         while (list.hasMoreElements()) {
-            String name = (String) list.nextElement();
+            String name = list.nextElement();
 
             if (name.startsWith("internal_")) {
                 log.debug("Ignoring parameter " + name);
@@ -1224,7 +1215,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param   schemanode  The schemanode from were to start searching
      * @param   recurse     Set to true if you want to let the process search in-depth through the entire tree, false if you just want it to search the first-level children
      */
-    private void resolveShortcuts(Node schemaNode, boolean recurse) throws WizardException {
+    private void resolveShortcuts(Node schemaNode, boolean recurse) {
         String xpath;
 
         if (recurse) {
@@ -1238,8 +1229,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (children == null) {
             throw new RuntimeException("could not perform xpath:" + xpath + " for schemanode:\n" + schemaNode);
         }
-
-        Node node;
 
         for (int i = 0; i < children.getLength(); i++) {
             resolveShortcut(children.item(i));
@@ -1273,7 +1262,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param   node    The node to resolve
      */
-    private void resolveShortcut(Node singleNode) throws WizardException {
+    private void resolveShortcut(Node singleNode) {
         // transforms <field name="firstname"/> into <field fdatapath="field[@name='firstname']" />
         String nodeName = singleNode.getNodeName();
 
@@ -1506,7 +1495,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         final String ordertype = Utils.getAttribute(fieldlist, "ordertype", "string");
 
         // set the orderby attribute for all the nodes
-        List tempstorage = new ArrayList(datalist.getLength());
+        List<Element> tempstorage = new ArrayList<Element>(datalist.getLength());
 
         for (int dataIndex = 0; dataIndex < datalist.getLength(); dataIndex++) {
             Element datacontext = (Element) datalist.item(dataIndex);
@@ -1543,7 +1532,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         // sort list
         if (orderby != null) {
-            Comparator comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
+            Comparator<Element> comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
                                                      INVERSE_ORDERTYPE.matcher(ordertype).matches());
             Collections.sort(tempstorage, comp);
             if (log.isDebugEnabled()) {
@@ -1555,7 +1544,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         int listsize = tempstorage.size();
 
         for (int dataindex = 0; dataindex < listsize; dataindex++) {
-            Element datacontext = (Element) tempstorage.get(dataindex);
+            Element datacontext = tempstorage.get(dataindex);
 
             // Select the form item
             Node item = Utils.selectSingleNode(fieldlist, "item");
@@ -1597,13 +1586,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             if (orderby != null) {
                 if ((dataindex > 0) && (hiddenCommands.indexOf("|move-up|") == -1)) {
                     addSingleCommand(newitem, "move-up", datacontext,
-                                     (Node) tempstorage.get(dataindex - 1));
+                                     tempstorage.get(dataindex - 1));
                 }
 
                 if (((dataindex + 1) < listsize) &&
                     (hiddenCommands.indexOf("|move-down|") == -1)) {
                     addSingleCommand(newitem, "move-down", datacontext,
-                                     (Node) tempstorage.get(dataindex + 1));
+                                     tempstorage.get(dataindex + 1));
                 }
             }
 
@@ -1694,7 +1683,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // place newfield in pre-html form
         form.appendChild(newField);
 
-        List exceptAttrs = new ArrayList(); // what is this?
+        List<String> exceptAttrs = new ArrayList<String>(); // what is this?
         exceptAttrs.add("fid");
 
         // copy all attributes from data to new pre-html field def
@@ -2009,14 +1998,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         startWizard = false;
         startWizardCmd = null;
 
-        boolean found = false;
         String commandName = "";
 
-        List errors = new ArrayList();
-        Enumeration list = req.getParameterNames();
+        Enumeration<String> list = req.getParameterNames();
 
         while (list.hasMoreElements()) {
-            commandName = (String) list.nextElement();
+            commandName = list.nextElement();
 
             if ((commandName.indexOf("cmd/") == 0) && !commandName.endsWith(".y")) {
                 if (log.isDebugEnabled()) {
@@ -2121,7 +2108,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                 NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
 
-                Map fieldValues = new HashMap();
+                Map<String,String> fieldValues = new HashMap<String,String>();
 
                 for (int j = 0; j < updatedFields.getLength(); j++) {
                     Node fieldNode = updatedFields.item(j);
@@ -2130,8 +2117,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     fieldValues.put(fieldName, fieldValue);
                 }
 
-                NodeList insideObjects = Utils.selectNodeList(updatedNode, "*");
-
                 for (int i = 0; i < nodesToUpdate.getLength(); i++) {
                     Node dataNode = nodesToUpdate.item(i);
                     NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
@@ -2139,7 +2124,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
                         Node fieldNode = fieldsToUpdate.item(j);
                         String fieldName = Utils.getAttribute(fieldNode, "name");
-                        String fieldValue = (String) fieldValues.get(fieldName);
+                        String fieldValue = fieldValues.get(fieldName);
                         Utils.storeText(fieldNode, fieldValue);
                     }
                 }
@@ -2151,7 +2136,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
                         Node fieldNode = fieldsToUpdate.item(j);
                         String fieldName = Utils.getAttribute(fieldNode, "name");
-                        String fieldValue = (String) fieldValues.get(fieldName);
+                        String fieldValue = fieldValues.get(fieldName);
                         Utils.storeText(fieldNode, fieldValue);
                     }
                 }
@@ -2249,7 +2234,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 StringTokenizer ids = new StringTokenizer(value, "|");
 
                 while (ids.hasMoreElements()) {
-                    Node newObject = addListItem(fid, did, ids.nextToken(), false, createOrder);
+                    addListItem(fid, did, ids.nextToken(), false, createOrder);
                     createOrder++;
                 }
             } else {
@@ -2259,7 +2244,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     otherdid = null;
                 }
 
-                Node newObject = addListItem(fid, did, otherdid, true, 1);
+                addListItem(fid, did, otherdid, true, 1);
             }
 
             break;
@@ -2405,12 +2390,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Node loadAction = Utils.selectSingleNode(schema.getDocumentElement(), "action[@type='load']/relation[@destination='" + relatedType + "']/object");
 
                 if (loadAction != null) {
-                    Collection newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
+                    Collection<Node> newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
                     // newly loaded objects must be marked as 'already-existing'.
 
-                    Iterator i = newSubRelations.iterator();
+                    Iterator<Node> i = newSubRelations.iterator();
                     while (i.hasNext()) {
-                        Node newSubRelation = (Node) i.next();
+                        Node newSubRelation = i.next();
                         Utils.setAttribute(newSubRelation, "already-exists", "true");
                         NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
 
@@ -2486,7 +2471,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @return     the binary data, if found.
      */
     public byte[] getBinary(String did) {
-        return (byte[]) binaries.get(did);
+        return binaries.get(did);
     }
 
     /**
@@ -2496,7 +2481,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @return     The name as set when #setBinary was used.
      */
     public String getBinaryName(String did) {
-        return (String) binaryNames.get(did);
+        return binaryNames.get(did);
     }
 
     /**
@@ -2506,7 +2491,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @return     The path as set when #setBinary was used.
      */
     public String getBinaryPath(String did) {
-        return (String) binaryPaths.get(did);
+        return binaryPaths.get(did);
     }
 
     /**
@@ -2805,7 +2790,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return fieldcon;
     }
 
-    class OrderByComparator implements Comparator {
+    class OrderByComparator implements Comparator<Element> {
         final boolean compareByNumber;
         final int inverse;
 
@@ -2818,10 +2803,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return (inverse == -1 ? "inverse " : "") + (compareByNumber ? "number" : "string");
         }
 
-        public int compare(Object o1, Object o2) {
-            Element n1 = (Element) o1;
-            Element n2 = (Element) o2;
-
+        public int compare(Element n1, Element n2) {
             // Determine the orderby values and compare
             // store it??
             String order1 = n1.getAttribute("orderby");

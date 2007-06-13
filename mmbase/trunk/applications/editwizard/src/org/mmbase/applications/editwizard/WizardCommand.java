@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.12 2005-10-05 10:41:38 michiel Exp $
+ * @version $Id: WizardCommand.java,v 1.13 2007-06-13 20:54:26 nklasens Exp $
  */
 public class WizardCommand {
 
@@ -48,7 +48,7 @@ public class WizardCommand {
 
     private String commandName="unknown";
     private int type = UNKNOWN_COMMAND;
-    private List params = null;
+    private List<String> params = null;
 
     private String value = null;
 
@@ -90,7 +90,7 @@ public class WizardCommand {
 
         int paramcount=st.countTokens();
         if (paramcount>0) {
-            params = new ArrayList(paramcount);
+            params = new ArrayList<String>(paramcount);
             // get optional other parameters: fid, did, and otherdid, possible others...
             while (st.hasMoreTokens()) {
                 String tok=st.nextToken();
@@ -127,7 +127,7 @@ public class WizardCommand {
         if ((params==null) || (i>=params.size()))
             return "";
         else
-            return (String)params.get(i);
+            return params.get(i);
     }
 
     /**
