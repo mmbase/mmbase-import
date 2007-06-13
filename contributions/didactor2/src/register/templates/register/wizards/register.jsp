@@ -103,7 +103,7 @@
                               <input type="hidden" name="person" value="${person}" />
                               <input type="hidden" name="chosenclass" value="${_node.classes}" />
                               <td><nobr><mm:field name="classes.name" /></nobr></td>
-                              <td><nobr><mm:field name="gui(mmevents.start)" /></nobr></td>
+                              <td><nobr><mm:field name="mmevents.start"><mm:time format=":LONG" /></mm:field></nobr></td>
                               <td>
                                 <select name="chosenworkgroup">
                                   <option value="-"><di:translate key="register.select_workgroup" /></option>
