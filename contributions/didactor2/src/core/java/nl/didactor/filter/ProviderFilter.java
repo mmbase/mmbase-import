@@ -18,6 +18,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.servlet.*;
+import org.mmbase.core.event.*;
 
 import org.mmbase.util.logging.*;
 
@@ -26,9 +27,9 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.6 2007-06-05 09:01:52 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.7 2007-06-13 13:48:36 michiel Exp $
  */
-public class ProviderFilter implements Filter, MMBaseStarter {
+public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
     private static MMBase mmbase;
 
@@ -60,8 +61,25 @@ public class ProviderFilter implements Filter, MMBaseStarter {
 
     public void setMMBase(MMBase mmb) {
         mmbase = mmb;
+        EventManager.getInstance().addEventListener(this);        
     }
 
+    public void notify(NodeEvent event) {
+        String builder = event.getBuilderName();
+        if ("providers".equals(builder) || "educations".equals(builder)) {
+            log.info("Clearing provider cache because " + event);
+            providerCache.clear();
+        }
+    }
+    public void notify(RelationEvent event) {
+        if (event.getRelationDestinationType().equals("urls")) {
+            String builder = event.getRelationSourceType();
+            if ("providers".equals(builder) || "educations".equals(builder)) {
+                log.info("Clearing provider cache because " + event);
+                providerCache.clear();
+            }
+        }
+    }
 
     protected Node selectByRelatedUrl(NodeList nodes, String url) {
         log.debug("Select  for " + url);
@@ -194,7 +212,7 @@ public class ProviderFilter implements Filter, MMBaseStarter {
                     log.warn("No education found for " + key);
                     attributes.put("education", null);
                 }
-                // try determining provider if education found, but not yet an education
+                // try determining provider if education found, but not yet a provider
                 if (provider == null && education != null) {
                     NodeList providers = education.getRelatedNodes("providers");
                     if (providers.size() > 0) {
