@@ -96,7 +96,7 @@
                           <th><di:translate key="register.workgroup" /></th>
                           <th></th>
                         </tr>
-                        <mm:related path="classes,mmevents" fields="classes.number,classes.name,mmevents.start,mmevents.stop" orderby="mmevents.start">
+                        <mm:related path="classes,mmevents" fields="classes.number,classes.name,mmevents.start,mmevents.stop" orderby="mmevents.start" directions="down">
                           <tr>
                             <form method="post">
                               <input type="hidden" name="educationid" value="${educationid}" />
