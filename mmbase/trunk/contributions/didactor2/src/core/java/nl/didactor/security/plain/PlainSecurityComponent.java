@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.15 2007-05-31 09:39:15 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.16 2007-06-13 13:58:39 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -104,7 +104,12 @@ public class PlainSecurityComponent implements AuthenticationComponent {
                         if (log.isDebugEnabled()) {
                             log.debug("Found 'didactor-plainlogin-userid' in session user: " + user);
                         }
-                        return new UserContext(user, app == null ? "login" : app);
+                        try {
+                            return new UserContext(user, app == null ? "login" : app);
+                        } catch (Exception e) {
+                            log.warn(e.getMessage(), e);
+                            return null;
+                        }
                     } else {
                         log.debug("Could not find user object number " + onum);
                         session.removeAttribute("didactor-plainlogin-userid");
