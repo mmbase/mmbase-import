@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.2 2007-01-30 18:16:30 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.3 2007-06-13 18:54:55 nklasens Exp $
  */
 public class JAIImageConverter extends AbstractImageConverter implements ImageConverter {
 
@@ -35,7 +35,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
-    public void init(Map params) {
+    public void init(Map<String,String> params) {
         log.info("Starting JAI convertor");
     }
 
@@ -43,7 +43,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
-    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         String format;
         byte[] pict=null;
         try {
@@ -113,11 +113,11 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
-    private PlanarImage doConvertCommands(PlanarImage img, List params) {
-        Iterator t = params.iterator();
+    private PlanarImage doConvertCommands(PlanarImage img, List<String> params) {
+        Iterator<String> t = params.iterator();
         while (t.hasNext()) {
             try {
-                String key=(String)t.next();
+                String key = t.next();
                 int pos = key.indexOf('(');
                 int pos2 = key.lastIndexOf(')');
                 if (pos!=-1 && pos2 != -1) {

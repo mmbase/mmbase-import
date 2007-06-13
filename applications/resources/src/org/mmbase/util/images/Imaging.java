@@ -88,7 +88,7 @@ public abstract class Imaging {
     // @author michiel
     public static List<String> parseTemplate(String template) {
         if (log.isDebugEnabled()) log.debug("parsing " + template);
-        List params = new ArrayList();
+        List<String> params = new ArrayList<String>();
         if (template != null) {
             int bracketDepth = 0;
             char quoteState = NOQUOTING; // can be - (not in quote), ' or ".
@@ -146,9 +146,9 @@ public abstract class Imaging {
     /**
      * Only used in legacy-support and perhaps debug code.
      */
-    public static String unparseTemplate(List params) {
+    public static String unparseTemplate(List<String> params) {
         StringBuffer buf = new StringBuffer();
-        Iterator i = params.iterator();
+        Iterator<String> i = params.iterator();
         while (i.hasNext()) {
             buf.append(i.next());
             if (i.hasNext()) {
@@ -171,13 +171,13 @@ public abstract class Imaging {
      * Probably because of different rounding strategies, there is sometimes a difference of one or
      * two pixels beteen the prediction and/or the result of ImageMagick and/or JAI.
      */
-    public static Dimension predictDimension(Dimension originalSize, List params) {
+    public static Dimension predictDimension(Dimension originalSize, List<String> params) {
 
         Dimension dim = new Dimension(originalSize);
         String gravity = "West";
-        Iterator i = params.iterator();
+        Iterator<String> i = params.iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
+            String key = i.next();
             int pos = key.indexOf('(');
             int pos2 = key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
@@ -384,7 +384,7 @@ public abstract class Imaging {
             for (int i = 0 ; i < templates.length; i++) {
 
                 String template = templates[i];
-                List params = parseTemplate(template);
+                List<String> params = parseTemplate(template);
                 System.out.print(template + ":" + predictDimension(originalSize, params) + ":");
                 try {
                     System.out.print(informer.getDimension(converter1.convertImage(ba, null, params)));
