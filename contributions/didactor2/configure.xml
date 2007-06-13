@@ -35,6 +35,8 @@
   <property name="jdbc.port"         value="3306" />
   <property name="jdbc.driver"       value="com.mysql.jdbc.Driver" />
 
+  <property name="imageconvert.converterroot"         value="" />
+  <property name="imageconvert.convertercommand"      value="convert" />
 
   
   <property name="mmbase.logdir"  value="${catalina.base}/logs" />
