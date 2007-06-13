@@ -12,7 +12,7 @@ package org.mmbase.module.tools;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-class ApplicationResult {
+public class ApplicationResult {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(ApplicationResult.class.getName());
@@ -20,16 +20,16 @@ class ApplicationResult {
     protected StringBuffer resultMessage;
     protected boolean success;
 
-    ApplicationResult() {
+    public ApplicationResult() {
         resultMessage = new StringBuffer();
         success = true;
     }
 
-    String getMessage() {
+    public String getMessage() {
         return resultMessage.toString();
     }
 
-    boolean isSuccess() {
+    public boolean isSuccess() {
         return success;
     }
 
@@ -40,21 +40,21 @@ class ApplicationResult {
         resultMessage.append(message);
     }
 
-    boolean error(String message) {
+    public boolean error(String message) {
         success = false;
         log.error(message);
         addMessage(message);
         return false;
     }
 
-    boolean warn(String message) {
+    public boolean warn(String message) {
         success = false;
         log.warn(message);
         addMessage(message);
         return false;
     }
 
-    boolean success(String message) {
+    public boolean success(String message) {
         success = true;
         addMessage(message);
         return true;

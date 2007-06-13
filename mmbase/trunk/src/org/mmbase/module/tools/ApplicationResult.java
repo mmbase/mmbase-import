@@ -16,25 +16,25 @@ import org.mmbase.util.logging.Logging;
 /**
  * Contains the status after installing an MMBase 'application'. I.e. whether is was successful, and
  * a newline separated message String containing the reason(s).
- * @version $Id: ApplicationResult.java,v 1.2 2006-12-05 21:14:24 michiel Exp $
+ * @version $Id: ApplicationResult.java,v 1.3 2007-06-13 11:25:53 nklasens Exp $
  */
-class ApplicationResult {
+public class ApplicationResult {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationResult.class);
 
     protected final StringBuffer resultMessage;
     protected boolean success;
 
-    ApplicationResult() {
+    public ApplicationResult() {
         resultMessage = new StringBuffer();
         success = true;
     }
 
-    String getMessage() {
+    public String getMessage() {
         return resultMessage.toString();
     }
 
-    boolean isSuccess() {
+    public boolean isSuccess() {
         return success;
     }
 
@@ -48,7 +48,7 @@ class ApplicationResult {
     /**
      * Adds a message and logs it as an error, and sets the success status to false.
      */
-    boolean error(String message) {
+    public boolean error(String message) {
         success = false;
         log.error(message);
         addMessage(message);
@@ -58,7 +58,7 @@ class ApplicationResult {
     /**
      * Adds a message and logs it as an warning, and sets the success status to false.
      */
-    boolean warn(String message) {
+    public boolean warn(String message) {
         success = false;
         log.warn(message);
         addMessage(message);
@@ -68,7 +68,7 @@ class ApplicationResult {
     /**
      * Adds a message  and sets the success status to true.
      */
-    boolean success(String message) {
+    public boolean success(String message) {
         success = true;
         addMessage(message);
         return true;
