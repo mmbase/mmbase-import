@@ -7,13 +7,15 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.core.CoreField;
+
 import java.util.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 
@@ -21,7 +23,7 @@ public class BasicSqlHandlerTest extends TestCase {
     private BasicSqlHandler instance;
 
     /** Disallowed values map. */
-    private Map disallowedValues = null;
+    private Map<String,String> disallowedValues = null;
 
     /** Prefix applied to buildernames to create tablenames. */
     private String prefix = null;
@@ -58,7 +60,7 @@ public class BasicSqlHandlerTest extends TestCase {
         news = mmbase.getBuilder("news");
 
         // Disallowed fields map.
-        disallowedValues = new HashMap();
+        disallowedValues = new HashMap<String,String>();
         disallowedValues.put("table", "m_table");
         disallowedValues.put("TABLE", "m_table");
         instance = new BasicSqlHandler();
@@ -109,9 +111,9 @@ public class BasicSqlHandlerTest extends TestCase {
             fail("Query without field, should throw IllegalStateException.");
         } catch (IllegalStateException e) {};
 
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs insrelRNumber = insrel.getField("rnumber");
-        FieldDefs newsTitle = news.getField("title");
+        CoreField imagesTitle = images.getField("title");
+        CoreField insrelRNumber = insrel.getField("rnumber");
+        CoreField newsTitle = news.getField("title");
 
         // Query with one step (default alias) and one field (default alias).
         BasicStepField field1a
@@ -130,7 +132,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(strSql, strSql.equalsIgnoreCase("SELECT TITLE AS IMAGETITLE FROM " + prefix + "images I"));
 
         // Add second field (null alias).
-        FieldDefs imagesNumber = images.getField("number");
+        CoreField imagesNumber = images.getField("number");
         BasicStepField field1b
             = query.addField(step1, imagesNumber).setAlias(null);
         strSql = instance.toSql(query, instance);
@@ -471,10 +473,10 @@ public class BasicSqlHandlerTest extends TestCase {
     public void testAppendQueryBodyToSql() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
 
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs insrelRNumber = insrel.getField("rnumber");
-        FieldDefs newsTitle = news.getField("title");
-        StringBuffer sb = new StringBuffer();
+        CoreField imagesTitle = images.getField("title");
+        CoreField insrelRNumber = insrel.getField("rnumber");
+        CoreField newsTitle = news.getField("title");
+        StringBuilder sb = new StringBuilder();
         BasicStep step1 = query.addStep(images).setAlias(null);
 
         // Query with one step (null alias) and one field (null alias).
@@ -505,7 +507,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "FROM " + prefix + "images I"));
 
         // Add second field (default alias).
-        FieldDefs imagesNumber = images.getField("number");
+        CoreField imagesNumber = images.getField("number");
         BasicStepField field1b
             = query.addField(step1, imagesNumber).setAlias(null);
         sb.setLength(0);
@@ -868,18 +870,18 @@ public class BasicSqlHandlerTest extends TestCase {
     public void testAppendConstraintToSql() {
 
         BasicSearchQuery query = new BasicSearchQuery();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         BasicStep step1 = query.addStep(images);
         step1.setAlias(null);
-        FieldDefs imagesTitle = images.getField("title");
+        CoreField imagesTitle = images.getField("title");
         StepField field1 = query.addField(step1, imagesTitle);
-        FieldDefs imagesNumber = images.getField("number");
+        CoreField imagesNumber = images.getField("number");
         StepField field2 = query.addField(step1, imagesNumber);
         BasicStep step2 = query.addStep(news);
         step2.setAlias(null);
-        FieldDefs newsNumber = news.getField("number");
+        CoreField newsNumber = news.getField("number");
         StepField field3 = query.addField(step2, newsNumber);
-        FieldDefs newsTitle = news.getField("title");
+        CoreField newsTitle = news.getField("title");
         StepField field4 = query.addField(step2, newsTitle);
 
         // Test for BasicFieldNullConstraint
@@ -1391,12 +1393,12 @@ public class BasicSqlHandlerTest extends TestCase {
 
     /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testGetAllowedValue() {
-        Set entries = disallowedValues.entrySet();
-        Iterator iEntries = entries.iterator();
+        Set<Map.Entry<String,String>> entries = disallowedValues.entrySet();
+        Iterator<Map.Entry<String,String>> iEntries = entries.iterator();
         while (iEntries.hasNext()) {
-            Map.Entry entry = (Map.Entry) iEntries.next();
-            String disallowedValue = (String) entry.getKey();
-            String allowedValue = (String) entry.getValue();
+            Map.Entry<String,String> entry = iEntries.next();
+            String disallowedValue = entry.getKey();
+            String allowedValue = entry.getValue();
 
             // Disallowed value.
             assertTrue(instance.getAllowedValue(disallowedValue) + " was expected to equal " + allowedValue, 
@@ -1419,12 +1421,12 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendCompositeConstraintToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendCompositeConstraintToSql() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Step step1 = query.addStep(images).setAlias(null);
-        FieldDefs imagesNumber = images.getField("number");
+        CoreField imagesNumber = images.getField("number");
         StepField field1 = query.addField(step1, imagesNumber);
         Step step2 = query.addStep(news).setAlias(null);
-        FieldDefs newsNumber = news.getField("number");
+        CoreField newsNumber = news.getField("number");
         StepField field2 = query.addField(step2, newsNumber);
 
         BasicFieldValueConstraint constraint1
@@ -1529,7 +1531,7 @@ public class BasicSqlHandlerTest extends TestCase {
 
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendFieldValue() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         instance.appendFieldValue(sb, "asd EFG", false, Field.TYPE_STRING);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd EFG'"));
 
@@ -1575,7 +1577,7 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendLikeOperator method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendLikeOperator() {
         // Should always append " LIKE ".
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         instance.appendLikeOperator(sb, true);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(" LIKE "));
 
@@ -1590,7 +1592,7 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicStep step = query.addStep(images);
         images.getField("number");
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         instance.appendField(sb, step, "number", false);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("NUMBER"));
 
