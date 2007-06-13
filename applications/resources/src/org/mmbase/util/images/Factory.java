@@ -29,19 +29,20 @@ public class Factory {
     private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
     private static ImageInformer imageInformer;
-    protected static Map params = new HashMap();
+    protected static Map<String, String> params = new HashMap<String, String>();
 
     /**
      * The ImageConvertInterface implementation to be used (defaults to ConvertImageMagic)
      */
-    protected static final Class DEFAULT_IMAGECONVERTER = ImageMagickImageConverter.class;
-    protected static final Class DEFAULT_IMAGEINFORMER = DummyImageInformer.class;
+    protected static final Class<?> DEFAULT_IMAGECONVERTER = ImageMagickImageConverter.class;
+    protected static final Class<?> DEFAULT_IMAGEINFORMER = DummyImageInformer.class;
 
     protected static int maxConcurrentRequests = 2;
 
     protected static final int maxRequests = 32;
-    protected static BlockingQueue<ImageConversionRequest>    imageRequestQueue     = new ArrayBlockingQueue(maxRequests);
-    protected static Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable  = new ConcurrentHashMap(maxRequests);
+    protected static BlockingQueue<ImageConversionRequest> imageRequestQueue = new ArrayBlockingQueue<ImageConversionRequest>(maxRequests);
+    protected static Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable 
+        = new ConcurrentHashMap<ImageConversionReceiver, ImageConversionRequest>(maxRequests);
     protected static ImageConversionRequestProcessor ireqprocessors[];
 
     /**
@@ -49,10 +50,10 @@ public class Factory {
      */
     protected static String defaultImageFormat = "jpeg";
 
-    public static void init(Map properties, org.mmbase.module.core.MMObjectBuilder imageCaches) {
+    public static void init(Map<String, String> properties, org.mmbase.module.core.MMObjectBuilder imageCaches) {
         params.putAll(properties);
 
-        String tmp = (String) properties.get("MaxConcurrentRequests");
+        String tmp = properties.get("MaxConcurrentRequests");
         if (tmp != null) {
             try {
                 maxConcurrentRequests = Integer.parseInt(tmp);
@@ -61,7 +62,7 @@ public class Factory {
             }
         }
 
-        tmp = (String) params.get("ImageConvert.DefaultImageFormat");
+        tmp = params.get("ImageConvert.DefaultImageFormat");
         if (tmp != null && ! tmp.equals("")) {
             defaultImageFormat = tmp;
         }
@@ -77,7 +78,7 @@ public class Factory {
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
         log.info("Starting " + maxConcurrentRequests + " Converters for " + imageConverter);
         for (int i = 0; i < maxConcurrentRequests; i++) {
-            ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageInformer, imageRequestQueue, imageRequestTable);
+            ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
         }
     }
 
@@ -88,7 +89,7 @@ public class Factory {
     private static ImageConverter loadImageConverter() {
 
         String className  = DEFAULT_IMAGECONVERTER.getName();
-        String tmp = (String) params.get("ImageConvertClass");
+        String tmp = params.get("ImageConvertClass");
         if (tmp != null) className = tmp;
 
         // backwards compatibility
@@ -104,7 +105,7 @@ public class Factory {
         ImageConverter ici = null;
 
         try {
-            Class cl = Class.forName(className);
+            Class<?> cl = Class.forName(className);
             ici = (ImageConverter) cl.newInstance();
             log.service("loaded '" + className+"' for image Factory");
         } catch (ClassNotFoundException e) {
@@ -125,13 +126,13 @@ public class Factory {
 
     private static ImageInformer loadImageInformer() {
         String className  = DEFAULT_IMAGEINFORMER.getName();
-        String tmp = (String) params.get("ImageInformerClass");
+        String tmp = params.get("ImageInformerClass");
         if (tmp != null) className = tmp;
 
         ImageInformer ii  = null;
 
         try {
-            Class cl = Class.forName(className);
+            Class<?> cl = Class.forName(className);
             ii = (ImageInformer) cl.newInstance();
             log.service("loaded '" + className+"' for image Factory");
         } catch (ClassNotFoundException e) {

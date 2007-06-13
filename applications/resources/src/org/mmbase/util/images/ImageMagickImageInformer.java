@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ImageMagickImageInformer.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: ImageMagickImageInformer.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  */
 public class ImageMagickImageInformer implements ImageInformer {
     
@@ -35,7 +35,7 @@ public class ImageMagickImageInformer implements ImageInformer {
 
     private static final Pattern IDENTIFY_PATTERN = Pattern.compile(".+?\\s.*?\\s(\\d+)x(\\d+).*");
 
-    public void init(Map params) {
+    public void init(Map<String,String> params) {
         String identifyCommand = "identify";
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
             // on the windows system, we _can_ assume the it uses .exe as extention...
@@ -45,7 +45,7 @@ public class ImageMagickImageInformer implements ImageInformer {
 
     }
 
-    public Dimension getDimension(InputStream input) throws IOException {
+    public Dimension getDimension(InputStream input) {
         return new Dimension(-1, -1); // not implemented
     }
 

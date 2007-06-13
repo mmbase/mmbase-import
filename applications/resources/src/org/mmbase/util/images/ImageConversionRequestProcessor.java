@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -35,19 +35,17 @@ public class ImageConversionRequestProcessor implements Runnable {
     private final int processorId;
 
     private final ImageConverter convert;
-    private final ImageInformer  informer;
     private final BlockingQueue<ImageConversionRequest> queue;
     private final Map<ImageConversionReceiver, ImageConversionRequest> table;
 
     /**
      * @javadoc
      */
-    public ImageConversionRequestProcessor(ImageConverter convert, ImageInformer informer, 
-                                           BlockingQueue<ImageConversionRequest> queue, Map<ImageConversionReceiver, ImageConversionRequest> table) {
+    public ImageConversionRequestProcessor(ImageConverter convert, BlockingQueue<ImageConversionRequest> queue, 
+                                           Map<ImageConversionReceiver, ImageConversionRequest> table) {
         this.convert = convert;
         this.queue = queue;
         this.table = table;
-        this.informer = informer;
         processorId = idCounter++;
         start();
     }
@@ -82,7 +80,7 @@ public class ImageConversionRequestProcessor implements Runnable {
      * Takes an ImageConversionRequest object, and performs the conversion.
      * @param req The ImageConversionRequest wich must be executed.
      */
-    private void processRequest(ImageConversionRequest req) throws InterruptedException {
+    private void processRequest(ImageConversionRequest req) {
 
         InputStream inputPicture = req.getInput();
         ImageConversionReceiver rec = req.getReceiver();

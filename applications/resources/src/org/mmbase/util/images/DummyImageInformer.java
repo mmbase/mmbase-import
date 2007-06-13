@@ -18,11 +18,11 @@ import java.io.*;
  *
  * @since MMBase 1.7.4
  * @author Michiel Meeuwissen
- * @version $Id: DummyImageInformer.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: DummyImageInformer.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  */
 public class DummyImageInformer implements ImageInformer {
 
-    public void init(Map params) {
+    public void init(Map<String,String> params) {
     }
 
     public Dimension getDimension(byte[] data) {

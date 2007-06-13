@@ -9,19 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 import java.io.*;
-import org.mmbase.util.logging.*;
 
 
 /**
  * The 'image conversion receiver' storing the result in a File
  *
  * @author Michiel Meeuwissen
- * @version $Id: FileReceiver.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: FileReceiver.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  * @since MMBase-1.9
  */
 public class FileReceiver implements ImageConversionReceiver {
-
-    private static final Logger log = Logging.getLoggerInstance(FileReceiver.class);
 
     private final File file;
     private Dimension dim = Dimension.UNDETERMINED;
