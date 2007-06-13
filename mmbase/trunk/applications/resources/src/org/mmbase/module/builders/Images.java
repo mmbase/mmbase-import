@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.3 2006-12-21 09:15:46 michiel Exp $
+ * @version $Id: Images.java,v 1.4 2007-06-13 19:40:56 nklasens Exp $
  */
 public class Images extends AbstractImages {
 
@@ -92,7 +92,7 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
-        Map map = getInitParameters("mmbase/imaging");
+        Map<String, String> map = getInitParameters("mmbase/imaging");
         map.put("configfile", getConfigResource());
 
         Factory.init(map, imageCaches);
@@ -107,13 +107,13 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.6
      */
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction " + function + "(" + args + ") of images builder on node " + node.getNumber());
         }
         if ("info".equals(function)) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new ArrayList<Object>();
+            Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
             info.put("cache", "" + CACHE_PARAMETERS + " The node number of the cached converted image (icaches node)");
             if (args == null || args.size() == 0) {
                 return info;
@@ -313,7 +313,7 @@ public class Images extends AbstractImages {
 
     // javadoc inherited
     public boolean commit(MMObjectNode node) {
-        Collection changed = node.getChanged();
+        Collection<String> changed = node.getChanged();
         // look if we need to invalidate the image cache...
         boolean imageCacheInvalid = changed.contains("handle");
         // do the commit

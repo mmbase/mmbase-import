@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.1 2006-11-24 09:37:25 pierre Exp $
+ * @version $Id: Attachments.java,v 1.2 2007-06-13 19:40:56 nklasens Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -89,9 +89,9 @@ public class Attachments extends AbstractServletBuilder {
         return super.getSuperGUIIndicator(field, node);
     }
 
-    protected final Set ATTACHMENTS_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {FIELD_MIMETYPE, FIELD_SIZE})));
+    protected final Set<String> ATTACHMENTS_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] {FIELD_MIMETYPE, FIELD_SIZE})));
     // javadoc inherited
-    protected Set getHandleFields() {
+    protected Set<String> getHandleFields() {
         return ATTACHMENTS_HANDLE_FIELDS;
     }
 
@@ -113,7 +113,7 @@ public class Attachments extends AbstractServletBuilder {
      *
      * @since MMBase-1.6.1
      */
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {
             return node.getStringValue(FIELD_MIMETYPE);
