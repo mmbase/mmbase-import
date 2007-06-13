@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.67 2007-05-04 12:11:54 nklasens Exp $
+ * @version $Id: Config.java,v 1.68 2007-06-13 20:54:26 nklasens Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -142,11 +142,7 @@ public class Config implements java.io.Serializable {
         public void configure(Config.Configurator configurator) throws WizardException  {
             wizard = configurator.getParam("wizard", wizard);
             if (wizard != null && wizard.startsWith("/")) {
-                try {
-                    wizard = configurator.getResource(wizard).toString();
-                } catch(MalformedURLException mfue) {
-                    throw new WizardException(mfue);
-                }
+                wizard = configurator.getResource(wizard).toString();
             }
             configurator.fillAttributes(attributes);
 
@@ -251,7 +247,7 @@ public class Config implements java.io.Serializable {
 
         public boolean multilevel = false;
         public String mainObjectName = null;
-        public List fieldList = null;
+        public List<String> fieldList = null;
 
         protected Cloud cloud;
 
@@ -511,7 +507,7 @@ public class Config implements java.io.Serializable {
                     throw new WizardException("The parameter 'fields' should be passed with a comma-separated list of fieldnames.");
                 }
 
-                fieldList = new ArrayList();
+                fieldList = new ArrayList<String>();
                 while (stok.hasMoreTokens()) {
                     String token = stok.nextToken();
                     fieldList.add(token);
@@ -605,7 +601,6 @@ public class Config implements java.io.Serializable {
      * and what are the defaults and so on.
      */
     public static class Configurator {
-        private static final Logger log = Logging.getLoggerInstance(Config.class);
 
         protected PageContext page;
         protected HttpServletRequest request;
@@ -638,7 +633,7 @@ public class Config implements java.io.Serializable {
             }
             */
             if (config.attributes == null) {
-                config.attributes = new HashMap();
+                config.attributes = new HashMap<String, String>();
                 fillAttributes(config.attributes);
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
@@ -753,14 +748,8 @@ public class Config implements java.io.Serializable {
             }
         }
 
-        /*
-        public String getRealPath(String path) {
-            return page.getServletContext().getRealPath(path);
-        }
-        */
-        public URL getResource(String path) throws MalformedURLException {
+        public URL getResource(String path) {
             return ResourceLoader.getWebRoot().getResource(path);
-            /// page.getServletContext().getResource(path)  (not using ResourceLoader)
         }
 
 
@@ -812,12 +801,12 @@ public class Config implements java.io.Serializable {
          * first call are added.  No arrays supported, only single values.
          * @since MMBase-1.7
          */
-        protected void fillAttributes(Map map) {
+        protected void fillAttributes(Map<String, String> map) {
             map.putAll(config.attributes);  // start with setting in global config
 
-            Enumeration e = request.getParameterNames();
+            Enumeration<String> e = request.getParameterNames();
             while (e.hasMoreElements()) {
-                String param = (String) e.nextElement();
+                String param = e.nextElement();
                 map.put(param, request.getParameter(param));
             }
 
