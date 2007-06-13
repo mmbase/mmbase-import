@@ -31,7 +31,7 @@
 
 
   <!-- defaults to mysql (should be hsql?)  -->
-  <property name="jdbc.url"          value="jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;characterEncoding=UTF-8" /
+  <property name="jdbc.url"          value="jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;characterEncoding=UTF-8" />
   <property name="jdbc.port"         value="3306" />
   <property name="jdbc.driver"       value="com.mysql.jdbc.Driver" />
 
