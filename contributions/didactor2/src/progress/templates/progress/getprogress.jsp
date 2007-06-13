@@ -3,6 +3,7 @@
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %>
+<mm:content type="text/plain" postprocessor="trimmer">
 <mm:cloud method="delegate">
 
 <jsp:directive.include file="/shared/setImports.jsp" />
@@ -50,7 +51,7 @@
          </mm:tree>
       </mm:relatednodescontainer>
       
-      <%=(double)nof_tests_passed / (double)nof_tests%>
+      <%= nof_tests > 0 ? (double)nof_tests_passed / (double)nof_tests : 0%>
 
      </mm:node>
    </os:cache>
@@ -62,3 +63,4 @@
 </mm:cloud>
 
 
+</mm:content>
