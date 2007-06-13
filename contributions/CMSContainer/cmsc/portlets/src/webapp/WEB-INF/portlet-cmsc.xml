@@ -213,4 +213,34 @@
 		</portlet-info>
 	</portlet>
 
+	<portlet>
+		<description>the xslt portlet, which renders a xslt</description>
+		<portlet-name>xsltportlet</portlet-name>
+		<display-name>Xslt Portlet</display-name>
+		<portlet-class>com.finalist.cmsc.portlets.XsltPortlet</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>xslt.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>xslt.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>com.finalist.cmsc.portlets.XsltPortlet</resource-bundle>
+		<portlet-info>
+			<title>JXslt Portlet</title>
+			<short-title>Xslt</short-title>
+			<keywords>xslt,static</keywords>
+		</portlet-info>
+	</portlet>
+
 </portlet-app>
