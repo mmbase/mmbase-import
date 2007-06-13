@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 public interface ImageInformer {
 
-    void init(Map params);
+    void init(Map<String,String> params);
 
     Dimension getDimension(byte[] input) throws java.io.IOException;
     /**

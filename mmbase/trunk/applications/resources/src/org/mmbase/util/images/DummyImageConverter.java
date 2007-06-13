@@ -18,14 +18,14 @@ import java.io.*;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: DummyImageConverter.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: DummyImageConverter.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  */
 public class DummyImageConverter implements ImageConverter {
 
     /**
      * @see ImageConverter#init(Map)
      */
-    public void init(Map params) {
+    public void init(Map<String,String> params) {
     }
 
     /**
@@ -33,7 +33,7 @@ public class DummyImageConverter implements ImageConverter {
      * This dummy method ignores any passed commands, and simply returns the inputed list.
      * @see ImageConverter#convertImage(byte[], String, List)
      */
-    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         return input;
     }
 

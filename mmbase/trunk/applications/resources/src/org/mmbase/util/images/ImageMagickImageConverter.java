@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.6 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.7 2007-06-13 18:54:55 nklasens Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -229,10 +229,10 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     }
 
     private static class ParseResult {
-        final List<String> args = new ArrayList();
+        final List<String> args = new ArrayList<String>();
         String format;
         File cwd;
-        final Set<File> temporaryFiles = new HashSet();
+        final Set<File> temporaryFiles = new HashSet<File>();
     }
 
     /**
@@ -300,7 +300,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             log.debug("getting convert commands from " + params);
         }
         ParseResult result = new ParseResult();
-        List cmds = result.args;
+        List<String> cmds = result.args;
         result.cwd = null;
         result.format = Factory.getDefaultImageFormat();
 
@@ -603,9 +603,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
     }
 
-    protected void launcherConvertImage(List cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
+    protected void launcherConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
         CommandLauncher launcher = new CommandLauncher("ConvertImage");
-        launcher.execute((String[]) cmd.toArray(new String[0]), env);
+        launcher.execute(cmd.toArray(new String[0]), env);
         launcher.waitAndWrite(originalStream, imageStream, errorStream);
     }
 
@@ -655,7 +655,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
 
     private final String[] EMPTY = new String[] {};
-    protected void connectorConvertImage(List cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
+    protected void connectorConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
         try {
             java.net.Socket socket = new java.net.Socket(host, port);
             final OutputStream os = socket.getOutputStream();

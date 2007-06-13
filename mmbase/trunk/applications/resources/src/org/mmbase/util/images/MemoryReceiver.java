@@ -9,19 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 import java.io.*;
-import org.mmbase.util.logging.*;
 
 
 /**
  * The 'image conversion receiver' storing the result in a File
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryReceiver.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: MemoryReceiver.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  * @since MMBase-1.9
  */
 public class MemoryReceiver implements ImageConversionReceiver {
-
-    private static final Logger log = Logging.getLoggerInstance(MemoryReceiver.class);
 
     private Dimension dim = Dimension.UNDETERMINED;
     private ByteArrayOutputStream stream;
@@ -37,7 +34,7 @@ public class MemoryReceiver implements ImageConversionReceiver {
         return dim;
     }
 
-    public OutputStream getOutputStream() throws IOException {
+    public OutputStream getOutputStream() {
         if (stream == null) {
             stream = new ByteArrayOutputStream();
         }

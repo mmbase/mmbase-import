@@ -34,7 +34,7 @@ public class LazyDimension extends Dimension {
     
     private void getDimension() {
         if (loaded) return;
-        List args = new ArrayList();
+        List<String> args = new ArrayList<String>();
         if (template != null) {
             args.add(template);
         }

@@ -20,12 +20,12 @@ import com.sun.media.jai.codec.MemoryCacheSeekableStream;
  * Informs about a image using JAI.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JAIImageInformer.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: JAIImageInformer.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
  * @since MMBase-1.8
  */
 public class JAIImageInformer implements ImageInformer {
 
-    public void init(Map params) {
+    public void init(Map<String,String> params) {
     }
 
     public Dimension getDimension(byte[] input) throws IOException { 
@@ -33,7 +33,7 @@ public class JAIImageInformer implements ImageInformer {
         PlanarImage img = JAI.create("stream", bin);
         return new Dimension(img.getWidth(), img.getHeight());
     }
-    public Dimension getDimension(InputStream input) throws IOException {
+    public Dimension getDimension(InputStream input) {
         MemoryCacheSeekableStream bin = new MemoryCacheSeekableStream(input);
         PlanarImage img = JAI.create("stream", bin);
         return new Dimension(img.getWidth(), img.getHeight());
