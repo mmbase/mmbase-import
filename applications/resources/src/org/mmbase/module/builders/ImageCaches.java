@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.2 2006-12-20 16:31:11 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.3 2007-06-13 19:40:56 nklasens Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -106,7 +106,7 @@ public class ImageCaches extends AbstractImages {
         String heightAndWidth = "";
         if (origNode != null) {
 
-            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
+            List<Object> cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
             MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
             //heightAndWidth = "height=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
             heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
@@ -187,7 +187,7 @@ public class ImageCaches extends AbstractImages {
      **/
     public MMObjectNode getCachedNode(int imageNumber, String template) {
         log.debug("Getting cached noded for " + template + " and image " + imageNumber);
-        List nodes;
+        List<MMObjectNode> nodes;
         String ckey = Factory.getCKey(imageNumber, template).toString();
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -216,7 +216,7 @@ public class ImageCaches extends AbstractImages {
             }
 
         } else {
-            return (MMObjectNode) nodes.get(0);
+            return nodes.get(0);
         }
     }
     /**
@@ -226,10 +226,10 @@ public class ImageCaches extends AbstractImages {
      * @return The icache node or <code>null</code> if it did not exist.
      **/
     protected MMObjectNode getLegacyCachedNode(int imageNumber, String template) {
-        List params = Imaging.parseTemplate(template);
+        List<String> params = Imaging.parseTemplate(template);
         String legacyCKey = "" + imageNumber + getLegacyCKey(params);
         log.info("Trying legacy " + legacyCKey);
-        List legacyNodes;
+        List<MMObjectNode> legacyNodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
@@ -243,11 +243,11 @@ public class ImageCaches extends AbstractImages {
                 log.warn("Found more then one cached image with key (" + legacyCKey + ")");
             }
             MMObjectNode legacyNode = null;
-            Iterator i = legacyNodes.iterator();
+            Iterator<MMObjectNode> i = legacyNodes.iterator();
             // now fix the ckey to new value
             String ckey = Factory.getCKey(imageNumber, template).toString();
             while (i.hasNext()) {
-                legacyNode = (MMObjectNode) i.next();
+                legacyNode = i.next();
                 if (fixLegacyCkeys) {
                     legacyNode.setValue(Imaging.FIELD_CKEY, ckey); // fix to new format
                     legacyNode.commit();
@@ -273,7 +273,7 @@ public class ImageCaches extends AbstractImages {
         }
         // first get all the nodes, which are currently invalid....
         // this means all nodes from icache where the field 'ID' == node it's number
-        List nodes;
+        List<MMObjectNode> nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField idField = query.getField(getField(FIELD_ID));
@@ -281,13 +281,13 @@ public class ImageCaches extends AbstractImages {
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
-            nodes = new java.util.ArrayList(); // do nothing
+            nodes = new java.util.ArrayList<MMObjectNode>(); // do nothing
         }
 
-        Iterator i = nodes.iterator();
+        Iterator<MMObjectNode> i = nodes.iterator();
         while(i.hasNext()) {
             // delete the icache node
-            MMObjectNode invalidNode = (MMObjectNode) i.next();
+            MMObjectNode invalidNode = i.next();
             removeNode(invalidNode);
             if (log.isDebugEnabled()) {
                 log.debug("deleted node with number#" + invalidNode.getNumber());
@@ -370,14 +370,14 @@ public class ImageCaches extends AbstractImages {
     protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
         String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
         String template = Imaging.parseCKey(ckey).template;
-        List params     = Imaging.parseTemplate(template);
+        List<String> params     = Imaging.parseTemplate(template);
         MMObjectNode orig = originalImage(node);
         Dimension origDimension = ((Images) orig.getBuilder()).getDimension(orig);
         return Imaging.predictDimension(origDimension, params);
     }
 
 
-    public String getMimeType(List params) {
+    public String getMimeType(List<String> params) {
         return getMimeType(getNode("" + params.get(0)));
     }
 
@@ -394,7 +394,7 @@ public class ImageCaches extends AbstractImages {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("wait")) {
             return waitForConversion(node);
         } else {
@@ -410,14 +410,14 @@ public class ImageCaches extends AbstractImages {
      * @param params a <code>List</code> of <code>String</code>s, with a size greater then 0 and not null
      * @return a string containing the key for this List, or <code>null</code>,....
      */
-    private String getLegacyCKey(List params) {
+    private String getLegacyCKey(List<String> params) {
         if (params == null || params.size() == 0) {
             log.debug("no parameters");
             return null;
         }
         // flatten parameters as a 'hashed' key;
         StringBuffer sckey = new StringBuffer("");
-        Iterator enumeration=params.iterator();
+        Iterator<String> enumeration=params.iterator();
         while(enumeration.hasNext()) {
             sckey.append(enumeration.next().toString());
         }

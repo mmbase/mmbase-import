@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.2 2007-06-13 19:40:56 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -50,7 +50,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * Cache with 'ckey' keys.
      * @since MMBase-1.6.2
      */
-    abstract protected static class CKeyCache extends org.mmbase.cache.Cache {
+    abstract protected static class CKeyCache extends org.mmbase.cache.Cache<String,Object> {
         protected CKeyCache(int i) {
             super(i);
         }
@@ -64,10 +64,10 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             if (log.isDebugEnabled()) {
                 log.debug("removing " + prefix);
             }
-            Iterator entries  = entrySet().iterator();
+            Iterator<Map.Entry<String,Object>> entries  = entrySet().iterator();
             while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry)entries.next();
-                String key = (String)entry.getKey();
+                Map.Entry<String,Object> entry = entries.next();
+                String key = entry.getKey();
                 if (log.isDebugEnabled()) {
                     log.debug("checking " + key);
                 }
@@ -86,9 +86,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
 
         void removeCacheNumber(int icacheNumber) {
-            Iterator entries  = entrySet().iterator();
+            Iterator<Map.Entry<String,Object>> entries  = entrySet().iterator();
             while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry) entries.next();
+                Map.Entry<String,Object> entry = entries.next();
                 Object value = entry.getValue();
                 if (value instanceof ByteFieldContainer) {
                     ByteFieldContainer bf = (ByteFieldContainer) value;
@@ -148,9 +148,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     }
 
 
-    protected final Set IMAGE_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {FIELD_FILESIZE, FIELD_ITYPE, FIELD_HEIGHT, FIELD_WIDTH})));
+    protected final Set<String> IMAGE_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] {FIELD_FILESIZE, FIELD_ITYPE, FIELD_HEIGHT, FIELD_WIDTH})));
     // javadoc inherited
-    protected Set getHandleFields() {
+    protected Set<String> getHandleFields() {
         return IMAGE_HANDLE_FIELDS;
     }
 
@@ -356,7 +356,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("mimetype")) {
             return getMimeType(node);
         } else if (function.equals("format")) {
