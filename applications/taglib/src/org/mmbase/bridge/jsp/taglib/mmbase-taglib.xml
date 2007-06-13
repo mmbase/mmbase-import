@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.393 2007-04-26 19:42:54 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.394 2007-06-13 07:07:25 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -755,7 +755,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <type>util</type>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
-      write to the page, unless the tag has a body. All tags which
+      written to the page, unless the tag has a body. All tags which
       produce output themselves are `writers'. This is contrary to tags which don't produce
       output, but only produce contextual information (e.g. mm:cloud, mm:node), or programmatic
       tools (e.g. mm:present, mm:import, mm:list)
@@ -883,8 +883,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <info>
         Override the default escape behaviour determined by the surrounding Content-tag.
         <document file="resources/taglibcontent.xml" mode="escapers" />
+	<p>The value can also refer to the id of an escaper tag</p>
       </info>
       <see tag="content" />
+      <see tag="escaper" />
       <see tag="formatter" attribute="format" />
       <since>MMBase-1.7</since>
     </attribute>
