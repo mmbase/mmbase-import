@@ -31,7 +31,7 @@ public class TestSqlHandler implements SqlHandler {
     /** 
      * Implements this method by appending sb with TEST1. 
      */
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint, 
+    public void appendConstraintToSql(StringBuilder sb, Constraint constraint, 
     SearchQuery query, boolean inverse, boolean inComposite) {
         sb.append(TEST1);
     }
@@ -40,7 +40,7 @@ public class TestSqlHandler implements SqlHandler {
      * Implements this method by appending sb with TEST2.
      */
     public void appendQueryBodyToSql(
-    StringBuffer sb, SearchQuery query, SqlHandler firstInChain) {
+    StringBuilder sb, SearchQuery query, SqlHandler firstInChain) {
         sb.append(TEST2);
     }
     
