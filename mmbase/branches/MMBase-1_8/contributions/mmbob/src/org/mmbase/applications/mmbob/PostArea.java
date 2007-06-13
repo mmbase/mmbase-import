@@ -507,7 +507,7 @@ public class PostArea {
      * @return moderatorsline in html
      */
     public String getModeratorsLine(String baseurl, boolean isGuest) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         boolean first = true;
         Enumeration e = moderators.elements();
         while (e.hasMoreElements()) {
