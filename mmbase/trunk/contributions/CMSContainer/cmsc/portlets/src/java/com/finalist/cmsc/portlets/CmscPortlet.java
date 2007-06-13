@@ -172,6 +172,16 @@ public abstract class CmscPortlet extends GenericPortlet {
         	siteLocale = request.getLocale();
         }
         locales.add(siteLocale);
+        Locale editorsLocale = getEditorLocale(request, siteLocale);
+        
+        if(editorsLocale != null && !editorsLocale.equals(siteLocale)) {
+        	locales.add(editorsLocale);
+        }
+        
+        return locales;
+    }
+
+    protected Locale getEditorLocale(RenderRequest request, Locale defaultLocale) {
         Locale editorsLocale = (Locale) request.getAttribute("editorsLocale");
         if(editorsLocale == null) {
         	Cloud cloud = CloudUtil.getCloudFromThread();
@@ -183,16 +193,11 @@ public abstract class CmscPortlet extends GenericPortlet {
         	}
         	
         	if(editorsLocale == null) { 
-        		editorsLocale = siteLocale;
+        		editorsLocale = defaultLocale;
         	}
         	request.setAttribute("editorsLocale", editorsLocale);
         }
-        
-        if(editorsLocale != null && !editorsLocale.equals(siteLocale)) {
-        	locales.add(editorsLocale);
-        }
-        
-        return locales;
+        return editorsLocale;
     }
 
     private Locale getUserLocale(Cloud cloud) {
@@ -217,7 +222,18 @@ public abstract class CmscPortlet extends GenericPortlet {
      * @param req
      * @param baseName
      */
-    private void setResourceBundle(RenderRequest req, String baseName) {
+    private void setResourceBundle(RenderRequest req, String template) {
+        String baseName = null;
+        if (!StringUtil.isEmpty(template)) {
+            int extnsionIndex = template.lastIndexOf(".");
+            if (extnsionIndex > -1) {
+                baseName = template.substring(0, extnsionIndex);
+            }
+            else {
+                baseName = template;
+            }
+        }
+        
         List<Locale> locales = getLocales(req);
         int count = 0;
         for(Locale locale:locales) {
@@ -271,9 +287,7 @@ public abstract class CmscPortlet extends GenericPortlet {
 		        }
 	        	count++;
         	}
-	        
         }
-        
     }
 
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
@@ -296,19 +310,16 @@ public abstract class CmscPortlet extends GenericPortlet {
     protected void doAbout(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         doInclude("about", null, req, res);
-        // throw new PortletException("doAbout method not implemented");
     }
     
     protected void doConfig(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         doInclude("config", null, req, res);
-        // throw new PortletException("doConfig method not implemented");
     }
     
     protected void doEditDefaults(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         doInclude("edit_defaults", null, req, res);
-        // throw new PortletException("doEditDefaults method not implemented");
     }
 
     protected void addViewInfo(RenderRequest req) {
@@ -327,30 +338,15 @@ public abstract class CmscPortlet extends GenericPortlet {
     protected void doPreview(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         doInclude("preview", null, req, res);
-        // throw new PortletException("doPreview method not implemented");
     }
     
     protected void doPrint(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         doInclude("print", null, req, res);
-        // throw new PortletException("doPrint method not implemented");
     }
 
     protected void doInclude(String type, String template, RenderRequest request, RenderResponse response) throws PortletException, IOException {
-        
-        if (StringUtil.isEmpty(template)) {
-            setResourceBundle(request, null);
-        }
-        else {
-            String baseName = null;
-            if (template.endsWith(".jsp")) {
-                baseName = template.substring(0, template.length() - ".jsp".length());
-            }
-            else {
-                baseName = template;
-            }
-            setResourceBundle(request, baseName);
-        }
+        setResourceBundle(request, template);
         
         response.setContentType("text/html");
         PortletRequestDispatcher rd = getRequestDispatcher(type, template);
@@ -358,6 +354,13 @@ public abstract class CmscPortlet extends GenericPortlet {
     }
 
     protected PortletRequestDispatcher getRequestDispatcher(String type, String template) {
+        String resourcveExtension = "jsp";
+        String fullTemplate = getTemplate(type, template, resourcveExtension);
+        PortletRequestDispatcher rd = getPortletContext().getRequestDispatcher(fullTemplate);
+        return rd;
+    }
+
+    protected String getTemplate(String type, String template, String resourcveExtension) {
         String baseDir = getPortletContext().getInitParameter("cmsc.portal." + type + ".base.dir");
         if (StringUtil.isEmpty(baseDir)) {
             String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");    
@@ -369,15 +372,13 @@ public abstract class CmscPortlet extends GenericPortlet {
         
         logInitParameters();
         
-        
         if (StringUtil.isEmpty(template)) {
             template = getInitParameter("template." + type);
             if (StringUtil.isEmpty(template)) {
-                template = getPortletName() + ".jsp";
+                template = getPortletName() + "." + resourcveExtension;
             }
         }
-        PortletRequestDispatcher rd = getPortletContext().getRequestDispatcher(baseDir + template);
-        return rd;
+        return baseDir + template;
     }
 
     protected void setAttribute(RenderRequest request, String var, Object value) {
