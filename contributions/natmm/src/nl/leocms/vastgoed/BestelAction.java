@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.6 2007-06-12 14:59:51 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.7 2007-06-13 11:55:41 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -82,6 +82,7 @@ public class BestelAction  extends Action {
       for(int i = 0; (items != null) && (i < items.size()); i++) {
           KaartenForm item = (KaartenForm) items.get(i);
           addLineToMessage(messagePlain, messageHtml, "Item:");
+          addLineToMessage(messagePlain, messageHtml, "-----");
           // kaartsoort string from nodenumbers in sel_Kaart
           String kaartsoort = "";
           String[] kartNodes = item.getSel_Kaart();
@@ -97,10 +98,14 @@ public class BestelAction  extends Action {
           }
           addLineToMessage(messagePlain, messageHtml, "kaartsoort: " + kaartsoort);
           //other item elements
-          addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
-          addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
+           addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
           addLineToMessage(messagePlain, messageHtml, "aantal: " + item.getAantal());
           addLineToMessage(messagePlain, messageHtml, "gerold of gevouwen: " + item.getGevouwenOfOpgerold());
+          addLineToMessage(messagePlain, messageHtml, "opmerkingen: " + item.getOpmerkingen());
+          addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
+          //kart type details for natuurgebied and eenheid
+          addLineToMessage(messagePlain, messageHtml, "detail: " + item.getKaartTypeDetail());
+
           addLineToMessage(messagePlain, messageHtml, "");
             }
 

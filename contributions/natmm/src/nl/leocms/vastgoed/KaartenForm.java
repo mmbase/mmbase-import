@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.3 2007-06-08 08:00:32 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.4 2007-06-13 11:55:41 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -155,6 +155,7 @@ public class KaartenForm extends ActionForm{
 //		return kaartSoort;
 //	}
 	
+    //kart type for jsp forms
 	public String getKaartType() {
 		String kartType  = rad_Gebied;
       if (kartType.equals(natuurgebiedKey)) {
@@ -169,6 +170,34 @@ public class KaartenForm extends ActionForm{
       
 	}
 
+    //kart type detail string for email
+    public String getKaartTypeDetail() {
+      String kartTypeDetail  = "";
+      if (rad_Gebied.equals(natuurgebiedKey)) {
+          kartTypeDetail += sel_Beheereenheden + "(";
+          for(int i=0; (sel_NatGeb!= null) && (i<sel_NatGeb.length) ; i++) {
+              kartTypeDetail += sel_NatGeb[i];
+              if (i != sel_NatGeb.length -1) {
+                  kartTypeDetail += ", ";
+              }
+          }
+          kartTypeDetail += ")";
+      } 
+      if (rad_Gebied.equals(eenheidKey)) {
+          kartTypeDetail += sel_gebieden + "(";
+          for(int i=0; (sel_Areaal!= null) && (i<sel_Areaal.length) ; i++) {
+              kartTypeDetail += sel_Areaal[i];
+              if (i != sel_Areaal.length -1) {
+                  kartTypeDetail += ", ";
+              }
+          }
+          kartTypeDetail += ")";
+      } 
+
+      return kartTypeDetail;
+      
+    }
+    
 	// getters and setters
 	
 	public String getFormaat() {
