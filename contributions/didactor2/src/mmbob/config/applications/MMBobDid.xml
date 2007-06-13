@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="MMBobDid" maintainer="didactor.nl" version="3" auto-deploy="true">
+<application name="MMBobDid" maintainer="didactor.nl" version="4" auto-deploy="true">
   <requirements>
     <requires name="MMBob" maintainer="mmbase.org" version="1" />
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
@@ -14,6 +14,7 @@
     <relation from="classes"    to="forums" type="related" />
     <relation from="educations" to="forums" type="related" />
     <relation from="educations" to="forums" type="rolerel" />
+    <relation from="people"     to="posters" type="related" />
   </allowedrelationlist>
 
   <datasourcelist>
