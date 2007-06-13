@@ -10,7 +10,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ChainedSqlHandlerTest extends TestCase {
     private final static int TEST_SUPPORT_LEVEL = 123;
@@ -56,7 +56,7 @@ public class ChainedSqlHandlerTest extends TestCase {
     
     /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testAppendQueryBodyToSql() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         instance.appendQueryBodyToSql(sb, query, instance);
         String queryBody = sb.toString();
         sb.setLength(0);
@@ -68,7 +68,7 @@ public class ChainedSqlHandlerTest extends TestCase {
     
     /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testAppendConstraintToSql() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Constraint constraint 
         = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         instance.appendConstraintToSql(sb, constraint, query, false, false);
