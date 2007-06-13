@@ -61,7 +61,7 @@
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
             <mm:link referid="wizardjsp" referids="user@origin">
               <mm:param name="wizard">config/education/educations-origin</mm:param>
-              <mm:param name="objectnumber">new<</mm:param>
+              <mm:param name="objectnumber">new</mm:param>
               <mm:param name="path"></mm:param>
               <td>
                 <nobr>
