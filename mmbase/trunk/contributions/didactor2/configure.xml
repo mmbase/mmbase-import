@@ -1,10 +1,10 @@
 <project name="didactor-config" default="config" basedir=".">
-     <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
-     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-       <classpath>
-         <pathelement location="lib/ant-contrib-1.0b1.jar"/>
-       </classpath>
-     </taskdef>
+  <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="lib/ant-contrib-1.0b1.jar"/>
+    </classpath>
+  </taskdef>
 
   <echo message="configuring..."/>
    <!--
@@ -21,6 +21,21 @@
   <property file="my.properties"/>
   <property file="build.properties"/>
   <property file="configure.properties"/>
+
+  <!-- reasonable defaults : -->
+  <property name="jdbc.supportclass" value="org.mmbase.module.database.DatabaseSupportShim" />
+  <property name="jdbc.querys"       value="-1" />
+  <property name="jdbc.probetime"    value="30" />
+  <property name="jdbc.password"     value="" />
+  <property name="jdbc.connections"  value="20" />
+
+
+  <!-- defaults to mysql (should be hsql?)  -->
+  <property name="jdbc.url"          value="jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;characterEncoding=UTF-8" /
+  <property name="jdbc.port"         value="3306" />
+  <property name="jdbc.driver"       value="com.mysql.jdbc.Driver" />
+
+
   
   <property name="mmbase.logdir"  value="${catalina.base}/logs" />
   <property name="mmbase.logfile" value="didactor" />
