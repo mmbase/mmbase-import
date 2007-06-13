@@ -2,10 +2,8 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:content postprocessor="none" expires="0">
-<mm:log>0</mm:log>
 <mm:cloud method="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
-<mm:log>1</mm:log>
   <mm:node referid="provider">
     <mm:countrelations type="flashpages" write="false">
         <mm:islessthan value="1">
