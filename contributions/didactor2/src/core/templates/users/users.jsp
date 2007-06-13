@@ -10,9 +10,7 @@
 %><%@page import ="nl.didactor.component.users.PeopleComparator"
 %><mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate">
-  <mm:log>USERSa</mm:log>
   <jsp:directive.include file="/shared/setImports.jsp" />
-  <mm:log>USERSb</mm:log>
   <mm:import id="tmpreferids" reset="true">provider?</mm:import>
   
   <mm:import externid="mode"/>
