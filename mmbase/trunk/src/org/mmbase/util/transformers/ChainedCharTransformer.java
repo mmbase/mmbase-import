@@ -44,7 +44,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.25 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.26 2007-06-13 07:51:41 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -73,24 +73,31 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     /**
      * Adds a Collection of CharTranformers to the chain of CharTransformers.
      *
-     * @throws ClassCastException if collecion does not contain only CharTransformers
+     * @throws ClassCastException if collection does not contain only CharTransformers
      */
     public ChainedCharTransformer addAll(Collection<CharTransformer> col) {
-        Iterator<CharTransformer> i = col.iterator();
-        while (i.hasNext()) {
-            CharTransformer c = i.next();
+        for (CharTransformer c : col) {
             add(c);
         }
         return this;
     }
 
+    /**
+     * @since MMBase-1.9
+     */
+    public ChainedCharTransformer add(CharTransformer... col) {
+        for (CharTransformer c : col) {
+            add(c);
+        }
+        return this;
+    }
+
+
     /** 
      * Implementation without Threads. Not needed when transforming by String. 
      */
     public String transform(String string) {
-        ListIterator<CharTransformer> i = charTransformers.listIterator();
-        while (i.hasNext()) {
-            CharTransformer ct = i.next();
+        for (CharTransformer ct : charTransformers) {
             string = ct.transform(string);            
         }
         return string;
@@ -128,10 +135,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     }
                 }
             }
-            // wait until all threads are ready, because only then this transformation is actually ready
-            Iterator<CharTransformerLink> ti = links.iterator();
-            while (ti.hasNext()) {
-                CharTransformerLink l = ti.next();
+            // wait until all threads are ready, because only then this transformation is actually
+            // ready
+            for (CharTransformerLink l : links) {
                 try {
                     while (!l.ready()) {                            
                         synchronized(l) { // make sure we have the lock.
