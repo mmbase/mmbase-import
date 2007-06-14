@@ -63,7 +63,7 @@ if(twoColumns) {
          
          <html:link 
             page="/nmintra/KaartenInitAction.eb">
-            purchase another map
+            <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>purchase another map
          </html:link>
          <br/><br/>
          
