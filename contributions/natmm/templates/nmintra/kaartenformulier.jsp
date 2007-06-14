@@ -215,7 +215,7 @@ function jsc_GeefInfo(id_DIV)
 
 function small_window(NaamPagina) {
 var newWindow;
-var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=screen.availWidth,height=screen.availHeight, top='+(20)+',left='+(20);
+var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=520,height=680, top='+(20)+',left='+(20);
 var fullLink;
 for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 	if (document.KaartenForm.sel_Kaart[i].selected) {

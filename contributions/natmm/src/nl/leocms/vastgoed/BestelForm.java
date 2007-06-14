@@ -1,10 +1,15 @@
 package nl.leocms.vastgoed;
 
 import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionError;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author
- * @version $Id: BestelForm.java,v 1.2 2007-06-06 10:12:00 evdberg Exp $
+ * @version $Id: BestelForm.java,v 1.3 2007-06-14 07:30:18 ieozden Exp $
  *
  * @struts:form name="BestelForm"
  */
@@ -42,5 +47,18 @@ public class BestelForm extends ActionForm{
       this.bezorgadres = bezorgadres;
    }
    
+   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+       if (naam == null || naam.length() <1) {
+           ActionErrors errors = new ActionErrors();
+           errors.add("naam", new ActionError("mijnleocms.required.name"));
+           return errors;
+       }
+       if (email == null || email.length() <1) {
+           ActionErrors errors = new ActionErrors();
+           errors.add("email", new ActionError("mijnleocms.required.email"));
+           return errors;
+       }
+       return null;
+   }
    
 }

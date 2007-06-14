@@ -534,7 +534,8 @@
       type="nl.leocms.vastgoed.BestelAction"
       name="BestelForm"
       scope="session"
-      validate="false"
+      input="/nmintra/bestelformulier.jsp"
+      validate="true"
     >
       <forward
         name="send"
