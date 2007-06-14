@@ -285,7 +285,8 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
-        <maxLength value="12" />
+        <unique value="true" />
+        <maxLength value="32" />
       </datatype>
     </field>
 
