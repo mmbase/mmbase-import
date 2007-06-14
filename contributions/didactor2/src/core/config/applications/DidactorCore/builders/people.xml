@@ -394,6 +394,9 @@
     <function key="relatedEducations" name="educations">
       <class>nl.didactor.component.education.utils.EducationPeopleConnector</class>
     </function>
+    <function key="peopleGenerateUserName" name="generateUserName">
+      <class>nl.didactor.functions.Functions</class>
+    </function>
   </functionlist>
 
 </builder>
