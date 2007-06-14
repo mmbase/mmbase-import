@@ -17,7 +17,8 @@ String kartType = "";
 </head>
 <body>
 
-Naam van de kaart: <b><%=kartName%></b> <a href="javascript:window.close()">close</a> 
+Naam van de kaart: <b><%=kartName%></b> 
+&nbsp;&nbsp;&nbsp;<a href="javascript:window.close()"><img border="0" src="../../media/vastgoed/close.gif"/> close</a> 
 <br>
 Informatie betreffende de kaart uit het opmerkingen veld: <br/>
 <mm:field name="opmerking"/>
