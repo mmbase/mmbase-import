@@ -26,8 +26,11 @@
         <jsp:directive.include file="../includes/descriptionrel_link.jsp" />
 
         <mm:node number="$learnobject" jspvar="nodeLearnObject">
-          <jsp:directive.include file="../includes/component_link.jsp" />
+          <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="components" role="rolerel">            
+            <jsp:directive.include file="../includes/component_link.jsp" />
+          </mm:hasrelationmanager>
         </mm:node>
+
 
         <mm:treeinclude page="/education/prev_next.jsp" referids="includePath,provider" objectlist="$includePath" />
 
