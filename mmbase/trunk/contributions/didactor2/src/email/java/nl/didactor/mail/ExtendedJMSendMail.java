@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.22 2007-05-03 13:38:49 michiel Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.23 2007-06-14 15:13:55 michiel Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -457,6 +457,8 @@ public class ExtendedJMSendMail extends SendMail {
 
             Transport.send(msg, onlyto);
             log.debug("JMSendMail done.");
+        } catch (javax.mail.SendFailedException sfe) {
+            log.warn("JMSendMail failure: " + sfe.getMessage());
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
             errors.append("\nMessaging: " + e.getMessage());
