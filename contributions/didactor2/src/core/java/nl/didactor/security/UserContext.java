@@ -17,7 +17,7 @@ import java.util.HashSet;
  * contains all information about a user, it can also report back
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: UserContext.java,v 1.6 2007-01-04 18:12:09 mmeeuwissen Exp $
+ * @version $Id: UserContext.java,v 1.7 2007-06-14 12:50:40 michiel Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -102,6 +102,6 @@ public class UserContext extends org.mmbase.security.BasicUser {
     }
 
     public Integer getUserNumber() {
-        return new Integer(wrappedNode);
+        return Integer.valueOf(wrappedNode);
     }
 }
