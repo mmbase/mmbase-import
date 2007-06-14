@@ -29,11 +29,13 @@ if(twoColumns) {
       <h3>Mijn bestelling</h3>
       
       <html:form action="/nmintra/BestelAction" method="POST">
-         
+         <b><html:errors bundle="LEOCMS"/></b>
          <table>
          <tr>
          <td>Naam:</td>
-         <td><html:text property="naam" size="44"/></td>
+         <td><html:text property="naam" size="44"/>
+         
+         </td>
          </tr>
          <tr>
          <td>E-mail:</td>
@@ -133,9 +135,9 @@ if(twoColumns) {
           
       </html:form>
       
-
 <%
-if ((request.getParameter("send") != null) && (request.getParameter("send").equals("verzenden"))) {
+if ((request.getParameter("send") != null) && (request.getParameter("send").equals("verzenden"))
+&& (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email"))) ) {
 %>
 <div style="color:red;"><b>'NL:your order is processed'</b></div>
 <%
