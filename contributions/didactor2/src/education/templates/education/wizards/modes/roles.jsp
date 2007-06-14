@@ -89,7 +89,7 @@
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td>
                  <mm:link referid="listjsp" referids="e@education">
-                   <mm:param name="wizard">config/class/classes</mm:param>
+                   <mm:param name="wizard">config/class/classes-standalone</mm:param>
                    <mm:param name="nodepath">classes</mm:param>
                    <mm:param name="search">yes</mm:param>
                    <mm:param name="orderby">number</mm:param>
