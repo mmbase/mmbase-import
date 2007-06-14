@@ -9,6 +9,7 @@
       <relation role="related">
         <object type="mmevents" />
       </relation>
+      <relation role="classrel" destination="{$education}" />
     </object>
   </action>
 
