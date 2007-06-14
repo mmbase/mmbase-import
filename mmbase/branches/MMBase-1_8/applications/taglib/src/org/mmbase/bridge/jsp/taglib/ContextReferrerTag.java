@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.3 2007-06-14 13:30:37 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.4 2007-06-14 14:30:16 michiel Exp $
  * @see ContextTag
  */
 
@@ -683,9 +683,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     protected Object getEscapedValue(Object value) throws JspTagException {
         if (helper.getEscape() == null) {
             // do wrap though, to maintain EL compatibility (also e.g. when written to request)
-            return Casting.wrap(value, null);
+            return value == null ? null : Casting.wrap(value, null);
         } else {
-            return Casting.wrap(value, ContentTag.getCharTransformer(helper.getEscape(), this));
+            return value == null ? null : Casting.wrap(value, ContentTag.getCharTransformer(helper.getEscape(), this));
         }
     }
 
