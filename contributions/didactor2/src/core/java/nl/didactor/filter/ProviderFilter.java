@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.7 2007-06-13 13:48:36 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.8 2007-06-14 08:38:07 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -189,22 +189,38 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             }
             Node education = null;                
             {
-                NodeList educations = provider != null ? 
-                    provider.getRelatedNodes("educations") :
-                    cloud.getNodeManager("educations").getList(null, null, null);
+                NodeList educations;
+                if (provider != null) {
+                    educations = provider.getRelatedNodes("educations");
+                    if (educations.size() == 0) {
+                        log.warn("Provider " + provider + " has no education");
+                        educations = cloud.getNodeManager("educations").getList(null, null, null);
+                    }
+                } else {
+                    // there was no provider found yet, so we try educations only
+                    educations = cloud.getNodeManager("educations").getList(null, null, null);
+                }
                 
                 for (String u : urls) {
                     education = selectByRelatedUrl(educations, u);
                     if (education != null) break;
                 }                    
 
-
+                
                 if (education == null && provider != null) {
+                    // no url related to the educations, simply take one related to the provider if
+                    // that was found.
                     NodeList eds = provider.getRelatedNodes("educations");
                     if (eds.size() > 0) {
                         education = eds.nodeIterator().nextNode();
                     }   
                 }
+
+                if (education == null && educations.size() > 0) {
+                    // Still no education found, if there are education at all, simply guess one.
+                    education = educations.nodeIterator().nextNode();
+                }
+
                 if (education != null) {
                     log.debug("Found education " + education.getNumber());
                     attributes.put("education", "" + education.getNumber()); 
