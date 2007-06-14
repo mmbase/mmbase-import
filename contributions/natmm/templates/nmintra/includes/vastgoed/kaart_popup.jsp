@@ -24,7 +24,7 @@ Informatie betreffende de kaart uit het opmerkingen veld: <br/>
 <br/>
 
 	<mm:relatednodes type="images" max="1">
-		<img src="<mm:image template="s(400x400)" />" border="0">
+		<img src="<mm:image template="s(480x480)" />" border="0">
 	</mm:relatednodes>
 	
 </body>
