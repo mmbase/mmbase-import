@@ -14,7 +14,7 @@
     <mm:setfield name="password"><mm:function id="password" set="utils" name="generatePassword" referids="template" /></mm:setfield>
     <mm:setfield name="username"><mm:function name="generateUserName" /></mm:setfield>
   </mm:createnode>
-
+ 
   <mm:createrelation cloud="cloud" role="related" source="education" destination="person" />
   <mm:log>Created person ${person.username}, for education ${education}</mm:log>
 

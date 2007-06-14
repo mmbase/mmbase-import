@@ -11,17 +11,17 @@
     </mm:param>
   </mm:treeinclude>
 
-  <mm:import externid="thanks" />
+  <mm:import externid="formsubmit">false</mm:import>
 
-  <mm:present referid="thanks">
+  <mm:compare referid="formsubmit" value="true">
     <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="uname">${requestScope.person.username}</mm:param>
       <mm:param name="password">${requestScope.password}</mm:param>
     </mm:treeinclude>
-  </mm:present>
-  <mm:notpresent referid="thanks">
+  </mm:compare>
+  <mm:compare referid="formsubmit" value="false">
     <mm:treeinclude page="/register/register_form.jsp" objectlist="$includePath" referids="$referids" />
-  </mm:notpresent>
+  </mm:compare>
 
 </mm:content>
 </mm:cloud>
