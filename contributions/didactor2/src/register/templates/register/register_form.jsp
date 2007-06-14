@@ -42,7 +42,7 @@
 
             <mm:treefile id="thanks" cloud="cloud" page="/register/index.jsp"
                          objectlist="$includePath" referids="$referids">
-              <mm:param name="thanks" />
+              <mm:param name="formsubmit">true</mm:param>
             </mm:treefile>
 
 
