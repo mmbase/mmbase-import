@@ -141,7 +141,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 	                		saveResponseForm(cloud, formfields, responseForm);
 	                	}
 	                	String emailData = data.toString();
-	                	boolean sent = sendResponseFormEmail(responseForm, emailData, attachment); 
+	                	boolean sent = sendResponseFormEmail(responseForm, userEmailAddress, emailData, attachment); 
 	                    if (!sent) {
 	                		errorMessages.put("sendemail", "view.error.sendemail");
 	                	}        
@@ -248,14 +248,19 @@ public class ResponseFormPortlet extends ContentPortlet {
         }	
 	}
 
-	private boolean sendResponseFormEmail(Node responseform, String responseformData, DataSource attachment) {
+	private boolean sendResponseFormEmail(Node responseform, String userEmailAddress, String responseformData, DataSource attachment) {
 		boolean sent = false;		
 		StringBuffer emailText = new StringBuffer();
 		
         String emailTextBefore = responseform.getStringValue("emailbody"); 
         String emailTextAfter = responseform.getStringValue("emailbodyafter"); 
-        String senderEmail = responseform.getStringValue("useremailsender");
-        String senderName = responseform.getStringValue("useremailsendername");     
+
+        String senderEmail = userEmailAddress;
+        String senderName = userEmailAddress;     
+        if (StringUtil.isEmptyOrWhitespace(userEmailAddress)) {
+            senderEmail = responseform.getStringValue("useremailsender");
+            senderName = responseform.getStringValue("useremailsendername");
+        }
         	             
         emailTextBefore = emailTextBefore.trim();    
     	emailText.append(emailTextBefore);
