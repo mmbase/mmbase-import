@@ -11,10 +11,8 @@ import org.mmbase.module.core.*;
 
 
 /**
- * This class is based on the NoAuthorization class from MMBase.
- *
- * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.2 2007-02-07 15:22:10 mmeeuwissen Exp $
+ * @javadoc
+ * @version $Id: Authorization.java,v 1.3 2007-06-14 12:50:40 michiel Exp $
  */
 public class Authorization extends org.mmbase.security.Authorization {
 
@@ -42,10 +40,29 @@ public class Authorization extends org.mmbase.security.Authorization {
     }
 
     /**
-     * No authorization means that everyting is allowed
-     * @return true
      */
     public boolean check(org.mmbase.security.UserContext user, int nodeid, Operation operation) {
+        if (! (user instanceof nl.didactor.security.UserContext)) {
+            return false;
+        } else {
+            // This is in no way an elaborate implementation
+
+            // Currently it only forbids deleting yourself, and admin.
+
+            nl.didactor.security.UserContext uc = (nl.didactor.security.UserContext) user;
+            if (operation.equals(Operation.DELETE)) {
+                if (uc.getUserNumber() == nodeid) {
+                    // you may not delete yourself
+                    return false;
+                } 
+                MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
+                MMObjectNode node = objectBuilder.getNode(nodeid);
+                if (node.getBuilder().getTableName().equals("people")) {
+                    if (node.getStringValue("username").equals("admin")) return false;
+                }
+                
+            }
+        }
         return true;
     }
 
@@ -53,6 +70,7 @@ public class Authorization extends org.mmbase.security.Authorization {
      * This method will call the 'preDelete()' method for the builder to which this node that is deleted belongs. 
      */
     public void verify(org.mmbase.security.UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
+        super.verify(user, nodeid, operation);
         if (operation.equals(Operation.DELETE)) {
             MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
             MMObjectNode node = objectBuilder.getNode(nodeid);
