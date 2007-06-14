@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.2 2006-12-05 21:43:23 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.3 2007-06-14 13:30:37 michiel Exp $
  * @see ContextTag
  */
 
@@ -83,11 +83,24 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
     private String       thisPage = null;
 
-    void setPageContextOnly(PageContext pc) {
+    void setPageContextOnly(final PageContext pc) {
         super.setPageContext(pc);
         // the 'page' Context
+        //        setThreadPageContext(pc);
     }
 
+    /*
+      EXPERIMENTAL
+    public static void setThreadPageContext(final PageContext pc) {
+        threadPageContext = new ThreadLocal() {
+                protected synchronized Object initialValue() {
+                    return pc;
+                }
+            };
+    }
+
+    public static ThreadLocal threadPageContext;
+    */
 
     public PageContext getPageContext() {
         return pageContext;
@@ -669,16 +682,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      */
     protected Object getEscapedValue(Object value) throws JspTagException {
         if (helper.getEscape() == null) {
-            return value;
+            // do wrap though, to maintain EL compatibility (also e.g. when written to request)
+            return Casting.wrap(value, null);
         } else {
-            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer(helper.getEscape(), this);
-            if (ct != null) {
-                return ct.transform(Casting.toString(value));
-            } else {
-                return value;
-            }
+            return Casting.wrap(value, ContentTag.getCharTransformer(helper.getEscape(), this));
         }
     }
-
 
 }
