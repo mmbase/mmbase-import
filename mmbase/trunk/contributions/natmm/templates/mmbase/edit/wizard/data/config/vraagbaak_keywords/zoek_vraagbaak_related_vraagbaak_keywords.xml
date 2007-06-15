@@ -13,6 +13,9 @@
          <search-fields>[word]</search-fields>
       </search-filter>
    </command>
+   <command name="startwizard" inline="true" wizardname="config/vraagbaak_keywords/wizard" objectnumber="new">
+      <prompt></prompt>
+   </command>   
    <action type="create">
       <relation destinationtype="vraagbaak_keywords" role="related"></relation>
    </action>
