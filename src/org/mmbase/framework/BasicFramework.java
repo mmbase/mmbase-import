@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.37 2007-06-15 10:46:43 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.38 2007-06-15 12:09:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -42,6 +42,7 @@ public class BasicFramework implements Framework {
     public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
     public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
     public static final Parameter<Integer> ACTION   = new Parameter<Integer>("action", Integer.class);
+    public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
 
 
     public String getName() {
@@ -108,7 +109,6 @@ public class BasicFramework implements Framework {
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
             map.putAll(state.getMap(blockParameters.toMap()));
-            map.putAll(frameworkParameters.toMap());
 
             StringBuilder sb = getUrl(page, map, req, escapeAmps);
             return sb;            
@@ -132,14 +132,11 @@ public class BasicFramework implements Framework {
         if (log.isDebugEnabled()) {
             log.debug("block " + block + "component " + component + " block parameters " + blockParameters + " framework parameters " + frameworkParameters);
         }
-        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
-        req.setAttribute("fw_title", block.getDescription());
-        frameworkParameters.set(COMPONENT, component.getName());
-        frameworkParameters.set(BLOCK,     block.getName());
-        if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
-            frameworkParameters.set(N, blockParameters.get(Parameter.NODE));
-        }
-        StringBuilder sb = getUrl("/mmbase/" + component.getName() + "/" + block.getName(), blockParameters.toMap(), req, writeamp);
+        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);       
+        String category = req.getParameter(CATEGORY.getName());
+
+        StringBuilder sb = getUrl("/mmbase/" + category + "/" + component.getName() + "/" + block.getName(), blockParameters.toMap(), req, writeamp);
+        log.debug("Using " + sb);
         return sb;
     }
 
@@ -157,7 +154,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createFrameworkParameters() {
-        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION);
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION, CATEGORY);
     }
 
     public boolean makeRelativeUrl() {
@@ -241,21 +238,30 @@ public class BasicFramework implements Framework {
         if (sp.startsWith("/mmbase")) {
             String[] path = sp.split("/");
             log.debug("Going to filter " + Arrays.asList(path));           
-            if (path.length == 4) { 
+            if (path.length >= 3) { 
                 assert path[0].equals("");
                 assert path[1].equals("mmbase");
-                Component comp = ComponentRepository.getInstance().getComponent(path[2]);
+                String category = path[2];
+                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
+                if (path.length == 3) return url.toString();
+                
+                Component comp = ComponentRepository.getInstance().getComponent(path[3]);
                 if (comp == null) {
                     log.debug("No such component, ignoring this too");
                     return noConvert(request);
                 }
-                Block block = comp.getBlock(path[3]);
+                url.append("&component=" + comp.getName());
 
+                if (path.length == 4) return url.toString();
+
+                Block block = comp.getBlock(path[4]);
                 log.debug("Will try to display " + block);
                 if (block == null) {
-                    throw new RuntimeException("No block " + path[3] + " in component " + path[2]);
+                    throw new RuntimeException("No block " + path[4] + " in component " + path[3]);
                 }
-                return "/mmbase/admin/index.jsp?component=" + comp.getName() + "&block=" + block.getName();
+                url.append("&block=" + block.getName());
+                log.debug("internal URL " + url);
+                return url.toString();
             } else {
                 log.debug("path length " + path.length);
                 return noConvert(request);
