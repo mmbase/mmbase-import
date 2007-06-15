@@ -23,7 +23,8 @@
    <field name="intro"/>
    <field name="tekst"/>
    <relation destination="pools" role="posrel"/>
-   <relation destination="persoon" role="related"/>   
+   <relation destination="persoon" role="related"/>  
+   <relation destination="vraagbaak_keywords" role="related"/> 
    <relation destination="vraagbaak" role="related"/>
    <relation destination="natuurgebieden" role="rolerel"/>
    <relation destination="images" role="posrel"/>
