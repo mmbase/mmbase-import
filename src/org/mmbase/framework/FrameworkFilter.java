@@ -16,15 +16,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Requestfilter that filters out all virtual 'userfriendly' URL's that have a 
- * corresponding page within the website. Regular expressions that define URL's to
- * be excluded from filtering should be listed in the 'excludes' parameter in web.xml.
- * 
+ * Requestfilter that filters out all URL's looking for virtual 'userfriendly' links that have a 
+ * corresponding page (technical URL) within the website. When the recieved URL is not a
+ * recognized by the framework as an 'userfriendly' one it just gets forwarded in its original 
+ * form.
+ * Regular expressions that define URL's to be excluded from filtering should be listed in the
+ * 'excludes' parameter in web.xml.
  * The filtering and conversion to a URL pointing to an existing JSP template is 
  * done by UrlConverter. Based upon code from LeoCMS and CMSC.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.1 2007-06-15 09:50:53 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.2 2007-06-15 10:18:05 andre Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -98,9 +100,9 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         return path != null ? path : request.getPathInfo();
     }
     /**
-     * Filters a request 
+     * Filters a request. 
      * URL conversion is only done when the URI does not match one of the excludes in web.xml.
-     * The conversion work is delegated to UrlConverter.
+     * The conversion work is delegated to UrlConverter. Waits for MMBase to be up.
      *
      * @param request	incoming request
      * @param response	outgoing response
