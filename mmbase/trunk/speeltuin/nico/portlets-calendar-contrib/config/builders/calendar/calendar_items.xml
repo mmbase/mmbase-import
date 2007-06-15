@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         extends="contentelement" maintainer="mmbase.org" 
+         name="calendar_items" version="0" 
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+  <names>
+    <singular xml:lang="en">Calendar item</singular>
+    <singular xml:lang="nl">Agendaitem</singular>
+    <singular xml:lang="eo">Kalendarero</singular>
+    <plural xml:lang="en">Calendar items</plural>
+    <plural xml:lang="nl">Agendaitems</plural>
+    <plural xml:lang="eo">Kalendareroj</plural>
+  </names>
+  <fieldlist>
+    <field name="intro">     
+      <gui>
+        <guiname xml:lang="en">Into text</guiname>
+        <guiname xml:lang="nl">Introductie</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="cmscrichtext">
+        <maxLength value="65000" />
+      </datatype>
+    </field>
+    <field name="body">     
+      <gui>
+        <guiname xml:lang="en">Body text</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="eo">Teksto</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="cmscrichtext">
+        <maxLength value="65000" />
+      </datatype>
+    </field>
+    <field name="organizer">     
+      <gui>
+        <guiname xml:lang="nl">Organisator</guiname>
+        <guiname xml:lang="en">Organizer</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="cmscrichtext">
+        <maxLength value="65000" />
+      </datatype>
+    </field>
+
+    <field name="start">
+      <gui>
+        <guiname xml:lang="en">Start time</guiname>
+        <guiname xml:lang="nl">Starttijd</guiname>
+        <guiname xml:lang="eo">Ektempo</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime">
+        <default value="now" />
+        <minInclusive value="today - 1 year" />
+        <maxInclusive value="today + 100 year" />
+      </datatype>
+    </field>
+    <field name="stop">
+      <gui>
+        <guiname xml:lang="en">Stop time</guiname>
+        <guiname xml:lang="nl">Eindtijd</guiname>
+        <guiname xml:lang="eo">Fintemp</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime">
+        <default value="now + 1 hour" />
+        <minInclusive value="today - 1 year" />
+        <maxInclusive value="today + 100 year" />
+      </datatype>
+    </field>
+    <field name="allday">
+      <gui>
+        <guiname xml:lang="en">All day</guiname>
+        <guiname xml:lang="nl">Volledige dag</guiname>
+        <guiname xml:lang="eo">Plentaga</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="yesno">
+        <default value="false" />
+        <required value="true" />
+      </datatype>
+    </field>
+    <field name="type">
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="eo">Tipo</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="node">
+        <enumeration>
+          <query type="calendar_item_types" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+        </enumeration>
+      </datatype>
+    </field>
+    <field name="location">
+      <gui>
+        <guiname xml:lang="en">Location</guiname>
+        <guiname xml:lang="nl">Locatie</guiname>
+        <guiname xml:lang="eo">Loko</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+    <field name="time">
+      <descriptions>
+        <description xml:lang="en">Alternative time-indication (free text). Can e.g. be used for events for several days.</description>
+        <description xml:lang="nl">Alternatieve tijd-indicatie (free-text). Is bijvoorbeeld te gebruiken als het het over een meerdaags iets gaat, dan kan hier de tijd per dag staan.</description>
+        <description xml:lang="eo">Alternative tempoindiko (liberforma). Uzeblas ekz. ĉe plurtagaj okazoj, tiaokaze ĉi-kampo povas estis plenigata per la ĉiutaga ektempo aŭ simila.</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Time</guiname>
+        <guiname xml:lang="nl">Tijdstip</guiname>
+        <guiname xml:lang="eo">Tempo</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+  </fieldlist>
+  <functionlist>
+    <function name="gui" >
+      <class>org.mmbase.calendar.GuiFunction</class>
+    </function>
+  </functionlist>
+</builder>
