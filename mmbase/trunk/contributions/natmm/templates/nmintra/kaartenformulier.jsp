@@ -469,7 +469,7 @@ if(twoColumns) {
 	<table>
 		<tr>
 			<td width="450">
-				Selecteer het(de) gebied(en) of geef de coördinaten:
+			Selecteer gebied(en) of geef de coördinaten op:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
@@ -578,7 +578,7 @@ formulier.">
 			<td width="20">
 				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();"/>
 			</td>
-			<td colspan="4">coördinaten:&nbsp;</td>
+			<td colspan="4">Coördinaten:&nbsp;</td>
 			<td>&nbsp;</td>
 		</tr>
 
@@ -630,7 +630,7 @@ formulier.">
 
 	<table width="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
 		<tr>
-			<td width="96" align="left">kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
+			<td width="96" align="left">Kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
 			<td width="139">
 				<img id="kartPicture" style="cursor:pointer" src="media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
 					onClick="javascript:small_window('includes/vastgoed/kaart_popup.jsp');">
@@ -783,7 +783,7 @@ formulier.">
 		<tr height="50">
 	  		<td></td>
 
-			<td>toevoegen aan mijn bestelling:&nbsp;</td>
+			<td>Toevoegen aan mijn bestelling:&nbsp;</td>
 			<td align="right">
 			<input type="image" src="media/vastgoed/wwagen.jpg" name="send"/>
 			</td>
@@ -795,7 +795,7 @@ formulier.">
 		
 		<html:link 
         page="/nmintra/KaartenAction.eb?shopping_cart">
-        TERUG NAAR KART...
+        Terug naar winkelwagentje...
 </html:link>
 
 		</td>

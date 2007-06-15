@@ -42,7 +42,7 @@ if(twoColumns) {
          <td><html:text property="email" size="44"/></td>
          </tr>
          <tr>
-         <td>Eendheid:</td>
+         <td>Eenheid:</td>
          <td><html:select property="eendheid">
             <html:option value="Noordenveld">Noordenveld</html:option>
             <html:option value="Waddengebied">Waddengebied</html:option>
@@ -63,7 +63,7 @@ if(twoColumns) {
          
          <html:link 
             page="/nmintra/KaartenInitAction.eb">
-            <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>purchase another map
+            <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Koop nog een kaart
          </html:link>
          <br/><br/>
          
@@ -131,15 +131,15 @@ if(twoColumns) {
          </table>
          
          <br/>
-         <input type="submit" name="send" value="verzenden"/>
+         <input type="submit" name="send" value="Verzenden"/>
           
       </html:form>
-      
+
 <%
-if ((request.getParameter("send") != null) && (request.getParameter("send").equals("verzenden"))
+if ((request.getParameter("send") != null) && (request.getParameter("send").equals("Verzenden"))
 && (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email"))) ) {
 %>
-<div style="color:red;"><b>'NL:your order is processed'</b></div>
+<div style="color:red;"><b><bean:message bundle="LEOCMS" key="shoppingcart.processed" /></b></div>
 <%
 }
 %>
