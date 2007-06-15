@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.7 2007-06-13 11:55:41 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.8 2007-06-15 10:55:35 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -68,7 +68,7 @@ public class BestelAction  extends Action {
       
       
       // mail message: kart values for buyer 
-      addLineToMessage(messagePlain, messageHtml, "BestelFormulier");
+      addLineToMessage(messagePlain, messageHtml, "Bestelformulier");
       addLineToMessage(messagePlain, messageHtml, "---------------");
       addLineToMessage(messagePlain, messageHtml, "Naam: " + bestelForm.getNaam());
       addLineToMessage(messagePlain, messageHtml, "Email: " + bestelForm.getEmail());
@@ -113,7 +113,7 @@ public class BestelAction  extends Action {
       Node emailNode = cloud.getNodeManager("email").createNode();
       emailNode.setValue("from",NMIntraConfig.fromEmailAddress);
       emailNode.setValue("to", NMIntraConfig.toEmailAddress);
-      emailNode.setValue("subject", "Nieuwe kaarten bestel - " + bestelForm.getNaam());
+      emailNode.setValue("subject", "Nieuwe kaarten besteld - " + bestelForm.getNaam());
       emailNode.setValue("replyto", "");
       emailNode.setValue("body",
                       "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
@@ -128,8 +128,8 @@ public class BestelAction  extends Action {
       emailNode.getValue("mail(oneshotkeep)");
       //
       emailNode.setValue("to", bestelForm.getEmail());
-      messagePlain = new StringBuffer("Please find attached your order details: \n\n").append(messagePlain);
-      messageHtml = new StringBuffer("Please find attached your order details: <br/><br/>").append(messageHtml);
+      messagePlain = new StringBuffer("Details van uw bestelling: \n\n").append(messagePlain);
+      messageHtml = new StringBuffer("Details van uw bestelling: <br/><br/>").append(messageHtml);
       emailNode.setValue("body",
           "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
              + messagePlain.toString()
