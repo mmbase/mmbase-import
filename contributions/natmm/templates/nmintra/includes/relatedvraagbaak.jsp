@@ -12,7 +12,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <% // print page proper css format
 if (printView) { %>
-	<html><head><link rel="stylesheet" type="text/css" href="../css/main.css"></head></html>
+	<html><head><link rel="stylesheet" type="text/css" href="../css/main.css"></head><body style="overflow: scroll !important;">
 <% } %>
 
 
@@ -72,4 +72,12 @@ if (printView) { %>
   <% } %>	
 
 </mm:node>
+
+<% // print page proper css format
+if (printView) { %>
+   </body></html>
+<% } %>
+
 </mm:cloud>
+
+
