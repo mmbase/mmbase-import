@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.46 2007-03-01 16:03:37 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.47 2007-06-15 08:58:25 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -383,7 +383,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 }
             }
             if (basePath == null) {
-                log.warn("Cannot determin a a Binary File Base Path");
+                log.warn("Cannot determin a Binary File Base Path");
                 return null;
             }
             File baseDir = new File(basePath);
