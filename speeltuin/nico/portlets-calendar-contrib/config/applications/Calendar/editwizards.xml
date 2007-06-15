@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editwizards exportsource="cmsc file dumper" timestamp="20060704104617">
+	<node number="202230" owner="default">
+		<name>calendar_items</name>
+		<description>calendar_items</description>
+		<wizard>config/calendar_items/calendar_items</wizard>
+		<nodepath>calendar_items</nodepath>
+		<fields>title</fields>
+	</node>
+</editwizards>
