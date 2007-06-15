@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.8 2007-06-15 10:55:35 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.9 2007-06-15 13:08:08 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -47,7 +47,7 @@ public class BestelAction  extends Action {
       // checking if delete action requested
       String deleteAction = request.getParameter("delete");
       if (deleteAction != null) {
-         log.info("deleting cart item: " + deleteAction);
+         log.debug("deleting cart item: " + deleteAction);
          
          basket.removeItem(deleteAction);
          

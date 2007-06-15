@@ -5,6 +5,19 @@
 
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function validationMessage() {
+	if((document.BestelForm.naam.value == "") || (document.BestelForm.email.value == "")) {
+		alert("Voer uw naam en email in.");
+		return false;
+	}
+	return true;
+}
+-->
+</script>
+
 <% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
 <td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
 <% 
@@ -28,7 +41,7 @@ if(twoColumns) {
       
       <h3>Mijn bestelling</h3>
       
-      <html:form action="/nmintra/BestelAction" method="POST">
+      <html:form action="/nmintra/BestelAction" method="POST"  onsubmit="return validationMessage()" >
          <b><html:errors bundle="LEOCMS"/></b>
          <table>
          <tr>
@@ -102,7 +115,7 @@ if(twoColumns) {
                    %>
                   </td>
                   
-                  <td bgcolor="#dddddd"><%= item.getKaartType()%></td>
+                  <td bgcolor="#dddddd"><%= item.getKaartType()%> - <%= item.getKaartTypeDetail() %></td>
                   <td bgcolor="#dddddd"><%= item.getSchaalOfFormaat()%></td>
                   <td bgcolor="#dddddd"><%= item.getAantal()%></td>
                   <td bgcolor="#dddddd"><%= item.getGevouwenOfOpgerold()%></td>
@@ -131,7 +144,7 @@ if(twoColumns) {
          </table>
          
          <br/>
-         <input type="submit" name="send" value="Verzenden"/>
+         <input type="submit" name="send" value="Verzenden" />
           
       </html:form>
 
