@@ -223,9 +223,9 @@ for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 		fullLink = NaamPagina + "?node=" + kartNode;
 		var windowName = kartNode;
 		newWindow = window.open(fullLink, windowName, props);
+		newWindow.focus();
 	}
 }
-newWindow.focus();
 }
 
 function jsc_defaultOptie() {

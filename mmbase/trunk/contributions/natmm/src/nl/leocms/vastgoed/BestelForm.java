@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author
- * @version $Id: BestelForm.java,v 1.3 2007-06-14 07:30:18 ieozden Exp $
+ * @version $Id: BestelForm.java,v 1.4 2007-06-15 13:08:08 ieozden Exp $
  *
  * @struts:form name="BestelForm"
  */
@@ -47,18 +47,19 @@ public class BestelForm extends ActionForm{
       this.bezorgadres = bezorgadres;
    }
    
-   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-       if (naam == null || naam.length() <1) {
-           ActionErrors errors = new ActionErrors();
-           errors.add("naam", new ActionError("mijnleocms.required.name"));
-           return errors;
-       }
-       if (email == null || email.length() <1) {
-           ActionErrors errors = new ActionErrors();
-           errors.add("email", new ActionError("mijnleocms.required.email"));
-           return errors;
-       }
-       return null;
-   }
+   //INTERVENES WITH THE DELETE ACTION
+//   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+//       if (naam == null || naam.length() <1) {
+//           ActionErrors errors = new ActionErrors();
+//           errors.add("naam", new ActionError("mijnleocms.required.name"));
+//           return errors;
+//       }
+//       if (email == null || email.length() <1) {
+//           ActionErrors errors = new ActionErrors();
+//           errors.add("email", new ActionError("mijnleocms.required.email"));
+//           return errors;
+//       }
+//       return null;
+//   }
    
 }
