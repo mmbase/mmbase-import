@@ -32,7 +32,7 @@ public class InformixStorageManager extends DatabaseStorageManager {
     }
 
     private void closeInformix() {
-        Connection con = ((MultiConnection)activeConnection).getRealConnection();
+        Connection con = ((MultiConnection)activeConnection).unwrap(Connection.class);
         try {
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
