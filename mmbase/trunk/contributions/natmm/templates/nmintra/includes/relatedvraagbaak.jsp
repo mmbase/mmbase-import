@@ -19,43 +19,42 @@ if (printView) { %>
 <mm:node number="<%=vraagId%>">
 
   
-  <table bgcolor="#cccccc" width="100%" >
+  <table bgcolor="#d9e4f4" width="100%" >
   <tr>
-  <td rowspan="2">
-   <mm:field name="titel_zichtbaar"
-	   ><mm:compare value="0" inverse="true"
-   	   ><div class="pageheader"><mm:field name="titel" 
-	   /></div></mm:compare
-	></mm:field>
-  </td>
-  <td width="20%">
-  status:
-	<mm:relatednodes type="pools" max="1">
-    <mm:field name="name"/>
-    </mm:relatednodes>
-    
-    
-  </td>
-  <td width="5%">
-  <% if (!printView) { %>
-  <a href="javascript:history.go(-1);">terug</a>
-  <% } %>
-  </td>
-  <td width="5%">
-  	<% if (!printView) { %>
-	  <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">print</a>
-	<% } %>  
+  <td>
+     <div style="float:left;">
+      <mm:field name="titel_zichtbaar"
+         ><mm:compare value="0" inverse="true"
+            ><div class="pageheader"><mm:field name="titel" 
+         /></div></mm:compare
+      ></mm:field>
+      </div>
+     <div style="float:right;">
+        <% if (!printView) { %>
+        <a href="javascript:history.go(-1);">terug</a>
+        <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">/ print</a>
+      	<% } %>  
+      </div>
+
   </td>
   </tr>
   <tr>
-  <td colspan="3">
-  medewerker:
-  	<mm:relatednodes type="persoon" max="1">
-    <a href="smoelenboek.jsp?employee=<mm:field name="number"/>"><mm:field name="titel"/></a>
-    </mm:relatednodes>
-    
+  <td>
+     <div style="float:left;">
+      	<mm:relatednodes type="pools" max="1">
+        Status:
+          <mm:field name="name"/>
+          </mm:relatednodes>
+      </div>
+     <div style="float:right;">
+        	<mm:relatednodes type="persoon" max="1">
+          Medewerker:
+          <a href="smoelenboek.jsp?employee=<mm:field name="number"/>"><mm:field name="titel"/></a>
+          </mm:relatednodes>
+      </div>
+
   </td>
-  </tr>
+  </tr>  
   </table>
   
   <mm:field name="intro" />

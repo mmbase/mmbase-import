@@ -19,7 +19,6 @@ if(twoColumns) {
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
     <a name="top">
-    <%@include file="includes/back_print.jsp" %>
     
     <div align="right">
        <mm:node number="<%= rbLogoID %>" notfound="skipbody"><img src="<mm:image template='s(120x80)'/>" border="0" alt=""></mm:node>
@@ -28,7 +27,47 @@ if(twoColumns) {
     <% 
       if(!"false".equals(request.getParameter("showteaser"))) { 
          %>
-         <%@include file="includes/relatedteaser.jsp" %>
+
+         <mm:node number="<%= paginaID %>">
+           <mm:field name="titel_zichtbaar">
+              <mm:compare value="0" inverse="true">
+                <table bgcolor="#9ab7e3" width="100%" >
+                <tr>
+                   <td>
+                      <div style="float:left;" class="pageheader"><mm:field name="titel" /></div>
+                      
+                     <%
+                     if(!printPage) {
+                       %>
+                       <div style="float:right; letter-spacing:1px;">
+                         <nobr>
+                           <a href="javascript:history.go(-1);">terug</a> /
+                           <a target="_blank" href="?<%= request.getQueryString() %>&pst=|action=print">print</a>
+                         </nobr>
+                       </div>
+                       <%
+                     }
+                     %>                      
+                      
+                   </td>
+                </tr>
+                </table>
+                <mm:import id="title_is_shown" />
+              </mm:compare>
+           </mm:field>
+           <mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
+            <% 
+               if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+                  %>
+                <mm:notpresent referid="title_is_shown"><br/></mm:notpresent>
+                <span class="black"><mm:write /></span>
+                <br/><br/>
+                <%
+               } 
+            %>
+            </mm:field>
+         </mm:node>
+
          <%
       }
       String startnodeId = articleId;
