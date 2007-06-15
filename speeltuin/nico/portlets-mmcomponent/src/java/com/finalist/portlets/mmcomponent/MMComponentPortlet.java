@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.portlets.mmcomponent;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.*;
 
 import javax.portlet.*;
 
@@ -33,7 +33,18 @@ public class MMComponentPortlet extends CmscPortlet {
     private static final String COMPONENT = "component";
     protected static final String ACTION_PARAM = "action";
     private static final String BLOCK = "block";
+    
+    private String initComponent;
 
+    @Override
+    public void init(PortletConfig config) throws PortletException {
+        String initComponent = config.getInitParameter(COMPONENT);
+        if (!StringUtil.isEmpty(initComponent)) {
+            this.initComponent = initComponent;
+        }
+        super.init(config);
+    }
+    
     @Override
     public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException {
         String action = request.getParameter(ACTION_PARAM);
@@ -43,8 +54,16 @@ public class MMComponentPortlet extends CmscPortlet {
             PortletPreferences preferences = request.getPreferences();
             String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
             if (portletId != null) {
-                // get the values submitted with the form
-                setPortletParameter(portletId, COMPONENT, request.getParameter(COMPONENT));
+                for (Enumeration<String> iterator = request.getParameterNames(); iterator.hasMoreElements();) {
+                    String name = iterator.nextElement();
+                    String value = request.getParameter(name);
+                    if (value.startsWith("node.")) {
+                        setPortletNodeParameter(portletId, name, value.substring("node.".length()));
+                    }
+                    else {
+                        setPortletParameter(portletId, name, value);
+                    }
+                }
             } else {
                 getLogger().error("No portletId");
             }
@@ -59,6 +78,9 @@ public class MMComponentPortlet extends CmscPortlet {
     public void processView(ActionRequest req, ActionResponse res) throws PortletException, IOException {
         PortletPreferences preferences = req.getPreferences();
         String componentName = preferences.getValue(COMPONENT, null);
+        if (StringUtil.isEmpty(componentName)) {
+            componentName = initComponent;
+        }
         if (!StringUtil.isEmpty(componentName)) {
             Component component = ComponentRepository.getInstance().getComponent(componentName);
             String blockname = req.getParameter(BLOCK);
@@ -74,7 +96,10 @@ public class MMComponentPortlet extends CmscPortlet {
     
     @Override
     protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
-        addComponentInfo(req);
+        if (!StringUtil.isEmpty(initComponent)) {
+            addComponentInfo(req);
+        }
+
         super.doEditDefaults(req, res);
     }
     
@@ -92,15 +117,27 @@ public class MMComponentPortlet extends CmscPortlet {
     
     @Override
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
-        super.doView(req, res);
-        
         PortletPreferences preferences = req.getPreferences();
+        
+        Enumeration<String> p = preferences.getNames();
+        while (p.hasMoreElements()) {
+            String pref = p.nextElement();
+            req.setAttribute(pref, preferences.getValue(pref, null));
+        }
+        
+//        setResourceBundle(res, null);
+        res.setContentType("text/html");
+
+        
         String componentName = preferences.getValue(COMPONENT, null);
+        if (StringUtil.isEmpty(componentName)) {
+            componentName = initComponent;
+        }
         if (!StringUtil.isEmpty(componentName)) {
             Component component = ComponentRepository.getInstance().getComponent(componentName);
             String blockname = req.getParameter(BLOCK);
             Block block;
-            if (!StringUtil.isEmpty(blockname)) {
+            if (StringUtil.isEmpty(blockname)) {
                 block = component.getDefaultBlock();
             }
             else {
@@ -133,14 +170,16 @@ public class MMComponentPortlet extends CmscPortlet {
                 blockParameters.set(Parameter.RESPONSE, (javax.servlet.http.HttpServletResponse)res);
 
                 Parameters frameworkParameters = MMBase.getMMBase().getFramework().createFrameworkParameters();
-                frameworkParameters.set(MMBaseFramework.PORTLETREQUEST, req);
-                frameworkParameters.set(MMBaseFramework.PORTLETRESPONSE, res);
+//                frameworkParameters.set(MMBaseFramework.PORTLETREQUEST, req);
+//                frameworkParameters.set(MMBaseFramework.PORTLETRESPONSE, res);
                 frameworkParameters.set("component", componentName);
                 frameworkParameters.set("block", blockname);
                 
                 try {
+                    
                     Renderer renderer = block.getRenderer(Renderer.Type.BODY);
                     req.setAttribute(Renderer.KEY, renderer);
+                    req.setAttribute("com.finalist.cmsc.MMBaseFramework.portal", Boolean.TRUE);
                     renderer.render(blockParameters, frameworkParameters, res.getWriter(), state);
                 }
                 catch (FrameworkException e) {
@@ -158,5 +197,5 @@ public class MMComponentPortlet extends CmscPortlet {
             }
         }
     }
-    
+
 }
