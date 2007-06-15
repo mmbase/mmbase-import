@@ -12,10 +12,12 @@ package org.mmbase.storage.implementation.database;
 import java.sql.*;
 
 import javax.sql.DataSource;
+import java.lang.reflect.*;
 
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBC;
+import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.util.logging.*;
 
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.14 2007-04-09 19:18:41 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.15 2007-06-15 08:59:00 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -72,6 +74,46 @@ public final class GenericDataSource implements DataSource {
         meta = true;
     }
 
+    /**
+     * Interesting trick to make things compile in both java 1.5 and 1.6
+     */
+    public static class ConnectionProxy implements java.lang.reflect.InvocationHandler {
+
+        private final MultiConnection multiCon;
+        
+        public static Connection newInstance(MultiConnection multiConnection) {
+            return (Connection) java.lang.reflect.Proxy.newProxyInstance(multiConnection.getClass().getClassLoader(),
+                                                                         new Class[] {Connection.class, MultiConnection.class},
+                                                                         new ConnectionProxy(multiConnection));
+        }
+
+        private ConnectionProxy(MultiConnection m) {
+            this.multiCon = m;
+        }
+
+        public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
+            Object result;
+            try {
+                
+                Method multiMethod = multiCon.getClass().getMethod(m.getName(), m.getParameterTypes());                
+                result = multiMethod.invoke(multiCon, args);
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
+            } catch (IllegalArgumentException iae) {
+                log.service("Probably called unimplemented method " + m + ", falling back to wrapped object. " + iae.getMessage(), iae);
+                try {
+                    result = m.invoke(multiCon.unwrap(Connection.class), args);
+                } catch (Exception e) {
+                    throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
+            } finally {
+
+            }
+            return result;
+        }
+    }
     // see javax.sql.DataSource
     public Connection getConnection() throws SQLException {
         String url = makeUrl();
@@ -87,7 +129,9 @@ public final class GenericDataSource implements DataSource {
                 return DriverManager.getConnection(url, name, password);
             }
         } else {
-            return jdbc.getConnection(url);
+            // why is this
+            return ConnectionProxy.newInstance(jdbc.getConnection(url));
+
         }
     }
     /**
@@ -107,7 +151,7 @@ public final class GenericDataSource implements DataSource {
         if (meta) {
             return DriverManager.getConnection(url, userName, password);
         } else {
-            return jdbc.getConnection(url, userName, password);
+            return ConnectionProxy.newInstance(jdbc.getConnection(url, userName, password));
         }
     }
 
