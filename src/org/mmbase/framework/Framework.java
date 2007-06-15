@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.23 2007-06-15 09:50:53 michiel Exp $
+ * @version $Id: Framework.java,v 1.24 2007-06-15 10:02:15 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -162,5 +162,12 @@ public interface Framework {
      */
     public String getUserBuilder();
 
+    /**
+     * Called by UrlFilter passing the HttpServletRequest with the 
+     * 'userfriendly' URL to be converted to a technical URL.
+     *
+     * @param  request  HttpServletRequest
+     * @return the converted technical URL
+     */
     public String convertUrl(HttpServletRequest request);
 }
