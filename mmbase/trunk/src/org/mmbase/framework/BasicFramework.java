@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.36 2007-06-15 10:26:16 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.37 2007-06-15 10:46:43 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -93,6 +93,9 @@ public class BasicFramework implements Framework {
     }
 
     public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps) {
+        if (log.isDebugEnabled()) {
+            log.debug("page " + page + "component " + component + " block parameters " + blockParameters + " framework parameters " + frameworkParameters);
+        }
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
         if (component == null) {
             StringBuilder sb = getUrl(page, blockParameters.toMap(), req, escapeAmps);
@@ -106,8 +109,10 @@ public class BasicFramework implements Framework {
             }
             map.putAll(state.getMap(blockParameters.toMap()));
             map.putAll(frameworkParameters.toMap());
+
             StringBuilder sb = getUrl(page, map, req, escapeAmps);
-            return sb;
+            return sb;            
+
         }
     }
 
@@ -124,20 +129,18 @@ public class BasicFramework implements Framework {
      */
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters,
                                      Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
-
+        if (log.isDebugEnabled()) {
+            log.debug("block " + block + "component " + component + " block parameters " + blockParameters + " framework parameters " + frameworkParameters);
+        }
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
-        String page = req.getServletPath();
         req.setAttribute("fw_title", block.getDescription());
         frameworkParameters.set(COMPONENT, component.getName());
         frameworkParameters.set(BLOCK,     block.getName());
         if (blockParameters.containsParameter(Parameter.NODE) && blockParameters.get(Parameter.NODE) != null) {
             frameworkParameters.set(N, blockParameters.get(Parameter.NODE));
-            StringBuilder sb = getUrl(page, component, blockParameters, frameworkParameters, writeamp);
-            return sb;
-        } else {
-            StringBuilder sb = getUrl(page, component, blockParameters, frameworkParameters, writeamp);
-            return sb;
         }
+        StringBuilder sb = getUrl("/mmbase/" + component.getName() + "/" + block.getName(), blockParameters.toMap(), req, writeamp);
+        return sb;
     }
 
     public StringBuilder getActionUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
