@@ -1,140 +1,93 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
-<%@page import="java.util.*" %>
-<mm:cloud rank="administrator" jspvar="cloud">
-  <mm:import externid="builder" required="true" />
-<% String builder = request.getParameter("builder"); %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<html xmlns="http://www.w3.org/TR/xhtml">
-<head>
-<title>Administrate Builder <%=builder%></title>
-<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
-<meta http-equiv="pragma" value="no-cache" />
-<meta http-equiv="expires" value="0" />
-</head>
-<body class="basic" >
-<table summary="builder actions">
-  <mm:log jspvar="log">
+<%@ page import="org.mmbase.module.core.MMBase,org.mmbase.bridge.*,java.util.*"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
+<div
+  class="component ${requestScope.className}"
+  id="${requestScope.componentId}">
+  <mm:import externid="builder" jspvar="builder" />
+  <mm:import externid="path" jspvar="path" />
+  <mm:import externid="cmd" jspvar="cmd" />
 
-<%
+  <h3>Administrate builder ${builder}</h3>
+  <table summary="description of <mm:write referid="builder" />" border="0" cellspacing="0" cellpadding="3">
+  <caption>
+    <mm:function referids="builder" module="mmadmin" name="BUILDERDESCRIPTION" />
+     
+    <mm:present referid="cmd">
+      <mm:functioncontainer module="mmadmin">
+         <mm:nodefunction name="$cmd" referids="builder,path" >
+           <mm:field name="RESULT" escape="p" />
+         </mm:nodefunction>
+       </mm:functioncontainer>
+    </mm:present>      
+    
+    </caption>
+    <tr>
+      <th>Setting</th>
+      <th colspan="2">Value</th>
+      <th class="center" colspan="2">Change</th>
+    </tr>
+    <tr>
+      <td>Class</td>
+      <td colspan="2"><mm:function referids="builder" module="mmadmin" name="BUILDERCLASSFILE" /></td>
+      <td class="center" colspan="2">
+        Not Available
+      </td>
+    </tr>
+    <tr><td colspan="5">&nbsp;</td></tr>
+    <tr>
+      <th>Field</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th class="center">View</th>
+    </tr>
+    <mm:nodelistfunction referids="builder" module="mmadmin" name="FIELDS">
+      <tr>
+        <td><mm:field name="item1" /></td>
+        <td>
+          <mm:import id="field" reset="true"><mm:field name="item2" /></mm:import>
+          <mm:link page="builders-field" referids="builder,field">
+            <a href="${_}">${field}</a>
+          </mm:link>
+        </td>
+        <td><mm:field name="item3" /></td>
+        <td><mm:field name="item4" /></td>
+        <td class="center">
+          <mm:link page="builders-field" referids="builder,field">
+            <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view properties" /></a>
+          </mm:link>
+        </td>
+      </tr>
+    </mm:nodelistfunction>
+  </table>
 
-   Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-
-   String cmd = request.getParameter("cmd");
-   String msg="";
-   if (cmd != null) {
-    try {
-        Map params=new Hashtable();
-        params.put("BUILDER",builder);
-        params.put("CLOUD", cloud);
-
-        if (cmd.equals("BUILDER-REMOVEFIELD")) {
-            params.put("FIELDNAME",request.getParameter("field"));
-            params.put("SURE",request.getParameter("confirm"));
-        } else if (cmd.equals("BUILDER-ADDFIELD")) {
-            params.put("dbname",request.getParameter("dbname"));
-            params.put("mmbasetype",request.getParameter("mmbasetype"));
-            params.put("guitype",request.getParameter("datatype"));
-            params.put("dbstate",request.getParameter("dbstate"));
-            params.put("dbnotnull",request.getParameter("dbnotnull"));
-            params.put("dbkey",request.getParameter("dbkey"));
-            params.put("dbsize",request.getParameter("dbsize"));
-        }
-        mmAdmin.process(cmd,builder,params,request,response);
-        msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
-    } catch (Exception e ) {
-       Throwable ec = e;
-       String message = ec.getMessage();
-       while (message == null && ec.getCause() != null) {
-        ec = ec.getCause();
-        message = ec.getMessage();
-       }
-        msg="<p> Error: "+ message + "</p>";
-        log.error(message, ec);
-    }
-   }
-%>
-<tr>
- <th class="header" colspan="5">Description of <mm:write referid="builder" /></th>
-</tr>
-<tr>
- <td class="multidata" colspan="5">
-   <p><mm:function referids="builder" module="mmadmin" name="BUILDERDESCRIPTION" /></p>
-   <%=msg%>&nbsp;
- </td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th class="header">Setting</th>
-  <th class="header" colspan="2">Value</th>
-  <th class="navigate" colspan="2">Change</th>
-</tr>
-<tr>
- <td class="data">Class</td>
- <td class="data" colspan="2"><mm:function referids="builder" module="mmadmin" name="BUILDERCLASSFILE" /></td>
- <td class="linkdata" colspan="2">
-    Not Available
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th class="header">Field</th>
-  <th class="header">Name</th>
-  <th class="header">Type</th>
-  <th class="header">Size</th>
-  <th class="navigate">More</th>
-</tr>
-<mm:nodelistfunction referids="builder" module="mmadmin" name="FIELDS">
-  <tr>
-    <td class="data"><mm:field name="item1" /></td>
-    <td class="data"><mm:field name="item2" id="field" /></td>
-    <td class="data"><mm:field name="item3" /></td>
-    <td class="data"><mm:field name="item4" /></td>
-    <td class="navigate">
-      <a href="<mm:url referids="builder,field" page="field.jsp" />"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
-    </td>
-  </tr>
-</mm:nodelistfunction>
-<tr>
- <td class="data">add new</td>
- <td class="data">&nbsp;</td>
- <td class="data">&nbsp;</td>
- <td class="data">&nbsp;</td>
- <td class="navigate">
-    <a href="<mm:url referids="builder" page="newfield.jsp" />"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add new" border="0" /></a>
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<form action="<mm:url page="result.jsp" />" method="POST">
-<tr>
-<th class="header">Action</th>
-  <th class="header" colspan="2">Path</th>
-  <th class="navigate" colspan="2">Confirm</th>
-</tr>
-<tr>
- <td class="data">Save</td>
- <td class="data" colspan="2"><input name="path" value="/tmp/<%=builder%>.xml" size="80" /></td>
- <td class="linkdata" colspan="2">
-   <input type="hidden" name="builder" value="<%=builder%>" />
-   <input type="hidden" name="cmd" value="BUILDERSAVE" />
-   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
- </td>
-</tr>
-</form>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr class="footer">
-<td class="navigate"><a href="../builders.jsp"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
-<td class="data" colspan="4">Return to Builder Overview</td>
-</tr>
-</mm:log>
-</table>
-</body></html>
+  <mm:link page="builders-actions" referids="builder">
+    <mm:param name="cmd">BUILDERSAVE</mm:param>
+    <form action="${_}" method="post">
+  </mm:link>
+  <table summary="save <mm:write referid="builder" />" border="0" cellspacing="0" cellpadding="3">
+    <tr>
+      <th>Action</th>
+      <th>Path</th>
+      <th class="center">Confirm</th>
+    </tr>
+    <tr>
+     <td>Save</td>
+     <td><input name="path" value="/tmp/${builder}.xml" size="80" /></td>
+     <td class="center">
+       <input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" />
+     </td>
+    </tr>
+  </table>
+  </form>
+  
+  <p>
+    <mm:link page="builders">
+      <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+    </mm:link>
+    Return to Builder Overview
+  </p>
+  
+</div>
 </mm:cloud>
