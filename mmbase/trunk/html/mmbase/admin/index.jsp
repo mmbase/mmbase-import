@@ -41,14 +41,14 @@
   <mm:param name="id">mmbase</mm:param>
   <mm:listfunction set="components" name="blockClassification">
     <mm:stringlist referid="_.subTypes" id="cat">
-      <mm:link page="/mmbase/admin/index.jsp" id="link"><mm:param name="category">${cat.name}</mm:param></mm:link>
-      <li><a <mm:compare referid="category" value="${cat.name}">class="selected"</mm:compare>href="${link}">${cat.name}</a>
+      <mm:link page="/mmbase/${cat.name}" id="link" />
+      <li><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${cat.name}</a>
 
       <mm:compare referid="category" value="${cat.name}">
         
         <c:forEach var="subcat" items="${cat.blocks}">
           <mm:first><ul></mm:first>
-          <mm:link page="${subcat.name}" component="${subcat.component.name}">
+          <mm:link page="/mmbase/${category}/${subcat.component.name}/${subcat.name}">
             <li><a title="${subcat.description}" href="${_}">${subcat.name}</a></li>
           </mm:link>
           <mm:last></ul></mm:last>
