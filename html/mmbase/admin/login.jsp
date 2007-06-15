@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html" session="false" 
-%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+<%@ page language="java" contentType="text/html" session="false" import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.ContextProvider"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -20,6 +19,15 @@
 <mm:import externid="username" from="parameters" />
 <mm:import externid="reason">please</mm:import>
 <mm:import externid="referrer">index.jsp</mm:import>
+<mm:import externid="currentType" jspvar="currentType">name/password</mm:import>
+
+
+<%
+  AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
+  String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
+  //String currentType = "name/password";
+%>
+
 
 <div id="wrap">
 <form id="loginbox" method="post" action="<mm:url page="$referrer" />">
@@ -28,19 +36,28 @@
 </mm:compare>
 <fieldset>
 <input type="hidden" name="command" value="login" />
-<input type="hidden" name="authenticate" value="name/password" />
+<%-- input type="hidden" name="authenticate" value="name/password" / --%>
   <div class="row">
-	<label><img src="<mm:url page="/mmbase/style/logo.png" />" alt="MMBase logo" width="40" height="50" /></label>
-	<h2>MMBase Administration</h2>
-	<h3>Please login</h3>
+    <label><img src="<mm:url page="/mmbase/style/logo.png" />" alt="MMBase logo" width="40" height="50" /></label>
+    <h2>MMBase Administration</h2>
+    <h3>Please login</h3>
   </div>
   <div class="row">
-	<label for="username">Name</label>
-	<input type="text" id="username" name="username" />
+    <label for="username">Name</label>
+    <input type="text" id="username" name="username" />
   </div>
   <div class="row">
-	<label for="password">Password</label>
-	<input type="password" id="password" name="password" />
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" />
+  </div>
+  <div class="row">
+    <label for="authenticate">Type</label>
+    <select name="authenticate" id="authenticate">
+      <% for (int i = 0 ; i < authenticationTypes.length; i++) { %>
+      <option value="<%= authenticationTypes[i] %>" <%= currentType.equals(authenticationTypes[i])? " selected='selected'" : ""%>><%= authenticationTypes[i] %></option>
+      <% } %>
+      <input type="hidden" name="referrer" value="<mm:write referid="referrer" />" />
+    </select>
   </div>
   <div class="lastrow">
     <input type="submit" name="Login" value="login" />

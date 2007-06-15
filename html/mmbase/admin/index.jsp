@@ -29,7 +29,7 @@
       <h1>MMBase</h1>
       <p>
         You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
-        <a href="logout.jsp">logout</a>
+        <mm:link page="/mmbase/admin/logout.jsp"><a href="${_}">logout</a></mm:link>
       </p>
     </div>
   </div>
