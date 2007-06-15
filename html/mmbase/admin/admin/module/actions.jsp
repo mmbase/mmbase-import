@@ -16,7 +16,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
     String msg="";
 %>
 
-<mm:present referid="cmd">cmd: <mm:write referid="cmd" />
+<mm:present referid="cmd">
   <mm:compare referid="cmd" value="MODULE-SETPROPERTY">
     <%
     if (cmd != null) {
