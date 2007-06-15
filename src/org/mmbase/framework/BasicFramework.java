@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.34 2007-04-16 08:33:09 nklasens Exp $
+ * @version $Id: BasicFramework.java,v 1.35 2007-06-15 09:50:53 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -223,6 +223,10 @@ public class BasicFramework implements Framework {
 
     public String getUserBuilder() {
         return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
+    }
+
+    public String convertUrl(HttpServletRequest request) {
+        return request.getRequestURL().toString();
     }
 
     /**

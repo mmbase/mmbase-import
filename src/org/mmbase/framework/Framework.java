@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
+import javax.servlet.http.*;
 import java.io.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.Parameters;
@@ -18,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.22 2007-03-30 20:46:16 michiel Exp $
+ * @version $Id: Framework.java,v 1.23 2007-06-15 09:50:53 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -53,7 +54,7 @@ public interface Framework {
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean escapeAmps);
 
 
-    // YOu could argue that only the block itself may create a link to its action
+    // You could argue that only the block itself may create a link to its action
     //public StringBuilder getActionUrl(Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
 
     // but we don't do that.
@@ -160,4 +161,6 @@ public interface Framework {
      * the nodes from the getUserNode() method.
      */
     public String getUserBuilder();
+
+    public String convertUrl(HttpServletRequest request);
 }
