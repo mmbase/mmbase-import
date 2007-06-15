@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.35 2007-06-15 09:50:53 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.36 2007-06-15 10:26:16 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -225,8 +225,41 @@ public class BasicFramework implements Framework {
         return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
     }
 
+    protected String noConvert(HttpServletRequest request) {
+        String query = request.getQueryString();
+        return request.getServletPath() + (query != null ? query : "");
+    }
+
+    /**
+     * Basic Framework only filters URL under /mmbase
+     */
     public String convertUrl(HttpServletRequest request) {
-        return request.getRequestURL().toString();
+        String sp = request.getServletPath();
+        if (sp.startsWith("/mmbase")) {
+            String[] path = sp.split("/");
+            log.debug("Going to filter " + Arrays.asList(path));           
+            if (path.length == 4) { 
+                assert path[0].equals("");
+                assert path[1].equals("mmbase");
+                Component comp = ComponentRepository.getInstance().getComponent(path[2]);
+                if (comp == null) {
+                    log.debug("No such component, ignoring this too");
+                    return noConvert(request);
+                }
+                Block block = comp.getBlock(path[3]);
+
+                log.debug("Will try to display " + block);
+                if (block == null) {
+                    throw new RuntimeException("No block " + path[3] + " in component " + path[2]);
+                }
+                return "/mmbase/admin/index.jsp?component=" + comp.getName() + "&block=" + block.getName();
+            } else {
+                log.debug("path length " + path.length);
+                return noConvert(request);
+            }
+        } else {            
+            return noConvert(request);
+        }
     }
 
     /**
