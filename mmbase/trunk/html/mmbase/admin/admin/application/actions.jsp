@@ -13,10 +13,6 @@
 <table summary="results" border="0" cellspacing="0" cellpadding="3">
   <caption>
     Results of your ${cmd} action on application <mm:write referid="application" />.
-    
-    cmd: <mm:write referid="cmd" jspvar="cmd" />
-    path: <mm:write referid="path" />
-    
   </caption>
   <tr>
     <th colspan="2">Results</th>
@@ -26,11 +22,7 @@
 		<mm:nodefunction module="mmadmin" name="LOAD" referids="application">
 		  <mm:field name="RESULT" escape="p" />
 		</mm:nodefunction>      
-
-<mm:import externid="app" jspvar="app" />
-
-
-
+		<mm:import externid="app" jspvar="app" />
 <%
    // String cmd = request.getParameter("cmd");
    Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -46,15 +38,13 @@
       while (t.getCause() != null) {
       t = t.getCause();
       }
-      msg="<p style=\"white-space:pre;\"> Error: "+ t + "</p>";
+      msg="<p> Error: "+ t + "</p>";
       } catch (Throwable e ) {
-      msg="<p style=\"white-space:pre;\"> Error: " + e + "</p>";
+      msg="<p> Error: " + e + "</p>";
       }
 
    }
 %>
-
-
 	  </mm:compare>
 	  <mm:compare referid="cmd" value="SAVE">
 		<mm:nodefunction module="mmadmin" name="SAVE" referids="application,path">
@@ -62,14 +52,14 @@
 		</mm:nodefunction>      
 	  </mm:compare>
     </td>
-  </tr><tr>
-    <td>
-      <mm:link page="applications" component="core">
-        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
-      </mm:link>
-    </td>
-    <td>Return to Applications Administration</td>
   </tr>
   </table>
+  
+  <p>
+	<mm:link page="applications">
+	  <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+	</mm:link>
+	Return to Applications Administration
+  </p>
 </div>
 </mm:cloud>

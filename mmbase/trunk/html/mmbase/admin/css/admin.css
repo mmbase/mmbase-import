@@ -21,7 +21,12 @@ h1, h2, h3, h4, h5, h6
     color: #002828;
 }
 
-img { border: 0; }
+img
+{
+	border: 0;
+	vertical-align: bottom;
+	margin-right: 4px;
+}
 
 #outerheader
 {
@@ -42,10 +47,7 @@ img { border: 0; }
     text-align: right;
 }
 
-#logo img
-{
-    margin-top: 2px;
-}
+#logo img { margin: 2px 0 0 0; }
 
 #head
 {

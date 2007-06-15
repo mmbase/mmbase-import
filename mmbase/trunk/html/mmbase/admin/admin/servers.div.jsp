@@ -17,7 +17,7 @@
       <th>Last Seen</th>
       <th>Host</th>
       <th>OS</th>
-      <th>Manage</th>
+      <th class="center">View</th>
     </tr>
   <mm:listnodes type="mmservers" >
     <tr>
@@ -37,7 +37,7 @@
       <td><mm:field name="atime"><mm:time format=":MEDIUM.MEDIUM" /></mm:field></td>
       <td><mm:field name="host" /></td>
       <td><mm:field name="os" /></td>
-      <td class="view">
+      <td class="center">
         <mm:field name="name">
           <mm:compare value="<%= MMBase.getMMBase().getMachineName() %>">
             <mm:link page="servers" referids="_@server">
@@ -76,6 +76,12 @@
       </td>
     </tr>   
   </table>
+  <p>
+	<mm:link page="servers">
+	  <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+	</mm:link>
+	Return to Servers Overview
+  </p>
 </mm:present>
 
 </div>
