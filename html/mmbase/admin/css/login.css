@@ -16,23 +16,23 @@
 #loginbox .lastrow
 {
 	clear: both;
-	padding: 1.2em 0.8em 0 5.3em;
+	padding: 1.2em 0.8em 0 6.3em;
 }
 
 #loginbox label
 {
 	float: left;
-	width: 5em;
+	width: 6em;
 	text-align: right;
 	padding-right: 0.3em;
 	font-weight: bold;
 }
 
-#loginbox label img { margin-right: 12px; }
+#loginbox label img { margin-right: 22px; }
 
 #loginbox fieldset
 {
-	width: 20em;
+	width: 22em;
 	border-color: #CCC;
 	border-width: 1px;
 	border-style: solid;
