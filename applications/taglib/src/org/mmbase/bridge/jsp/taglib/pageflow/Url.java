@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.22 2007-06-07 12:03:03 michiel Exp $;
+ * @version $Id: Url.java,v 1.23 2007-06-15 12:10:36 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -171,7 +171,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             tag.fillStandardParameters(blockParams);
             blockParams.setAutoCasting(true);
             for (Map.Entry<String, ?> entry : params) {
-                blockParams.set(entry.getKey(), entry.getValue());
+                if (frameworkParams.containsParameter(entry.getKey())) {
+                    frameworkParams.set(entry.getKey(), entry.getValue());
+                } else {
+                    blockParams.set(entry.getKey(), entry.getValue());
+                }
             }
             if (action) {
                 result = framework.getActionUrl(block, component, blockParams, frameworkParams, writeamp).toString();
@@ -183,7 +187,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             }
         } else {
             log.debug("not a block");
-            // no component, this is a normal 'link'. no compoments, so no block can be guessed.
+            // no component, this is a normal 'link'. no components, so no block can be guessed.
             if (internal) {
                 log.debug("Creating internal url link to page: " + page);
                 result = framework.getInternalUrl(page, (Renderer)null, component, new Parameters(params), frameworkParams).toString();
