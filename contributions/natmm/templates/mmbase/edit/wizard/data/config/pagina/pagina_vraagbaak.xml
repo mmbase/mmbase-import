@@ -57,6 +57,9 @@
          <relation destination="terms" role="related">
             <object />
          </relation>         
+         <relation destination="vraagbaak_keywords" role="related">
+            <object />
+         </relation>    
       </object>
     </relation>
    </action>
