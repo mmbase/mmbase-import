@@ -18,7 +18,7 @@
 
   <jsp:directive.attribute name="buttons"  /><!-- directory containing images for buttons -->
 
-  <jsp:directive.attribute name="cols" required="true"  /><!-- number of collumns to show -->
+  <jsp:directive.attribute name="cols" required="true"  /><!-- number of columns to show -->
   <jsp:directive.attribute name="rows" required="true"  /><!-- number of rows to show -->
                   <!-- total number of months shown is cols x rows -->
   
@@ -44,11 +44,11 @@
       
       <c:when test="${empty layout or layout eq 'horizontal'}">
 
-        <!-- produced collumns when 'horizontal': -->
+        <!-- produced columns when 'horizontal': -->
         <col class="weeknr month" /> <!-- 0 - 5 -->
         
         <c:forEach begin="1" end="${cols}">
-          <!-- one week is presented by 9 collums, monthname, the week number followed by one column per day -->
+          <!-- one week is presented by 9 colums, monthname, the week number followed by one column per day -->
           <col class="monthname" />
           <col class="weeknr year" />
           <jsp:scriptlet>
