@@ -261,11 +261,9 @@ Applications build file
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <!--
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    -->
     <ant dir="oscache-cache"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
