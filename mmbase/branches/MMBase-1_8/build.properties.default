@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.26.2.1 2007-06-12 12:10:10 michiel Exp $
+# $Id: build.properties.default,v 1.26.2.2 2007-06-18 20:12:53 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -146,7 +146,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 backport-util-concurrent.version=backport-util-concurrent-2.1
 backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
 backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
-backport-util-concurrent.loc=http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-2.1/${backport-util-concurrent.file}
+backport-util-concurrent.loc=http://dcl.mathcs.emory.edu/util/backport-util-concurrent/dist/backport-util-concurrent-2.1/${backport-util-concurrent.file}
 backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/backport-util-concurrent.jar
 
 
