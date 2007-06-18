@@ -1,4 +1,0 @@
-# if build-files need the mmbase-version they should use this property file for that.
-
-distro.version=1.9.0
-distro=MMBase ${distro.version}

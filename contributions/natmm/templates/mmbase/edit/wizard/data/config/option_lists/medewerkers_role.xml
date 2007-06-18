@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="medewerkers_role">
-   <option id="1">aanspreekpunt (is op de hoogte van details tbv ledenservice en derden)</option>
-   <option id="2">excursieleider</option>
-   <option id="99">overig</option>
-</optionlist>
