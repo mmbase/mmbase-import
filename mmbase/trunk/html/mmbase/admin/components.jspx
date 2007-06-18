@@ -21,6 +21,7 @@
               <mm:link>
                 <mm:param name="component">${comp.name}</mm:param>
                 <a href="${_}" class="navigate">${comp.name}</a>
+                (Version: ${comp.version}).
               </mm:link>
             </li>
           </mm:listfunction>
