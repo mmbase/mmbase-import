@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.106 2007-03-30 14:40:55 johannes Exp $
+ * @version $Id: UrlTag.java,v 1.107 2007-06-18 17:26:51 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -42,10 +42,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     private static Boolean makeRelative       = null;
     protected Attribute  referids             = Attribute.NULL;
     protected List<Map.Entry<String, Object>> extraParameters  = null;
+    protected List<Map.Entry<String, Object>> frameworkParameters  = null;
     protected UrlParameters parameters;
     protected Attribute  page                 = Attribute.NULL;
     protected Attribute  block                = Attribute.NULL;
-    protected Attribute  component            = Attribute.NULL;
     protected Attribute  escapeAmps           = Attribute.NULL;
     protected Attribute  absolute             = Attribute.NULL;
     protected Attribute  encode               = Attribute.NULL;
@@ -61,13 +61,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public void setBlock(String b) throws JspTagException {
         block = getAttribute(b);
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public void setComponent(String p) throws JspTagException {
-        component = getAttribute(p);
     }
 
     public void setEscapeamps(String e) throws JspTagException {
@@ -116,34 +109,61 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
     }
 
-    public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
+    /**
+     * @since MMBase-1.9
+     */
+    public void addFrameworkParameter(String key, Object value) throws JspTagException {
+        frameworkParameters.add(new Entry<String, Object>(key, value));
+        if (url != null) {
+            url.invalidate();
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("adding parameter " + key + "/" + value + "--> "  + parameters);
+        }
+    }
+
+    protected void initTag(boolean internal) throws JspTagException {
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
+        frameworkParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
         if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+            if (page != Attribute.NULL) {
+                throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+            }
 
             Object o = getObject(getReferid());
             if (o instanceof Url) {
                 Url u = (Url) getObject(getReferid());
                 extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, false);
+                frameworkParameters.addAll(u.frameworkParams);
+                url = new Url(this, u, frameworkParameters, parameters, internal);
             } else {
-                url = new Url(this, Casting.toString(o), getComponent(), parameters, false);
+                url = new Url(this, 
+                              getPage(Casting.toString(o)), 
+                              frameworkParameters,
+                              parameters, internal);
             }
         } else {
-            url = new Url(this, getPage(), getComponent(), parameters, false);
+            url = new Url(this, getPage(getPage()), frameworkParameters, parameters, internal);
         }
 
         if (getId() != null) {
             parameters.getWrapped(); // dereference this
             getContextProvider().getContextContainer().register(getId(), url); 
         }
+        
+    }
+    
 
+    public int doStartTag() throws JspTagException {
+        initTag(false);
         return EVAL_BODY_BUFFERED;
     }
 
+    protected String getPage(String p) throws JspTagException {
+        return p;
+    }
     /**
      * Return the page.
      */
@@ -194,16 +214,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     /**
      * Returns the component assiociated with this url. This is either the 'current' component, the
-     * explicit component specified with the 'component' attribute, or <code>null</code>
+     * or <code>null</code>
      * @since MMBase-1.9
      */
     protected Component getComponent() throws JspTagException {
-        if (component == Attribute.NULL) {
-            return Url.getComponent(this);
-        } else {
-            ComponentRepository rep = ComponentRepository.getInstance();
-            return rep.getComponent(component.getString(this));
-        }
+        return Url.getComponent(this);
     }
 
     /**
@@ -242,6 +257,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         doAfterBodySetValue();
         helper.doEndTag();
         extraParameters = null;
+        frameworkParameters = null;
         parameters = null;
         return super.doEndTag();
     }

@@ -31,61 +31,43 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.23 2007-06-07 13:23:24 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.24 2007-06-18 17:26:51 michiel Exp $
  */
 
 public class LeafFileTag extends UrlTag {
 
     private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class);
-    protected Attribute  objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
 
+
+    protected Attribute  objectList = Attribute.NULL;
+
+    public void setObjectlist(String p) throws JspTagException {
+        objectList = getAttribute(p);
+    }
     protected Attribute notFound        = Attribute.NULL;
 
     public void setNotfound(String n) throws JspTagException {
         notFound = getAttribute(n);
     }
     
-    public int doStartTag() throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("starttag " + getId());
-            log.debug("leaffile starttag: " + getPage());
-        }
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
-        th.setCloud(getCloudVar());
-        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
-        
+    protected String getPage(String p) throws JspTagException {
         try {
-            if (referid != Attribute.NULL) {
-                if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-                
-                Object o = getObject(getReferid());
-                if (o instanceof Url) {
-                    Url u = (Url) getObject(getReferid());
-                    extraParameters.addAll(u.params);
-                    url = new Url(this, u, parameters, false);
-                } else {
-                    url = new Url(this,  th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
-                }
-            } else {
-                url = new Url(this, th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, false);
-            }
-        
-        } catch ( java.io.IOException ioe) {
+            return th.findLeafFile(p, objectList.getValue(this).toString(),
+                                   pageContext.getSession());
+        } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
+    }
 
+    public void initTag() throws JspTagException {
+        super.initTag(false);
+        th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         url.setLegacy();
         if (log.isDebugEnabled()) {
             log.debug("leaffile end of starttag: " + url.toString());
         }
-        return EVAL_BODY_BUFFERED;
     }
 
     public void doFinally() {
@@ -93,9 +75,6 @@ public class LeafFileTag extends UrlTag {
         super.doFinally();
     }
 
-    public void setObjectlist(String p) throws JspTagException {
-        objectList = getAttribute(p);
-    }
 
     // override to cancel
     protected boolean doMakeRelative() {

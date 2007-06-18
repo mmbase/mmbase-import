@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.22 2007-06-07 13:23:24 michiel Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.23 2007-06-18 17:26:51 michiel Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
@@ -39,57 +39,35 @@ public class LeafIncludeTag extends IncludeTag {
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
-    public int doStartTag() throws JspTagException {
-        log.debug("starttag " + getId());
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
-        th.setCloud(getCloudVar());
-        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
-        
+
+    public void setObjectlist(String p) throws JspTagException {
+        objectList = getAttribute(p);
+    }
+
+
+    protected String getPage(String p) throws JspTagException {
         try {
-            if (referid != Attribute.NULL) {
-                if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-                
-                Object o = getObject(getReferid());
-                if (o instanceof Url) {
-                    Url u = (Url) getObject(getReferid());
-                    extraParameters.addAll(u.params);
-                    url = new Url(this, u, parameters, true);
-                } else {
-                    url = new Url(this, th.findLeafFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
-                }
-            } else {
-                String leafPage = th.findLeafFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
-                if (log.isDebugEnabled()) {
-                    log.debug("Found " + leafPage + " from " + getPage());
-                }
-                if ("".equals(leafPage)) {
-                    throw new TaglibException("Could not find leaf-page '" + getPage() + "'");
-                }
-                url = new Url(this, leafPage , getComponent(), parameters, true);
-            }
+            return th.findLeafFile(p, objectList.getValue(this).toString(),
+                                   pageContext.getSession());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
-
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
-
-        url.setLegacy();
-        return EVAL_BODY_BUFFERED;
     }
+    
+    protected void initTag(boolean internal) throws JspTagException {
+        super.initTag(internal);
+        th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        url.setLegacy();
+    }
+
 
     public void doFinally() {
         th.doFinally();
         super.doFinally();
     }
 
-    public void setObjectlist(String p) throws JspTagException {
-        objectList = getAttribute(p);
-    }
+
 
     // override to cancel
     protected boolean doMakeRelative() {

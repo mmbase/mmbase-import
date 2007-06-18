@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.24 2007-06-15 12:33:17 michiel Exp $;
+ * @version $Id: Url.java,v 1.25 2007-06-18 17:26:51 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -41,8 +41,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     private final ContextReferrerTag tag;
     private final String page;
-    private final Component component;
-    protected final List<Map.Entry<String, Object>> params;
+    //private final Component component;
+    protected final Collection<Map.Entry<String, Object>> params;
+    protected final Collection<Map.Entry<String, Object>> frameworkParams;
     private final String abs;
     private final boolean encodeUrl;
     private final boolean escapeAmps;
@@ -55,25 +56,33 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     private boolean legacy = false;
 
-    public Url(UrlTag t, String p, Component comp, List<Map.Entry<String, Object>> pars, boolean intern) throws JspTagException {
+    public Url(UrlTag t, 
+               String p, 
+               Collection<Map.Entry<String, Object>> framework, 
+               Collection<Map.Entry<String, Object>> pars, 
+               boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
         encodeUrl = t.encode();
         escapeAmps = t.escapeAmps();
         page = p;
         params = pars;
-        component = comp;
+        frameworkParams = framework;
         internal = intern;
     }
     
-    public Url(UrlTag t, Url u, List<Map.Entry<String, Object>> pars, boolean intern) throws JspTagException {
+    public Url(UrlTag t, 
+               Url u, 
+               Collection<Map.Entry<String, Object>> framework, 
+               Collection<Map.Entry<String, Object>> pars, 
+               boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
         encodeUrl = t.encode();
         escapeAmps = t.escapeAmps();
         page = u.page;
-        component = u.component;
         params = pars;
+        frameworkParams = framework;
         internal = intern;
     }
 
@@ -84,7 +93,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         escapeAmps = true;
         page = p;
         params = new ArrayList<Map.Entry<String, Object>>();
-        component = comp;
+        frameworkParams = null;
         internal = false; 
     }
 
@@ -111,7 +120,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         for (Map.Entry<String, ?> entry : params) {
             m.put(entry.getKey(), entry.getValue());
         }
-        String res = BasicFramework.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        String res = BasicFramework.getUrl(page, m.entrySet(), (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }
@@ -130,72 +139,30 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
         // TODO we should not use core.
         Framework framework = MMBase.getMMBase().getFramework();
-
         // perhaps this?
         //Framework is of course always only relevant for local cloud context.
         //Framework framework = LocalContext.getCloudContext().getFramework();
 
-        Parameters frameworkParams = framework.createFrameworkParameters();
-        tag.fillStandardParameters(frameworkParams);
-        Parameters blockParams;
-        Block block;
-        if (component != null) {
-            if ("".equals(page) || page == null) {
-                HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
-                Renderer currentRenderer = (Renderer) req.getAttribute(Renderer.KEY);
-                if (currentRenderer != null) {
-                    block = currentRenderer.getBlock();
-                } else {
-                    block = component.getDefaultBlock();
-                }
-                if (log.isDebugEnabled()) {
-                    log.debug("No explicit page, guessing current block " + block + " using " + currentRenderer);
-                }
-            } else {
-                block = component.getBlock(page);
-            }
-            if (log.isDebugEnabled()) {
-                if (block == null) {
-                    log.debug("There is no block " + page + " in component " + component);
-                    // could give error here if component was explicit?
-                } else {
-                    log.debug("found block " + block);
-                }
-            }
-        } else {
-            log.debug("No component");
-            block = null;
-        }
-        if (block != null) {
-            blockParams = block.createParameters();
-            tag.fillStandardParameters(blockParams);
-            blockParams.setAutoCasting(true);
-            for (Map.Entry<String, ?> entry : params) {
-                //if (frameworkParams.containsParameter(entry.getKey())) {
-                //frameworkParams.set(entry.getKey(), entry.getValue());
-                //} else {
-                    blockParams.set(entry.getKey(), entry.getValue());
-                    //}
-            }
-            if (action) {
-                result = framework.getActionUrl(block, component, blockParams, frameworkParams, writeamp).toString();
-            } else {
-                result = framework.getBlockUrl(block, component, blockParams, frameworkParams, Renderer.WindowState.NORMAL, writeamp).toString();
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("using " + blockParams);
-            }
-        } else {
-            log.debug("not a block");
-            // no component, this is a normal 'link'. no components, so no block can be guessed.
-            if (internal) {
-                log.debug("Creating internal url link to page: " + page);
-                result = framework.getInternalUrl(page, (Renderer)null, component, new Parameters(params), frameworkParams).toString();
-            } else {
-                log.debug("Creating normal url link to page: " + page);
-                result = framework.getUrl(page, component, new Parameters(params), frameworkParams, writeamp).toString();
+
+
+        Parameters frameworkParameters = framework.createParameters();
+        tag.fillStandardParameters(frameworkParameters);
+        if (frameworkParams != null) {
+            for (Map.Entry<String, Object> entry : frameworkParams) {
+                frameworkParameters.set(entry.getKey(), entry.getValue());
             }
         }
+        
+        if (internal) {
+            log.debug("Creating internal url link to page: " + page);
+            //result = framework.getInternalUrl(page, new Parameters(params),
+            //frameworkParameters).toString();
+            result = null;
+        } else {
+            log.debug("Creating normal url link to page: " + page);
+            result = framework.getUrl(page, params, frameworkParameters, writeamp).toString();
+        }
+
         if (writeamp) {
             cacheAmp = result;
         } else {
