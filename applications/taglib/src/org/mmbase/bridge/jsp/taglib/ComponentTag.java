@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.14 2007-06-15 09:14:50 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.15 2007-06-18 17:29:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
@@ -34,6 +34,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
     private Attribute windowState  = Attribute.NULL;
 
     protected final List<Map.Entry<String, Object>> extraParameters = new ArrayList<Map.Entry<String, Object>>();
+    protected final List<Map.Entry<String, Object>> extraFrameworkParameters = new ArrayList<Map.Entry<String, Object>>();
 
     /**
      */
@@ -59,6 +60,9 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             log.debug("adding parameter " + key + "/" + value);
         }
         extraParameters.add(new Entry<String, Object>(key, value));
+    }
+    public void addFrameworkParameter(String key, Object value) {
+        throw new UnsupportedOperationException("Cloudtag does not receive framework parameters");
     }
 
     private boolean used = false;
@@ -88,9 +92,12 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             }
             Framework fw = MMBase.getMMBase().getFramework();
             if (fw == null) throw new JspTagException("No MMBase Framework found");
-            Parameters frameworkParams = fw.createFrameworkParameters();
+            Parameters frameworkParams = fw.createParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
+            for (Map.Entry<String, Object> entry : extraFrameworkParameters) {
+                frameworkParams.set(entry.getKey(), entry.getValue());
+            }
             fw.render(renderer, params, frameworkParams, w, windowStateValue);
             used = true;
         } catch (FrameworkException fe) {
