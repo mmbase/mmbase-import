@@ -190,7 +190,7 @@
          classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
-    <body jsp="/mmbase/admin/components.jspx">
+    <body jsp="components.jspx">
       <param name="component" type="String" />
       <param name="view" type="String" /> <!-- hmm, should not be done like this -->
     </body>
@@ -200,7 +200,7 @@
          classification="mmbase.components"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
-    <body jsp="/mmbase/admin/components/tree.jspx">
+    <body jsp="components/tree.jspx">
     </body>
   </block>
 
