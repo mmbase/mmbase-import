@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.22 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: EditTag.java,v 1.23 2007-06-18 17:29:21 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -166,6 +166,9 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("adding parameter " + key + "/" + value);
         editor.getParameters().set(key, value);
+    }
+    public void addFrameworkParameter(String key, Object value) {
+        throw new UnsupportedOperationException("Edit-tag does not receive framework parameters");
     }
 
     /**

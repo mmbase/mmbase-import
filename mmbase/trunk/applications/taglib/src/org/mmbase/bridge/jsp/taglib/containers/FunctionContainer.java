@@ -10,18 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.util.Entry;
 
 /**
  * Function Container can be used around Function (-like) Tags
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.8 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: FunctionContainer.java,v 1.9 2007-06-18 17:29:21 michiel Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier, FunctionContainerOrNodeProvider {
 
@@ -31,7 +31,7 @@ public interface FunctionContainer extends ParamHandler, TagIdentifier, Function
      * @see ParamHandler#addParameter
      * @return List of parameters (in order of setting if there was no definition)
      */
-    List<Entry> getParameters();
+    List<Map.Entry<String, Object>> getParameters();
 
 
     /**

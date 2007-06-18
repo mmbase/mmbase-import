@@ -23,7 +23,7 @@ import org.mmbase.util.functions.Parameters;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.11 2006-12-09 15:16:21 johannes Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.12 2007-06-18 17:29:20 michiel Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -84,7 +84,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             break;
         case TYPE_USERNODE:
             Framework fw = org.mmbase.module.core.MMBase.getMMBase().getFramework();
-            Parameters frameworkParams = fw.createFrameworkParameters();
+            Parameters frameworkParams = fw.createParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
             show = fw.getUserNode(frameworkParams);

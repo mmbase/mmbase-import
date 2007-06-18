@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.73 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: FormatterTag.java,v 1.74 2007-06-18 17:29:21 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -218,6 +218,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             log.debug("adding parameter " + key + "/" + value);
         }
         extraParameters.add(new Entry<String, Object>(key, value));
+    }
+    public void addFrameworkParameter(String key, Object value) {
+        throw new UnsupportedOperationException("Formatter-tag does not receive framework parameters");
     }
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
