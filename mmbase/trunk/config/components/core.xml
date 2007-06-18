@@ -15,7 +15,7 @@
          classification="mmbase.about"
          mimetype="text/html">
     <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
-    <body jsp="/mmbase/admin/about/about.div.jsp" />
+    <body jsp="about.div.jsp" />
   </block>
 
   <block name="license" 
