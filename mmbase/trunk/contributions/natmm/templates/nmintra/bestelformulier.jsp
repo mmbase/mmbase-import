@@ -115,7 +115,12 @@ if(twoColumns) {
                    %>
                   </td>
                   
-                  <td bgcolor="#dddddd"><%= item.getKaartType()%> - <%= item.getKaartTypeDetail() %></td>
+                  <td bgcolor="#dddddd"><%= item.getKaartType()%>
+                  	<% if (!item.getKaartTypeDetail().equals("")) {
+                  	out.print(" - " + item.getKaartTypeDetail());
+                  	}  
+                  	%>
+                  </td>
                   <td bgcolor="#dddddd"><%= item.getSchaalOfFormaat()%></td>
                   <td bgcolor="#dddddd"><%= item.getAantal()%></td>
                   <td bgcolor="#dddddd"><%= item.getGevouwenOfOpgerold()%></td>
