@@ -21,7 +21,7 @@
               <mm:link>
                 <mm:param name="component">${comp.name}</mm:param>
                 <a href="${_}" class="navigate">${comp.name}</a>
-                (Version: ${comp.version}).
+                <jsp:text> (version: ${comp.version}).</jsp:text>
               </mm:link>
             </li>
           </mm:listfunction>
@@ -33,6 +33,7 @@
       <mm:present referid="component">
         <h1>'${component}'</h1>
         <mm:function set="components" name="get" referids="component@name" id="c">
+          <p>Version: ${c.version}</p>
           <p>Defined in ${c.uri}</p>
           <p>Blocks in this component</p>
           <ul>
