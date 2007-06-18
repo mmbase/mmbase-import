@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.18 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: Vwmtasks.java,v 1.19 2007-06-18 15:18:05 michiel Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -132,9 +132,9 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         log.info("Thread started, entering while loop");
 
         while (kicker!=null) {
-            log.service("Periodically sleep "+SLEEP_TIME
-                +" seconds and add all new vwmtasks that were created since last check ("
-                +DateSupport.date2string(lastchecked)+").");
+            log.debug("Periodically sleep " + SLEEP_TIME
+                      + " seconds and add all new vwmtasks that were created since last check ("
+                      + DateSupport.date2string(lastchecked) + ").");
             try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){return;}
             getVwmTasks();
         }
@@ -220,18 +220,20 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         int checktime = lastchecked;
         lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
-        log.service("Search vwmtasks "+"WHERE changedtime>"+checktime
-                +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
-        Enumeration e = search("WHERE changedtime>"+checktime
-                +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
+        log.debug("Search vwmtasks  WHERE changedtime>" + checktime
+                  + " AND wantedcpu='" + getMachineName() + "'"
+                  + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
+        Enumeration e = search("WHERE changedtime>" + checktime
+                               + " AND wantedcpu='" + getMachineName() + "'"
+                               + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
 
         for (MMObjectNode node=null; e.hasMoreElements();) {
             node = (MMObjectNode)e.nextElement();
             vwm  = node.getStringValue("vwm");
             task = node.getStringValue("task");
-            log.debug("Adding "+vwm+" tasknode "+node);
+            if (log.isTraceEnabled()) {
+                log.trace("Adding " + vwm + " tasknode " + node);
+            }
             vwms.putTask(vwm,node);
         }
     }
