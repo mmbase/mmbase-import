@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.9 2006-12-15 14:43:27 michiel Exp $
+ * @version $Id: Component.java,v 1.10 2007-06-18 16:22:50 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -30,6 +30,11 @@ public interface Component {
      * The name of the bundle to use for messages
      */
     ResourceBundle getBundle();
+
+    /**
+     * A component can have a version number.
+     */
+    int getVersion();
 
     /**
      * The description can contain further information about the component, mainly to be displayed

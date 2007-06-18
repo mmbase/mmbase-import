@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.26 2007-04-13 10:10:51 andre Exp $
+ * @version $Id: BasicComponent.java,v 1.27 2007-06-18 16:22:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -32,6 +32,8 @@ public class BasicComponent implements Component {
     private final Map<String, Block> blocks = new HashMap<String, Block>();
     private Block defaultBlock = null;
     private String uri;
+    private int version = 1;
+
 
     public BasicComponent(String name) {
         this.name = name;
@@ -44,6 +46,10 @@ public class BasicComponent implements Component {
     public String getUri() {
         return uri;
     }
+    public int getVersion() {
+        return version;
+    }
+    
 
     public LocalizedString getDescription() {
         return description;
@@ -53,6 +59,8 @@ public class BasicComponent implements Component {
         uri = el.getOwnerDocument().getDocumentURI();
         log.debug("Configuring " + this);
         description.fillFromXml("description", el);
+
+        version = Integer.parseInt(el.getAttribute("version"));
 
         NodeList bundleElements = el.getElementsByTagName("bundle");
         for (int i = 0; i < bundleElements.getLength(); i++) {
