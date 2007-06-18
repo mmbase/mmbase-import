@@ -12,12 +12,13 @@ package org.mmbase.module.builders;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import java.lang.reflect.*;
 
 /**
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.1 2006-11-07 22:08:16 michiel Exp $
+ * @version $Id: Urls.java,v 1.2 2007-06-18 19:58:31 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
@@ -55,13 +56,20 @@ public class Urls extends MMObjectBuilder {
      */
     public void notify(NodeEvent event) {
          if(tableName.equals(event.getBuilderName())){
-             Jumpers jumpers = (Jumpers)mmb.getBuilder("jumpers");
+             MMObjectBuilder jumpers = mmb.getBuilder("jumpers");
              if (jumpers == null) {
                  log.debug("Urls builder - Could not get Jumper builder");
              } else {
-                 jumpers.delJumpCache(""+event.getNodeNumber());
+                 // avoid compile/runtime dependency on Jumpers builder.
+                 try {
+                     Method m = jumpers.getClass().getMethod("delJumpCache", String.class);
+                     m.invoke(jumpers, "" + event.getNodeNumber());
+                 } catch (Exception e) {
+                     log.warn("" + event + " " + e.getMessage());
+                 }
              }
          }
         super.notify(event);
     }
 }
+   
