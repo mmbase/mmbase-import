@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.io.File;
 import org.mmbase.util.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,10 +24,23 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.5 2007-06-07 14:00:20 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.6 2007-06-18 08:58:29 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
+
+    protected static Cache<String, String> smartPathCache = new Cache<String, String>(100) {
+            public String getName() {
+                return "SmartPathCache";
+            }
+            public String getDescription() {
+                return "Caches the result of the 'smartpath' function";
+            }
+        };
+    static {
+        smartPathCache.putCache();
+    }
+
 
     protected final MMObjectBuilder parent;
     protected String nodeNumber;
@@ -88,10 +102,39 @@ public class SmartPathFunction {
     public boolean getBackwardsCompatible() {
         return backwardsCompatible;
     }
+
+    public String smartKey() {
+        return path + '.' + nodeNumber + '.' + version;
+    }
+
     /**
      * The found path as a <code>String</code>, or <code>null</code> if not found    
      */
-    public String smartpath() {
+    public final String smartpath() {
+        String result;
+        String key = null;
+        if (smartPathCache.isActive()) {
+            key = smartKey();
+            result = (String) smartPathCache.get(key);
+            if (result != null || smartPathCache.containsKey(key)) {
+                return result;
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
+        }
+        result = getSmartPath();
+        
+        if (key != null) {
+            smartPathCache.put(key, result);
+        }
+        return result;
+    }
+
+    /**
+     * The found path as a <code>String</code>, or <code>null</code> if not found    
+     */
+    protected String getSmartPath() {
         log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
         if (backwardsCompatible) {
             return parent.getSmartPath(documentRoot, path, nodeNumber, version);
