@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.24 2007-02-11 14:46:14 nklasens Exp $
+ * @version $Id: Block.java,v 1.25 2007-06-18 17:34:06 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -74,6 +74,13 @@ public class Block {
      */
     public Type[] getClassification() {
         return classification;
+    }
+
+    public Type[] getClassification(String filter) {
+        String[] parts = filter.split("\\s*?[,\\s]\\s*");
+        for (Type type : classification) {
+        }
+        return null;
     }
 
     /**
@@ -204,6 +211,10 @@ public class Block {
         }
         public String getName() {
             return name;
+        }
+
+        public boolean contains(String test) {
+            return false;
         }
 
         Type getParent() {
