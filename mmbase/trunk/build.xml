@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.162 2007-04-12 14:52:52 michiel Exp $
+$Id: build.xml,v 1.163 2007-06-18 10:07:19 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -323,10 +323,6 @@ builddate=${builddate}
     <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
 
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
-
-    <!--
-    <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
-    -->
 
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
