@@ -341,7 +341,7 @@ jsc_setPicture(null);
 }
 
 function jsc_setPicture(selectedIndex) {
-	if (selectedIndex != null) {
+	if ((selectedIndex != null) && (selectedIndex != -1)) {
 	// use Natuurgebied(en)
 	if(document.KaartenForm.rad_Gebied[0].checked) {
 		document.getElementById("kartPicture").src=imagesNat[selectedIndex]; 
@@ -367,8 +367,38 @@ function jsc_setPicture(selectedIndex) {
  		}
  	iKaart++;
  	} 	
- 	
+ 	if (selectedIndex == -1) {
+ 		// all pictures unselected
+ 		document.getElementById("kartPicture").src = "media/vastgoed/Nicolao_Visscher.jpg";
  	}
+ 	}
+}
+
+// ragGebied radio and a certain kart should be selected before form submit
+function validationMessage() {
+	//rad_Gebied check
+	var radioChecked = false;
+	var i = 0;
+	while((i < document.KaartenForm.rad_Gebied.length) && (radioChecked == false)) {
+		radioChecked = document.KaartenForm.rad_Gebied[i].checked;
+		i++;
+	}
+	if(!radioChecked) {
+		alert("Geen gebied(en) geselecteerd of coördinaten opgegeven.");
+		return false;
+	}
+	// document.KaartenForm.sel_Kaart
+	var kartSelected = false;
+	i = 0;
+	while((i < document.KaartenForm.sel_Kaart.length) && (kartSelected == false)) {
+		kartSelected = document.KaartenForm.sel_Kaart[i].selected;
+		i++;
+	}
+	if(!kartSelected) {
+		alert("Geen kaartsoort(en) geselecteerd.");
+		return false;
+	}
+	return true;
 }
 
 //
@@ -464,7 +494,7 @@ if(twoColumns) {
     <a name="top">
     <%--%@include file="includes/back_print.jsp" %>--%>
     
-<html:form action="/nmintra/KaartenAction" method="POST">
+<html:form action="/nmintra/KaartenAction" method="POST" onsubmit="return validationMessage()">
 
 	<table>
 		<tr>

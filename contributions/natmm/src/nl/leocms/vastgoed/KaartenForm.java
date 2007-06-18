@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.4 2007-06-13 11:55:41 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.5 2007-06-18 09:16:50 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -58,7 +58,7 @@ public class KaartenForm extends ActionForm{
 		schaal = "1:5000";
 		formaat = "A4";
 		rad_Gevouwen = "gevouwen";
-		rad_Gebied = natuurgebiedKey;
+        rad_Gebied = ""; //rad_Gebied = natuurgebiedKey;
       //
       resetMaps();
    }
@@ -157,7 +157,10 @@ public class KaartenForm extends ActionForm{
 	
     //kart type for jsp forms
 	public String getKaartType() {
-		String kartType  = rad_Gebied;
+      String kartType  = rad_Gebied;
+      if (kartType == null) {
+          return "";
+      }
       if (kartType.equals(natuurgebiedKey)) {
          kartType += "";
       } else if (kartType.equals(eenheidKey)) {
@@ -165,9 +168,7 @@ public class KaartenForm extends ActionForm{
       } else if (kartType.equals(coordinatenKey)) {
          kartType += " (" + linksX + ":" + linksY + " " + rechtsX + ":" + rechtsY + ")";
       }
-      
       return kartType;
-      
 	}
 
     //kart type detail string for email
@@ -337,84 +338,9 @@ public class KaartenForm extends ActionForm{
 	}
 
    private void resetMaps() {
-      natGebMap = new TreeMap();
-      Map dummy = new TreeMap();
-      dummy.put("Harger- en Pettemerpolder", new Boolean(false));
-      dummy.put("Loterijlanden", new Boolean(false));
-      dummy.put("Nijenburg", new Boolean(false));
-      dummy.put("Weidse Polder", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("Kennemerland", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Kadelanden", new Boolean(false));
-      dummy.put("Nieuwkoopse plassen", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("Nieuwkoop", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Beekbergerwoud", new Boolean(false));
-      dummy.put("Hoeve Delle", new Boolean(false));
-      dummy.put("Loenense Hooilanden", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("Oost-Veluwe", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Ankeveense plassen", new Boolean(false));
-      dummy.put("Loosdrechtse plassen", new Boolean(false));
-      dummy.put("Tienhovense plassen", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("Vechtplassen", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Chaamse Beek", new Boolean(false));
-      dummy.put("Markdal", new Boolean(false));
-      dummy.put("Oosterheide", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("West-Brabant", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Genhoes", new Boolean(false));
-      dummy.put("Geuldal", new Boolean(false));
-      dummy.put("Gulpdal", new Boolean(false));
-      dummy.put("Sint-Pietersberg", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      natGebMap.put("Zuid-Limburg", dummy);
-      
-      // gebied map (area)
-      gebiedMap = new TreeMap();
-      dummy = new TreeMap();
-      dummy.put("Noordenveld", new Boolean(false));
-      dummy.put("Waddengebied", new Boolean(false));
-      dummy.put("Zuid-Drenthe", new Boolean(false));
-      dummy.put("de Wieden", new Boolean(false));
-      dummy.put("Salland", new Boolean(false));
-      dummy.put("Twente", new Boolean(false));
-      dummy.put("etc.", new Boolean(false));
-      gebiedMap.put("Eenheid", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
-      dummy.put("Overijssel en Flevoland", new Boolean(false));
-      dummy.put("Gelderland", new Boolean(false));
-      dummy.put("Noord-Holland en Utrecht", new Boolean(false));
-      dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
-      dummy.put("Noord-Brabant en Limburg", new Boolean(false));
-      gebiedMap.put("Regio", dummy);
-      
-      dummy = new TreeMap();
-      dummy.put("Groningen", new Boolean(false));
-      dummy.put("Friesland", new Boolean(false));
-      dummy.put("Drenthe", new Boolean(false));
-      dummy.put("Overijssel", new Boolean(false));
-      dummy.put("Flevoland", new Boolean(false));
-      dummy.put("Gelderland", new Boolean(false));
-      dummy.put("Utrecht", new Boolean(false));
-      dummy.put("Noord-Holland", new Boolean(false));
-      dummy.put("Zuid-Holland", new Boolean(false));
-      dummy.put("Zeeland", new Boolean(false));
-      dummy.put("Noord-Brabant", new Boolean(false));
-      gebiedMap.put("Provincie", dummy);
+      NelisReader nelis = NelisReader.getInstance();
+      natGebMap = nelis.getNatGebMap();
+      gebiedMap = nelis.getGebiedMap();
       
       //kaart type
       selKaartMap = new TreeMap();
