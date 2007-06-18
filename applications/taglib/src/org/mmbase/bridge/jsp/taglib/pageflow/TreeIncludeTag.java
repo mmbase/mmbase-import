@@ -31,55 +31,37 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.21 2007-06-07 13:23:24 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.22 2007-06-18 17:26:51 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
 
     private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class);
     protected Attribute objectList = Attribute.NULL;
+
+    public void setObjectlist(String p) throws JspTagException {
+        objectList = getAttribute(p);
+    }
+
     private TreeHelper th = new TreeHelper();
 
-    public int doStartTag() throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("Starttag " + getId());
-        }
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
-        th.setCloud(getCloudVar());
-        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
-
+    protected String getPage(String p) throws JspTagException {
         try {
-            if (referid != Attribute.NULL) {
-                if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-                
-                Object o = getObject(getReferid());
-                if (o instanceof Url) {
-                    Url u = (Url) getObject(getReferid());
-                    extraParameters.addAll(u.params);
-                    url = new Url(this, u, parameters, true);
-                } else {
-                    url = new Url(this, th.findTreeFile(Casting.toString(o), objectList.getValue(this).toString(), pageContext.getSession()), getComponent(), parameters, true);
-                }
-            } else {
-                String leafPage = th.findTreeFile(getPage(), objectList.getValue(this).toString(), pageContext.getSession());
-                url = new Url(this, leafPage , getComponent(), parameters, true);
-            }
+            return th.findTreeFile(p, objectList.getValue(this).toString(),
+                                   pageContext.getSession());
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
+    }
 
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
-
+    public void initTag() throws JspTagException {
+        super.initTag(false);
+        th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         url.setLegacy();
         if (log.isDebugEnabled()) {
-            log.debug("URL " + url);
+            log.debug("leaffile end of starttag: " + url.toString());
         }
-        return EVAL_BODY_BUFFERED;
     }
 
     public void doFinally() {
@@ -87,9 +69,6 @@ public class TreeIncludeTag extends IncludeTag {
         super.doFinally();
     }
 
-    public void setObjectlist(String p) throws JspTagException {
-        objectList = getAttribute(p);
-    }
 
     // override to cancel
     protected boolean doMakeRelative() {

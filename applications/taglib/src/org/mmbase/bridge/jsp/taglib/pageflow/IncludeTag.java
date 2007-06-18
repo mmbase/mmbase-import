@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.73 2007-06-07 12:03:03 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.74 2007-06-18 17:26:51 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -106,37 +106,11 @@ public class IncludeTag extends UrlTag {
     }
 
     
-
     public int doStartTag() throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("starttag " + getId());
-        }  
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        parameters = new UrlParameters(this);
-        helper.useEscaper(false);
-        if (referid != Attribute.NULL) {
-            if (page != Attribute.NULL || component != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
-
-            Object o = getObject(getReferid());
-            if (o instanceof Url) {
-                Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                url = new Url(this, u, parameters, true);
-            } else {
-                url = new Url(this, Casting.toString(o), getComponent(), parameters, true);
-            }
-        } else {
-            url = new Url(this, getPage(), getComponent(), parameters, true);
-        }
-
-        if (getId() != null) {
-            parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
-        }
-
+        initTag(true);
         return EVAL_BODY_BUFFERED;
     }
-    
+
 
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
