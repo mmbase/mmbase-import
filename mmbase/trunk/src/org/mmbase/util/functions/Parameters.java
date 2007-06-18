@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.util.Casting;
+import org.mmbase.util.Entry;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.35 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: Parameters.java,v 1.36 2007-06-18 17:32:11 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -115,7 +116,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * @since MMBase-1.9
      */
-    public Parameters(TreeMap<String, Object> backing) {
+    public Parameters(Map<String, Object> backing) {
         this.backing = backing;
         toIndex = backing.size() - 1;
         definition = null;
@@ -462,7 +463,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Gets the value of a parameter, cast to a String.
      * @param parameterName the name of the parameter to get
-     * @return value the parameter value as a <code>STring</code>
+     * @return value the parameter value as a <code>String</code>
      */
     public String getString(String parameterName) {
         return Casting.toString(get(parameterName));
@@ -475,4 +476,52 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         return Collections.unmodifiableMap(backing);
     }
 
+    /**
+     * Returns the Parameters as an unmodifiable List of Map.Entrys with predictable iteration order
+     * (the same order of this Parameters, which is a List of the values only, itself)
+     * @since MMBase-1.9
+     */
+    public List<Map.Entry<String, Object>> toEntryList() {
+        return new AbstractList<Map.Entry<String, Object>>() {
+            public int size() {
+                return Parameters.this.size();
+            }
+            public Map.Entry<String, Object> get(final int i) {
+
+                return new Map.Entry<String, Object>() {
+                    final Parameter<?> a = Parameters.this.definition[i + Parameters.this.fromIndex];
+                    // see Map.Entry
+                    public String getKey() {
+                        return a.getName();
+                    }
+
+                    // see Map.Entry
+                    public Object getValue() {
+                        return Parameters.this.backing.get(a.getName());
+                    }
+                    
+                    // see Map.Entry
+                    public Object setValue(Object v) {
+                        return Parameters.this.backing.put(a.getName(), v);
+                    }
+                    
+                    public int hashCode() {
+                        Object value = getValue();
+                        return a.getName().hashCode() ^ (value == null ? 0 : value.hashCode());
+                    }
+                    public boolean equals(Object o) {
+                        if (o instanceof Map.Entry) {
+                            Map.Entry entry = (Map.Entry) o;                            
+                            Object value = getValue();
+                            return
+                                a.getName().equals(entry.getKey()) &&
+                                (value == null ? entry.getValue() == null : value.equals(entry.getValue()));
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+            }
+        };
+    }
 }
