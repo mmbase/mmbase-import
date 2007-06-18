@@ -19,10 +19,10 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.27 2007-06-18 22:00:21 michiel Exp $
+ * @version $Id: Framework.java,v 1.28 2007-06-18 22:18:24 michiel Exp $
  * @since MMBase-1.9
  */
-public interface Framework {
+public interface Framework extends UrlConverter { 
 
     /**
      * CSS-id to be used on block
