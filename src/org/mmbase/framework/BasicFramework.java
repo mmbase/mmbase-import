@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.41 2007-06-18 21:30:48 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.42 2007-06-18 22:00:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -126,7 +126,7 @@ public class BasicFramework implements Framework {
             if ("".equals(path)) path = null; 
             if (path == null) path = frameworkParameters.get(BLOCK);
 
-            State state = getState(req, true);
+            State state = getState(req, false);
 
             // if no explicit block, then this will be an URL to the current block.
             Block block = path != null ? component.getBlock(path) : state.getRenderer().getBlock();
@@ -169,10 +169,10 @@ public class BasicFramework implements Framework {
         return block;
     }
 
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        String sp = request.getServletPath();
         if (page.startsWith("/mmbase")) {
+            String sp = request.getServletPath();
             String[] path = sp.split("/");
             log.debug("Going to filter " + Arrays.asList(path));           
             if (path.length >= 3) { 
@@ -185,7 +185,7 @@ public class BasicFramework implements Framework {
                 Component comp = ComponentRepository.getInstance().getComponent(path[3]);
                 if (comp == null) {
                     log.debug("No such component, ignoring this too");
-                    return BasicFramework.getUrl(page, params.entrySet(), request, false);
+                    return BasicFramework.getUrl(page, params, request, false);
                 }
                 url.append("&component=" + comp.getName());
 
@@ -201,21 +201,11 @@ public class BasicFramework implements Framework {
                 return url;
             } else {
                 log.debug("path length " + path.length);
-                return BasicFramework.getUrl(page, params.entrySet(), request, false);
+                return BasicFramework.getUrl(page, params, request, false);
             }
         } else {            
-            return BasicFramework.getUrl(page, params.entrySet(), request, false);
+            return BasicFramework.getUrl(page, params, request, false);
         }
-    }
-    public StringBuilder getInternalUrl(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters) {
-        return new StringBuilder();
-        
-    }
-
-
-    public StringBuilder getInternalUrl(Processor processor, Parameters blockParameters, Parameters frameworkParameters) {
-        return new StringBuilder();
-        //return getUrl(page, component, blockParameters, frameworkParameters, false);
     }
     
     public Block getBlock(Component component, String blockName) {
@@ -235,9 +225,8 @@ public class BasicFramework implements Framework {
      */
     protected State getState(HttpServletRequest request, boolean create) {
         State state = (State) request.getAttribute(KEY);
-        if (state == null && create) {
+        if (state == null && create) {            
             state = new State(request);
-            request.setAttribute(KEY, state);
         }
         return state;
     }
@@ -274,6 +263,7 @@ public class BasicFramework implements Framework {
             renderer.render(blockParameters, frameworkParameters, w, windowState);
         } finally {
             request.setAttribute(Renderer.KEY, previousRenderer);
+            state.end();
         }
     }
 
@@ -302,9 +292,12 @@ public class BasicFramework implements Framework {
         private int id = 0;
         private Renderer renderer = null;
         private final HttpServletRequest request;
+        private final Object previousState;
 
         State(HttpServletRequest r) {
             request = r;
+            previousState = r.getAttribute(KEY);
+            request.setAttribute(KEY, this);
         }
 
 
@@ -314,6 +307,9 @@ public class BasicFramework implements Framework {
 
         public HttpServletRequest getRequest() {
             return request;
+        }
+        public void end() {
+            request.setAttribute(KEY, previousState);
         }
 
         /**
