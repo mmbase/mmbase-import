@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.40 2007-06-18 21:25:27 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.41 2007-06-18 21:30:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -140,7 +140,11 @@ public class BasicFramework implements Framework {
             Map<String, Object> map = new TreeMap<String, Object>();
             for (Object e : req.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                map.put(entry.getKey(), entry.getValue()[0]);
+                String k = entry.getKey();
+                if (k.equals(CATEGORY.getName())) continue; // already in servletpath
+                if (k.equals(BLOCK.getName())) continue; // already in servletpath
+                if (k.equals(COMPONENT.getName())) continue; // already in servletpath
+                map.put(k, entry.getValue()[0]);
             }
             for (Map.Entry<String, Object> entry : parameters) {
                 blockParameters.set(entry.getKey(), entry.getValue());                
