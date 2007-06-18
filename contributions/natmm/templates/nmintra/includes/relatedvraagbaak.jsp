@@ -32,7 +32,8 @@ if (printView) { %>
      <div style="float:right;">
         <% if (!printView) { %>
         <a href="javascript:history.go(-1);">terug</a>
-        <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">/ print</a>
+        /
+        <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">print</a>
       	<% } %>  
       </div>
 
