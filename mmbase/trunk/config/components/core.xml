@@ -63,14 +63,7 @@
       <param name="action"   type="String" />
       <param name="property" type="String" />
       <param name="value"    type="String" />
-    </body>
-  </block>
-  
-  <block name="modules-newproperty"
-         mimetype="text/html">
-    <description xml:lang="en">Add a propertie to the selected module</description>
-    <body jsp="/mmbase/admin/admin/module/newproperty.jsp">
-      <param name="module" type="String" />
+      <param name="path"     type="String" />
     </body>
   </block>
   
@@ -85,7 +78,10 @@
   
   <block name="applications-actions" 
          mimetype="text/html">
-    <description xml:lang="en">Shows the application installation page and actions that can be taken</description>
+    <description xml:lang="en">
+      Is the follow-up for the application installation page and shows the results of actions 
+      that can be taken.
+    </description>
     <body jsp="/mmbase/admin/admin/application/actions.jsp">
       <param name="application" type="String" />
       <param name="app" type="String" />
@@ -98,8 +94,31 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
-    <body jsp="/mmbase/admin/admin/builders.jsp">
+    <body jsp="/mmbase/admin/admin/builders.div.jsp">
+      <param name="builder" type="String" />
+    </body>
+  </block>
+  
+  <block name="builders-actions" 
+         mimetype="text/html">
+    <description xml:lang="en">
+      Folow-up for the first builders block, shows a builders fields.
+    </description>
+    <body jsp="/mmbase/admin/admin/builder/actions.jsp">
+      <param name="builder" type="String" />
+      <param name="cmd"     type="String" />
+      <param name="path"    type="String" />
+    </body>
+  </block>
 
+  <block name="builders-field" 
+         mimetype="text/html">
+    <description xml:lang="en">
+      Folow-up for the second builders block, shows the various attributes of a field.
+    </description>
+    <body jsp="/mmbase/admin/admin/builder/field.jsp">
+      <param name="builder" type="String" />
+      <param name="field"   type="String" />
     </body>
   </block>
   
