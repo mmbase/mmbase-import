@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.38 2007-06-15 12:09:45 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.39 2007-06-18 17:30:49 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -51,10 +51,15 @@ public class BasicFramework implements Framework {
 
     /**
      * General utility function to create an Url
+     * @param page servletPath
+     * @param params The query to be added
+     * @param req A request object is needed to determin context-paths and so on.
+     * @param writeamp Wheter amperstands must be XML-escaped. Typically needed if the URL is used
+     * in (X)HTML.
      */
-    public static StringBuilder getUrl(String page, Map<String, ? extends Object> params, HttpServletRequest req, boolean writeamp) {
+    public static StringBuilder getUrl(String page, Collection<Map.Entry<String, Object>> params, HttpServletRequest req, boolean escapeamp) {
         StringBuilder show = new StringBuilder();
-        if (writeamp) {
+        if (escapeamp) {
             page = page.replaceAll("&", "&amp;");
         }
         if (page.equals("")) { // means _this_ page
@@ -69,11 +74,11 @@ public class BasicFramework implements Framework {
 
         if (params != null && ! params.isEmpty()) {
             // url is now complete up to query string, which we are to construct now
-            String amp = (writeamp ? "&amp;" : "&");
+            String amp = (escapeamp ? "&amp;" : "&");
             String connector = (show.indexOf("?") == -1 ? "?" : amp);
 
             Writer w = new StringBuilderWriter(show);
-            for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
+            for (Map.Entry<String, ? extends Object> entry : params) {
                 Object value = entry.getValue();
                 if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
                     if (value instanceof Iterable) {
@@ -92,39 +97,107 @@ public class BasicFramework implements Framework {
         }
         return show;
     }
-
-    public StringBuilder getUrl(String page, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps) {
+    
+    public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
+                                Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
-            log.debug("page " + page + "component " + component + " block parameters " + blockParameters + " framework parameters " + frameworkParameters);
+            log.debug(" framework parameters " + frameworkParameters);
         }
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+
+        // BasicFramework always shows only one component
+        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
+        
         if (component == null) {
-            StringBuilder sb = getUrl(page, blockParameters.toMap(), req, escapeAmps);
+            // cannot be handled by Framework
+            StringBuilder sb = BasicFramework.getUrl(path, parameters, req, escapeAmps);
             return sb;
         } else {
+            Block block = path != null ? component.getBlock(path) : component.getBlock(frameworkParameters.get(BLOCK));
+
             State state = getState(req);
-            Map<String, Object> map = new HashMap<String, Object>();
+
+            Parameters blockParameters = block.createParameters();
+
+            Map<String, Object> map = new TreeMap<String, Object>();
             for (Object e : req.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 map.put(entry.getKey(), entry.getValue()[0]);
             }
+            for (Map.Entry<String, Object> entry : parameters) {
+                blockParameters.set(entry.getKey(), entry.getValue());                
+            }
             map.putAll(state.getMap(blockParameters.toMap()));
 
-            StringBuilder sb = getUrl(page, map, req, escapeAmps);
+            String category = req.getParameter(CATEGORY.getName());
+            if (category == null) {
+                Block.Type[] classification = block.getClassification();
+            }
+            String page = "/mmbase/" + category + "/" + component.getName() + "/" + block.getName();
+            StringBuilder sb = BasicFramework.getUrl(page, map.entrySet(), req, escapeAmps);
             return sb;            
 
         }
     }
 
-    public StringBuilder getInternalUrl(String page, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    public Block getBlock(Parameters frameworkParameters) {
+        Component comp  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
+        if (comp == null) return null;
+        Block block = comp.getBlock(frameworkParameters.get(BLOCK));
+        return block;
     }
 
-    public StringBuilder getInternalUrl(String page, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters) {
-        return getUrl(page, component, blockParameters, frameworkParameters, false);
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        String sp = request.getServletPath();
+        if (page.startsWith("/mmbase")) {
+            String[] path = sp.split("/");
+            log.debug("Going to filter " + Arrays.asList(path));           
+            if (path.length >= 3) { 
+                assert path[0].equals("");
+                assert path[1].equals("mmbase");
+                String category = path[2];
+                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
+                if (path.length == 3) return url;
+                
+                Component comp = ComponentRepository.getInstance().getComponent(path[3]);
+                if (comp == null) {
+                    log.debug("No such component, ignoring this too");
+                    return BasicFramework.getUrl(page, params.entrySet(), request, false);
+                }
+                url.append("&component=" + comp.getName());
+
+                if (path.length == 4) return url;
+
+                Block block = comp.getBlock(path[4]);
+                log.debug("Will try to display " + block);
+                if (block == null) {
+                    throw new RuntimeException("No block " + path[4] + " in component " + path[3]);
+                }
+                url.append("&block=" + block.getName());
+                log.debug("internal URL " + url);
+                return url;
+            } else {
+                log.debug("path length " + path.length);
+                return BasicFramework.getUrl(page, params.entrySet(), request, false);
+            }
+        } else {            
+            return BasicFramework.getUrl(page, params.entrySet(), request, false);
+        }
+    }
+    public StringBuilder getInternalUrl(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters) {
+        return new StringBuilder();
+        
+    }
+
+
+    public StringBuilder getInternalUrl(Processor processor, Parameters blockParameters, Parameters frameworkParameters) {
+        return new StringBuilder();
+        //return getUrl(page, component, blockParameters, frameworkParameters, false);
     }
     
     /**
+     * Generates an external URL to a block.
      * @todo state not used.
      */
     public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters,
@@ -134,8 +207,11 @@ public class BasicFramework implements Framework {
         }
         HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);       
         String category = req.getParameter(CATEGORY.getName());
+        if (category == null) {
+            Block.Type[] classification = block.getClassification();
+        }
 
-        StringBuilder sb = getUrl("/mmbase/" + category + "/" + component.getName() + "/" + block.getName(), blockParameters.toMap(), req, writeamp);
+        StringBuilder sb = getUrl("/mmbase/" + category + "/" + component.getName() + "/" + block.getName(), blockParameters.toEntryList(), req, writeamp);
         log.debug("Using " + sb);
         return sb;
     }
@@ -153,7 +229,7 @@ public class BasicFramework implements Framework {
         return component.getBlock(blockName);
     }
 
-    public Parameters createFrameworkParameters() {
+    public Parameters createParameters() {
         return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION, CATEGORY);
     }
 
@@ -223,52 +299,6 @@ public class BasicFramework implements Framework {
 
     public String getUserBuilder() {
         return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
-    }
-
-    protected String noConvert(HttpServletRequest request) {
-        String query = request.getQueryString();
-        return request.getServletPath() + (query != null ? query : "");
-    }
-
-    /**
-     * Basic Framework only filters URL under /mmbase
-     */
-    public String convertUrl(HttpServletRequest request) {
-        String sp = request.getServletPath();
-        if (sp.startsWith("/mmbase")) {
-            String[] path = sp.split("/");
-            log.debug("Going to filter " + Arrays.asList(path));           
-            if (path.length >= 3) { 
-                assert path[0].equals("");
-                assert path[1].equals("mmbase");
-                String category = path[2];
-                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
-                if (path.length == 3) return url.toString();
-                
-                Component comp = ComponentRepository.getInstance().getComponent(path[3]);
-                if (comp == null) {
-                    log.debug("No such component, ignoring this too");
-                    return noConvert(request);
-                }
-                url.append("&component=" + comp.getName());
-
-                if (path.length == 4) return url.toString();
-
-                Block block = comp.getBlock(path[4]);
-                log.debug("Will try to display " + block);
-                if (block == null) {
-                    throw new RuntimeException("No block " + path[4] + " in component " + path[3]);
-                }
-                url.append("&block=" + block.getName());
-                log.debug("internal URL " + url);
-                return url.toString();
-            } else {
-                log.debug("path length " + path.length);
-                return noConvert(request);
-            }
-        } else {            
-            return noConvert(request);
-        }
     }
 
     /**
