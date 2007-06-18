@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.10 2007-06-18 16:22:50 michiel Exp $
+ * @version $Id: Component.java,v 1.11 2007-06-18 21:34:14 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -41,6 +41,11 @@ public interface Component {
      * in pages about components generally.
      */
     LocalizedString getDescription();
+
+    /**
+     * An URI which may identify the configuration of this Component
+     */
+    String getUri();
 
     /**
      * Configures the component, by XML.
