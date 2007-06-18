@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.26 2007-06-18 17:30:20 michiel Exp $
+ * @version $Id: Framework.java,v 1.27 2007-06-18 22:00:21 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -66,37 +66,25 @@ public interface Framework {
      * Returns the current block, according to the framework.
      */
     public Block getBlock(Parameters frameworkParameters);
-    
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters);
+
     /**
      * Generates an URL to a resource to be called and included by a renderer.
      * Typically, this generates a URL to a jsp, called by a renderer such as the {@link JspRenderer}, 
      * who calls the resource using the RequestDispatcher.
      * This method allows for frameworks to do some filtering on URLs (such as pretty URLs).
-     * You should generally not call this method unless you write a Renderer that depends on code or data from external resources.
-     *
+     * You should generally not call this method unless you write a Renderer that depends on code or
+     * data from external resources.
      * @param path The page (e.g. image/css) provided by the component to create an URL for
-     * @param renderer The renderer that is to call the URL
-     * @param component The component to use to search the file for
-     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
-     * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects
+     * @param params Extra parameters for that path
+     * @param frameworkParameters The parameters that are required by the framework, such as the
+     *                            'request' and 'cloud' objects
+     * @return A valid interal URL, or <code>null</code> if nothing framework specific could be
+     *         determined (this would make it possible to 'chain' frameworks).
      */
-    public StringBuilder getInternalUrl(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters);
+    public StringBuilder getInternalUrl(String path, 
+                                        Collection<Map.Entry<String, Object>> params, 
+                                        Parameters frameworkParameters);
 
-    /**
-     * Generates an URL to a resource to be called by a processor.
-     * Typically, this generates a URL to a jsp, called by a processor such as the {@link JspProcessor}, 
-     * who calls the resource using the RequestDispatcher.
-     * This method allows for frameworks to do some filtering on URLs (such as pretty URLs).
-     * You should generally not call this method unless you write a Processor that depends on code or data from external resources.
-     *
-     * @param path The page (e.g. image/css) provided by the component to create an URL for
-     * @param processor The processor that is to call this URL
-     * @param component The component to use to search the file for
-     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
-     * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects
-     */
-    public StringBuilder getInternalUrl(Processor processor, Parameters blockParameters, Parameters frameworkParameters);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call. 
