@@ -29,7 +29,7 @@
   </mm:nodelistfunction>
   <tr>
     <td>
-      <mm:link page="databases" component="core">
+      <mm:link page="databases">
         <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
       </mm:link>
     </td>

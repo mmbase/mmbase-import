@@ -28,7 +28,7 @@
 	<td class="center">
 	  <mm:link page="modules-actions">
 	    <mm:param name="module"><mm:field name="item1" /></mm:param>
-		<a title="view module" href="${_}"><img src="<mm:url page="/mmbase/style/images/view.png" />" alt="view" /></a>
+		<a title="view module" href="${_}"><img src="<mm:url page="/mmbase/style/images/next.png" />" alt="view" /></a>
 	  </mm:link>
 	</td>
   </tr>

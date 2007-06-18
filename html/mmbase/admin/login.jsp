@@ -19,15 +19,12 @@
 <mm:import externid="username" from="parameters" />
 <mm:import externid="reason">please</mm:import>
 <mm:import externid="referrer">index.jsp</mm:import>
+
 <mm:import externid="currentType" jspvar="currentType">name/password</mm:import>
-
-
 <%
   AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
   String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
-  //String currentType = "name/password";
 %>
-
 
 <div id="wrap">
 <form id="loginbox" method="post" action="<mm:url page="$referrer" />">

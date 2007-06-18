@@ -28,9 +28,9 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
     <td><mm:field name="item3" /></td>
     <td><mm:field name="item4" /></td>
     <td class="view">    
-      <a href="<mm:url referids="database" page="database/actions.jsp" />">
-        <img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" />
-      </a>
+      <mm:link page="databases-connections">
+        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" /></a>
+      </mm:link>
     </td>
 </tr>
 </mm:nodelistfunction>
@@ -47,7 +47,7 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <tr>
     <td colspan="2">
       <mm:field name="item1" id="item1" write="false">
-		<mm:link page="databases-connections" referids="item1" component="core">
+		<mm:link page="databases-connections">
 		  <a href="${_}" title="view connections"><mm:write referid="item1" /></a>
 		</mm:link>
       </mm:field>
@@ -55,7 +55,7 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
     <td><mm:field name="item2" /></td>
     <td><mm:field name="item3" /></td>
     <td class="view">
-      <mm:link page="databases-connections" referids="item1" component="core">
+      <mm:link page="databases-connections">
         <a href="${_}" title="view connections"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view" /></a>
       </mm:link>
     </td>
