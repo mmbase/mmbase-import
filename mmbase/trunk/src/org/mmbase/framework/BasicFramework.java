@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.39 2007-06-18 17:30:49 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.40 2007-06-18 21:25:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -107,15 +107,33 @@ public class BasicFramework implements Framework {
 
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
+        if (component == null) {
+            // if no explicit component specified, suppose current component, if there is one:
+            State state = getState(req, false);
+            if (state != null) {
+                component = state.getRenderer().getBlock().getComponent();
+            }
+        }
         
         if (component == null) {
+            log.debug("Not currently rendering a component");
             // cannot be handled by Framework
             StringBuilder sb = BasicFramework.getUrl(path, parameters, req, escapeAmps);
             return sb;
         } else {
-            Block block = path != null ? component.getBlock(path) : component.getBlock(frameworkParameters.get(BLOCK));
+            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
 
-            State state = getState(req);
+            if ("".equals(path)) path = null; 
+            if (path == null) path = frameworkParameters.get(BLOCK);
+
+            State state = getState(req, true);
+
+            // if no explicit block, then this will be an URL to the current block.
+            Block block = path != null ? component.getBlock(path) : state.getRenderer().getBlock();
+
+            if (log.isDebugEnabled()) {
+                log.debug("Rendering component " + component + " generating URL to " + block);
+            }
 
             Parameters blockParameters = block.createParameters();
 
@@ -196,35 +214,6 @@ public class BasicFramework implements Framework {
         //return getUrl(page, component, blockParameters, frameworkParameters, false);
     }
     
-    /**
-     * Generates an external URL to a block.
-     * @todo state not used.
-     */
-    public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters,
-                                     Parameters frameworkParameters, Renderer.WindowState state, boolean writeamp) {
-        if (log.isDebugEnabled()) {
-            log.debug("block " + block + "component " + component + " block parameters " + blockParameters + " framework parameters " + frameworkParameters);
-        }
-        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);       
-        String category = req.getParameter(CATEGORY.getName());
-        if (category == null) {
-            Block.Type[] classification = block.getClassification();
-        }
-
-        StringBuilder sb = getUrl("/mmbase/" + category + "/" + component.getName() + "/" + block.getName(), blockParameters.toEntryList(), req, writeamp);
-        log.debug("Using " + sb);
-        return sb;
-    }
-
-    public StringBuilder getActionUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean writeamp) {
-        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
-        State state = getState(req);
-        Renderer renderer = state.getRenderer();
-        frameworkParameters.set(ACTION, state.getId());
-        return getBlockUrl(block, component, blockParameters, frameworkParameters, state.getWindowState(), writeamp);
-    }
-
-
     public Block getBlock(Component component, String blockName) {
         return component.getBlock(blockName);
     }
@@ -240,9 +229,9 @@ public class BasicFramework implements Framework {
     /**
      * Returns the state object for the request.
      */
-    protected State getState(HttpServletRequest request) {
+    protected State getState(HttpServletRequest request, boolean create) {
         State state = (State) request.getAttribute(KEY);
-        if (state == null) {
+        if (state == null && create) {
             state = new State(request);
             request.setAttribute(KEY, state);
         }
@@ -264,7 +253,7 @@ public class BasicFramework implements Framework {
         if (log.isDebugEnabled()) {
             log.info("Rendering " + renderer);
         }
-        State state = getState(request);
+        State state = getState(request, true);
 
         request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
         if (state.render(renderer)) {
