@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import javax.servlet.http.*;
 import java.io.*;
+import java.util.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.Parameters;
 
@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.25 2007-06-15 10:20:49 andre Exp $
+ * @version $Id: Framework.java,v 1.26 2007-06-18 17:30:20 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework {
@@ -37,28 +37,6 @@ public interface Framework {
      * Return the name of the framework 
      */
     public String getName();
-
-    /** 
-     * Returns a URL that can be presented to the user (to be put into HTML) to a specific block
-     * for a component. The url might be different based on the WindowState of the block.
-     *
-     * @param block     The block to create an URL for, or a page (e.g. image/css) provided by the component
-     * @param component The component to use to search the file for
-     * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
-     * @param frameworkParameters The parameters that are required by the framework, for instance containing the 'request' and 'cloud'.
-     * @param state the window state in which the content should be rendered
-     * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;). 
-     *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is 
-     *                   for some reason called directly.     
-     */
-    public StringBuilder getBlockUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state, boolean escapeAmps);
-
-
-    // You could argue that only the block itself may create a link to its action
-    //public StringBuilder getActionUrl(Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
-
-    // but we don't do that.
-    public StringBuilder getActionUrl(Block block, Component component, Parameters blockParameters, Parameters frameworkParameters, boolean escapeAmps);
 
 
     /** 
@@ -79,9 +57,17 @@ public interface Framework {
      *                   for some reason called directly. 
      * @return An URL relative to the root of this web application (i.e. withouth a context path)
      */
-    public StringBuilder getUrl(String path, Component component, Parameters urlParameters, Parameters frameworkParameters, boolean escapeAmps);
+    public StringBuilder getUrl(String path, 
+                                Collection<Map.Entry<String, Object>> parameters,
+                                Parameters frameworkParameters, boolean escapeAmps);
 
-
+    
+    /**
+     * Returns the current block, according to the framework.
+     */
+    public Block getBlock(Parameters frameworkParameters);
+    
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters);
     /**
      * Generates an URL to a resource to be called and included by a renderer.
      * Typically, this generates a URL to a jsp, called by a renderer such as the {@link JspRenderer}, 
@@ -95,7 +81,7 @@ public interface Framework {
      * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
      * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects
      */
-    public StringBuilder getInternalUrl(String path, Renderer renderer, Component component, Parameters blockParameters, Parameters frameworkParameters);
+    public StringBuilder getInternalUrl(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters);
 
     /**
      * Generates an URL to a resource to be called by a processor.
@@ -110,7 +96,7 @@ public interface Framework {
      * @param blockParameters The parameters that were set on the block using referids and sub-&lt;mm:param&gt; tags
      * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects
      */
-    public StringBuilder getInternalUrl(String path, Processor processor, Component component, Parameters blockParameters, Parameters frameworkParameters);
+    public StringBuilder getInternalUrl(Processor processor, Parameters blockParameters, Parameters frameworkParameters);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call. 
@@ -125,7 +111,7 @@ public interface Framework {
      * If the framework does not use the MMBase taglib for rendering of components, it needs to provide it's own mechanism to 
      * fill the above parameters with default values (such as through a servlet or portlet).
      */
-    public Parameters createFrameworkParameters(); 
+    public Parameters createParameters(); 
 
     /**
      * Render content (such as HTML or XML) using a Renderer obtained from a component's block.
@@ -169,5 +155,5 @@ public interface Framework {
      * @param  request  HttpServletRequest
      * @return the converted technical URL
      */
-    public String convertUrl(HttpServletRequest request);
+    //public String convertUrl(HttpServletRequest request);
 }
