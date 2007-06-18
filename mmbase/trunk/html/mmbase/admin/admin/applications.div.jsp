@@ -23,7 +23,7 @@
     <mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
       <tr>
         <td>
-          <mm:link page="applications" component="core">
+          <mm:link page="applications">
             <mm:param name="application"><mm:field name="item1" /></mm:param>
             <a href="${_}" title="manage application"><mm:field name="item1" /></a>
           </mm:link>
@@ -33,7 +33,7 @@
         <td><mm:field name="item4" /></td>
         <td><mm:field name="item5" /></td>
         <td class="center">
-          <mm:link page="applications" component="core">
+          <mm:link page="applications">
             <mm:param name="application"><mm:field name="item1" /></mm:param>
             <a href="${_}" title="manage application"><img src="<mm:url page="/mmbase/style/images/next.png" />" alt="manage" /></a>
           </mm:link>
@@ -79,7 +79,7 @@
     </tr>
   </table>
 
-  <mm:link page="applications-actions" referids="application" component="core">
+  <mm:link page="applications-actions" referids="application">
     <form action="${_}" method="post">
   </mm:link>
     <input name="cmd" type="hidden" value="SAVE" />

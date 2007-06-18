@@ -1,4 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<%@ page import="org.mmbase.bridge.*,
+				 org.mmbase.cache.*,
+				 java.util.*,
+				 java.util.regex.*,
+				 org.mmbase.storage.search.implementation.database.BasicSqlHandler,
+				 org.mmbase.storage.search.SearchQuery"
+				 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
+<div
+  class="component ${requestScope.componentClassName}"
+  id="${requestScope.componentId}">
 <%!
    String saveDevide(float f1, float f2){
       try{
@@ -20,18 +30,10 @@
       return name.replace(' ', '_');
    }
 %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.*,java.util.*"
-%><%@include file="../settings.jsp"
-%><mm:content expires="0">
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <mm:import externid="rs_show">-</mm:import>
 <mm:import externid="rs_action">-</mm:import>
 <mm:import externid="rs_name">-</mm:import>
-<html xmlns="http://www.w3.org/TR/xhtml">
-<head>
-  <title>Cache Monitor</title>
-  <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+  <h3>Cache Monitor</h3>
   <style type="text/css">
       .label{
          background-color:    #cccccc;
@@ -52,10 +54,9 @@
          color:               #333333;
       }
   </style>
-</head>
-<body class="basic" >
+
 <!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
-<table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="cache manager" width="100%" cellspacing="0" cellpadding="3" border="0">
 
     <mm:import externid="active" from="parameters" />
     <mm:import externid="clear"  from="parameters" />
@@ -75,18 +76,10 @@
   </mm:write>
 </mm:present>
 
-<tr align="left">
-  <th class="header" colspan="6">Cache Monitor</th>
-</tr>
-<tr>
-  <td class="multidata" colspan="6">
-    <p>
-      This tools hows the performance of the various MMBase caches. You can also (temporary) turn
-      on/off the cache here. For a persistant change you should change caches.xml.
-    </p>
-  </td>
-</tr>
-
+<caption>
+  This tools hows the performance of the various MMBase caches. You can also (temporary) turn
+  on/off the cache here. For a persistant change you should change caches.xml.
+</caption>
 
 <%
    List caches = new ArrayList();
@@ -110,7 +103,7 @@
         }
     });
 %>
-   <tr><td colspan="6"><h3>Query Caches</h3></td></tr>
+   <tr><th colspan="6">Query Caches</th></tr>
    <tr><td colspan="6"><p>Query caches are used to cache the result of different types of
    queries. These caches have a plugin like system of for (sets of) rules that will decide if
    a certain change in the cloud should invalidate a query from the cache. </p></td></tr>
@@ -334,7 +327,4 @@
 </tr>
 </table>
 
-</body>
-</html>
 </mm:cloud>
-</mm:content>
