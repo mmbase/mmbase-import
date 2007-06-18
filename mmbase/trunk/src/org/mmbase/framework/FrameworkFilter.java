@@ -9,8 +9,10 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.servlet.*;
 import org.mmbase.module.core.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * done by UrlConverter. Based upon code from LeoCMS and CMSC.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.2 2007-06-15 10:18:05 andre Exp $
+ * @version $Id: FrameworkFilter.java,v 1.3 2007-06-18 17:33:22 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -120,6 +122,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         
         if (request instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) request;
+            HttpServletResponse res = (HttpServletResponse) response;
             String path = getPath(req);
             if (log.isDebugEnabled()) log.debug("Processing path: " + path);
             if (path != null) {
@@ -134,8 +137,21 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             }
             
             // URL is not excluded, pass it to UrlConverter to process and forward the request
-            String forwardUrl = MMBase.getMMBase().getFramework().convertUrl(req);
-            if (log.isDebugEnabled()) log.debug("Received '" + forwardUrl + "' from UrlConverter, forwarding.");
+            Framework fw =  MMBase.getMMBase().getFramework();
+            Parameters params = fw.createParameters();
+            if (params.containsParameter(Parameter.REQUEST)) {
+                params.set(Parameter.REQUEST, req);
+            }
+            if (params.containsParameter(Parameter.RESPONSE)) {
+                params.set(Parameter.RESPONSE, res);
+            }
+            String forwardUrl = MMBase.getMMBase().getFramework().getInternalUrl(path, req.getParameterMap(), params).toString();
+
+
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Received '" + forwardUrl + "' from UrlConverter, forwarding.");
+            }
             if (forwardUrl != null && !forwardUrl.equals("")) {
                 /* 
                  * RequestDispatcher: If the path begins with a "/" it is interpreted
