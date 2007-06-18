@@ -17,9 +17,17 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.40 2006-08-30 18:17:07 michiel Exp $
+ * @version $Id: Version.java,v 1.41 2007-06-18 09:49:17 michiel Exp $
  */
 public class Version {
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static String getTag() {
+        String cvsTag = "$Name: not supported by cvs2svn $";
+        return cvsTag.substring(6, cvsTag.length() - 1).trim();
+    }
 
     /**
      * Returns the 'name' part of the MMBase version. This will normally be 'MMBase'.
@@ -112,7 +120,12 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String get() {
-        return getName() + " " + getNumber();
+        String tag = getTag();
+        if (tag.startsWith("MMBase")) {
+            return tag + " " + getBuildDate();
+        } else {
+            return getName() + " " + getNumber();
+        }
     }
 
 
