@@ -3,21 +3,16 @@
   <property name="project.name"     value="resources" />
   <property name="project.target.templates.dir"   value="../mmexamples" />
 
-  <property name="jai.jars.dir"        location="build" />
-  <property name="project.jars.includes"   value="resources/build/jai_codec.jar,resources/build/jai_core.jar,jumpers/build/mmbase-jumpers.jar" />
+  <property name="project.jars.dir"        location="build" />
+  <property name="project.jars.includes"   value="jai_codec.jar,jai_core.jar" />
 
   <property name="java.source.version"     value="1.5" />
   <import file="../buildbase-include.xml" />
 
   <property file="build.properties.default" />
   
-  <target name="jar" description="Create mmbase-resources.jar" depends="jumpers,jai.jar,buildbase.jar" />
+  <target name="jar" description="Create mmbase-resources.jar" depends="jai.jar,buildbase.jar" />
 
-  <target name="jumpers">
-    <echo message="${project.jars.dir}${project.jars.includes}" />
-    <echo message="${applications.dir}/jumpers" />
-    <ant dir="${applications.dir}/jumpers" inheritAll="false" />
-  </target>
   <target name="jai.jar" description="Get JAI jar">
     
     <echo message="jai" />
@@ -32,8 +27,8 @@
 	
     <echo message="${project.jars.dir}${project.jars.includes}" />
 
-    <copy file="${jai_codec.jar}" todir="${jai.jar.dir}" preservelastmodified="true" />
-    <copy file="${jai_core.jar}"  todir="${jai.jar.dir}" preservelastmodified="true" />
+    <copy file="${jai_codec.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+    <copy file="${jai_core.jar}"  todir="${project.jar.dir}" preservelastmodified="true" />
   </target>
 
 </project>
