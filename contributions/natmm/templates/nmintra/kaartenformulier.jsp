@@ -534,12 +534,7 @@ formulier.">
 		<tr>
 			<td height="70" valign="top">
 				<html:select style="width:100%;" property="sel_Beheereenheden" onclick="jsc_VulSelectUitArray(this.form.sel_NatGeb, arr_NatGeb[this.selectedIndex]);">
-					<html:option value="Kennemerland">Kennemerland</html:option>
-					<html:option value="Nieuwkoop">Nieuwkoop</html:option>
-					<html:option value="Oost-Veluwe">Oost-Veluwe</html:option>
-					<html:option value="Vechtplassen">Vechtplassen</html:option>
-					<html:option value="West-Brabant">West-Brabant</html:option>
-					<html:option value="Zuid-Limburg">Zuid-Limburg</html:option>
+					<html:options property="gebiedList"/>
 				</html:select>
 			</td>
 		</tr>

@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.5 2007-06-18 09:16:50 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.6 2007-06-18 16:26:57 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -81,7 +81,7 @@ public class KaartenForm extends ActionForm{
                }
             }       
          } catch (Exception e) {
-            log.debug("updateMapValues - no entry for key: " + sel_Beheereenheden);
+            log.info("updateMapValues - no entry for key: " + sel_Beheereenheden);
          }
       }
       
@@ -351,6 +351,9 @@ public class KaartenForm extends ActionForm{
       
    }
 
+   public Set getGebiedList() {
+       return natGebMap.keySet();
+    }
 
    public Map getNatGebMap() {
       return natGebMap;
