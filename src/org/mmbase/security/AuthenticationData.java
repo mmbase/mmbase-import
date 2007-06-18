@@ -15,7 +15,7 @@ import org.mmbase.bridge.Node;
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.8 2007-01-17 19:58:15 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.9 2007-06-18 09:01:14 michiel Exp $
  * @since MMBase-1.8
  */
 public interface AuthenticationData {
@@ -89,8 +89,8 @@ public interface AuthenticationData {
     /**
      * Common parameters for logon-info.
      */
-    static final Parameter PARAMETER_USERNAME   = new Parameter("username", String.class, true);
-    static final Parameter PARAMETER_PASSWORD   = new Parameter("password", String.class, true);
+    static final Parameter<String> PARAMETER_USERNAME   = new Parameter<String>("username", String.class, true);
+    static final Parameter<String> PARAMETER_PASSWORD   = new Parameter<String>("password", String.class, true);
     static final Parameter PARAMETER_USERNAMES  = new Parameter("usernames", java.util.List.class);
     static final Parameter PARAMETER_RANK       = new Parameter("rank",     Rank.class);
     //    static final Parameter PARAMETER_REMOTEADDR = new Parameter("remoteaddr",   String.class);
