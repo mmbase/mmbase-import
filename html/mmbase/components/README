@@ -1,0 +1,4 @@
+This directory is the default location for component blocks implemented as JSP.
+
+All Jsps in this directory (and subdirectories) should produce precisely one component block 'div',
+and be referred to in a component XML (in <config dir>/components).
