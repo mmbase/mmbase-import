@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.14 2007-06-19 13:59:30 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.15 2007-06-19 14:05:58 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -67,7 +67,7 @@ public abstract class ReloadableModule extends Module {
         properties = parser.getProperties();
         parser.getLocalizedDescription(getLocalizedDescription());
         parser.getLocalizedGUIName(getLocalizedGUIName());
-        loadFromContext();
+        loadInitParameters("mmbase/" + getName());
         return true;
     }
 
