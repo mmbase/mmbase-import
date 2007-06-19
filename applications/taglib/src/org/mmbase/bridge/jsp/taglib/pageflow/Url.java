@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.25 2007-06-18 17:26:51 michiel Exp $;
+ * @version $Id: Url.java,v 1.26 2007-06-19 10:58:42 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -120,7 +120,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         for (Map.Entry<String, ?> entry : params) {
             m.put(entry.getKey(), entry.getValue());
         }
-        String res = BasicFramework.getUrl(page, m.entrySet(), (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        String res = BasicUrlConverter.getUrl(page, m.entrySet(), (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }
@@ -155,11 +155,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         
         if (internal) {
             log.debug("Creating internal url link to page: " + page);
-            //result = framework.getInternalUrl(page, new Parameters(params),
-            //frameworkParameters).toString();
-            result = null;
+            result = framework.getInternalUrl(page, params, frameworkParameters).toString();
         } else {
-            log.debug("Creating normal url link to page: " + page);
+            if (log.isDebugEnabled()) {
+                log.debug("Creating normal url link to page: " + page + " " + params + " fw: " + frameworkParameters);
+            }
             result = framework.getUrl(page, params, frameworkParameters, writeamp).toString();
         }
 
