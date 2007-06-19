@@ -482,7 +482,7 @@
          <stringutil string="${tag}" property="tag.name">           
            <substring beginindex="7" endindex="${shorter}" />
          </stringutil>
-         <property name="war.name.postfix" value="-${tag.name}" />
+         <property name="war.name.postfix" value=".${tag.name}" />
        </else>
      </if>
      <tstamp />
