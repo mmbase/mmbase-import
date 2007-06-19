@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.8 2007-06-07 16:08:08 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.9 2007-06-19 14:59:00 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -416,7 +416,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Specified in the xml builder file with the <properties> tag.
      * The use of properties is determined by builder
      */
-    private Hashtable properties = null;
+    private final Hashtable properties = new Hashtable();;
 
     /**
      * The datatype collector for this builder
@@ -452,6 +452,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (oType != -1) return true;
 
             log.debug("Init of builder " + getTableName());
+            loadInitParameters();
 
             // first make sure parent builder is initalized
             initAncestors();
@@ -2732,7 +2733,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param properties the properties to set
      */
     void setInitParameters(Hashtable properties) {
-        this.properties = properties;
+        this.properties.putAll(properties);
+        loadInitParameters();
         update();
     }
 
@@ -2746,13 +2748,30 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     
     /**
+     * Override properties through application context
+     * @param contextPath path in application context where properties are located
+     * @since MMBase 1.8.5
+     */
+    public void loadInitParameters() {
+        try {
+            Map contextMap = ApplicationContextReader.getProperties("mmbase-builders/" + getTableName());
+            log.info("Using properties " + contextMap);
+            properties.putAll(contextMap);
+
+        } catch (javax.naming.NamingException ne) {
+            log.info("Can't obtain properties from application context: " + ne.getMessage());
+        }
+    }
+    /**
      * Get all builder properties and override properties through application context
      * @param contextPath path in application context where properties are located
      * @return a <code>Map</code> containing the current properties
      * @since MMBase 1.8.2
+     * @deprecated
      */
     public Map getInitParameters(String contextPath) {
         Map map = new HashMap();
+        loadInitParameters();
         map.putAll(getInitParameters());
         
         try {
@@ -2773,7 +2792,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param value value of the property
      */
     public void setInitParameter(String name, String value) {
-        if (properties == null) properties = new Hashtable();
         properties.put(name,value);
         update();
     }
