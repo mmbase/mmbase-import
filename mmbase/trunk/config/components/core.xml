@@ -154,6 +154,8 @@
       <param name="cache"        type="String" required="true"/>
       <param name="deleteentry"  type="String" />
       <param name="deletekey"    type="String" />
+      <param name="key"          type="String" />
+      <param name="value"        type="String" />
     </body>
   </block>
   
@@ -203,7 +205,7 @@
          classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
-    <body jsp="components.jspx">
+    <body jsp="components/list.jspx">
       <param name="component" type="String" />
       <param name="view" type="String" /> <!-- hmm, should not be done like this -->
     </body>
