@@ -21,14 +21,14 @@ import org.mmbase.util.LocalizedString;
  * @since MMBase-1.9
  * @author Pierre van Rooden
  *
- * @version $Id: DescribedFunctionProvider.java,v 1.1 2006-11-24 14:15:13 pierre Exp $
+ * @version $Id: DescribedFunctionProvider.java,v 1.2 2007-06-19 14:00:11 michiel Exp $
  */
 public abstract class DescribedFunctionProvider extends FunctionProvider implements Descriptor {
 
     /**
      * Name or key of the provider.
      */
-    protected String key;
+    protected String name;
 
     /**
      * Descriptions per locale
@@ -40,38 +40,40 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      */
     protected LocalizedString guiName;
 
+    protected DescribedFunctionProvider() {
+        super();
+        setDescription("");
+    }
+    
     /**
      * Create a described function provider
      * @param name the name of the function provider
      */
     protected DescribedFunctionProvider(String name) {
         super();
-        if (name != null) {
-            setName(name);
-            setGUIName(key);
-        }
+        this.name = name;
+        setGUIName(name);
         setDescription("");
     }
+  
 
     /**
      * Returns the name or 'key' of this descriptor.
      * @return the name as a String
      */
     public String getName() {
-        return key;
+        return name;
     }
 
     /**
-     * Sets the provider name if it wasn't already set.
+     * @deprecated
      */
-    protected void setName(String name) {
-        if (key == null) {
-            key = name;
-            setGUIName(name);
-        } else {
-            throw new IllegalArgumentException("Name was already set (" + key + ")");
-        }
+    public final void setName(String n) {
+        if (n == null) throw new IllegalArgumentException();
+        this.name = n;
+        setGUIName(name);
     }
+
 
     /**
      * The locale which must be used if no locale is specified.
@@ -85,7 +87,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
     }
 
     public String getDescription(Locale locale) {
-        if (description == null) description = new LocalizedString(key);
+        if (description == null) description = new LocalizedString(name);
         return description.get(locale == null ? getDefaultLocale() : locale);
     }
 
@@ -117,7 +119,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      * @return the GUI Name
      */
     public String getGUIName(Locale locale) {
-        if (guiName == null) guiName = new LocalizedString(key);
+        if (guiName == null) guiName = new LocalizedString(name);
         return guiName.get(locale == null ? getDefaultLocale() : locale);
     }
 
@@ -132,7 +134,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
     }
 
     public void setGUIName(String g, Locale locale) {
-        if (guiName == null) guiName = new LocalizedString(key);
+        if (guiName == null) guiName = new LocalizedString(name);
         guiName.set(g, locale);
     }
 
