@@ -22,7 +22,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ModuleReader.java,v 1.8 2007-06-19 14:00:54 michiel Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -116,20 +116,6 @@ public class ModuleReader extends DocumentReader {
         }
     }
 
-    /**
-     * Get the (alternate) application context of this module.
-     * Returns <code>null</code> if no context is found.
-     * @since MMBase-1.9
-     */
-    public String getContext() {
-        Element e = getElementByPath("module");
-        String tmp = getElementAttributeValue(e, "context");
-        if (tmp != null && !tmp.equals("")) {
-            return tmp;
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Get the maintainer of this module
