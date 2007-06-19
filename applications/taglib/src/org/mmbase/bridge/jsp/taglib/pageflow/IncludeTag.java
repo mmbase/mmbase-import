@@ -35,12 +35,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.74 2007-06-18 17:26:51 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.75 2007-06-19 10:58:42 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
-    private static  final Logger log = Logging.getLoggerInstance(IncludeTag.class);
+    private static  final Logger log     = Logging.getLoggerInstance(IncludeTag.class);
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
@@ -54,9 +54,9 @@ public class IncludeTag extends UrlTag {
     protected static int MAX_INCLUDE_LEVEL = -1;
 
 
-    protected Attribute debugType = Attribute.NULL;
+    protected Attribute debugType       = Attribute.NULL;
 
-    private Attribute cite = Attribute.NULL;
+    private Attribute cite              = Attribute.NULL;
 
     private Attribute encodingAttribute = Attribute.NULL;
 
@@ -132,7 +132,7 @@ public class IncludeTag extends UrlTag {
                 // Then these, and the session,  also can be used in the include-d page
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
-                    StringBuffer koekjes = new StringBuffer();
+                    StringBuilder koekjes = new StringBuilder();
                     for (int i=0; i < cookies.length; i++) {
                         if (log.isDebugEnabled()) {
                             log.debug("setting cookie " + i + ":" + cookies[i].getName() + "=" + cookies[i].getValue());
