@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.42 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: QueryResultCache.java,v 1.43 2007-06-19 09:23:27 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -62,7 +62,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
-        log.debug("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
+        log.service("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
         MMBase.getMMBase().addNodeRelatedEventsListener("object", this);
     }
 
@@ -125,8 +125,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
     private void increaseCounters(SearchQuery query, Map<String, Integer> counters) {
-        for (Object element : query.getSteps()) {
-            Step step = (Step) element;
+        for (Step step : query.getSteps()) {
             String stepName = step.getTableName();
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
@@ -139,8 +138,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
     private void decreaseCounters(SearchQuery query, Map<String, Integer> counters) {
-        for (Object element : query.getSteps()) {
-            Step step = (Step) element;
+        for (Step step : query.getSteps()) {
             String stepName = step.getTableName();
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
@@ -181,15 +179,13 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             return true;
         }
         MMObjectBuilder srcbuilder = mmb.getMMObject(event.getRelationSourceType());
-        for (Object element : srcbuilder.getAncestors()) {
-            MMObjectBuilder parent = (MMObjectBuilder) element;
+        for (MMObjectBuilder parent : srcbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
         }
         MMObjectBuilder destbuilder = mmb.getMMObject(event.getRelationDestinationType());
-        for (Object element : destbuilder.getAncestors()) {
-            MMObjectBuilder parent = (MMObjectBuilder) element;
+        for (MMObjectBuilder parent : destbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
@@ -215,8 +211,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder destbuilder = mmb.getMMObject(event.getBuilderName());
-        for (Object element : destbuilder.getAncestors()) {
-            MMObjectBuilder parent = (MMObjectBuilder) element;
+        for (MMObjectBuilder parent : destbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
@@ -235,19 +230,17 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             oldTypeCounters = new HashMap<String, Integer>(typeCounters);
         }
 
-        Set<SearchQuery> removeKeys = new HashSet<SearchQuery>();
+        Set<SearchQuery>     removeKeys        = new HashSet<SearchQuery>();
         Map<String, Integer> foundTypeCounters = new HashMap<String, Integer>();
 
         evaluate(event, cacheKeys, removeKeys, foundTypeCounters);
 
         synchronized(this) {
-            Iterator<SearchQuery> removeIter = removeKeys.iterator();
-            while(removeIter.hasNext()) {
-                remove(removeIter.next());
+            for (SearchQuery q : removeKeys) {
+                remove(q);
             }
             
-            for (Object element : typeCounters.keySet()) {
-                String type = (String) element;
+            for (String type : typeCounters.keySet()) {
                 if (foundTypeCounters.containsKey(type)) {
                     if (oldTypeCounters.containsKey(type)) {
                         // adjust counter
@@ -258,15 +251,13 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                             int newValue = foundValue + (guessedValue - oldValue);
                             foundTypeCounters.put(type, newValue);
                         }
-                    }
-                    else {
+                    } else {
                         int guessedValue = typeCounters.get(type);
                         int foundValue = foundTypeCounters.get(type);
                         int newValue = foundValue + guessedValue;
                         foundTypeCounters.put(type, newValue);
                     }
-                }
-                else {
+                } else {
                     Integer guessedValue = typeCounters.get(type);
                     foundTypeCounters.put(type, guessedValue);
                 }
@@ -283,9 +274,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         if (log.isDebugEnabled()) {
             log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush because of " + event);
         }
-        Iterator<SearchQuery> i = cacheKeys.iterator();
-        while(i.hasNext()) {
-            SearchQuery key = i.next();
+        for (SearchQuery key : cacheKeys) {
 
             boolean shouldRelease;
             if(releaseStrategy.isEnabled()){
@@ -303,8 +292,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
 
             if (shouldRelease) {
                 removeKeys.add(key);
-            }
-            else {
+            } else {
                 increaseCounters(key, foundTypeCounters);
             }
         }
