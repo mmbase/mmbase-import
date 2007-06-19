@@ -4,7 +4,7 @@
 				 java.util.regex.*,
 				 org.mmbase.storage.search.implementation.database.BasicSqlHandler,
 				 org.mmbase.storage.search.SearchQuery"
-				 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+				 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
 <div
   class="component ${requestScope.componentClassName}"
@@ -58,11 +58,11 @@
 <!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
 <table summary="cache manager" width="100%" cellspacing="0" cellpadding="3" border="0">
 
-    <mm:import externid="active" from="parameters" />
-    <mm:import externid="clear"  from="parameters" />
+  <mm:import externid="active" from="request" />
+  <mm:import externid="clear"  from="request" />
 
 <mm:present referid="active">
-  <mm:import externid="cache" from="parameters" required="true" />
+  <mm:import externid="cache" from="request" required="true" />
   <mm:write referid="active" jspvar="active" vartype="String">
   <mm:write referid="cache" jspvar="cache" vartype="String">
   <% CacheManager.getCache(cache).setActive(active.equals("on") ? true : false); %>
@@ -70,7 +70,7 @@
 </mm:present>
 
 <mm:present referid="clear">
-  <mm:import externid="cache" from="parameters" required="true" />
+  <mm:import externid="cache" from="request" required="true" />
   <mm:write referid="cache" jspvar="cache" vartype="String">
   <% CacheManager.getCache(cache).clear();   %>
   </mm:write>
