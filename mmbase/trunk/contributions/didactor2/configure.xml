@@ -168,6 +168,9 @@
         <replace file="${build.config.dir}/modules/sendmail.xml"
                  token="$${sendmail.smarthost}"
                  value="${sendmail.smarthost}"/>
+        <replace file="${build.config.dir}/modules/sendmail.xml"
+                 token="$${sendmail.emailsenderdomain}"
+                 value="${emailsenderdomain}"/>
       </then>
     </if>
     <if>
