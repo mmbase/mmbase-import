@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @application XSL or Tools
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.12 2004-10-25 08:08:36 pierre Exp $
+ * @version $Id: XSLConvert.java,v 1.13 2007-06-19 13:59:30 michiel Exp $
  */
 public class XSLConvert extends ProcessorModule {
 
@@ -40,7 +40,9 @@ public class XSLConvert extends ProcessorModule {
         configpath = MMBaseContext.getConfigPath();
     }
 
-    public XSLConvert() {}
+    public XSLConvert(String name) { 
+        super(name);
+    }
 
     /**
      * Generate a list of values from a command to the processor

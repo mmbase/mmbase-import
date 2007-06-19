@@ -19,11 +19,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.13 2006-11-24 14:25:12 pierre Exp $
+ * @version $Id: ReloadableModule.java,v 1.14 2007-06-19 13:59:30 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
     private static final Logger log = Logging.getLoggerInstance(ReloadableModule.class);
+
+    public ReloadableModule() {
+    }
+    public ReloadableModule(String name) {
+        super(name);
+    }
 
     /**
      * Reloads the configuration file.
@@ -56,7 +62,6 @@ public abstract class ReloadableModule extends Module {
             return false;
         }
 
-        setContext(parser.getContext());
         setMaintainer(parser.getMaintainer());
         setVersion(parser.getVersion());
         properties = parser.getProperties();

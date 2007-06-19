@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.155 2007-06-06 11:35:47 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.156 2007-06-19 13:59:30 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -121,6 +121,9 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ProcessFunction("BUILDERSAVE", new Parameter[] {PARAM_BUILDER, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
 
+    public MMAdmin(String name) { 
+        super(name);
+    }
 
     /**
      * @javadoc

@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module;
 
+import org.mmbase.module.core.MMBaseContext;
 import java.util.*;
 import java.net.*;
+import java.lang.reflect.*;
 import org.xml.sax.*;
 
 import org.mmbase.util.*;
@@ -33,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.89 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: Module.java,v 1.90 2007-06-19 13:59:30 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -82,8 +84,6 @@ public abstract class Module extends DescribedFunctionProvider {
     // the state map, containing runtime-generated information as name-value pairs.
     private Map<String, String> states = new Hashtable<String, String>();
 
-    // the application context path, for loading a module's properties.
-    private String context = null;
 
     // the name of the module maintainer
     private String maintainer;
@@ -94,8 +94,15 @@ public abstract class Module extends DescribedFunctionProvider {
     // startup call.
     private boolean started = false;
 
+
+    /**
+     * @deprecated
+     */
     public Module() {
-        this(null);
+        addFunction(getVersionFunction);
+        addFunction(getMaintainerFunction);
+        String startedAt = (new Date(System.currentTimeMillis())).toString();
+        setState(STATE_START_TIME, startedAt);
     }
 
     public Module(String name) {
@@ -105,15 +112,6 @@ public abstract class Module extends DescribedFunctionProvider {
         String startedAt = (new Date(System.currentTimeMillis())).toString();
         setState(STATE_START_TIME, startedAt);
     }
-
-    /**
-     * Sets the module name. This also determines the default context path for a module.
-     */
-    public final void setName(String name) {
-        super.setName(name);
-        context = "mmbase/" + name;
-    }
-
     /**
      * @since MMBase-1.8
      */
@@ -223,7 +221,7 @@ public abstract class Module extends DescribedFunctionProvider {
     /**
      * Sets an init-parameter key-value pair
      */
-    public void setInitParameter(String key,String value) {
+    public void setInitParameter(String key, String value) {
         if (properties != null) {
             properties.put(key, value);
         }
@@ -238,6 +236,10 @@ public abstract class Module extends DescribedFunctionProvider {
             if (value == null) {
                 key = key.toLowerCase();
                 value = properties.get(key);
+                // Can also set properties in web.xml/context.xml
+                if (value == null && MMBaseContext.isInitialized()) {
+                    value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
+                }
                 // try the system property, set on the JVM commandline
                 // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
                 // -Dmmbaseroot.machinename=myname
@@ -253,32 +255,10 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
-     * Returns the properties to the subclass.
-     */
-    protected Map<String, String> getProperties(String propertytable) {
-        return null;
-    }
-
-    /**
-     * Returns one propertyvalue to the subclass.
-     */
-    protected String getProperty(String name, String var) {
-        return "";
-    }
-
-    /**
      * Gets own modules properties
      */
     public Map<String, String> getInitParameters() {
         return properties;
-    }
-
-    /**
-     * Override properties through the module's application context
-     * @since MMBase 1.9
-     */
-    public void loadFromContext() {
-        loadInitParameters(context);
     }
 
     /**
@@ -289,9 +269,8 @@ public abstract class Module extends DescribedFunctionProvider {
     public void loadInitParameters(String contextPath) {
         try {
             Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
-            if (!contextMap.isEmpty()) {
-                properties.putAll(contextMap);
-            }
+            properties.putAll(contextMap);
+
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
@@ -311,23 +290,6 @@ public abstract class Module extends DescribedFunctionProvider {
         }
     }
 
-    /**
-     * Returns the application context of this module (used to load properties form the environment).
-     * @return the context
-     */
-    protected final String getContext() {
-        return context;
-    }
-
-    /**
-     * Sets the application context of this module.
-     * @param value the context
-     */
-    protected final void setContext(String value) {
-        if (value != null) {
-            context = value;
-        }
-    }
 
     /**
      * Provide some info on the module;
@@ -545,19 +507,29 @@ public abstract class Module extends DescribedFunctionProvider {
                         URL url = new URL(parser.getURLString());
                         URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
                         Class<?> newClass = c.loadClass(className);
-                        mod = (Module) newClass.newInstance();
+                        try {
+                            Constructor constructor = newClass.getConstructor(String.class);
+                            mod = (Module) constructor.newInstance(moduleName);
+                        } catch (NoSuchMethodException nsme) {
+                            log.warn(nsme);
+                            mod = (Module) newClass.newInstance();
+                            mod.setName(moduleName);
+                        }
                     } else {
                         Class<?> newClass = Class.forName(className);
-                        mod =  (Module) newClass.newInstance();
+                        try {
+                            Constructor constructor = newClass.getConstructor(String.class);
+                            mod =  (Module) constructor.newInstance(moduleName);
+                        } catch (NoSuchMethodException nsme) {
+                            log.warn(nsme);
+                            mod = (Module) newClass.newInstance();
+                            mod.setName(moduleName);
+                        }
                     }
-                    // set the module name property, and the default context
-                    mod.setName(moduleName);
+
                     mod.configurationPath = ResourceLoader.getName(file);
 
                     results.put(moduleName, mod);
-
-                    // set an alternate context if given
-                    mod.setContext(parser.getContext());
 
                     mod.setMaintainer(parser.getMaintainer());
                     mod.setVersion(parser.getVersion());
@@ -565,7 +537,7 @@ public abstract class Module extends DescribedFunctionProvider {
                     parser.getLocalizedGUIName(mod.getLocalizedGUIName());
 
                     mod.properties = parser.getProperties();
-                    mod.loadFromContext();
+                    mod.loadInitParameters("mmbase/" + mod.getName());
 
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
