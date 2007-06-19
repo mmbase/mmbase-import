@@ -29,7 +29,6 @@
         <xsd:element ref="properties" minOccurs="0" />
       </xsd:sequence>
       <xsd:attribute name="name"       type="xsd:string" use="required" />
-      <xsd:attribute name="context"    type="xsd:string" />
       <xsd:attribute name="maintainer" type="xsd:string" />
       <xsd:attribute name="version"    type="xsd:string" />
     </xsd:complexType>
