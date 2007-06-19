@@ -13,6 +13,9 @@ and restart Tomcat.
 ----
 
 2007
+  -   emailsenderdomain setting was removed from web.xml
+      Is now a setting in sendmail-module (can be overridden in server.xml like so).
+	
 
    To upgrade mmbob:
     alter table mmb_posters  modify password varchar(128);
