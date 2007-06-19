@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.15 2007-04-13 08:43:10 andre Exp $
+ * @version $Id: CacheManager.java,v 1.16 2007-06-19 21:26:42 michiel Exp $
  */
 public class CacheManager {
 
@@ -302,6 +302,16 @@ public class CacheManager {
         caches.clear();
     }
 
+   
+    /**
+     * Used in config/functions/caches.xml
+     */
+    public Object remove(String name, Object key) {
+        Cache cache = getCache(name);
+        if (cache == null) throw new IllegalArgumentException();
+        return cache.remove(key);
+    }
+
     public static class Bean<K, V> {
         private final Cache<K, V> cache;
         public Bean(Cache<K, V> c) {
@@ -310,7 +320,8 @@ public class CacheManager {
         public String getName() { return cache.getName(); }
         public String getDescription() { return cache.getDescription(); }
         public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
-        public Set<Map.Entry<K,V>> entrySet() { return cache.entrySet(); }
+        public Set<Map.Entry<K, V>> getEntrySet() { return new HashSet<Map.Entry<K, V>>(cache.entrySet()); }
+        public Set<K> getKeySet() { return new HashSet<K>(cache.keySet()); }
         public int getHits() { return cache.getHits(); }
         public int getMisses() { return cache.getMisses(); }
         public int getPuts() { return cache.getPuts(); }
@@ -324,5 +335,31 @@ public class CacheManager {
         public int getCheapByteSize() { return cache.getCheapByteSize(); }
         public boolean isEmpty() { return cache.isEmpty(); }
         public Map<K, V> getMap() {  return cache; }
+        public Map<K, Integer> getCounts() {
+            return new AbstractMap<K, Integer>() {
+                public Set<Map.Entry<K, Integer>> entrySet() {
+                    return new AbstractSet<Map.Entry<K, Integer>>() {
+                        public int size() {
+                            return cache.size();
+                        }
+                        public Iterator<Map.Entry<K, Integer>> iterator() {
+                            return new Iterator<Map.Entry<K, Integer>>() {
+                                private Iterator<K> iterator = new HashSet<K>(cache.keySet()).iterator();
+                                public boolean hasNext() {
+                                    return iterator.hasNext();
+                                }
+                                public Map.Entry<K, Integer> next() {
+                                    K key = iterator.next();
+                                    return new org.mmbase.util.Entry<K, Integer>(key, cache.getCount(key));
+                                }
+                                public void remove() {
+                                    throw new UnsupportedOperationException();
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        }
     }
 }
