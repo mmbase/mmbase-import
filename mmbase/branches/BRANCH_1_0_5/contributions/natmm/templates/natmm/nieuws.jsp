@@ -79,7 +79,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
    } else {  // *** show the dossiers if there are dossiers related to this page
       %>
 	      <% if (isNaardermeer.equals("true")) { %>			
-   			<td style="vertical-align:top;width:75%;padding-left:10px;padding-right:10px;">
+   			<td style="vertical-align:top;width:100%;padding-left:10px;padding-right:66px;">
 		  <% } else { %>
 		    <td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
 		  <% } %>	
