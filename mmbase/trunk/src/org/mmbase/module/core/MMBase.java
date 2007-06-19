@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.221 2007-04-09 19:22:38 michiel Exp $
+ * @version $Id: MMBase.java,v 1.222 2007-06-19 13:59:30 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -232,7 +232,8 @@ public class MMBase extends ProcessorModule {
     /**
      * Constructor to create the MMBase root module.
      */
-    public MMBase() {
+    public MMBase(String name) {
+        super(name);
         if (mmbaseroot != null) log.error("Tried to instantiate a second MMBase");
         log.debug("MMBase constructed");
     }
@@ -1071,8 +1072,8 @@ public class MMBase extends ProcessorModule {
                 builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
                 builder.getStorageConnector().addIndices(parser.getIndices(builder));
                 for (Function func : parser.getFunctions(builder)) {
-                    builder.addFunction(func);
-                    log.service("Added " + func + " to " + builder);
+                    Function prev = builder.addFunction(func);
+                    log.service((prev == null ? "Added " : "Replaced ") + func + " to " + builder);
                 }
                 if (parent != null) {
                     for (Function parentFunction : parent.getFunctions()) {

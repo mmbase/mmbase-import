@@ -27,7 +27,8 @@ import org.mmbase.util.logging.*;
  * this is a J2EE concept, this class provides support for usage of this.
  *
  * @author Eduard Witteveen
- * @version $Id: Naming.java,v 1.5 2007-06-11 12:29:03 michiel Exp $
+ * @version $Id: Naming.java,v 1.6 2007-06-19 13:59:30 michiel Exp $
+ * @deprecated Datasource can be configured in mmbaseroot.xml
  */
 public class Naming extends ProcessorModule implements JDBCInterface {
     private static Logger log = Logging.getLoggerInstance(Naming.class);
@@ -65,6 +66,10 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 	public long getStartTimeMillis() {
 	    return 0;
 	}
+    }
+
+    public Naming(String name) { 
+        super(name);
     }
 
     /**

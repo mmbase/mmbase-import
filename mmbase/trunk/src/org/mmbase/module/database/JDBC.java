@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.54 2007-04-09 19:20:44 michiel Exp $
+ * @version $Id: JDBC.java,v 1.55 2007-06-19 13:59:30 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -52,6 +52,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     {
         addFunction(new GetNodeListFunction("POOLS", PARAMS_PAGEINFO));
         addFunction(new GetNodeListFunction("CONNECTIONS", PARAMS_PAGEINFO));
+    }
+
+    public JDBC(String name) { 
+        super(name);
     }
 
     public void onload() {
