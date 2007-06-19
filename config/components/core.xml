@@ -140,7 +140,12 @@
     caches. You can also (temporary) turn on/off the cache here. For a persistant 
     change you should change caches.xml.</description>
     <body jsp="/mmbase/admin/tools/cache.jsp">
-
+      <param name="active" type="String" />
+      <param name="cache"  type="String" />
+      <param name="clear"  type="String" />
+      <param name="rs_show"  type="String" />
+      <param name="rs_action"  type="String" />
+      <param name="rs_name"  type="String" />
     </body>
   </block>
   
