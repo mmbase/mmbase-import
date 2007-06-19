@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A hashtable which has a maximum of entries.  Old entries are
@@ -20,10 +21,12 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.27 2007-04-16 08:37:36 nklasens Exp $
+ * @version $Id: LRUHashtable.java,v 1.28 2007-06-19 10:39:21 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
+
+    private static final Logger log = Logging.getLoggerInstance(LRUHashtable.class);
 
     private final Hashtable<K, LRUEntry> backing; 
 
@@ -43,10 +46,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * Maximum size (capacity) of the table
      */
     private int size = 0;
-    /**
-     * Current size of the table.
-     */
-    private int currentSize = 0;
 
     /**
      * Creates the URL Hashtable.
@@ -106,9 +105,12 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             work = new LRUEntry(key, value);
             backing.put(key, work);
             appendEntry(work);
-            currentSize++;
-            if (currentSize > size) {
-                remove(root.next.key);
+            if (backing.size() > size) {
+                Object was =  remove(root.next.key);
+                assert was != null;
+                if (was == null) {
+                    log.warn("Nothing was removed, while that was expected " + root.next.key + " should have been removed");
+                }
             }
         }
         return rtn;
@@ -170,7 +172,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         if (work != null) {
             V rtn = work.value;
             removeEntry(work);
-            currentSize--;
             return rtn;
         } else {
             return null;
@@ -210,7 +211,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * Return the current size of the table
      */
     public int size() {
-        return currentSize;
+        return backing.size();
     }
 
     /**
@@ -221,7 +222,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     public void setMaxSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size of LRUHashtable to negative value");
         if (size < this.size) {
-            while(currentSize > size) {
+            while(size() > size) {
                 remove(root.next.key);
             }
         }
@@ -261,7 +262,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * and a description of the underlying hashtable
      */
     public String toString() {
-        return "Size=" + currentSize + ", Max=" + size;
+        return "Size=" + size() + ", Max=" + size;
     }
 
     /**
@@ -273,8 +274,8 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      */
     public String toString(boolean which) {
         if (which) {
-            StringBuffer b = new StringBuffer();
-            b.append("Size " + currentSize + ", Max " + size + " : ");
+            StringBuilder b = new StringBuilder();
+            b.append("Size " + size() + ", Max " + size + " : ");
             b.append(super.toString());
             return b.toString();
         } else {
@@ -288,7 +289,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     public synchronized void clear() {
         while (root.next != dangling) removeEntry(root.next);
         backing.clear();
-        currentSize = 0;
     }
 
     /**
@@ -366,7 +366,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     }
 
 
-    public void config(Map<String,String> map) {
+    public void config(Map<String, String> map) {
         // lru needs no configuration.
     }
 
@@ -374,7 +374,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         return getByteSize(new SizeOf());
     }
     public int getByteSize(SizeOf sizeof) {
-        int len = 4 * SizeOf.SZ_REF + (30 + 5 * SizeOf.SZ_REF) * currentSize;  // 30:overhead of Hashtable, 5*SZ_REF: overhead of LRUEntry
+        int len = 4 * SizeOf.SZ_REF + (30 + 5 * SizeOf.SZ_REF) * size();  // 30:overhead of Hashtable, 5*SZ_REF: overhead of LRUEntry
         LRUEntry current = root.next;
         while (current != null && current != dangling) {
             current = current.next;
@@ -508,7 +508,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             it.remove();
             if (work != null) {
                 LRUHashtable.this.removeEntry(work);
-                LRUHashtable.this.currentSize--;
             }
         }
     }
@@ -538,7 +537,6 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
                     i.remove();
                     if (work != null) {
                         LRUHashtable.this.removeEntry(work);
-                        LRUHashtable.this.currentSize--;
                     }
                 }
             };
