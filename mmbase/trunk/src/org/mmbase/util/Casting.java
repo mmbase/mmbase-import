@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.103 2007-06-11 14:57:56 michiel Exp $
+ * @version $Id: Casting.java,v 1.104 2007-06-19 21:04:50 michiel Exp $
  */
 
 import java.util.*;
@@ -249,7 +249,7 @@ public class Casting {
             return "";
         }
 
-        return toStringBuffer(new StringBuffer(), o).toString();
+        return toStringBuilder(new StringBuilder(), o).toString();
     }
 
     /**
@@ -286,6 +286,8 @@ public class Casting {
         return buffer;
     }
 
+    private static org.mmbase.storage.search.implementation.database.BasicSqlHandler sqlHandler = 
+        new org.mmbase.storage.search.implementation.database.BasicSqlHandler();
     /**
      * Convert an object to a string, using a Writer.
      * @param writer The Writer with which to create (write) the string
@@ -298,6 +300,12 @@ public class Casting {
             return writer;
         }
         Object s = wrap(o, null);
+        if (s instanceof org.mmbase.storage.search.SearchQuery) {
+            try {
+                s = sqlHandler.toSql((org.mmbase.storage.search.SearchQuery) s, sqlHandler);
+            } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            }
+        }
         writer.write(s.toString());
         return writer;
     }
