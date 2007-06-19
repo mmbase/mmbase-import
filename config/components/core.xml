@@ -148,6 +148,14 @@
       <param name="rs_name"  type="String" />
     </body>
   </block>
+  <block name="showcache" 
+         mimetype="text/html">
+    <body jsp="cache/showcache.jsp">
+      <param name="cache"        type="String" required="true"/>
+      <param name="deleteentry"  type="String" />
+      <param name="deletekey"    type="String" />
+    </body>
+  </block>
   
   <block name="blobs" 
          classification="mmbase.tools"
