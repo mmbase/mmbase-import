@@ -34,6 +34,11 @@ public class ProcessorModule extends Module implements ProcessorInterface {
 
     private static final Logger log = Logging.getLoggerInstance(ProcessorModule.class);
 
+    public ProcessorModule() {
+    }
+    public ProcessorModule(String name) {
+        super(name);
+    }
     /**
      * {@inheritDoc}
      **/

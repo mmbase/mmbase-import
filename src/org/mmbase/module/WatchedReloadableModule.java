@@ -17,7 +17,7 @@ import org.mmbase.util.ResourceWatcher;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.5 2006-11-24 14:19:55 pierre Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.6 2007-06-19 13:59:30 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
@@ -29,6 +29,11 @@ public abstract class WatchedReloadableModule extends ReloadableModule {
                 }
             }
         };
+    public WatchedReloadableModule() {
+    }
+    public WatchedReloadableModule(String name) {
+        super(name);
+    }
 
     /**
      * {@inheritDoc}
