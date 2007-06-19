@@ -14,6 +14,7 @@
         <property name="context">java:comp/env</property>
         <property name="datasource">mail/MMBase</property>
     -->
+    <property name="emailsenderdomain">${sendmail.emailsenderdomain}</property>
   </properties>
   
 
