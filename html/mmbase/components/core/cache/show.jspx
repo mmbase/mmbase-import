@@ -1,0 +1,75 @@
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    class="component ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <mm:cloud rank="administrator">
+  <mm:import externid="cache"  id="name"  required="true" />
+  <mm:import externid="deleteentry" vartype="integer">-1</mm:import>
+  <mm:import externid="deletekey"    />
+  
+  <form  method="post">
+    <table summary="applications">
+
+      <mm:function set="caches" name="get" referids="name" id="cache" />
+      <tr>
+        <th class="header" colspan="5">Cache Monitor</th>
+      </tr>
+      <tr>
+        <td class="multidata" colspan="5">${cache.description} Cache - first 500 of ${cache.size} entries</td>
+      </tr>
+      <mm:import externid="key" jspvar="key">.*</mm:import>
+      <mm:import externid="value" jspvar="value">.*</mm:import>
+      <tr>
+        <th class="header">Position</th>
+        <th class="header">Count</th>
+        <th class="header">Key<input type="text" name="key" value="${key}" /></th>
+        <th class="header">Value<input type="text" name="value" value="${value}" /></th>
+        <th class="header"><input type="submit" value="search" /></th>
+      </tr>
+
+      
+      <c:forEach items="${cache.entrySet}" var="entry" end="${500}" varStatus="status">
+        <c:if test="${deleteentry eq status.index}">
+          <tr><td colspan="5">Deleting  <mm:function set="caches" name="remove" referids="cache.name@cache,entry.key@key" /></td></tr>
+        </c:if>
+      </c:forEach>
+
+      <c:forEach items="${cache.entrySet}" var="entry" end="${500}" varStatus="status">
+        <mm:context>
+          <mm:function id="k" write="false" set="utils" name="toString" referids="entry.key@object" />
+          
+          <mm:write value="${k}">
+            <mm:compare  regexp="${key}">
+              <mm:write value="${entry.value}">
+                <mm:compare  regexp="${value}">
+                  <tr>
+                    <td class="data"><mm:index /></td>
+                    <td class="data">${cache.counts[entry.key]}</td>
+                    <td class="data">${k}</td>
+                    <td class="data">${entry.value}</td>
+                    <mm:link referids="name@cache">
+                      <mm:param name="deletekey" value="${entry.key}" />
+                      <mm:param name="deleteentry" value="${status.index}" />
+                      <td class="data"><a href="${_}">remove</a></td>
+                    </mm:link>
+                  </tr>
+                </mm:compare>
+              </mm:write>
+            </mm:compare>
+          </mm:write>
+        </mm:context>
+      </c:forEach>      
+      <tr><td>&amp;nbsp;</td></tr>
+      <tr class="footer">
+        <td class="navigate">
+          <a href="${mm:url('cache', pageContext)}">
+            <img src="${mm:url('/mmbase/style/images/back.png', pageContext)}" alt="back" border="0" />
+          </a>
+        </td>
+        <td class="data" colspan="3">Return to Cache Monitor</td>
+      </tr>
+    </table>
+  </form>
+  </mm:cloud>
+</div>
