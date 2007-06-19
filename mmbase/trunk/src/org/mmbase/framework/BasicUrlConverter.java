@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.1 2007-06-18 22:18:24 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.2 2007-06-19 19:14:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -134,7 +134,7 @@ public class BasicUrlConverter implements UrlConverter {
             for (Object e : req.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
-                if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in servletpath
+                if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in  servletpath, or not relevant
                 if (k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
                 if (k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
                 map.put(k, entry.getValue()[0]);
@@ -142,13 +142,15 @@ public class BasicUrlConverter implements UrlConverter {
             for (Map.Entry<String, Object> entry : parameters) {
                 blockParameters.set(entry.getKey(), entry.getValue());                
             }
-            map.putAll(state.getMap(blockParameters.toMap()));
+            if (state != null) {
+                map.putAll(state.getMap(blockParameters.toMap()));
+            }
 
             String category = req.getParameter(BasicFramework.CATEGORY.getName());
             if (category == null) {
                 Block.Type[] classification = block.getClassification();
             }
-            String page = "/mmbase/" + category + "/" + component.getName() + "/" + block.getName();
+            String page = "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName();
             StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), req, escapeAmps);
             return sb;            
 
@@ -159,7 +161,9 @@ public class BasicUrlConverter implements UrlConverter {
         if (page.startsWith("/mmbase")) {
             String sp = request.getServletPath();
             String[] path = sp.split("/");
-            log.debug("Going to filter " + Arrays.asList(path));           
+            if (log.isDebugEnabled()) {
+                log.debug("Going to filter " + Arrays.asList(path));           
+            }
             if (path.length >= 3) { 
                 assert path[0].equals("");
                 assert path[1].equals("mmbase");
@@ -177,7 +181,9 @@ public class BasicUrlConverter implements UrlConverter {
                 if (path.length == 4) return url;
 
                 Block block = comp.getBlock(path[4]);
-                log.debug("Will try to display " + block);
+                if (log.isDebugEnabled()) {
+                     log.debug("Will try to display " + block);
+                }
                 if (block == null) {
                     throw new RuntimeException("No block " + path[4] + " in component " + path[3]);
                 }
