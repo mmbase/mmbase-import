@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.90 2007-06-19 13:59:30 michiel Exp $
+ * @version $Id: Module.java,v 1.91 2007-06-19 14:58:02 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -264,11 +264,11 @@ public abstract class Module extends DescribedFunctionProvider {
     /**
      * Override properties through application context
      * @param contextPath path in application context where properties are located
-     * @since MMBase 1.8.2
+     * @since MMBase 1.8.5
      */
-    public void loadInitParameters(String contextPath) {
+    public void loadInitParameters() {
         try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
+            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase/" + getName());
             properties.putAll(contextMap);
 
         } catch (javax.naming.NamingException ne) {
@@ -537,7 +537,7 @@ public abstract class Module extends DescribedFunctionProvider {
                     parser.getLocalizedGUIName(mod.getLocalizedGUIName());
 
                     mod.properties = parser.getProperties();
-                    mod.loadInitParameters("mmbase/" + mod.getName());
+                    mod.loadInitParameters();
 
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
