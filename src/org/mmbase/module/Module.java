@@ -13,6 +13,7 @@ import java.util.*;
 import java.net.*;
 import org.xml.sax.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.ModuleReader;
 
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77.2.2 2006-09-10 17:04:36 nklasens Exp $
+ * @version $Id: Module.java,v 1.77.2.3 2007-06-19 14:19:11 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -187,10 +188,13 @@ public abstract class Module extends FunctionProvider {
      */
     public String getInitParameter(String key) {
         if (properties != null) {
-            String value=(String)properties.get(key);
+            String value=(String) properties.get(key);
             if (value == null) {
                 key = key.toLowerCase();
-                value = (String)properties.get(key);
+                value = (String) properties.get(key);
+                if (value == null && MMBaseContext.isInitialized()) {
+                    value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
+                }
                 // try the system property, set on the JVM commandline
                 // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
                 // -Dmmbaseroot.machinename=myname
@@ -237,11 +241,13 @@ public abstract class Module extends FunctionProvider {
     public void loadInitParameters(String contextPath) {
         try {
             Map contextMap = ApplicationContextReader.getProperties(contextPath);
+            log.service("Loading parameters " + contextPath + " from " + contextPath);        
             if (!contextMap.isEmpty()) {
                 properties.putAll(contextMap);
             }
+               
         } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+            log.service("Can't obtain properties from application context: " + ne.getMessage());
         }
     }
 
@@ -288,6 +294,7 @@ public abstract class Module extends FunctionProvider {
      * @since MMBase-1.6.2
      */
     public static synchronized final void shutdownModules() {
+        log.info("Shutting down modules by ", new Exception());
         Iterator i = getModules();
         while (i != null && i.hasNext()) {
             Module m = (Module) i.next();
@@ -440,7 +447,7 @@ public abstract class Module extends FunctionProvider {
                 InputSource is = moduleLoader.getInputSource(file);
                 if (is != null) parser = new ModuleReader(is);
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
             }
             if (parser != null && parser.getStatus().equals("active")) {
                 String className = parser.getClassName();
@@ -461,6 +468,7 @@ public abstract class Module extends FunctionProvider {
 
                     results.put(fileName, mod);
 
+
                     mod.properties = new Hashtable(parser.getProperties());
 
                     // set the module name property using the module's filename
@@ -469,6 +477,9 @@ public abstract class Module extends FunctionProvider {
 
                     mod.setMaintainer(parser.getMaintainer());
                     mod.setVersion(parser.getVersion());
+
+                    mod.loadInitParameters("mmbase/" + mod.getName());
+
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
                               "which was specified in the module:'" + file + " '(" + cnfe + ")" );
