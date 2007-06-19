@@ -150,7 +150,7 @@
   </block>
   <block name="showcache" 
          mimetype="text/html">
-    <body jsp="cache/showcache.jsp">
+    <body jsp="cache/show.jspx">
       <param name="cache"        type="String" required="true"/>
       <param name="deleteentry"  type="String" />
       <param name="deletekey"    type="String" />
