@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.28 2007-06-19 10:39:21 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.29 2007-06-19 11:56:24 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
@@ -45,7 +45,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * Maximum size (capacity) of the table
      */
-    private int size = 0;
+    private int maxSize = 0;
 
     /**
      * Creates the URL Hashtable.
@@ -57,7 +57,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         backing = new Hashtable<K, LRUEntry>(cap, lf);
         root.next = dangling;
         dangling.prev = root;
-        this.size = size;
+        this.maxSize = size;
     }
 
     /**
@@ -105,11 +105,12 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
             work = new LRUEntry(key, value);
             backing.put(key, work);
             appendEntry(work);
-            if (backing.size() > size) {
-                Object was =  remove(root.next.key);
+            if (backing.size() > maxSize) {
+                K remove = root.next.key;
+                Object was =  remove(remove);
                 assert was != null;
                 if (was == null) {
-                    log.warn("Nothing was removed, while that was expected " + root.next.key + " should have been removed");
+                    log.warn("Nothing was removed, while that was expected " + remove + " should have been removed");
                 }
             }
         }
@@ -221,19 +222,19 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      */
     public void setMaxSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size of LRUHashtable to negative value");
-        if (size < this.size) {
-            while(size() > size) {
+        if (size < maxSize) {
+            while(size() > maxSize) {
                 remove(root.next.key);
             }
         }
-        this.size = size;
+        maxSize = size;
     }
 
     /**
      * Return the maximum size of the table
      */
     public int maxSize() {
-        return size;
+        return maxSize;
     }
 
     /**
@@ -262,7 +263,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * and a description of the underlying hashtable
      */
     public String toString() {
-        return "Size=" + size() + ", Max=" + size;
+        return "Size=" + size() + ", Max=" + maxSize;
     }
 
     /**
@@ -275,7 +276,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     public String toString(boolean which) {
         if (which) {
             StringBuilder b = new StringBuilder();
-            b.append("Size " + size() + ", Max " + size + " : ");
+            b.append("Size " + size() + ", Max " + maxSize + " : ");
             b.append(super.toString());
             return b.toString();
         } else {
