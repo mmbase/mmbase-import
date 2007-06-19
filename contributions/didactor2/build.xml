@@ -6,6 +6,12 @@
     </classpath>
   </taskdef>
 
+  <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask">
+    <classpath>
+      <pathelement location="lib/AntelopeTasks_3.4.2.jar" />
+    </classpath>
+  </taskdef>
+
   <property file="my.properties"/>
   <property file="configure.properties"/>
   <property file="build.properties"/>
@@ -45,9 +51,6 @@
   	
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
     <foreach list="${providers}" target="build.provider" inheritall="true" param="provider" />
-    <replace file="${build.webapp.dir}/WEB-INF/web.xml"
-             token="$${emailsenderdomain}"
-             value="${emailsenderdomain}"/>
 
      <ant antfile="configure.xml" target="config"/>
      <if>
@@ -461,7 +464,6 @@
    -->
    <target name="war" depends="info,webapp">
      <property name="tag"         value="$Name: not supported by cvs2svn $" />
-     <!--
      <if>
        <contains string="${tag}" substring="Name:  $" />
        <then>
@@ -469,10 +471,20 @@
          <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
        </then>
        <else>
-         <property name="war.name.postfix"         value="${tag}" />
+         <!-- 
+              WTF, I hate Ant
+              2 external libraries and 8 lines to do something completely trivial:
+         -->
+         <stringutil string="${tag}" property="tag.length">
+           <length/>
+         </stringutil>
+         <math result="shorter" operand1="${tag.length}" operation="-" operand2="2" datatype="int"/>
+         <stringutil string="${tag}" property="tag.name">           
+           <substring beginindex="7" endindex="${shorter}" />
+         </stringutil>
+         <property name="war.name.postfix" value="-${tag.name}" />
        </else>
      </if>
-     -->
      <tstamp />
      <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
 
