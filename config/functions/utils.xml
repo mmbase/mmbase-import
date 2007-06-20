@@ -37,11 +37,16 @@
   </function>
   -->
 
-  <function name="toString">
+  <function name="cloudcontext">
+    <type>singleton</type>
+    <class>org.mmbase.bridge.ContextProvider</class>
+    <method>getDefaultCloudContext</method>
+  </function>
+
+  <function name="mmbase">
     <type>class</type>
-    <class>org.mmbase.util.Casting</class>
-    <method>toString</method>
-    <param name="object" type="Object" />
+    <class>org.mmbase.module.core.MMBase</class>
+    <method>getMMBase</method>
   </function>
 
 </functionset>
