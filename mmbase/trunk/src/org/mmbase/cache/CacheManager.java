@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.16 2007-06-19 21:26:42 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.17 2007-06-20 14:24:06 michiel Exp $
  */
 public class CacheManager {
 
@@ -53,6 +53,15 @@ public class CacheManager {
      */
     public static Bean getBean(String name) {
         return new Bean(getCache(name));
+    }
+    public static Set<Bean> getQueryCaches() {
+        Set<Bean> result = new HashSet<Bean>();
+        for (Cache c : caches.values()) {
+            if (c instanceof QueryResultCache) {
+                result.add(new Bean(c));
+            }
+        }
+        return result;
     }
 
     /**
@@ -334,6 +343,7 @@ public class CacheManager {
         public int getByteSize() { return cache.getByteSize(); }
         public int getCheapByteSize() { return cache.getCheapByteSize(); }
         public boolean isEmpty() { return cache.isEmpty(); }
+        public ReleaseStrategy getReleaseStrategy() { return cache instanceof QueryResultCache ? ((QueryResultCache) cache).getReleaseStrategy() : null;}
         public Map<K, V> getMap() {  return cache; }
         public Map<K, Integer> getCounts() {
             return new AbstractMap<K, Integer>() {
