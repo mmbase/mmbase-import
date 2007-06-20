@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.45 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: Utils.java,v 1.46 2007-06-20 16:54:21 michiel Exp $
  */
 
 public class Utils {
@@ -261,7 +261,7 @@ public class Utils {
             }
             // otherwise return the text contained by the node's children
             Node childnode=node.getFirstChild();
-            StringBuffer value = new StringBuffer();
+            StringBuilder value = new StringBuilder();
             while (childnode != null) {
                 if ((childnode.getNodeType()==Node.TEXT_NODE) || (childnode.getNodeType()==Node.CDATA_SECTION_NODE)) {
                     value.append(childnode.getNodeValue());
@@ -451,13 +451,13 @@ public class Utils {
      * @param       transformer     The transformer.
      * @param       params          The params to be placed. Standard name/value pairs.
      */
-    protected static void setStylesheetParams(Transformer transformer, Map<String,String> params, Cloud cloud){
-        if (params==null) return;
+    protected static void setStylesheetParams(Transformer transformer, Map<String,String> params, Cloud cloud) {
+        if (params == null) return;
 
-        Iterator<Map.Entry<String,String>> i = params.entrySet().iterator();
-        while (i.hasNext()){
-            Map.Entry<String,String> entry = i.next();
-            log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (log.isDebugEnabled()) {
+                log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
+            }
             transformer.setParameter(entry.getKey(), entry.getValue());
         }
         if (cloud != null) {
@@ -476,7 +476,7 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map<String,String> params, Cloud cloud) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map<String, String> params, Cloud cloud) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
         if (xslFile == null) throw new RuntimeException("No xslFile given");
         Source xsl;
@@ -499,7 +499,7 @@ public class Utils {
         if (params != null) {
             setStylesheetParams(transformer, params, cloud);
         }
-        if (log.isDebugEnabled()) log.trace("transforming: \n" + stringFormatted(node));
+        if (log.isTraceEnabled()) log.trace("transforming: \n" + stringFormatted(node));
         transformer.transform(new DOMSource(node), result);
     }
 
@@ -565,8 +565,8 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map<String,String> params, Cloud cloud) throws TransformerException {
-        if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map<String, String> params, Cloud cloud) throws TransformerException {
+        if (log.isTraceEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         StringWriter res = new StringWriter();
         transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params, cloud);
@@ -594,14 +594,14 @@ public class Utils {
      * @return     a string with the result.
      */
     public static String transformAttribute(Node context, String attributeTemplate) {
-        return transformAttribute(context,attributeTemplate,false,null);
+        return transformAttribute(context,attributeTemplate, false, null);
     }
 
     /**
      * same as above, but now you can supply if the given attributeTemplate is already a xpath or not. (Default should be false).
      */
     public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsPath) {
-        return transformAttribute(context,attributeTemplate,plainTextIsPath,null);
+        return transformAttribute(context, attributeTemplate, plainTextIsPath, null);
     }
 
     /**
@@ -619,7 +619,8 @@ public class Utils {
     */
     public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map<String,String> params) {
         if (attributeTemplate == null) return null;
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
+
         String template = fillInParams(attributeTemplate, params);
         if (plainTextIsXpath && template.indexOf("{") == -1) {
             template = "{" + template + "}";
@@ -636,6 +637,9 @@ public class Utils {
             } else{
                 result.append(part);
             }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Transforming " + attributeTemplate + " using " + params + " --> " + result);
         }
         return result.toString();
     }
@@ -686,11 +690,9 @@ public class Utils {
      * @param     params  the table with params (name/value pairs)
      * @return    The resulting string
      */
-    public static String fillInParams(String text, Map<String,String> params) {
+    public static String fillInParams(String text, Map<String, String> params) {
         if (params == null) return text;
-        Iterator<Map.Entry<String,String>> i = params.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<String,String> entry = i.next();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             // accept both $xxx and {$xxx}
             text = multipleReplace(text, "{$" + entry.getKey() + "}", entry.getValue());
             text = multipleReplace(text, "$" + entry.getKey(), entry.getValue());
@@ -708,11 +710,11 @@ public class Utils {
      * @param       replacewith     the string which should be placed.
      */
     public static String multipleReplace(String text, String searchfor, String replacewith) {
-        if (text==null || searchfor==null || replacewith==null) return null;
-        if (searchfor.indexOf(replacewith)>-1) return text; // cannot replace, would create an infinite loop!
-        int pos=-1;
-        int len=searchfor.length();
-        while ((pos=text.indexOf(searchfor))>-1) {
+        if (text == null || searchfor == null || replacewith == null) return null;
+        if (searchfor.indexOf(replacewith) > -1) return text; // cannot replace, would create an infinite loop!
+        int pos = -1;
+        int len = searchfor.length();
+        while ((pos = text.indexOf(searchfor)) > -1) {
             text = text.substring(0,pos) + replacewith + text.substring(pos+len);
         }
         return text;
