@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.58 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.59 2007-06-20 14:21:50 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -315,8 +315,8 @@ public class DataTypeDefinition {
             String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
             String value = DataTypeXml.getAttribute(element, "value");
             Class claz = dataType.getClass();
-            Method method = claz.getMethod(methodName, new Class[] {String.class});
-            method.invoke(dataType, new Object[] { value });
+            Method method = claz.getMethod(methodName, String.class);
+            method.invoke(dataType, value);
         } catch (NoSuchMethodException nsme) {
             log.warn(nsme);
             return false;
