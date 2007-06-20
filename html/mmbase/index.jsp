@@ -23,13 +23,10 @@
         </li>
       </mm:haspage>
       <mm:haspage page="admin">
-        <li><a href="admin">Admin pages</a></li>
+        <li><a href="about">Admin pages</a></li>
       </mm:haspage>
       <mm:haspage page="security">
         <li><a href="security">Security administration</a></li>
-      </mm:haspage>
-      <mm:haspage page="mpl-1.0.jsp">
-        <li><a href="mpl-1.0.jsp">License</a></li>
       </mm:haspage>
     </ul>
     <hr />
