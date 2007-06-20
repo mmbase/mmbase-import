@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.47 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.48 2007-06-20 17:15:10 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -360,15 +360,15 @@ public class WizardDatabaseConnector {
      *                     The first ordernr in a list is 1
      */
     private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
-                                  Node objectNode, Map<String,String> params, int createorder)  throws WizardException {
+                                  Node objectNode, Map<String, Object> params, int createorder)  throws WizardException {
         // fill-in (or place) defined fields and their values.
         NodeList fields = Utils.selectNodeList(objectDef, "field");
-        for (int i=0; i<fields.getLength(); i++) {
+        for (int i = 0; i<fields.getLength(); i++) {
             Node field = fields.item(i);
             String fieldname = Utils.getAttribute(field, "name");
             // does this field already exist?
-            Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
-            if (datafield==null) {
+            Node datafield = Utils.selectSingleNode(objectNode, "field[@name='" + fieldname + "']");
+            if (datafield == null) {
                 // None-existing field (getNew/getNewRelationa always return all fields)
                 String type = Utils.getAttribute(objectDef, "type");
                 throw new WizardException("field " + fieldname + " does not exist in '" + type + "'");
@@ -379,8 +379,11 @@ public class WizardDatabaseConnector {
             // the variable $pos is used to make that distinction
             params.put("pos",createorder+"");
             Node parent = data.getDocumentElement();
-            if (log.isDebugEnabled()) log.debug("parent="+parent.toString());
-            value = Utils.transformAttribute(parent,value,false,params);
+            if (log.isDebugEnabled()) {
+                log.debug("parent=" + parent.toString());
+            }
+
+            value = Utils.transformAttribute(parent, value, false, params);
             params.remove("pos");
             if (value == null) {
                 value = "";
@@ -406,7 +409,7 @@ public class WizardDatabaseConnector {
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String,String> params) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String, Object> params) throws WizardException {
         return createObject(data, targetParentNode, objectDef, params, 1);
     }
 
@@ -442,9 +445,9 @@ public class WizardDatabaseConnector {
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String,String> params, int createorder) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String, Object> params, int createorder) throws WizardException {
 
-        String context = params.get("context");
+        String context = (String) params.get("context");
 
         if (objectDef == null) throw new WizardException("No 'objectDef' given"); // otherwise NPE in getAttribute
 
@@ -500,7 +503,7 @@ public class WizardDatabaseConnector {
             // determine destination
             // dnumber can be null
             String dnumber = Utils.getAttribute(relation, "destination", null);
-            dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
+            dnumber = Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
             String dtype = "";
 
             String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
@@ -569,7 +572,7 @@ public class WizardDatabaseConnector {
      * @param cmd the command Element to execute
      * @param binaries a HashMap containing files (binaries) uploaded in the wizard
      */
-    private Element sendCommand(Element cmd, Map<String,byte[]> binaries) throws WizardException {
+    private Element sendCommand(Element cmd, Map<String, byte[]> binaries) throws WizardException {
         Dove    dove    = new Dove(Utils.emptyDocument());
         Element results = dove.executeRequest(cmd, userCloud, binaries);
         NodeList errors = Utils.selectNodeList(results, ".//error");
@@ -640,7 +643,7 @@ public class WizardDatabaseConnector {
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
      */
-    public Element put(Document originalData, Document newData, Map<String,byte[]> binaries) throws WizardException {
+    public Element put(Document originalData, Document newData, Map<String, byte[]> binaries) throws WizardException {
         Node putcmd =getPutData(originalData, newData);
         return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
