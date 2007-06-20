@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.3 2007-06-20 10:32:53 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.4 2007-06-20 11:52:34 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -101,6 +101,9 @@ public class BasicUrlConverter implements UrlConverter {
         BasicFramework.State state = framework.getState(request, false);
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
+
+        boolean explicitComponent = component != null;
+
         if (component == null) {
             // if no explicit component specified, suppose current component, if there is one:
             if (state != null) {
@@ -116,14 +119,29 @@ public class BasicUrlConverter implements UrlConverter {
         } else {
             // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
             
-            boolean filteredMode = request.getServletPath().startsWith("/mmbase/");
+            boolean filteredMode = request.getServletPath().startsWith("/mmbase/") || (state == null && explicitComponent);
 
-            if ("".equals(path)) path = null; 
-            if (path == null) path = frameworkParameters.get(BasicFramework.BLOCK);
+            Map<String, Object> map = new TreeMap<String, Object>();
 
-
-            // if no explicit block, then this will be an URL to the current block.
-            Block block = path != null ? component.getBlock(path) : state.getRenderer().getBlock();
+            Block block;
+            String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
+            if (blockParam != null) {
+                 block = component.getBlock(blockParam);
+                 if (! filteredMode) {
+                    map.put(BasicFramework.BLOCK.getName(), block.getName());
+                    map.put(BasicFramework.COMPONENT.getName(), component.getName());
+                 }
+            } else {
+                block = component.getBlock(path);
+                if (block != null && ! filteredMode) {
+                    path = null; // used, determin path with 
+                    map.put(BasicFramework.BLOCK.getName(), block.getName());
+                    map.put(BasicFramework.COMPONENT.getName(), component.getName());
+                }
+                if (block == null && state != null) {
+                    block = state.getRenderer().getBlock();
+                }
+            }
 
 
             if (block == null) {
@@ -141,7 +159,6 @@ public class BasicUrlConverter implements UrlConverter {
             Parameters blockParameters = block.createParameters();
 
 
-            Map<String, Object> map = new TreeMap<String, Object>();
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
@@ -163,7 +180,7 @@ public class BasicUrlConverter implements UrlConverter {
             }
             String page = filteredMode ? 
                 "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
-                path == null ? request.getServletPath() : path;
+                path == null ? FrameworkFilter.getPath(request) : path;
             StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
             return sb;            
 
@@ -173,7 +190,7 @@ public class BasicUrlConverter implements UrlConverter {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith("/mmbase")) {
-            String sp = request.getServletPath();
+            String sp = FrameworkFilter.getPath(request);
             String[] path = sp.split("/");
             if (log.isDebugEnabled()) {
                 log.debug("Going to filter " + Arrays.asList(path));           

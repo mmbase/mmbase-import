@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * done by UrlConverter. Based upon code from LeoCMS and CMSC.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.5 2007-06-20 10:32:00 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.6 2007-06-20 11:52:34 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -97,9 +97,15 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
     }
     
 
-    protected static String getPath(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return path != null ? path : request.getPathInfo();
+    public static String getPath(HttpServletRequest request) {
+        String path = (String) request.getAttribute("javax.servlet.forward.request_uri");
+        if (path != null) path = path.substring(request.getContextPath().length());
+        path = (String) request.getRequestURI();
+        if (path != null) path = path.substring(request.getContextPath().length());
+        // i think path is always != null now.
+        if (path == null) path = request.getServletPath();
+        if (path == null) path = request.getPathInfo();
+        return path;
     }
     /**
      * Filters a request. 
@@ -121,7 +127,19 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         }
         
         if (request instanceof HttpServletRequest) {
+
+        
             HttpServletRequest req = (HttpServletRequest) request;
+            if (log.isTraceEnabled()) {
+                log.trace("Request URI: " + req.getRequestURI());
+                log.trace("Request URL: " + req.getRequestURL());
+                Enumeration e = request.getAttributeNames();
+                while (e.hasMoreElements()) {
+                    String att = (String) e.nextElement();
+                    log.trace("attribute " + att + ": " + request.getAttribute(att));
+                }
+            }
+
             HttpServletResponse res = (HttpServletResponse) response;
             String path = getPath(req);
             if (log.isDebugEnabled()) log.debug("Processing path: " + path);
