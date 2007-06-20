@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.2 2007-06-19 19:14:20 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.3 2007-06-20 10:32:53 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -96,13 +96,13 @@ public class BasicUrlConverter implements UrlConverter {
         if (log.isDebugEnabled()) {
             log.debug(" framework parameters " + frameworkParameters);
         }
-        HttpServletRequest req = frameworkParameters.get(Parameter.REQUEST);
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
 
+        BasicFramework.State state = framework.getState(request, false);
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
         if (component == null) {
             // if no explicit component specified, suppose current component, if there is one:
-            BasicFramework.State state = framework.getState(req, false);
             if (state != null) {
                 component = state.getRenderer().getBlock().getComponent();
             }
@@ -111,32 +111,43 @@ public class BasicUrlConverter implements UrlConverter {
         if (component == null) {
             log.debug("Not currently rendering a component");
             // cannot be handled by Framework
-            StringBuilder sb = BasicUrlConverter.getUrl(path, parameters, req, escapeAmps);
+            StringBuilder sb = BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
             return sb;
         } else {
             // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
+            
+            boolean filteredMode = request.getServletPath().startsWith("/mmbase/");
 
             if ("".equals(path)) path = null; 
             if (path == null) path = frameworkParameters.get(BasicFramework.BLOCK);
 
-            BasicFramework.State state = framework.getState(req, false);
 
             // if no explicit block, then this will be an URL to the current block.
             Block block = path != null ? component.getBlock(path) : state.getRenderer().getBlock();
 
+
+            if (block == null) {
+                log.debug("Cannot determin a block, suppose it a normal link");
+                if (filteredMode) {
+                    return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
+                } else {
+                    
+                }
+            }
             if (log.isDebugEnabled()) {
                 log.debug("Rendering component " + component + " generating URL to " + block);
             }
 
             Parameters blockParameters = block.createParameters();
 
+
             Map<String, Object> map = new TreeMap<String, Object>();
-            for (Object e : req.getParameterMap().entrySet()) {
+            for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
                 if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in  servletpath, or not relevant
-                if (k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
-                if (k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
+                if (filteredMode && k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
+                if (filteredMode && k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
                 map.put(k, entry.getValue()[0]);
             }
             for (Map.Entry<String, Object> entry : parameters) {
@@ -146,18 +157,21 @@ public class BasicUrlConverter implements UrlConverter {
                 map.putAll(state.getMap(blockParameters.toMap()));
             }
 
-            String category = req.getParameter(BasicFramework.CATEGORY.getName());
+            String category = request.getParameter(BasicFramework.CATEGORY.getName());
             if (category == null) {
                 Block.Type[] classification = block.getClassification();
             }
-            String page = "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName();
-            StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), req, escapeAmps);
+            String page = filteredMode ? 
+                "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
+                path == null ? request.getServletPath() : path;
+            StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
             return sb;            
 
         }
     }
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        if (page == null) throw new IllegalArgumentException();
         if (page.startsWith("/mmbase")) {
             String sp = request.getServletPath();
             String[] path = sp.split("/");
@@ -195,6 +209,7 @@ public class BasicUrlConverter implements UrlConverter {
                 return BasicUrlConverter.getUrl(page, params, request, false);
             }
         } else {            
+            log.debug("Leaving unfiltered");
             return BasicUrlConverter.getUrl(page, params, request, false);
         }
     }
