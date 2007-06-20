@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.24 2006-12-13 10:17:30 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.25 2007-06-20 14:29:55 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -46,7 +46,7 @@
 
 
 
-  <xsl:variable name="newstype">xmlnews</xsl:variable>
+  <xsl:param name="newstype">xmlnews</xsl:param>
   <!-- I had an 'xmlnews' type... Can easily switch beteen them like
        this.  Perhaps you prefer 'news' itself to contain XML fields. -->
 
