@@ -1,0 +1,19 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"          
+          version="1.2"
+    >
+  <mm:import externid="blockType" from="request" />
+  <p>${blockType.name}</p>
+  <ul>
+    <mm:stringlist referid="blockType.subTypes">
+      <mm:write request="blockType" />
+      <li><mm:include page="blockType.jspx" /></li>
+    </mm:stringlist>
+  </ul>
+  <ul>
+    <mm:stringlist referid="blockType.blocks">
+      <li>${_.component} : ${_}</li>
+    </mm:stringlist>
+  </ul>
+
+</jsp:root>
