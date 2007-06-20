@@ -1,7 +1,7 @@
 <!--                                                                                                                                                                                  
      This is a very common way to override an xslt.
 
-  @version: $Id: 2xhtml.xslt,v 1.1 2006-09-18 14:12:53 michiel Exp $                                                                                                               
+  @version: $Id: 2xhtml.xslt,v 1.2 2007-06-20 14:29:28 michiel Exp $                                                                                                               
 -->
 <xsl:stylesheet
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
@@ -16,6 +16,8 @@
   <xsl:import href="mm:xslt/2xhtml.xslt" />
 
   <xsl:output method="xml" omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
+
+  
 
 </xsl:stylesheet>
 
