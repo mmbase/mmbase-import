@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.153 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.154 2007-06-20 17:15:10 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -114,12 +114,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private Document originalData;
 
     // not yet committed uploads are stored in these hashmaps
-    private Map<String,byte[]> binaries = new HashMap<String,byte[]>();
-    private Map<String,String> binaryNames = new HashMap<String,String>();
-    private Map<String,String> binaryPaths = new HashMap<String,String>();
+    private Map<String, byte[]> binaries = new HashMap<String, byte[]>();
+    private Map<String, String> binaryNames = new HashMap<String, String>();
+    private Map<String, String> binaryPaths = new HashMap<String, String>();
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    private Map<String,String> variables = new HashMap<String,String>();
+    private Map<String, Object> variables = new HashMap<String, Object>();
 
     // the constraints received from mmbase are stored + cached in this xmldom
     private Document constraints;
@@ -333,8 +333,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param objectNumber number of the object to check
      * @throws WizardException if the object cannot be retrieved
      */
-    protected boolean mayDeleteNode(String objectNumber)
-        throws WizardException {
+    protected boolean mayDeleteNode(String objectNumber) throws WizardException {
         return checkNode(objectNumber, "maydelete");
     }
 
@@ -508,7 +507,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
      */
-    public void writeHtmlForm(Writer out, String instanceName, Map<String,String> externParams)
+    public void writeHtmlForm(Writer out, String instanceName, Map<String, Object> externParams)
         throws WizardException, TransformerException {
         if (log.isDebugEnabled()) {
             log.debug("writeHtmlForm for " + instanceName);
@@ -518,7 +517,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         Document preForm = getPreForm(instanceName);
         Validator.validate(preForm, schema);
 
-        Map<String,String> params = new HashMap<String,String>(variables);
+        Map<String, Object> params = new HashMap<String, Object>(variables);
         params.put("ew_context", context);
 
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
@@ -2108,7 +2107,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                 NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
 
-                Map<String,String> fieldValues = new HashMap<String,String>();
+                Map<String, String> fieldValues = new HashMap<String, String>();
 
                 for (int j = 0; j < updatedFields.getLength(); j++) {
                     Node fieldNode = updatedFields.item(j);
