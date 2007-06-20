@@ -1,38 +1,42 @@
 <div
     class="component mm_c_core mm_c_b_license ${requestScope.className}"
     id="${requestScope.componentId}">
-  <h2>MOZILLA PUBLIC LICENSE</h2>
-  <h3>Version 1.0</h3>
+  <h1>MOZILLA PUBLIC LICENSE</h1>
+  <h2>Version 1.0</h2>
 
-<p></p><hr width="20%"><p>
-
-</p><p><b>1. Definitions.</b>
-</p><ul>
-
+  <h3>1. Definitions.</h3>
+  
+  <p>
     <b>1.1. ``Contributor''</b> means each entity that creates or contributes
     to the creation of Modifications.
-
-    <p><b>1.2. ``Contributor Version''</b> means the combination of the
+  </p>
+  
+  <p>
+    <b>1.2. ``Contributor Version''</b> means the combination of the
     Original Code, prior Modifications used by a Contributor, and the
-    Modifications made by that particular Contributor.
+    Modifications made by that particular Contributor.  
+  </p>
 
-    </p><p><b>1.3. ``Covered Code''</b> means the Original Code or Modifications
+  <p>
+    <b>1.3. ``Covered Code''</b> means the Original Code or Modifications
     or the combination of the Original Code and Modifications, in each case
     including portions thereof<b>.</b>
-
-    </p><p><b>1.4. ``Electronic Distribution Mechanism''</b> means a mechanism
+  </p>
+  
+  <p>
+    <b>1.4. ``Electronic Distribution Mechanism''</b> means a mechanism
     generally accepted in the software development community for the
-    electronic transfer of data.
-
-    </p><p><b>1.5. ``Executable''</b> means Covered Code in any form other than
-    Source Code.
-
-    </p><p><b>1.6. ``Initial Developer''</b> means the individual or entity
-    identified as the Initial Developer in the Source Code notice required by
-    <b>Exhibit A</b>.
-
-    </p><p><b>1.7. ``Larger Work''</b> means a work which combines Covered Code
-    or portions thereof with code not governed by the terms of this License.
+    electronic transfer of data.  
+  </p>
+  <p><b>1.5. ``Executable''</b> means Covered Code in any form other than
+  Source Code.
+  
+  </p><p><b>1.6. ``Initial Developer''</b> means the individual or entity
+  identified as the Initial Developer in the Source Code notice required by
+  <b>Exhibit A</b>.
+  
+  </p><p><b>1.7. ``Larger Work''</b> means a work which combines Covered Code
+  or portions thereof with code not governed by the terms of this License.
 
     </p><p><b>1.8. ``License''</b> means this document.
 
@@ -41,16 +45,14 @@
     Modifications.  When Covered Code is released as a series of files, a
     Modification is: 
 
-	</p><ul>
-
+	</p>
 	<p><b>A.</b> Any addition to or deletion from the contents of a file
 	containing Original Code or previous Modifications.
 
 	</p><p><b>B.</b> Any new file that contains any part of the Original
 	Code or previous Modifications.
 
-	</p></ul>
-
+	</p>
     <p><b>1.10. ``Original Code''</b> means Source Code of computer software
     code which is described in the Source Code notice required by <b>Exhibit
     A</b> as Original Code, and which, at the time of its release under this
@@ -75,13 +77,13 @@
     or (b) ownership of fifty percent (50%) or more of the outstanding shares
     or beneficial ownership of such entity.
 
-</p></ul>
+</p>
 <b>2. Source Code License.</b>
 <ul>
 
     <b>2.1. The Initial Developer Grant.</b>
 
-    <br>The Initial Developer hereby grants You a world-wide, royalty-free,
+    <br />The Initial Developer hereby grants You a world-wide, royalty-free,
     non-exclusive license, subject to third party intellectual property
     claims: 
 
@@ -102,7 +104,7 @@
 
     <p><b>2.2. Contributor Grant.</b>
 
-    <br>Each Contributor hereby grants You a world-wide, royalty-free,
+    <br />Each Contributor hereby grants You a world-wide, royalty-free,
     non-exclusive license, subject to third party intellectual property
     claims: 
 
@@ -128,7 +130,7 @@
 
     <b>3.1. Application of License.</b>
 
-    <br>The Modifications which You create or to which You contribute are
+    <br />The Modifications which You create or to which You contribute are
     governed by the terms of this License, including without limitation
     Section <b>2.2</b>.  The Source Code version of Covered Code may be
     distributed only under the terms of this License or a future version of
@@ -142,7 +144,7 @@
 
     <p><b>3.2. Availability of Source Code.</b>
 
-    <br>Any Modification which You create or to which You contribute must be
+    <br />Any Modification which You create or to which You contribute must be
     made available in Source Code form under the terms of this License either
     on the same media as an Executable version or via an accepted Electronic
     Distribution Mechanism to anyone to whom you made an Executable version
@@ -156,7 +158,7 @@
 
     </p><p><b>3.3. Description of Modifications.</b>
 
-    <br>You must cause all Covered Code to which you contribute to contain a
+    <br />You must cause all Covered Code to which you contribute to contain a
     file documenting the changes You made to create that Covered Code and the
     date of any change. You must include a prominent statement that the
     Modification is derived, directly or indirectly, from Original Code
@@ -170,7 +172,7 @@
 
 	<p><b>(a) Third Party Claims</b>. 
 
-	<br>If You have knowledge that a party claims an intellectual
+	<br/>If You have knowledge that a party claims an intellectual
 	property right in particular functionality or code (or its
 	utilization under this License), you must include a text file with
 	the source code distribution titled ``LEGAL'' which describes the
@@ -185,7 +187,7 @@
 
 	</p><p><b>(b) Contributor APIs</b>. 
 
-	<br>If Your Modification is an application programming interface and
+	<br />If Your Modification is an application programming interface and
 	You own or control patents which are reasonably necessary to
 	implement that API, you must also include this information in the
 	LEGAL file.
@@ -194,7 +196,7 @@
 
     <p><b>3.5. Required Notices.</b>
 
-    <br>You must duplicate the notice in <b>Exhibit A</b> in each file of the
+    <br />You must duplicate the notice in <b>Exhibit A</b> in each file of the
     Source Code, and this License in any documentation for the Source Code,
     where You describe recipients' rights relating to Covered Code. If You
     created one or more Modification(s), You may add your name as a
@@ -214,7 +216,7 @@
 
     </p><p><b>3.6. Distribution of Executable Versions.</b>
 
-    <br>You may distribute Covered Code in Executable form only if the
+    <br />You may distribute Covered Code in Executable form only if the
     requirements of Section <b>3.1-3.5</b> have been met for that Covered
     Code, and if You include a notice stating that the Source Code version of
     the Covered Code is available under the terms of this License, including
@@ -237,7 +239,7 @@
 
     </p><p><b>3.7. Larger Works.</b>
 
-    <br>You may create a Larger Work by combining Covered Code with other
+    <br />You may create a Larger Work by combining Covered Code with other
     code not governed by the terms of this License and distribute the Larger
     Work as a single product. In such a case, You must make sure the
     requirements of this License are fulfilled for the Covered Code.
@@ -270,13 +272,13 @@
 
     <b>6.1. New Versions</b>. 
 
-    <br>Netscape Communications Corporation (``Netscape'') may publish
+    <br />Netscape Communications Corporation (``Netscape'') may publish
     revised and/or new versions of the License from time to time.  Each
     version will be given a distinguishing version number.
 
     <p><b>6.2. Effect of New Versions</b>. 
 
-    <br>Once Covered Code has been published under a particular version of
+    <br />Once Covered Code has been published under a particular version of
     the License, You may always continue to use it under the terms of that
     version. You may also choose to use such Covered Code under the terms of
     any subsequent version of the License published by Netscape. No one other
@@ -285,7 +287,7 @@
 
     </p><p><b>6.3. Derivative Works</b>. 
 
-    <br>If you create or use a modified version of this License (which you
+    <br />If you create or use a modified version of this License (which you
     may only do in order to apply it to code which is not already Covered
     Code governed by this License), you must (a) rename Your license so that
     the phrases ``Mozilla'', ``MOZILLAPL'', ``MOZPL'', ``Netscape'', ``NPL''
@@ -406,13 +408,13 @@
     License for the specific language governing rights and limitations under
     the License.
 
-    </p><p>The Original Code is ______________________________________.
+    </p><pre>
+    The Original Code is ______________________________________.    
+    The Initial Developer of the Original Code is    ________________________.  
+    Portions created by ______________________ are Copyright (C) ______ _______________________.  
+    All Rights Reserved.
 
-    </p><p>The Initial Developer of the Original Code is
-    ________________________.  Portions created by ______________________ are
-    Copyright (C) ______ _______________________.  All Rights Reserved.
-
-    </p><p>Contributor(s): ______________________________________.''
-
-</p></ul>
+    Contributor(s): ______________________________________.
+    </pre>
+</ul>
 </div>

@@ -22,7 +22,7 @@
          classification="mmbase.about"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase licence</description>
-    <body jsp="/mmbase/mpl-1.0.div.jsp" />
+    <body jsp="mpl-1.0.jspx" />
   </block>
   
   <!-- admin -->
