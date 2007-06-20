@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.21 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: EmailHandler.java,v 1.22 2007-06-20 14:32:27 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -280,7 +280,7 @@ public class EmailHandler {
         // the headers for html mail
         if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
             headers.put("Mime-Version", "1.0");
-            headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\"");
+            headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\""); // oh no!
         }
 
         // is the don't mail tag set ? this allows
