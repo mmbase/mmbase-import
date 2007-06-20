@@ -42,11 +42,11 @@
  * The essential bits are the id's with the corresponding classes for the subitems.
  *
  * @author Michiel Meeuwissen <jsmenu@meeuw.org>
- * $Id: menu.js,v 1.10 2006-07-11 18:49:40 michiel Exp $
+ * $Id: menu.js,v 1.11 2007-06-20 14:29:28 michiel Exp $
  */
 
 //
-var TIMEOUT    = 1000;    // ms
+var TIMEOUT    = 3000;    // ms
 var MENU_CLASS = "mmenu"; // class of a menu element
 var debugarea;            // textarea with id menu_debug if that is present on the page.
 
@@ -80,7 +80,7 @@ function getElementsByClass(node, searchClass, tag) {
   var els = node.getElementsByTagName(tag);
   var elsLen = els.length;
   var pattern = new RegExp("\\b" + searchClass + "\\b");
-  for (i = 0, j = 0; i < elsLen; i++) {
+  for (var i = 0, j = 0; i < elsLen; i++) {
     if ( pattern.test(els[i].className) ) {
         classElements[j] = els[i];
         j++;
@@ -96,7 +96,8 @@ function getElementsByClassNonNesting(node, searchClass, tag, result) {
     var childs = node.childNodes;
     var pattern = new RegExp("\\b" + searchClass + "\\b");
     tag = tag.toUpperCase();
-    for (i = 0; i < childs.length; i++) {
+    //debug("Searching " + childs.length + " of " + node.tagName);
+    for (var i = 0; i < childs.length; i++) {
         if (pattern.test(childs[i].className) && (tag == '*' || tag == childs[i].tagName.toUpperCase())) {
             result[result.length] = childs[i];
         } else {
@@ -117,7 +118,9 @@ function getSubMenus(elm, searchClass) {
 function initMenu(menuId, reposition) {
     if (!debugarea) debugarea = document.getElementById("menu_debug");
     var menu = document.getElementById(menuId);
+    debug("initing " + menuId);
     initMenuElement(menu, reposition, '');
+
 }
 function initMenuElement(menu, reposition) {
     var menuItems = getElementsByClassNonNesting(menu, MENU_CLASS, "a");
@@ -171,7 +174,10 @@ function getMenuByParent(elm) {
  * The mouse over event of a menu. It marks the menu so that it cannot collapse now.
  */
 function useMenu(event) {
+    var thisMenu = getTarget(event);
+    thisMenu._inuse = true;
     var menu = getMenuByParent(getTarget(event));
+    debug("XXXUsing menu " + menu.id);
     if (menu) {
         menu._inuse = true;
         debug("Marking menu " + menu.id + " in use on event on " + getTarget(event));
@@ -185,7 +191,7 @@ function unuseMenu(event) {
     var menu = getMenuByParent(getTarget(event));
     if (menu) {
         menu._inuse = false;
-        debug("Unusing menu " + menu.id + " on " + getTarget(event));
+        debug("Unusing menu " + menu.id + " on " + getTarget(event).tagName);
         setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
@@ -199,18 +205,17 @@ function openMenu(event) {
     debug("opening " + menu.id + " ? " + menu.tagName);
     // collapse siblings
     for (var i = 0 ; i < menu.siblings.length ; i++) {
-        debug("FOUND" + menu.siblings[i].id);
+        //debug("FOUND" + menu.siblings[i].id);
         var sibl = menu.siblings[i];
         if (sibl != menu) {
-            debug("Collapsing other sibling of " + menu.id + ": " + sibl);
-            collapseMenu(sibl.id);
+            //debug("Collapsing other sibling of " + menu.id + ": " + sibl);
+            //collapseMenu(sibl.id);
         }
     }
     menu._inuse = true;
-    debug("marked used " + menu.id);
+    debug("marked used " + menu.tagName + " " + menu.id);
     var subMenus = getSubMenus(menu._parent, menu.id);
     for (var i = 0 ; i < subMenus.length; i++) {
-        debug("opening because because of " + menu.tagName + "/" + menu.id);
         var subMenu = subMenus[i];
         subMenu.style.display = "block";
         subMenu.style.visibility = "visible";
@@ -249,9 +254,9 @@ function positionMenu(subMenu) {
 function closeMenu(event) {
     var menu = getMenuByClass(getTarget(event));
     var subMenus = getSubMenus(menu._parent, menu.id);
-    menu._inuse = false;
     for (var i = 0 ; i < subMenus.length; i++) {
-        debug("collapsing because because of " + menu.tagName + "/" + menu.id + " on mouse out of " + getTarget(event));
+        debug("collapsing because because of " + menu.tagName + "/" + menu.id + " on mouse out of " + getTarget(event));        
+        menu._inuse = false;
         setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
@@ -260,6 +265,7 @@ function closeMenu(event) {
  * This method actually closes a menu.
  */
 function collapseMenu(id) {
+    //xalert("Closing " + id);
     var menu = document.getElementById(id);
     if (menu && ! menu._inuse) {
         var subMenus = getSubMenus(menu._parent, menu.id);

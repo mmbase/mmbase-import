@@ -12,7 +12,7 @@
         <jsp:text> </jsp:text>
       </script>
       <script type="text/JavaScript">        
-        //addEvent(window, 'load',  function () { initMenu("my_menu"); });
+        addEvent(window, 'load',  function () { initMenu("my_menu"); });
         addEvent(window, 'load',  function () { initMenu("my_menu2", "left"); });
       </script>
       <style>
@@ -39,7 +39,6 @@
         Menu made with UL-structure.
       </p>
 
-      <!--
       <ul id="my_menu" class="menu">
         <li>
           <a class="mmenu" id="item1">Item 1</a>
@@ -69,13 +68,18 @@
           </ul>
         </li>
       </ul>
--->
+
       <div id="my_menu2" class="menu">
         <p>Menu made with DIV-structure. </p>
         <a class="mmenu" id="i" href="item">Item</a>
         <div class="i sub" id="submenu2">
-          <a class="mmenu" id="subi" href="subitem">sub</a>
-          
+          <a class="mmenu" id="subi" href="subitem">sub1</a>
+          <a class="mmenu" id="subj" href="subitem">sub2</a>          
+        </div>
+        <a class="mmenu" id="j" href="item">Item</a>
+        <div class="j sub" id="submenu2">
+          <a class="mmenu" id="subi" href="subitem">sub1</a>
+          <a class="mmenu" id="subj" href="subitem">sub2</a>          
         </div>
       </div>
       <mm:import externid="debug" />

@@ -1,7 +1,7 @@
 <!--                                                                                                                                                                                  
      This is a very common way to override an xslt.
 
-  @version: $Id: my2xhtml.xslt,v 1.1 2006-09-18 14:12:53 michiel Exp $                                                                                                               
+  @version: $Id: my2xhtml.xslt,v 1.2 2007-06-20 14:29:28 michiel Exp $                                                                                                               
 -->
 <xsl:stylesheet
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
@@ -31,12 +31,13 @@
     <xsl:param name="position" />
     <xsl:param name="last" />
     <xsl:param name="body" />
-    <xsl:value-of select="$body" />
     <a>
       <xsl:attribute name="onclick">window.open(this.href, '_blank'); return false;</xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:apply-templates select="$body" />
+      <xsl:apply-templates select="$body">
+        <xsl:with-param name="in_a">yes</xsl:with-param>
+      </xsl:apply-templates>
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
    </xsl:template>
