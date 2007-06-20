@@ -6,8 +6,8 @@
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.7 2006-05-23 19:37:25 michiel Exp $ --&gt;</jsp:text>
-  <mm:content type="text/html" expires="0">
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.8 2007-06-20 14:29:28 michiel Exp $ --&gt;</jsp:text>
+  <mm:content type="text/html" expires="0" postprocessor="none">
     <head>
       <title>MMBase Richtext Application</title>
       <mm:link page="/mmbase/style/css/mmbase.css">
@@ -209,6 +209,17 @@
           </td>
           <td>
             <a href="mynews/testmenu.jspx" class="navigate"><img src="${next}" alt="mynews"  /></a>
+          </td>
+        </tr>
+        <tr>
+          <td>XSLT</td>
+          <td>
+            <p>
+              Richtext is transformed to (X)HTML using XSLT. This XSLT can be overriden. Here it can be tested.
+            </p>
+          </td>
+          <td>
+            <a href="mmxftests" class="navigate"><img src="${next}" alt="mynews"  /></a>
           </td>
         </tr>
       </table>
