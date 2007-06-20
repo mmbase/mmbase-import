@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.59 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ImportTag.java,v 1.60 2007-06-20 13:31:29 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -78,7 +78,7 @@ public class ImportTag extends ContextReferrerTag {
         Object value = null;
         helper.overrideWrite(false);
         log.trace("dostarttag of import");
-        
+
         if (getId() == null) {
             log.trace("No id was given, using externid ");
             useId = (String) externid.getValue(this);
@@ -87,11 +87,11 @@ public class ImportTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
 
-        
+
         if (externid != Attribute.NULL) {
 
             boolean res = reset.getBoolean(this, false);
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.trace("Externid was given " + externid.getString(this));
             }
             if (from.getString(this).equals("")) {
@@ -141,6 +141,9 @@ public class ImportTag extends ContextReferrerTag {
             setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
                 ContextContainer cc = getContextProvider().getContextContainer();
+                if (log.isDebugEnabled()) {
+                    log.debug("Using " + cc + " to register" + useId);
+                }
                 cc.reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
@@ -199,8 +202,12 @@ public class ImportTag extends ContextReferrerTag {
                 }
                 boolean res = reset.getBoolean(this, false);
                 // should this be more general? Also in other contextwriters?
-
-                getContextProvider().getContextContainer().register(useId, helper, !res);
+                ContextProvider cp = getContextProvider();
+                ContextContainer cc = cp.getContextContainer();
+                if (log.isDebugEnabled()) {
+                    log.debug("registering in " + cp + " with container " + cc);
+                }
+                cc.register(useId, helper, !res);
 
             } else {
                 if (helper.getJspvar() == null) {
