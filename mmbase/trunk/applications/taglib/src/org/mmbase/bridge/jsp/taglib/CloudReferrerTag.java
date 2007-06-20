@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.34 2007-06-07 12:47:35 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.35 2007-06-20 13:28:43 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -43,7 +43,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     private static CloudContext cloudContext;
 
 
-    private Attribute cloudId = Attribute.NULL;
+    protected Attribute cloudId = Attribute.NULL;
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
 
