@@ -17,8 +17,8 @@
         <ul>
           <mm:listfunction id="trans" set="transactions" name="list" >
             <li>
-              <mm:link referids="trans@name">
-                <a href="${_}">${trans}</a>
+              <mm:link referids="trans.key@name">
+                <a href="${_}">${trans.key}</a>
               </mm:link>
             </li>
           </mm:listfunction>
