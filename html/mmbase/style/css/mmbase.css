@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.11 2006-04-11 19:11:53 michiel Exp $;
+ @version $Id: mmbase.css,v 1.12 2007-06-20 14:44:50 michiel Exp $;
 */
 
 html { 
@@ -31,6 +31,9 @@ table {
 
 
 }
+td.numeric { 
+  text-align: right;
+}
 
 /* a basic body is a page not using a table */
 body.basic h1 { 
@@ -42,13 +45,15 @@ body.basic p, table {
   width: 94%;
 }
 
-
 .intro { 
   font-style: italic;
 }
 
 td {
   padding: 3pt;
+}
+td p { 
+
 }
 th {
   background-color: #ddd;
