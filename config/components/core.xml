@@ -127,7 +127,7 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
-    <body jsp="/mmbase/admin/transactions.jspx">
+    <body jsp="transactions.jspx">
       <param name="transaction" type="String" />
     </body>
   </block>
@@ -218,6 +218,28 @@
     <body jsp="components/tree.jspx">
     </body>
   </block>
+
+  <block name="test" 
+         classification="mmbase.components,mmbase.examples"
+         mimetype="text/html">
+    <description xml:lang="en">TEST</description>
+    <head jsp="components/test.head.jspx" />
+    <body jsp="components/test.jspx">
+      <param name="a" />
+      <param name="b" />
+    </body>
+    <process jsp="components/test.jspx" />
+  </block>
+
+
+  <block name="login" 
+         classification=""
+         mimetype="text/html">
+    <description xml:lang="en">Generic mmbase login box</description>
+    <body jsp="login.jspx">
+    </body>
+  </block>
+
 
   <!-- examples -->
   <block name="mmexamples" 
