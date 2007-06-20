@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.11 2005-12-18 00:19:21 michiel Exp $
+ * @version $Id: PasswordGenerator.java,v 1.12 2007-06-20 14:00:56 michiel Exp $
  */
 
 public class PasswordGenerator implements PasswordGeneratorInterface {
@@ -117,7 +117,7 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
      * @param template the template the password should be based on.
      * @return the generated password.
      */
-    public String getPassword(String template) {
+    public String getPassword(@org.mmbase.util.functions.Name("template") String template) {
         int len;
         boolean next = true;
         StringBuffer pwd = new StringBuffer();
