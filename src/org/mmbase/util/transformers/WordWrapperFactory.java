@@ -43,10 +43,10 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
             log.debug("Creating transformer, with " + parameters);
         }
         final int length = ((Integer) parameters.get("length")).intValue();
-        return new ReaderTransformer() {            
+        return new ReaderTransformer() {
 
             public Writer transform(Reader r, Writer w) {
-                StringBuffer word = new StringBuffer();  // current word
+                StringBuilder word = new StringBuilder();  // current word
                 try {
                     log.trace("Starting wrapping words.");
                     int ll = 0; // 'line lenght'
@@ -67,7 +67,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
                             } else {
                                 ll += word.length();
                                 if (ll < length) {
-                                    w.write(c);                             
+                                    w.write(c);
                                 }
                                 ll++;
                             }
