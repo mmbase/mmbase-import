@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.25 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.26 2007-06-20 13:30:12 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -117,9 +117,9 @@ public class NodeProviderHelper implements NodeProvider {
 
 
     boolean checked = false; // need to check jspvar/pagecontext-var conflict only first time.
+
     /**
      * Fill the jsp and context vars
-     *
      */
 
     public void fillVars() throws JspTagException {
@@ -166,10 +166,10 @@ public class NodeProviderHelper implements NodeProvider {
             PageContext pageContext = thisTag.getPageContext();
             if (_Stack.empty()) {
                 pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
+                _Stack = null;
             } else {
                 pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
             }
-            _Stack = null;
         }
     }
     /**
@@ -210,6 +210,7 @@ public class NodeProviderHelper implements NodeProvider {
             }
         }
         pushed = 0;
+        _Stack = null;
         checked = false;
         return BodyTagSupport.EVAL_PAGE;
     }
