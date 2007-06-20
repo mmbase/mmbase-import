@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.20 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: Groups.java,v 1.21 2007-06-20 14:38:09 michiel Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -180,13 +180,16 @@ public class Groups extends MMObjectBuilder {
 
 
     public String toString(MMObjectNode n) {
-        return n.getStringValue("name");
+        return n.getStringValue("name") + " (" + n.getNumber() + ")";
     }
 
 
     // needed to make SecurityOpeations Cache work?
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.getNumber() == o2.getNumber();
+    }
+    public int hashCode(MMObjectNode o) {
+        return 127 * o.getNumber();
     }
 
 
