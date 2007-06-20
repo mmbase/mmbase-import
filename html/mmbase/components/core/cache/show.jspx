@@ -13,7 +13,7 @@
     <input type="hidden" name="cache" value="${name}" />
     <table summary="show cache ${name}">
 
-      <mm:function set="caches" name="get" referids="name" id="cache" />
+      <mm:voidfunction set="caches" name="get" referids="name" id="cache" />
       <tr>
         <th colspan="5">Cache Monitor</th>
       </tr>
@@ -39,7 +39,7 @@
 
       <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
         <mm:context>
-          <mm:function id="k" write="false" set="utils" name="toString" referids="entry.key@object" />
+          <mm:voidfunction id="k"  set="utils" name="toString" referids="entry.key@object" />
           
           <mm:write value="${k}">
             <mm:compare  regexp="${key}">
