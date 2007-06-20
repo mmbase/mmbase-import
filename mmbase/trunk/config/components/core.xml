@@ -30,7 +30,7 @@
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
-    <body jsp="/mmbase/admin/admin/servers.div.jsp">
+    <body jsp="servers.jspx">
       <param name="server" type="String" />
     </body>
   </block>
