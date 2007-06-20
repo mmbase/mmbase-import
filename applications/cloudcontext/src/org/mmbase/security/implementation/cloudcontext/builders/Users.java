@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.52 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: Users.java,v 1.53 2007-06-20 14:38:09 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -435,8 +435,9 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * Makes sure unique values and not-null's are filed
+     * Makes sure unique values and not-null's are filed    
      */
+    /*
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
@@ -448,14 +449,9 @@ public class Users extends MMObjectBuilder {
             currentUserName = "user";
         }
         setUniqueValue(node, FIELD_USERNAME, currentUserName);
-        if (getField(FIELD_VALID_FROM) != null && node.isNull(FIELD_VALID_FROM)) {
-            node.setValue(FIELD_VALID_FROM, System.currentTimeMillis()/1000);
-        }
-        if (getField(FIELD_VALID_TO) != null && node.isNull(FIELD_VALID_TO)) {
-            node.setValue(FIELD_VALID_TO, VALID_TO_DEFAULT);
-        }
-     }
 
+     }
+    */
     /**
      * @javadoc
      */
