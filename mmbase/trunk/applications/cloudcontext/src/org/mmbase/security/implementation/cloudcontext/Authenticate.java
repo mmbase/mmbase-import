@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.18 2007-02-10 16:52:47 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.19 2007-06-20 14:37:15 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -88,9 +88,22 @@ public class Authenticate extends Authentication {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.9
+     */
+    public org.mmbase.bridge.Node getNode(org.mmbase.bridge.Cloud cloud) throws SecurityException {
+        return cloud.getNode(cloud.getUser().getIdentifier());
+    }
+
+    public String getUserBuilder() {
+        return "mmbaseusers";
+    }
+
+
     // javadoc inherited
     public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
