@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * done by UrlConverter. Based upon code from LeoCMS and CMSC.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.4 2007-06-18 22:01:08 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.5 2007-06-20 10:32:00 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -145,7 +145,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (params.containsParameter(Parameter.RESPONSE)) {
                 params.set(Parameter.RESPONSE, res);
             }
-            String forwardUrl = MMBase.getMMBase().getFramework().getInternalUrl(path, req.getParameterMap().entrySet(), params).toString();
+            String forwardUrl = fw.getInternalUrl(path, req.getParameterMap().entrySet(), params).toString();
 
 
             
