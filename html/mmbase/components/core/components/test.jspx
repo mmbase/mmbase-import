@@ -1,0 +1,55 @@
+<jsp:root
+    version="1.2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <mm:import externid="a" from="request">A</mm:import>
+  <mm:import externid="b" from="request">B</mm:import>
+  <c:choose>
+    <c:when test="${empty requestScope['org.mmbase.framework.renderer']}">
+      PROCESSING.
+    </c:when>
+    <c:otherwise>
+      <div 
+          class="test ${requestScope.componentClassName}"
+          id="${requestScope.componentId}">
+        <h1>a = ${a}</h1>
+        <h1>b = ${b}</h1>
+        <p>Used renderer: ${requestScope['org.mmbase.framework.renderer'].type}</p>
+        <p>Block: ${requestScope['org.mmbase.framework.renderer'].block}</p>
+        <p>Component: ${requestScope['org.mmbase.framework.renderer'].block.component}</p>
+        <div class="technical" style="display: none;">
+          <p>URI: ${request.requestURI}</p>
+          <p>ServletPath: ${request.servletPath}</p>
+          <p>Pathinfo: ${request.pathInfo}</p>
+          <jsp:scriptlet>
+            for (Object a : java.util.Collections.list(request.getAttributeNames())) {
+          </jsp:scriptlet>
+          <p><jsp:expression>a</jsp:expression>: <jsp:expression>request.getAttribute((String) a)</jsp:expression></p>
+          <jsp:scriptlet>
+            }
+          </jsp:scriptlet>
+          <p><jsp:expression>org.mmbase.framework.FrameworkFilter.getPath(request)</jsp:expression></p>
+        </div>
+        <p>
+          <mm:link>
+            <mm:param name="a">AA</mm:param>
+            <a href="${_}">Change a</a>
+          </mm:link>
+        </p>
+        <mm:link>
+          <mm:param framework="true" name="process">true</mm:param>
+          <form action="${_}">
+            <table>
+              <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
+              <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
+              <tr><td colspan="100"><input type="submit" /></td></tr>
+            </table>
+          </form>
+        </mm:link>
+      </div>
+    </c:otherwise>
+  </c:choose>
+</jsp:root>
