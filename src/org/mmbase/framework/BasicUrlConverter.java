@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.4 2007-06-20 11:52:34 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.5 2007-06-20 12:25:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -199,6 +199,18 @@ public class BasicUrlConverter implements UrlConverter {
                 assert path[0].equals("");
                 assert path[1].equals("mmbase");
                 String category = path[2];
+                if (! category.equals("_")) {
+                    boolean categoryOk = false;
+                    for (Block.Type rootType : ComponentRepository.getInstance().getBlockClassification("mmbase")[0].getSubTypes()) {
+                        categoryOk = rootType.getName().equals(category);
+                        if (categoryOk) break;
+                    }
+                    if (! categoryOk) {
+                        log.debug("No such component clasification, ignoring this");
+                        return BasicUrlConverter.getUrl(page, params, request, false);
+                    }
+                }
+
                 StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
                 if (path.length == 3) return url;
                 
