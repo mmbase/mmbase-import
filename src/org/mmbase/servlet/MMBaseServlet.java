@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.65 2007-05-04 12:33:51 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.66 2007-06-20 14:27:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -197,7 +197,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             // default: one minute
             retryAfter = 60;
         } else {
-            retryAfter = Integer.valueOf(retryAfterParameter).intValue();
+            retryAfter = Integer.valueOf(retryAfterParameter);
         }
 
         if (! MMBaseContext.isInitialized()) {
@@ -265,12 +265,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         }
 
         String hold = servletContext.getInitParameter("stall-server");
-        log.info("stall-server: '" + hold + "'");
         if ("yes".equals(hold) || "true".equals(hold)) {
-            log.info("Waiting until MMBase is started");
+            log.service(getServletName() + ": Waiting until MMBase is started");
             Runnable starter = new MMBaseStartThread.Job(this);
             starter.run();
-            log.info("Ready");
+            log.service(getServletName() + ": Ready to receive requests.");
         } else {
             if (initialize) {
                 // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
@@ -431,7 +430,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
         } else if ("server".equals(q)) {
             String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for other ap-servers.
-            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getCanonicalHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
         }
         pw.close();
     }

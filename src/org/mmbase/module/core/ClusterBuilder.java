@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.91 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.92 2007-06-20 14:25:39 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -422,7 +422,7 @@ public class ClusterBuilder extends VirtualBuilder {
             List<MMObjectNode> clusterNodes = getClusterNodes(query);
             return new Vector<MMObjectNode>(clusterNodes);
         } catch (Exception e) {
-            log.error(e + Logging.stackTrace(e));
+            log.error(e.getMessage(), e);
             return null;
         }
     }
