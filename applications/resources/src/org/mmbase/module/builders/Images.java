@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.4 2007-06-13 19:40:56 nklasens Exp $
+ * @version $Id: Images.java,v 1.5 2007-06-20 14:35:10 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -209,7 +209,9 @@ public class Images extends AbstractImages {
                 }
             }
             int icacheNumber = icacheNode.insert("imagesmodule");
-            log.debug("Inserted " + icacheNode);
+            if (log.isDebugEnabled()) {
+                log.debug("Inserted " + icacheNode);
+            }
             if (icacheNumber < 0) {
                 throw new RuntimeException("Can't insert cache entry id=" + node.getNumber() + " key=" + template);
             }
