@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.9 2007-06-19 14:59:00 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.10 2007-06-21 08:47:17 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2759,7 +2759,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             properties.putAll(contextMap);
 
         } catch (javax.naming.NamingException ne) {
-            log.info("Can't obtain properties from application context: " + ne.getMessage());
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
     }
     /**
