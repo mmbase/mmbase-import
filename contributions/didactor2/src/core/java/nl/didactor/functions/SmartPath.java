@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since Didactor-2.3
- * @version $Id: SmartPath.java,v 1.1 2007-06-08 12:20:31 michiel Exp $
+ * @version $Id: SmartPath.java,v 1.2 2007-06-21 16:34:25 michiel Exp $
  */
 public class SmartPath extends org.mmbase.module.core.SmartPathFunction {
     protected static Logger log = Logging.getLoggerInstance(SmartPath.class);
@@ -38,6 +38,10 @@ public class SmartPath extends org.mmbase.module.core.SmartPathFunction {
         spPathPrefix = p;
     }
 
+    public void setDidactor(String test) {
+        // just to add 'didactor' to the parameter list, which makes the function easier to recognize.
+    }
+
     /**
      */
     protected String getSmartPath() {
@@ -57,7 +61,7 @@ public class SmartPath extends org.mmbase.module.core.SmartPathFunction {
         ResourceLoader child = webRoot.getChildResourceLoader(path);
 
         String n = nodeNumber;
-        if (version != null) n += "\\." + version;       
+        if (version != null && ! version.equals("")) n += "\\." + version;       
         MMObjectNode node = parent.getNode(n);
 
         String magName = null;
@@ -65,7 +69,7 @@ public class SmartPath extends org.mmbase.module.core.SmartPathFunction {
             log.debug("Going to test with fields " + Arrays.asList(spFieldNames));
         }
         if (node == null) {
-            throw new RuntimeException("No node with number " + nodeNumber + " found");
+            throw new RuntimeException("No node with number " + n + " found");
         }
 
         for (String spFieldName : spFieldNames) {
