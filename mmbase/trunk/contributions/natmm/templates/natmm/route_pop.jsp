@@ -1,5 +1,4 @@
 <%@include file="includes/top0.jsp" %>
-<% boolean loginForRoutePopRequired = false; %>
 <% boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1); %>
 <mm:cloud jspvar="cloud">
 <%@include file="/editors/mailer/util/memberid_get.jsp" %>
@@ -99,106 +98,90 @@ if(!artikelID.equals("-1")) {
                </td>
             </tr>
          </table>
-         <%
-         // http://jira.finalist.com/browse/NMCMS-218
-         if( loginForRoutePopRequired && memberid==null ) {
-      
-            %><table class="dotline"><tr><td height="3"></td></tr></table>
-            <div style="margin:5px 0px 5px 0px">
-            <strong>Deze pagina is alleen toegankelijk voor leden van Natuurmonumenten.</strong><br/>
-            Log alstublieft eerst in op de <a href="routes">de Natuurmonumenten website</a> en open vervolgens deze pagina opnieuw.
-            </div>
-            <table class="dotline"><tr><td height="3"></td></tr></table>
-            <%
-      
-         } else { 
-      
-            %>
-            <table class="dotline"><tr><td height="3"></td></tr></table>
-                  <mm:field name="intro">
-                     <mm:isnotempty>
-                     <div style="margin:5px 0px 5px 0px">
-                     <strong><mm:write /></strong>
-                     <table class="dotline"><tr><td height="3"></td></tr></table>
-                     </div>
-                     </mm:isnotempty>
-                  </mm:field>
-                  
-                  <mm:field name="text">
-                     <mm:isnotempty>
-                     <div style="margin:5px 0px 5px 0px">
-                     <strong><mm:write /></strong>
-                     <table class="dotline"><tr><td height="3"></td></tr></table>
-                     </div>
-                     </mm:isnotempty>
-                  </mm:field>
-                  <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
-                     <mm:node element="paragraaf">
-                        <mm:first>
-                           <span class="colortitle">Inhoud</span> | 
-                        </mm:first>
-                        <mm:field name="titel_zichtbaar">
-                           <mm:compare value="0" inverse="true">
-                              <mm:field name="titel">
-                                 <mm:isnotempty>
-                                    <a href="route_pop.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><mm:write /></a> | 
-                                 </mm:isnotempty>
-                              </mm:field>
-                           </mm:compare>
-                        </mm:field>
-                     </mm:node>
-                  </mm:related>  
-                  <br><br>
-                  <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
-                     <mm:node element="paragraaf">
-                     <mm:first inverse="true">
-                        <table class="dotline"><tr><td height="3"></td></tr></table>
+
+         <table class="dotline"><tr><td height="3"></td></tr></table>
+               <mm:field name="intro">
+                  <mm:isnotempty>
+                  <div style="margin:5px 0px 5px 0px">
+                  <strong><mm:write /></strong>
+                  <table class="dotline"><tr><td height="3"></td></tr></table>
+                  </div>
+                  </mm:isnotempty>
+               </mm:field>
+               
+               <mm:field name="text">
+                  <mm:isnotempty>
+                  <div style="margin:5px 0px 5px 0px">
+                  <strong><mm:write /></strong>
+                  <table class="dotline"><tr><td height="3"></td></tr></table>
+                  </div>
+                  </mm:isnotempty>
+               </mm:field>
+               <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
+                  <mm:node element="paragraaf">
+                     <mm:first>
+                        <span class="colortitle">Inhoud</span> | 
                      </mm:first>
-                     <a name="<mm:field name="number" />" id="<mm:field name="number" />"></a>
                      <mm:field name="titel_zichtbaar">
                         <mm:compare value="0" inverse="true">
                            <mm:field name="titel">
-                              <mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
+                              <mm:isnotempty>
+                                 <a href="route_pop.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><mm:write /></a> | 
+                              </mm:isnotempty>
                            </mm:field>
                         </mm:compare>
                      </mm:field>
-                     <%@include file="includes/image_logic.jsp" %>
-                     <mm:field name="tekst">
-                        <mm:isnotempty><mm:write /><br/></mm:isnotempty>
-                     </mm:field>
-                     <table width="100%" cellspacing="0" cellpadding="0" align="right">
-                        <tr>
-                           <td width="100%"></td>
-                           <td align="right" class="top_ico">
-                            <a href="route_pop.jsp?<%= request.getQueryString() %>#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a>
-                           </td>
-                        </tr>
-                     </table>
-                     <br />
-                     <mm:last>
-                        <table class="dotline"><tr><td height="3"></td></tr></table>
-                     </mm:last>
-                     </mm:node>
-                  </mm:related>  
-                  </div>
-               </td>
-               </tr>
-               <tr>
-                <td align="right" valign="bottom">
-                  <table width="100%" cellspacing="0" cellpadding="1">
-                  <tr>
-                     <td width="100%"></td>
-                     <td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
-                     <td>&nbsp;</td>
-                     <td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
-                  </tr>
+                  </mm:node>
+               </mm:related>  
+               <br><br>
+               <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
+                  <mm:node element="paragraaf">
+                  <mm:first inverse="true">
+                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                  </mm:first>
+                  <a name="<mm:field name="number" />" id="<mm:field name="number" />"></a>
+                  <mm:field name="titel_zichtbaar">
+                     <mm:compare value="0" inverse="true">
+                        <mm:field name="titel">
+                           <mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
+                        </mm:field>
+                     </mm:compare>
+                  </mm:field>
+                  <%@include file="includes/image_logic.jsp" %>
+                  <mm:field name="tekst">
+                     <mm:isnotempty><mm:write /><br/></mm:isnotempty>
+                  </mm:field>
+                  <table width="100%" cellspacing="0" cellpadding="0" align="right">
+                     <tr>
+                        <td width="100%"></td>
+                        <td align="right" class="top_ico">
+                         <a href="route_pop.jsp?<%= request.getQueryString() %>#top"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a>
+                        </td>
+                     </tr>
                   </table>
-                </td>
+                  <br />
+                  <mm:last>
+                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                  </mm:last>
+                  </mm:node>
+               </mm:related>  
+               </div>
+            </td>
             </tr>
-            </table>
-            <%
-         }
-         %>
+            <tr>
+             <td align="right" valign="bottom">
+               <table width="100%" cellspacing="0" cellpadding="1">
+               <tr>
+                  <td width="100%"></td>
+                  <td align="right" class="print_ico"><a href="javascript:printIt()"><img src="media/trans.gif" alt="" width="15" height="15" border="0"></a></td>
+                  <td>&nbsp;</td>
+                  <td align="right" class="close_ico"><a href="javascript:window.close()"><img src="media/trans.gif" alt="" width="13" height="15" border="0"></a></td>
+               </tr>
+               </table>
+             </td>
+         </tr>
+         </table>
+
          </td>
       </tr>
    </table>
