@@ -147,7 +147,7 @@ public abstract class Imaging {
      * Only used in legacy-support and perhaps debug code.
      */
     public static String unparseTemplate(List<String> params) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         Iterator<String> i = params.iterator();
         while (i.hasNext()) {
             buf.append(i.next());
@@ -175,9 +175,7 @@ public abstract class Imaging {
 
         Dimension dim = new Dimension(originalSize);
         String gravity = "West";
-        Iterator<String> i = params.iterator();
-        while (i.hasNext()) {
-            String key = i.next();
+        for (String key : params) {
             int pos = key.indexOf('(');
             int pos2 = key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
@@ -209,13 +207,16 @@ public abstract class Imaging {
                     boolean onlyWhenOneBigger    = false;
                     boolean onlyWhenBothSmaller   = false;
 
+
+
                     for (int j = 0 ; j < options.length(); j++) {
-                        char o = options.charAt(j);
-                        if (o == '%') percentage = true;
-                        if (o == '@') area = true;
-                        if (o == '!') aspectRatio = false;
-                        if (o == '>') onlyWhenOneBigger = true;
-                        if (o == '<') onlyWhenBothSmaller = true;
+                        switch(options.charAt(j)) {
+                        case '%': percentage = true; break;
+                        case '@': area = true; break;
+                        case '!': aspectRatio = false; break;
+                        case '>': onlyWhenOneBigger = true; break;
+                        case '<': onlyWhenBothSmaller = true; break;
+                        }
                     }
 
                     int x = "".equals(xString) ? 0 : Integer.parseInt(xString);
