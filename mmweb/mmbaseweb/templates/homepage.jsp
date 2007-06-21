@@ -170,41 +170,69 @@
 		  </mm:url>">Agenda &raquo;&raquo;</a></p>
 		</mm:last></mm:context>
 	</mm:list>
-	<%--
-	<h4>Bugs this week</h4>
-	<mm:time time="today" id="lastweek" offset="-604800" write="false" />
-	<p><mm:listnodescontainer type="bugreports">
-		<mm:sortorder field="time"  direction="DOWN" />
-			<mm:constraint field="time"    operator=">=" value="$lastweek" />
-			<mm:constraint field="bstatus" operator=">" value="4" />
-		<a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=6" />">Solved : <mm:size /></a><br />
-	</mm:listnodescontainer>
-	<mm:listnodescontainer type="bugreports">
-		<mm:sortorder field="time"  direction="DOWN" />
-			<mm:constraint field="time"    operator=">=" value="$lastweek" />
-			<mm:constraint field="bstatus" operator="<" value="2" />
-		<a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
-	</mm:listnodescontainer></p>
-	--%>
+	
 	<h4>Bugtracker</h4>
-	<p><a href="/browseproject">Bugtracker &raquo;&raquo;</a></p>
-	<p>Recently solved:</p>
+	<p>In the last 7 days:<br />
+	<mm:link page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10000&created:previous=-1w&sorter/field=created&sorter/order=DESC">
+	  <a href="${_}">
+	</mm:link>
 	<mm:formatter escape="none">
 	  <mm:include cite="true" page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa">
 	    <mm:param name="view">rss</mm:param>
 	    <mm:param name="pid">10000</mm:param>
-	    <mm:param name="update:after"><mm:time time="now - 1 week" format="d/MM/yy" /></mm:param>
+	    <mm:param name="created:previous">-1w</mm:param>
+	    <mm:param name="sorter/field">created</mm:param>
+	    <mm:param name="sorter/order">DESC</mm:param>
+	    <mm:param name="tempMax">25</mm:param>
+	    <mm:param name="reset">true</mm:param>
+	    <mm:param name="decorator">none</mm:param>
+	  </mm:include>
+	  <mm:xslt>
+	    <xsl:template match="channel">
+	      <xsl:value-of select="count(//item)" />
+	    </xsl:template>
+	  </mm:xslt>
+	</mm:formatter></a> new issues<br />
+	<mm:link page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10000&status=5&status=6&updated:previous=-1w&sorter/field=updated&sorter/order=DESC">
+	  <a href="${_}">
+	</mm:link>
+	<mm:formatter escape="none">
+	  <mm:include cite="true" page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa">
+	    <mm:param name="view">rss</mm:param>
+	    <mm:param name="pid">10000</mm:param>
 	    <mm:param name="status">5</mm:param>
 	    <mm:param name="status">6</mm:param>
+	    <mm:param name="updated:previous">-1w</mm:param>
 	    <mm:param name="sorter/field">updated</mm:param>
 	    <mm:param name="sorter/order">DESC</mm:param>
-	    <mm:param name="tempMap">5</mm:param>
+	    <mm:param name="tempMax">25</mm:param>
+	    <mm:param name="reset">true</mm:param>
+	    <mm:param name="decorator">none</mm:param>
+	  </mm:include>
+	  <mm:xslt>
+	    <xsl:template match="channel">
+	      <xsl:value-of select="count(//item)" />
+	    </xsl:template>
+	  </mm:xslt>
+	</mm:formatter></a> issues solved.<br />
+	<a href="/browseproject">Go to bugtracker &raquo;&raquo;</a></p>
+
+	<mm:node number="portal_developers"><mm:field name="number"><mm:compare value="$portal">
+	<p>Recently updated:</p>
+	<mm:formatter escape="none">
+	  <mm:include cite="true" page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa">
+	    <mm:param name="view">rss</mm:param>
+	    <mm:param name="pid">10000</mm:param>
+	    <mm:param name="update:previous">-1w</mm:param>
+	    <mm:param name="sorter/field">updated</mm:param>
+	    <mm:param name="sorter/order">DESC</mm:param>
+	    <mm:param name="tempMax">5</mm:param>
 	    <mm:param name="decorator">none</mm:param>
 	    <mm:param name="reset">true</mm:param>
 	  </mm:include>
 	  <mm:xslt>
 	    <xsl:template match="channel">
-	      <ul>
+	      <ul class="none">
 		<xsl:for-each select="item">
 		  <xsl:if test="position() &lt; 6">
 		    <li>
@@ -216,6 +244,7 @@
 	    </xsl:template>
 	  </mm:xslt>
 	</mm:formatter>
+	</mm:compare></mm:field></mm:node>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
 </tr>
