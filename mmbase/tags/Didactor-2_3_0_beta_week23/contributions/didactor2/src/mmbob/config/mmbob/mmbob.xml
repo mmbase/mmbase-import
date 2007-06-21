@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mmbobconfig PUBLIC "-//MMBase//DTD mmbob config 1.0//EN" "http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd">
+<mmbobconfig>
+  <forums id="default" account="admin">
+    <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
+    <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
+    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
+    <speedposttime value="10" />
+    <syncer type="fast" delayTime="200" sleepTime="5000" />
+    <syncer type="slow" delayTime="50" sleepTime="1000" />
+  </forums>
+</mmbobconfig>

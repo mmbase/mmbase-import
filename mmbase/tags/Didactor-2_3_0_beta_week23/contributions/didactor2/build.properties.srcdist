@@ -1,0 +1,18 @@
+# Place where to build
+build.dir = ${basedir}/build
+
+# IMPORTANT: these two settings define which components to build, and the 
+# template-provider. With the 'provider' setting empty you will use the
+# default layout.
+# If you choose not to use all components, you MUST use both 'core' and
+# 'education'.
+providers=
+components = core,versioning,education,utils,portalpages,cmshelp,faq,news,projectgroup,search,address,competence,pdf,redspider,sources,agenda,isbo,pop,register,drm,metadata,report,chat,mmbob,portfolio,workspace,virtualclassroom,cms,email,progress,scorm,assessment,proactivemail
+
+# The following components have been disabled because they require special attention:
+# aselect, reports, rmmci
+
+# Some defaults
+war.name=didactor
+multiple.wars =
+

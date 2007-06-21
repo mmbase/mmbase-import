@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Metadata Editor</title>
+  <title xml:lang="en">Metadata Editor</title>
+  
+  <action type="load">
+  </action>
+
+  <action type="create">
+    <object type="metadate"/>
+  </action>
+
+  <steps>
+    <step form-schema="step1" />
+  </steps>
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Metadata Invoeren</title>
+    <title xml:lang="en">Metadata</title>
+    <field name="value" ftype="datetime">
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
+    </field>
+  </form-schema>
+</wizard-schema>

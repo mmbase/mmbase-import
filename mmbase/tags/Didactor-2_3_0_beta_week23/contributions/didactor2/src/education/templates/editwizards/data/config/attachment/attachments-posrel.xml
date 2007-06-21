@@ -1,0 +1,50 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="attachments" role="posrel" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']">
+    <title xml:lang="nl">Bijbehorende bijlagen</title>
+    <title xml:lang="en">Related files</title>
+
+    <item>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+          <prompt xml:lang="nl">Positie</prompt>
+          <prompt xml:lang="en">Position</prompt>
+        </field>
+        <field name="title" ftype="data">
+            <prompt xml:lang="nl">Bijlage titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
+        </field>
+        <field ftype="data" name="description">
+            <prompt xml:lang="nl">Omschrijving</prompt>
+            <prompt xml:lang="en">Description</prompt>
+        </field>
+        <field wizardname="config/attachment/attachment" ftype="startwizard" />
+   </item>
+
+    <command name="startwizard" inline="true" wizardname="config/attachment/attachment" objectnumber="new" />
+
+    <command name="search" nodepath="attachments" fields="title,filename,description" age="-1" orderby="number" directions="down" >
+        <prompt xml:lang="nl">Zoeken naar bestand</prompt>
+        <prompt xml:lang="en">Search files</prompt>
+        <search-filter>
+            <name xml:lang="nl">Titel bevat</name>
+            <name xml:lang="en">Title contains</name>
+            <search-fields>title</search-fields>
+        </search-filter>
+        <search-filter>
+	      <name xml:lang="nl">Omschrijving bevat</name>
+	      <name xml:lang="en">Description contains</name>
+	      <search-fields>description</search-fields>
+	    </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Bestandsnaam bevat</name>
+            <name xml:lang="en">File name contains</name>
+            <search-fields>filename</search-fields>
+        </search-filter>
+    </command>
+
+    <action type="create">
+        <relation role="posrel">
+          <object type="attachments" />
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+   </action>
+</list>

@@ -1,0 +1,18 @@
+<jsp:root
+    version="1.2"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+
+  <!-- values are provided by ProviderFilter
+       This makes this JSP actuall superflous, whilst you can use ${requestScope.provider} etc.
+       But well.
+  -->
+  <mm:import externid="provider"    from="request" />
+  <mm:import externid="education"   from="request" />
+  <mm:import externid="includePath" from="request" />
+  <mm:import externid="referids"    from="request" />
+  <mm:import externid="language"    from="request" />
+
+</jsp:root>

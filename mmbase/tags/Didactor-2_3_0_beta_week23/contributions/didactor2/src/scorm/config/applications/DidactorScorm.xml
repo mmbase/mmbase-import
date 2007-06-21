@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorScorm" maintainer="didactor.nl" version="1" auto-deploy="true">
+    <requirements>
+        <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
+        <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
+    </requirements>
+
+    <neededbuilderlist>
+      <builder maintainer="didactor.nl" version="1">packages</builder>
+   </neededbuilderlist>
+
+    <neededreldeflist>
+      <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    </neededreldeflist>
+
+    <allowedrelationlist>
+      <relation from="packages" to="educations" type="related" />
+    </allowedrelationlist>
+
+    <datasourcelist>
+      <datasource builder="components" path="DidactorScorm/components.xml" />
+    </datasourcelist>
+
+    <relationsourcelist />
+
+    <contextsourcelist />
+
+    <description></description>
+
+    <install-notice></install-notice>
+
+</application>
