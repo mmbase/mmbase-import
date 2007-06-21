@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.72 2007-01-17 15:01:09 michiel Exp $
+ * @version $Id: Node.java,v 1.73 2007-06-21 07:32:31 pierre Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -454,8 +454,10 @@ public interface Node extends Comparable<Node> {
     public FieldValue getFieldValue(Field field);
 
     /**
-     * Validates a node by checking the values from it's field against the constraints of
+     * Validates a node by checking the values from it's fields against the constraints of
      * each field's datatype.
+     * For performance reasons, it only validates fields that actually changed (as of MMBase 1.8.4),
+     * or when a new node is created.
      * This method is called by the {@link #commit} method, after commit processors are run.
      * Note that because commit processors may make necessary changes to field values, it is possible for
      * validate() to fail when used outside the commit process if the constraints are set too strict.
