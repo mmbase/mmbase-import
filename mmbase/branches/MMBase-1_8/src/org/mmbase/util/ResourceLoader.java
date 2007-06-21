@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39 2006-07-17 17:26:13 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.1 2007-06-21 13:08:13 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -885,9 +885,16 @@ public class ResourceLoader extends ClassLoader {
      * @return A List of all files associated with the resource.
      */
     public List/*<File>*/ getFiles(String name) {
-
-
         List result = new ArrayList();
+        if (name.startsWith("file://")) {
+            try {
+                result.add(new File(new URL(name).getFile()));
+                return result;
+            } catch (MalformedURLException mfue) {
+                log.warn(mfue);
+            }
+        }
+
         Iterator i = roots.iterator();
         while (i.hasNext()) {
             Object o = i.next();
@@ -972,6 +979,23 @@ public class ResourceLoader extends ClassLoader {
                 }
             }
         }
+        List files = getFiles(name);
+        Iterator it = files.iterator();
+        while (it.hasNext()) {
+            File file = (File) it.next();
+            if (file.equals(f)) {
+                return null;
+            } else {
+                if (file.exists()) {
+                    try {
+                        return file.toURL(); // f is shadowed!
+                    } catch (MalformedURLException mfue) {
+                        assert false : mfue;
+                    }
+                }
+            }
+        }
+        
         // did not find f as a file for this resource
         throw new IllegalArgumentException("File " + f + " is not a file for resource "  + name);
     }
