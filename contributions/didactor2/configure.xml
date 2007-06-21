@@ -41,7 +41,7 @@
   
   <property name="mmbase.logdir"  value="${catalina.base}/logs" />
   <property name="mmbase.logfile" value="didactor" />
-  <property name="mmbaseroot.database" value="" />
+  <property name="mmbaseroot.database" value="mysql" />
   <property name="mmbaseroot.basename" value="mmb" />
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
