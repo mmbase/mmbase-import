@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.46 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: ResourceLoader.java,v 1.47 2007-06-21 13:00:09 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -421,7 +421,6 @@ public class ResourceLoader extends ClassLoader {
     public static synchronized ResourceLoader getWebDirectory(HttpServletRequest request) {
         return  ResourceLoader.getWebRoot().getChildResourceLoader(request.getServletPath()).getParentResourceLoader();
     }
-
 
     /**
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
@@ -891,6 +890,14 @@ public class ResourceLoader extends ClassLoader {
      */
     public List<File> getFiles(String name) {
         List<File> result = new ArrayList<File>();
+        if (name.startsWith("file://")) {
+            try {
+                result.add(new File(new URL(name).getFile()));
+                return result;
+            } catch (MalformedURLException mfue) {
+                log.warn(mfue);
+            }
+        }
         for (PathURLStreamHandler o : roots) {
             if (o instanceof FileURLStreamHandler) {
                 result.add(((FileURLStreamHandler) o).getFile(name));
