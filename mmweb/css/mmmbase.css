@@ -63,6 +63,16 @@ ul
 }
 
 ul li { list-style: circle;}
+
+.none {  }
+
+.none li
+{
+	list-style: inside;
+	margin-left: -1.4em;
+	margin-right: 4px;
+}
+
 h1
 {
     font-size: 1.8em;
