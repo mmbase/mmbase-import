@@ -106,7 +106,7 @@ arr_NatGeb = new Array
          	String valuesKey = (String) valuesIterator.next();
          	Boolean isSelected = (Boolean) valuesMap.get(valuesKey);
          	
-         	out.print("new Array('" + valuesKey + "', " + index + ", " + isSelected + ")");
+         	out.print("new Array(\"" + valuesKey + "\", " + index + ", " + isSelected + ")");
             if (valuesIterator.hasNext()) {
          		out.println(",");
         	}
@@ -136,7 +136,7 @@ arr_Areaal = new Array
          	String valuesKey = (String) valuesIterator.next();
          	Boolean isSelected = (Boolean) valuesMap.get(valuesKey);
          	
-         	out.print("new Array('" + valuesKey + "', " + index + ", " + isSelected + ")");
+         	out.print("new Array(\"" + valuesKey + "\", " + index + ", " + isSelected + ")");
             if (valuesIterator.hasNext()) {
          		out.println(",");
         	}
