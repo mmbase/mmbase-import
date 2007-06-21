@@ -64,7 +64,7 @@ if(hasRightCell) {
    %><table width="539px;" border="0" cellspacing="0" cellpadding="0">
    <tr>
    	<td style="vertical-align:top;padding-right:10px;padding-bottom:10px;width:364px;">
-   	<br/>
+   		 <br/>
          <mm:compare referid="showpageintro" value="true">
             <%@include file="../includes/page_intro.jsp" %>
          </mm:compare>
@@ -94,7 +94,7 @@ if(hasRightCell) {
       	<% } %>
       </td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
- 	 <% if (isNaardermeer.equals("true")) { %>			
+ 	 <% if (!isNaardermeer.equals("false")) { %>			
    		<img src="media/trans.gif" height="226" width="1">
 	  <% } %>	
 	  <br/>
