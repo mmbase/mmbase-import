@@ -259,7 +259,7 @@
 	<mm:field name="organisation.name" id="org_name" write="false" />
 	<mm:field name="organisation.number" id="org" write="false" />
 	<mm:node element="images">
-	  <mm:first><div style="margin-bottom:12px;" align="center"></mm:first>
+	  <mm:first><div class="sponsorlogos"></mm:first>
 	  <a title="More about <mm:write referid="org_name" />" href="<mm:url referids="org"
 		  ><mm:param name="portal">foundation</mm:param
 		  ><mm:param name="page">organisations</mm:param></mm:url>"><img src="<mm:image template="s(60x35)" />" 
