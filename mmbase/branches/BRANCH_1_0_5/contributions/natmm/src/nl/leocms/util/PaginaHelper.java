@@ -1250,7 +1250,7 @@ public class PaginaHelper {
       ids.put("rubriek", rubriekID);
       ids.put("pagina", paginaID);
       
-      // Checking if page belongs tot he Neerdermeer subsite (rubriek)
+      // Checking if page belongs to the Neerdermeer subsite (rubriek)
       String isNaardermeer = "false";
       String subRubriek = getSubsiteRubriek(cloud, paginaID); //node number of our sub rubriek
       try{
