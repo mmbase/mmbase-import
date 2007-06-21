@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.414 2007-06-19 14:57:18 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.415 2007-06-21 13:44:29 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1722,10 +1722,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Returns all Functions which are available (or at least known to be available) on a Node.
      * @since MMBase-1.8
      */
-    protected Collection<Function> getFunctions(MMObjectNode node) {
-        Collection<Function<?>> builderFunctions = getFunctions();
-        Collection<Function> nodeFunctions = new HashSet<Function>();
-        for (Function<?> function : builderFunctions) {
+    protected Collection<Function<?>> getFunctions(MMObjectNode node) {
+        Collection<Function<?>> nodeFunctions = new HashSet<Function<?>>();
+        for (Function<?> function : getFunctions()) {
             if (function instanceof NodeFunction) {
                 nodeFunctions.add(((NodeFunction<?>) function).newInstance(node));
             }
@@ -1766,9 +1765,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         if (function.equals("info")) {
             Map<String,String> info = new HashMap<String,String>();
-            Iterator<Function> i = getFunctions(node).iterator();
-            while (i.hasNext()) {
-                Function f = i.next();
+            for (Function<?> f : getFunctions(node)) {
                 info.put(f.getName(), f.getDescription());
             }
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
@@ -2614,7 +2611,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-builders/" + getTableName());
             properties.putAll(contextMap);
-
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }

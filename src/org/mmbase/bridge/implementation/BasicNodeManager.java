@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.132 2007-04-16 08:33:43 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.133 2007-06-21 13:46:51 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -366,6 +366,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public NodeList getList(NodeQuery query) {
         try {
+            if (query == null) query = createQuery();
+
             boolean checked = cloud.setSecurityConstraint(query);
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
@@ -561,7 +563,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     @Override
-    public Collection getFunctions() {
+    public Collection<Function<?>> getFunctions() {
         return  builder.getFunctions();
     }
 
