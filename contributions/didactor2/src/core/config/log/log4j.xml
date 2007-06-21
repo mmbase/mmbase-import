@@ -15,7 +15,7 @@
       <!--
       <param name="ConversionPattern" value="%d %q %c{4} %M.%L %x - %m%n" />
       -->
-      <param name="ConversionPattern" value="%d %q %c{4} - %m%n" />
+      <param name="ConversionPattern" value="%N %d %q %c{4} - %m%n" />
     </layout>
   </appender>
 
@@ -25,7 +25,7 @@
     <param name="DatePattern" value="'.'yyyy-MM-dd" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d - %m%n" />
+      <param name="ConversionPattern" value="%N %d - %m%n" />
     </layout>
   </appender>
 
