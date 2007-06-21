@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.48 2007-06-21 13:09:48 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.49 2007-06-21 15:58:19 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -461,10 +461,8 @@ public class ResourceLoader extends ClassLoader {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
         roots   = new ArrayList<PathURLStreamHandler>();
-        Iterator<PathURLStreamHandler> i = cl.roots.iterator();
+        for (PathURLStreamHandler o : cl.roots) {
         // hmm, don't like this code, but don't know how else to copy the inner object.
-        while (i.hasNext()) {
-            PathURLStreamHandler o = i.next();
             if (o instanceof FileURLStreamHandler) {
                 roots.add(new FileURLStreamHandler((FileURLStreamHandler) o));
             } else if (o instanceof NodeURLStreamHandler) {
@@ -1487,30 +1485,39 @@ public class ResourceLoader extends ClassLoader {
         private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    String currentRoot  = root + ResourceLoader.this.context.getPath();
-                    String resourcePath = currentRoot + (recursive == null ? "" : recursive);
-                    Collection<String> c = servletContext.getResourcePaths(resourcePath);
+                    final String currentRoot  = root + (root.equals("/") ? "" : ResourceLoader.this.context.getPath());
+                    final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
+                    final Collection<String> c = servletContext.getResourcePaths(resourcePath);
+
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("CurrentRoot '" + currentRoot + "' resourcePath '" + resourcePath + "' c: " + c);
+                    }
+
                     if (c == null) return results;
-                    Iterator<String> j = c.iterator();
-                    while (j.hasNext()) {
-                        String res = j.next();
+
+                    for (String res : c) {
+                        log.trace(res);
                         if (res.equals(resourcePath + "/")) {
                             // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
                             continue;
                         }
 
                         String newResourcePath = res.substring(currentRoot.length());
-                        boolean isDir = newResourcePath.endsWith("/");
+                        final boolean isDir = newResourcePath.endsWith("/");
                         if (isDir) {
+                            newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1);
                             // subdirs
                             if (recursive != null) {
-                                getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
+                                getPaths(results, pattern, newResourcePath, directories);
                             }
-                            if (newResourcePath.equals("/")) continue;
+                            if (newResourcePath.equals("")) continue;
                         }
-                        if ((pattern == null || pattern.matcher(newResourcePath).matches()) && (directories == isDir)) {
-                            if (isDir) newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1) ;
+                        if ((pattern == null || pattern.matcher("/" + newResourcePath).matches()) && (directories == isDir)) {
+                            log.debug("Adding " + newResourcePath);
                             results.add(newResourcePath);
+                        } else {
+                            log.debug(newResourcePath + " does not match " + pattern);
                         }
                     }
                 } catch (NoSuchMethodError nsme) {
@@ -1523,9 +1530,12 @@ public class ResourceLoader extends ClassLoader {
                     // old app-server (orion 1.5.4: java.lang.NoSuchMethodError: javax.servlet.ServletContext.getResourcePaths(Ljava/lang/String;)Ljava/util/Set;)
                     // simply ignore, running on war will not work in such app-servers
                 } catch (Throwable t) {
-                    log.error(Logging.stackTrace(t));
+                    log.error(t.getMessage(), t);
                     // ignore
                 }
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("Returning " + results);
             }
             return results;
         }
@@ -1845,7 +1855,7 @@ public class ResourceLoader extends ClassLoader {
             }
 
             // search connection which will be used for reading, and check if it can be used for writing
-            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();
+            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();            
             while (i.hasNext()) {
                 PathURLStreamHandler cf = i.next();
                 URLConnection c = cf.openConnection(name);
@@ -1937,9 +1947,8 @@ public class ResourceLoader extends ClassLoader {
                 arg = argv[1];
             }
             if (arg.equals("*") || arg.equals("**")) {
-                Iterator<String> i = resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**")).iterator();
-                while (i.hasNext()) {
-                    System.out.println("" + i.next());
+                for (String s : resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**"))) {
+                    System.out.println("" + s);
                 }
             } else {
                 InputStream resource = resourceLoader.getResourceAsStream(arg);
