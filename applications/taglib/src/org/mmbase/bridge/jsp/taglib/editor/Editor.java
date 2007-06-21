@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.14 2007-02-24 21:58:52 nklasens Exp $
+ * @version $Id: Editor.java,v 1.15 2007-06-21 15:50:25 nklasens Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -63,7 +63,7 @@ abstract public class Editor {
 
 
     protected  Parameter[] getParameterDefinition() {
-        return Parameter.EMPTY;
+        return Parameter.emptyArray();
     }
 
     /**

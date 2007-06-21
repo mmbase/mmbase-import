@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.47 2007-06-11 12:34:06 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.48 2007-06-21 15:50:22 nklasens Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -86,7 +86,7 @@ public abstract class FileWatcher {
 
 
 
-    private static Map<String,Object> props;
+    private static Map<String,String> props;
 
 
     /**
@@ -95,7 +95,7 @@ public abstract class FileWatcher {
     static private Runnable watcher = new Runnable() {
             public void run() {
                 try {
-                    String delay = (String) props.get("delay");
+                    String delay = props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
                         log.service("Set thread delay time to " + THREAD_DELAY);

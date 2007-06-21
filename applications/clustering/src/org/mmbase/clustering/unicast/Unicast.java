@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.10 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: Unicast.java,v 1.11 2007-06-21 15:50:25 nklasens Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -63,23 +63,23 @@ public class Unicast extends ClusterManager {
         start();
     }
 
-    protected synchronized void readConfiguration(Map configuration) {
+    protected synchronized void readConfiguration(Map<String,String> configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = (String) configuration.get("unicastport");
+        String tmp = configuration.get("unicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
-        tmp = (String) configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicastport");
+        tmp = configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) configuration.get("unicasttimeout");
+        tmp = configuration.get("unicasttimeout");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastTimeout = Integer.parseInt(tmp);

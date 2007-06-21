@@ -31,7 +31,7 @@ public class RealURLComposer extends FragmentURLComposer  {
         }
     }
 
-    public static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment, Map info) {
+    public static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment, Map<String, Object> info) {
         if ("true".equals(info.get("nude"))) return args;
         if (fragment != null) { // can add this for RM-sources
             long start = fragment.getLongValue("start");
@@ -118,9 +118,9 @@ public class RealURLComposer extends FragmentURLComposer  {
             char[] dArray = new char[sArray.length];
             
             int j = 0;
-            for (int i=0;i<sArray.length;i++) {
-                if (Character.isLetterOrDigit(sArray[i]) ||(sArray[i]==' ')||(sArray[i]=='.')||(sArray[i]=='-')||(sArray[i]=='_')) {
-                    dArray[j] = sArray[i];
+            for (char element : sArray) {
+                if (Character.isLetterOrDigit(element) ||(element==' ')||(element=='.')||(element=='-')||(element=='_')) {
+                    dArray[j] = element;
                     j++;
                 }
             }

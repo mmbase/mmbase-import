@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.15 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.16 2007-06-21 15:50:20 nklasens Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -86,7 +86,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
 
-                List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+                List<Step> newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);

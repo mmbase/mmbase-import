@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mmbase.applications.packaging.BundleManager;
-import org.mmbase.applications.packaging.InstallManager;
-import org.mmbase.applications.packaging.PackageManager;
-import org.mmbase.applications.packaging.Person;
-import org.mmbase.applications.packaging.ShareManager;
+import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.bundlehandlers.BundleContainer;
 import org.mmbase.applications.packaging.packagehandlers.PackageContainer;
 import org.mmbase.applications.packaging.sharehandlers.ShareGroup;
@@ -123,15 +119,15 @@ public class Controller {
      *
      * @return    The sharedPackages value
      */
-    public List getSharedPackages() {
+    public List<MMObjectNode> getSharedPackages() {
         // get the current best packages
-        Iterator packages = ShareManager.getSharedPackages();
+        Iterator<PackageContainer> packages = ShareManager.getSharedPackages();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (packages.hasNext()) {
-            PackageContainer p = (PackageContainer) packages.next();
+            PackageContainer p = packages.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", p.getId());
             virtual.setValue("name", p.getName());
@@ -162,15 +158,15 @@ public class Controller {
      *
      * @return    The sharedBundles value
      */
-    public List getSharedBundles() {
+    public List<MMObjectNode> getSharedBundles() {
         // get the current best packages
-        Iterator bundles = ShareManager.getSharedBundles();
+        Iterator<BundleContainer> bundles = ShareManager.getSharedBundles();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (bundles.hasNext()) {
-            BundleContainer b = (BundleContainer) bundles.next();
+            BundleContainer b = bundles.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", b.getId());
             virtual.setValue("name", b.getName());
@@ -201,15 +197,15 @@ public class Controller {
      *
      * @return    The notSharedPackages value
      */
-    public List getNotSharedPackages() {
+    public List<MMObjectNode> getNotSharedPackages() {
         // get the current best packages
-        Iterator packages = ShareManager.getNotSharedPackages();
+        Iterator<PackageContainer> packages = ShareManager.getNotSharedPackages();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (packages.hasNext()) {
-            PackageContainer p = (PackageContainer) packages.next();
+            PackageContainer p = packages.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", p.getId());
             virtual.setValue("name", p.getName());
@@ -228,15 +224,15 @@ public class Controller {
      *
      * @return    The notSharedBundles value
      */
-    public List getNotSharedBundles() {
+    public List<MMObjectNode> getNotSharedBundles() {
         // get the current best bundles
-        Iterator bundles = ShareManager.getNotSharedBundles();
+        Iterator<BundleContainer> bundles = ShareManager.getNotSharedBundles();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (bundles.hasNext()) {
-            BundleContainer b = (BundleContainer) bundles.next();
+            BundleContainer b = bundles.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", b.getId());
             virtual.setValue("name", b.getName());
@@ -259,10 +255,10 @@ public class Controller {
      * @param  callbackurl  Description of the Parameter
      * @return              The remoteSharedPackages value
      */
-    public List getRemoteSharedPackages(String user, String password, String method, String host, String callbackurl) {
+    public List<MMObjectNode> getRemoteSharedPackages(String user, String password, String method, String host, String callbackurl) {
         // get the current best packages
-        Iterator packages = ShareManager.getRemoteSharedPackages(user, password, method, host);
-        List list = new ArrayList();
+        Iterator<Object> packages = ShareManager.getRemoteSharedPackages(user, password, method, host);
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (packages.hasNext()) {
@@ -285,7 +281,7 @@ public class Controller {
                 virtual.setValue("licensebody", p.getLicenseBody());
                 String path = ShareManager.getProvidingPath(method) + "/package.mmp?id=" + p.getId() + "&amp;version=" + p.getVersion();
                 virtual.setValue("path", path);
-                List l = p.getRelatedPeople("initiators");
+                List<Object> l = p.getRelatedPeople("initiators");
                 if (l != null) {
                     virtual.setValue("initiators", getRelatedPeopleString(l, "initiators"));
                 }
@@ -318,7 +314,7 @@ public class Controller {
                 virtual.setValue("licensebody", p.getLicenseBody());
                 String path = ShareManager.getProvidingPath(method) + "/package.mmp?id=" + p.getId() + "&amp;version=" + p.getVersion();
                 virtual.setValue("path", path);
-                List l = p.getScreenshots();
+                List<Object> l = p.getScreenshots();
                 if (l != null) {
                     virtual.setValue("screenshots", getRelatedScreenshotsString(l,ShareManager.getProvidingPath(method)));
                 }
@@ -363,11 +359,11 @@ public class Controller {
      * @param  type    Description of the Parameter
      * @return         The relatedPeopleString value
      */
-    public String getRelatedPeopleString(List people, String type) {
+    public String getRelatedPeopleString(List<Object> people, String type) {
         String body = "";
         if (people != null) {
-            for (Iterator i = people.iterator(); i.hasNext(); ) {
-                Person pr = (Person) i.next();
+            for (Object object : people) {
+                Person pr = (Person) object;
                 if (type.equals("initiators")) {
                     body += "\t\t\t<initiator name=\"" + pr.getName() + "\" company=\"" + pr.getCompany() + "\" />\n";
                 } else if (type.equals("developers")) {
@@ -382,10 +378,10 @@ public class Controller {
         return body;
     }
 
-    public String getRelatedScreenshotsString(List screenshots,String path) {
+    public String getRelatedScreenshotsString(List<Object> screenshots,String path) {
         String body = "";
 	path = path.substring(0,path.length()-31);
-        for (Iterator i = screenshots.iterator(); i.hasNext(); ) {
+        for (Iterator<Object> i = screenshots.iterator(); i.hasNext(); ) {
                 String name = (String) i.next();
                 String file = (String) i.next();
                 String description = (String) i.next();
@@ -395,9 +391,9 @@ public class Controller {
     }
 
 
-    public String getRelatedStarturlsString(List starturls) {
+    public String getRelatedStarturlsString(List<Object> starturls) {
         String body = "";
-        for (Iterator i = starturls.iterator(); i.hasNext(); ) {
+        for (Iterator<Object> i = starturls.iterator(); i.hasNext(); ) {
                 String name = (String) i.next();
                 String link = (String) i.next();
                 String description = (String) i.next();
@@ -415,8 +411,8 @@ public class Controller {
      * @param  wv  Description of the Parameter
      * @return     The shareUsers value
      */
-    public List getShareUsers(String id, String wv) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getShareUsers(String id, String wv) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         ShareInfo shareinfo = null;
@@ -448,7 +444,7 @@ public class Controller {
 
         if (shareinfo != null) {
             // get the current best packages
-            Iterator users = shareinfo.getShareUsers();
+            Iterator<Object> users = shareinfo.getShareUsers();
 
             while (users.hasNext()) {
                 ShareUser u = (ShareUser) users.next();
@@ -466,13 +462,13 @@ public class Controller {
      *
      * @return    The allUsers value
      */
-    public List getAllUsers() {
-        List list = new ArrayList();
+    public List<MMObjectNode> getAllUsers() {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator users = ShareManager.getShareUsers();
+        Iterator<ShareUser> users = ShareManager.getShareUsers();
         while (users.hasNext()) {
-            ShareUser u = (ShareUser) users.next();
+            ShareUser u = users.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", u.getName());
             list.add(virtual);
@@ -486,13 +482,13 @@ public class Controller {
      *
      * @return    The allGroups value
      */
-    public List getAllGroups() {
-        List list = new ArrayList();
+    public List<MMObjectNode> getAllGroups() {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator groups = ShareManager.getShareGroups();
+        Iterator<ShareGroup> groups = ShareManager.getShareGroups();
         while (groups.hasNext()) {
-            ShareGroup g = (ShareGroup) groups.next();
+            ShareGroup g = groups.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", g.getName());
             list.add(virtual);
@@ -507,15 +503,15 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The groupUsers value
      */
-    public List getGroupUsers(String name) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getGroupUsers(String name) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         ShareGroup sg = ShareManager.getShareGroup(name);
         if (sg != null) {
-            Iterator users = sg.getMembers();
+            Iterator<ShareUser> users = sg.getMembers();
             while (users.hasNext()) {
-                ShareUser u = (ShareUser) users.next();
+                ShareUser u = users.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", u.getName());
                 list.add(virtual);
@@ -592,8 +588,8 @@ public class Controller {
      * @param  wv  Description of the Parameter
      * @return     The shareUsersReverse value
      */
-    public List getShareUsersReverse(String id, String wv) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getShareUsersReverse(String id, String wv) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         ShareInfo shareinfo = null;
@@ -624,10 +620,10 @@ public class Controller {
 
         if (shareinfo != null) {
             // get the current best packages
-            Iterator users = ShareManager.getShareUsers();
+            Iterator<ShareUser> users = ShareManager.getShareUsers();
 
             while (users.hasNext()) {
-                ShareUser u = (ShareUser) users.next();
+                ShareUser u = users.next();
                 if (!shareinfo.containsUser(u.getName())) {
                     MMObjectNode virtual = builder.getNewNode("admin");
                     virtual.setValue("name", u.getName());
@@ -944,8 +940,8 @@ public class Controller {
      * @param  wv  Description of the Parameter
      * @return     The shareGroups value
      */
-    public List getShareGroups(String id, String wv) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getShareGroups(String id, String wv) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         ShareInfo shareinfo = null;
@@ -976,7 +972,7 @@ public class Controller {
 
         if (shareinfo != null) {
             // get the current best packages
-            Iterator groups = shareinfo.getShareGroups();
+            Iterator<Object> groups = shareinfo.getShareGroups();
 
             while (groups.hasNext()) {
                 ShareGroup g = (ShareGroup) groups.next();
@@ -996,8 +992,8 @@ public class Controller {
      * @param  wv  Description of the Parameter
      * @return     The shareGroupsReverse value
      */
-    public List getShareGroupsReverse(String id, String wv) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getShareGroupsReverse(String id, String wv) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         ShareInfo shareinfo = null;
@@ -1028,10 +1024,10 @@ public class Controller {
 
         if (shareinfo != null) {
             // get the current best packages
-            Iterator groups = ShareManager.getShareGroups();
+            Iterator<ShareGroup> groups = ShareManager.getShareGroups();
 
             while (groups.hasNext()) {
-                ShareGroup g = (ShareGroup) groups.next();
+                ShareGroup g = groups.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 if (!shareinfo.containsGroup(g.getName())) {
                     virtual.setValue("name", g.getName());
@@ -1101,8 +1097,8 @@ public class Controller {
      * @param  wv  Description of the Parameter
      * @return     The bundleShareInfo value
      */
-    public List getBundleShareInfo(String id, String wv) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getBundleShareInfo(String id, String wv) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
@@ -1134,8 +1130,8 @@ public class Controller {
      * @param  account  Description of the Parameter
      * @return          The userInfo value
      */
-    public List getUserInfo(String account) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getUserInfo(String account) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 

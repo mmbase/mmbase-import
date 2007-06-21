@@ -2,14 +2,14 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+ import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSortOrderTest extends TestCase {
 
@@ -37,9 +37,9 @@ public class BasicSortOrderTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         MMObjectBuilder builder = mmbase.getBuilder("images");
-        FieldDefs fieldDefs = builder.getField("title");
+        CoreField CoreField = builder.getField("title");
         Step step = new BasicStep(builder);
-        field = new BasicStepField(step, fieldDefs);
+        field = new BasicStepField(step, CoreField);
         instance = new BasicSortOrder(field);
     }
 

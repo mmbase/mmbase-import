@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.8 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.9 2007-06-21 15:50:25 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -43,7 +43,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue nodesToSend;
+    private final BlockingQueue<byte[]> nodesToSend;
 
     /** Channel to send messages on */
     private final JChannel channel;
@@ -54,7 +54,7 @@ public class ChangesSender implements Runnable {
      * @param channel Channel on which to send messages
      * @param nodesToSend Queue of messages to send
      */
-    ChangesSender(JChannel channel, BlockingQueue nodesToSend, Statistics send) {
+    ChangesSender(JChannel channel, BlockingQueue<byte[]> nodesToSend, Statistics send) {
         this.send = send;
         this.channel = channel;
         this.nodesToSend = nodesToSend;
@@ -98,7 +98,7 @@ public class ChangesSender implements Runnable {
                     continue;
                 }
 
-                byte[] message = (byte[]) nodesToSend.take();
+                byte[] message = nodesToSend.take();
                 long startTime = System.currentTimeMillis();
                 Message msg = new Message(null, null, message);
                 try {

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.28 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: ImageMaster.java,v 1.29 2007-06-21 15:50:23 nklasens Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -50,7 +50,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * The filelist is periodically cleared by {@link ImagePusher} (which purges duplicate
      * files and handles the remaining transfers).
      */
-    Vector files=new Vector();
+    Vector<aFile2Copy> files=new Vector<aFile2Copy>();
     /**
      * The background thread that takes care of of the files scheduled for transfer.
      */
@@ -289,7 +289,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                     // We now have a clean ckey ( aka 234242+f(gif) )
                     // Get mimetype from ckey params string.
                     StringTokenizer st = new StringTokenizer(ckey,"+\n\r");
-                    Vector ckeyVec = new Vector();
+                    Vector<Object> ckeyVec = new Vector<Object>();
                     while (st.hasMoreTokens()) {
                         ckeyVec.addElement(st.nextElement());
                     }
@@ -527,14 +527,14 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      *
      *
      */
-    private String getImageMimeType(Images images, List params) {
+    private String getImageMimeType(Images images, List<Object> params) {
         String format = null;
         String key;
 
         // WHY the itype colomn isn't used?
 
-        for (Iterator e = params.iterator() ;e.hasNext();) {
-            key = (String)e.next();
+        for (Object object : params) {
+            key = (String)object;
 
             // look if our string is long enough...
             if(key != null && key.length() > 2) {

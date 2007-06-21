@@ -2,7 +2,8 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import java.util.*;
-import org.mmbase.module.core.MMObjectBuilder;
+
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -11,7 +12,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -111,7 +112,7 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Null argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List steps = instance1.getSteps();
+        List<Step> steps = instance1.getSteps();
         assertTrue(steps.size() == 0);
         Step step0 = instance1.addStep(images);
         steps = instance1.getSteps();
@@ -146,7 +147,7 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Null nextBuilder argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List steps = instance1.getSteps();
+        List<Step> steps = instance1.getSteps();
         assertTrue(steps.size() == 1);
         RelationStep relationStep = instance1.addRelationStep(insrel, images);
         steps = instance1.getSteps();
@@ -159,8 +160,8 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of addField method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testAddField() {
         Step step = instance1.addStep(images);
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs imagesDescription = images.getField("description");
+        CoreField imagesTitle = images.getField("title");
+        CoreField imagesDescription = images.getField("description");
         
         // Null step argument, should throw IllegalArgumentException
         try {
@@ -168,13 +169,13 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Null step argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        // Null fieldDefs argument, should throw IllegalArgumentException
+        // Null CoreField argument, should throw IllegalArgumentException
         try {
             instance1.addField(step, null);
-            fail("Null fieldDefs argument, should throw IllegalArgumentException");
+            fail("Null CoreField argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List fields = instance1.getFields();
+        List<StepField> fields = instance1.getFields();
         assertTrue(fields.size() == 0);
         StepField field0 = instance1.addField(step, imagesTitle);
         fields = instance1.getFields();
@@ -198,8 +199,8 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of addAggregatedField method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testAddAggregatedField() {
         Step step = instance2.addStep(images);
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs imagesDescription = images.getField("description");
+        CoreField imagesTitle = images.getField("title");
+        CoreField imagesDescription = images.getField("description");
         
         // Null step argument, should throw IllegalArgumentException
         try {
@@ -208,11 +209,11 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Null step argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        // Null fieldDefs argument, should throw IllegalArgumentException
+        // Null CoreField argument, should throw IllegalArgumentException
         try {
             instance2.addAggregatedField(
             step, null, AggregatedField.AGGREGATION_TYPE_COUNT);
-            fail("Null fieldDefs argument, should throw IllegalArgumentException");
+            fail("Null CoreField argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
         // Invalid aggregation type argument, should throw IllegalArgumentException
@@ -222,7 +223,7 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Invalid aggregation type argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List fields = instance2.getFields();
+        List<StepField> fields = instance2.getFields();
         assertTrue(fields.size() == 0);
         StepField field0 = instance2.addAggregatedField(
         step, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
@@ -255,12 +256,12 @@ public class BasicSearchQueryTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         Step step = instance1.addStep(images);
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs imagesDescription = images.getField("description");
+        CoreField imagesTitle = images.getField("title");
+        CoreField imagesDescription = images.getField("description");
         StepField field0 = instance1.addField(step, imagesTitle);
         StepField field1 = instance1.addField(step, imagesDescription);
         
-        List sortOrders = instance1.getSortOrders();
+        List<SortOrder> sortOrders = instance1.getSortOrders();
         assertTrue(sortOrders.size() == 0);
         SortOrder sortOrder0 = instance1.addSortOrder(field0);
         sortOrders = instance1.getSortOrders();
@@ -298,8 +299,8 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddSortOrder();
         
-        List sortOrders = instance1.getSortOrders();
-        Object item = sortOrders.get(0);
+        List<SortOrder> sortOrders = instance1.getSortOrders();
+        SortOrder item = sortOrders.get(0);
         
         // List returned must be unmodifiable.
         try {
@@ -317,8 +318,8 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddStep();
         
-        List steps = instance1.getSteps();
-        Object item = steps.get(0);
+        List<Step> steps = instance1.getSteps();
+        Step item = steps.get(0);
         
         // List returned must be unmodifiable.
         try {
@@ -336,8 +337,8 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddField();
         
-        List fields = instance1.getFields();
-        Object item = fields.get(0);
+        List<StepField> fields = instance1.getFields();
+        StepField item = fields.get(0);
         
         // List returned must be unmodifiable.
         try {

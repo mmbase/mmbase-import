@@ -39,7 +39,7 @@ public class MimeBodyTag {
     private String formatter;
     private String filepath;
     private String filename;
-    private Vector altnodes; // synchronized?
+    private Vector<MimeBodyTag> altnodes; // synchronized?
     private MimeMultipart relatednodes;
     private String number;
     private String field;
@@ -60,7 +60,7 @@ public class MimeBodyTag {
         if (altnodes==null) {
             //altnodes=new MimeMultipart("alternative");
             //altnodes.addBodyPart(getMimeBodyPart());
-            altnodes = new Vector();
+            altnodes = new Vector<MimeBodyTag>();
         }
         //altnodes.addBodyPart(sub.getMimeBodyPart());
         altnodes.addElement(sub);
@@ -232,9 +232,9 @@ public class MimeBodyTag {
                     result.addBodyPart(wrapper);
                 }
 
-                Enumeration e=altnodes.elements();
+                Enumeration<MimeBodyTag> e=altnodes.elements();
                 while (e.hasMoreElements()) {
-                    MimeBodyTag t=(MimeBodyTag)e.nextElement();
+                    MimeBodyTag t=e.nextElement();
             
                     r=t.getRelatedpart();
                     if (r==null) {

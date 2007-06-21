@@ -24,11 +24,11 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.12 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MMEdit.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
  */
 public class MMEdit extends ProcessorModule {
 
-    Hashtable commandHandlers; // The objects that handle process, replace and
+    Hashtable<String,CommandHandlerInterface> commandHandlers; // The objects that handle process, replace and
     // list commands
     StateManager stateMngr;
 
@@ -42,7 +42,7 @@ public class MMEdit extends ProcessorModule {
         CommandHandlerInterface newHandler;
 
         mmBase= (MMBase)getModule("MMBASEROOT");
-        commandHandlers = new Hashtable();
+        commandHandlers = new Hashtable<String,CommandHandlerInterface>();
         stateMngr = new StateManager(mmBase);
         commandHandlers.put("STATE", stateMngr);
         newHandler = new ObjectSelector(stateMngr);
@@ -139,7 +139,7 @@ public class MMEdit extends ProcessorModule {
                     DirectoryLister imglister = new DirectoryLister();
                     String path = tok.nextToken();
                     Vector unsorted = imglister.getDirectories(path);  //Retrieve all filepaths
-                    Vector sorted = imglister.sortDirectories(unsorted,comparefield);
+                    Vector<String> sorted = imglister.sortDirectories(unsorted,comparefield);
                     result = imglister.createThreeItems(sorted,tagger);
                     tagger.setValue("ITEMS", "3");
                     //added 27jan1999
@@ -152,7 +152,7 @@ public class MMEdit extends ProcessorModule {
                     }
                 } else {
 
-                    handler = (CommandHandlerInterface)commandHandlers.get(token);
+                    handler = commandHandlers.get(token);
 
                     if (handler != null) {
                         result = handler.getList(sp, tagger, tok);
@@ -179,7 +179,7 @@ public class MMEdit extends ProcessorModule {
             cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
             token = tok.nextToken();
-            handler = (CommandHandlerInterface)commandHandlers.get(token);
+            handler = commandHandlers.get(token);
 
             if (handler != null) {
                 handler.process(sp, tok, cmds, vars);
@@ -215,7 +215,7 @@ public class MMEdit extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(command,"-\n\r");
         token = tok.nextToken();
         // log.error("MMEDIT->"+token+" "+commandHandlers);
-        handler =  (CommandHandlerInterface)commandHandlers.get(token);
+        handler =  commandHandlers.get(token);
 
         if (handler != null) return handler.replace(sp, tok);
 

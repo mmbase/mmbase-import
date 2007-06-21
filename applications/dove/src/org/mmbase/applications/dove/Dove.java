@@ -11,9 +11,11 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.RelationStep;
@@ -53,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.84 2007-05-10 11:58:08 michiel Exp $
+ * @version $Id: Dove.java,v 1.85 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -182,7 +184,6 @@ public class Dove extends AbstractDove {
         if (field == null) {
             for (FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f = i.nextField();
-                String fname = f.getName();
                 if (isDataField(nm, f)) {
                     addField(out, nm, f, node);
                 }
@@ -754,12 +755,12 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @param repository Repository that contains the blobs
      */
-    public void put(Element in, Element out, Cloud cloud, Map repository) {
+    public void put(Element in, Element out, Cloud cloud, Map<String,byte[]> repository) {
         // first collect all new and original nodes
-        Map originalNodes     = new HashMap();
-        Map newNodes          = new HashMap();
-        Map originalRelations = new HashMap();
-        Map newRelations      = new HashMap();
+        Map<String, Map<String, Object>> originalNodes     = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> newNodes = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> originalRelations = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> newRelations      = new HashMap<String, Map<String, Object>>();
 
         // get all the needed info from the xml stream
         Element query = getFirstElement(in);
@@ -773,7 +774,7 @@ public class Dove extends AbstractDove {
                         boolean isRelation = node.getTagName().equals(RELATION);
 
                         // store the values of one node
-                        Map values = new HashMap();
+                        Map<String, Object> values = new HashMap<String, Object>();
                         if (isRelation) {
                             if (isOriginal) {
                                 originalRelations.put(node.getAttribute(ELM_NUMBER), values);
@@ -817,7 +818,7 @@ public class Dove extends AbstractDove {
                                 String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
-                                    Object repval = repository.get(href);
+                                    byte[] repval = repository.get(href);
                                     if (repval != null) {
                                         values.put(fieldname, repval);
                                         // also retrieve and set filename
@@ -848,25 +849,23 @@ public class Dove extends AbstractDove {
         // are there new nodes to handle ?
         if (newNodes.size() > 0 || newRelations.size() > 0) {
             Transaction trans = cloud.createTransaction();
-            Map addedNodes     = new HashMap ();
-            Map addedRelations = new HashMap();
+            Map<Node, Element> addedNodes     = new HashMap<Node, Element> ();
+            Map<Relation, Element> addedRelations = new HashMap<Relation, Element>();
             if (mergeClouds(originalNodes, newNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
                 trans.commit();
                 // retrieve all numbers and reset them to the right value
                 // This is possible, as the nodes themselves contain this info after the
                 // transaction
                 //
-                for (Iterator i = addedNodes.entrySet().iterator(); i.hasNext(); ) {
-                    Map.Entry me=(Map.Entry)i.next();
-                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
-                    Element oe = (Element)me.getValue();
+                for (Entry<Node, Element> me : addedNodes.entrySet()) {
+                    org.mmbase.bridge.Node n = me.getKey();
+                    Element oe = me.getValue();
                     oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
                 }
                 // retrieve all numbers, snumbers, dnumbers and reset them to the right value
-                for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
-                    Map.Entry me=(Map.Entry)i.next();
-                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
-                    Element re = (Element)me.getValue();
+                for (Entry<Relation, Element> me : addedRelations.entrySet()) {
+                    Relation n = me.getKey();
+                    Element re = me.getValue();
                     re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
                     re.setAttribute(ELM_SOURCE, "" + n.getIntValue("snumber"));
                     re.setAttribute(ELM_DESTINATION, "" + n.getIntValue("dnumber"));
@@ -886,7 +885,7 @@ public class Dove extends AbstractDove {
      * @param aliases a Map with mappings from XML aliases to node reference values
      * @return the node reference value
      */
-    protected String getNodeReferenceFromValue(String name, Map values, Map aliases) {
+    protected String getNodeReferenceFromValue(String name, Map<String,Object> values, Map<String, Integer> aliases) {
         String result=null;
         String value=(String)values.get(name);
         Object tmp=aliases.get(value);
@@ -910,7 +909,7 @@ public class Dove extends AbstractDove {
      * @param values a Map with new node values
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element objectelement, Map values) {
+    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element objectelement, Map<String,Object> values) {
         return fillFields(alias, node, objectelement, values, null);
     }
 
@@ -927,15 +926,14 @@ public class Dove extends AbstractDove {
      *        if <code>null</code>, no checking takes place
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
+    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map<String,Object> values, Map<String,Object> originalValues) {
         node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
-        for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry me = (Map.Entry)i.next();
-            String key = (String)me.getKey();
+        for (Entry<String, Object> me : values.entrySet()) {
+            String key = me.getKey();
             if (isEditableField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
                 DataType dt = node.getNodeManager().getField(key).getDataType();
-                String changes = (String) properties.getProperties().get(PROP_CHANGES);
+                String changes = properties.getProperties().get(PROP_CHANGES);
                 if ((! CHANGES_IGNORE.equals(changes)) &&
                     (originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
@@ -1004,7 +1002,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewNode(String alias, Map values, Map aliases, Map addedNodes, Element out, Cloud cloud) {
+    protected boolean putNewNode(String alias, Map<String,Object> values, Map<String, Integer> aliases, Map<Node, Element> addedNodes, Element out, Cloud cloud) {
         String type = (String) values.get("_otype");
 
         NodeManager nm = cloud.getNodeManager(type);
@@ -1044,7 +1042,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewRelation(String alias, Map values, Map aliases, Map addedRelations, Element out, Cloud cloud) {
+    protected boolean putNewRelation(String alias, Map<String,Object> values, Map<String, Integer> aliases, Map<Relation, Element> addedRelations, Element out, Cloud cloud) {
         String role = (String) values.get("_role");
 
         RelationManager relman=cloud.getRelationManager(role);
@@ -1088,7 +1086,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteNode(String alias, Map originalValues, Element out, Cloud cloud) {
+    protected boolean putDeleteNode(String alias, Map<String,Object> originalValues, Element out, Cloud cloud) {
         // check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
@@ -1116,7 +1114,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteRelation(String alias, Map originalValues, Element out, Cloud cloud) {
+    protected boolean putDeleteRelation(String alias, Map<String,Object> originalValues, Element out, Cloud cloud) {
         String role = (String)originalValues.get("_role");
         RelationManager relman = cloud.getRelationManager(role);
         org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
@@ -1143,7 +1141,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putChangeNode(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
+    protected boolean putChangeNode(String alias, Map<String,Object> values, Map<String,Object> originalValues, Map<String, Integer> aliases, Element out, Cloud cloud) {
         // now check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
@@ -1187,21 +1185,18 @@ public class Dove extends AbstractDove {
      *           as childs to this element.
      * @param cloud the cloud to work on
      */
-    protected boolean mergeClouds(Map originalNodes, Map newNodes, Map originalRelations, Map newRelations,
-                                  Map addedNodes, Map addedRelations, Element out, Cloud cloud) {
-        Map aliases = new HashMap(); // hash from alias names to real names
+    protected boolean mergeClouds(Map<String, Map<String, Object>> originalNodes, Map<String, Map<String, Object>> newNodes, Map<String, Map<String, Object>> originalRelations, Map<String, Map<String, Object>> newRelations,
+                                  Map<Node, Element> addedNodes, Map<Relation, Element> addedRelations, Element out, Cloud cloud) {
+        Map<String, Integer> aliases = new HashMap<String, Integer>(); // hash from alias names to real names
 
         // create new tag and add it to response
         Element newElement = doc.createElement(NEW);
         out.appendChild(newElement);
 
         // lets enum all the newNodes
-        for (Iterator i = newNodes.entrySet().iterator(); i.hasNext(); ) {
-            // handle the several cases we have when we have
-            // a new node (merge, really new)
-            Map.Entry me = (Map.Entry)i.next();
-            String alias = (String)me.getKey();
-            Map values = (Map)me.getValue();
+        for (Entry<String, Map<String, Object>> me : newNodes.entrySet()) {
+            String alias = me.getKey();
+            Map<String, Object> values = me.getValue();
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
@@ -1210,13 +1205,13 @@ public class Dove extends AbstractDove {
             } else if (status != null && status.equals("delete")) {
                 // to check if they send a original
                 // XXX: no original is not an error ???
-                Map originalValues = (Map) originalNodes.get(alias);
+                Map<String, Object> originalValues = originalNodes.get(alias);
                 if (originalValues!=null) {
                     if (!putDeleteNode(alias, originalValues, newElement, cloud)) return false;;
                 }
             } else if (status == null || status.equals("") || status.equals("change")) {
                 // check if they send a original
-                Map originalValues = (Map )originalNodes.get(alias);
+                Map<String, Object> originalValues = originalNodes.get(alias);
                 if (originalValues != null) {
                     if(!putChangeNode(alias, values, originalValues, aliases, newElement, cloud)) return false;
                 } else {
@@ -1234,19 +1229,16 @@ public class Dove extends AbstractDove {
         }
 
         // now handle all the relations
-        for (Iterator i = newRelations.entrySet().iterator(); i.hasNext(); ) {
-            // handle the several cases we have when we have
-            // a new node (merge, really new)
-            Map.Entry me = (Map.Entry)i.next();
-            String alias = (String)me.getKey();
-            Map values = (Map)me.getValue();
+        for (Entry<String, Map<String, Object>> me : newRelations.entrySet()) {
+            String alias = me.getKey();
+            Map<String,Object> values = me.getValue();
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
             if (status != null && status.equals("new")) {
                 if (!putNewRelation(alias, values, aliases, addedRelations, newElement, cloud)) return false;
             } else if (status != null && status.equals("delete")) {
-                Map originalValues = (Map)originalRelations.get(alias);
+                Map<String,Object> originalValues = originalRelations.get(alias);
                 if (originalValues != null) {
                     if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;
                 } // no error ???
@@ -1286,9 +1278,9 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on - if null, a cloud will be created by the Dove class
      * @param repository Repository that contains the blobs
      */
-    public void doRequest(Element in, Element out, Cloud cloud, Map repository) {
+    public void doRequest(Element in, Element out, Cloud cloud, Map<String,byte[]> repository) {
         // set repository for blobs
-        if (repository == null) repository = new HashMap();
+        if (repository == null) repository = new HashMap<String,byte[]>();
 
         Element command = getFirstElement(in);
         if ((cloud == null)) {
@@ -1349,7 +1341,7 @@ public class Dove extends AbstractDove {
             if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
             String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
             if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
-            Map user = new HashMap();
+            Map<String, String> user = new HashMap<String, String>();
             if ((userName!=null) && (!userName.equals(""))) {
                 user.put("username", userName);
                 user.put("password", password);

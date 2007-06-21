@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Users.java,v 1.9 2004-09-20 09:43:58 marcel Exp $
+ * @version $Id: Users.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
  */
 public class Users extends MMObjectBuilder {
 
@@ -27,7 +27,7 @@ public class Users extends MMObjectBuilder {
 
     // cache the 100 most active users, enh. is to allow
     // people to set it in users.xml
-    LRUHashtable cache = new LRUHashtable(100);
+    LRUHashtable<String, Integer> cache = new LRUHashtable<String, Integer>(100);
 
     // rico's funkie password generator
     protected PasswordGeneratorInterface pwgen = new PasswordGenerator ();
@@ -74,7 +74,7 @@ public class Users extends MMObjectBuilder {
     public int getNumber(String key) {
 
         // check if we have this key allready in cache
-        Integer n=(Integer)cache.get(key);
+        Integer n=cache.get(key);
         if (n!=null) {
 
             // we have it in the cache so return that

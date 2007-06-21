@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.7 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.8 2007-06-21 15:50:25 nklasens Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -49,7 +49,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final BlockingQueue nodesToSpawn;
+    private final BlockingQueue<byte[]> nodesToSpawn;
 
     /** JChannel: the multicast communication channel */
     private final JChannel channel;
@@ -59,7 +59,7 @@ public class ChangesReceiver implements Runnable {
      * @param channel channel on which to listen for and recieve messages.
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(JChannel channel, BlockingQueue nodesToSpawn) {
+    ChangesReceiver(JChannel channel, BlockingQueue<byte[]> nodesToSpawn) {
         this.channel = channel;
         this.nodesToSpawn = nodesToSpawn;
         this.start();

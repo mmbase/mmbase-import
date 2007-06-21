@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 import javax.xml.parsers.*;
 
-import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.xml.sax.*;
@@ -30,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.11 2007-06-06 11:35:47 nklasens Exp $
+ * @version $Id: TransactionsParser.java,v 1.12 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -88,20 +87,8 @@ public class TransactionsParser extends DefaultHandler {
     /** Logger instance. */
     private static Logger log = Logging.getLoggerInstance(TransactionsParser.class.getName());
 
-    /** MMBase module. */
-    private static MMBase mmbase = null;
-
     /** TransactionHandler module. */
     private static TransactionHandler transactionHandler = null;
-
-    /** Upload module. */
-    // private static Upload upload = null;
-
-    /** TransactionManager module. */
-    private TransactionManager transactionManager;
-
-    /** TemporaryNodeManager module. */
-    private TemporaryNodeManager tmpObjectManager;
 
     /** Path of the MMBase dtd directory. */
     private String dtdDirectory;
@@ -150,7 +137,7 @@ public class TransactionsParser extends DefaultHandler {
 
     /** The name/value attributes of param elements, when parsing
      *  an objectMerger element. */
-    private HashMap params;
+    private HashMap<String, String> params;
 
     /**
      * Creates new TransactionParser object.
@@ -170,14 +157,10 @@ public class TransactionsParser extends DefaultHandler {
      */
     public TransactionsParser(UserTransactionInfo uti) {
         this.uti = uti;
-        mmbase = MMBase.getMMBase();
         transactionHandler = (TransactionHandler)TransactionHandler.getModule("transactionhandler");
         //upload = (Upload)Module.getModule("upload");
         dtdDirectory = MMBaseContext.getConfigPath() + File.separator + "dtd" + File.separator;
         reportDirectory = MMBaseContext.getConfigPath() + File.separator + "import" + File.separator + "report" + File.separator;
-        transactionManager = TransactionManager.getInstance();
-        tmpObjectManager = transactionManager.getTemporaryNodeManager();
-
     }
 
     /**
@@ -345,14 +328,14 @@ public class TransactionsParser extends DefaultHandler {
                 className = attributes.getValue(ATTRIBUTE_CLASS);
 
                 // Initialize parameters.
-                params = new HashMap();
+                params = new HashMap<String, String>();
 
             } else if (name.equals(ELEMENT_OBJECT_MERGER)) { // objectMerger
                 // Get attributes.
                 className = attributes.getValue(ATTRIBUTE_CLASS);
 
                 // Initialize parameters.
-                params = new HashMap();
+                params = new HashMap<String, String>();
 
             } else if (name.equals(ELEMENT_PARAM)) { // param
                 // Get attributes.

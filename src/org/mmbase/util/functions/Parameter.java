@@ -15,6 +15,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
+import java.util.Map.Entry;
 import java.io.*;
 import org.w3c.dom.*;
 
@@ -27,7 +28,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.43 2007-05-23 13:20:33 michiel Exp $
+ * @version $Id: Parameter.java,v 1.44 2007-06-21 15:50:21 nklasens Exp $
  * @see Parameters
  */
 
@@ -41,12 +42,12 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * these constants, and if it has a cloud ('mm:cloud is used'), then cloud-parameters are filled
      * automaticly.
      */
-    public static final Parameter<String> LANGUAGE                                  = new Parameter("language", String.class);
-    public static final Parameter<Locale> LOCALE                                    = new Parameter("locale",   Locale.class);
-    public static final Parameter<org.mmbase.security.UserContext>         USER     = new Parameter("user", org.mmbase.security.UserContext.class);
-    public static final Parameter<javax.servlet.http.HttpServletResponse>  RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
-    public static final Parameter<javax.servlet.http.HttpServletRequest>   REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
-    public static final Parameter<org.mmbase.bridge.Cloud>                 CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
+    public static final Parameter<String> LANGUAGE                                  = new Parameter<String>("language", String.class);
+    public static final Parameter<Locale> LOCALE                                    = new Parameter<Locale>("locale",   Locale.class);
+    public static final Parameter<org.mmbase.security.UserContext>         USER     = new Parameter<org.mmbase.security.UserContext>("user", org.mmbase.security.UserContext.class);
+    public static final Parameter<javax.servlet.http.HttpServletResponse>  RESPONSE = new Parameter<javax.servlet.http.HttpServletResponse>("response", javax.servlet.http.HttpServletResponse.class);
+    public static final Parameter<javax.servlet.http.HttpServletRequest>   REQUEST  = new Parameter<javax.servlet.http.HttpServletRequest>("request",  javax.servlet.http.HttpServletRequest.class);
+    public static final Parameter<org.mmbase.bridge.Cloud>                 CLOUD    = new Parameter<org.mmbase.bridge.Cloud> ("cloud",  org.mmbase.bridge.Cloud.class);
 
     /**
      * 'system' parameter set for nodefunctions.
@@ -62,7 +63,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * An empty Parameter array.
      */
+    @SuppressWarnings("unchecked")
     public static final Parameter[] EMPTY  = new Parameter[0];
+
+    @SuppressWarnings({ "unchecked", "cast" })
+    public static final <C> Parameter<C>[] emptyArray() {
+        return (Parameter<C>[]) EMPTY;
+    }
 
     /**
      * @since MMBase-1.9
@@ -74,7 +81,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
             Parameter parameter = readFromXml((Element)params.item(i));
             list.add(parameter);
         }
-        return  list.toArray(Parameter.EMPTY);
+        return  list.toArray(Parameter.emptyArray());
     }
 
     /**

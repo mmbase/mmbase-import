@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.47 2007-04-05 14:04:18 pierre Exp $
+ * @version $Id: XMLNodeReader.java,v 1.48 2007-06-21 15:50:22 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -122,8 +122,7 @@ public class XMLNodeReader extends DocumentReader {
                                 // tokenize here!
                                 String n4value = n4.getNodeValue();
                                 String[] aliases = n4value.split(",");
-                                for(int i = 0; i < aliases.length; i++) {
-                                    String alias = aliases[i];
+                                for (String alias : aliases) {
                                     log.info("Setting alias to " + alias);
                                     newNode.setAlias(alias);
                                 }

@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.12 2007-02-24 21:58:52 nklasens Exp $
+ * @version $Id: YAMMEditor.java,v 1.13 2007-06-21 15:50:25 nklasens Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -39,8 +39,8 @@ public class YAMMEditor extends Editor {
     private static final Logger log = Logging.getLoggerInstance(YAMMEditor.class);
 
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("url", String.class, "/mmbase/edit/yammeditor/yammeditor.jsp"),
-        new Parameter("icon", String.class, "/mmbase/style/images/change.gif")
+        new Parameter<String>("url", String.class, "/mmbase/edit/yammeditor/yammeditor.jsp"),
+        new Parameter<String>("icon", String.class, "/mmbase/style/images/change.gif")
     };
 
 
@@ -86,13 +86,13 @@ public class YAMMEditor extends Editor {
      * @param nodenrList    List with nodenumbers
      * @param fieldList     List with fieldnames
      */
-    public void registerFields(List queryList, List nodenrList, List fieldList) {
+    public void registerFields(List<Query> queryList, List<String> nodenrList, List<String> fieldList) {
         log.debug("processing fields");
         for (int i = 0; i < nodenrList.size(); i++) {
-            String fldName = (String) fieldList.get(i);
+            String fldName = fieldList.get(i);
             log.debug("processing field '" + fldName + "'");
-            Query query = (Query) queryList.get(i);
-            String nodenr = (String) nodenrList.get(i);
+            Query query = queryList.get(i);
+            String nodenr = nodenrList.get(i);
 
             processField(query, nodenr, fldName);
         }
@@ -166,22 +166,21 @@ public class YAMMEditor extends Editor {
 
     protected List<String> getNodesFromQuery(Query query, String nr) {
         List<String> nl = new ArrayList<String>();
-        List steps = query.getSteps();
+        List<Step> steps = query.getSteps();
 
         if (steps.size() == 1) {    // why ?
             nl.add(nr);
             log.debug("1. added nr to list of all the nodes in query: " + nr);
         }
 
-        Iterator si = steps.iterator();
+        Iterator<Step> si = steps.iterator();
         while (si.hasNext()) {
-            Step step = (Step) si.next();
+            Step step = si.next();
 
             // Get the nodes from this step
             //   (haalt alle nodes uit step, itereert erover en stopt ze in nl )
-            SortedSet nodeSet = step.getNodes();
-            for (Iterator nsi = nodeSet.iterator(); nsi.hasNext();) {
-                Integer n = (Integer)nsi.next();
+            SortedSet<Integer> nodeSet = step.getNodes();
+            for (Integer n : nodeSet) {
                 nr = String.valueOf(n);
 
                 if (!nl.contains(nr)) {
@@ -202,12 +201,12 @@ public class YAMMEditor extends Editor {
      * @param   ql  List with queries
      * @return      List with paths from #getPathFromQuery
      */
-    protected List<String> fillPathList(List ql) {
+    protected List<String> fillPathList(List<Query> ql) {
         List<String> pl = new ArrayList<String>();
 
-        Iterator i = ql.iterator();
+        Iterator<Query> i = ql.iterator();
         while (i.hasNext()) {
-            Query q = (Query) i.next();
+            Query q = i.next();
             String path = getPathFromQuery(q);
             if (!path.equals("") && !pl.contains(path)) {
                 pl.add(path);
@@ -230,17 +229,16 @@ public class YAMMEditor extends Editor {
     protected String getPathFromQuery(Query query) {
         StringBuilder path = new StringBuilder();
 
-        java.util.List steps = query.getSteps();
+        java.util.List<Step> steps = query.getSteps();
         log.debug("Nr of steps : " + steps.size());
         if (steps.size() > 1) {     // no need to look for a path when there is just 1 step
-            Iterator si = steps.iterator();
+            Iterator<Step> si = steps.iterator();
             while (si.hasNext()) {
-                Step step = (Step) si.next();
+                Step step = si.next();
 
                 String nodenrs = "";
-                SortedSet nodeSet = step.getNodes();    // Get the (start?)nodes from this step
-                for (Iterator nsi = nodeSet.iterator(); nsi.hasNext();) {
-                    Integer number = (Integer)nsi.next();
+                SortedSet<Integer> nodeSet = step.getNodes();    // Get the (start?)nodes from this step
+                for (Integer number : nodeSet) {
                     if (nodenrs.equals("")) {
                         nodenrs = String.valueOf(number);
                     } else {

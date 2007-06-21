@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.22 2007-06-20 14:32:27 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.23 2007-06-21 15:50:19 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -58,7 +58,7 @@ public class EmailHandler {
 
 
         String from = node.getStringValue("from");
-        Set   toGroup = getAttachedGroups(node);
+        Set<NodeRecipient>   toGroup = getAttachedGroups(node);
 
         // get Body of the mail (including url based)
         String body = node.getStringValue("body");

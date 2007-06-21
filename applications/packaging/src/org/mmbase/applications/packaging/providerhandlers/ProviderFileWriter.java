@@ -52,9 +52,9 @@ public class ProviderFileWriter {
      */
     private static String writeProviders() {
         String result = "";
-        Iterator e = ProviderManager.getProviders();
+        Iterator<ProviderInterface> e = ProviderManager.getProviders();
         while (e.hasNext()) {
-            ProviderInterface p = (ProviderInterface) e.next();
+            ProviderInterface p = e.next();
             String method = p.getMethod();
             result += "\t<provider name=\"" + p.getName() + "\" maintainer=\"" + p.getMaintainer() + "\" ";
             result += "method=\"" + method + "\" ";

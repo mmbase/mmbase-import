@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.29 2007-06-05 13:27:29 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.30 2007-06-21 15:50:21 nklasens Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -94,7 +94,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
         if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
         if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE);
-        return defList.toArray(Parameter.EMPTY);
+        return defList.toArray(Parameter.emptyArray());
     }
 
     /**

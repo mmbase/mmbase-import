@@ -22,16 +22,16 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.2 2007-06-13 19:40:56 nklasens Exp $
+ * @version $Id: AbstractImages.java,v 1.3 2007-06-21 15:50:20 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
-    public final static Parameter[] HEIGHT_PARAMETERS = Parameter.EMPTY;
-    public final static Parameter[] WIDTH_PARAMETERS  = Parameter.EMPTY;
-    public final static Parameter[] DIMENSION_PARAMETERS  = Parameter.EMPTY;
+    public final static Parameter[] HEIGHT_PARAMETERS = Parameter.emptyArray();
+    public final static Parameter[] WIDTH_PARAMETERS  = Parameter.emptyArray();
+    public final static Parameter[] DIMENSION_PARAMETERS  = Parameter.emptyArray();
 
 
     public static final String FIELD_ITYPE       = "itype";

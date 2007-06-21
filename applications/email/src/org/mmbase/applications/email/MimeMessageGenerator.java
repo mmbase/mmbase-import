@@ -35,14 +35,14 @@ public class MimeMessageGenerator {
      */
     public static MimeMultipart getMimeMultipart(String text) {
         
-        Hashtable nodes = new Hashtable();
-        Vector rootnodes = new Vector();
+        Hashtable<String, MimeBodyTag> nodes = new Hashtable<String, MimeBodyTag>();
+        Vector<MimeBodyTag> rootnodes = new Vector<MimeBodyTag>();
 
 
-	Enumeration tags=MimeBodyTagger.getMimeBodyParts(text);
+	Enumeration<MimeBodyTag> tags=MimeBodyTagger.getMimeBodyParts(text);
 	while (tags.hasMoreElements()) {
             try {
-		MimeBodyTag tag=(MimeBodyTag)tags.nextElement();
+		MimeBodyTag tag=tags.nextElement();
 
 		// get all the needed fields
 		String type=tag.getType();
@@ -57,12 +57,12 @@ public class MimeMessageGenerator {
 		if (alt==null && related==null) {
                     rootnodes.addElement(tag);
 		} else if (alt!=null) {
-                    MimeBodyTag oldpart=(MimeBodyTag)nodes.get(alt);
+                    MimeBodyTag oldpart=nodes.get(alt);
                     if (oldpart!=null) {
                         oldpart.addAlt(tag);
                     }
 		} else if (related!=null) {
-                    MimeBodyTag oldpart=(MimeBodyTag)nodes.get(related);
+                    MimeBodyTag oldpart=nodes.get(related);
                     if (oldpart!=null) {
                         oldpart.addRelated(tag);
                     }
@@ -74,7 +74,7 @@ public class MimeMessageGenerator {
 	}
 
 	if (rootnodes.size()==1) {
-            MimeBodyTag t=(MimeBodyTag)rootnodes.elementAt(0);
+            MimeBodyTag t=rootnodes.elementAt(0);
             MimeMultipart mmp=t.getMimeMultipart();
             if (mmp!=null) {
                 return(mmp);
@@ -84,9 +84,9 @@ public class MimeMessageGenerator {
             try {
                 MimeMultipart root = new MimeMultipart();
                 root.setSubType("mixed");
-                Enumeration l = rootnodes.elements();
+                Enumeration<MimeBodyTag> l = rootnodes.elements();
                 while (l.hasMoreElements()) {
-                    MimeBodyTag t = (MimeBodyTag) l.nextElement();
+                    MimeBodyTag t = l.nextElement();
                     MimeMultipart mmp = t.getMimeMultipart();
                     if (mmp != null) {
                         log.info("setting parent info : " + t.getId());

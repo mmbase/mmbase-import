@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.51 2007-05-23 14:40:47 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.52 2007-06-21 15:50:25 nklasens Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -51,7 +51,7 @@ public class DateHandler extends AbstractTypeHandler {
         return Calendar.getInstance(tag.getTimeZone());
     }
 
-    protected DateTimePattern getPattern(DataType dt) throws JspTagException {
+    protected DateTimePattern getPattern(DataType<Object> dt) throws JspTagException {
         DateTimePattern dateTimePattern;
         if (! (dt instanceof DateTimeDataType)) {
             // backwards compatibility
@@ -137,7 +137,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append(">=</option>");
             buffer.append("</select>");
         }
-        DataType dt = field.getDataType();
+        DataType<Object> dt = field.getDataType();
         DateTimePattern dateTimePattern = getPattern(dt);
         Calendar minDate = getInstance();
         Calendar maxDate = getInstance();
@@ -288,7 +288,7 @@ public class DateHandler extends AbstractTypeHandler {
      */
     protected Calendar getSpecifiedValue(final Field field, Calendar cal) throws JspTagException {
         String fieldName = field.getName();
-        DataType dt = field.getDataType();
+        DataType<Object> dt = field.getDataType();
         if (log.isDebugEnabled()) {
             log.debug("Using " + dt);
         }

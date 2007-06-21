@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase. The mmbaseusers builder used to store nothing more than name/password combination. 
  *
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.2 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: UserBuilder.java,v 1.3 2007-06-21 15:50:27 nklasens Exp $
  */
 public class UserBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(UserBuilder.class);
@@ -51,9 +51,9 @@ public class UserBuilder extends MMObjectBuilder {
         if (log.isTraceEnabled()) {
             log.trace("username: '" + username + "' password: '" + password + "'");
         }
-        java.util.Enumeration e = search("WHERE username = '"+username+"' ");
+        java.util.Enumeration<MMObjectNode> e = search("WHERE username = '"+username+"' ");
         while(e.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode) e.nextElement();
+            MMObjectNode node = e.nextElement();
             if(password == null || encode(password).equals(node.getStringValue("password"))) {
                 // found it !
                 log.trace("username: '"+username+"' password: '"+password+"' found in node #" + node.getNumber());

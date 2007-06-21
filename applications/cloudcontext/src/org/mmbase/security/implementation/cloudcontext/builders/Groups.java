@@ -26,13 +26,13 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.21 2007-06-20 14:38:09 michiel Exp $
+ * @version $Id: Groups.java,v 1.22 2007-06-21 15:50:20 nklasens Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
 
 
-    protected static Cache containsCache = new Cache(500) {
+    protected static Cache<String,Boolean> containsCache = new Cache<String,Boolean>(500) {
             public String getName()        { return "CCS:ContainedBy"; }
             public String getDescription() { return "group + group/user --> boolean"; }
         };
@@ -70,7 +70,7 @@ public class Groups extends MMObjectBuilder {
      * Checks wether group or user identified by number is contained by group (also indirectly)
      */
     protected boolean contains(MMObjectNode containingGroupNode, int containedObject) {
-        return contains(containingGroupNode, containedObject, new HashSet());
+        return contains(containingGroupNode, containedObject, new HashSet<Integer>());
     }
 
 
@@ -78,10 +78,10 @@ public class Groups extends MMObjectBuilder {
      * Checks wether group or user identified by number is contained by group.
      *
      */
-    protected boolean contains(MMObjectNode containingGroupNode, int containedObject, Set recurse) {
+    protected boolean contains(MMObjectNode containingGroupNode, int containedObject, Set<Integer> recurse) {
         int containingGroup = containingGroupNode.getNumber();
         String key = "" + containingGroup + "/" + containedObject;
-        Boolean result = (Boolean) containsCache.get(key);
+        Boolean result = containsCache.get(key);
 
         if (result == null) {
             int role       = mmb.getRelDef().getNumberByName("contains");
@@ -99,19 +99,19 @@ public class Groups extends MMObjectBuilder {
             query.setConstraint(numberConstraint);
             query.addFields(relationStep.getNext());
 
-            List resultList;
+            List<MMObjectNode> resultList;
             try {
                 resultList = storageConnector.getNodes(query, false);
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage());
-                resultList = new ArrayList();
+                resultList = new ArrayList<MMObjectNode>();
             }
 
-            Iterator i = resultList.iterator();
+            Iterator<MMObjectNode> i = resultList.iterator();
 
             result = Boolean.FALSE;
             while (i.hasNext()) {
-                MMObjectNode group = (MMObjectNode) i.next();
+                MMObjectNode group = i.next();
 
                 if (group.getNumber() == containingGroup) {
                     log.trace("yes!");
@@ -140,12 +140,12 @@ public class Groups extends MMObjectBuilder {
      * Returns all groups, which are (directly or indirectly) containing the given object (user/group)
      */
 
-    public SortedSet getGroups(int containedObject) {
-        SortedSet result = new TreeSet();
+    public SortedSet<Integer> getGroups(int containedObject) {
+        SortedSet<Integer> result = new TreeSet<Integer>();
         try {
-            Iterator  nodes = getNodes(new NodeSearchQuery(this)).iterator();
+            Iterator<MMObjectNode>  nodes = getNodes(new NodeSearchQuery(this)).iterator();
             while (nodes.hasNext()) {
-                MMObjectNode group = (MMObjectNode) nodes.next();
+                MMObjectNode group = nodes.next();
                 if (contains(group, containedObject)) {
                     result.add(new Integer(group.getNumber()));
                 } else {

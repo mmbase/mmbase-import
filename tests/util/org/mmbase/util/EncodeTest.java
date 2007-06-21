@@ -80,10 +80,10 @@ public class EncodeTest extends TestCase {
             String name = (String) iter.next();
             Encode encode = new Encode(name);
             if (encode.isCharEncoder()){
-                for (int x =0 ; x < TESTS.length ; x++){
-                    String encoded = encode.encode(TESTS[x]);
+                for (String element : TESTS) {
+                    String encoded = encode.encode(element);
                     String decoded = encode.decode(encoded);
-                    assertTrue("char encoder["+ name +"] failed symetric test with input value["+ TESTS[x]+ "]",TESTS[x].equals(decoded));
+                    assertTrue("char encoder["+ name +"] failed symetric test with input value["+ element+ "]",element.equals(decoded));
                 }
             }
         }

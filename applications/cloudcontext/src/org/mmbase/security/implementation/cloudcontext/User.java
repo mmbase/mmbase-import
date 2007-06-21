@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.23 2006-10-13 15:55:50 nklasens Exp $
+ * @version $Id: User.java,v 1.24 2007-06-21 15:50:25 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
@@ -99,7 +99,7 @@ public class User extends BasicUser implements MMBaseObserver {
     }
 
 
-    public SortedSet getGroups() {
+    public SortedSet<Integer> getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }
 

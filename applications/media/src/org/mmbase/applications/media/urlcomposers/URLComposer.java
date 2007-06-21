@@ -35,9 +35,9 @@ import java.util.*;
 public class URLComposer  {
     protected MMObjectNode  source;
     protected MMObjectNode  provider;
-    protected Map           info;
+    protected Map<String, Object>           info;
     
-    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
+    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         if(cacheExpireObjects!=null) {
             cacheExpireObjects.add(provider);
             cacheExpireObjects.add(source);
@@ -49,12 +49,12 @@ public class URLComposer  {
         this.provider = provider;
         this.source   = source;
         this.info     = info;
-        if (this.info == null) this.info = new java.util.Hashtable();
+        if (this.info == null) this.info = new java.util.Hashtable<String, Object>();
     }
     
     public MMObjectNode getSource()   { return source;  }
     public MMObjectNode getProvider() { return provider;}
-    public Map          getInfo()     { return info; }
+    public Map<String, Object>          getInfo()     { return info; }
     
     /**
      * The format of the produced URL. This is not necessarily the format of the source.
@@ -74,12 +74,12 @@ public class URLComposer  {
 
     
     
-    public String getGUIIndicator(Map options) {
-        Locale locale = (Locale) options.get("locale");
+    public String getGUIIndicator(Map<String,Locale> options) {
+        Locale locale = options.get("locale");
         return getFormat().getGUIIndicator(locale);
     }
     
-    public String getDescription(Map options) {
+    public String getDescription(Map<String,Locale> options) {
         return null; // no informative description
     }
     

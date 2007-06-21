@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -73,21 +73,21 @@ public class NodeSearchQueryTest extends TestCase {
             fail("Virtual builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
             
-        Collection fields = images.getFields();
-        List stepFields = instance.getFields();
-        Iterator iStepFields = stepFields.iterator();
+        Collection<CoreField> fields = images.getFields();
+        List<StepField> stepFields = instance.getFields();
+        Iterator<StepField> iStepFields = stepFields.iterator();
         // Test all elements in stepFields are persistent fields from images.
         while (iStepFields.hasNext()) {
-            StepField stepField = (StepField) iStepFields.next();
+            StepField stepField = iStepFields.next();
             CoreField field = images.getField(stepField.getFieldName());
             //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
             //assertTrue(field.getType() != Field.TYPE_BINARY); // NodeSearchQuery is not in 'database', so it should not whine!
             assertTrue(field.inStorage());
         }
         // Test all persistent fields from images are in query.
-        Iterator iFields = fields.iterator();
+        Iterator<CoreField> iFields = fields.iterator();
         while (iFields.hasNext()) {
-            CoreField field = (CoreField) iFields.next();
+            CoreField field = iFields.next();
             if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
                 assertTrue(instance.getField(field) != null);
             }
@@ -97,9 +97,8 @@ public class NodeSearchQueryTest extends TestCase {
     /** Test of getField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testGetField() {
         Step step = instance.getSteps().get(0);
-        Collection fields = images.getFields();
-        for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
-            CoreField field = (CoreField) iFields.next();
+        Collection<CoreField> fields = images.getFields();
+        for (CoreField field : fields) {
             if (field.inStorage()) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);

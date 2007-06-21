@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.12 2006-12-08 16:49:44 michiel Exp $
+ * @version $Id: Renderer.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -47,7 +47,7 @@ public interface Renderer {
             return new Renderer() {
                 public Type getType() { return Type.this; }
                 public void render(Parameters parameters, Parameters urlparameters, Writer w, WindowState state) { };
-                public Parameter[] getParameters() { return Parameter.EMPTY; };
+                public Parameter[] getParameters() { return Parameter.emptyArray(); };
                 public Block getBlock() { return block ; };
                 public String toString() { return "EMPTY Renderer"; }
             };

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.19 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: AbstractFunction.java,v 1.20 2007-06-21 15:50:21 nklasens Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -44,7 +44,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     public AbstractFunction(String name, Parameter<?>[] def, ReturnType<R> returnType) {
         this.name = name;
         if (def != null) {
-            this.parameterDefinition = Functions.define(def).toArray((Parameter.EMPTY));
+            this.parameterDefinition = Functions.define(def).toArray((Parameter.emptyArray()));
         }
         this.returnType = returnType;
     }
@@ -128,7 +128,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public Parameter[] getParameterDefinition() {
+    public Parameter<?>[] getParameterDefinition() {
         return parameterDefinition;
     }
 
@@ -137,11 +137,11 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter defintion for this function object.
      */
-    public void setParameterDefinition(Parameter[] params) {
+    public void setParameterDefinition(Parameter<?>[] params) {
         if (parameterDefinition != null) {
             throw new IllegalStateException("Definition is set already");
         }
-        parameterDefinition = Functions.define(params).toArray(Parameter.EMPTY);
+        parameterDefinition = Functions.define(params).toArray(Parameter.emptyArray());
     }
 
 
@@ -179,7 +179,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
-        return (o instanceof Function) && ((Function)o).getName().equals(name);
+        return (o instanceof Function) && ((Function<?>)o).getName().equals(name);
     }
 
 

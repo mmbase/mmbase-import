@@ -11,7 +11,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ConstraintParserTest extends TestCase {
 
@@ -59,7 +59,7 @@ public class ConstraintParserTest extends TestCase {
         query.addStep(news);
         StepField numericalField = instance.getField("number");
         StepField stringField = instance.getField("title");
-        Iterator iTokens = Arrays.asList(new String[] {
+        Iterator<String> iTokens = Arrays.asList(new String[] {
             "12345.6",
             "NotANumber",
             "'", "12345.6", "'",
@@ -97,7 +97,7 @@ public class ConstraintParserTest extends TestCase {
 
     /** Test of tokenize method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testTokenize() {
-        List tokens = ConstraintParser.tokenize("qwe '' and '123''456' or \"\"\"789\"");
+        List<String> tokens = ConstraintParser.tokenize("qwe '' and '123''456' or \"\"\"789\"");
         assertTrue(tokens.toString(), tokens.equals(
             Arrays.asList(new String[] {
                 "qwe", "'", "", "'", "and", "'", "123'456", "'", "or", "'",
@@ -151,7 +151,7 @@ public class ConstraintParserTest extends TestCase {
 
     /** Test of getField(String, List) method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testGetField2() {
-        List steps = query.getSteps();
+        List<Step> steps = query.getSteps();
         Step step1 = query.addStep(images).setAlias("step1");
         StepField field = ConstraintParser.getField("number", steps);
         assertTrue(field.toString(), field.getStep() == step1);

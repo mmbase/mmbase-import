@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.55 2007-06-19 13:59:30 michiel Exp $
+ * @version $Id: JDBC.java,v 1.56 2007-06-21 15:50:27 nklasens Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -347,8 +347,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Vector listPools(StringTagger tagger) {
         Vector results = new Vector();
-        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
-            String name = (String) i.next();
+        for (Object element : poolHandler.keySet()) {
+            String name = (String) element;
             MultiPool pool = poolHandler.get(name);
             results.addElement(stripSensistive(name));
             results.addElement("" + pool.getSize());
@@ -363,8 +363,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Vector listConnections(StringTagger tagger) {
         Vector results = new Vector();
-        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
-            String name= (String) i.next();
+        for (Object element : poolHandler.keySet()) {
+            String name= (String) element;
             MultiPool pool = poolHandler.get(name);
             for (Iterator f = pool.getBusyPool(); f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();

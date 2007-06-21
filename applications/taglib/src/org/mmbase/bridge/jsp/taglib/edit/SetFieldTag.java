@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.34 2005-11-23 10:29:39 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.35 2007-06-21 15:50:24 nklasens Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -72,7 +72,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             value = "";
         }
 
-        if ((field != null) && (type == Field.TYPE_BYTE)) {
+        if ((field != null) && (type == Field.TYPE_BINARY)) {
             // if the field type is a byte[] then we expect a BASE64 encoded String, unless value is actualy a byte[].
             if (value instanceof byte[]) {
                 node.setByteValue(fieldName, (byte[]) value);

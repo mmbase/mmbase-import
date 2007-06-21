@@ -40,11 +40,11 @@ public class PackageManager {
     private static Logger log = Logging.getLoggerInstance(PackageManager.class);
 
     // Contains all packages key=packagename/maintainer value=reference to application
-    private static HashMap packages = new HashMap();
+    private static HashMap<String, PackageContainer> packages = new HashMap<String, PackageContainer>();
 
     // state of this manager
     private static boolean state = false;
-    private static HashMap packagehandlers;
+    private static HashMap<String, String> packagehandlers;
 
     public static final String DTD_PACKAGEHANDLERS_1_0 = "packagehandlers_1_0.dtd";
     public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN";
@@ -73,7 +73,7 @@ public class PackageManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator getPackages() {
+    public static Iterator<PackageContainer> getPackages() {
         return packages.values().iterator();
     }
 
@@ -81,7 +81,7 @@ public class PackageManager {
      * return all packages based
      * @return all packages
      */
-    public static Iterator getPackageVersions(String id) {
+    public static Iterator<PackageVersionContainer> getPackageVersions(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -94,7 +94,7 @@ public class PackageManager {
     /**
      * return a list of version numbers of this package
      */
-    public static Iterator getPackageVersionNumbers(String id) {
+    public static Iterator<String> getPackageVersionNumbers(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -165,7 +165,7 @@ public class PackageManager {
         id = id.replace('/','_');
 
         // check if we allready have a package container for this
-        PackageContainer pc = (PackageContainer)packages.get(id);
+        PackageContainer pc = packages.get(id);
 
         boolean found = false;
         if (pc != null) {
@@ -179,7 +179,7 @@ public class PackageManager {
             // create and store it
 
             // try to create this handler
-            String classname = (String)packagehandlers.get(type);
+            String classname = packagehandlers.get(type);
             if (classname != null) {
                 try {
                     Class newclass = Class.forName(classname);
@@ -291,15 +291,15 @@ public class PackageManager {
         // this checks all the packages if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last package update
-        Iterator e = ((HashMap)packages.clone()).values().iterator();
+        Iterator<PackageContainer> e = ((HashMap<String,PackageContainer>)packages.clone()).values().iterator();
         while (e.hasNext()) {
-            PackageContainer pc = (PackageContainer)e.next();
-            Iterator e2 = pc.getVersions();
+            PackageContainer pc = e.next();
+            Iterator<PackageVersionContainer> e2 = pc.getVersions();
             while (e2.hasNext()) {
-                PackageVersionContainer pvc = (PackageVersionContainer)e2.next();
-                Iterator e3 = pvc.getPackages();
+                PackageVersionContainer pvc = e2.next();
+                Iterator<PackageInterface> e3 = pvc.getPackages();
                 while (e3.hasNext()) {
-                    BasicPackage p = (BasicPackage)e3.next();
+                    PackageInterface p = e3.next();
                     ProviderInterface prov = p.getProvider();
                     if (wantedprov == prov) {
                         long providertime = p.getProvider().lastSeen();
@@ -321,7 +321,7 @@ public class PackageManager {
     }
 
     public static void readPackageHandlers() {
-        packagehandlers = new HashMap();
+        packagehandlers = new HashMap<String, String>();
         String filename = getConfigPath()+File.separator+"packaging"+File.separator+"packagehandlers.xml";
 
         File file = new File(filename);
@@ -355,16 +355,16 @@ public class PackageManager {
         }
     }
 
-    public static HashMap getPackageHandlers() {
+    public static HashMap<String, String> getPackageHandlers() {
         return packagehandlers;
     }
 
     public static String getConfigPath() {
-        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.size() == 0) {
             return null;
         } else {
-            return ((File) files.get(0)).getAbsolutePath();
+            return files.get(0).getAbsolutePath();
         }
     }
 

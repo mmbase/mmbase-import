@@ -14,8 +14,7 @@ import java.util.Map;
 import org.mmbase.applications.packaging.InstallManager;
 import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.ProviderManager;
-import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
-import org.mmbase.applications.packaging.packagehandlers.PackageVersionContainer;
+import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
@@ -63,17 +62,17 @@ public class Controller {
      *
      * @return    The packageHandlers value
      */
-    public List getPackageHandlers() {
+    public List<MMObjectNode> getPackageHandlers() {
         // get the current package handlers we have installed
-        Map packagehandlers = PackageManager.getPackageHandlers();
-        List list = new ArrayList();
+        Map<String, String> packagehandlers = PackageManager.getPackageHandlers();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator e = packagehandlers.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> e = packagehandlers.entrySet().iterator();
         while (e.hasNext()) {
-            Map.Entry entry = (Map.Entry) e.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
+            Map.Entry<String,String> entry = e.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", key);
@@ -89,18 +88,18 @@ public class Controller {
      *
      * @return    The packages value
      */
-    public List getPackages() {
+    public List<MMObjectNode> getPackages() {
         // signal action to for package discovery
         ProviderManager.resetSleepCounter();
 
         // get the current best packages
-        Iterator packages = PackageManager.getPackages();
+        Iterator<PackageContainer> packages = PackageManager.getPackages();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (packages.hasNext()) {
-            PackageInterface p = (PackageInterface) packages.next();
+            PackageInterface p = packages.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", p.getId());
             virtual.setValue("name", p.getName());
@@ -123,18 +122,18 @@ public class Controller {
      * @param  id  Description of the Parameter
      * @return     The packageVersions value
      */
-    public List getPackageVersions(String id) {
+    public List<MMObjectNode> getPackageVersions(String id) {
         // get the packages of one id (all versions)
-        Iterator packageversions = PackageManager.getPackageVersions(id);
+        Iterator<PackageVersionContainer> packageversions = PackageManager.getPackageVersions(id);
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (packageversions.hasNext()) {
-            PackageVersionContainer pvc = (PackageVersionContainer) packageversions.next();
-            Iterator packages = pvc.getPackages();
+            PackageVersionContainer pvc = packageversions.next();
+            Iterator<PackageInterface> packages = pvc.getPackages();
             while (packages.hasNext()) {
-                PackageInterface p = (PackageInterface) packages.next();
+                PackageInterface p = packages.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("id", p.getId());
                 virtual.setValue("name", p.getName());
@@ -160,14 +159,14 @@ public class Controller {
      * @param  id  Description of the Parameter
      * @return     The packageVersionNumbers value
      */
-    public List getPackageVersionNumbers(String id) {
+    public List<MMObjectNode> getPackageVersionNumbers(String id) {
         // get the packages of one id (all versions)
-        Iterator verlist = PackageManager.getPackageVersionNumbers(id);
+        Iterator<String> verlist = PackageManager.getPackageVersionNumbers(id);
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         while (verlist.hasNext()) {
-            String version = (String) verlist.next();
+            String version = verlist.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("version", version);
             list.add(virtual);

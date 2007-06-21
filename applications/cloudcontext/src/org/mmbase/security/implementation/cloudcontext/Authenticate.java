@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.19 2007-06-20 14:37:15 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.20 2007-06-21 15:50:25 nklasens Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -43,7 +43,7 @@ public class Authenticate extends Authentication {
     private boolean allowEncodedPassword = false;
 
     private static Properties extraAdmins = new Properties();      // Admins to store outside database.
-    protected static Map      loggedInExtraAdmins = new HashMap();
+    protected static Map<String, User>      loggedInExtraAdmins = new HashMap<String, User>();
 
 
     protected void readAdmins(InputStream in) {
@@ -182,7 +182,7 @@ public class Authenticate extends Authentication {
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
-        return (User) loggedInExtraAdmins.get(userName);
+        return loggedInExtraAdmins.get(userName);
     }
 
     // javadoc inherited

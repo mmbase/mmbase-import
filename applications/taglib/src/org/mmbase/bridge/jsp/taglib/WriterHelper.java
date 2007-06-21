@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.93 2007-04-26 10:25:49 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.94 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class WriterHelper {
@@ -292,7 +292,7 @@ public class WriterHelper {
             // Take one element of list if vartype defined not to be a list.
             // this is usefull when using mm:includes and passing a var which also can be on the request
             if (v instanceof Collection) {
-                Collection l = (Collection) v;
+                Collection<?> l = (Collection<?>) v;
                 if (l.size() > 0) {
                     // v = l.get(l.size() - 1); // last element
                     v = l.iterator().next();               // first element, allows for 'overriding'.
@@ -307,7 +307,7 @@ public class WriterHelper {
             case TYPE_LIST:
                 if (! (v instanceof List)) {
                     if ("".equals(v)) {
-                        v = new ArrayList();
+                        v = new ArrayList<Object>();
                     } else {
                         v = Casting.toList(v, listDelimiter.getString(thisTag));
                     }
@@ -317,7 +317,7 @@ public class WriterHelper {
                 if (v == null) {
                     // if a vector is requested, but the value is not present,
                     // make a vector of size 0.
-                    v = new Vector();
+                    v = new Vector<Object>();
                 } else if (! (v instanceof Vector)) {
                     // if a vector is requested, but the value is not a vector,
                     if (! (v instanceof Collection)) {
@@ -327,21 +327,21 @@ public class WriterHelper {
                         vector.add(v);
                         v = vector;
                     } else {
-                        v = new Vector((Collection)v);
+                        v = new Vector<Object>((Collection<?>)v);
                     }
                 }
                 break;
             case TYPE_SET:
                 if (v == null) {
-                    v = new HashSet();
+                    v = new HashSet<Object>();
                 } else if (! (v instanceof Set)) {
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
-                        Set set = new HashSet();
+                        Set<Object> set = new HashSet<Object>();
                         set.add(v);
                         v = set;
                     } else {
-                        v = new HashSet((Collection)v);
+                        v = new HashSet<Object>((Collection<?>)v);
                     }
                 }
                 break;

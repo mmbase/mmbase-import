@@ -20,7 +20,7 @@ import org.mmbase.security.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.12 2006-09-07 12:48:41 pierre Exp $
+ * @version $Id: Verify.java,v 1.13 2007-06-21 15:50:25 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
@@ -69,11 +69,11 @@ public class Verify extends Authorization {
     }
 
     // javadoc inherited
-    public Set getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
+    public Set<String> getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
         return Contexts.getBuilder().getPossibleContexts((User) userContext, nodeId);
     }
 
-    public Set getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
+    public Set<String> getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
         return Contexts.getBuilder().getPossibleContexts((User) userContext);
     }
 

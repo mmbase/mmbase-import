@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.3 2007-06-13 19:40:56 nklasens Exp $
+ * @version $Id: ImageCaches.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -34,7 +34,7 @@ public class ImageCaches extends AbstractImages {
 
     public static final String FIELD_ID       = "id";
 
-    public final static Parameter[] WAIT_PARAMETERS      =  Parameter.EMPTY;
+    public final static Parameter[] WAIT_PARAMETERS      =  Parameter.emptyArray();
 
     static final String GUI_IMAGETEMPLATE = "s(100x60)";
 

@@ -174,7 +174,6 @@ public abstract class Imaging {
     public static Dimension predictDimension(Dimension originalSize, List<String> params) {
 
         Dimension dim = new Dimension(originalSize);
-        String gravity = "West";
         for (String key : params) {
             int pos = key.indexOf('(');
             int pos2 = key.lastIndexOf(')');
@@ -207,16 +206,13 @@ public abstract class Imaging {
                     boolean onlyWhenOneBigger    = false;
                     boolean onlyWhenBothSmaller   = false;
 
-
-
                     for (int j = 0 ; j < options.length(); j++) {
-                        switch(options.charAt(j)) {
-                        case '%': percentage = true; break;
-                        case '@': area = true; break;
-                        case '!': aspectRatio = false; break;
-                        case '>': onlyWhenOneBigger = true; break;
-                        case '<': onlyWhenBothSmaller = true; break;
-                        }
+                        char o = options.charAt(j);
+                        if (o == '%') percentage = true;
+                        if (o == '@') area = true;
+                        if (o == '!') aspectRatio = false;
+                        if (o == '>') onlyWhenOneBigger = true;
+                        if (o == '<') onlyWhenBothSmaller = true;
                     }
 
                     int x = "".equals(xString) ? 0 : Integer.parseInt(xString);
@@ -224,8 +220,8 @@ public abstract class Imaging {
 
 
                     if (percentage) {
-                        x *= (float) dim.x / 100.0;
-                        y *= (float) dim.y / 100.0;
+                        x *= dim.x / 100.0;
+                        y *= dim.y / 100.0;
                         aspectRatio = false;
                     }
                     if (x == 0) {
@@ -282,7 +278,6 @@ public abstract class Imaging {
                     dim.y = (int) Math.round(Math.abs(Math.sin(a)) * xorg + Math.abs(Math.cos(a) * yorg));
 
                 } else if (type.equals("gravity")) {
-                    gravity = cmd;
                 } else if (type.equals("chop")) {
                 } else if (type.equals("shave")) {
                 } else if (type.equals("crop")) {
@@ -382,9 +377,8 @@ public abstract class Imaging {
 
             System.out.println("original size: " + originalSize);
             System.out.println("template:predicted size:actual size (IM):actual size(JAI)");
-            for (int i = 0 ; i < templates.length; i++) {
+            for (String template : templates) {
 
-                String template = templates[i];
                 List<String> params = parseTemplate(template);
                 System.out.print(template + ":" + predictDimension(originalSize, params) + ":");
                 try {

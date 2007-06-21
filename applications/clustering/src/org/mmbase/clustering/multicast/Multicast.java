@@ -25,7 +25,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.11 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: Multicast.java,v 1.12 2007-06-21 15:50:23 nklasens Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -80,29 +80,29 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    protected synchronized void readConfiguration(Map configuration) {
+    protected synchronized void readConfiguration(Map<String,String> configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = (String) configuration.get("multicastport");
+        String tmp = configuration.get("multicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) configuration.get("multicasthost");
+        tmp = configuration.get("multicasthost");
         if (tmp != null && !tmp.equals("")) {
             multicastHost = tmp;
         }
 
-        tmp = (String) configuration.get("multicastTTL");
+        tmp = configuration.get("multicastTTL");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastTTL = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = (String) configuration.get("dpsize");
+        tmp = configuration.get("dpsize");
         if (tmp != null && !tmp.equals("")) {
             try {
                 dpsize = Integer.parseInt(tmp);

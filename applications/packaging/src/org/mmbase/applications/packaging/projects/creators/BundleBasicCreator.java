@@ -14,11 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
+import java.util.jar.*;
 
 import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.ProviderManager;
@@ -68,8 +64,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 
 	// lets first see if we need to create related targets
         setSubProgressBar(relatedtargetcreate.size());
-       	for (Iterator i = relatedtargetcreate.iterator(); i.hasNext();) {
-		Target rt = (Target)i.next();
+       	for (Target rt : relatedtargetcreate) {
 		// tricky should be make last version based on local number
 		// or remote number, both ways now until i decide.
                 int nv=rt.getNextVersion();
@@ -93,7 +88,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 	// set to 25%
         increaseProgressBar(200);
 
-	relatedtargetcreate = new ArrayList();
+	relatedtargetcreate = new ArrayList<Target>();
 	
 
 	String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_bundle_basic_"+newversion;
@@ -113,12 +108,11 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	increaseProgressBar(100);
 
 		// loop the included packages to put them in the bundle jar
-		ArrayList packages=(ArrayList)target.getItem("includedpackages");
+		ArrayList<IncludedPackage> packages=(ArrayList<IncludedPackage>)target.getItem("includedpackages");
 
         	setSubProgressBar(packages.size());
-        	for (Iterator i = packages.iterator(); i.hasNext();) {
-               		IncludedPackage ip=(IncludedPackage)i.next();
-			if (ip.getIncluded()) {
+        	for (IncludedPackage ip : packages) {
+               		if (ip.getIncluded()) {
 				// sometimes it seems to take a while before
 				// the bundle to show up so wait a while for it
 				PackageInterface p=PackageManager.getPackage(ip.getId(),ip.getVersion());
@@ -225,22 +219,21 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 
 
    public String getNeededPackagesXML(Target target) {
-	ArrayList packages=(ArrayList)target.getItem("includedpackages");
+	ArrayList<IncludedPackage> packages=(ArrayList<IncludedPackage>)target.getItem("includedpackages");
 	String body="\t<neededpackages>\n";
 	if (packages!=null) {
-        	for (Iterator i = packages.iterator(); i.hasNext();) {
-               		IncludedPackage ip=(IncludedPackage)i.next();
-			body+="\t\t<package name=\""+ip.getName()+"\" type=\""+ip.getType()+"\" maintainer=\""+ip.getMaintainer()+"\" version=\""+ip.getVersion()+"\" included=\""+ip.getIncluded()+"\" />\n";
+        	for (IncludedPackage ip : packages) {
+               		body+="\t\t<package name=\""+ip.getName()+"\" type=\""+ip.getType()+"\" maintainer=\""+ip.getMaintainer()+"\" version=\""+ip.getVersion()+"\" included=\""+ip.getIncluded()+"\" />\n";
 		}
 	}
 	body+="\t</neededpackages>\n";
 	return body;
      }
 
-  public ArrayList getIncludedPackages(Target target) {
+  public ArrayList<IncludedPackage> getIncludedPackages(Target target) {
 	Object o=target.getItem("includedpackages");
 	if (o!=null) {
-		return (ArrayList)o;
+		return (ArrayList<IncludedPackage>)o;
 	}
 	return null;
   }
@@ -248,7 +241,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
   public boolean decodeItems(Target target) {
 			super.decodeItems(target);
 			// decode the needed packages	
-			ArrayList includedpackages=new ArrayList();
+			ArrayList<IncludedPackage> includedpackages=new ArrayList<IncludedPackage>();
 			ExtendedDocumentReader reader=target.getReader();
                        	org.w3c.dom.Node n=reader.getElementByPath(prefix+".neededpackages");
         		org.w3c.dom.Node n2=n.getFirstChild();
@@ -291,10 +284,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
   }
 
   public boolean setIncludedVersion(Target target,String id,String newversion) {
-	ArrayList packages=(ArrayList)target.getItem("includedpackages");
-       	for (Iterator i = packages.iterator(); i.hasNext();) {
-              	IncludedPackage ip=(IncludedPackage)i.next();
-		if (ip.getId().equals(id)) {
+	ArrayList<IncludedPackage> packages=(ArrayList<IncludedPackage>)target.getItem("includedpackages");
+       	for (IncludedPackage ip : packages) {
+              	if (ip.getId().equals(id)) {
 			ip.setVersion(newversion);
 		}
 	}
@@ -304,10 +296,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 
 
   public boolean delIncludedPackage(Target target,String id) {
-	ArrayList packages=(ArrayList)target.getItem("includedpackages");
-       	for (Iterator i = packages.iterator(); i.hasNext();) {
-              	IncludedPackage ip=(IncludedPackage)i.next();
-		if (ip.getId().equals(id)) {
+	ArrayList<IncludedPackage> packages=(ArrayList<IncludedPackage>)target.getItem("includedpackages");
+       	for (IncludedPackage ip : packages) {
+              	if (ip.getId().equals(id)) {
 			packages.remove(ip);
 			break;
 		}
@@ -338,7 +329,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
    }
 
   public boolean addPackage(Target target,String newpackage) {
-	ArrayList packages=(ArrayList)target.getItem("includedpackages");
+	ArrayList<IncludedPackage> packages=(ArrayList<IncludedPackage>)target.getItem("includedpackages");
 	PackageInterface p=PackageManager.getPackage(newpackage);
 	if (p!=null) {
              IncludedPackage ip=new IncludedPackage();
@@ -348,7 +339,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
              ip.setType(p.getType());
              ip.setIncluded(true);
 	     if (packages==null) {
-		packages=new ArrayList();
+		packages=new ArrayList<IncludedPackage>();
 		target.setItem("includedpackages",packages);
 	     }
 	     packages.add(ip);

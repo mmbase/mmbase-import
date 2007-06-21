@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.9 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.10 2007-06-21 15:50:20 nklasens Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements NodeEventListener, RelationEventListener {
@@ -40,12 +40,12 @@ class CacheInvalidator implements NodeEventListener, RelationEventListener {
     private CacheInvalidator() {
     }
 
-    private List<Map> securityCaches = new ArrayList(); // list of all security caches that must be invalidated
+    private List<Map<?,?>> securityCaches = new ArrayList<Map<?,?>>(); // list of all security caches that must be invalidated
 
     /**
      *  A security builder can add its cache(s)
      */
-    synchronized void addCache(Map c) {
+    synchronized void addCache(Map<?,?> c) {
         securityCaches.add(c);
     }
 
@@ -79,7 +79,7 @@ class CacheInvalidator implements NodeEventListener, RelationEventListener {
                         log.service("Invalidating all security caches now.");
                         synchronized(CacheInvalidator.this) {
                             invalidateScheduled = false;
-                            for (Map c : CacheInvalidator.this.securityCaches) {
+                            for (Map<?,?> c : CacheInvalidator.this.securityCaches) {
                                 c.clear();
                             }
                         }

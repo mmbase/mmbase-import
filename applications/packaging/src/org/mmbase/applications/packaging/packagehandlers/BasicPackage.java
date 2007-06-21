@@ -60,7 +60,7 @@ public class BasicPackage implements PackageInterface {
     private installStep bundlestep;
     private boolean dependsfailed = false;
     private BundleInterface parentbundle = null;
-    private ArrayList initiators, supporters, contacts, developers;
+    private ArrayList<Object> initiators, supporters, contacts, developers;
     private float progressbar = 0;
     private float progressstep = 1;
 
@@ -69,7 +69,7 @@ public class BasicPackage implements PackageInterface {
     // only can provide log info but also possible fixed, feedback, stats
     // etc etc. Each step in itself can have steps again providing for things
     // like three style logging and feedback
-    private ArrayList installsteps;
+    private ArrayList<installStep> installsteps;
 
     private long lastupdated;
 
@@ -404,7 +404,7 @@ public class BasicPackage implements PackageInterface {
             step = new installStep();
         }
         if (installsteps == null) {
-            installsteps = new ArrayList();
+            installsteps = new ArrayList<installStep>();
             installsteps.add(step);
             return step;
         } else {
@@ -419,7 +419,7 @@ public class BasicPackage implements PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Iterator getInstallSteps() {
+    public Iterator<installStep> getInstallSteps() {
         if (installsteps != null) {
             return installsteps.iterator();
         } else {
@@ -446,14 +446,14 @@ public class BasicPackage implements PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Iterator getInstallSteps(int logid) {
+    public Iterator<installStep> getInstallSteps(int logid) {
         // well maybe its one of my subs ?
-        Iterator e = getInstallSteps();
+        Iterator<installStep> e = getInstallSteps();
         while (e.hasNext()) {
-            installStep step = (installStep) e.next();
+            installStep step = e.next();
             Object o = step.getInstallSteps(logid);
             if (o != null) {
-                return (Iterator) o;
+                return (Iterator<installStep>) o;
             }
         }
         return null;
@@ -722,7 +722,7 @@ public class BasicPackage implements PackageInterface {
      * @param  type  Description of the Parameter
      * @return       The relatedPeople value
      */
-    public List getRelatedPeople(String type) {
+    public List<Object> getRelatedPeople(String type) {
         if (type.equals("initiators")) {
             return initiators;
         }
@@ -746,8 +746,8 @@ public class BasicPackage implements PackageInterface {
      * @param  type  Description of the Parameter
      * @return       Description of the Return Value
      */
-    private ArrayList decodeRelatedPeople(org.w3c.dom.Node n, String type) {
-        ArrayList list = new ArrayList();
+    private ArrayList<Object> decodeRelatedPeople(org.w3c.dom.Node n, String type) {
+        ArrayList<Object> list = new ArrayList<Object>();
         org.w3c.dom.Node n2 = n.getFirstChild();
         while (n2 != null) {
             if (n2.getNodeName().equals(type)) {

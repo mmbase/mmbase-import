@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.2 2007-05-23 13:12:15 michiel Exp $
+ * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.3 2007-06-21 15:50:20 nklasens Exp $
  */
 public class LocalizedEntryListFactoryTest extends TestCase {
 
@@ -39,17 +39,17 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         fact.add(EN, "b", "hi");
         assertTrue(fact.size() == 2); // a and b.
         {
-            List col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "hoi")});
+            List<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "hoi")});
             assertEquals(col, fact.get(NL));
         }
         {
-            List col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "saluut")});
+            List<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "saluut")});
             assertEquals(col, fact.get(BE));  
             assertEquals(col, fact.get(BE_VAR));  
             
         }
         {
-            Collection col  = Arrays.asList(new Object[] { new Entry("a", "hello"), new Entry("b", "hi")});
+            Collection<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hello"), new Entry("b", "hi")});
             assertEquals(col, fact.get(EN));
         }
         assertEquals("a", fact.castKey("a"));
@@ -62,12 +62,12 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         assertTrue(fact.size() == 2); // false and true
         {
-            Collection col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar")});
+            Collection<Object> col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar")});
             assertEquals(col, fact.get(NL));
             assertEquals(col, fact.get(BE));
         }
         {
-            Collection col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true")});
+            Collection<Object> col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true")});
             assertEquals(col, fact.get(EN));
         }
     }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.15 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: Ranks.java,v 1.16 2007-06-21 15:50:20 nklasens Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -47,9 +47,9 @@ public class Ranks extends MMObjectBuilder {
         boolean res = super.init();
         addEventListener(CacheInvalidator.getInstance());
         try {
-            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
+            Iterator<MMObjectNode> i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {
-                MMObjectNode rank = (MMObjectNode) i.next();
+                MMObjectNode rank = i.next();
                 String name = rank.getStringValue("name");
                 Rank r = Rank.getRank(name);
                 if (r == null) {
@@ -69,9 +69,9 @@ public class Ranks extends MMObjectBuilder {
         int rank = node.getIntValue("rank");
         String name  = node.getStringValue("name");
         try {
-            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
+            Iterator<MMObjectNode> i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {
-                MMObjectNode otherNode = (MMObjectNode) i.next();
+                MMObjectNode otherNode = i.next();
                 if (node.getNumber() == otherNode.getNumber()) continue;
                 Rank r = getRank(otherNode);
                 if(r.getInt() == rank) {
@@ -100,7 +100,7 @@ public class Ranks extends MMObjectBuilder {
      *
      */
     public void removeNode(MMObjectNode node) {
-        List users =  node.getRelatedNodes("mmbaseusers", RelationStep.DIRECTIONS_SOURCE);
+        List<MMObjectNode> users =  node.getRelatedNodes("mmbaseusers", RelationStep.DIRECTIONS_SOURCE);
         if (users.size() > 1) {
             // cannot happen?
             throw new SecurityException("Rank " + node + " cannot be removed because there are users with this rank: " + users);
@@ -136,15 +136,15 @@ public class Ranks extends MMObjectBuilder {
         org.mmbase.core.CoreField rankFieldDefs = getField("rank");
         StepField rankField = q.getField(rankFieldDefs);
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(rankField, new Integer(rank.getInt()));
-        cons.setOperator(FieldValueConstraint.LESS_EQUAL);
+        cons.setOperator(FieldCompareConstraint.LESS_EQUAL);
         BasicSortOrder s = q.addSortOrder(rankField);
         s.setDirection(SortOrder.ORDER_DESCENDING);
         q.setConstraint(cons);
         q.setMaxNumber(1);
         try {
-            Iterator i = getNodes(q).iterator();
+            Iterator<MMObjectNode> i = getNodes(q).iterator();
             if (i.hasNext()) {
-                return  (MMObjectNode) i.next();
+                return  i.next();
             } else {
                 return null;
             }

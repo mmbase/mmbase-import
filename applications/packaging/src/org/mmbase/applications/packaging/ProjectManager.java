@@ -42,10 +42,10 @@ public class ProjectManager {
     private static boolean state = false;
 
     // list of all the defined projects (xml file)
-    private static Map projects = new HashMap();
+    private static Map<String, Project> projects = new HashMap<String, Project>();
 
     // list of all the defined creators this manager can work with (xml file)
-    private static Map creators = new HashMap();
+    private static Map<String, CreatorInterface> creators = new HashMap<String, CreatorInterface>();
 
     // defines needed for the xml readers to find the dtd's
     public static final String DTD_PROJECTS_1_0 = "projects_1_0.dtd";
@@ -89,7 +89,7 @@ public class ProjectManager {
      *
      * @return projects
      */
-    public static Iterator getProjects() {
+    public static Iterator<Project> getProjects() {
         return projects.values().iterator();
     }
 
@@ -100,7 +100,7 @@ public class ProjectManager {
     * @return Project or null if not found
     */
     public static Project getProject(String name) {
-        return (Project)projects.get(name);
+        return projects.get(name);
     }
 
 
@@ -127,7 +127,7 @@ public class ProjectManager {
     * @return true if the change worked, false if something went wrong
     */
     public static boolean changeProjectSettings(String oldname,String newname,String newpath) {
-        Project p = (Project)projects.get(oldname);
+        Project p = projects.get(oldname);
         if (p != null) {
             projects.remove(oldname);
             addProject(newname,newpath);
@@ -201,7 +201,7 @@ public class ProjectManager {
     * resources.
     */
     public static void readCreators() {
-        creators = new HashMap();
+        creators = new HashMap<String, CreatorInterface>();
 
         // XXX Should use ResourceLoader here
 
@@ -250,7 +250,7 @@ public class ProjectManager {
     *
     * @return creators
     */
-    public static Map getCreators() {
+    public static Map<String, CreatorInterface> getCreators() {
         return creators;
     }
 
@@ -275,9 +275,9 @@ public class ProjectManager {
        String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
        body += "<!DOCTYPE projects PUBLIC \"-//MMBase/DTD projects config 1.0//EN\" \"http://www.mmbase.org/dtd/projects_1_0.dtd\">\n";
        body += "<projects>\n";
-       Iterator e=projects.values().iterator();
+       Iterator<Project> e=projects.values().iterator();
        while (e.hasNext()) {
-           Project pr = (Project)e.next();
+           Project pr = e.next();
            body += "\t<project name=\""+pr.getName()+"\" path=\""+pr.getPath()+"\" />\n";
        }
        body += "</projects>\n";

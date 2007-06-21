@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.Casting;
@@ -31,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.24 2007-06-18 17:26:51 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.25 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class LeafFileTag extends UrlTag {
