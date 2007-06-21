@@ -9,10 +9,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
-import java.util.Iterator;
+import java.util.*;
 import java.lang.reflect.Method;
 
 import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
 
@@ -57,7 +58,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.40 2006-07-15 19:51:45 michiel Exp $
+ * @version $Id: Logging.java,v 1.40.2.1 2007-06-21 12:34:22 michiel Exp $
  */
 
 
@@ -100,6 +101,19 @@ public class Logging {
      */
     public static void setMachineName(String mn) {
         machineName = mn;
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static Map getInitParameters() {
+        try {
+            Map contextMap = ApplicationContextReader.getProperties("mmbase-logging");
+            return contextMap;
+        } catch (javax.naming.NamingException ne) {
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+            return new HashMap();
+        }
     }
 
 
@@ -152,12 +166,14 @@ public class Logging {
 
         String classToUse    = SimpleImpl.class.getName(); // default
         String configuration = "stderr,info";              // default
+
+        Map overrides = getInitParameters();
         try { // to read the XML configuration file
-           String claz = reader.getElementValue("logging.class");
+            String claz = overrides.containsKey("class") ? (String) overrides.get("class") : reader.getElementValue("logging.class");
             if (claz != null) {
                 classToUse = claz;
             }
-            String config = reader.getElementValue("logging.configuration");
+            String config = overrides.containsKey("configuration") ? (String) overrides.get("configuration") : reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
         } catch (Exception e) {
             log.error("Exception during parsing: " + e);
