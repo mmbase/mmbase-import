@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.mmbase.util.logging.Logging;
@@ -17,14 +18,16 @@ import nl.leocms.util.ApplicationHelper;
 
 public class NelisReader
 { 
+    // ASSUMES A 3 COLUMN FORMAT (REGIO/EENHEID/GEBIED)
+    // seperator and nelis file are configured in readData() method
     private Map natGebMap;
     private Map gebiedMap;
     private long timeStamp;
-    private final static long  EXPIRE_INTERVAL = 2 * 60 * 60 * 1000;  //2 * 60 * 1000; //2 * 60 * 60 * 1000; //two hours of refresh interval till last read 
+    private final static long  EXPIRE_INTERVAL = 2 * 60 * 60 * 1000; //two hours of refresh interval till last read 
     private static final Logger log = Logging.getLoggerInstance(NelisReader.class);
     
     
-    // Private constructor suppresses generation of a (public) default constructor
+  // Private constructor suppresses generation of a (public) default constructor
   private NelisReader() {}
  
   private static class SingletonHolder
@@ -51,6 +54,14 @@ public Map getGebiedMap() {
     }
     return gebiedMap;
 }
+
+// procides access to the list of eenheids to beused directly in forms
+public Set getEenheidList() {
+    // calling map getter for a refresh
+    Map temp = getNatGebMap();
+    return temp.keySet();
+ }
+
 
 private void readData() {
     //set time stamp 
@@ -97,76 +108,9 @@ private void readData() {
       } catch(Exception e) {
         log.info(e);
       }
-            
-            
-     // these bloks should move to addLineToMaps() method below       
+                 
+     // Provincies are constant and hardcoded unlike other values that come from Nelis file.  
     Map dummy = new TreeMap();
-    
-//    dummy.put("Harger- en Pettemerpolder", new Boolean(false));
-//    dummy.put("Loterijlanden", new Boolean(false));
-//    dummy.put("Nijenburg", new Boolean(false));
-//    dummy.put("Weidse Polder", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("Kennemerland", dummy);
-//    
-//    dummy = new TreeMap();
-//    dummy.put("Kadelanden", new Boolean(false));
-//    dummy.put("Nieuwkoopse plassen", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("Nieuwkoop", dummy);
-//    
-//    dummy = new TreeMap();
-//    dummy.put("Beekbergerwoud", new Boolean(false));
-//    dummy.put("Hoeve Delle", new Boolean(false));
-//    dummy.put("Loenense Hooilanden", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("Oost-Veluwe", dummy);
-//    
-//    dummy = new TreeMap();
-//    dummy.put("Ankeveense plassen", new Boolean(false));
-//    dummy.put("Loosdrechtse plassen", new Boolean(false));
-//    dummy.put("Tienhovense plassen", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("Vechtplassen", dummy);
-//    
-//    dummy = new TreeMap();
-//    dummy.put("Chaamse Beek", new Boolean(false));
-//    dummy.put("Markdal", new Boolean(false));
-//    dummy.put("Oosterheide", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("West-Brabant", dummy);
-//    
-//    dummy = new TreeMap();
-//    dummy.put("Genhoes", new Boolean(false));
-//    dummy.put("Geuldal", new Boolean(false));
-//    dummy.put("Gulpdal", new Boolean(false));
-//    dummy.put("Sint-Pietersberg", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    natGebMap.put("Zuid-Limburg", dummy);
-//  
-    //
-    
-//    dummy = new TreeMap();
-//    dummy.put("Noordenveld", new Boolean(false));
-//    dummy.put("Waddengebied", new Boolean(false));
-//    dummy.put("Zuid-Drenthe", new Boolean(false));
-//    dummy.put("de Wieden", new Boolean(false));
-//    dummy.put("Salland", new Boolean(false));
-//    dummy.put("Twente", new Boolean(false));
-//    dummy.put("etc.", new Boolean(false));
-//    gebiedMap.put("Eenheid", dummy);
-//    
-    // Provincie and Regio's are constant
-    dummy = new TreeMap();
-    dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
-    dummy.put("Overijssel en Flevoland", new Boolean(false));
-    dummy.put("Gelderland", new Boolean(false));
-    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
-    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
-    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
-    gebiedMap.put("Regio", dummy);
-    
-    dummy = new TreeMap();
     dummy.put("Groningen", new Boolean(false));
     dummy.put("Friesland", new Boolean(false));
     dummy.put("Drenthe", new Boolean(false));
@@ -179,25 +123,22 @@ private void readData() {
     dummy.put("Zeeland", new Boolean(false));
     dummy.put("Noord-Brabant", new Boolean(false));
     gebiedMap.put("Provincie", dummy);    
-
 }
 
 private void addLineToMaps(String selectionType, String selectionCategory, String selectionValue){
     
     //we need to find a way to reflect these three lines to the maps
-    // 1st line semms to be the regio
-    //2nd 3rd seem to fill natuurgebied(en) selections 
-    //other selects : province and eenheid ???
+    // 1st line is the regio
+    //2nd 3rd to fill eenheid/natuurgebied(en) selections 
     
-    //log.info("*" + selectionType + "*" + selectionCategory + "*" + selectionValue + "*");
-insertKeyToSubMap(gebiedMap, "Eenheid", selectionCategory);
+    //log.debug("*" + selectionType + "*" + selectionCategory + "*" + selectionValue + "*");
     insertKeyToSubMap(natGebMap, selectionCategory, selectionValue);
-    
-    
-    
+    insertKeyToSubMap(gebiedMap, "Eenheid", selectionCategory);
+    insertKeyToSubMap(gebiedMap, "Regio", selectionType);
     
 }
 
+// we are using Map of Maps to represent the selection boxes. 
 private void insertKeyToSubMap(Map topMap, String topKey, String subKey) {
     Map subMap = (Map) topMap.get(topKey);
     if (subMap == null) {
