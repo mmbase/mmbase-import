@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.52 2007-06-21 07:30:18 pierre Exp $
+ * @version $Id: INFO.java,v 1.53 2007-06-21 11:28:42 michiel Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -539,7 +539,7 @@ public class INFO extends ProcessorModule {
                     String domain = tmp.substring(tmp.lastIndexOf('.'));
                     tmp = tmp.substring(0,tmp.lastIndexOf('.'));
                     tmp = tmp.substring(tmp.lastIndexOf('.')+1);
-                    domain = tmp+domain;
+                    domain = tmp + domain;
                     if (domain!=null) {
                         String serverdomain = getProperty("server","Domain");
                         return toYesNo(serverdomain.equals(domain));
@@ -555,6 +555,14 @@ public class INFO extends ProcessorModule {
             return HttpAuth.getRemoteUser(sp.req);
         }
     }
+    /**
+     * Returns the properties to the subclass.
+     */
+    protected Map getProperties(String propertytable) {
+         return null;
+     }
+ 
+
 
     /**
      * Returns a continues range of values with two set numerical boundaries and a step-increase, or
