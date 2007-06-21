@@ -5,6 +5,11 @@
 
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
+<%@page import="nl.leocms.vastgoed.NelisReader" %>
+<% 
+	NelisReader nelis = NelisReader.getInstance(); 
+	request.setAttribute("nelis", nelis);
+%>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
@@ -33,12 +38,7 @@ if(twoColumns) {
     <tr><td style="padding:10px;padding-top:18px;">
     <a name="top">
     <%@include file="includes/back_print.jsp" %>
-
-
-
-
-
-      
+  
       <h3>Mijn bestelling</h3>
       
       <html:form action="/nmintra/BestelAction" method="POST"  onsubmit="return validationMessage()" >
@@ -57,12 +57,7 @@ if(twoColumns) {
          <tr>
          <td>Eenheid:</td>
          <td><html:select property="eendheid">
-            <html:option value="Noordenveld">Noordenveld</html:option>
-            <html:option value="Waddengebied">Waddengebied</html:option>
-            <html:option value="Zuid-Drenthe">Zuid-Drenthe</html:option>
-            <html:option value="de Wieden">de Wieden</html:option>
-            <html:option value="Salland">Salland</html:option>
-            <html:option value="Twente">Twente</html:option>
+			<html:options name="nelis" property="eenheidList" />
          	</html:select>
          </td>
          </tr>
