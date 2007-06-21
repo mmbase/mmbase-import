@@ -146,24 +146,25 @@ private void readData() {
 //  
     //
     
-    dummy = new TreeMap();
-    dummy.put("Noordenveld", new Boolean(false));
-    dummy.put("Waddengebied", new Boolean(false));
-    dummy.put("Zuid-Drenthe", new Boolean(false));
-    dummy.put("de Wieden", new Boolean(false));
-    dummy.put("Salland", new Boolean(false));
-    dummy.put("Twente", new Boolean(false));
-    dummy.put("etc.", new Boolean(false));
-    gebiedMap.put("Eenheid", dummy);
-//    
 //    dummy = new TreeMap();
-//    dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
-//    dummy.put("Overijssel en Flevoland", new Boolean(false));
-//    dummy.put("Gelderland", new Boolean(false));
-//    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
-//    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
-//    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
-//    gebiedMap.put("Regio", dummy);
+//    dummy.put("Noordenveld", new Boolean(false));
+//    dummy.put("Waddengebied", new Boolean(false));
+//    dummy.put("Zuid-Drenthe", new Boolean(false));
+//    dummy.put("de Wieden", new Boolean(false));
+//    dummy.put("Salland", new Boolean(false));
+//    dummy.put("Twente", new Boolean(false));
+//    dummy.put("etc.", new Boolean(false));
+//    gebiedMap.put("Eenheid", dummy);
+//    
+    // Provincie and Regio's are constant
+    dummy = new TreeMap();
+    dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
+    dummy.put("Overijssel en Flevoland", new Boolean(false));
+    dummy.put("Gelderland", new Boolean(false));
+    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
+    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
+    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
+    gebiedMap.put("Regio", dummy);
     
     dummy = new TreeMap();
     dummy.put("Groningen", new Boolean(false));
@@ -188,8 +189,8 @@ private void addLineToMaps(String selectionType, String selectionCategory, Strin
     //2nd 3rd seem to fill natuurgebied(en) selections 
     //other selects : province and eenheid ???
     
-    log.info("*" + selectionType + "*" + selectionCategory + "*" + selectionValue + "*");
-    insertKeyToSubMap(gebiedMap, "Regio", selectionType);
+    //log.info("*" + selectionType + "*" + selectionCategory + "*" + selectionValue + "*");
+insertKeyToSubMap(gebiedMap, "Eenheid", selectionCategory);
     insertKeyToSubMap(natGebMap, selectionCategory, selectionValue);
     
     
