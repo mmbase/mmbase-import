@@ -92,9 +92,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
                 return node;
             }
-        }
-        catch (SearchQueryException e)
-        {
+        } catch (SearchQueryException e) {
             log.error(e.toString());
             return null;
         }
@@ -128,7 +126,7 @@ public class PeopleBuilder extends DidactorBuilder {
             // forbid setting a username to an existing one
             if (originalValue != null && originalValue.equals("") && !newValue.equals("")) {
                 if (countUsernamesInCloud((String) newValue) != 0) {
-                    log.warn("setValues() cleared username "+((String) newValue)+" because it already exists");
+                    log.warn("setValues() cleared username " + ((String) newValue) + " because it already exists");
                     node.storeValue("username", "");
                     return false;
                 }
@@ -163,25 +161,31 @@ public class PeopleBuilder extends DidactorBuilder {
             int now = (int)(System.currentTimeMillis() / 1000);    
             int oldtime = node.getIntValue("lastactivity");
             if (now - oldtime > 60 * 5) {
-                return new Integer("0");
+                return Integer.valueOf(0);
             } else {
                 int islogged = node.getIntValue("islogged");
                 if (islogged == 0) {
-                    return new Integer("0");
+                    return Integer.valueOf(0);
                 }
-                return new Integer("1");
+                return Integer.valueOf(1);
             }
         }
 
         // No fielddefs, so it is definately a virtual field. Is it a component setting?
         if (field.indexOf("-") > 0) {
-            log.debug("Trying to get '" + field + "'");
+            if (log.isDebugEnabled()) {
+                log.debug("Trying to get '" + field + "'");
+            }
             String componentName = field.substring(0, field.indexOf("-"));
             String settingName = field.substring(field.indexOf("-") + 1, field.length());
-            log.debug("Component [" + componentName + "], setting [" + settingName + "]");
+            if (log.isDebugEnabled()) {
+                log.debug("Component [" + componentName + "], setting [" + settingName + "]");
+            }
             Component c = Component.getComponent(componentName);
             Object value = c.getUserSetting(settingName, "" + node.getNumber(), LocalContext.getCloudContext().getCloud("mmbase"));
-            log.debug("Value: [" + value + "] (" + value.getClass() + ")");
+            if (log.isDebugEnabled()) {
+                log.debug("Value: [" + value + "] (" + value.getClass() + ")");
+            }
             return value;
         }
 
@@ -195,14 +199,14 @@ public class PeopleBuilder extends DidactorBuilder {
         String newValue = (String) node.getValues().get("username");
         if (newValue != null && !newValue.equals("")) {
             if (countUsernamesInCloud(newValue) != 0) {
-                log.info("insert() cleared username "+newValue+" because it already exists");
+                log.info("insert() cleared username " + newValue + " because it already exists");
                 node.storeValue("username", "");
                 node.storeValue("password","");
             }
         }
         int number = super.insert(owner, node);
         Event event = new Event((String) node.getValues().get("username"), null, null, null, null, 
-                "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
+                                "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
         EventDispatcher.report(event, null, null);
         log.info("insert people node");
         return number;
