@@ -20,7 +20,7 @@ boolean showNextDotLine = false;
 <%@include file="../includes/getstyle.jsp" %>
 <mm:node number="<%=objectID%>" notfound="skipbody">
 <%-- For vertical logo of naardermeer site to be displayed without covering article content --%>
-  <% if (isNaardermeer.equals("true")) { %>		
+  <% if (!isNaardermeer.equals("false")) { %>		
    	<table width="88%" cellpadding="0" cellspacing="0" border="0" align="left" height="226">
   <% } else { %>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0">
