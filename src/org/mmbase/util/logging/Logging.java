@@ -11,6 +11,9 @@ package org.mmbase.util.logging;
 
 import java.lang.reflect.Method;
 
+import java.util.*;
+
+import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
@@ -56,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.42 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Logging.java,v 1.43 2007-06-21 12:29:51 michiel Exp $
  */
 
 
@@ -101,6 +104,18 @@ public class Logging {
         machineName = mn;
     }
 
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static Map<String, String> getInitParameters() {
+        try {
+            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-logging");
+            return contextMap;
+        } catch (javax.naming.NamingException ne) {
+            log.error("Can't obtain properties from application context: " + ne.getMessage());
+            return new HashMap<String, String>();
+        }
+    }
 
     /**
      * Configure the logging system.
@@ -151,16 +166,17 @@ public class Logging {
 
         String classToUse    = SimpleImpl.class.getName(); // default
         String configuration = "stderr,info";              // default
+
+        Map<String, String> overrides = getInitParameters();
         try { // to read the XML configuration file
-           String claz = reader.getElementValue("logging.class");
+            String claz = overrides.containsKey("class") ? overrides.get("class") : reader.getElementValue("logging.class");
             if (claz != null) {
                 classToUse = claz;
             }
-            String config = reader.getElementValue("logging.configuration");
+            String config = overrides.containsKey("configuration") ? overrides.get("configuration") : reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
         } catch (Exception e) {
-            log.error("Exception during parsing: " + e);
-            log.error(stackTrace(e));
+            log.error("Exception during parsing: " + e.getMessage(), e);
         }
 
 
@@ -196,6 +212,8 @@ public class Logging {
             wrapper.setLogger(getLoggerInstance(wrapper.getName()));
             log.debug("Replaced logger " + wrapper.getName());
         }
+
+        ResourceLoader.initLogging();
     }
 
     /**
@@ -207,13 +225,13 @@ public class Logging {
     public static void configureClass(String configuration) {
         try { // to configure
             // System.out.println("Found class " + logClass.getName());
-            Method conf = logClass.getMethod("configure", new Class[] { String.class } );
-            conf.invoke(null, new Object[] { configuration } );
+            Method conf = logClass.getMethod("configure", String.class);
+            conf.invoke(null, configuration);
         } catch (NoSuchMethodException e) {
             log.debug("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
-            log.error("Invocation Exception while configuration class. " + e.getMessage(), e);
+            log.error("Invocation Exception while configuration class. " + logClass + " with configuration String '" + configuration + "' :" + e.getMessage(), e);
         } catch (Exception e) {
             log.error("", e);
         }
@@ -235,8 +253,8 @@ public class Logging {
     public  static Logger getLoggerInstance (String s) {
         // call the getLoggerInstance static method of the logclass:
         try {
-            Method getIns = logClass.getMethod("getLoggerInstance", new Class[] { String.class } );
-            Logger logger =  (Logger) getIns.invoke(null, new Object[] {s});
+            Method getIns = logClass.getMethod("getLoggerInstance", String.class);
+            Logger logger =  (Logger) getIns.invoke(null, s);
             if (configured) {
                 return logger;
             } else {
@@ -281,13 +299,19 @@ public class Logging {
      */
     public static void shutdown() {
         try {
-            if (logClass != null) {
-                Method shutdown = logClass.getMethod("shutdown", new Class[] {} );
-                shutdown.invoke(null, new Object[] {} );
+            if (configured) {
+                for (LoggerWrapper wrapper : LoggerWrapper.getWrappers()) {
+                    wrapper.setLogger(SimpleImpl.getLoggerInstance("org.mmbase.SHUTDOWN"));
+                }
+                if (logClass != null) {
+                    Method shutdown = logClass.getMethod("shutdown");
+                    shutdown.invoke(null);
+                }
+                configured = false;
             }
         } catch (NoSuchMethodException e) {
             // System.err.println("No such method"); // okay, nothing to shutdown.
-        } catch (Exception e) {
+        } catch (Throwable e) {
             System.err.println(e + stackTrace(e));
         }
 
