@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.2 2007-06-14 08:38:33 michiel Exp $
+ * @version $Id: Functions.java,v 1.3 2007-06-21 13:11:30 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -64,7 +64,11 @@ public class Functions {
      * Works on people nodes only.
      */
     public String peopleGenerateUserName() {
-        String uname = node.getStringValue("firstname").substring(0, 1) + node.getStringValue("lastname");
+        String firstName = node.getStringValue("firstname");
+        if (firstName.length() > 0) {
+            firstName = firstName.substring(0, 1);
+        }
+        String uname = firstName + node.getStringValue("lastname");
         if (uname.length() > 8) {
             uname = uname.substring(0, 8);
         }
