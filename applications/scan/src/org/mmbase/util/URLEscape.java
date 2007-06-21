@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated use Encode
  * @author vpro
- * @version $Id: URLEscape.java,v 1.1 2005-07-28 09:23:19 pierre Exp $
+ * @version $Id: URLEscape.java,v 1.2 2007-06-21 15:50:20 nklasens Exp $
  */
 public class URLEscape {
 
@@ -69,8 +69,8 @@ public class URLEscape {
             return str; // should not happen
         }
 
-        for (int i = 0; i<buf.length;i++) {
-            int a = (int)buf[i] & 0xff;
+        for (byte element : buf) {
+            int a = element & 0xff;
             if (a>=32 && a<128 && isacceptable[a-32]) {
                 esc.append((char)a);
             } else {
@@ -129,10 +129,10 @@ public class URLEscape {
      * Method for testing this class from the command line
      */
     public static void main(String args[]) {
-        for (int i=0;i<args.length;i++) {
-            log.info("Original : '"+args[i]+"'");
-            log.info("Escaped : '"+escapeurl(args[i])+"'");
-            log.info("Unescaped again : '"+unescapeurl(escapeurl(args[i]))+"'");
+        for (String element : args) {
+            log.info("Original : '"+element+"'");
+            log.info("Escaped : '"+escapeurl(element)+"'");
+            log.info("Unescaped again : '"+unescapeurl(escapeurl(element))+"'");
         }
 
     }

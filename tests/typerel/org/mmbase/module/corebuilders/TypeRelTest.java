@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.13 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: TypeRelTest.java,v 1.14 2007-06-21 15:50:27 nklasens Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -328,7 +328,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
         RelationManagerIterator it = rm1.relationManagerIterator();
         while (it.hasNext()) {
-            RelationManager rm = it.nextRelationManager(); // no exceptions..
+            it.nextRelationManager(); // no exceptions..
         }
 
         RelationManager rmi11 = cloud.getRelationManager(objectManager, urlsManager, INH_ROLE);

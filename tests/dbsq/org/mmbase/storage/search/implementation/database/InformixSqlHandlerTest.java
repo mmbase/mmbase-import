@@ -2,7 +2,7 @@ package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+ import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.implementation.database.InformixSqlHandler;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -11,7 +11,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class InformixSqlHandlerTest extends TestCase {
 
@@ -52,7 +52,7 @@ public class InformixSqlHandlerTest extends TestCase {
 
         query = new BasicSearchQuery();
         BasicStep imageStep = query.addStep(images);
-        FieldDefs imageNumber = images.getField("number");
+        CoreField imageNumber = images.getField("number");
         BasicStepField imageNumberField = query.addField(imageStep, imageNumber);
         Constraint constraint = new BasicFieldNullConstraint(imageNumberField);
         query.setConstraint(constraint);
@@ -107,7 +107,7 @@ public class InformixSqlHandlerTest extends TestCase {
         // Distinct keyword avoided in aggregating query.
         query = new BasicSearchQuery(true);
         BasicStep step1 = query.addStep(images).setAlias(null);
-        FieldDefs imagesTitle = images.getField("title");
+        CoreField imagesTitle = images.getField("title");
         query.addAggregatedField(step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT).setAlias(null);
         query.setDistinct(true);
         String strSql = instance.toSql(query, instance);

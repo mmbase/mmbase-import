@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.4 2007-03-08 08:51:38 nklasens Exp $
+ * @verion $Id: DocumentReaderTest.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
  */
 public class DocumentReaderTest extends TestCase {
 
@@ -119,8 +119,8 @@ public class DocumentReaderTest extends TestCase {
                            "<a xml:lang='nl' c='d'><b /><b /></a>",
                            "<a xml:lang='nl' c='d'><b /><!-- hoi --><b /></a>",
                            "<a xml:lang='nl'><b>abc</b><b c='d'>hoi<c/></b></a>"};
-        for (int i = 0 ; i < cases.length; i ++) {
-            testToDocument(cases[i]);
+        for (String element : cases) {
+            testToDocument(element);
         }
     }
 }

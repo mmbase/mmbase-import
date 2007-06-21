@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.11 2007-04-25 11:27:16 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.12 2007-06-21 15:50:22 nklasens Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -48,7 +48,7 @@ public class CrontabModule extends WatchedReloadableModule {
       </pre>
      */
     public void init() {
-        for (Map.Entry entry : getInitParameters().entrySet()) {
+        for (Map.Entry<String, String> entry : getInitParameters().entrySet()) {
             addJob(entry);
         }
         readMoreJobs();
@@ -58,8 +58,8 @@ public class CrontabModule extends WatchedReloadableModule {
         cronDaemon.stop();
     }
 
-    protected void addJob(Map.Entry entry) {
-        String value = (String)entry.getValue();
+    protected void addJob(Map.Entry<String,String> entry) {
+        String value = entry.getValue();
         String[] tokens = value.trim().split("[\n|]");
         String times;
         if (tokens.length > 0) {
@@ -84,7 +84,7 @@ public class CrontabModule extends WatchedReloadableModule {
             description = tokens[2].trim();
         }
         if (description == null || description.length() == 0) {
-            description = (String)entry.getKey();
+            description = entry.getKey();
         }
 
         if (tokens.length > 3) {
@@ -99,7 +99,7 @@ public class CrontabModule extends WatchedReloadableModule {
         }
 
         try {
-            CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type, servers);
+            CronEntry job = new CronEntry(entry.getKey(), times, description, className, configString, type, servers);
             log.debug("Found job: " + job);
             myEntries.add(job);
             cronDaemon.add(job);
@@ -118,9 +118,9 @@ public class CrontabModule extends WatchedReloadableModule {
      */
     public void reload() {
         log.info("Reloading crontab");
-        Iterator i = myEntries.iterator();
+        Iterator<CronEntry> i = myEntries.iterator();
         while (i.hasNext()) {
-            cronDaemon.remove((CronEntry)i.next());
+            cronDaemon.remove(i.next());
         }
         myEntries.clear();
         init();
@@ -129,12 +129,12 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    private Map utilProperties = new UtilReader("crontab.xml", new Runnable() { public void run() { reload();}}).getProperties();
+    private Map<String,String> utilProperties = new UtilReader("crontab.xml", new Runnable() { public void run() { reload();}}).getProperties();
 
     public void readMoreJobs() {
-        Iterator i = utilProperties.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> i = utilProperties.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<String,String> entry = i.next();
             addJob(entry);
         }
 

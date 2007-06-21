@@ -9,7 +9,6 @@ package org.mmbase.applications.packaging.packagehandlers;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -276,9 +275,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                         String exportnumber = n.getAttribute("number");
                         MMObjectBuilder bul = mmb.getMMObject(type);
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
-                        Enumeration b = syncbul.search(query);
+                        Enumeration<MMObjectNode> b = syncbul.search(query);
                         if (b.hasMoreElements()) {
-                            MMObjectNode syncnode = (MMObjectNode) b.nextElement();
+                            MMObjectNode syncnode = b.nextElement();
                             log.info("node allready installed : " + exportnumber);
                         } else {
                             log.info("node installing !! : " + exportnumber);
@@ -387,7 +386,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                         log.warn("error setting long-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == Field.TYPE_BYTE) {
+                } else if (type == Field.TYPE_BINARY) {
                     String filename = n2.getAttribute("file");
                     JarEntry je = jf.getJarEntry("data/" + filename);
                     if (je != null) {
@@ -419,9 +418,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
      */
     private MMObjectNode getExistingContentNode(MMObjectNode newnode, MMObjectBuilder bul) {
         String checkQ = "";
-        Collection vec = bul.getFields();
-        for (Iterator h = vec.iterator(); h.hasNext(); ) {
-            CoreField def = (CoreField) h.next();
+        Collection<CoreField> vec = bul.getFields();
+        for (CoreField def : vec) {
             if (def.isUnique()) {
                 int type = def.getType();
                 String name = def.getName();
@@ -436,9 +434,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             }
         }
         if (!checkQ.equals("")) {
-            Enumeration r = bul.search(checkQ);
+            Enumeration<MMObjectNode> r = bul.search(checkQ);
             if (r.hasMoreElements()) {
-                MMObjectNode oldnode = (MMObjectNode) r.nextElement();
+                MMObjectNode oldnode = r.nextElement();
                 return oldnode;
             }
         }
@@ -481,9 +479,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 
                         MMObjectBuilder bul = mmb.getMMObject(type);
 
-                        Enumeration b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
+                        Enumeration<MMObjectNode> b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
-                            MMObjectNode syncnode = (MMObjectNode) b.nextElement();
+                            MMObjectNode syncnode = b.nextElement();
                             log.debug("relation allready installed : " + exportnumber);
                         } else {
                             MMObjectNode loadednode = createNewObject(nodereader, bul, n, jf);
@@ -491,7 +489,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                             b = syncbul.search("exportnumber==" + snumber + "+exportsource=='" + exportsource + "'");
                             int realsnumber = -1;
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2 = (MMObjectNode) b.nextElement();
+                                MMObjectNode n2 = b.nextElement();
                                 realsnumber = n2.getIntValue("localnumber");
                             }
 
@@ -499,7 +497,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                             int realdnumber = -1;
                             b = syncbul.search("exportnumber==" + dnumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2 = (MMObjectNode) b.nextElement();
+                                MMObjectNode n2 = b.nextElement();
                                 realdnumber = n2.getIntValue("localnumber");
                             }
 

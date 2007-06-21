@@ -163,7 +163,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
      * Wrapper around the put() method of the cache implementation.
      */
     public V put(K key, V value) {
-        V oldValue = (V) get(key);
+        V oldValue = get(key);
         // returning does not work because of bug CACHE-255 in oscache (http://jira.opensymphony.com/browse/CACHE-255)
         if (key instanceof String) {
             //return (V) cacheImpl.put(key, value);

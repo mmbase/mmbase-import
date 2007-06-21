@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.33 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: DocumentReader.java,v 1.34 2007-06-21 15:50:22 nklasens Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -73,7 +73,7 @@ public class DocumentReader  {
 
     private String systemId;
 
-    static UtilReader.PropertiesMap<Object> utilProperties = null;
+    static UtilReader.PropertiesMap<String> utilProperties = null;
     /**
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on

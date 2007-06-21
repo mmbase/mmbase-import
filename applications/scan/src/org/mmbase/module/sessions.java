@@ -32,13 +32,13 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.30 2006-11-24 14:22:40 pierre Exp $
+ * @version $Id: sessions.java,v 1.31 2007-06-21 15:50:21 nklasens Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
     private static Logger log = Logging.getLoggerInstance(sessions.class.getName());
 
-    Hashtable sessions = new Hashtable();
+    Hashtable<String, sessionInfo> sessions = new Hashtable<String, sessionInfo>();
     private MMBase mmbase;
     MMObjectBuilder props,users;
 
@@ -57,7 +57,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             log.debug("getSession(): wanted=" + wanted);
         }
         if (wanted!=null) {
-            sessionInfo session=(sessionInfo)sessions.get(wanted);
+            sessionInfo session=sessions.get(wanted);
             if (session==null) {
                 if (sp.req!=null) {
                     session=new sessionInfo(sp.req.getRemoteHost(),wanted);
@@ -129,11 +129,11 @@ public class sessions extends ProcessorModule implements sessionsInterface {
      * @param value    a Vector containing the
      *                 Strings to be added to the set.
      */
-    public void addSetValues(sessionInfo session,String key,Vector values) {
+    public void addSetValues(sessionInfo session,String key,Vector<Object> values) {
         if (session!=null) {
             String str;
-            for (Enumeration e=values.elements();e.hasMoreElements();) {
-                str=(String)e.nextElement();
+            for (Object object : values) {
+                str=(String)object;
                 session.addSetValue(key,str);
             }
         } else {
@@ -459,10 +459,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         if (cmd.charAt(0)=='"') cmd=cmd.substring(1,cmd.length()-1);
         if (cmd.equals("sessions")) {
             Vector results = new Vector();
-            for (Enumeration e=sessions.keys();e.hasMoreElements();) {
-                val = (String)e.nextElement();
+            for (Enumeration<String> e=sessions.keys();e.hasMoreElements();) {
+                val = e.nextElement();
                 results.addElement(val);
-                tmps=(sessionInfo)sessions.get(val);
+                tmps=sessions.get(val);
                 results.addElement(tmps.getHostName());
             }
             return results;
@@ -471,14 +471,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             Vector results=new Vector();
             String key;
             sessionInfo session=getSession(sp,sp.sname);
-            for (Enumeration e=session.values.keys();e.hasMoreElements();) {
-                key=(String)e.nextElement();
+            for (Enumeration<String> e=session.values.keys();e.hasMoreElements();) {
+                key=e.nextElement();
                 results.addElement("VAR");
                 results.addElement(key);
                 results.addElement(session.getValue(key));
             }
-            for (Enumeration e=session.setvalues.keys();e.hasMoreElements();) {
-                key=(String)e.nextElement();
+            for (Enumeration<String> e=session.setvalues.keys();e.hasMoreElements();) {
+                key=e.nextElement();
                 results.addElement("SET");
                 results.addElement(key);
                 results.addElement(session.getSetString(key));

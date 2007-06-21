@@ -69,7 +69,7 @@ public abstract class MMBaseTest extends TestCase {
             String database = System.getProperty("test.database");
             if (database == null) database = "test";
             try {
-                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + database, "sa", "");
+                DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + database, "sa", "");
                 // ok!, already running one.
                 return;
             } catch (SQLException sqe) {

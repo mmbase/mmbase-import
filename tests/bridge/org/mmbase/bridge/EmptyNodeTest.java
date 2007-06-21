@@ -38,120 +38,120 @@ public class EmptyNodeTest extends NodeTest {
     }
 
     public void testGetValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Object value = node.getValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), value == null);
+        for (String element : fieldTypes) {
+            Object value = node.getValue(element + "field");
+            assertTrue("Empty " + element + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), value == null);
         }
     }
 
     public void testGetByteValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            byte[] bytes = node.getByteValue(fieldTypes[i] + "field");
-            if (fieldTypes[i].equals("byte")) {
+        for (String element : fieldTypes) {
+            byte[] bytes = node.getByteValue(element + "field");
+            if (element.equals("byte")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("double")) {
+            } else if (element.equals("double")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("float")) {
+            } else if (element.equals("float")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("int")) {
+            } else if (element.equals("int")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("long")) {
+            } else if (element.equals("long")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("string")) {
+            } else if (element.equals("string")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("xml")) {
+            } else if (element.equals("xml")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("node")) {
+            } else if (element.equals("node")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("boolean")) {
+            } else if (element.equals("boolean")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("datetime")) {
+            } else if (element.equals("datetime")) {
                 assertTrue(bytes.length == 0);
-            } else if (fieldTypes[i].equals("list")) {
+            } else if (element.equals("list")) {
                 assertTrue(bytes.length == 0);
             } else {
-                fail("Unknown fieldtype encountered " + fieldTypes[i]);
+                fail("Unknown fieldtype encountered " + element);
             }
         }
     }
 
     public void testGetDoubleValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            double value = node.getDoubleValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return -1, but " + value,
+        for (String element : fieldTypes) {
+            double value = node.getDoubleValue(element + "field");
+            assertTrue("Empty " + element + " field queried as double did not return -1, but " + value,
                         value == -1);
         }
     }
 
     public void testGetFloatValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            float value = node.getFloatValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as float did not return -1, but " + value,
+        for (String element : fieldTypes) {
+            float value = node.getFloatValue(element + "field");
+            assertTrue("Empty " + element + " field queried as float did not return -1, but " + value,
                         value == -1);
         }
     }
 
     public void testGetIntValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            int value = node.getIntValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as integer did not return -1, but " + value,
+        for (String element : fieldTypes) {
+            int value = node.getIntValue(element + "field");
+            assertTrue("Empty " + element + " field queried as integer did not return -1, but " + value,
                         value == -1);
         }
     }
 
     public void testGetLongValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            long value = node.getLongValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as long did not return -1, but " + value,
+        for (String element : fieldTypes) {
+            long value = node.getLongValue(element + "field");
+            assertTrue("Empty " + element + " field queried as long did not return -1, but " + value,
                         value == -1);
         }
     }
 
     public void testGetStringValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Object value = node.getStringValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but " + value, "".equals(value));
+        for (String element : fieldTypes) {
+            Object value = node.getStringValue(element + "field");
+            assertTrue("Empty " + element + " field queried as string did not return an empty string, but " + value, "".equals(value));
         }
     }
 
     public void testGetXMLValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Document value = node.getXMLValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as XML not null (as javadoc sais it should) but '" + value + "'",
+        for (String element : fieldTypes) {
+            Document value = node.getXMLValue(element + "field");
+            assertTrue("Empty " + element + " field queried as XML not null (as javadoc sais it should) but '" + value + "'",
                 value == null);
         }
     }
 
     public void testGetNodeValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Node value = node.getNodeValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value,
+        for (String element : fieldTypes) {
+            Node value = node.getNodeValue(element + "field");
+            assertTrue("Empty " + element + " field queried as Node did not return null, but " + value,
                         value == null);
        }
     }
 
     public void testGetBooleanValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            boolean value = node.getBooleanValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value,
+        for (String element : fieldTypes) {
+            boolean value = node.getBooleanValue(element + "field");
+            assertTrue("Empty " + element + " field queried as boolean did not return false, but " + value,
                         !value);
        }
     }
 
     public void testGetDateTimeValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            Date value = node.getDateValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
+        for (String element : fieldTypes) {
+            Date value = node.getDateValue(element + "field");
+            assertTrue("Empty " + element + " field queried as datetime returned null", value != null);
+            assertTrue("Empty " + element + " field queried as datetime did not return "+new Date(-1)+", but " + value,
                         value.getTime()==-1);
        }
     }
 
     public void testGetListValue() {
-        for (int i = 0; i < fieldTypes.length; i++) {
-            List value = node.getListValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value != null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value, value.size() == 0);
+        for (String element : fieldTypes) {
+            List value = node.getListValue(element + "field");
+            assertTrue("Empty " + element + " field queried as list returned null", value != null);
+            assertTrue("Empty " + element + " field queried as list did not return [], but " + value, value.size() == 0);
        }
     }
 

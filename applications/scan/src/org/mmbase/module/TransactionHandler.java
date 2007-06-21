@@ -44,7 +44,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     private static String securityMode = "none";
 
     // Cashes all transactions belonging to a user.
-    private static Hashtable transactionsOfUser = new Hashtable();
+    private static Hashtable<String, UserTransactionInfo> transactionsOfUser = new Hashtable<String, UserTransactionInfo>();
     // Reference to the transactionManager.
     private static TransactionManager transactionManager;
     // Reference to the temporaryNodeManager
@@ -162,7 +162,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                     log.error("No xFile and no iSource file received!");
                 }
             }
-            Iterator i = errorHandler.getResultList().iterator();
+            Iterator<ErrorStruct> i = errorHandler.getResultList().iterator();
             while (i.hasNext()) {
                 log.error("" + i.next());
             }
@@ -298,7 +298,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                             throw new TransactionHandlerException(tName + " transaction doesn't exists id = " + id);
                         }
                         // actually open transaction
-                        transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+                        transactionInfo = userTransactionInfo.knownTransactionContexts.get(id);
                         currentTransactionContext = transactionInfo.transactionContext;
                     } else {
 
@@ -310,7 +310,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                                 throw new TransactionHandlerException("Transaction '" + id + "' is probably already committed, check attribute commit=false");
                             }
                             // actually open transaction
-                            transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+                            transactionInfo = userTransactionInfo.knownTransactionContexts.get(id);
                             currentTransactionContext = transactionInfo.transactionContext;
                             transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
                             // destroy transaction information
@@ -323,7 +323,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                                 // cancel real transaction
                                 transactionManager.cancel(userTransactionInfo.user, id);
                                 // get transaction information object
-                                TransactionInfo ti = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+                                TransactionInfo ti = userTransactionInfo.knownTransactionContexts.get(id);
                                 // destroy transaction information
                                 ti.stop();
                                 // continue with next transaction command.
@@ -497,14 +497,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                                 if (transactionInfo.knownObjectContexts.get(id) == null) {
                                     throw new TransactionHandlerException(oName + " Object id doesn't exists: " + id);
                                 }
-                                currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
+                                currentObjectContext = transactionInfo.knownObjectContexts.get(id);
                             } else {
                                 if (oName.equals("deleteObject")) {
                                     if (id == null) {
                                         throw new TransactionHandlerException(oName + " no id specified");
                                     }
                                     //delete from temp cloud
-                                    currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
+                                    currentObjectContext = transactionInfo.knownObjectContexts.get(id);
                                     transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(), currentObjectContext);
                                     // destroy
                                     tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(), currentObjectContext);
@@ -661,7 +661,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         } else {
             log.warn("UserTransactionInfo already known for user " + user);
         }
-        return ((UserTransactionInfo)transactionsOfUser.get(user));
+        return transactionsOfUser.get(user);
     }
 
     /**	
@@ -699,7 +699,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
      */
     class UserTransactionInfo {
         // contains all known transactions of a user
-        public Hashtable knownTransactionContexts = new Hashtable();
+        public Hashtable<String, TransactionInfo> knownTransactionContexts = new Hashtable<String, TransactionInfo>();
         // The user
         public User user = null;
         // the parse trace
@@ -713,7 +713,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         // The transactionname 
         String transactionContext = null;
         // All objects belonging to a certain transaction
-        Hashtable knownObjectContexts = new Hashtable();
+        Hashtable<String, String> knownObjectContexts = new Hashtable<String, String>();
         // Needed to timeout transaction
         long timeout = 0;
         // id of the transaction

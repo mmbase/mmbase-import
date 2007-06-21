@@ -33,9 +33,9 @@ public class Project {
     String path;
     String name;
     String basedir;
-    HashMap targets = new HashMap();
-    HashMap packagetargets = new HashMap();
-    HashMap bundletargets = new HashMap();
+    HashMap<String, Target> targets = new HashMap<String, Target>();
+    HashMap<String, Target> packagetargets = new HashMap<String, Target>();
+    HashMap<String, Target> bundletargets = new HashMap<String, Target>();
 
     /**
      * DTD resource filename of the packaging DTD version 1.0
@@ -128,7 +128,7 @@ public class Project {
      *
      * @return    The targets value
      */
-    public Iterator getTargets() {
+    public Iterator<Target> getTargets() {
         return targets.values().iterator();
     }
 
@@ -259,9 +259,9 @@ public class Project {
      */
     public Target getTargetById(String id) {
     // find the target with the same package id
-        Iterator e = packagetargets.values().iterator();
+        Iterator<Target> e = packagetargets.values().iterator();
         while (e.hasNext()) {
-            Target t = (Target) e.next();
+            Target t = e.next();
             if (t.getId().equals(id)) {
             return t;
             }
@@ -274,7 +274,7 @@ public class Project {
      *
      * @return    The packageTargets value
      */
-    public Iterator getPackageTargets() {
+    public Iterator<Target> getPackageTargets() {
         return packagetargets.values().iterator();
     }
 
@@ -283,7 +283,7 @@ public class Project {
      *
      * @return    The bundleTargets value
      */
-    public Iterator getBundleTargets() {
+    public Iterator<Target> getBundleTargets() {
         return bundletargets.values().iterator();
     }
 
@@ -457,14 +457,14 @@ public class Project {
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE packaging PUBLIC \"-//MMBase/DTD packaging config 1.0//EN\" \"http://www.mmbase.org/dtd/packaging_1_0.dtd\">\n";
         body += "<packaging basedir=\".\">\n";
-        Iterator e = packagetargets.values().iterator();
+        Iterator<Target> e = packagetargets.values().iterator();
         while (e.hasNext()) {
-            Target t = (Target) e.next();
+            Target t = e.next();
             body += "\t<package name=\"" + t.getName() + "\" type=\"" + t.getType() + "\" file=\"" + t.getPath() + "\" />\n";
         }
         e = bundletargets.values().iterator();
         while (e.hasNext()) {
-            Target t = (Target) e.next();
+            Target t = e.next();
             body += "\t<bundle name=\"" + t.getName() + "\" type=\"" + t.getType() + "\" file=\"" + t.getPath() + "\" />\n";
         }
         body += "</packaging>\n";
@@ -496,16 +496,16 @@ public class Project {
     public boolean hasSyntaxErrors() {
         // performs several syntax checks to signal
         // the users in the gui tools on possible problems
-        Iterator e = packagetargets.values().iterator();
+        Iterator<Target> e = packagetargets.values().iterator();
         while (e.hasNext()) {
-            Target t = (Target) e.next();
+            Target t = e.next();
             if (t.hasSyntaxErrors()) {
                 return true;
             }
         }
         e = bundletargets.values().iterator();
         while (e.hasNext()) {
-            Target t = (Target) e.next();
+            Target t = e.next();
             if (t.hasSyntaxErrors()) {
                 return true;
             }

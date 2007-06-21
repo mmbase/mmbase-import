@@ -9,7 +9,7 @@ import org.mmbase.storage.search.Step;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -93,13 +93,13 @@ public class BasicStepTest extends TestCase {
             fail("Negative node, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        SortedSet nodes = instance.getNodes();
+        SortedSet<Integer> nodes = instance.getNodes();
         assertTrue(nodes.size() == 0);
         int nodeNumber0 = 23456;
         instance.addNode(nodeNumber0);
         nodes = instance.getNodes();
         assertTrue(nodes.size() == 1);
-        Iterator iNodes = nodes.iterator();
+        Iterator<Integer> iNodes = nodes.iterator();
         assertTrue(iNodes.hasNext());
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
@@ -121,8 +121,8 @@ public class BasicStepTest extends TestCase {
         // See:
         testAddNode();
         
-        SortedSet nodes = instance.getNodes();
-        Object item = nodes.first();
+        SortedSet<Integer> nodes = instance.getNodes();
+        Integer item = nodes.first();
         
         // List returned must be unmodifiable.
         try {

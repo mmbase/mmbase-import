@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.44 2005-12-05 18:44:41 johannes Exp $
+ * @version $Id: MediaFragments.java,v 1.45 2007-06-21 15:50:25 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -95,8 +95,8 @@ public class MediaFragments extends MMObjectBuilder {
      * Would something like this be feasible to translate a List to a Map?
      *
      */
-    static protected Map translateURLArguments(List arguments, Map info) {
-        if (info == null) info = new HashMap();
+    static protected Map<String, Object> translateURLArguments(List<?> arguments, Map<String, Object> info) {
+        if (info == null) info = new HashMap<String, Object>();
         if (arguments != null) {
             if (arguments instanceof Parameters) {
                 info.putAll(((Parameters) arguments).toMap());
@@ -110,13 +110,13 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
-            List empty = new Vector();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new Vector<Object>();
+            java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
             info.put(FUNCTION_ROOT, "() Returns the 'parent' MMObjectNode's number of the parent or null");
@@ -145,11 +145,11 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_ROOT.equals(function)) {
             return "" + getRootFragment(node).getNumber();
         } else if (FUNCTION_AVAILABLE.equals(function)) {
-            List pt  = node.getRelatedNodes("publishtimes");
+            List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
             if (pt.size() == 0) {
                 return Boolean.TRUE;
             } else {
-                MMObjectNode publishtime = (MMObjectNode) pt.get(0);
+                MMObjectNode publishtime = pt.get(0);
                 int now   = (int) (System.currentTimeMillis() / 1000);
                 int begin = publishtime.getIntValue("begin");
                 int end   = publishtime.getIntValue("end");
@@ -161,7 +161,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, translateURLArguments(args, null));
         } else if (FUNCTION_NUDEURL.equals(function)) {
-            Map info = translateURLArguments(args, null);
+            Map<String, Object> info = translateURLArguments(args, null);
             info.put("nude", "true");
             return getURL(getRootFragment(node), info);
         } else if (FUNCTION_FORMAT.equals(function)) {
@@ -231,21 +231,21 @@ public class MediaFragments extends MMObjectBuilder {
      * It could contain a Map with preferences, or other information about the client.
      *
      */
-    protected List getURLs(MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
-        if (urls == null) urls = new ArrayList();
+    protected List<URLComposer> getURLs(MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
+        if (urls == null) urls = new ArrayList<URLComposer>();
 
-        Iterator i = getSources(fragment).iterator();
+        Iterator<MMObjectNode> i = getSources(fragment).iterator();
         while (i.hasNext()) {
-            MMObjectNode source = (MMObjectNode) i.next();
+            MMObjectNode source = i.next();
             MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
             bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;
     }
 
-    protected List getFilteredURLs(MMObjectNode fragment, Map info, Set cacheExpireObjects) {
+    protected List<URLComposer> getFilteredURLs(MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         log.debug("getfilteredurls");
-        List urls =  getURLs(fragment, info, null,cacheExpireObjects);
+        List<URLComposer> urls =  getURLs(fragment, info, null,cacheExpireObjects);
         return MainFilter.getInstance().filter(urls);
     }
 
@@ -258,11 +258,11 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
      */
-    protected  String getURL(MMObjectNode fragment, Map info) {
+    protected  String getURL(MMObjectNode fragment, Map<String, Object> info) {
         log.debug("Getting url of a fragment.");
         String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
-            String url = (String) cache.get(key);
+            String url = cache.get(key);
             if (log.isDebugEnabled()) {
                 log.debug("Cache hit, key = " + key);
                 log.debug("Resolved url = " + url);
@@ -272,11 +272,11 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("No cache hit, key = " + key);
         }
 
-        Set cacheExpireObjects = new HashSet();
-        List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
+        Set<MMObjectNode> cacheExpireObjects = new HashSet<MMObjectNode>();
+        List<URLComposer> urls = getFilteredURLs(fragment, info, cacheExpireObjects);
         String result = "";
         if (urls.size() > 0) {
-            result = ((URLComposer) urls.get(0)).getURL();
+            result = urls.get(0).getURL();
         }
         if (log.isDebugEnabled()) {
             log.debug("Add to cache, key = " + key);
@@ -287,13 +287,13 @@ public class MediaFragments extends MMObjectBuilder {
         return result;
     }
 
-    protected  String getFormat(MMObjectNode fragment, Map info)   {
+    protected  String getFormat(MMObjectNode fragment, Map<String, Object> info)   {
         log.debug("Getting format of a fragment.");
         // XXX also cache this ?
         // XXX can be done in the same cache if we extend the key...
-        List urls = getFilteredURLs(fragment, info, null);
+        List<URLComposer> urls = getFilteredURLs(fragment, info, null);
         if (urls.size() > 0) {
-            return ((URLComposer) urls.get(0)).getFormat().toString();
+            return urls.get(0).getFormat().toString();
         } else {
             return ""; //no sources
         }
@@ -312,13 +312,13 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Adds a parent fragment to the Stack and returns true, or returns false.
      */
-    protected boolean addParentFragment(Stack fragments) {
-        MMObjectNode fragment = (MMObjectNode) fragments.peek();
+    protected boolean addParentFragment(Stack<MMObjectNode> fragments) {
+        MMObjectNode fragment = fragments.peek();
         int role = mmb.getRelDef().getNumberByName("posrel");
         InsRel insrel =  mmb.getRelDef().getBuilder(role);
-        Enumeration e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
+        Enumeration<MMObjectNode> e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
         while (e.hasMoreElements()) {
-            MMObjectNode relation = (MMObjectNode) e.nextElement();
+            MMObjectNode relation = e.nextElement();
             if (relation.getIntValue("dnumber") == fragment.getNumber()) { // yes, found a parent node
                 if (log.isDebugEnabled()) {
                     log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
@@ -340,8 +340,8 @@ public class MediaFragments extends MMObjectBuilder {
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
-    public Stack getParentFragments(MMObjectNode fragment) {
-        Stack result = new Stack();
+    public Stack<MMObjectNode> getParentFragments(MMObjectNode fragment) {
+        Stack<MMObjectNode> result = new Stack<MMObjectNode>();
         result.push(fragment);
         if (log.isDebugEnabled()) {
             log.debug("Finding parents of node " + fragment.getNumber());
@@ -360,8 +360,8 @@ public class MediaFragments extends MMObjectBuilder {
      * @return The parent media fragment or null if it has not.
      */
     public MMObjectNode getRootFragment(MMObjectNode fragment) {
-        Stack s = getParentFragments(fragment);
-        return (MMObjectNode) s.peek();
+        Stack<MMObjectNode> s = getParentFragments(fragment);
+        return s.peek();
     }
 
     /**
@@ -370,10 +370,10 @@ public class MediaFragments extends MMObjectBuilder {
      * @param fragment the mediafragment
      * @return All mediasources related to given mediafragment
      */
-    public List getSources(MMObjectNode fragment) {
+    public List<MMObjectNode> getSources(MMObjectNode fragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment " + fragment.getNumber());
         MMObjectNode root  = getRootFragment(fragment);
-        List mediasources =  root.getRelatedNodes("mediasources");
+        List<MMObjectNode> mediasources =  root.getRelatedNodes("mediasources");
         if (mediasources == null) {
             log.warn("Could not get related nodes of type mediasources");
         }
@@ -389,9 +389,8 @@ public class MediaFragments extends MMObjectBuilder {
      * @param fragment The MMObjectNode
      */
     public  void removeSources(MMObjectNode fragment) {
-        List ms = getSources(fragment);
-        for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
-            MMObjectNode source = (MMObjectNode) mediaSources.next();
+        List<MMObjectNode> ms = getSources(fragment);
+        for (MMObjectNode source : ms) {
             MMObjectBuilder parent = source.getBuilder();
             parent.removeRelations(source);
             parent.removeNode(source);
@@ -401,7 +400,7 @@ public class MediaFragments extends MMObjectBuilder {
     // --------------------------------------------------------------------------------
     // These methods are added to be backwards compatible.
 
-    private Map               classification     = null;
+    private Map<String, String>               classification     = null;
 
      /**
       * For backwards compatibility reasons, the first version of the mediafragment builder
@@ -418,11 +417,10 @@ public class MediaFragments extends MMObjectBuilder {
              return;
          }
          log.debug("Using downwards compatible classification code.");
-         classification =  new Hashtable();
+         classification =  new Hashtable<String, String>();
          MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-         Vector nodes = fn.getRelatedNodes("lookup");
-         for (Enumeration e = nodes.elements();e.hasMoreElements();) {
-             MMObjectNode node = (MMObjectNode)e.nextElement();
+         Vector<MMObjectNode> nodes = fn.getRelatedNodes("lookup");
+         for (MMObjectNode node : nodes) {
              String index = node.getStringValue("index");
              String value = node.getStringValue("value");
              log.debug("classification uses: " + index + " -> " + value);
@@ -454,7 +452,7 @@ public class MediaFragments extends MMObjectBuilder {
                 log.error("Number "+number+" is not a media/audio/video fragment "+media);
                 return "Number "+number+" is not a media/audio/video fragment "+media;
             }
-            Map info = new HashMap();
+            Map<String, Object> info = new HashMap<String, Object>();
             if(userSpeed!=null) {
                 info.put("speed",""+userSpeed);
             }

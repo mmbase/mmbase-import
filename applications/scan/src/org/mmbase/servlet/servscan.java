@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.45 2006-03-09 16:39:20 michiel Exp $
+ * @version $Id: servscan.java,v 1.46 2007-06-21 15:50:24 nklasens Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -307,7 +307,7 @@ public class servscan extends JamesServlet {
     }
 
     void handlePost(scanpage sp, HttpServletResponse res) throws Exception {
-        String rtn, part, part2, finals, tokje, header;
+        String part;
         Hashtable proc_cmd = new Hashtable();
         Hashtable proc_var = new Hashtable();
         Object obj;
@@ -331,7 +331,7 @@ public class servscan extends JamesServlet {
         }
 
         // Process method=post information
-        for (Enumeration t = poster.getPostParameters().keys(); t.hasMoreElements(); ) {
+        for (Enumeration<String> t = poster.getPostParameters().keys(); t.hasMoreElements(); ) {
             obj = t.nextElement();
             part = (String)obj;
             if (part.indexOf("SESSION-") == 0) {
@@ -495,12 +495,11 @@ public class servscan extends JamesServlet {
 
     private boolean doCrcCheck(scanpage sp, HttpServletResponse res) {
         if (sp.body != null && sp.body.indexOf("<CRC>") != -1) {
-            Vector p = sp.getParamsVector();
+            Vector<String> p = sp.getParamsVector();
             String value = null;
             String checker = null;
-            for (Enumeration t=  p.elements(); t.hasMoreElements();) {
-                String part = (String)t.nextElement();
-                if (!((String)p.lastElement()).equals(part)) {
+            for (String part : p) {
+                if (!p.lastElement().equals(part)) {
                     if (value == null) {
                         value = part;
                     } else {

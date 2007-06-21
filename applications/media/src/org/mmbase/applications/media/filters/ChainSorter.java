@@ -19,13 +19,13 @@ import org.w3c.dom.Element;
  * Chains some comparators to make one new comparator.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ChainSorter.java,v 1.3 2005-07-09 15:29:11 nklasens Exp $
+ * @version $Id: ChainSorter.java,v 1.4 2007-06-21 15:50:21 nklasens Exp $
  */
 public class ChainSorter extends  Sorter {
 
-    private List comparators;
+    private List<Sorter> comparators;
     public  ChainSorter() {
-        comparators = new ArrayList();
+        comparators = new ArrayList<Sorter>();
     }
     /**
      * Empties the chain
@@ -48,17 +48,17 @@ public class ChainSorter extends  Sorter {
      * Configure. Configures all elements on default.
      */
     public void configure(DocumentReader reader, Element e) {
-        Iterator i = comparators.iterator();
+        Iterator<Sorter> i = comparators.iterator();
         while (i.hasNext()) {
-            Sorter ri = (Sorter) i.next();
+            Sorter ri = i.next();
             ri.configure(reader, e);
         }
     }
 
     public int compareURLComposer(URLComposer o1, URLComposer o2) {
-        Iterator i = comparators.iterator();
+        Iterator<Sorter> i = comparators.iterator();
         while (i.hasNext()) {
-            int comp = ((Sorter) i.next()).compare(o1, o2); 
+            int comp = i.next().compare(o1, o2); 
             if (comp != 0) return comp; 
         }
         return 0;

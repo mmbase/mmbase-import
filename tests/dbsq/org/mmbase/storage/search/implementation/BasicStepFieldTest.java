@@ -3,15 +3,15 @@ package org.mmbase.storage.search.implementation;
 import junit.framework.*;
 
 import org.mmbase.bridge.Field;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class BasicStepFieldTest extends TestCase {
 
@@ -34,8 +34,8 @@ public class BasicStepFieldTest extends TestCase {
     private MMObjectBuilder builder1 = null;
     private MMObjectBuilder builder2 = null;
 
-    /** FieldDefs example. */
-    private FieldDefs fieldDefs = null;
+    /** CoreField example. */
+    private CoreField CoreField = null;
 
     public BasicStepFieldTest(java.lang.String testName) {
         super(testName);
@@ -54,9 +54,9 @@ public class BasicStepFieldTest extends TestCase {
         mmbase = MMBase.getMMBase();
         builder1 = mmbase.getBuilder(BUILDER_NAME1);
         builder2 = mmbase.getBuilder(BUILDER_NAME2);
-        fieldDefs = builder1.getField(FIELD_NAME1);
+        CoreField = builder1.getField(FIELD_NAME1);
         step = new BasicStep(builder1);
-        instance = new BasicStepField(step, fieldDefs);
+        instance = new BasicStepField(step, CoreField);
     }
 
     /**
@@ -67,15 +67,15 @@ public class BasicStepFieldTest extends TestCase {
     /** Test of constructor. **/
     public void testConstructor() {
         Step step2 = new BasicStep(builder2);
-        // FieldDefs object does not belong to step, should throw IllegalArgumentException.
+        // CoreField object does not belong to step, should throw IllegalArgumentException.
         try {
-            new BasicStepField(step2, fieldDefs);
-            fail("FieldDefs object does not belong to step, should throw IllegalArgumentException.");
+            new BasicStepField(step2, CoreField);
+            fail("CoreField object does not belong to step, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         // Null step, should throw IllegalArgumentException.
         try {
-            new BasicStepField(null, fieldDefs);
+            new BasicStepField(null, CoreField);
             fail("Null step, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
@@ -131,12 +131,12 @@ public class BasicStepFieldTest extends TestCase {
     public void testGetType() {
 
         MMObjectBuilder images = mmbase.getBuilder("images");
-        FieldDefs imagesNumber = images.getField("number");
-        FieldDefs imagesOwner = images.getField("owner");
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs imagesDescription = images.getField("description");
-        FieldDefs imagesHandle = images.getField("handle");
-        FieldDefs imagesItype = images.getField("itype");
+        CoreField imagesNumber = images.getField("number");
+        CoreField imagesOwner = images.getField("owner");
+        CoreField imagesTitle = images.getField("title");
+        CoreField imagesDescription = images.getField("description");
+        CoreField imagesHandle = images.getField("handle");
+        CoreField imagesItype = images.getField("itype");
 
         Step step = new BasicStep(images);
         instance = new BasicStepField(step, imagesNumber);
@@ -161,9 +161,9 @@ public class BasicStepFieldTest extends TestCase {
     /** Test of testValue method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testTestValue() {
         MMObjectBuilder images = mmbase.getBuilder("images");
-        FieldDefs imagesNumber = images.getField("number");
-        FieldDefs imagesHandle = images.getField("handle");
-        FieldDefs imagesOwner = images.getField("owner");
+        CoreField imagesNumber = images.getField("number");
+        CoreField imagesHandle = images.getField("handle");
+        CoreField imagesOwner = images.getField("owner");
 
         Step step = new BasicStep(images);
         // NODE type field.

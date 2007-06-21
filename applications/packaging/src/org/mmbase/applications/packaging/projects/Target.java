@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.mmbase.applications.packaging.BundleManager;
-import org.mmbase.applications.packaging.PackageManager;
-import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
@@ -42,9 +40,9 @@ public class Target {
     String publishsharepassword;
     boolean publishstate;
     boolean isbundle;
-    private ArrayList screenshots = new ArrayList();
-    private ArrayList starturls = new ArrayList();
-    HashMap items = new HashMap();
+    private ArrayList<String> screenshots = new ArrayList<String>();
+    private ArrayList<String> starturls = new ArrayList<String>();
+    HashMap<String, Object> items = new HashMap<String, Object>();
     ExtendedDocumentReader reader;  
     Project parent;
 
@@ -94,11 +92,11 @@ public class Target {
         return depends;
     }
 
-    public ArrayList getScreenshots() {
+    public ArrayList<String> getScreenshots() {
         return screenshots;
     }
 
-    public ArrayList getStarturls() {
+    public ArrayList<String> getStarturls() {
         return starturls;
     }
 
@@ -338,7 +336,7 @@ public class Target {
      *
      * @return    The packageSteps value
      */
-    public Iterator getPackageSteps() {
+    public Iterator<packageStep> getPackageSteps() {
         return creator.getPackageSteps();
     }
 
@@ -349,7 +347,7 @@ public class Target {
      * @param  logid  Description of the Parameter
      * @return        The packageSteps value
      */
-    public Iterator getPackageSteps(int logid) {
+    public Iterator<packageStep> getPackageSteps(int logid) {
         return creator.getPackageSteps(logid);
     }
 
@@ -666,7 +664,7 @@ public class Target {
      * @param  type  Description of the Parameter
      * @return       The relatedPeople value
      */
-    public ArrayList getRelatedPeople(String type) {
+    public ArrayList<Person> getRelatedPeople(String type) {
         return creator.getRelatedPeople(type, this);
     }
 
@@ -676,7 +674,7 @@ public class Target {
      *
      * @return    The packageDepends value
      */
-    public ArrayList getPackageDepends() {
+    public ArrayList<PackageDepend> getPackageDepends() {
         return creator.getPackageDepends(this);
     }
 
@@ -686,7 +684,7 @@ public class Target {
      *
      * @return    The includedPackages value
      */
-    public ArrayList getIncludedPackages() {
+    public ArrayList<IncludedPackage> getIncludedPackages() {
         if (isBundle()) {
             return creator.getIncludedPackages(this);
         }

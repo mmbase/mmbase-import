@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.51 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.52 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -71,14 +71,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
                         int i = min;
-                        protected Iterator getIterator(Node node, Field field) {
-                            return new Iterator() {
+                        protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
+                            return new Iterator<Entry<Integer, Integer>>() {
                                     public boolean hasNext() {
                                         return i <= max;
                                     }
-                                    public Object next() {
+                                    public Entry<Integer, Integer> next() {
                                         Integer value = new Integer(i++);
-                                        return new Entry(value, value);
+                                        return new Entry<Integer, Integer>(value, value);
                                     }
                                     public void remove() {
                                         throw new UnsupportedOperationException();
@@ -95,14 +95,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
                         long i = min;
-                        protected Iterator getIterator(Node node, Field field) {
-                            return new Iterator() {
+                        protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
+                            return new Iterator<Entry<Long, Long>>() {
                                     public boolean hasNext() {
                                         return i <= max;
                                     }
-                                    public Object next() {
+                                    public Entry<Long, Long> next() {
                                         Long value = new Long(i++);
-                                        return new Entry(value, value);
+                                        return new Entry<Long, Long>(value, value);
                                     }
                                     public void remove() {
                                         throw new UnsupportedOperationException();
@@ -200,7 +200,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.checkHtmlInput(node, field, errors);
         }
         Object fieldValue = getFieldValue(node, field);
-        DataType dt = field.getDataType();
+        DataType<Object> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);

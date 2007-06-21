@@ -35,7 +35,7 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.34 2005-10-06 11:46:31 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.35 2007-06-21 15:50:25 nklasens Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -139,10 +139,10 @@ public class MediaSources extends MMObjectBuilder {
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
      * @return the url of the media source
      */
-    protected String getURL(MMObjectNode source, Map info) {
-        List urls = getFilteredURLs(source, null, info);
+    protected String getURL(MMObjectNode source, Map<String, Object> info) {
+        List<URLComposer> urls = getFilteredURLs(source, null, info);
         if (urls.size() == 0) return "[could not compose URL]";
-        URLComposer ri = (URLComposer) urls.get(0);
+        URLComposer ri = urls.get(0);
         return ri.getURL();
     }
 
@@ -197,11 +197,11 @@ public class MediaSources extends MMObjectBuilder {
     }
 
 
-    protected  String getFormat(MMObjectNode source, Map info)   {
+    protected  String getFormat(MMObjectNode source, Map<String, Object> info)   {
         log.debug("Getting format of a source.");        
-        List urls = getFilteredURLs(source, null, info);
+        List<URLComposer> urls = getFilteredURLs(source, null, info);
         if (urls.size() > 0) {
-            return ((URLComposer) urls.get(0)).getFormat().toString();
+            return urls.get(0).getFormat().toString();
         } else {
             return ""; //no sources 
         }
@@ -217,13 +217,13 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on mediasources " + node);
         }
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new ArrayList<Object>();
+            java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put("absoluteurl", "(<??>)");
             info.put("urlresult", "(<??>) ");
             info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really URLComposer.URLComposer's)");
@@ -266,10 +266,10 @@ public class MediaSources extends MMObjectBuilder {
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_AVAILABLE.equals(function)) {
-            Iterator providers = getProviders(node).iterator();
+            Iterator<MMObjectNode> providers = getProviders(node).iterator();
             while (providers.hasNext()) {
                 // if one of the providers is online, then this source is availabe.
-                MMObjectNode provider = (MMObjectNode) providers.next();
+                MMObjectNode provider = providers.next();
                 if (provider.getIntValue("state") == MediaProviders.STATE_ON) return Boolean.TRUE;
             }
             return Boolean.FALSE;
@@ -323,7 +323,7 @@ public class MediaSources extends MMObjectBuilder {
                 arg = "";
             }
             if (function.equals("absoluteurl")) {
-                Map info = new HashMap();
+                Map<String, Object> info = new HashMap<String, Object>();
                 info.put("server", arg);
                 return getURL(node, info);
             } else if (function.equals("urlresult")) {
@@ -348,10 +348,10 @@ public class MediaSources extends MMObjectBuilder {
      * Returns all possible URLs for this source. (A source can be on different providers)
      */
     
-    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
-        if (urls == null) urls = new ArrayList();
+    protected List<URLComposer> getURLs(MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
+        if (urls == null) urls = new ArrayList<URLComposer>();
         log.debug("Getting urls for source " + source.getNumber());
-        List providers = getProviders(source);
+        List<MMObjectNode> providers = getProviders(source);
         if (providers.size() == 0) {
             if (defaultProvider != null) {
                 MMObjectNode provider = getNode(defaultProvider);
@@ -364,9 +364,9 @@ public class MediaSources extends MMObjectBuilder {
             }
             
         } else {        
-            Iterator i = providers.iterator();
+            Iterator<MMObjectNode> i = providers.iterator();
             while (i.hasNext()) {
-                MMObjectNode provider = (MMObjectNode) i.next();
+                MMObjectNode provider = i.next();
                 if (log.isDebugEnabled()) {
                     log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
                 }
@@ -379,8 +379,8 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * Returns all URLs for this source, but filtered, with the best ones on top.
      */
-    protected List getFilteredURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
-        List urls = getURLs(source, fragment, info, null, null);
+    protected List<URLComposer> getFilteredURLs(MMObjectNode source, MMObjectNode fragment, Map<String, Object> info) {
+        List<URLComposer> urls = getURLs(source, fragment, info, null, null);
         return MainFilter.getInstance().filter(urls);
     }
     
@@ -410,12 +410,12 @@ public class MediaSources extends MMObjectBuilder {
 	*/
 
 	int providernumber = 0;
-	Enumeration e = providers.search("WHERE name='"+providername+"'");
+	Enumeration<MMObjectNode> e = providers.search("WHERE name='"+providername+"'");
         if (!e.hasMoreElements()) {
             log.error("No media provider found with name "+providername);
             return;
 	} else {
-		MMObjectNode provider = (MMObjectNode)e.nextElement();
+		MMObjectNode provider = e.nextElement();
    		providernumber = provider.getIntValue("number");
 		log.debug("found provider with number = "+providernumber);
 	}
@@ -443,7 +443,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param source the mediasource
      * @return All mediaproviders related to the given mediasource
      */
-    protected List getProviders(MMObjectNode source) {
+    protected List<MMObjectNode> getProviders(MMObjectNode source) {
         if (log.isDebugEnabled()) {
             log.debug("mediasource " + source.getStringValue("number"));
         }

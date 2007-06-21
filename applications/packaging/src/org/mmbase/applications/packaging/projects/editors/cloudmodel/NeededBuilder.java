@@ -23,11 +23,11 @@ public class NeededBuilder {
 	String status="active";
 	String classname = "Dummy";
 	String searchage = "1000";
-	HashMap names_singular = new HashMap();
-	HashMap names_plural = new HashMap();
-	HashMap descriptions = new HashMap();
-	ArrayList properties = new ArrayList();
-	ArrayList fields = new ArrayList();
+	HashMap<String, String> names_singular = new HashMap<String, String>();
+	HashMap<String, String> names_plural = new HashMap<String, String>();
+	HashMap<String, String> descriptions = new HashMap<String, String>();
+	ArrayList<String> properties = new ArrayList<String>();
+	ArrayList<NeededBuilderField> fields = new ArrayList<NeededBuilderField>();
 
 	public String getMaintainer() {
 		return maintainer;
@@ -49,7 +49,7 @@ public class NeededBuilder {
 	     names_singular.put(language,name);
 	}
 
-	public HashMap getSingularNames() {
+	public HashMap<String, String> getSingularNames() {
 	     return names_singular;
 	}
 
@@ -64,7 +64,7 @@ public class NeededBuilder {
 	     names_plural.put(language,name);
 	}
 
-	public HashMap getPluralNames() {
+	public HashMap<String, String> getPluralNames() {
 	     return names_plural;
 	}
 
@@ -80,7 +80,7 @@ public class NeededBuilder {
 	     descriptions.put(language,name);
 	}
 
-	public HashMap getDescriptions() {
+	public HashMap<String, String> getDescriptions() {
 	     return descriptions;
 	}
 
@@ -146,15 +146,15 @@ public class NeededBuilder {
 		fields.add(field);
 	}
 
- 	public Iterator getFields() {
+ 	public Iterator<NeededBuilderField> getFields() {
 		return fields.iterator();
 	}
 
 
     	public NeededBuilderField getField(String field) {
-    		Iterator nbfl=getFields();
+    		Iterator<NeededBuilderField> nbfl=getFields();
 		while (nbfl.hasNext()) {
-			NeededBuilderField nbf=(NeededBuilderField)nbfl.next();
+			NeededBuilderField nbf=nbfl.next();
 			if (nbf.getDBName().equals(field)) {
 				return nbf;
 			}
@@ -164,9 +164,9 @@ public class NeededBuilder {
 
 
     	public boolean deleteField(String field) {
-    		Iterator nbfl=getFields();
+    		Iterator<NeededBuilderField> nbfl=getFields();
 		while (nbfl.hasNext()) {
-			NeededBuilderField nbf=(NeededBuilderField)nbfl.next();
+			NeededBuilderField nbf=nbfl.next();
 			if (nbf.getDBName().equals(field)) {
 				fields.remove(nbf);	
 				return true;

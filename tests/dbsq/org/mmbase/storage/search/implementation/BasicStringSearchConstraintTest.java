@@ -3,15 +3,13 @@ package org.mmbase.storage.search.implementation;
 import junit.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.StringSearchConstraint;
-
+import org.mmbase.core.*;
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStringSearchConstraintTest extends TestCase {
 
@@ -50,12 +48,12 @@ public class BasicStringSearchConstraintTest extends TestCase {
         Step step = new BasicStep(builder);
 
         // Field1 (string field).
-        FieldDefs fieldDefs = builder.getField(FIELD_NAME1);
-        field1 = new BasicStepField(step, fieldDefs);
+        CoreField CoreField = builder.getField(FIELD_NAME1);
+        field1 = new BasicStepField(step, CoreField);
 
         // Field2 (integer field).
-        fieldDefs = builder.getField(FIELD_NAME2);
-        field2 = new BasicStepField(step, fieldDefs);
+        CoreField = builder.getField(FIELD_NAME2);
+        field2 = new BasicStepField(step, CoreField);
 
         instance = new BasicStringSearchConstraint(field1,
         StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED,
@@ -69,7 +67,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
 
     /** Tests constructor (with searchterms as string). */
     public void testConstructor1() {
-        List searchTerms
+        List<String> searchTerms
         = Arrays.asList(new String[] {"some", "search", "terms"});
         // Applied to integer field, should throw IllegalArgumentException.
         try {
@@ -83,7 +81,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         try {
             new BasicStringSearchConstraint(field1,
             StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED,
-            StringSearchConstraint.MATCH_TYPE_LITERAL, new ArrayList());
+            StringSearchConstraint.MATCH_TYPE_LITERAL, new ArrayList<String>());
             fail("Empty searchterm string, should throw IllegalArgumentException.");
         } catch(IllegalArgumentException e) {}
     }
@@ -279,7 +277,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         String newTerm = "skeukowkk";
         int nrTerms = instance.getSearchTerms().size();
         BasicStringSearchConstraint result = instance.addSearchTerm(newTerm);
-        List searchTerms = instance.getSearchTerms();
+        List<String> searchTerms = instance.getSearchTerms();
         assertTrue(searchTerms.size() == (nrTerms + 1));
         assertTrue(searchTerms.get(nrTerms).equals(newTerm));
         assertTrue(result == instance);
@@ -298,7 +296,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
 
     /** Test of setSearchTerms(List) method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
     public void testSetSearchTerms() {
-        List searchTerms = new ArrayList();
+        List<String> searchTerms = new ArrayList<String>();
         searchTerms.add("kjeid");
         searchTerms.add("uerui");
         searchTerms.add("zcvvc");
@@ -309,14 +307,14 @@ public class BasicStringSearchConstraintTest extends TestCase {
 
         try {
             // Empty list of searchterms, should throw IllegalArgumentException.
-            instance.setSearchTerms(new ArrayList());
+            instance.setSearchTerms(new ArrayList<String>());
             fail("Empty list of searchterms, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
-        searchTerms.add(new Integer(0));
+        searchTerms.add("0");
         try {
             // Non-string searchterms, should throw IllegalArgumentException.
-            instance.setSearchTerms(new ArrayList());
+            instance.setSearchTerms(new ArrayList<String>());
             fail("Non-string searchterms, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }
@@ -355,7 +353,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         // same as:
         testSetParameter();
 
-        Map map = instance.getParameters();
+        Map<String,Object> map = instance.getParameters();
         try {
             // Trying to modify map, should throw UnsupportedOperationException.
             map.put("kdj", "iiup");

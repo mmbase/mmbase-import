@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.33 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ClusterManager.java,v 1.34 2007-06-21 15:50:21 nklasens Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -39,9 +39,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected final Statistics send    = new Statistics();
 
     /** Queue with messages to send to other MMBase instances */
-    protected BlockingQueue nodesToSend = new LinkedBlockingQueue(64);
+    protected BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
     /** Queue with received messages from other MMBase instances */
-    protected BlockingQueue nodesToSpawn = new LinkedBlockingQueue(64);
+    protected BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;
@@ -57,8 +57,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         kicker = null;
     }
 
-    protected void readConfiguration(Map configuration) {
-        String tmp = (String) configuration.get("spawnthreads");
+    protected void readConfiguration(Map<String,String> configuration) {
+        String tmp = configuration.get("spawnthreads");
         if (tmp != null && !tmp.equals("")) {
             spawnThreads = !"false".equalsIgnoreCase(tmp);
         }
@@ -256,7 +256,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     public void run() {
         while(kicker != null) {
             try {
-                byte[] message = (byte[]) nodesToSpawn.take();
+                byte[] message = nodesToSpawn.take();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
                 if (log.isDebugEnabled()) {

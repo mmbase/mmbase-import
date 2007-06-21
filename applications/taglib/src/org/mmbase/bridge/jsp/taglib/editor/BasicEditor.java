@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.12 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: BasicEditor.java,v 1.13 2007-06-21 15:50:25 nklasens Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -41,12 +41,12 @@ public class BasicEditor extends Editor {
     private static final FunctionProvider patterns = PatternNodeFunctionProvider.getInstance();
 
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("url", String.class, "/mmbase/edit/basic/"),
-        new Parameter("urlparams", Map.class, null),
-        new Parameter("icon", String.class, ""),
-        new Parameter("iconparams", Map.class, null),
-        new Parameter("when", String.class, "always"),
-        new Parameter("target", String.class, "new"),
+        new Parameter<String>("url", String.class, "/mmbase/edit/basic/"),
+        new Parameter<Map>("urlparams", Map.class, null),
+        new Parameter<String>("icon", String.class, ""),
+        new Parameter<Map>("iconparams", Map.class, null),
+        new Parameter<String>("when", String.class, "always"),
+        new Parameter<String>("target", String.class, "new"),
         Parameter.CLOUD
     };
 

@@ -81,9 +81,9 @@ public class Controller {
         return true;
     }
 
-    public List getPackageInstallSteps(String id,String wv,String wp,String slogid) {
+    public List<MMObjectNode> getPackageInstallSteps(String id,String wv,String wp,String slogid) {
 
-                List list = new ArrayList();
+                List<MMObjectNode> list = new ArrayList<MMObjectNode>();
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         try {
@@ -98,7 +98,7 @@ public class Controller {
         }
         if (p!=null) {
 
-            Iterator steps=null;
+            Iterator<installStep> steps=null;
             if (logid==-1) {
                 steps=p.getInstallSteps();
             } else {
@@ -106,7 +106,7 @@ public class Controller {
             }
 
             while (steps.hasNext()) {
-                installStep step=(installStep)steps.next();
+                installStep step=steps.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("userfeedback",step.getUserFeedBack());
                 virtual.setValue("timestamp",step.getTimeStamp());
@@ -129,9 +129,9 @@ public class Controller {
 
 
 
-    public List getBundleInstallSteps(String id,String wv,String wb,String slogid) {
+    public List<MMObjectNode> getBundleInstallSteps(String id,String wv,String wb,String slogid) {
 
-                List list = new ArrayList();
+                List<MMObjectNode> list = new ArrayList<MMObjectNode>();
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         try {
@@ -146,7 +146,7 @@ public class Controller {
         }
         if (b!=null) {
 
-            Iterator steps=null;
+            Iterator<installStep> steps=null;
             if (logid==-1) {
                 steps=b.getInstallSteps();
             } else {
@@ -156,7 +156,7 @@ public class Controller {
             // create a result list
 
             while (steps.hasNext()) {
-                installStep step=(installStep)steps.next();
+                installStep step=steps.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("userfeedback",step.getUserFeedBack());
                 virtual.setValue("timestamp",step.getTimeStamp());
@@ -180,8 +180,8 @@ public class Controller {
 
 
 
-    public List havePackageLog(String id,String wv,String wp) {
-            List list = new ArrayList();
+    public List<MMObjectNode> havePackageLog(String id,String wv,String wp) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
              MMObjectNode virtual = builder.getNewNode("admin");
 
@@ -194,7 +194,7 @@ public class Controller {
         }
         if (p!=null) {
 
-            Iterator steps=p.getInstallSteps();
+            Iterator<installStep> steps=p.getInstallSteps();
             
             if (steps!=null) {
                 virtual.setValue("log","true");
@@ -208,8 +208,8 @@ public class Controller {
 
 
 
-    public List haveBundleLog(String id,String wv,String wb) {
-            List list = new ArrayList();
+    public List<MMObjectNode> haveBundleLog(String id,String wv,String wb) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
              MMObjectNode virtual = builder.getNewNode("admin");
@@ -222,7 +222,7 @@ public class Controller {
             b=BundleManager.getBundle(id,wv,wb);
         }
         if (b!=null) {
-            Iterator steps=b.getInstallSteps();
+            Iterator<installStep> steps=b.getInstallSteps();
             if (steps!=null) {
                 virtual.setValue("log","true");
             } else {
@@ -233,8 +233,8 @@ public class Controller {
         return list;
     }
 
-    public List getPackageInfo(String id,String wv,String wp) {
-            List list = new ArrayList();
+    public List<MMObjectNode> getPackageInfo(String id,String wv,String wp) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
              MMObjectNode virtual = builder.getNewNode("admin");
@@ -270,8 +270,8 @@ public class Controller {
     }
 
 
-    public List getPackagePeople(String id,String wv,String wp,String type) {
-            List list = new ArrayList();
+    public List<MMObjectNode> getPackagePeople(String id,String wv,String wp,String type) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 
@@ -283,10 +283,10 @@ public class Controller {
             p=PackageManager.getPackage(id,wv,wp);
         }
         if (p!=null) {
-            List people=p.getRelatedPeople(type);
+            List<Object> people=p.getRelatedPeople(type);
             if (people!=null) {
-                    for (Iterator i = people.iterator(); i.hasNext();) {
-                Person pr=(Person)i.next();
+                    for (Object object : people) {
+                Person pr=(Person)object;
                      MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name",pr.getName());
                 virtual.setValue("company",pr.getCompany());
@@ -300,8 +300,8 @@ public class Controller {
     }
 
 
-    public List getBundlePeople(String id,String wv,String wp,String type) {
-            List list = new ArrayList();
+    public List<MMObjectNode> getBundlePeople(String id,String wv,String wp,String type) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 
@@ -313,10 +313,10 @@ public class Controller {
             b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
-            List people=b.getRelatedPeople(type);
+            List<Object> people=b.getRelatedPeople(type);
             if (people!=null) {
-                    for (Iterator i = people.iterator(); i.hasNext();) {
-                Person pr=(Person)i.next();
+                    for (Object object : people) {
+                Person pr=(Person)object;
                      MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name",pr.getName());
                 virtual.setValue("company",pr.getCompany());
@@ -330,8 +330,8 @@ public class Controller {
     }
 
 
-    public List getBundleScreenshots(String id,String wv,String wp) {
-            List list = new ArrayList();
+    public List<MMObjectNode> getBundleScreenshots(String id,String wv,String wp) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         BundleInterface b=null;
@@ -342,13 +342,13 @@ public class Controller {
             b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
-            List screenshots=b.getScreenshots();
+            List<Object> screenshots=b.getScreenshots();
             if (screenshots!=null) {
-                for (Iterator i = screenshots.iterator(); i.hasNext();) {
+                for (Object object : screenshots) {
                         MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("name",i.next());
-                	virtual.setValue("file",i.next());
-                	virtual.setValue("description",i.next());
+                	virtual.setValue("name",object);
+                	virtual.setValue("file",object);
+                	virtual.setValue("description",object);
                 	list.add(virtual);
             	}
             }
@@ -357,8 +357,8 @@ public class Controller {
     }
 
 
-    public List getBundleStarturls(String id,String wv,String wp) {
-            List list = new ArrayList();
+    public List<MMObjectNode> getBundleStarturls(String id,String wv,String wp) {
+            List<MMObjectNode> list = new ArrayList<MMObjectNode>();
              VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         BundleInterface b=null;
@@ -369,13 +369,13 @@ public class Controller {
             b=BundleManager.getBundle(id,wv,wp);
         }
         if (b!=null) {
-            List starturls=b.getStarturls();
+            List<Object> starturls=b.getStarturls();
             if (starturls!=null) {
-                for (Iterator i = starturls.iterator(); i.hasNext();) {
+                for (Object object : starturls) {
                         MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("name",i.next());
-                	virtual.setValue("link",i.next());
-                	virtual.setValue("description",i.next());
+                	virtual.setValue("name",object);
+                	virtual.setValue("link",object);
+                	virtual.setValue("description",object);
                 	list.add(virtual);
             	}
             }
@@ -383,8 +383,8 @@ public class Controller {
         return list;
     }
 
-    public List getBundleInfo(String id,String wv,String wp) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getBundleInfo(String id,String wv,String wp) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         MMObjectNode virtual = builder.getNewNode("admin");
@@ -423,8 +423,8 @@ public class Controller {
 
 
 
-    public List getPackageManagerSettings() {
-                List list = new ArrayList();
+    public List<MMObjectNode> getPackageManagerSettings() {
+                List<MMObjectNode> list = new ArrayList<MMObjectNode>();
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
                 MMObjectNode virtual = builder.getNewNode("admin");
@@ -463,11 +463,10 @@ public class Controller {
     }
 
 
-    public String getRelatedPeopleString(List people,String type) {
+    public String getRelatedPeopleString(List<Person> people,String type) {
         String body="";
         if (people!=null) {
-                   for (Iterator i = people.iterator(); i.hasNext();) {
-            Person pr=(Person)i.next();
+            for (Person pr : people) {
                 if (type.equals("initiators")) {
                     body+="\t\t\t<initiator name=\""+pr.getName()+"\" company=\""+pr.getCompany()+"\" />\n";
                 } else if (type.equals("developers")) {

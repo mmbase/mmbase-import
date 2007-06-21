@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.cache;
 
 import org.mmbase.cache.Cache;
-import org.mmbase.cache.CacheManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
@@ -24,7 +23,7 @@ import java.util.*;
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
  */
-public class URLCache extends Cache {
+public class URLCache extends Cache<String,String> {
     private static int cacheSize = 4 * 1024;    // Max size of the node cache
     private static URLCache cache;
     private static Logger log = Logging.getLoggerInstance(URLCache.class);
@@ -47,12 +46,12 @@ public class URLCache extends Cache {
      * @param info user information to be cached
      * @return key to be cached
      */
-    static public String toKey(MMObjectNode mediaFragment, Map info) {
+    static public String toKey(MMObjectNode mediaFragment, Map<String, Object> info) {
         
         StringBuffer toKey = new StringBuffer("MediaFragmentNumber=").append(mediaFragment.getNumber());
-        Iterator infoItems = info.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> infoItems = info.entrySet().iterator();
         while (infoItems.hasNext()) {
-            Map.Entry entry  = (Map.Entry)infoItems.next();
+            Map.Entry<String, Object> entry  = infoItems.next();
             toKey.append(',').append(entry.getKey()).append('=').append(entry.getValue());
         }
         if (log.isDebugEnabled()) {
@@ -67,7 +66,7 @@ public class URLCache extends Cache {
      * @param result  cache result
      * @param objects the objects that can invalidate the cache
      */
-    public synchronized void put(String key, String result, Set objects) {
+    public synchronized void put(String key, String result, Set<MMObjectNode> objects) {
         cache.put(key, result);
         log.debug("Adding to cache, key="+key);
         if(objects!=null) {
@@ -110,7 +109,7 @@ public class URLCache extends Cache {
      * If an object changes it is a good idea to assume that the cache entry is invalid.
      */
     class CacheExpire {
-        private Cache objectNumber2Keys = new Cache(10000) {
+        private Cache<String, Vector<String>> objectNumber2Keys = new Cache<String, Vector<String>>(10000) {
             public String getName()        { return "Media objectnumber-to-keys cache"; }
             public String getDescription() { return "Contains information about which objects are used to create a certain cache entry."; }
         };
@@ -128,9 +127,9 @@ public class URLCache extends Cache {
          * @param obj A vector with object numbers (Strings).
          * @param key The key of the cache entry to invalidate if an object changes.
          */
-        private void put(Set obj, String key) {
-            for(Iterator objects = obj.iterator();objects.hasNext();) {
-                put((MMObjectNode)objects.next(), key);
+        private void put(Set<MMObjectNode> obj, String key) {
+            for (MMObjectNode objectNode : obj) {
+                put(objectNode, key);
             }
         }
         
@@ -143,12 +142,12 @@ public class URLCache extends Cache {
             if(node==null) {
                 return;
             }
-            Vector keyList = null;
+            Vector<String> keyList = null;
             String objectNumber = ""+node.getNumber();
             if(objectNumber2Keys.containsKey(objectNumber)) {
-                keyList = (Vector)objectNumber2Keys.get(objectNumber);
+                keyList = objectNumber2Keys.get(objectNumber);
             } else {
-                keyList = new Vector(20);
+                keyList = new Vector<String>(20);
                 objectNumber2Keys.put(objectNumber,keyList);
             }
             keyList.add(key);
@@ -160,9 +159,8 @@ public class URLCache extends Cache {
          */
         private void remove(String nodeNumber) {
             if(objectNumber2Keys.containsKey(nodeNumber)) {
-                Vector keyList = (Vector)objectNumber2Keys.get(nodeNumber);
-                for(Iterator items = keyList.iterator(); items.hasNext();) {
-                    String key = (String)items.next();
+                Vector<String> keyList = objectNumber2Keys.get(nodeNumber);
+                for (String key : keyList) {
                     cache.remove(key);
                     log.debug("Flusing key from cache, key="+key);
                 }
@@ -176,7 +174,7 @@ public class URLCache extends Cache {
      * cache entrie will be flushed.
      */
     private class Observer implements MMBaseObserver  {
-        private Set observingBuilders = new HashSet(); // the builders in which 'this' was registered already.
+        private Set<String> observingBuilders = new HashSet<String>(); // the builders in which 'this' was registered already.
         
         Observer() {
         }

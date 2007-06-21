@@ -33,11 +33,11 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.9 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.10 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
-    private static final Logger log = Logging.getLoggerInstance(ByteHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(BinaryHandler.class);
     /**
      * Constructor 
      * @param tag
@@ -76,7 +76,6 @@ public class BinaryHandler extends AbstractTypeHandler {
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
         if (MultiPart.isMultipart(tag.getPageContext())) {
-            ContextContainer cc = tag.getContextProvider().getContextContainer();
             ContextTag ct = tag.getContextTag();
             FileItem bytes = ct.getFileItem(prefix(field.getName()));
             return bytes;
@@ -89,8 +88,8 @@ public class BinaryHandler extends AbstractTypeHandler {
         Object fieldValue = getFieldValue(node, field);
 
         if (fieldValue != null) {
-            DataType dt = field.getDataType();
-            Collection col = dt.validate(fieldValue, node, field);
+            DataType<Object> dt = field.getDataType();
+            Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
             if (col.size() == 0) {
                 // do actually set the field, because some datatypes need cross-field checking
                 // also in an mm:form, you can simply commit.
@@ -112,9 +111,9 @@ public class BinaryHandler extends AbstractTypeHandler {
                     show.append(prefixError(field.getName()));
                     show.append("\" class=\"mm_check_error\">");
                     Locale locale =  tag.getLocale();
-                    Iterator i = col.iterator();
+                    Iterator<LocalizedString> i = col.iterator();
                     while (i.hasNext()) {
-                        LocalizedString error = (LocalizedString) i.next();
+                        LocalizedString error = i.next();
                         show.append("<span>");
                         Xml.XMLEscape(error.get(locale), show);
                         show.append("</span>");

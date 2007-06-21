@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.44 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: scancache.java,v 1.45 2007-06-21 15:50:21 nklasens Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -63,7 +63,7 @@ public class scancache extends Module implements scancacheInterface {
      * The key to retrieve a pool is the poolname. The value returned ia a LRUHashtable,
      * configured to hold a maximum of MAX_CACHE_POOL_SIZE entries.
      */
-    Hashtable pools = new Hashtable();
+    Hashtable<String, LRUHashtable<String, String>> pools = new Hashtable<String, LRUHashtable<String, String>>();
 
     /**
      * Contains the last date (as an <code>Integer</code>) a file was stored in a pool.
@@ -71,7 +71,7 @@ public class scancache extends Module implements scancacheInterface {
      * There is a limit to the number of values stored in this pool. This means if you have
          * more then 4 pooltypes you have to bump that value or suffer performance degredation
      */
-    LRUHashtable timepool = new LRUHashtable(MAX_CACHE_POOL_SIZE*4);
+    LRUHashtable<String,Integer> timepool = new LRUHashtable<String,Integer>(MAX_CACHE_POOL_SIZE*4);
 
     // org.mmbas StatisticsInterface stats;
 
@@ -229,15 +229,15 @@ public class scancache extends Module implements scancacheInterface {
         int now=(int)(System.currentTimeMillis()/1000);
 
         // get pool memory cache
-        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+        LRUHashtable<String, String> pool=pools.get(poolName);
         if (pool!=null) {
-            String value=(String)pool.get(key);
+            String value=pool.get(key);
             // Check expiration
             // XXX better to check value==null first...
                         if (value!=null) {
                     try {
                         // get the time from memory
-                        Integer tmp2=(Integer)timepool.get(poolName+key);
+                        Integer tmp2=timepool.get(poolName+key);
                         int then=tmp2.intValue();
                         log.debug("scancache -> file="+then+" now="+now
                                 +" now-then="+(now-then)+" interval="+interval);
@@ -268,7 +268,7 @@ public class scancache extends Module implements scancacheInterface {
             }
             if (pool==null) {
                 // create a new pool
-                pool=new LRUHashtable(MAX_CACHE_POOL_SIZE);
+                pool=new LRUHashtable<String, String>(MAX_CACHE_POOL_SIZE);
                 pools.put(poolName,pool);
             }
             pool.put(key,fileinfo.value); // store value in the memory cache
@@ -298,7 +298,7 @@ public class scancache extends Module implements scancacheInterface {
          */
         public long getLastModDate(String poolName, String key) {
                 if (timepool.containsKey(poolName+key)) {
-                        Integer tmp2=(Integer)timepool.get(poolName+key);
+                        Integer tmp2=timepool.get(poolName+key);
                         log.debug("scancache last modified in timepool " + (tmp2.intValue()));
                         return ((long)tmp2.intValue()) * 1000;
                 }
@@ -373,17 +373,17 @@ public class scancache extends Module implements scancacheInterface {
      */
     public String newput(String poolName,HttpServletResponse res, String key,String value, String mimeType) {
         if (status==false) return null;  // no caching if inactive
-        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+        LRUHashtable<String, String> pool=pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable();
+            pool=new LRUHashtable<String, String>();
             pools.put(poolName,pool);
         }
         // insert the new item and save to disk
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
             timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
-            return (String)pool.put(key,value);
+            return pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
             // new file for asis support
@@ -403,7 +403,7 @@ public class scancache extends Module implements scancacheInterface {
             saveFile(poolName,filename,body);
             // signal to start transfer of file to mirrors
             signalNetFileSrv(filename);
-            return (String)pool.put(key,value);
+            return pool.put(key,value);
         }
         log.error("newPut("+poolName+",HttpServletRequest,"+key+","+value+"): poolname("+poolName+") is not a valid cache name!");
         return null;
@@ -425,10 +425,10 @@ public class scancache extends Module implements scancacheInterface {
      */
     public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
         if (status==false) return null; // no caching when inactive
-        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+        LRUHashtable<String, String> pool=pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable();
+            pool=new LRUHashtable<String, String>();
             pools.put(poolName,pool);
         }
         log.debug("newput2("+poolName+","+key+","+value+","+cachetype+"): NEWPUT");
@@ -438,7 +438,7 @@ public class scancache extends Module implements scancacheInterface {
             saveFile(poolName,key,value);
             // also add time to timepool??
             timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
-            return (String)pool.put(key,value);
+            return pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
             // new file for asis support
@@ -457,7 +457,7 @@ public class scancache extends Module implements scancacheInterface {
             log.debug("newput2("+poolName+","+key+","+value+","+cachetype+"): NEWPUT=SAVE");
             saveFile(poolName,filename,body);
             if (cachetype!=0) signalNetFileSrv(filename);
-            return (String)pool.put(key,value);
+            return pool.put(key,value);
         }
         log.error("newput2("+poolName+","+key+","+value+","+cachetype+"): poolName("+poolName+") is not a valid cachetype!");
         return null;
@@ -473,16 +473,16 @@ public class scancache extends Module implements scancacheInterface {
      */
     public String put(String poolName, String key,String value) {
         if (status==false) return null; // no caching if inactive
-        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+        LRUHashtable<String, String> pool=pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable();
+            pool=new LRUHashtable<String, String>();
             pools.put(poolName,pool);
         }
         // got pool now insert the new item and save to disk
         saveFile(poolName,key,value);
 
-        return (String)pool.put(key,value);
+        return pool.put(key,value);
     }
 
 
@@ -617,7 +617,7 @@ public class scancache extends Module implements scancacheInterface {
     public void remove(String poolName, String key) {
             File file = new File(cachepath + poolName + key);
             file.delete();
-            LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+            LRUHashtable pool=pools.get(poolName);
             if (pool!=null) pool.remove(key);
             timepool.remove(poolName + key);
     }

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.14 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.15 2007-06-21 15:50:23 nklasens Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -33,7 +33,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final BlockingQueue nodesToSpawn;
+    private final BlockingQueue<byte[]> nodesToSpawn;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -54,7 +54,7 @@ public class ChangesReceiver implements Runnable {
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue nodesToSpawn)  throws UnknownHostException {
+    ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue<byte[]> nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;

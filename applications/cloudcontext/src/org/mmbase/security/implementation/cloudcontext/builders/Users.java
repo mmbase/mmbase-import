@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.53 2007-06-20 14:38:09 michiel Exp $
+ * @version $Id: Users.java,v 1.54 2007-06-21 15:50:20 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -53,12 +53,12 @@ public class Users extends MMObjectBuilder {
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
 
-    protected static Cache rankCache = new Cache(20) {
+    protected static Cache<Integer,Rank> rankCache = new Cache<Integer,Rank>(20) {
             public String getName()        { return "CCS:SecurityRank"; }
             public String getDescription() { return "Caches the rank of users. User node --> Rank"; }
         };
 
-    protected static Cache userCache = new Cache(20) {
+    protected static Cache<String,MMObjectNode> userCache = new Cache<String,MMObjectNode>(20) {
             public String getName()        { return "CCS:SecurityUser"; }
             public String getDescription() { return "Caches the users. UserName --> User Node"; }
         };
@@ -73,7 +73,7 @@ public class Users extends MMObjectBuilder {
             }
     };
 
-    protected Function<Rank> rankFunction = new NodeFunction<Rank>("rank", Parameter.EMPTY, new ReturnType<Rank>(Rank.class, "Rank")) {
+    protected Function<Rank> rankFunction = new NodeFunction<Rank>("rank", Parameter.emptyArray(), new ReturnType<Rank>(Rank.class, "Rank")) {
             {
                 setDescription("Returns the rank of an mmbaseusers node");
             }
@@ -136,7 +136,7 @@ public class Users extends MMObjectBuilder {
         Integer userNumber = new Integer(userNode.getNumber());
         Rank rank;
         if (userNode != null) {
-            rank = (Rank) rankCache.get(userNumber);
+            rank = rankCache.get(userNumber);
         } else {
             log.warn("No node given, returning Anonymous.");
             return Rank.ANONYMOUS;
@@ -146,7 +146,7 @@ public class Users extends MMObjectBuilder {
             if (userNode instanceof Authenticate.AdminVirtualNode) {
                 rank = Rank.ADMIN;
             } else {
-                List ranks =  userNode.getRelatedNodes("mmbaseranks", RelationStep.DIRECTIONS_DESTINATION);
+                List<MMObjectNode> ranks =  userNode.getRelatedNodes("mmbaseranks", RelationStep.DIRECTIONS_DESTINATION);
                 if (ranks.size() > 1) {
                     log.warn("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
@@ -154,10 +154,10 @@ public class Users extends MMObjectBuilder {
                 if (ranks.size() == 0) {
                     log.debug("No ranks related to this user");
                 } else {
-                    Iterator i = ranks.iterator();
+                    Iterator<MMObjectNode> i = ranks.iterator();
                     while (i.hasNext()) {
                         Ranks rankBuilder = Ranks.getBuilder();
-                        Rank r = rankBuilder.getRank((MMObjectNode) i.next());
+                        Rank r = rankBuilder.getRank(i.next());
                         if (r.compareTo(rank) > 0) rank = r; // choose the highest  one
                     }
                 }
@@ -272,7 +272,7 @@ public class Users extends MMObjectBuilder {
         if (!userNameCaseSensitive) {
             userName = userName.toLowerCase();
         }
-        MMObjectNode user = (MMObjectNode) userCache.get(userName);
+        MMObjectNode user = userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
             StepField sf        = nsq.getField(getField("username"));
@@ -282,9 +282,9 @@ public class Users extends MMObjectBuilder {
             nsq.addSortOrder(nsq.getField(getField("number")));
             SearchQueryException e = null;
             try {
-                Iterator i = getNodes(nsq).iterator();
+                Iterator<MMObjectNode> i = getNodes(nsq).iterator();
                 if(i.hasNext()) {
-                    user = (MMObjectNode) i.next();
+                    user = i.next();
                 }
 
                 if(i.hasNext()) {
@@ -336,12 +336,12 @@ public class Users extends MMObjectBuilder {
         // sometimes, I quite hate the 'core version' query-framework.
 
         try {
-            List result = mmb.getClusterBuilder().getClusterNodes(query);
+            List<MMObjectNode> result = mmb.getClusterBuilder().getClusterNodes(query);
             if (log.isDebugEnabled()) {
                 log.debug("Executing " + query + " --> " + result);
             }
             if (result.size() > 0) {
-                return ((MMObjectNode) result.get(0)).getNodeValue("mmbaseusers");
+                return result.get(0).getNodeValue("mmbaseusers");
             } else {
                 return null;
             }
@@ -362,9 +362,9 @@ public class Users extends MMObjectBuilder {
         Constraint cons = new BasicFieldValueConstraint(sf, userName);
         nsq.setConstraint(cons);
         try {
-            Iterator i = getNodes(nsq).iterator();
+            Iterator<MMObjectNode> i = getNodes(nsq).iterator();
             while(i.hasNext()) {
-                MMObjectNode n = (MMObjectNode) i.next();
+                MMObjectNode n = i.next();
                 if (n.getNumber() == node.getNumber()) continue;
                 removeNode(node);
                 throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
@@ -459,10 +459,11 @@ public class Users extends MMObjectBuilder {
         return true;
     }
 
-   protected Object executeFunction(MMObjectNode node, String function, List args) {
+   protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            List<Object> empty = new ArrayList<Object>();
+            java.util.Map<String,String> info = 
+                (java.util.Map<String,String>) super.executeFunction(node, function, empty);
             info.put("gui", "(status..) Gui representation of this object.");
                  if (args == null || args.size() == 0) {
                 return info;
@@ -526,9 +527,9 @@ public class Users extends MMObjectBuilder {
     protected void invalidateCaches(int nodeNumber) {
         rankCache.remove(new Integer(nodeNumber));
 
-        Iterator i =  userCache.entrySet().iterator();
+        Iterator<Map.Entry<String,MMObjectNode>> i =  userCache.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<String,MMObjectNode> entry = i.next();
             Object value = entry.getValue();
             if (value == null) {
                 i.remove();
@@ -553,15 +554,15 @@ public class Users extends MMObjectBuilder {
             rankCache.remove(Integer.valueOf(number));
 
             MMObjectNode node = getNode(number);
-            Map users = new HashMap();
-            Iterator i = userCache.entrySet().iterator();
+            Map<String,MMObjectNode> users = new HashMap<String,MMObjectNode>();
+            Iterator<Map.Entry<String,MMObjectNode>> i = userCache.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Object value = entry.getValue();
+                Map.Entry<String,MMObjectNode> entry = i.next();
+                MMObjectNode value = entry.getValue();
                 if (value == null) {
                     i.remove();
                 } else {
-                    MMObjectNode cacheNode = (MMObjectNode) value;
+                    MMObjectNode cacheNode = value;
                     if (cacheNode.getNumber() == node.getNumber()) {
                         users.put(entry.getKey(), node);
                         i.remove();

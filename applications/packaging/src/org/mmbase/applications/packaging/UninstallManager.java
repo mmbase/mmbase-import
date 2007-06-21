@@ -13,6 +13,7 @@ package org.mmbase.applications.packaging;
 import java.util.Iterator;
 
 import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.installhandlers.uninstallThread;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.util.logging.Logger;
@@ -139,7 +140,7 @@ public class UninstallManager {
         return bnd;
     }
 
-    public static Iterator getUninstallSteps() {
+    public static Iterator<installStep> getUninstallSteps() {
         return pkg.getInstallSteps();
     }
 }

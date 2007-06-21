@@ -157,22 +157,22 @@ public class DataTypesTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         StringBuffer err = new StringBuffer();
-        for (int i = 0; i < cases.length; i++) {
-            Object[] kase = (Object[]) cases[i];
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             Object[] invalidValues = (Object[]) kase[2];
-            for (int j = 0; j < validValues.length; j++) {
-                field.getDataType().validate(validValues[j]); // should not give exception
-                Collection errors = field.getDataType().validate(validValues[j], null, field);
+            for (Object element2 : validValues) {
+                field.getDataType().validate(element2); // should not give exception
+                Collection<LocalizedString> errors = field.getDataType().validate(element2, null, field);
                 if(errors.size() != 0) {
-                    err.append("V Field " + field.getName() + " value '" + (validValues[j] == null ? "" : validValues[j].getClass().getName() + " ") +  Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
+                    err.append("V Field " + field.getName() + " value '" + (element2 == null ? "" : element2.getClass().getName() + " ") +  Casting.toString(element2) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
                 }
             }
-            for (int j = 0; j < invalidValues.length; j++) {
-                field.getDataType().validate(invalidValues[j]); // should not give exception
-                if (field.getDataType().validate(invalidValues[j], null, field).size() == 0) {
-                    err.append("I Field " + field.getName() + " value '" + (invalidValues[j] == null ? "" : invalidValues[j].getClass().getName() + " ") +  Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
+            for (Object element2 : invalidValues) {
+                field.getDataType().validate(element2); // should not give exception
+                if (field.getDataType().validate(element2, null, field).size() == 0) {
+                    err.append("I Field " + field.getName() + " value '" + (element2 == null ? "" : element2.getClass().getName() + " ") +  Casting.toString(element2) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
 
 
@@ -187,7 +187,7 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("boolean_string");
         DataType dt = field.getDataType();
-        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        LocalizedEntryListFactory<Object> fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof StringDataType);
         assertEquals(fact.size(), 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
@@ -199,7 +199,7 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("integer_boolean");
         DataType dt = field.getDataType();
-        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        LocalizedEntryListFactory<Object> fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof BooleanDataType);
         assertEquals(fact.size(), 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
@@ -211,7 +211,7 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("string_boolean");
         DataType dt = field.getDataType();
-        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        LocalizedEntryListFactory<Object> fact = dt.getEnumerationFactory();
         assertFalse(fact.isEmpty());
         assertTrue(dt instanceof BooleanDataType);
         assertEquals(fact.size(), 2);
@@ -229,7 +229,7 @@ public class DataTypesTest extends BridgeTest {
         Field field = nodeManager.getField("typedef");
         DataType dt = field.getDataType();
         assertNotNull(dt.getEnumerationValues(null, field.getNodeManager().getCloud(), null, field));
-        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        LocalizedEntryListFactory<Object> fact = dt.getEnumerationFactory();
         assertFalse(fact.isEmpty());
         assertTrue(dt instanceof NodeDataType);
         int numberOfTypes = cloud.getList(null, "typedef", null, null, null, null, null, false).size();
@@ -271,8 +271,8 @@ public class DataTypesTest extends BridgeTest {
     public void testDefaultValuesUncommited() {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
-        for (int i = 0; i < cases.length; i++) {
-            Object[] kase = (Object[]) cases[i];
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
@@ -287,8 +287,8 @@ public class DataTypesTest extends BridgeTest {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
         commit(newNode);
-        for (int i = 0; i < cases.length; i++) {
-            Object[] kase = (Object[]) cases[i];
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
@@ -301,8 +301,8 @@ public class DataTypesTest extends BridgeTest {
     public void testValidValuesCommit() {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
-        for (int i = 0; i < cases.length; i++) {
-            Object[] kase = (Object[]) cases[i];
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             for (int j = 0; j < validValues.length; j++) {
@@ -405,14 +405,14 @@ public class DataTypesTest extends BridgeTest {
         FieldIterator iterator = nodeManager.getFields(NodeManager.ORDER_EDIT).fieldIterator();
         while(iterator.hasNext()) {
             Field field = iterator.nextField();
-            DataType dt = (BasicDataType) field.getDataType().clone();
+            DataType dt = (DataType) field.getDataType().clone();
             dt.setRequired(true);
             dt.finish("bla");
 
             assertTrue(dt.isRequired());
             assertEquals(dt.getRequiredRestriction().getValue(), Boolean.TRUE);
             assertFalse(dt.getRequiredRestriction().valid(null, null, null));
-            Collection errors = dt.validate(null);
+            Collection<LocalizedString> errors = dt.validate(null);
             assertTrue("According to " + dt + " null should be invalid, but it was", errors.size() > 0);
         }
     }

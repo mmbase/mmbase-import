@@ -15,8 +15,6 @@ import org.mmbase.security.SecurityException;
 import java.util.*;
 
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-
 import org.xml.sax.InputSource;
 
 import javax.xml.xpath.*;
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.25 2007-04-09 19:09:51 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.26 2007-06-21 15:50:23 nklasens Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {

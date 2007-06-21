@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @application Mail
  * @author Rob Vermeulen
- * @version $Id: Mail.java,v 1.1 2007-01-08 12:01:59 michiel Exp $
+ * @version $Id: Mail.java,v 1.2 2007-06-21 15:50:24 nklasens Exp $
  */
 public class Mail {
 
@@ -31,7 +31,7 @@ public class Mail {
     /**
      * All the mail headers defined for this mail object.
      */
-    public Hashtable headers = new Hashtable();
+    public Hashtable<String, String> headers = new Hashtable<String, String>();
 
     /**
      * The recipient of the mail
@@ -139,7 +139,7 @@ public class Mail {
      * @return the old value of the header (<Code>null</code> if not earlier defined)
      */
     public String setHeader(String header,String value) {
-        return (String)headers.put(header,value);
+        return headers.put(header,value);
     }
 
     /**
@@ -147,7 +147,7 @@ public class Mail {
      * @return the value of the header (<Code>null</code> if not defined)
      */
     public String getHeader(String header) {
-        return (String)headers.get(header);
+        return headers.get(header);
     }
 
     /**

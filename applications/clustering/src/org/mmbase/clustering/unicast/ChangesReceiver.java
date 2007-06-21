@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.8 2006-10-16 14:48:45 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.9 2007-06-21 15:50:25 nklasens Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -34,7 +34,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final BlockingQueue nodesToSpawn;
+    private final BlockingQueue<byte[]> nodesToSpawn;
 
     private final ServerSocket serverSocket;
 
@@ -43,7 +43,7 @@ public class ChangesReceiver implements Runnable {
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
      */
-    ChangesReceiver(int unicastPort, BlockingQueue nodesToSpawn) throws IOException {
+    ChangesReceiver(int unicastPort, BlockingQueue<byte[]> nodesToSpawn) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
         SocketAddress address = new InetSocketAddress(MMBase.getMMBase().getHost(), unicastPort);

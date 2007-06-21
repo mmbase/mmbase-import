@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.46 2007-05-23 13:14:36 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.47 2007-06-21 15:50:22 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -349,7 +349,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         public Map.Entry<C, String> next() {
                             Map.Entry<C, String> res;
                             if (subIterator != null) {
-                                res = (Map.Entry) subIterator.next();
+                                res = subIterator.next();
                                 Object key = res.getKey();
                                 if (key != null && key instanceof SortedBundle.ValueWrapper) {
                                     res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());

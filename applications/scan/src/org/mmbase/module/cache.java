@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: pierre $
- * @version $Id: cache.java,v 1.15 2006-11-24 14:22:22 pierre Exp $
+ * @author  $Author: nklasens $
+ * @version $Id: cache.java,v 1.16 2007-06-21 15:50:21 nklasens Exp $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -57,7 +57,7 @@ public class cache extends Module implements cacheInterface {
      * @javadoc
      * @scope private
      */
-    LRUHashtable lines = new LRUHashtable( MaxLines );
+    LRUHashtable<Object, Object> lines = new LRUHashtable<Object, Object>( MaxLines );
 
     /**
      * Simple file cache system that can be used by any servlet
@@ -74,7 +74,7 @@ public class cache extends Module implements cacheInterface {
      */
     public void reload() {
         readParams();
-        if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
+        if( MaxLines > 0 ) lines = new LRUHashtable<Object, Object>( MaxLines );
     }
 
     /** @duplicate */
@@ -85,7 +85,7 @@ public class cache extends Module implements cacheInterface {
      * Old interface to the inner table, will be removed soon
      * @deprecated-now direct access to lines seems undesirable and is implementation-dependent
      */
-    public LRUHashtable lines() {
+    public LRUHashtable<Object, Object> lines() {
         return lines;
     }
 
@@ -150,7 +150,7 @@ public class cache extends Module implements cacheInterface {
             state_up=true;
         }
         readParams();
-        if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
+        if( MaxLines > 0 ) lines = new LRUHashtable<Object, Object>( MaxLines );
     }
 
     /**
@@ -172,7 +172,7 @@ public class cache extends Module implements cacheInterface {
         setState("Number cachelines",""+lines.size());
         cacheline line;
         int size=0;
-        for (Enumeration t=lines.elements();t.hasMoreElements();) {
+        for (Enumeration<Object> t=lines.elements();t.hasMoreElements();) {
             line=(cacheline)t.nextElement();
             size+=line.filesize;
         }

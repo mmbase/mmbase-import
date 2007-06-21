@@ -60,16 +60,16 @@ public class ShareFileWriter {
      */
     private static String writeSharedPackages() {
         String result = "\t<packages>\n";
-        Iterator e = ShareManager.getSharedPackages();
+        Iterator<PackageContainer> e = ShareManager.getSharedPackages();
         while (e.hasNext()) {
-            PackageContainer p = (PackageContainer) e.next();
+            PackageContainer p = e.next();
             ShareInfo shareinfo = p.getShareInfo();
             result += "\t\t<package name=\"" + p.getName() + "\" maintainer=\"" + p.getMaintainer() + "\" ";
             result += "type=\"" + p.getType() + "\" ";
             result += "versions=\"best\" ";
             result += "active=\"" + shareinfo.isActive() + "\" ";
             result += ">\n";
-            Iterator e2 = shareinfo.getShareUsers();
+            Iterator<Object> e2 = shareinfo.getShareUsers();
             while (e2.hasNext()) {
                 ShareUser su = (ShareUser) e2.next();
                 result += "\t\t\t<login user=\"" + su.getName() + "\" />\n";
@@ -93,16 +93,16 @@ public class ShareFileWriter {
      */
     private static String writeSharedBundles() {
         String result = "\t<bundles>\n";
-        Iterator e = ShareManager.getSharedBundles();
+        Iterator<BundleContainer> e = ShareManager.getSharedBundles();
         while (e.hasNext()) {
-            BundleContainer b = (BundleContainer) e.next();
+            BundleContainer b = e.next();
             ShareInfo shareinfo = b.getShareInfo();
             result += "\t\t<bundle name=\"" + b.getName() + "\" maintainer=\"" + b.getMaintainer() + "\" ";
             result += "type=\"" + b.getType() + "\" ";
             result += "versions=\"best\" ";
             result += "active=\"" + shareinfo.isActive() + "\" ";
             result += ">\n";
-            Iterator e2 = shareinfo.getShareUsers();
+            Iterator<Object> e2 = shareinfo.getShareUsers();
             while (e2.hasNext()) {
                 ShareUser su = (ShareUser) e2.next();
                 result += "\t\t\t<login user=\"" + su.getName() + "\" />\n";
@@ -126,9 +126,9 @@ public class ShareFileWriter {
      */
     private static String writeUsers() {
         String result = "\t<users>\n";
-        Iterator e = ShareManager.getShareUsers();
+        Iterator<ShareUser> e = ShareManager.getShareUsers();
         while (e.hasNext()) {
-            ShareUser su = (ShareUser) e.next();
+            ShareUser su = e.next();
             result += "\t\t<user name=\"" + su.getName() + "\" password=\"" + su.getPassword() + "\" ";
             if (su.getMethod() != null) {
                 result += "method=\"" + su.getMethod() + "\" ";
@@ -150,11 +150,11 @@ public class ShareFileWriter {
      */
     private static String writeProvidingPaths() {
         String result = "\t<providingpaths>\n";
-        HashMap has = ShareManager.getProvidingPaths();
-        Iterator e = has.keySet().iterator();
+        HashMap<String, String> has = ShareManager.getProvidingPaths();
+        Iterator<String> e = has.keySet().iterator();
         while (e.hasNext()) {
-            String key = (String) e.next();
-            String path = (String) has.get(key);
+            String key = e.next();
+            String path = has.get(key);
             result += "\t\t<providingpath method=\"" + key + "\" path=\"" + path + "\" />\n";
         }
         result += "\t</providingpaths>\n";
@@ -169,13 +169,13 @@ public class ShareFileWriter {
      */
     private static String writeGroups() {
         String result = "\t<groups>\n";
-        Iterator e = ShareManager.getShareGroups();
+        Iterator<ShareGroup> e = ShareManager.getShareGroups();
         while (e.hasNext()) {
-            ShareGroup sg = (ShareGroup) e.next();
+            ShareGroup sg = e.next();
             result += "\t\t<group name=\"" + sg.getName() + "\">\n";
-            Iterator e2 = sg.getMembers();
+            Iterator<ShareUser> e2 = sg.getMembers();
             while (e2.hasNext()) {
-                ShareUser su = (ShareUser) e2.next();
+                ShareUser su = e2.next();
                 result += "\t\t\t<member user=\"" + su.getName() + "\" />\n";
             }
             result += "\t\t</group>\n";

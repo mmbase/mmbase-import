@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.29 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: UtilReader.java,v 1.30 2007-06-21 15:50:22 nklasens Exp $
  */
 public class UtilReader {
 
@@ -100,7 +100,8 @@ public class UtilReader {
         }
     }
 
-    private final Map<String, Object> properties = new HashMap<String, Object>();
+    private final Map<String, String> properties = new HashMap<String, String>();
+    private final Map<String,Collection<Map.Entry<String,String>>> maps = new HashMap<String, Collection<Map.Entry<String,String>>>();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -158,10 +159,18 @@ public class UtilReader {
     /**
      * Get the properties of this utility.
      */
-    public PropertiesMap<Object> getProperties() {
-        return new PropertiesMap<Object>(properties);
+    public PropertiesMap<String> getProperties() {
+        return new PropertiesMap<String>(properties);
     }
 
+    /**
+     * Get the properties of this utility.
+     */
+    public PropertiesMap<Collection<Map.Entry<String,String>>> getMaps() {
+        return new PropertiesMap<Collection<Map.Entry<String,String>>>(maps);
+    }
+
+    
     /**
      * Reports whether the configured resource (in the constructor) is actually backed. If not,
      * getProperties will certainly return an empty Map.
@@ -177,6 +186,7 @@ public class UtilReader {
 
     protected void readProperties(String s) {
         properties.clear();
+        maps.clear();
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
         List<URL> configList = configLoader.getResourceList(s);
@@ -198,7 +208,7 @@ public class UtilReader {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
-                            Collection<Map.Entry<String, Object>> entryList = new ArrayList<Map.Entry<String, Object>>();
+                            Collection<Map.Entry<String,String>> entryList = new ArrayList<Map.Entry<String,String>>();
 
                             for (Element entry : reader.getChildElements(p,"entry")) {
                                 String key = null;
@@ -212,13 +222,13 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null && value != null) {
-                                    entryList.add(new Entry<String, Object>(key, value));
+                                    entryList.add(new Entry<String,String>(key, value));
                                 }
                             }
-                            if (properties.containsKey(name)) {
+                            if (maps.containsKey(name)) {
                                 log.service("Property '" + name + "'(" + entryList + "') of " + url + " is shadowed");
                             } else {
-                                properties.put(name, entryList);
+                                maps.put(name, entryList);
                             }
                         } else {
                             String value = reader.getElementValue(p);

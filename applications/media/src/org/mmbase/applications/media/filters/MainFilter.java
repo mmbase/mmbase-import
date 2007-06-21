@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
@@ -54,7 +55,7 @@ public class MainFilter {
         }
     };
 
-    private List filters = new ArrayList();
+    private List<Filter> filters = new ArrayList<Filter>();
 
     /**
      * Construct the MainFilter
@@ -100,7 +101,7 @@ public class MainFilter {
             String  clazz        = reader.getElementValue(chainElement);
             String  elementId    = chainElement.getAttribute(ID_ATT);
             try {
-                Class newclass = Class.forName(clazz);
+                Class<?> newclass = Class.forName(clazz);
                 Filter filter = (Filter) newclass.newInstance();
                 if (filter instanceof Sorter) {
                     chainComp.add((Sorter) filter);
@@ -143,10 +144,10 @@ public class MainFilter {
      * Perform the actual filter task
      */
 
-    public List filter(List urls) {
-        Iterator i = filters.iterator();
+    public List<URLComposer> filter(List<URLComposer> urls) {
+        Iterator<Filter> i = filters.iterator();
         while (i.hasNext()) {
-            Filter filter = (Filter) i.next();
+            Filter filter = i.next();
             if (log.isDebugEnabled()) {
                 log.debug("Using filter " + filter);
                 log.debug("before: " + urls);
@@ -168,7 +169,7 @@ public class MainFilter {
     // ====================================================================================
     // Test-code
 
-    private static void addTestData(Collection c) {
+    private static void addTestData(Collection<String> c) {
         c.add("hoi");
         c.add("hallo");
         c.add("heeej");
@@ -183,12 +184,12 @@ public class MainFilter {
         c.add("komop");
         c.add("1234");
     }
-    private static class TestComparator implements Comparator {
+    private static class TestComparator implements Comparator<String> {
         private int i;
         TestComparator(int i) {
             this.i = i;
         }
-        public int compare(Object o1, Object o2) {
+        public int compare(String o1, String o2) {
             return o1.hashCode() - o2.hashCode();
         }
 
@@ -198,20 +199,20 @@ public class MainFilter {
         // what is quicker: sorting a list, or creating a new sortedset:
         final int ITERATIONS = 200000;
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         addTestData(list);
         long start = System.currentTimeMillis();
         for (int i = 0; i < ITERATIONS; i++) {
-            Comparator c = new TestComparator(i);
+            Comparator<String> c = new TestComparator(i);
             Collections.sort(list, c);
         }
         log.debug("list duration: " + (System.currentTimeMillis() - start));
         log.debug(list);
-        SortedSet  sortedSet   = new TreeSet();
+        SortedSet<String>  sortedSet   = new TreeSet<String>();
         addTestData(sortedSet);
         start = System.currentTimeMillis();
         for (int i = 0; i < ITERATIONS; i++) {
-            SortedSet s = new TreeSet(new TestComparator(i));
+            SortedSet<String> s = new TreeSet<String>(new TestComparator(i));
             s.addAll(sortedSet);
             sortedSet = s;
         }

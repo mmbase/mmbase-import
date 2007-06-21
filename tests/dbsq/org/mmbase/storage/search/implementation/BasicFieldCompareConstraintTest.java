@@ -1,15 +1,16 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
+
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldCompareConstraintTest extends TestCase {
     
@@ -35,8 +36,8 @@ public class BasicFieldCompareConstraintTest extends TestCase {
     /** Builder example. */
     private MMObjectBuilder builder = null;
     
-    /** FieldDefs example. */
-    private FieldDefs fieldDefs = null;
+    /** CoreField example. */
+    private CoreField CoreField = null;
     
     public BasicFieldCompareConstraintTest(java.lang.String testName) {
         super(testName);
@@ -56,13 +57,13 @@ public class BasicFieldCompareConstraintTest extends TestCase {
         Step step = new BasicStep(builder);
         
         // Create instance 1 (string field).
-        fieldDefs = builder.getField(FIELD_NAME1);
-        field1 = new BasicStepField(step, fieldDefs);
+        CoreField = builder.getField(FIELD_NAME1);
+        field1 = new BasicStepField(step, CoreField);
         instance1 = new BasicFieldCompareConstraint(field1);
         
         // Create instance 2 (integer field).
-        fieldDefs = builder.getField(FIELD_NAME2);
-        field2 = new BasicStepField(step, fieldDefs);
+        CoreField = builder.getField(FIELD_NAME2);
+        field2 = new BasicStepField(step, CoreField);
         instance2 = new BasicFieldCompareConstraint(field2);        
     }
     

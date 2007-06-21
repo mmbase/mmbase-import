@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.8 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.9 2007-06-21 15:50:20 nklasens Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -62,8 +62,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
 
     private Constraint addConstraint(Query query, int op, List<Constraint> constraints) throws JspTagException {
         Constraint newConstraint = null;
-        for (Iterator<Constraint> i = constraints.iterator(); i.hasNext();) {
-            Constraint constraint = i.next();
+        for (Constraint constraint : constraints) {
             if (newConstraint == null) {
                 newConstraint = constraint;
             } else {

@@ -9,7 +9,8 @@ package org.mmbase.applications.packaging.projects.creators;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.projects.*;
 
 /**
  * Interface for all the creators
@@ -77,7 +78,7 @@ public interface CreatorInterface {
      *
      * @return    The packageSteps value
      */
-    public Iterator getPackageSteps();
+    public Iterator<packageStep> getPackageSteps();
 
 
     /**
@@ -86,7 +87,7 @@ public interface CreatorInterface {
      * @param  logid  Description of the Parameter
      * @return        The packageSteps value
      */
-    public Iterator getPackageSteps(int logid);
+    public Iterator<packageStep> getPackageSteps(int logid);
 
 
     /**
@@ -216,7 +217,7 @@ public interface CreatorInterface {
      * @param  target  Description of the Parameter
      * @return         The relatedPeople value
      */
-    public ArrayList getRelatedPeople(String type, Target target);
+    public ArrayList<Person> getRelatedPeople(String type, Target target);
 
 
     /**
@@ -252,7 +253,7 @@ public interface CreatorInterface {
      * @param  target  Description of the Parameter
      * @return         The includedPackages value
      */
-    public ArrayList getIncludedPackages(Target target);
+    public ArrayList<IncludedPackage> getIncludedPackages(Target target);
 
 
     /**
@@ -478,7 +479,7 @@ public interface CreatorInterface {
      * @param  target  Description of the Parameter
      * @return         The packageDepends value
      */
-    public ArrayList getPackageDepends(Target target);
+    public ArrayList<PackageDepend> getPackageDepends(Target target);
 
 
     /**

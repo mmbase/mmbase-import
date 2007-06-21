@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.9 2006-07-06 11:40:48 michiel Exp $
+ * @version $Id: Multicast.java,v 1.10 2007-06-21 15:50:25 nklasens Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -106,17 +106,17 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    protected synchronized void readConfiguration(Map configuration) {
+    protected synchronized void readConfiguration(Map<String,String> configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = (String) configuration.get("channelproperties");
+        String tmp = configuration.get("channelproperties");
         if (tmp != null && !tmp.equals("")) {
             channelProperties = tmp;
         } else {
             log.error("No channel properties found");
         }
 
-        tmp = (String) configuration.get("channelname");
+        tmp = configuration.get("channelname");
         if (tmp != null && !tmp.equals("")) {
             channelName = tmp;
         }

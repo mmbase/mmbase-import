@@ -27,7 +27,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.4 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
  */
 public class ExtendedDocumentReader extends XMLBasicReader {
 
@@ -63,7 +63,7 @@ public class ExtendedDocumentReader extends XMLBasicReader {
         return DocumentReader.getDocumentBuilder(validating, handler, resolver);
     }
 
-    public static DocumentBuilder getDocumentBuilder(Class refer) {
+    public static DocumentBuilder getDocumentBuilder(Class<ExtendedDocumentReader> refer) {
         return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
     }
 }

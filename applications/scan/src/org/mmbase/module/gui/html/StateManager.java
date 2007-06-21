@@ -28,7 +28,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.18 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: StateManager.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -46,7 +46,7 @@ public class StateManager implements CommandHandlerInterface {
      * Each user has an editstate, stored in the statemanager.
      * @scope private
      */
-    Hashtable editStates; // HashTable with editstates indexed by usernames
+    Hashtable<String, EditState> editStates; // HashTable with editstates indexed by usernames
 
     /**
      * Initialises the StateManager, by creating a new (empty) map of editstates.
@@ -54,7 +54,7 @@ public class StateManager implements CommandHandlerInterface {
      */
     public StateManager(MMBase mmBase) {
         this.mmBase = mmBase;
-        editStates = new Hashtable();
+        editStates = new Hashtable<String, EditState>();
     }
 
     /**
@@ -72,7 +72,7 @@ public class StateManager implements CommandHandlerInterface {
      * @return the EditState objevt associated with this user
      */
     public EditState getEditState(String user) {
-        EditState result = (EditState)editStates.get(user);
+        EditState result = editStates.get(user);
         if (result == null) {
             result = new EditState(user,mmBase);
             editStates.put(user, result);
@@ -288,11 +288,11 @@ public class StateManager implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
+    String createSelectionQuery(Hashtable<String, Object> skeys,MMObjectBuilder bul) {
         String where="MMNODE ",key,val;
         String name=bul.getTableName();
-            for (Enumeration h=skeys.keys();h.hasMoreElements();) {
-                key=(String)h.nextElement();
+            for (Enumeration<String> h=skeys.keys();h.hasMoreElements();) {
+                key=h.nextElement();
                 val=(String)skeys.get(key);
                     if (val!=null && !val.equals("")) {
                     // val to lower for search
@@ -374,7 +374,6 @@ public class StateManager implements CommandHandlerInterface {
      * @javadoc
      */
     public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
-        String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
 
@@ -432,11 +431,11 @@ public class StateManager implements CommandHandlerInterface {
      */
     public Vector getOpenBuilders(EditState state,StringTagger args) {
         Vector results=new Vector();
-        Vector nodes=state.getEditStates();
+        Vector<EditStateNode> nodes=state.getEditStates();
         EditStateNode node;
         MMObjectNode curnode=state.getEditNode(); // problem
-        for (Enumeration h=nodes.elements();h.hasMoreElements();) {
-            node=(EditStateNode)h.nextElement();
+        for (Enumeration<EditStateNode> h=nodes.elements();h.hasMoreElements();) {
+            node=h.nextElement();
             results.addElement(node.getDutchBuilderName());
             if (curnode==node.getEditNode()) {
                 results.addElement("a");
@@ -457,7 +456,7 @@ public class StateManager implements CommandHandlerInterface {
     public EditState getState(String user) {
         EditState result;
 
-        result = (EditState)editStates.get(user);
+        result = editStates.get(user);
         if (result == null) result = new EditState(user,mmBase);
 
         return result;

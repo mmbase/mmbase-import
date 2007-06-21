@@ -12,7 +12,6 @@ package org.mmbase.util;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.w3c.dom.Element;
 
@@ -31,14 +30,14 @@ import org.w3c.dom.Element;
  * @application SCAN
  * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.13 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.14 2007-06-21 15:50:20 nklasens Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 
     Hashtable languageList; // Hashtable from languagecode to Hashtables with dictionaries
 
     String languagecode;  // code for language, e.g. 'nl'
-    Hashtable dictionary; // dictionary of mmbase term identifiers to translations in language
+    Hashtable<String, String> dictionary; // dictionary of mmbase term identifiers to translations in language
 
 
     public XMLMMLanguageReader(String filename) {
@@ -55,13 +54,13 @@ public class XMLMMLanguageReader extends XMLBasicReader {
      *
      */
     protected void generateFromDOM() {
-        dictionary = new Hashtable();
+        dictionary = new Hashtable<String, String>();
         Element e = document.getDocumentElement();
         languagecode = getElementAttributeValue(e,"xml:lang");
         Element d = getElementByPath("mmlanguage.dictionary");
 
-        for (Iterator iter = getChildElements(d).iterator(); iter.hasNext();) {
-            Element a = (Element) iter.next();
+        for (Object element : getChildElements(d)) {
+            Element a = (Element) element;
             dictionary.put(getElementName(a),getElementValue(a));
         }
     }
@@ -76,7 +75,7 @@ public class XMLMMLanguageReader extends XMLBasicReader {
     /*
      * @return Hashtable from mmbase term identifiers to their translations in the language.
      */
-    public Hashtable getDictionary() {
+    public Hashtable<String, String> getDictionary() {
         return dictionary;
     }
 
@@ -94,10 +93,10 @@ public class XMLMMLanguageReader extends XMLBasicReader {
             //reader.generateLanguageList();
 
             System.out.println("language = "+reader.getLanguageCode());
-            Hashtable dict = reader.getDictionary();
-            Enumeration enumeration = dict.keys();
+            Hashtable<String, String> dict = reader.getDictionary();
+            Enumeration<String> enumeration = dict.keys();
             while (enumeration.hasMoreElements()) {
-                String s = (String)enumeration.nextElement();
+                String s = enumeration.nextElement();
                 System.out.println(s+" => "+dict.get(s));
             }
 

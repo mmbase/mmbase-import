@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.21 2007-05-10 11:37:54 michiel Exp $
+ * @version $Id: AbstractDove.java,v 1.22 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public abstract class AbstractDove {
@@ -263,7 +263,7 @@ public abstract class AbstractDove {
      * @param cloud the MMCI cloud to use, if applicable.
      * @param repository Repository that contains the blobs
      */
-    public abstract  void doRequest(Element in, Element out, Cloud cloud, Map repository);
+    public abstract  void doRequest(Element in, Element out, Cloud cloud, Map<String,byte[]> repository);
 
     /**
      * Handles a request running one or more RPCs.
@@ -285,7 +285,7 @@ public abstract class AbstractDove {
      * @return the element that described the response (or return value).
      *           Results of calls should be added as childs to this element.
      */
-    public Element executeRequest (Element in, Cloud cloud, Map repository) {
+    public Element executeRequest (Element in, Cloud cloud, Map<String,byte[]> repository) {
         Element out = doc.createElement(RESPONSE);
         doc.appendChild(out);
         if (in.getTagName().equals(REQUEST)) {

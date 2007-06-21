@@ -26,7 +26,7 @@ import java.util.*;
 public class ClientBitrateFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(ClientBitrateFilter.class);
     private static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".bitrates";
-    private static Map bitrateFilters = new HashMap();
+    private static Map<String, BitrateFilterInfo> bitrateFilters = new HashMap<String, BitrateFilterInfo>();
 
     public void configure(DocumentReader reader, Element element) {
         try {
@@ -44,12 +44,10 @@ public class ClientBitrateFilter implements Filter {
         }
     }
 
-    public List filter(List urlcomposers) {
-        List filteredUrlcomposers = new ArrayList();
+    public List<URLComposer> filter(List<URLComposer> urlcomposers) {
+        List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
 
-        for (Iterator urlcomposerlist = urlcomposers.iterator();urlcomposerlist.hasNext();) {
-            URLComposer urlcomposer = (URLComposer)urlcomposerlist.next();
-
+        for (URLComposer urlcomposer : urlcomposers) {
             Object bitrate = urlcomposer.getInfo().get("bitrate");
             log.debug("Client specified bitrate = " + bitrate);
 
@@ -67,7 +65,7 @@ public class ClientBitrateFilter implements Filter {
                 if(!bitrateFilters.containsKey(bitrate)) {
                     log.error("Specified bitrate keyword is invaled. biterate="+bitrate);
                 }
-                BitrateFilterInfo brfi = (BitrateFilterInfo)bitrateFilters.get(bitrate);
+                BitrateFilterInfo brfi = bitrateFilters.get(bitrate);
                 int br = urlcomposer.getSource().getIntValue("bitrate");
                 if (brfi.validate(br)) {
                     log.debug("BitrateFilter "+brfi+" fits for urlcomposer with bitrate "+br);
