@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.73 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: Node.java,v 1.74 2007-06-21 13:46:51 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -850,7 +850,7 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.8
      * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Collection getFunctions();
+    public Collection<Function<?>> getFunctions();
 
     /**
      * Returns a Fuction object.
