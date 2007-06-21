@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.32 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: NodeDataType.java,v 1.33 2007-06-21 07:32:31 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType<Node> {
@@ -83,6 +83,10 @@ public class NodeDataType extends BasicDataType<Node> {
     public MustExistRestriction getMustExistRestriction() {
         mustExistRestriction.setFixed(true);
         return mustExistRestriction;
+    }
+
+    public int getEnforceStrength() {
+        return Math.max(super.getEnforceStrength(), mustExistRestriction.getEnforceStrength());
     }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {

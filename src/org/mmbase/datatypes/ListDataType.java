@@ -19,7 +19,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.22 2007-05-08 15:18:25 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.23 2007-06-21 07:32:31 pierre Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType<List> {
@@ -76,6 +76,10 @@ public class ListDataType extends AbstractLengthDataType<List> {
      */
     public void setItemDataType(DataType value) {
         itemRestriction.setValue(value);
+    }
+
+    public int getEnforceStrength() {
+        return Math.max(super.getEnforceStrength(), itemRestriction.getEnforceStrength());
     }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {

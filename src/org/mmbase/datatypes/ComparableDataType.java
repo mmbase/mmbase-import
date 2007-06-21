@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.28 2007-05-08 15:18:25 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.29 2007-06-21 07:32:31 pierre Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
@@ -161,7 +161,10 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         maxRestriction.setValue(value);
     }
 
-
+    public int getEnforceStrength() {
+        int enforceStrength = Math.max(super.getEnforceStrength(), minRestriction.getEnforceStrength());
+        return Math.max(enforceStrength, maxRestriction.getEnforceStrength());
+    }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);

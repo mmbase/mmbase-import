@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.19 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.20 2007-06-21 07:32:31 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -463,15 +463,24 @@ public abstract class AbstractNode implements Node {
         Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
             Field field = fi.nextField();
+            // don't validate read-only (cannot be changed) or virtual fields (are not stored).
+            // Specifically, the 'number' field must not be validated, because for new nodes it does not yet
+            // point to an existing node... 
+	    // TODO: the number field should not be a NODE field
+	    // TODO: possibly virtual fields DO need validation? How about temporary fields?
             if (! field.isReadOnly() && !field.isVirtual()) {
-                // don't validate read-only fields. Users cannot have edited those.  Most noticably,
-                // the _number_ field must not be validated, because for new nodes it does not yet
-                // point to an existing node... I think the number field should not be a NODE field...
-                Object value = getValueWithoutProcess(field.getName());
-                Collection<LocalizedString> fieldErrors = field.getDataType().validate(value, this, field);
-                for (LocalizedString error : fieldErrors) {
-                    errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
-                               error.get(locale));
+		// Only change a field if the enforcestrength of the restrictions is
+		// applicable to the change.
+                int enforceStrength = field.getDataType().getEnforceStrength();
+                if ((enforceStrength > DataType.ENFORCE_ONCHANGE) || 
+		    (isChanged(field.getName()) && (enforceStrength >= DataType.ENFORCE_ONCREATE)) ||
+	            (isNew() && (enforceStrength >= DataType.ENFORCE_NEVER))) {
+                    Object value = getValueWithoutProcess(field.getName());
+                    Collection<LocalizedString> fieldErrors = field.getDataType().validate(value, this, field);
+                    for (LocalizedString error : fieldErrors) {
+                        errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
+                                   error.get(locale));
+                    }
                 }
             }
         }
