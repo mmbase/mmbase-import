@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.14 2006-08-25 14:16:52 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.14.2.1 2007-06-21 07:42:33 pierre Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -147,6 +147,13 @@
       <xsl:when test="o:field[@name='width'] &gt; $thumbwidth + 20">
         <!-- if thumb is smaller than actual image, produce a link to popup -->
         <xsl:choose>
+          <xsl:when test="$popupwidth = '-1'">
+            <xsl:apply-templates select="." mode="img">
+              <xsl:with-param name="relation" select="$relation" />
+              <xsl:with-param name="position" select="$position"  />
+              <xsl:with-param name="last"  select="$last"  />
+            </xsl:apply-templates>
+          </xsl:when>
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
             <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
