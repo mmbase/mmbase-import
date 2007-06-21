@@ -15,7 +15,7 @@
     <web-app  xmlns="http://java.sun.com/xml/ns/j2ee">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="j2ee:description" />
-      <xsl:apply-templates select="j2ee:display-param" />
+      <xsl:apply-templates select="j2ee:display-name" />
       <xsl:apply-templates select="j2ee:context-param" />
       <xsl:apply-templates select="$mergeXml/j2ee:web-app/j2ee:context-param" />
       <xsl:apply-templates select="j2ee:filter" />
