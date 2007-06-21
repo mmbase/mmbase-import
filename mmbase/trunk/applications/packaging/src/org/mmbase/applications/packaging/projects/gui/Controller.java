@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author     Daniel Ockeloen
  * @created    July 20, 2004
- * @version    $Id: Controller.java,v 1.9 2005-07-22 20:10:31 michiel Exp $
+ * @version    $Id: Controller.java,v 1.10 2007-06-21 15:50:25 nklasens Exp $
  */
 public class Controller {
 
@@ -66,15 +66,15 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The projectBundleTargets value
      */
-    public List getProjectBundleTargets(String name) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getProjectBundleTargets(String name) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Iterator targets = p.getBundleTargets();
+            Iterator<Target> targets = p.getBundleTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
             while (targets.hasNext()) {
-                Target t = (Target) targets.next();
+                Target t = targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("type", t.getType());
@@ -93,15 +93,15 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The projectPackageTargets value
      */
-    public List getProjectPackageTargets(String name) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getProjectPackageTargets(String name) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Iterator targets = p.getPackageTargets();
+            Iterator<Target> targets = p.getPackageTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
             while (targets.hasNext()) {
-                Target t = (Target) targets.next();
+                Target t = targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("type", t.getType());
@@ -120,15 +120,15 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The projectTargets value
      */
-    public List getProjectTargets(String name) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getProjectTargets(String name) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Iterator targets = p.getTargets();
+            Iterator<Target> targets = p.getTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
             while (targets.hasNext()) {
-                Target t = (Target) targets.next();
+                Target t = targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("depends", t.getDepends());
@@ -147,14 +147,14 @@ public class Controller {
      * @param  logid    Description of the Parameter
      * @return          The targetPackageSteps value
      */
-    public List getTargetPackageSteps(String project, String target, int logid) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getTargetPackageSteps(String project, String target, int logid) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                Iterator steps = null;
+                Iterator<packageStep> steps = null;
                 if (logid == -1) {
                     steps = t.getPackageSteps();
                 } else {
@@ -162,7 +162,7 @@ public class Controller {
                 }
                 if (steps != null) {
                     while (steps.hasNext()) {
-                        packageStep step = (packageStep) steps.next();
+                        packageStep step = steps.next();
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("userfeedback", step.getUserFeedBack());
                         virtual.setValue("timestamp", step.getTimeStamp());
@@ -191,15 +191,15 @@ public class Controller {
      * @param  target   Description of the Parameter
      * @return          Description of the Return Value
      */
-    public List haveTargetLog(String project, String target) {
-        List list = new ArrayList();
+    public List<MMObjectNode> haveTargetLog(String project, String target) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                Iterator steps = t.getPackageSteps();
+                Iterator<packageStep> steps = t.getPackageSteps();
 
                 if (steps != null) {
                     virtual.setValue("log", "true");
@@ -223,17 +223,16 @@ public class Controller {
      * @param  target   Description of the Parameter
      * @return          The targetPackageDepends value
      */
-    public List getTargetPackageDepends(String project, String target) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getTargetPackageDepends(String project, String target) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project pr = ProjectManager.getProject(project);
         if (pr != null) {
             Target t = pr.getTarget(target);
             if (t != null) {
-                ArrayList in = t.getPackageDepends();
+                ArrayList<PackageDepend> in = t.getPackageDepends();
                 if (in != null) {
-                    for (Iterator i = in.iterator(); i.hasNext(); ) {
-                        PackageDepend p = (PackageDepend) i.next();
+                    for (PackageDepend p : in) {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("name", p.getName());
                         virtual.setValue("maintainer", p.getMaintainer());
@@ -334,17 +333,16 @@ public class Controller {
      * @param  target   Description of the Parameter
      * @return          The targetIncludedPackages value
      */
-    public List getTargetIncludedPackages(String project, String target) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getTargetIncludedPackages(String project, String target) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                ArrayList in = t.getIncludedPackages();
+                ArrayList<IncludedPackage> in = t.getIncludedPackages();
                 if (in != null) {
-                    for (Iterator i = in.iterator(); i.hasNext(); ) {
-                        IncludedPackage ip = (IncludedPackage) i.next();
+                    for (IncludedPackage ip : in) {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("name", ip.getName());
                         virtual.setValue("maintainer", ip.getMaintainer());
@@ -396,17 +394,16 @@ public class Controller {
      * @param  subtype  Description of the Parameter
      * @return          The targetPeople value
      */
-    public List getTargetPeople(String project, String target, String type, String subtype) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getTargetPeople(String project, String target, String type, String subtype) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                List people = t.getRelatedPeople(type);
+                List<Person> people = t.getRelatedPeople(type);
                 if (people != null) {
-                    for (Iterator i = people.iterator(); i.hasNext(); ) {
-                        Person pr = (Person) i.next();
+                    for (Person pr : people) {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("name", pr.getName());
                         virtual.setValue("company", pr.getCompany());
@@ -428,20 +425,20 @@ public class Controller {
      * @param  target   Description of the Parameter
      * @return          The Screenshots value
      */
-    public List getTargetScreenshots(String project, String target) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getTargetScreenshots(String project, String target) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                List screenshots = t.getScreenshots();
+                List<String> screenshots = t.getScreenshots();
                 if (screenshots != null) {
-                    for (Iterator i = screenshots.iterator(); i.hasNext(); ) {
+                    for (String string : screenshots) {
                         MMObjectNode virtual = builder.getNewNode("admin");
-                        virtual.setValue("name", (String)i.next());
-                        virtual.setValue("link", (String)i.next());
-                        virtual.setValue("description", (String)i.next());
+                        virtual.setValue("name", string);
+                        virtual.setValue("link", string);
+                        virtual.setValue("description", string);
                         list.add(virtual);
                     }
                 }
@@ -460,8 +457,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean packageTarget(String project, String target, int newversion,String latest,String createnew,String publishprovider,String publishstate,String publishsharepassword) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
         Project p = ProjectManager.getProject(project);
         if (p != null) {
 	// this first part handles auto includes and updates (mostly for bundles)
@@ -614,7 +609,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean setIncludedVersion(String project, String target, String id, String newversion) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -633,7 +627,6 @@ public class Controller {
      * @return                 Description of the Return Value
      */
     public boolean setPackageDescription(String project, String target, String newdescription) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -724,7 +717,6 @@ public class Controller {
      * @return                 Description of the Return Value
      */
     public boolean setPackageLicenseType(String project, String target, String newlicensetype) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -746,7 +738,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean setPackageInitiator(String project, String target, String oldname, String newname, String oldcompany, String newcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -910,7 +901,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean delPackageInitiator(String project, String target, String oldname, String oldcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -932,7 +922,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean setPackageDeveloper(String project, String target, String oldname, String newname, String oldcompany, String newcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -952,7 +941,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean addPackageDeveloper(String project, String target, String newname, String newcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -972,7 +960,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean delPackageDeveloper(String project, String target, String oldname, String oldcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -996,7 +983,6 @@ public class Controller {
      * @return            Description of the Return Value
      */
     public boolean setPackageContact(String project, String target, String oldreason, String newreason, String oldname, String newname, String oldemail, String newemail) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1017,7 +1003,6 @@ public class Controller {
      * @return            Description of the Return Value
      */
     public boolean addPackageContact(String project, String target, String newreason, String newname, String newemail) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1038,7 +1023,6 @@ public class Controller {
      * @return            Description of the Return Value
      */
     public boolean delPackageContact(String project, String target, String oldreason, String oldname, String oldemail) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1058,7 +1042,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean setPackageSupporter(String project, String target, String oldcompany, String newcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1077,7 +1060,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean addPackageSupporter(String project, String target, String newcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1096,7 +1078,6 @@ public class Controller {
      * @return             Description of the Return Value
      */
     public boolean delPackageSupporter(String project, String target, String oldcompany) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1115,7 +1096,6 @@ public class Controller {
      * @return          Description of the Return Value
      */
     public boolean delIncludedPackage(String project, String target, String id) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);
@@ -1161,15 +1141,15 @@ public class Controller {
      *
      * @return    The projects value
      */
-    public List getProjects() {
+    public List<MMObjectNode> getProjects() {
         // get the current best packages
-        Iterator projects = ProjectManager.getProjects();
+        Iterator<Project> projects = ProjectManager.getProjects();
 
-        List list = new ArrayList();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (projects.hasNext()) {
-            Project p = (Project) projects.next();
+            Project p = projects.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", p.getName());
             virtual.setValue("path", p.getPath());
@@ -1185,16 +1165,16 @@ public class Controller {
      *
      * @return    The creators value
      */
-    public List getCreators() {
+    public List<MMObjectNode> getCreators() {
         // get the current creators we have installed
-        Map creators = ProjectManager.getCreators();
-        List list = new ArrayList();
+        Map<String, CreatorInterface> creators = ProjectManager.getCreators();
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator e = creators.keySet().iterator();
+        Iterator<String> e = creators.keySet().iterator();
         while (e.hasNext()) {
-            String key = (String) e.next();
-            CreatorInterface cr = (CreatorInterface) creators.get(key);
+            String key = e.next();
+            CreatorInterface cr = creators.get(key);
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", key);

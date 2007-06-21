@@ -15,21 +15,16 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  * A very simple tag to check if a relation may be created. It needs two nodes.
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.13 2006-04-11 22:55:02 michiel Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.14 2007-06-21 15:50:26 nklasens Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
-    
-    private static final Logger log = Logging.getLoggerInstance(MayCreateRelationTag.class);
 
     private Attribute role = Attribute.NULL;
     private Attribute source = Attribute.NULL;

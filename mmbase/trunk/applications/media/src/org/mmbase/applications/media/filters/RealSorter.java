@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.10 2005-07-09 15:29:11 nklasens Exp $
+ * @version $Id: RealSorter.java,v 1.11 2007-06-21 15:50:20 nklasens Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);
@@ -78,7 +78,7 @@ public class RealSorter extends  ChainSorter {
          * @todo
          */
         protected int getPreference(URLComposer ri) {
-            Map info           = ri.getInfo();
+            Map<String, Object> info           = ri.getInfo();
             int wantedSpeed    = -1;
 
             int preference     = 0;
@@ -140,7 +140,7 @@ public class RealSorter extends  ChainSorter {
          * @javadoc
          */
         protected int getPreference(URLComposer ri) {
-            Map info           = ri.getInfo();
+            Map<String, Object> info           = ri.getInfo();
             int wantedChannels = -1;
 
             int preference     = 0;

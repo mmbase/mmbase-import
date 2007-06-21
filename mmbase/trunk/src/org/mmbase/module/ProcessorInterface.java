@@ -37,7 +37,7 @@ public interface ProcessorInterface  {
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values contained in MMObjectNode objects
      */
-    public Vector<VirtualNode> getNodeList(Object context, String command, Map<String,Object> params);
+    public Vector<MMObjectNode> getNodeList(Object context, String command, Map<String,Object> params);
 
     /**
      * Generate a list of values from a command to the processor.

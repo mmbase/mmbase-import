@@ -1,15 +1,16 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
+
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicAggregatedFieldTest extends TestCase {
 
@@ -28,8 +29,8 @@ public class BasicAggregatedFieldTest extends TestCase {
     /** Builder. */
     private MMObjectBuilder images = null;
 
-    /** FieldDefs. */
-    private FieldDefs fieldDefs = null;
+    /** CoreField. */
+    private CoreField CoreField = null;
 
     public BasicAggregatedFieldTest(java.lang.String testName) {
         super(testName);
@@ -47,9 +48,9 @@ public class BasicAggregatedFieldTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         images = mmbase.getBuilder(IMAGES);
-        fieldDefs = images.getField(TITLE);
+        CoreField = images.getField(TITLE);
         step = new BasicStep(images);
-        instance = new BasicAggregatedField(step, fieldDefs,
+        instance = new BasicAggregatedField(step, CoreField,
         AggregatedField.AGGREGATION_TYPE_MAX);
     }
 

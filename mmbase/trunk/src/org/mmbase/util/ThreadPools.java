@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.9 2007-04-16 08:39:53 nklasens Exp $
+ * @version $Id: ThreadPools.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -60,13 +60,13 @@ public abstract class ThreadPools {
      */
     public static void configure() {
 
-        Map<String,Object> props = properties.getProperties();
-        String max = (String) props.get("jobs.maxsize");
+        Map<String,String> props = properties.getProperties();
+        String max = props.get("jobs.maxsize");
         if (max != null) {
             log.info("Setting max pool size from " + ((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() + " to " + max);
             ((ThreadPoolExecutor) jobsExecutor).setMaximumPoolSize(Integer.parseInt(max));
         }
-        String core = (String) props.get("jobs.coresize");
+        String core = props.get("jobs.coresize");
         if (core != null) {
             log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + core);
             ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(Integer.parseInt(core));

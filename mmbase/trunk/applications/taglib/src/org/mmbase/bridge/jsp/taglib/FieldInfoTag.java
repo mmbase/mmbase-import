@@ -42,13 +42,13 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.99 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: FieldInfoTag.java,v 1.100 2007-06-21 15:50:20 nklasens Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
 
-    private static Class defaultHandler = DefaultTypeHandler.class;
-    private static Map handlers = new HashMap(); // datatype-class --> handler Class
+    private static Class<?> defaultHandler = DefaultTypeHandler.class;
+    private static Map<Class<?>, Class<?>> handlers = new HashMap<Class<?>, Class<?>>(); // datatype-class --> handler Class
 
     static {
         try {
@@ -175,20 +175,20 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * The type handler is responsible for showing the html
      */
     protected TypeHandler getTypeHandler(Field field) {
-        DataType dataType = field.getDataType();
-        Class dataTypeClass = dataType.getClass();
-        Class handler = (Class) handlers.get(dataTypeClass);
+        DataType<Object> dataType = field.getDataType();
+        Class<?> dataTypeClass = dataType.getClass();
+        Class<?> handler = handlers.get(dataTypeClass);
         log.debug("Looking for typehandler for " + dataTypeClass);
         while (handler == null) {
             log.debug("No handler found for " + dataTypeClass);
             dataTypeClass = dataTypeClass.getSuperclass();
             if(dataTypeClass == null) break;
-            handler = (Class) handlers.get(dataTypeClass);
+            handler = handlers.get(dataTypeClass);
         }
 
         if (handler == null) {
             log.warn("Could not find typehandler for type " + field.getDataType() + " using default for type.");
-            handler = (Class) handlers.get(DataTypes.getDataType(Fields.getTypeDescription(field.getType())).getClass());
+            handler = handlers.get(DataTypes.getDataType(Fields.getTypeDescription(field.getType())).getClass());
         }
         if (handler == null) {
             log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default.");
@@ -210,9 +210,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     private static void initializeTypeHandlers() {
         log.service("Reading taglib field-handlers");
-        handlers = new HashMap();
+        handlers = new HashMap<Class<?>, Class<?>>();
 
-        Class thisClass = FieldInfoTag.class;
+        Class<FieldInfoTag> thisClass = FieldInfoTag.class;
         InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
         DocumentReader reader  = new DocumentReader(fieldtypes, thisClass);
         Element fieldtypesElement = reader.getElementByPath("fieldtypes");
@@ -220,7 +220,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         for (Element element: reader.getChildElements(fieldtypesElement, "fieldtype")) {
             String type = element.getAttribute("id");
             DataType dataType = DataTypes.getDataType(type);
-            Class dataTypeClass = dataType.getClass();
+            Class<?> dataTypeClass = dataType.getClass();
             if (dataType == null) {
                 log.warn("'" + type + "' is not a known datatype");
             }
@@ -238,7 +238,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     /**
      * Set the type handler for the given type.
      */
-    private static Class getDefaultTypeHandler() {
+    private static Class<?> getDefaultTypeHandler() {
         return defaultHandler;
     }
 

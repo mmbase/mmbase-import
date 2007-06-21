@@ -15,12 +15,10 @@ import org.mmbase.framework.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
-import org.mmbase.util.functions.*;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.util.*;
 
@@ -32,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.107 2007-06-18 17:26:51 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.108 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {

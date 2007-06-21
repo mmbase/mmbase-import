@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.63 2006-09-11 10:49:47 pierre Exp $
+ * @version $Id: servdb.java,v 1.64 2007-06-21 15:50:24 nklasens Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -131,7 +131,6 @@ public class servdb extends JamesServlet {
             boolean done=false;
             cacheline cline=null;
             long nowdate=0;
-            int cmd;
             // org.mmbase String mimetype=getContentType();
             String mimetype="image/jpeg";
 
@@ -333,10 +332,10 @@ public class servdb extends JamesServlet {
                         mimetype=cline.mimetype;
                     } else if (req.getRequestURI().indexOf("jump")!=-1) {
                         // do jumper
-                        long begin=(long)System.currentTimeMillis();
+                        long begin=System.currentTimeMillis();
                         Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
                         String key=(String)(getParamVector(req)).elementAt(0);
-                        String url = (String)bul.getJump(key);
+                        String url = bul.getJump(key);
                         log.debug("jump.db Url="+url);
                         if (url!=null) {
                             // jhash.put(key,url);
@@ -349,7 +348,7 @@ public class servdb extends JamesServlet {
                             res.setHeader("Last-Modified",dt);
                             res.setHeader("Date",dt);
                         }
-                        long end=(long)System.currentTimeMillis();
+                        long end=System.currentTimeMillis();
                         //debug("getUrl="+(end-begin)+" ms");
 
                     } else if (req.getRequestURI().indexOf("attachment")!=-1) {
@@ -412,7 +411,7 @@ public class servdb extends JamesServlet {
      * @javadoc
      */
     boolean Show_Directory(String pathname,File dirfile, PrintWriter out) {
-        String body,bfiles,bdirs,header,line;
+        String body,bfiles,bdirs,header;
         int i;
 
         String files[] = dirfile.list();
@@ -476,7 +475,7 @@ public class servdb extends JamesServlet {
 
         for (Enumeration e=getInitParameters().keys();e.hasMoreElements();) {
             tmp=(String)e.nextElement();
-            tmp2=(String)getInitParameter(tmp);
+            tmp2=getInitParameter(tmp);
             pos=tmp.indexOf("Root.");
             if (pos==0) {
                 result.put(tmp.substring(5),tmp2);
@@ -595,8 +594,8 @@ public class servdb extends JamesServlet {
         body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(dtdbase).append("/mmnode/").append(tableName).append(".dtd\">\n");
         body.append("<" + tableName + ">\n");
         body.append("<number>" + node.getNumber() + "</number>\n");
-        for (Iterator i = node.getBuilder().getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
-            CoreField field = (CoreField)i.next();
+        for (Object element : node.getBuilder().getFields(NodeManager.ORDER_CREATE)) {
+            CoreField field = (CoreField)element;
             int type = field.getType();
             String name = field.getName();
             body.append('<').append(name).append('>');
@@ -668,7 +667,6 @@ public class servdb extends JamesServlet {
      */
     public String getAttachmentFileName(Vector params) {
         log.debug("getAttachment(): param="+params);
-        String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
@@ -697,7 +695,6 @@ public class servdb extends JamesServlet {
      */
     public byte[] getAttachment(Vector params) {
         log.debug("getAttachment(): param="+params);
-        String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
@@ -813,8 +810,8 @@ public class servdb extends JamesServlet {
         if (sp.req.getMethod().equals("POST")) {
             if (poster.checkPostMultiParameter("only")) {
                 String line="";
-                Vector only=poster.getPostMultiParameter("only");
-                for (Enumeration e=only.elements();e.hasMoreElements();) {
+                Vector<Object> only=poster.getPostMultiParameter("only");
+                for (Enumeration<Object> e=only.elements();e.hasMoreElements();) {
                     if (!line.equals("")) {
                         line+=","+(String)e.nextElement();
                     } else {

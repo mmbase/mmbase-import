@@ -20,8 +20,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
-import org.mmbase.util.*;
-
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 import org.mmbase.applications.dove.*;
@@ -33,7 +31,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.12 2005-01-30 16:46:40 nico Exp $
+ * @version $Id: DoveServlet.java,v 1.13 2007-06-21 15:50:27 nklasens Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
     
@@ -46,7 +44,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
      * @param res the HTTP Response object
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
+    throws IOException {
         PrintWriter out = res.getWriter();
         
         res.setContentType("text/html");
@@ -76,14 +74,14 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
      * @param res the HTTP Response object
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
+    throws IOException {
         String error="unknown error";
         String errortype="unknown";
         boolean pretty="yes".equals(req.getParameter("pretty"));
         boolean plain="yes".equals(req.getParameter("plain"));
         try {
             DoveErrorHandler errorhandler = new DoveErrorHandler();
-            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false,errorhandler);
+            DocumentBuilder db = DocumentReader.getDocumentBuilder(false,errorhandler, null);
             
             // Right now we read content from parameters
             // Maybe we want the xml to be directly in the body?

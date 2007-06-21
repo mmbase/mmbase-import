@@ -102,7 +102,7 @@ public class RegexpReplacer extends ChunkedTransformer {
 
         patterns.clear();
 
-        Collection<?> regs = (Collection<?>) utilReader.getProperties().get("regexps");
+        Collection<?> regs = utilReader.getMaps().get("regexps");
         if (regs != null) {
             addPatterns(regs, patterns);
         } else {

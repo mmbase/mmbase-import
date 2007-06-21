@@ -20,6 +20,8 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import java.util.Map;
+
+import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
@@ -36,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.29 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.30 2007-06-21 15:50:25 nklasens Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -111,7 +113,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String set = functionSet.getString(this);
             if (set.equals(THISPAGE)) {
-                Class jspClass = pageContext.getPage().getClass();
+                Class<? extends Object> jspClass = pageContext.getPage().getClass();
                 Method method = Functions.getMethodFromClass(jspClass, functionName);
                 return FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
             } else {
@@ -128,9 +130,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String className = functionClass.getString(this);
             try {
-                Class clazz;
+                Class<?> clazz;
                 if (className.indexOf(".") == -1) {
-                    Class jspClass = pageContext.getPage().getClass();
+                    Class<? extends Object> jspClass = pageContext.getPage().getClass();
                     clazz   = BeanFunction.getClass(jspClass, className);
                 } else {
                     clazz = Class.forName(className);
@@ -246,10 +248,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
             if (functionContainer != null) {
-                Iterator i = functionContainer.getParameters().iterator();
+                Iterator<Entry<String, Object>> i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    params.set((String) entry.getKey(), entry.getValue());
+                    Map.Entry<String, Object> entry = i.next();
+                    params.set(entry.getKey(), entry.getValue());
                 }
             }
             if (referids != Attribute.NULL) {

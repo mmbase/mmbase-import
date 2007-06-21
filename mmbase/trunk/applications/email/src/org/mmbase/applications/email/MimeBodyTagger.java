@@ -28,11 +28,11 @@ public class MimeBodyTagger {
     /**
      * @javadoc
      */
-    public static Enumeration getMimeBodyParts(String body) {
+    public static Enumeration<MimeBodyTag> getMimeBodyParts(String body) {
 	String startkey="<multipart ";
 	String endkey="</multipart>";
 
-	Vector results=new Vector();
+	Vector<MimeBodyTag> results=new Vector<MimeBodyTag>();
 
 	int pos=body.indexOf(startkey);
 	while (pos!=-1) {

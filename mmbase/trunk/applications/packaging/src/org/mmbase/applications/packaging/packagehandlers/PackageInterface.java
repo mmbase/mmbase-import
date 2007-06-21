@@ -154,7 +154,7 @@ public interface PackageInterface {
      * @param  type  Description of the Parameter
      * @return       The relatedPeople value
      */
-    public List getRelatedPeople(String type);
+    public List<Object> getRelatedPeople(String type);
 
 
     /**
@@ -229,7 +229,7 @@ public interface PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Iterator getInstallSteps();
+    public Iterator<installStep> getInstallSteps();
 
 
     /**
@@ -238,7 +238,7 @@ public interface PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Iterator getInstallSteps(int logid);
+    public Iterator<installStep> getInstallSteps(int logid);
 
 
     /**
@@ -307,6 +307,9 @@ public interface PackageInterface {
      * @param  stepcount  Description of the Parameter
      */
     public void increaseProgressBar(int stepcount);
+
+
+    public long lastSeen();
 
 }
 

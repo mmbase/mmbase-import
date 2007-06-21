@@ -11,7 +11,6 @@ package org.mmbase.module.core;
 
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.io.File;
 import org.mmbase.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.6 2007-06-18 08:58:29 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.7 2007-06-21 15:50:24 nklasens Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);

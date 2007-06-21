@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.builders;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +24,7 @@ import java.lang.reflect.Method;
  * be online/offline.
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.13 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MediaProviders.java,v 1.14 2007-06-21 15:50:25 nklasens Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -57,18 +58,18 @@ public class MediaProviders extends MMObjectBuilder {
      * @return A List of URLComposer's
      */
 
-    protected List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
+    protected List<URLComposer> getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
         return urlComposerFactory.createURLComposers(provider, source, fragment, info, urls, cacheExpireObjects);
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + args);
         }
 
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, "info", empty);
+            List<Object> empty = new ArrayList<Object>();
+            Map<?,?> info = (Map<?,?>) super.executeFunction(node, "info", empty);
             if (args == null || args.size() == 0) {
                 return info;
             } else {

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.151 2007-06-18 17:29:20 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.152 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -99,8 +99,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Attribute pwd = Attribute.NULL;
     private Attribute rank = Attribute.NULL;
     private Attribute sessionName = Attribute.NULL;
-
-    private Attribute onfail = Attribute.NULL;
 
     private HttpSession session;
     private HttpServletRequest request;
@@ -168,13 +166,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             throw new JspTagException("Unknown rank '" + s + "'");
         }
         return r;
-    }
-
-    /**
-     * @since MMBase-1.7
-     */
-    public void setOnfail(String of) throws JspTagException {
-        onfail = getAttribute(of);
     }
 
     // javadoc inherited (from ParameterHandler)
@@ -907,7 +898,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 log.debug("username not correct");
                 return denyHTTP("<h2 class=\"mm_cloud\">" + bundle.getString("cloudtag.wronguser") + "</h2><p class\"mm_cloud\">" + bundle.getString("cloudtag.mustbe") + logon + "</p>");
             } else {
-                logon = new ArrayList();
+                logon = new ArrayList<String>();
                 logon.add(userName);
             }
         } else { // logon == null
@@ -958,9 +949,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 setName(cloudNamePassed); // THIS SEEM DANGEROUS
             }
             user.setAutoCasting(true);
-            Enumeration enumeration = request.getParameterNames();
+            Enumeration<String> enumeration = request.getParameterNames();
             while (enumeration.hasMoreElements()) {
-                String key = (String) enumeration.nextElement();
+                String key = enumeration.nextElement();
                 String value = (String) org.mmbase.bridge.jsp.taglib.util.ContextContainer.fixEncoding(request.getParameter(key), pageContext);
                 if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);

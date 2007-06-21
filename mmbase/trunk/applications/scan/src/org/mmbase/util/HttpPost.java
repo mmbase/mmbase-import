@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * HttpPost handles all the PostInformation
  *
  * @application SCAN. To port this, use of HttpPost by i.e. taglibs should be replaced with the jakarta FileUpload code.
- * @version $Id: HttpPost.java,v 1.29 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: HttpPost.java,v 1.30 2007-06-21 15:50:20 nklasens Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -60,7 +60,7 @@ public class HttpPost {
     /**
     * post buffer, holds the values ones decoded
     */
-    private Hashtable postValues = new Hashtable();
+    private Hashtable<String, Object> postValues = new Hashtable<String, Object>();
 
     /**
      * Some postparameters are decoded to disk
@@ -102,9 +102,9 @@ public class HttpPost {
         if (isPostedToDisk) {
             File f = new File(uploadDir);
             File[] files = f.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].getName().indexOf("form_" + postid) == 0) {
-                    files[i].delete();
+            for (File element : files) {
+                if (element.getName().indexOf("form_" + postid) == 0) {
+                    element.delete();
                 }
             }
         }
@@ -140,7 +140,7 @@ public class HttpPost {
     * @see #getPostParameter
     * @see #checkPostMultiParameter
     */
-    public Hashtable getPostParameters() throws PostValueToLargeException {
+    public Hashtable<String, Object> getPostParameters() throws PostValueToLargeException {
         if (!isRequestDecoded) {
             decodePost(req);
         }
@@ -189,7 +189,7 @@ public class HttpPost {
     * it also converts the byte[] into strings
     * @see #checkPostMultiParameter
     */
-    public Vector getPostMultiParameter(String name) throws PostValueToLargeException {
+    public Vector<Object> getPostMultiParameter(String name) throws PostValueToLargeException {
         return getPostMultiParameter(name, null);
     }
 
@@ -200,7 +200,7 @@ public class HttpPost {
     * it also converts the byte[] into strings
     * @see #checkPostMultiParameter
     */
-    public Vector getPostMultiParameter(String name, String encoding) throws PostValueToLargeException {
+    public Vector<Object> getPostMultiParameter(String name, String encoding) throws PostValueToLargeException {
 
         // decode when not done yet..
         if (!isRequestDecoded) {
@@ -213,7 +213,7 @@ public class HttpPost {
             return null;
         }
 
-        Vector results = new Vector();
+        Vector<Object> results = new Vector<Object>();
         if (obj instanceof Vector) {
             Vector v = (Vector)obj;
             Enumeration e = v.elements();
@@ -553,7 +553,7 @@ public class HttpPost {
     * @param postbuffer buffer with the postbuffer information
     * @param post_header hashtable to put the postbuffer information in
     */
-    public boolean readPostFormData(byte[] postbuffer, Hashtable post_header, String line) {
+    public boolean readPostFormData(byte[] postbuffer, Hashtable<String, Object> post_header, String line) {
         int i2, i3, i4, start2, end2;
         String r;
         String templine = "--" + line.substring(line.indexOf("boundary=") + 9);
@@ -663,7 +663,7 @@ public class HttpPost {
     * @param postbuffer buffer with the postbuffer information
     * @param post_header hashtable to put the fromFile information in
     */
-    public boolean readPostFormData(String formFile, Hashtable post_header, String line) {
+    public boolean readPostFormData(String formFile, Hashtable<String, Object> post_header, String line) {
         FileInputStream fis = null;
         RandomAccessFile raf = null;
         try {
@@ -760,19 +760,19 @@ public class HttpPost {
         return false;
     }
 
-    private final void addpostinfo(Hashtable postinfo, String name, Object value) {
+    private final void addpostinfo(Hashtable<String, Object> postinfo, String name, Object value) {
         Object obj;
-        Vector v = null;
+        Vector<Object> v = null;
 
         if (postinfo.containsKey(name)) {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v = new Vector();
+                v = new Vector<Object>();
                 v.addElement(obj); // Add the first one
                 v.addElement(value); // Then the one given
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v = (Vector)obj;
+                v = (Vector<Object>)obj;
                 v.addElement(value);
             } else {
                 log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
@@ -782,9 +782,9 @@ public class HttpPost {
         }
     }
 
-    private final void addpostinfo2(Hashtable postinfo, String name, String values) {
+    private final void addpostinfo2(Hashtable<String, Object> postinfo, String name, String values) {
         Object obj;
-        Vector v = null;
+        Vector<Object> v = null;
 
         byte[] value = new byte[values.length()];
         values.getBytes(0, values.length(), value, 0);
@@ -792,12 +792,12 @@ public class HttpPost {
         if (postinfo.containsKey(name)) {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v = new Vector();
+                v = new Vector<Object>();
                 v.addElement(obj); // Add the first one
                 v.addElement(value); // Then add the current one
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v = (Vector)obj;
+                v = (Vector<Object>)obj;
                 v.addElement(value);
             } else {
                 log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
@@ -813,7 +813,7 @@ public class HttpPost {
     * @param postbuffer buffer with the postbuffer information
     * @param post_header hashtable to put the postbuffer information in
     */
-    private boolean readPostUrlEncoded(byte[] postbuffer, Hashtable post_header) {
+    private boolean readPostUrlEncoded(byte[] postbuffer, Hashtable<String, Object> post_header) {
         String mimestr = "";
         int i = 0, idx;
         char letter;

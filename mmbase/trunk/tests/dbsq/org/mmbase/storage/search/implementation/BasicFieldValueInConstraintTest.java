@@ -2,15 +2,16 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import java.util.*;
+
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
 
@@ -35,9 +36,9 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     /** Builder example. */
     private MMObjectBuilder builder = null;
 
-    /** FieldDefs examples. */
-    private FieldDefs stringFieldDefs = null;
-    private FieldDefs integerFieldDefs = null;
+    /** CoreField examples. */
+    private CoreField stringCoreField = null;
+    private CoreField integerCoreField = null;
 
     public BasicFieldValueInConstraintTest(java.lang.String testName) {
         super(testName);
@@ -55,11 +56,11 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         builder = mmbase.getBuilder(BUILDER_NAME);
-        stringFieldDefs = builder.getField(STRING_FIELD_NAME);
-        integerFieldDefs = builder.getField(INTEGER_FIELD_NAME);
+        stringCoreField = builder.getField(STRING_FIELD_NAME);
+        integerCoreField = builder.getField(INTEGER_FIELD_NAME);
         Step step = new BasicStep(builder);
-        stringField = new BasicStepField(step, stringFieldDefs);
-        integerField = new BasicStepField(step, integerFieldDefs);
+        stringField = new BasicStepField(step, stringCoreField);
+        integerField = new BasicStepField(step, integerCoreField);
         instance = new BasicFieldValueInConstraint(stringField);
     }
 
@@ -82,14 +83,14 @@ public class BasicFieldValueInConstraintTest extends TestCase {
             fail("Trying to add integer value to string field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
-        List values = new ArrayList(instance.getValues());
+        List<Object> values = new ArrayList<Object>(instance.getValues());
         assertTrue(values.size() == 0);
         instance.addValue(STRING_TEST_VALUE1);
-        values = new ArrayList(instance.getValues());
+        values = new ArrayList<Object>(instance.getValues());
         assertTrue(values.size() == 1);
         assertTrue(values.indexOf(STRING_TEST_VALUE1) == 0);
         instance.addValue(STRING_TEST_VALUE2);
-        values = new ArrayList(instance.getValues());
+        values = new ArrayList<Object>(instance.getValues());
         assertTrue(values.size() == 2);
         // Lexicographically ordering:
         assertTrue(values.indexOf(STRING_TEST_VALUE1) == 1);
@@ -103,10 +104,10 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
 
         // Add integer value to integer field.
-        values = new ArrayList(instance2.getValues());
+        values = new ArrayList<Object>(instance2.getValues());
         assertTrue(values.size() == 0);
         instance2.addValue(INTEGER_TEST_VALUE);
-        values = new ArrayList(instance2.getValues());
+        values = new ArrayList<Object>(instance2.getValues());
         assertTrue(values.size() == 1);
         assertTrue(values.indexOf(INTEGER_TEST_VALUE) == 0);
     }
@@ -116,7 +117,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         // See:
         testAddValue();
 
-        Set values = instance.getValues();
+        Set<Object> values = instance.getValues();
 
         // List returned must be unmodifiable.
         try {

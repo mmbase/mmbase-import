@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.415 2007-06-21 13:44:29 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.416 2007-06-21 15:50:24 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -274,7 +274,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
-    protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions", Parameter.EMPTY, ReturnType.COLLECTION) {
+    protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions", Parameter.emptyArray(), ReturnType.COLLECTION) {
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
             }

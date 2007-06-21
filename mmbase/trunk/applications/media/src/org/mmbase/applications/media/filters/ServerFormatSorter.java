@@ -25,7 +25,7 @@ import org.mmbase.util.xml.DocumentReader;
  * can be combined with this one).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.9 2006-11-24 14:28:54 pierre Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.10 2007-06-21 15:50:21 nklasens Exp $
  * @see     ClientFormatSorter
  */
 public class ServerFormatSorter extends  PreferenceSorter {
@@ -34,7 +34,7 @@ public class ServerFormatSorter extends  PreferenceSorter {
     public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";
 
-    protected List preferredFormats = new ArrayList();
+    protected List<Format> preferredFormats = new ArrayList<Format>();
 
     public  ServerFormatSorter() {};
 

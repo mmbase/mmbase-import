@@ -19,19 +19,15 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.16 2006-10-25 22:04:52 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.17 2007-06-21 15:50:20 nklasens Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
-    private static final Logger log = Logging.getLoggerInstance(ListRelationsContainerTag.class);
     private NodeQuery   query        = null;
     private NodeQuery   relatedQuery        = null;
     private Attribute cachePolicy  = Attribute.NULL;
@@ -76,11 +72,11 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     public NodeQuery getRelatedQuery() {
         NodeQuery r = (NodeQuery) relatedQuery.clone();
         // copy constraint and sort-orders of the query.
-        List querySteps = query.getSteps();
-        List rSteps     = r.getSteps();
+        List<Step> querySteps = query.getSteps();
+        List<Step> rSteps     = r.getSteps();
         for (int i = 0 ; i < querySteps.size(); i++) {
-            Step queryStep = (Step) querySteps.get(i);
-            Step rStep = (Step) rSteps.get(i);
+            Step queryStep = querySteps.get(i);
+            Step rStep = rSteps.get(i);
             Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);
             Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);
         }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.36 2007-06-18 17:32:11 michiel Exp $
+ * @version $Id: Parameters.java,v 1.37 2007-06-21 15:50:21 nklasens Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -37,7 +37,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * No need to bother for the functions with no parameters. This is a constant you could supply.
      */
-    public static final Parameters VOID = new Parameters(Parameter.EMPTY);
+    public static final Parameters VOID = new Parameters(Parameter.emptyArray());
 
 
     /**
@@ -78,7 +78,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * </pre>
      */
     public Parameters(Parameter<?>... def) {
-        definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.EMPTY);
+        definition = Functions.define(def, new ArrayList<Parameter>()).toArray(Parameter.emptyArray());
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
@@ -217,7 +217,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     public Parameter[] getDefinition() {
         checkDef();
         if (fromIndex > 0 || toIndex != definition.length - 1) {
-            return Arrays.asList(definition).subList(fromIndex, toIndex).toArray(Parameter.EMPTY);
+            return Arrays.asList(definition).subList(fromIndex, toIndex).toArray(Parameter.emptyArray());
         } else {
             return definition;
         }

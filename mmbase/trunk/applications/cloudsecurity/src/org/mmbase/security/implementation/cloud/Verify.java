@@ -28,11 +28,11 @@ import java.util.*;
  * on nodes with the owner field '[shared]'.
  *
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.1 2006-10-13 17:11:11 nklasens Exp $
+ * @version $Id: Verify.java,v 1.2 2007-06-21 15:50:27 nklasens Exp $
  */
 public class Verify extends Authorization {
     private static final Logger log = Logging.getLoggerInstance(Verify.class);
-    private static final Set adminBuilders = new HashSet();
+    private static final Set<String> adminBuilders = new HashSet<String>();
 
     protected void load() {
 	adminBuilders.add("typedef");
@@ -165,14 +165,14 @@ public class Verify extends Authorization {
 	log.info("[node #"+nodeid+"] context set ["+user.getIdentifier()+"]");
     }
 
-    public Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public Set<String> getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
 	// retrieve all the users....
 	MMBase mmb = MMBase.getMMBase();
 	UserBuilder builder =  (UserBuilder) mmb.getBuilder("mmbaseusers");
-	Enumeration e = builder.search(null);
-	Set contexts = new HashSet();
+	Enumeration<MMObjectNode> e = builder.search(null);
+	Set<String> contexts = new HashSet<String>();
 	while(e.hasMoreElements()) {
-	    contexts.add(((MMObjectNode) e.nextElement()).getStringValue("username"));
+	    contexts.add(e.nextElement().getStringValue("username"));
 	}
 	contexts.add(SHARED_CONTEXT_ID);
         contexts.add(builder.getNode(nodeid).getStringValue("owner"));

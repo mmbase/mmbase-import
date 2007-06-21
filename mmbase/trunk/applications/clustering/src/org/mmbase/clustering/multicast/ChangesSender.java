@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.13 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.14 2007-06-21 15:50:23 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -38,7 +38,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue nodesToSend;
+    private final BlockingQueue<byte[]> nodesToSend;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -59,7 +59,7 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param send Statistics object in which to administer duration costs
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue nodesToSend, Statistics send) throws UnknownHostException  {
+    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -104,7 +104,7 @@ public class ChangesSender implements Runnable {
         log.debug("Started sending");
         while(ms != null) {
             try {
-                byte[] data = (byte[]) nodesToSend.take();
+                byte[] data = nodesToSend.take();
                 long startTime = System.currentTimeMillis();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {

@@ -1,15 +1,16 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
+
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicCompareFieldsConstraintTest extends TestCase {
 
@@ -35,11 +36,11 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     /** Builder example. */
     private MMObjectBuilder builder = null;
 
-    /** FieldDefs example (string type). */
-    private FieldDefs stringFieldDefs = null;
+    /** CoreField example (string type). */
+    private CoreField stringCoreField = null;
 
-    /** FieldDefs example (integer type). */
-    private FieldDefs integerFieldDefs = null;
+    /** CoreField example (integer type). */
+    private CoreField integerCoreField = null;
 
     /** Second string type Field instance. */
     private BasicStepField stringField2 = null;
@@ -47,11 +48,11 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     /** Second builder example. */
     private MMObjectBuilder builder2 = null;
 
-    /** Second string FieldDefs example. */
-    private FieldDefs stringFieldDefs2 = null;
+    /** Second string CoreField example. */
+    private CoreField stringCoreField2 = null;
 
-    /** Second  integer FieldDefs example. */
-    private FieldDefs integerFieldDefs2 = null;
+    /** Second  integer CoreField example. */
+    private CoreField integerCoreField2 = null;
 
     public BasicCompareFieldsConstraintTest(java.lang.String testName) {
         super(testName);
@@ -69,16 +70,16 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
         mmbase = MMBase.getMMBase();
         builder = mmbase.getBuilder(BUILDER_NAME);
         Step step = new BasicStep(builder);
-        stringFieldDefs = builder.getField(STRING_FIELD_NAME);
-        stringField = new BasicStepField(step, stringFieldDefs);
-        integerFieldDefs = builder.getField(INTEGER_FIELD_NAME);
-        integerField = new BasicStepField(step, integerFieldDefs);
+        stringCoreField = builder.getField(STRING_FIELD_NAME);
+        stringField = new BasicStepField(step, stringCoreField);
+        integerCoreField = builder.getField(INTEGER_FIELD_NAME);
+        integerField = new BasicStepField(step, integerCoreField);
         builder2 = mmbase.getBuilder(BUILDER_NAME2);
         Step step2 = new BasicStep(builder2);
-        stringFieldDefs2 = builder2.getField(STRING_FIELD_NAME2);
-        stringField2 = new BasicStepField(step2, stringFieldDefs2);
-        integerFieldDefs2 = builder2.getField(INTEGER_FIELD_NAME2);
-        integerField = new BasicStepField(step2, integerFieldDefs2);
+        stringCoreField2 = builder2.getField(STRING_FIELD_NAME2);
+        stringField2 = new BasicStepField(step2, stringCoreField2);
+        integerCoreField2 = builder2.getField(INTEGER_FIELD_NAME2);
+        integerField = new BasicStepField(step2, integerCoreField2);
         instance = new BasicCompareFieldsConstraint(stringField, stringField2);
     }
 

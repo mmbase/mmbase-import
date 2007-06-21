@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.21 2007-06-20 14:32:27 michiel Exp $ 
+ * @version $Id: EmailBuilder.java,v 1.22 2007-06-21 15:50:19 nklasens Exp $ 
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -168,7 +168,7 @@ public class EmailBuilder extends MMObjectBuilder {
         }
         if (function.equals("info")) {
             List<?> empty = new ArrayList<Object>();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put("gui", "(mailtype or mailstatus) Gui representation of this object.");
             if (args == null || args.size() == 0) {
                 return info;
@@ -195,7 +195,6 @@ public class EmailBuilder extends MMObjectBuilder {
                 log.warn("Trying to mail a node with unsupported type " + mailType);
             }
 
-            String val = node.getStringValue("mailtype");
             return null;
         } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
             if (log.isDebugEnabled()) {
@@ -217,7 +216,6 @@ public class EmailBuilder extends MMObjectBuilder {
             default:
                 log.warn("Trying to start a mail of a node with unsupported type " + mailType);
             }
-            String val = node.getStringValue("mailtype");
             return null;
         }
         if (log.isDebugEnabled()) {

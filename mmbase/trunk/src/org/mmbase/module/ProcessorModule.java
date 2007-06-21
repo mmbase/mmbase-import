@@ -142,7 +142,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector<VirtualNode> getNodeList(Object context, String command, Map<String,Object> params) {
+    public Vector<MMObjectNode> getNodeList(Object context, String command, Map<String,Object> params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
@@ -168,7 +168,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector<String> fieldlist = tagger.Values("FIELDS");
-        Vector<VirtualNode> res = new Vector<VirtualNode>(v.size() / items);
+        Vector<MMObjectNode> res = new Vector<MMObjectNode>(v.size() / items);
         MMObjectBuilder bul = getListBuilder(command, params);
         for(int i= 0; i < v.size(); i+=items) {
             VirtualNode node = new VirtualNode(bul);

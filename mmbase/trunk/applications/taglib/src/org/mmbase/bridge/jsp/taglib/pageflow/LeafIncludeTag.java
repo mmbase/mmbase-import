@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.Casting;
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.23 2007-06-18 17:26:51 michiel Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.24 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {

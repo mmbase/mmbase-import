@@ -47,7 +47,7 @@ public class ShareServlet extends BridgeServlet {
 
     private static String packagepath = "/mmpm/download/package.mmp";
 
-    private Hashtable postValues = new Hashtable();
+    private Hashtable<String, Object> postValues = new Hashtable<String, Object>();
 
     private boolean isRequestDecoded = false;
     private long postid;
@@ -84,7 +84,7 @@ public class ShareServlet extends BridgeServlet {
      * @exception  IOException       Description of the Exception
      * @javadoc
      */
-    public synchronized void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public synchronized void doGet(HttpServletRequest req, HttpServletResponse res) {
         // Set the content type of this request
         res.setContentType("application/x-binary");
 
@@ -142,7 +142,7 @@ public class ShareServlet extends BridgeServlet {
         }
     }
 
-    public synchronized void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public synchronized void doPost(HttpServletRequest req, HttpServletResponse res) {
 	this.req=req;
 
         String filename = getPostParameter("filename");
@@ -185,7 +185,7 @@ public class ShareServlet extends BridgeServlet {
     */
     public String getPostParameter(String name)  {
         Object obj = null;
-        Vector v;
+        Vector<byte[]> v;
 
         if (!isRequestDecoded) {
             decodePost(req);
@@ -203,12 +203,12 @@ public class ShareServlet extends BridgeServlet {
             }
 
             if (obj instanceof Vector) {
-                v = (Vector)obj;
+                v = (Vector<byte[]>)obj;
                 Object elem = v.elementAt(0);
                 if (elem instanceof String) {
                     return (String)elem;
                 } else {
-                    return new String((byte[])v.elementAt(0));
+                    return new String(v.elementAt(0));
                 }
             } else {
                 return new String((byte[])obj);
@@ -333,7 +333,7 @@ public class ShareServlet extends BridgeServlet {
     }
 
 
-    private boolean readPostUrlEncoded(byte[] postbuffer, Hashtable post_header) {
+    private boolean readPostUrlEncoded(byte[] postbuffer, Hashtable<String, Object> post_header) {
         String mimestr = "";
         int i = 0, idx;
         char letter;
@@ -367,9 +367,9 @@ public class ShareServlet extends BridgeServlet {
     }
 
 
-    private final void addpostinfo2(Hashtable postinfo, String name, String values) {
+    private final void addpostinfo2(Hashtable<String, Object> postinfo, String name, String values) {
         Object obj;
-        Vector v = null;
+        Vector<Object> v = null;
 
         byte[] value = new byte[values.length()];
         values.getBytes(0, values.length(), value, 0);
@@ -377,12 +377,12 @@ public class ShareServlet extends BridgeServlet {
         if (postinfo.containsKey(name)) {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v = new Vector();
+                v = new Vector<Object>();
                 v.addElement(obj); // Add the first one
                 v.addElement(value); // Then add the current one
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v = (Vector)obj;
+                v = (Vector<Object>)obj;
                 v.addElement(value);
             } else {
                 log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
@@ -393,7 +393,7 @@ public class ShareServlet extends BridgeServlet {
     }
 
 
-    public boolean readPostFormData(byte[] postbuffer, Hashtable post_header, String line) {
+    public boolean readPostFormData(byte[] postbuffer, Hashtable<String, Object> post_header, String line) {
         int i2, i3, i4, start2, end2;
         String r;
         String templine = "--" + line.substring(line.indexOf("boundary=") + 9);
@@ -451,14 +451,14 @@ public class ShareServlet extends BridgeServlet {
                     String mimetype = extractContentType(disposition.substring(separator - (start2 + 2) + 2));
                     String fieldname = dispositionInfo[1];
                     String filename = dispositionInfo[2];
-                    Vector v1 = new Vector();
+                    Vector<byte[]> v1 = new Vector<byte[]>();
                     v1.addElement(mimetype.getBytes());
                     addpostinfo(post_header, fieldname + "_type", v1);
-                    Vector v2 = new Vector();
+                    Vector<byte[]> v2 = new Vector<byte[]>();
                     v2.addElement(filename.getBytes());
                     addpostinfo(post_header, fieldname + "_name", v2);
 
-                    Vector v3 = new Vector();
+                    Vector<String> v3 = new Vector<String>();
                     v3.addElement("" + filesize);
                     addpostinfo(post_header, fieldname + "_size", v3);
 
@@ -494,19 +494,19 @@ public class ShareServlet extends BridgeServlet {
     }
 
 
-    private final void addpostinfo(Hashtable postinfo, String name, Object value) {
+    private final void addpostinfo(Hashtable<String, Object> postinfo, String name, Object value) {
         Object obj;
-        Vector v = null;
+        Vector<Object> v = null;
 
         if (postinfo.containsKey(name)) {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v = new Vector();
+                v = new Vector<Object>();
                 v.addElement(obj); // Add the first one
                 v.addElement(value); // Then the one given
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v = (Vector)obj;
+                v = (Vector<Object>)obj;
                 v.addElement(value);
             } else {
                 log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
@@ -614,7 +614,7 @@ public class ShareServlet extends BridgeServlet {
     }
 
 
-    public boolean readPostFormData(String formFile, Hashtable post_header, String line) {
+    public boolean readPostFormData(String formFile, Hashtable<String, Object> post_header, String line) {
         FileInputStream fis = null;
         RandomAccessFile raf = null;
         try {
@@ -730,8 +730,8 @@ public class ShareServlet extends BridgeServlet {
             log.warn(msg);
         }
         if (obj instanceof Vector) {
-            Vector v = (Vector)obj;
-            byte[] data = (byte[])v.elementAt(0);
+            Vector<byte[]> v = (Vector<byte[]>)obj;
+            byte[] data = v.elementAt(0);
             return data;
         }
         byte[] data = (byte[])obj;

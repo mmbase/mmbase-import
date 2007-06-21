@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.30 2006-09-08 14:57:39 michiel Exp $
+ * @version $Id: scanpage.java,v 1.31 2007-06-21 15:50:20 nklasens Exp $
  */
 public class scanpage extends PageInfo {
     // logger
@@ -47,7 +47,7 @@ public class scanpage extends PageInfo {
      * These are either set mnaually using {@link #setParamsVector}, or
      * determined from the page using the {@link #req} field
      */
-    public Vector params;
+    public Vector<String> params;
     /**
      * The processor set for this page.
      * This values is set and used by scanparser to determine the default
@@ -170,7 +170,7 @@ public class scanpage extends PageInfo {
             params=buildparams();
         }
         try {
-            str=(String)params.elementAt(num);
+            str=params.elementAt(num);
         } catch(IndexOutOfBoundsException e) {
             str=null;
         }
@@ -182,8 +182,8 @@ public class scanpage extends PageInfo {
      * Parse the querystring of the current page to retrieve all paarmeters
      * @return a <code>Vector</code> of parameter values
      */
-    private Vector buildparams() {
-        Vector params=new Vector();
+    private Vector<String> buildparams() {
+        Vector<String> params=new Vector<String>();
         if (querystring!=null) {
             String paramline=querystring;
             //StringTokenizer tok=new StringTokenizer(querystring,"+\n\r",true);
@@ -202,7 +202,7 @@ public class scanpage extends PageInfo {
      * Manually set the parameters of a page.
      * @param params a <code>Vector</code> of parameter values
      */
-    public boolean setParamsVector(Vector params) {
+    public boolean setParamsVector(Vector<String> params) {
         this.params=params;
         return true;
     }
@@ -211,7 +211,7 @@ public class scanpage extends PageInfo {
      * Retrieve all parameters of a page.
      * @return a <code>Vector</code> of parameter values
      */
-    public Vector getParamsVector() {
+    public Vector<String> getParamsVector() {
         if (params==null) params=buildparams();
         if (params.size()==0) return null;
         return params;
@@ -223,7 +223,7 @@ public class scanpage extends PageInfo {
      * @param paramline  a string containing teh parametervalues seperated by '+' characters
      */
     public boolean setParamsLine(String paramline) {
-        this.params=new Vector();
+        this.params=new Vector<String>();
         //StringTokenizer tok=new StringTokenizer(paramline,"+\n\r");
         // rico
         int pos=paramline.indexOf("+");

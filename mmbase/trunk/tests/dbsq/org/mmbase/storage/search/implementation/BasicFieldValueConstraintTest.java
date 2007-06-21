@@ -1,15 +1,15 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
+
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldValueConstraintTest extends TestCase {
 
@@ -33,14 +33,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
     /** Field instance 1 (string field). */
     private BasicStepField field1 = null;
 
-    /** Field instance 2 (integer field). */
-    private StepField field2 = null;
-
     /** Builder example. */
     private MMObjectBuilder builder = null;
-
-    /** FieldDefs example. */
-    private FieldDefs fieldDefs = null;
 
     public BasicFieldValueConstraintTest(java.lang.String testName) {
         super(testName);
@@ -61,13 +55,13 @@ public class BasicFieldValueConstraintTest extends TestCase {
         Step step = new BasicStep(builder);
 
         // Create instance 1 (string field).
-        fieldDefs = builder.getField(FIELD_NAME1);
-        field1 = new BasicStepField(step, fieldDefs);
+        org.mmbase.core.CoreField field = builder.getField(FIELD_NAME1);
+        field1 = new BasicStepField(step, field);
         instance1 = new BasicFieldValueConstraint(field1, STRING_VALUE1);
 
         // Create instance 2 (integer field).
-        fieldDefs = builder.getField(FIELD_NAME2);
-        field2 = new BasicStepField(step, fieldDefs);
+        field = builder.getField(FIELD_NAME2);
+        BasicStepField field2 = new BasicStepField(step, field);
         instance2 = new BasicFieldValueConstraint(field2, DOUBLE_VALUE1);
     }
 

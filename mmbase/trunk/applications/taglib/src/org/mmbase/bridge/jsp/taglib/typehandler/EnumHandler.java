@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.39 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.40 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -49,7 +49,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8
      */
     protected Iterator getIterator(Node node, Field field) throws JspTagException  {
-        DataType dataType = field.getDataType();
+        DataType<Object> dataType = field.getDataType();
         Locale locale = tag.getLocale();
         return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
     }
@@ -74,7 +74,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                         resource = enumType;
 
                     }
-                    Class type;
+                    Class<?> type;
                     switch(field.getType()) {
                     case Field.TYPE_STRING:  type = String.class; break;
                     case Field.TYPE_INTEGER: type = Integer.class; break;

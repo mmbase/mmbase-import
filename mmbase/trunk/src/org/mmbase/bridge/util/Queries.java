@@ -16,7 +16,6 @@ import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.BasicSortOrder;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.89 2007-05-31 10:08:03 michiel Exp $
+ * @version $Id: Queries.java,v 1.90 2007-06-21 15:50:27 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */

@@ -247,7 +247,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         {
             Step step = nq2.addStep(newsManager);
             nq2.setNodeStep(step);
-            RelationStep relationStep = nq1.addRelationStep(urlsManager, "posrel", "destination");
+            nq1.addRelationStep(urlsManager, "posrel", "destination");
         }
 
         //a new relation node should not flush cache the cache
@@ -466,8 +466,8 @@ public class ReleaseStrategyTest extends BridgeTest {
 
     }
 
-    private Map getMap(Object key, Object value){
-        Map m = new HashMap();
+    private Map<String,Object> getMap(String key, Object value){
+        Map<String,Object> m = new HashMap<String,Object>();
         m.put(key, value);
         return m;
     }

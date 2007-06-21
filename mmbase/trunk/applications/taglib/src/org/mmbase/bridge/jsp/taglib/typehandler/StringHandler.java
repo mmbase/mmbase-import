@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.60 2007-05-29 17:17:13 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.61 2007-06-21 15:50:25 nklasens Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -108,7 +108,7 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append("\" />");
                 }
             } catch (ClassCastException cce) {
-                DataType dt = field.getDataType();
+                DataType<Object> dt = field.getDataType();
                 log.error("Expected StringDataType for field " + field + " but found " + dt.getClass().getName() + ":"+ dt);
                 throw cce;
             }

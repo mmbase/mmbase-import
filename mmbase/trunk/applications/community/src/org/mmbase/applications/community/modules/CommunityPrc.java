@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.23 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: CommunityPrc.java,v 1.24 2007-06-21 15:50:22 nklasens Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -204,7 +204,7 @@ public class CommunityPrc extends ProcessorModule {
      * MMCI).
      * If neither object is supported, no data is returned.
      */
-    private void setReturnValue(PageInfo sp, Hashtable vars, String name, String value) {
+    private void setReturnValue(PageInfo sp, Hashtable<String, String> vars, String name, String value) {
         if (vars!=null) {
             // return it in the vars hashtable
             if (value==null) {
@@ -222,22 +222,22 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the post was successful
      */
-    private boolean doPostProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    private boolean doPostProcess(PageInfo sp, Hashtable cmds, Hashtable<String, String> vars) {
         // Get the MessageThread, Subject and Body from the formvalues.
         String tmp = (String)cmds.get("MESSAGE-POST");
         setReturnValue(sp,vars,"MESSAGE-ERROR",null);
         try {
             int messagethreadnr = Integer.parseInt(tmp);
-            String subject = (String)vars.get("MESSAGE-SUBJECT");
-            String body = (String)vars.get("MESSAGE-BODY");
-            tmp = (String)vars.get("MESSAGE-CHANNEL");
+            String subject = vars.get("MESSAGE-SUBJECT");
+            String body = vars.get("MESSAGE-BODY");
+            tmp = vars.get("MESSAGE-CHANNEL");
             int channel = Integer.parseInt(tmp);
 
             // Get user and chatterName
-            tmp = (String)vars.get("MESSAGE-CHATTER");
+            tmp = vars.get("MESSAGE-CHATTER");
             int user;
             if (tmp != null) user = Integer.parseInt(tmp); else user = -1;
-            String chatterName = (String)vars.get("MESSAGE-CHATTERNAME");
+            String chatterName = vars.get("MESSAGE-CHATTERNAME");
 
             // Let the messagebuilder post the message.
             int result=Message.POST_ERROR_UNKNOWN;
@@ -268,18 +268,18 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the update was sucecsful
      */
-    private boolean doUpdateProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    private boolean doUpdateProcess(PageInfo sp, Hashtable cmds, Hashtable<String, String> vars) {
         String tmp = (String)cmds.get("MESSAGE-UPDATE");
         try {
             // Get the Subject, Body, number from the formvalues.
             int number = Integer.parseInt(tmp);
-            String subject = (String)vars.get("MESSAGE-SUBJECT");
-            String body = (String)vars.get("MESSAGE-BODY");
+            String subject = vars.get("MESSAGE-SUBJECT");
+            String body = vars.get("MESSAGE-BODY");
             // Get user and chatterName
-            tmp = (String)vars.get("MESSAGE-CHATTER");
+            tmp = vars.get("MESSAGE-CHATTER");
             int user;
             if (tmp != null) user = Integer.parseInt(tmp); else user = -1;
-            String chatterName = (String)vars.get("MESSAGE-CHATTERNAME");
+            String chatterName = vars.get("MESSAGE-CHATTERNAME");
             log.info("MESSAGE-CHATTERNAME="+chatterName);
             int result=messageBuilder.update(chatterName, user, subject, body, number);
             if (result<Message.POST_OK) {
@@ -326,7 +326,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values as MMObjectNodes
      */
-    public Vector getNodeList(Object context, String command, Map params) {
+    public Vector<MMObjectNode> getNodeList(Object context, String command, Map params) {
         activate();
         if (command.equals("WHO")) return channelBuilder.getNodeListUsers(params);
         if (command.equals("TEMPORARYRELATIONS")) return getNodeListTemporaryRelations(params);
@@ -342,7 +342,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param command the list command to execute.
      * @return a <code>Vector</code> that contains the list values
      */
-    public Vector getList(PageInfo sp, StringTagger params, String command) {
+    public Vector<String> getList(PageInfo sp, StringTagger params, String command) {
         if (activate()) {
             if (command.equals("TREE")) return messageBuilder.getListMessages(params);
             if (command.equals("WHO")) return channelBuilder.getListUsers(params);
@@ -367,16 +367,16 @@ public class CommunityPrc extends ProcessorModule {
      * <li>FIELDS - The values of the fields to return.</li>
      * </ul>
      */
-    public Vector getListTemporaryRelations(StringTagger params) {
-        Enumeration relatedNodes = getNodeListTemporaryRelations(params).elements();
+    public Vector<String> getListTemporaryRelations(StringTagger params) {
+        Enumeration<MMObjectNode> relatedNodes = getNodeListTemporaryRelations(params).elements();
         MMObjectNode relatedNode;
         Object value;
-        Vector result=new Vector();
-        Vector fields = params.Values("FIELDS");
+        Vector<String> result=new Vector<String>();
+        Vector<String> fields = params.Values("FIELDS");
         while (relatedNodes.hasMoreElements()) {
-            relatedNode = (MMObjectNode)relatedNodes.nextElement();
+            relatedNode = relatedNodes.nextElement();
             for (int i = 0; i < fields.size(); i++) {
-                value = relatedNode.getValue((String)fields.elementAt(i));
+                value = relatedNode.getValue(fields.elementAt(i));
                 if (value != null) result.add("" + value); else result.add("");
             }
         }
@@ -396,13 +396,13 @@ public class CommunityPrc extends ProcessorModule {
      * <li>FIELDS - The values of the fields to return.</li>
      * </ul>
      */
-    public Vector getNodeListTemporaryRelations(Map params) {
+    public Vector<MMObjectNode> getNodeListTemporaryRelations(Map params) {
         activate();
         String number = (String)params.get("NODE");
         MMObjectNode node;
         if (number == null) {
             log.warn("getListTemporaryRelations(): Can't find node: " + number);
-            return new Vector();
+            return new Vector<MMObjectNode>();
         }
         int offset=0;
         String tmp = (String)params.get("FROMCOUNT");
@@ -416,7 +416,7 @@ public class CommunityPrc extends ProcessorModule {
             node = messageBuilder.getNode(number);
         else
             node = MMObjectBuilder.temporaryNodes.get(number);
-        Vector relatedNodes = messageBuilder.getTemporaryRelated(node, (String)params.get("TYPE"),offset,max);
+        Vector<MMObjectNode> relatedNodes = messageBuilder.getTemporaryRelated(node, (String)params.get("TYPE"),offset,max);
         return relatedNodes;
     }
 }

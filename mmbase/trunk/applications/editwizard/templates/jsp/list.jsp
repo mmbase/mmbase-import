@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.71 2007-06-20 17:01:37 michiel Exp $
+     * @version  $Id: list.jsp,v 1.72 2007-06-21 15:50:23 nklasens Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -332,7 +332,7 @@ for (int i = pageOffset; i<pagecount && i - pageOffset <maxpages; i++) {
     pages.appendChild(pagenode);
 }
 
-java.util.Map params = listConfig.getAttributes();
+java.util.Map<String,String> params = listConfig.getAttributes();
 
 
 params.put("start",      String.valueOf(start));
@@ -345,7 +345,6 @@ params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("unlinkable",  unlinkable +"");
 params.put("creatable",  creatable+"");
-params.put("cloud",  cloud);
 params.put("popupid",  popupId);
 
 if (roleStr != null) params.put("relationRole",  roleStr);
@@ -364,7 +363,8 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
+java.net.URL ew_path = new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), ".");
+params.put("ew_path", ew_path.toString() );
 
 
 log.trace("Doing the transformation for " + listConfig.template);

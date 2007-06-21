@@ -118,7 +118,7 @@ import java.util.Vector;
  *  Released as 1.5.</li>
  * </ul>
  * @author Marco Schmidt
- * @version $Id: ImageInfo.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: ImageInfo.java,v 1.2 2007-06-21 15:50:25 nklasens Exp $
  * @since MMBase-1.7.4
  */
 public class ImageInfo {
@@ -229,7 +229,7 @@ public class ImageInfo {
     private InputStream in;
     private DataInput din;
     private boolean collectComments = true;
-    private Vector comments;
+    private Vector<String> comments;
     private boolean determineNumberOfImages;
     private int numberOfImages;
     private int physicalHeightDpi;
@@ -239,7 +239,7 @@ public class ImageInfo {
 
     private void addComment(String s) {
         if (comments == null) {
-            comments = new Vector();
+            comments = new Vector<String>();
         }
         comments.addElement(s);
     }
@@ -788,7 +788,7 @@ public class ImageInfo {
         if (comments == null || index < 0 || index >= comments.size()) {
             throw new IllegalArgumentException("Not a valid comment index: " + index);
         }
-        return (String)comments.elementAt(index);
+        return comments.elementAt(index);
     }
 
     /**

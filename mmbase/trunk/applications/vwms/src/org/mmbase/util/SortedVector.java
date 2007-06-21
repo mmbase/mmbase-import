@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Todo: Remove duplicate code for the binary search
  * @deprecated You can use java.util.SortedSet (implementations of that), or Collections.sort(), if duplicate entries are essential (but how should they be sorted then?)
  * @author Rico Jansen
- * @version $Id: SortedVector.java,v 1.1 2007-06-03 12:21:45 nklasens Exp $
+ * @version $Id: SortedVector.java,v 1.2 2007-06-21 15:50:22 nklasens Exp $
  */
 public class SortedVector extends java.util.Vector {
 
@@ -268,11 +268,11 @@ public class SortedVector extends java.util.Vector {
      * otherwise use SortVector(Vector,CompareInterface) to specify
      * the interface
      */
-    public static SortedVector SortVector(Vector vec) {
+    public static SortedVector SortVector(Vector<String> vec) {
         SortedVector newvec=new SortedVector();
 
-        for (Enumeration e=vec.elements();e.hasMoreElements();) {
-            newvec.addElement(e.nextElement());
+        for (String string : vec) {
+            newvec.addElement(string);
         }
         newvec.Sort();
         return newvec;
@@ -297,7 +297,7 @@ public class SortedVector extends java.util.Vector {
      */
     public static void main(String args[]) {
         SortedVector v;
-        Vector vec=new Vector();
+        Vector<String> vec=new Vector<String>();
         StringCompare strc=new StringCompare();
 
         /* Binary insert test */

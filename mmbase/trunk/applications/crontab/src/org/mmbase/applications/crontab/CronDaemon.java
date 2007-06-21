@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.13 2006-11-11 16:03:21 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.14 2007-06-21 15:50:21 nklasens Exp $
  */
 public class CronDaemon  {
 
@@ -33,9 +33,9 @@ public class CronDaemon  {
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
-        cronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
-        removedCronEntries = Collections.synchronizedSet(new HashSet());
-        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
+        cronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
+        removedCronEntries = Collections.synchronizedSet(new HashSet<CronEntry>());
+        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
         start();
     }
 

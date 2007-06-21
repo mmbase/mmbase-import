@@ -42,10 +42,10 @@ public class ProviderManager {
     private static PackageDiscovery packagediscovery = null;
 
     // Contains all providers key=provider value=reference to provider
-    private static HashMap providers = null;
+    private static HashMap<String, ProviderInterface> providers = null;
 
     // Contains all providerhandlers
-    private static HashMap providerhandlers = null;
+    private static HashMap<String, String> providerhandlers = null;
 
 
     /** DTD resource filename of the providerhandlers DTD version 1.0 */
@@ -85,7 +85,7 @@ public class ProviderManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator getProviders() {
+    public static Iterator<ProviderInterface> getProviders() {
         if (providers == null) init();
         return providers.values().iterator();
     }
@@ -154,7 +154,7 @@ public class ProviderManager {
     }
 
     public static void readProviders() {
-        providers = new HashMap();
+        providers = new HashMap<String, ProviderInterface>();
         String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"providers.xml";
 
         File file = new File(filename);
@@ -188,7 +188,7 @@ public class ProviderManager {
 
                         if (method != null) {
                             // try to create this handler
-                            String classname = (String)providerhandlers.get(method);
+                            String classname = providerhandlers.get(method);
                             if (classname != null) {
                                 try {
                                     Class newclass = Class.forName(classname);
@@ -289,7 +289,7 @@ public class ProviderManager {
 
 
     public static void readProviderHandlers() {
-       providerhandlers = new HashMap();
+       providerhandlers = new HashMap<String, String>();
        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"providerhandlers.xml";
 
         File file = new File(filename);
@@ -336,7 +336,7 @@ public class ProviderManager {
         }
     }
 
-    public static HashMap getProviderHandlers() {
+    public static HashMap<String, String> getProviderHandlers() {
         return providerhandlers;
     }
 

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.25 2007-06-18 17:34:06 michiel Exp $
+ * @version $Id: Block.java,v 1.26 2007-06-21 15:50:23 nklasens Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -122,7 +122,7 @@ public class Block {
         for (Parameter p : params) {
             help.add(p);
         }
-        specific = new Parameter.Wrapper(help.toArray(Parameter.EMPTY));
+        specific = new Parameter.Wrapper(help.toArray(Parameter.emptyArray()));
         log.debug("Set parameters of " + this + " to " + help);
     }
 

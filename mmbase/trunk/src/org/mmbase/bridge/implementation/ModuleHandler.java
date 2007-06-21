@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.35 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: ModuleHandler.java,v 1.36 2007-06-21 15:50:27 nklasens Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -202,7 +202,7 @@ public class ModuleHandler implements Module, InvocationHandler {
             Cloud cloud = getCloud(parameters);
             log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
             try {
-                List<org.mmbase.module.core.VirtualNode> v 
+                List<org.mmbase.module.core.MMObjectNode> v 
                     = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
                 log.info("Got list " + v);
                 if (v.size() == 0) {

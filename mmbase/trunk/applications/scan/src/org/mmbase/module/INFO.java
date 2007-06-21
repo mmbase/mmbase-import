@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.53 2007-06-21 11:28:42 michiel Exp $
+ * @version $Id: INFO.java,v 1.54 2007-06-21 15:50:21 nklasens Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -56,7 +56,7 @@ public class INFO extends ProcessorModule {
     /**
      * @scope private
      */
-    Hashtable DirCache=new Hashtable();
+    Hashtable<String,SortedVector> DirCache=new Hashtable<String,SortedVector>();
 
     /**
      * Constructor for
@@ -562,8 +562,6 @@ public class INFO extends ProcessorModule {
          return null;
      }
  
-
-
     /**
      * Returns a continues range of values with two set numerical boundaries and a step-increase, or
      * the range of characters of the alphabet. <br />
@@ -948,8 +946,6 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("WEEKDATE")) {
                 String sday;
                 int iday,iweek;
-                Date ad;
-
                 iweek=(days/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -997,8 +993,6 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("GWEEKDATE")) {
                 String sday;
                 int iday,iweek;
-                Date ad;
-
                 iweek=((days+3)/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1022,8 +1016,6 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("NEXTGWEEKDATE")) {
                 String sday;
                 int iday,iweek;
-                Date ad;
-
                 iweek=((days+3)/7)+2;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1256,7 +1248,7 @@ public class INFO extends ProcessorModule {
         // scan the disk
         File scanfile = new File(documentroot+base);
         //debug(documentroot+base);
-        SortedVector fullres=(SortedVector)DirCache.get(documentroot+base);
+        SortedVector fullres=DirCache.get(documentroot+base);
         if (fullres==null) {
             fullres=getDirTimes(scanfile);
             DirCache.put(documentroot+base,fullres);
@@ -1328,8 +1320,8 @@ public class INFO extends ProcessorModule {
         String theFileName;
         String files[] = scanfile.list();
         if (files!=null) {
-            for (int i=0;i<files.length;i++) {
-                theFileName=files[i];
+            for (String element : files) {
+                theFileName=element;
                 theFile = new File(scanfile,theFileName);
                 if (theFile.isDirectory() && theFileName.length()==10) {
                     d=DateSupport.parsedbmdate(theFileName);

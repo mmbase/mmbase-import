@@ -50,15 +50,15 @@ public class Controller {
     }
 
 
-    public List getNeededBuilders(String cloudmodelfile) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getNeededBuilders(String cloudmodelfile) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 	log.info("GETNEEDED BUILDERS="+cloudmodelfile);	
 	Model model = new Model(cloudmodelfile);
-        Iterator neededbuilders=model.getNeededBuilders();
-        for (Iterator i = neededbuilders; i.hasNext();) {
-            NeededBuilder nb=(NeededBuilder)i.next();
+        Iterator<NeededBuilder> neededbuilders=model.getNeededBuilders();
+        for (Iterator<NeededBuilder> i = neededbuilders; i.hasNext();) {
+            NeededBuilder nb=i.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name",nb.getName());
             virtual.setValue("maintainer",nb.getMaintainer());
@@ -69,14 +69,14 @@ public class Controller {
     }
 
 
-    public List getNeededRelDefs(String cloudmodelfile) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getNeededRelDefs(String cloudmodelfile) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 	Model model = new Model(cloudmodelfile);
-        Iterator neededreldefs=model.getNeededRelDefs();
-        for (Iterator i = neededreldefs; i.hasNext();) {
-            NeededRelDef nr=(NeededRelDef)i.next();
+        Iterator<NeededRelDef> neededreldefs=model.getNeededRelDefs();
+        for (Iterator<NeededRelDef> i = neededreldefs; i.hasNext();) {
+            NeededRelDef nr=i.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("source",nr.getSource());
             virtual.setValue("target",nr.getTarget());
@@ -89,17 +89,17 @@ public class Controller {
         return list;
     }
 
-    public List getNeededBuilderFields(String cloudmodelfile,String buildername,String language) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getNeededBuilderFields(String cloudmodelfile,String buildername,String language) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 	Model model = new Model(cloudmodelfile);
         NeededBuilder nb=model.getNeededBuilder(buildername);
 	if (nb!=null) {
-            Iterator nbfl = nb.getFields();
+            Iterator<NeededBuilderField> nbfl = nb.getFields();
 	    int pos = 3;
 	    while (nbfl.hasNext()) {
             	MMObjectNode virtual = builder.getNewNode("admin");
-		NeededBuilderField nbf = (NeededBuilderField)nbfl.next();
+		NeededBuilderField nbf = nbfl.next();
             	virtual.setValue("dbname",nbf.getDBName());
             	virtual.setValue("dbstate",nbf.getDBState());
             	virtual.setValue("dbtype",nbf.getDBType());
@@ -166,14 +166,14 @@ public class Controller {
     }
 
 
-    public List getAllowedRelations(String cloudmodelfile) {
-        List list = new ArrayList();
+    public List<MMObjectNode> getAllowedRelations(String cloudmodelfile) {
+        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 	Model model = new Model(cloudmodelfile);
-        Iterator allowedrelations=model.getAllowedRelations();
-        for (Iterator i = allowedrelations; i.hasNext();) {
-            AllowedRelation ar=(AllowedRelation)i.next();
+        Iterator<AllowedRelation> allowedrelations=model.getAllowedRelations();
+        for (Iterator<AllowedRelation> i = allowedrelations; i.hasNext();) {
+            AllowedRelation ar=i.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("from",ar.getFrom());
             virtual.setValue("to",ar.getTo());

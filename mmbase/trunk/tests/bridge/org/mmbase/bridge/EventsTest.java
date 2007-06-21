@@ -30,7 +30,7 @@ public class EventsTest extends BridgeTest {
 
         // register a event listener here.
         AllEventListener listener = new AllEventListener() {
-                List events = new ArrayList();
+                List<Event> events = new ArrayList<Event>();
                 public void notify(Event e) {
                     events.add(e);
                 }

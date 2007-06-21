@@ -24,7 +24,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * Posts a message
  *
  * @author Pierre van Rooden
- * @version $Id: UpdateTag.java,v 1.11 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: UpdateTag.java,v 1.12 2007-06-21 15:50:23 nklasens Exp $
  */
  
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
@@ -65,7 +65,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         if (body.length()==0) {
             throw new JspTagException("Field 'body' not specified");
         }
-        Hashtable params=new Hashtable();
+        Hashtable<String, Object> params=new Hashtable<String, Object>();
         try {
             Cloud cloud=getCloudVar();
             params.put("CLOUD",cloud);

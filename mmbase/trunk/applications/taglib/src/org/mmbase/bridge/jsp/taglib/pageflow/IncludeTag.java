@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag.UrlParameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
@@ -17,7 +16,7 @@ import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
-//import javax.net.ssl.*;
+
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.75 2007-06-19 10:58:42 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.76 2007-06-21 15:50:20 nklasens Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -263,10 +262,10 @@ public class IncludeTag extends UrlTag {
         req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
 
         if (attributes != Attribute.NULL) {
-            Iterator i = Referids.getReferids(attributes, this).entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> i = Referids.getReferids(attributes, this).entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                req.setAttribute((String) entry.getKey(), entry.getValue());
+                Map.Entry<String, Object> entry = i.next();
+                req.setAttribute(entry.getKey(), entry.getValue());
             }
 
         }
