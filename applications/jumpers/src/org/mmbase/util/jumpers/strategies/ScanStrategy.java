@@ -10,16 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.jumpers.strategies;
 
-import java.util.Vector;
-import java.util.Iterator;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
-
-import org.mmbase.util.jumpers.JumperCalculator;
 
 /**
 * This is the default scan-strategy.
@@ -41,12 +32,10 @@ import org.mmbase.util.jumpers.JumperCalculator;
 * for others. 
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: ScanStrategy.java,v 1.1 2007-06-18 16:15:25 michiel Exp $
+* @version $Id: ScanStrategy.java,v 1.2 2007-06-21 16:04:56 nklasens Exp $
 */
 
 public class ScanStrategy extends JumperStrategy { 
-
-    private static Logger log = Logging.getLoggerInstance(ScanStrategy.class);
 
     private String[] builders = new String[] {
         "cassettes", "cds", "imagealiases", "urls"
@@ -58,8 +47,8 @@ public class ScanStrategy extends JumperStrategy {
             throw new IllegalArgumentException("node(" + node + ") is null!");
         }
 
-        for(int i = 0; i < builders.length; i++) { 
-            if(node.getBuilder().getTableName().equals(builders[i])) {
+        for (String element : builders) { 
+            if(node.getBuilder().getTableName().equals(element)) {
                 return true;
             }
         }

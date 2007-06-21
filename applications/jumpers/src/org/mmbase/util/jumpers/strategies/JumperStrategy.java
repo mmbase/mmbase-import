@@ -10,37 +10,19 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.jumpers.strategies;
 
-import java.util.List;
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Vector;
 import java.util.Iterator;
-import java.util.StringTokenizer;
-
 import java.math.BigDecimal;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.builders.Jumpers;
 
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.module.corebuilders.FieldDefs;
-
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-
-import org.mmbase.storage.search.implementation.database.SqlHandler;
-import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 
 /**
 * This is the baseclass for strategies.
@@ -59,7 +41,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 * @see #calculate(MMObjectNode)
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: JumperStrategy.java,v 1.1 2007-06-18 16:15:25 michiel Exp $
+* @version $Id: JumperStrategy.java,v 1.2 2007-06-21 16:04:56 nklasens Exp $
 */
 public abstract class JumperStrategy { 
 
@@ -68,7 +50,7 @@ public abstract class JumperStrategy {
     protected static MMBase     mmbase  = null; 
     protected static Jumpers    jumpers = null;
 
-    protected Map testset = new HashMap();
+    protected Map<String, String> testset = new HashMap<String, String>();
     protected static Cloud cloud;
 
     static { 
@@ -125,12 +107,12 @@ public abstract class JumperStrategy {
         if(testset.size() > 0) { 
             log.info("strategy(" + getClass().getName() + "): test started..");
             
-            Iterator i = testset.keySet().iterator();
+            Iterator<String> i = testset.keySet().iterator();
             while(i.hasNext() && result) { 
                 long _starttime = System.currentTimeMillis();
 
-                String key = (String)i.next();
-                String url = (String)testset.get(key);
+                String key = i.next();
+                String url = testset.get(key);
                 MMObjectNode node = null;
 
                 if(url != null && !url.equals("")) { 

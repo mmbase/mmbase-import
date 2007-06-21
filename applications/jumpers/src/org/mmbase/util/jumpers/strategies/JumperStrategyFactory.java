@@ -13,15 +13,12 @@ package org.mmbase.util.jumpers.strategies;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
-
 import java.util.StringTokenizer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.builders.Jumpers;
 
@@ -38,7 +35,7 @@ import org.mmbase.module.builders.Jumpers;
 * returns true and after which it will return stategy.calculate(node).
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: JumperStrategyFactory.java,v 1.1 2007-06-18 16:15:25 michiel Exp $
+* @version $Id: JumperStrategyFactory.java,v 1.2 2007-06-21 16:04:56 nklasens Exp $
 */
 
 
@@ -47,7 +44,7 @@ public class JumperStrategyFactory {
     private static final Logger log = Logging.getLoggerInstance(JumperStrategyFactory.class);
 
     private static Jumpers jumpers;
-    private static List strategies = new ArrayList();
+    private static List<JumperStrategy> strategies = new ArrayList<JumperStrategy>();
 
     /**
     * Add available strategies to the pool of strategies.
@@ -70,7 +67,7 @@ public class JumperStrategyFactory {
             String strategy_classname = tok.nextToken().trim();
             try { 
                 JumperStrategy strategy = (JumperStrategy)Class.forName(strategy_classname).newInstance();
-                this.strategies.add(strategy);
+                JumperStrategyFactory.strategies.add(strategy);
                 log.info("using strategy["+strategy_classname+"]");
             } catch(java.lang.ClassNotFoundException e) {
                 log.fatal("strategy name("+strategy_classname+"): Exception: "+e);
@@ -108,9 +105,9 @@ public class JumperStrategyFactory {
         long starttime = System.currentTimeMillis();  
         String url = null;
 
-        Iterator i = strategies.iterator();
+        Iterator<JumperStrategy> i = strategies.iterator();
         while(i.hasNext()) { 
-            JumperStrategy strategy = (JumperStrategy)i.next();
+            JumperStrategy strategy = i.next();
             if(strategy.contains(node)) { 
                 if (log.isDebugEnabled()) {
                     log.debug(node.getBuilder().getTableName() + "(" + node.getNumber() + "): " + strategy.getClass().getName() + " going to handle..");
@@ -139,9 +136,9 @@ public class JumperStrategyFactory {
 
     public boolean test() { 
         boolean result = false;
-        Iterator i = strategies.iterator();
+        Iterator<JumperStrategy> i = strategies.iterator();
         while(i.hasNext()) { 
-            JumperStrategy strategy = (JumperStrategy)i.next();
+            JumperStrategy strategy = i.next();
             result = strategy.test();
             if(!result)
                 return result;

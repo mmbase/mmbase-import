@@ -10,21 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.jumpers;
 
-import java.util.Vector;
-import java.util.Iterator;
-
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.Jumpers;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.jumpers.strategies.JumperStrategy;
 import org.mmbase.util.jumpers.strategies.JumperStrategyFactory;
-
-import org.mmbase.util.jumpers.strategies.*;
 
 /**
 * This is the factory-class for jumper-strategies.
@@ -39,7 +29,7 @@ import org.mmbase.util.jumpers.strategies.*;
 * returns true and after which it will return stategy.calculate(node).
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: JumperCalculator.java,v 1.1 2007-06-18 16:15:25 michiel Exp $
+* @version $Id: JumperCalculator.java,v 1.2 2007-06-21 16:04:56 nklasens Exp $
 */
 
 public class JumperCalculator { 
