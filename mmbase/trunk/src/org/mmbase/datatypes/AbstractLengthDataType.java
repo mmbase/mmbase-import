@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.20 2007-05-08 15:23:37 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.21 2007-06-21 07:32:31 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
@@ -110,12 +110,18 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
         getMaxLengthRestriction().setValue(Long.valueOf(value));
     }
 
+    public int getEnforceStrength() {
+        int enforceStrength = Math.max(super.getEnforceStrength(), minLengthRestriction.getEnforceStrength());
+        return Math.max(enforceStrength, maxLengthRestriction.getEnforceStrength());
+    }
+
     protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValueOrNull(errors, castValue, value,  node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         return errors;
 
     }
+
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);

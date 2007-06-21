@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.73 2007-05-08 15:23:37 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.74 2007-06-21 07:32:31 pierre Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -71,8 +71,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     /**
      * Create a data type object of unspecified class type
-     * @param name the name of the data type
-s     */
+     * @param name the name of the data types
+     */
     public BasicDataType(String name) {
         this(name, (Class<C>) Object.class);
     }
@@ -484,6 +484,12 @@ s     */
         errors = uniqueRestriction.validate(errors, castValue, node, field);
         errors = validateCastValue(errors, castValue, value, node, field);
         return errors;
+    }
+
+    public int getEnforceStrength() {
+        int enforceStrength = Math.max(typeRestriction.getEnforceStrength(), requiredRestriction.getEnforceStrength());
+        enforceStrength = Math.max(enforceStrength, enumerationRestriction.getEnforceStrength());
+        return Math.max(enforceStrength, uniqueRestriction.getEnforceStrength());
     }
 
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
