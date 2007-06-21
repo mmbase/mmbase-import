@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.51 2005-08-31 11:46:55 nklasens Exp $
+ * @version $Id: INFO.java,v 1.52 2007-06-21 07:30:18 pierre Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -74,6 +74,12 @@ public class INFO extends ProcessorModule {
         rnd=new RandomPlus();
     }
 
+    /**
+     * Returns one propertyvalue to the subclass (original in Module).
+     */
+    protected String getProperty(String name, String var) {
+        return ""; // really unsure what this is supposed to do?
+    }
 
     /**
      * Generate a list of values from a command to the processor.
@@ -535,12 +541,12 @@ public class INFO extends ProcessorModule {
                     tmp = tmp.substring(tmp.lastIndexOf('.')+1);
                     domain = tmp+domain;
                     if (domain!=null) {
-                        String serverdomain=getProperty("server","Domain");
+                        String serverdomain = getProperty("server","Domain");
                         return toYesNo(serverdomain.equals(domain));
                     }
                     return toYesNo(false);
                 } else {
-                    String servername=getProperty("server","MachineName");
+                    String servername = getProperty("server","MachineName");
                     return toYesNo(servername.equals(tmp));
                 }
             }
