@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.43 2007-06-21 12:29:51 michiel Exp $
+ * @version $Id: Logging.java,v 1.44 2007-06-21 16:17:21 michiel Exp $
  */
 
 
@@ -112,7 +112,7 @@ public class Logging {
             Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-logging");
             return contextMap;
         } catch (javax.naming.NamingException ne) {
-            log.error("Can't obtain properties from application context: " + ne.getMessage());
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
             return new HashMap<String, String>();
         }
     }
