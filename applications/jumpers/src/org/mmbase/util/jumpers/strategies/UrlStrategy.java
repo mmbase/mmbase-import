@@ -10,16 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.jumpers.strategies;
 
-import java.util.Vector;
-import java.util.Iterator;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
-
-import org.mmbase.util.jumpers.JumperCalculator;
 
 /**
 * UrlStrategy.
@@ -28,12 +19,10 @@ import org.mmbase.util.jumpers.JumperCalculator;
 * @see org.mmbase.module.builders.Urls#getDefaultUrl(int) 
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: UrlStrategy.java,v 1.1 2007-06-18 16:15:25 michiel Exp $
+* @version $Id: UrlStrategy.java,v 1.2 2007-06-21 16:04:56 nklasens Exp $
 */
 
 public class UrlStrategy extends JumperStrategy { 
-
-    private static Logger log = Logging.getLoggerInstance(UrlStrategy.class);
 
     /** {@inheritDoc} */
     public boolean contains(MMObjectNode node) {
