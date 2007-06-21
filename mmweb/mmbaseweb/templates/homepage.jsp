@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
 %><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
 %><mm:cloud><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp"
@@ -176,6 +177,7 @@
 	<mm:link page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10000&created:previous=-1w&sorter/field=created&sorter/order=DESC">
 	  <a href="${_}">
 	</mm:link>
+	<cache:cache time="3600">
 	<mm:formatter escape="none">
 	  <mm:include cite="true" page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa">
 	    <mm:param name="view">rss</mm:param>
@@ -245,6 +247,7 @@
 	  </mm:xslt>
 	</mm:formatter>
 	</mm:compare></mm:field></mm:node>
+	</cache:cache>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
 </tr>
