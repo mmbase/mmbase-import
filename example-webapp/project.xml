@@ -75,6 +75,37 @@ See http://www.MMBase.org/license
 				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
+
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-mynews</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+				<mmbase.templates.path>mmexamples</mmbase.templates.path>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-myyahoo</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+				<mmbase.templates.path>mmexamples</mmbase.templates.path>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-codings</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+				<mmbase.templates.path>mmexamples</mmbase.templates.path>
+			</properties>
+		</dependency>
 		
         <dependency>
             <groupId>hsqldb</groupId>
@@ -84,26 +115,6 @@ See http://www.MMBase.org/license
             <properties>
 				<war.bundle>${war.bundle}</war.bundle>
             </properties>
-        </dependency>
-
-		<!-- Download libraries for database connection pooling -->        
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.2.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>commons-pool</groupId>
-            <artifactId>commons-pool</artifactId>
-            <version>1.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.1</version>
-            <type>jar</type>
         </dependency>
 
     </dependencies>
