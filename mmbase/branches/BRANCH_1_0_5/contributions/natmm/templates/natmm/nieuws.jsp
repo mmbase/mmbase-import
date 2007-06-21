@@ -54,7 +54,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
    <% 
    if(!artikelID.equals("-1")&&artCnt<2) { // *** show the selected article, or the unique article related to this page
       %><td style="vertical-align:top;width:75%;padding:10px;padding-top:0px;">
-			  <br/>
+		<br/>
          <mm:list nodes="<%= artikelID %>" path="artikel,posrel,dossier" orderby="dossier.naam">
             <mm:first>Dossier: </mm:first>
             <mm:first inverse="true">, </mm:first>
