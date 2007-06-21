@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.221 2007-06-11 14:56:30 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.222 2007-06-21 13:46:51 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -977,12 +977,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
-    public Collection  getFunctions() {
+    public Collection<Function<?>> getFunctions() {
         return  getNode().getFunctions();
     }
 
     @Override
-    protected Function getNodeFunction(String functionName) {
+    protected Function<?> getNodeFunction(String functionName) {
         return getNode().getFunction(functionName);
     }
 
