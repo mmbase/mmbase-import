@@ -154,6 +154,12 @@ strong
 #relatedcontent .relationcontainer td { font-size: 0.85em; }
 #relatedcontent ul { font-size: 0.85em; }
 
+.sponsorlogos
+{
+	text-align: center;
+	margin: -1em 0 0 0;
+}
+
 #footer
 {
     clear: right;
