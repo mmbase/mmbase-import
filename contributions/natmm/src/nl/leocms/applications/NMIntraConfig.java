@@ -23,7 +23,8 @@ public class NMIntraConfig {
       "products",
       "projects",
       "teaser",
-      "vacature"
+      "vacature",
+      "vraagbaak"
    };
    
    // used to determine in which objects a contentelement is used (ContentHelper.usedInItems)
