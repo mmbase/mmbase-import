@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77.2.3 2007-06-19 14:19:11 michiel Exp $
+ * @version $Id: Module.java,v 1.77.2.4 2007-06-22 14:57:52 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -237,6 +237,7 @@ public abstract class Module extends FunctionProvider {
      * override properties through application context
      * @param contextPath path in application context where properties are located
      * @since MMBase 1.8.2
+     * @deprecated Just use {@link #loadInitParameters()}
      */
     public void loadInitParameters(String contextPath) {
         try {
@@ -251,6 +252,14 @@ public abstract class Module extends FunctionProvider {
         }
     }
 
+    /**
+     * override properties through application context
+     * @since MMBase 1.8.5
+     */
+    public void loadInitParameters() {
+        loadInitParameters("mmbase/" + getName());
+
+    }
     
     /**
      * Returns an iterator of all the modules that are currently active.
@@ -478,7 +487,7 @@ public abstract class Module extends FunctionProvider {
                     mod.setMaintainer(parser.getMaintainer());
                     mod.setVersion(parser.getVersion());
 
-                    mod.loadInitParameters("mmbase/" + mod.getName());
+                    mod.loadInitParameters();
 
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
