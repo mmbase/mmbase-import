@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.1 2007-06-21 13:08:13 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.2 2007-06-22 12:45:42 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1498,30 +1498,41 @@ public class ResourceLoader extends ClassLoader {
         private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    String currentRoot  = root + ResourceLoader.this.context.getPath();
-                    String resourcePath = currentRoot + (recursive == null ? "" : recursive);
-                    Collection c = servletContext.getResourcePaths(resourcePath);
+                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + ResourceLoader.this.context.getPath();
+                    final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
+                    final Collection c = servletContext.getResourcePaths(resourcePath);
+
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("CurrentRoot '" + currentRoot + "' resourcePath '" + resourcePath + "' c: " + c);
+                    }
+
                     if (c == null) return results;
+
                     Iterator j = c.iterator();
                     while (j.hasNext()) {
                         String res = (String) j.next();
+                        log.trace(res);
                         if (res.equals(resourcePath + "/")) {
                             // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
                             continue;
                         }
 
                         String newResourcePath = res.substring(currentRoot.length());
-                        boolean isDir = newResourcePath.endsWith("/");
+                        final boolean isDir = newResourcePath.endsWith("/");
                         if (isDir) {
+                            newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1);
                             // subdirs
                             if (recursive != null) {
-                                getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
+                                getPaths(results, pattern, newResourcePath, directories);
                             }
-                            if (newResourcePath.equals("/")) continue;
+                            if (newResourcePath.equals("")) continue;
                         }
-                        if ((pattern == null || pattern.matcher(newResourcePath).matches()) && (directories == isDir)) {
-                            if (isDir) newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1) ;
+                        if ((pattern == null || pattern.matcher("/" + newResourcePath).matches()) && (directories == isDir)) {
+                            log.debug("Adding " + newResourcePath);
                             results.add(newResourcePath);
+                        } else {
+                            log.debug(newResourcePath + " does not match " + pattern);
                         }
                     }
                 } catch (NoSuchMethodError nsme) {
@@ -1534,9 +1545,12 @@ public class ResourceLoader extends ClassLoader {
                     // old app-server (orion 1.5.4: java.lang.NoSuchMethodError: javax.servlet.ServletContext.getResourcePaths(Ljava/lang/String;)Ljava/util/Set;)
                     // simply ignore, running on war will not work in such app-servers
                 } catch (Throwable t) {
-                    log.error(Logging.stackTrace(t));
+                    log.error(t.getMessage(), t);
                     // ignore
                 }
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("Returning " + results);
             }
             return results;
         }
