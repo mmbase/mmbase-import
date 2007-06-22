@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.7 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: SmartPathFunction.java,v 1.8 2007-06-22 15:00:06 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -59,11 +59,13 @@ public class SmartPathFunction {
      */
     public void setNodeNumber(String nm) {
         log.debug("Setting " + nodeNumber);
-        nodeNumber = nm;
+        if (nm != null && ! nm.equals("")) {
+            nodeNumber = nm;
+        }
     }
 
     public void setNode(org.mmbase.bridge.Node n) {
-        if (nodeNumber == null) {
+        if (nodeNumber == null || "".equals(nodeNumber)) {
             nodeNumber = "" + n.getNumber();
         }
     }
