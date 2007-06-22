@@ -141,5 +141,28 @@
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
+      
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Timestamp</guiname>
+            <guiname xml:lang="en">Timestamp</guiname>
+            <guitype>integer</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>5</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">timestamp</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
    </fieldlist>
 </builder>
