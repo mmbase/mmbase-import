@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.10 2007-06-22 13:52:34 evdberg Exp $
+ * @version $Id: BestelAction.java,v 1.11 2007-06-22 14:38:25 evdberg Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -128,6 +128,7 @@ public class BestelAction  extends Action {
             bestelRegel.setValue("gevouwd_gerold",item.getGevouwenOfOpgerold());
             bestelRegel.setValue("opmerkingen",item.getOpmerkingen());
             bestelRegel.setValue("details",item.getKaartTypeDetail());
+            bestelRegel.setValue("timestamp",new Integer((int)System.currentTimeMillis()/1000));
             bestelRegel.commit();
 
             log.debug("saved bestelling to database: " + bestelNode.getStringValue("number"));
