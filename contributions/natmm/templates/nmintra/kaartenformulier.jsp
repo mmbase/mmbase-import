@@ -662,7 +662,8 @@ formulier.">
 
 			</td>
 			<td width="249">
-				<html:select style="width:100%;" property="sel_Kaart" size="6" multiple="multiple" onchange="jsc_setPicture(this.selectedIndex);">
+			<%-- ** If multiple karts need to be selected add multiple="multiple" to the html:select below ** --%>
+				<html:select style="width:100%;" property="sel_Kaart" size="6" onchange="jsc_setPicture(this.selectedIndex);">
 				</html:select>
 			</td>
 		</tr>
