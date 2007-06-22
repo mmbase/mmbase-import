@@ -25,6 +25,8 @@ import java.io.PrintWriter;
 
 import java.util.*;
 
+import java.lang.reflect.*;
+
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.util.logging.Logging;
@@ -37,7 +39,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.53.2.2 2007-05-04 12:35:50 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.53.2.3 2007-06-22 15:42:35 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -160,9 +162,27 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         cal.setTime(new java.util.Date(System.currentTimeMillis() - start));
         if (! mmbaseInited) {
             log.info("MMBase servlets are ready to receive requests, started in " +cal.get(Calendar.MINUTE)+" min "+cal.get(Calendar.SECOND)+" sec.");
+            try {
+                Properties p = new Properties();
+                java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("oscache.properties");
+                if (is != null) {
+                    p.load(is);
+                }
+                if (p.getProperty("cache.path") == null) {
+                    p.setProperty("cache.path", mmb.getInitParameter("datadir") + java.io.File.separator + "oscache");
+                }
+                
+                Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
+                Method m = osCache.getMethod("getInstance", new Class [] {ServletContext.class, Properties.class});
+                m.invoke(null, new Object[] { getServletContext(), p});
+                log.service("Using " + p + " for oscache");                
+            } catch (Exception e) {
+                log.service(e.getMessage(), e);
+            }
         }
 
         mmbase = mmb;
+
         mmbaseInited = true;
     }
 
@@ -579,6 +599,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 associatedServlets.clear();
                 servletMappings.clear();
                 log.info("No MMBase servlets left; modules can be shut down");
+                MMBase.getMMBase().shutdown();
                 Module.shutdownModules();
                 ThreadGroup threads = MMBaseContext.getThreadGroup();
                 log.service("Send interrupt to " + threads.activeCount() + " threads in " +
