@@ -20,6 +20,7 @@
 
       <!-- relations NMIntra -->
       <builder version="0" maintainer="mmbase.org">discountrel</builder>
+      <builder version="0" maintainer="mmbase.org">kaart_bestel_regel</builder>
 
       <!-- objects NatMM -->
       <builder version="0" maintainer="mmbase.org">ads</builder>
@@ -86,6 +87,7 @@
       <builder version="0" maintainer="mmbase.org">style</builder> <!-- should be removed after migration -->
       <builder version="0" maintainer="mmbase.org">terms</builder>
       <builder version="0" maintainer="mmbase.org">thema_plot_kaart</builder>
+      <builder version="0" maintainer="mmbase.org">bestelling_vastgoed</builder>
       <builder version="0" maintainer="mmbase.org">topics</builder>
       <builder version="0" maintainer="mmbase.org">users</builder>
       <builder version="0" maintainer="mmbase.org">vraagbaak</builder>      
@@ -105,6 +107,7 @@
       <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel"/>
       <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" builder="rolerel"/>
       <reldef source="synonymrel" target="synonymrel" direction="bidirectional" guisourcename="Synonymrel" guitargetname="Synonymrel" builder="insrel"/>
+      <reldef source="kaart_bestel_regel" target="kaart_bestel_regel" direction="bidirectional" guisourcename="KaartBestelRegel" guitargetname="KaartBestelRegel" builder="kaart_bestel_regel"/>
    </neededreldeflist>
    <allowedrelationlist>
       <relation from="afdelingen" to="afdelingen" type="readmore"/>
@@ -238,6 +241,7 @@
       <relation from="terms" to="terms" type="rolerel"/>
       <relation from="terms" to="terms" type="synonymrel"/>
       <relation from="thema_plot_kaart" to="images" type="related"/>
+      <relation from="bestelling_vastgoed" to="thema_plot_kaart" type="kaart_bestel_regel"/>
       <relation from="topics" to="pools" type="posrel" />
       <relation from="topics" to="keywords" type="posrel" />
       <relation from="users" to="medewerkers" type="related"/> 
@@ -312,6 +316,7 @@
       <datasource builder="style" path="NMIntra/style.xml"/>  <!-- should be removed after migration -->
       <datasource builder="terms" path="NMIntra/terms.xml"/>
       <datasource builder="thema_plot_kaart" path="NMIntra/thema_plot_kaart.xml"/>
+      <datasource builder="bestelling_vastgoed" path="NMIntra/bestelling_vastgoed.xml"/>
       <datasource builder="topics" path="NMIntra/topics.xml"/>
       <datasource builder="users" path="NMIntra/users.xml"/>
       <datasource builder="vraagbaak" path="NMIntra/vraagbaak.xml"/>
@@ -328,6 +333,7 @@
       <relationsource builder="posrel" path="NMIntra/posrel.xml"/>
       <relationsource builder="readmore" path="NMIntra/readmore.xml"/>
       <relationsource builder="rolerel" path="NMIntra/rolerel.xml"/>
+      <relationsource builder="kaart_bestel_regel" path="NMIntra/kaart_bestel_regel.xml"/>
     </relationsourcelist>
     <contextsourcelist>
         <contextsource type="full" goal="backup" path=""/>
