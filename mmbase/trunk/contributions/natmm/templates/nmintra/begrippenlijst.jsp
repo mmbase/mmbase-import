@@ -63,7 +63,7 @@ if(twoColumns) {
     	<br/>
     	
     	<div id ="<mm:field name="number"/>" style="display:none;">
-    		<mm:relatednodes path="related,vraagbaak" searchdir="source">
+    		<mm:relatednodes path="related,vraagbaak" searchdir="source" orderby="titel">
 	    		&nbsp;&nbsp;<a href='?v=<mm:field name="number"/>' class="underlined"><mm:field name="titel"/></a><br/>
 	    	</mm:relatednodes>
 	    	<br/>
