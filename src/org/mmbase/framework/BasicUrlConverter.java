@@ -23,16 +23,15 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
- * The framework that does nothing, besides adding the block-parameters to the URL. No support for
- * conflicting block parameters.
+ * Basic implementation of UrlConverter
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.5 2007-06-20 12:25:20 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.6 2007-06-22 13:21:25 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
-
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
@@ -44,6 +43,7 @@ public class BasicUrlConverter implements UrlConverter {
 
     /**
      * General utility function to create an Url
+     * 
      * @param page servletPath
      * @param params The query to be added
      * @param req A request object is needed to determin context-paths and so on.
