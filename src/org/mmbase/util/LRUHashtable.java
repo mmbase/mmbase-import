@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A hashtable which has a maximum of entries.  Old entries are
@@ -20,10 +21,12 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.24 2006-02-23 17:37:23 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.24.2.1 2007-06-22 14:55:43 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
+
+    private static final Logger log = Logging.getLoggerInstance(LRUHashtable.class);
 
     private static final String ROOT     = "root";
     private static final String DANGLING = "dangling";
@@ -108,7 +111,11 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             appendEntry(work);
             currentSize++;
             if (currentSize > size) {
-                remove(root.next.key);
+                Object remove = root.next.key;
+                Object was =  remove(remove);
+                if (was == null) {
+                    log.warn("Nothing was removed, while that was expected " + remove + " should have been removed");
+                }
             }
         }
         return rtn;
