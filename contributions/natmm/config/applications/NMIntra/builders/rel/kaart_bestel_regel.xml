@@ -102,8 +102,8 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Gebied of Coordinaten</guiname>
-            <guiname xml:lang="en">Gebied of Coordinaten</guiname>
+            <guiname xml:lang="nl">Details</guiname>
+            <guiname xml:lang="en">Details</guiname>
             <guitype>string</guitype>
          </gui>
          <editor>
@@ -114,7 +114,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">gebied_coordinaten</name>
+            <name xml:lang="nl">details</name>
             <type key="false" notnull="false" size="256" state="persistent">STRING</type>
          </db>
       </field>
