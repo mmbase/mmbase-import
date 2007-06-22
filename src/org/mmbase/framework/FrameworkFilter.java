@@ -19,16 +19,16 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Requestfilter that filters out all URL's looking for virtual 'userfriendly' links that have a 
- * corresponding page (technical URL) within the website. When the recieved URL is not a
- * recognized by the framework as an 'userfriendly' one it just gets forwarded in its original 
+ * corresponding page (technical URL) within the website. When the recieved URL is not
+ * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original 
  * form.
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
  * The filtering and conversion to a URL pointing to an existing JSP template is 
- * done by UrlConverter. Based upon code from LeoCMS and CMSC.
+ * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.6 2007-06-20 11:52:34 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.7 2007-06-22 13:21:25 andre Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -73,7 +73,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * @throws ServletException thrown when an exception occurs in the web.xml
      */
     public void init(FilterConfig config) throws ServletException {
-        log.info("Starting UrlFilter for YAFramework");
+        log.info("Starting UrlFilter");
         ctx = config.getServletContext();
         String excludes = config.getInitParameter("excludes");
         if (excludes != null && excludes.length() > 0) {
@@ -107,10 +107,12 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         if (path == null) path = request.getPathInfo();
         return path;
     }
+    
+
     /**
-     * Filters a request. 
+     * Filters a request and delegates it to UrlConverter if needed.
      * URL conversion is only done when the URI does not match one of the excludes in web.xml.
-     * The conversion work is delegated to UrlConverter. Waits for MMBase to be up.
+     * Waits for MMBase to be up.
      *
      * @param request	incoming request
      * @param response	outgoing response
