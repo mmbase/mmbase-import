@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.7 2007-06-21 14:01:51 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.8 2007-06-22 08:22:06 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -342,10 +342,6 @@ public class KaartenForm extends ActionForm{
       natGebMap = nelis.getNatGebMap();
       gebiedMap = nelis.getGebiedMap();
       
-      // Nelis reader instance can be modified with specific selections. boolean values have to be set to false, to reset the maps properly.
-      resetSubMapValues(natGebMap);
-      resetSubMapValues(gebiedMap);
-      
       //kaart type
       selKaartMap = new TreeMap();
       selKaartMap.put(natuurgebiedKey, new ArrayList());
@@ -353,20 +349,6 @@ public class KaartenForm extends ActionForm{
       selKaartMap.put(nederlandKey, new ArrayList());
       selKaartMap.put(coordinatenKey, new ArrayList());
       
-   }
-   
-   // Map contains a sub map that has values have to be set to false.
-   private void resetSubMapValues(Map map) {
-       Set keySet = map.keySet();
-       Iterator keysIterator = keySet.iterator();
-       while (keysIterator.hasNext()) {
-          TreeMap targetMap = (TreeMap) map.get(keysIterator.next());
-          Set subSet = targetMap.keySet();
-          Iterator subIterator = subSet.iterator();
-          while (subIterator.hasNext()) {
-          	targetMap.put(subIterator.next(), new Boolean(false));
-           }   
-       }
    }
 
    public Set getGebiedList() {
@@ -376,8 +358,6 @@ public class KaartenForm extends ActionForm{
    public Map getNatGebMap() {
       return natGebMap;
    }
-
-
 
    public Map getGebiedMap() {
       return gebiedMap;
