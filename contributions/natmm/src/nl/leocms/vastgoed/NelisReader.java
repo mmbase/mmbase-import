@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -45,14 +46,35 @@ public Map getNatGebMap() {
     if ((natGebMap == null) || (System.currentTimeMillis() > timeStamp + EXPIRE_INTERVAL)) {
         readData();
     }
-    return natGebMap;
+    return copyMaps(natGebMap);
 }
 
 public Map getGebiedMap() {
     if ((gebiedMap == null) || (System.currentTimeMillis() > timeStamp + EXPIRE_INTERVAL)) {
         readData();
     }
-    return gebiedMap;
+    return copyMaps(gebiedMap);
+}
+
+// For proper multi-user behaviour, we copy references of objects inside these Map of Maps
+private Map copyMaps(Map map) {
+    Map copyMap = new TreeMap();
+    
+    Set keySet = map.keySet();
+    Iterator keysIterator = keySet.iterator();
+    while (keysIterator.hasNext()) {
+       String theKey = (String) keysIterator.next();  
+       TreeMap innerMap = (TreeMap) map.get(theKey);
+       Map copyInnerMap = new TreeMap();
+       copyMap.put(new String(theKey), copyInnerMap);
+       
+       Set subSet = innerMap.keySet();
+       Iterator subIterator = subSet.iterator();
+       while (subIterator.hasNext()) {
+          copyInnerMap.put(new String((String)subIterator.next()), new Boolean(false));
+        }   
+    }
+    return copyMap;
 }
 
 // procides access to the list of eenheids to beused directly in forms
