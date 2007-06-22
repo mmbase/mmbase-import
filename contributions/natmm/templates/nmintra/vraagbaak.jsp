@@ -84,14 +84,18 @@ if(twoColumns) {
       
       }
       %>
-      <%-- list of raagbaaks --%>
-      <p> <b>Inhoud:</b>
+      <%-- list of vraagbaaks --%>
       <mm:list nodes="<%= startnodeId %>"  path="<%= vraagPath %>" orderby="<%= vraagOrderby %>"
-         >
-         <mm:node element="vraagbaak">  
-          <li/> <a href="<%= ph.createPaginaUrl(startnodeId,request.getContextPath()) %>#<mm:field name="number"/>"><mm:field name="titel"/></a>
-         </mm:node>
-         </mm:list>
+         ><mm:size jspvar="size" write="false" >
+         <mm:isgreaterthan value="1">
+        	<mm:first><p> <b>Inhoud:</b></mm:first>
+         	<mm:node element="vraagbaak">  
+          		<li/> <a href="<%= ph.createPaginaUrl(startnodeId,request.getContextPath()) %>#<mm:field name="number"/>"><mm:field name="titel"/></a>
+         	</mm:node>
+		</mm:isgreaterthan>
+      	</mm:size>
+      </mm:list>
+
       </p><br/>
       
       <mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"

@@ -69,7 +69,7 @@ if (printView) { %>
   
   
   <% if (!printView && callingNode != null) { %>
-  	<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">link to top</a></p><br/>
+  	<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">naar boven</a></p><br/>
   <% } %>	
 
 </mm:node>
