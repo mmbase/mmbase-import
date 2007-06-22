@@ -89,11 +89,7 @@ private void readData() {
     //set time stamp 
     timeStamp = System.currentTimeMillis();
     log.debug("timestamp:" + timeStamp);
-    
-    //
-    natGebMap = new TreeMap();
-    gebiedMap = new TreeMap();
-    
+ 
     String separator = "\\|";
     String NELIS_FILE = "nelis.csv";
     
@@ -106,7 +102,11 @@ private void readData() {
     try {
       BufferedReader dataFileReader = getBufferedReader(nelisPath);
       String nextLine = dataFileReader.readLine();
-
+      
+      // file is found. maps can be reset. otherwise keep old maps.
+      natGebMap = new TreeMap();
+      gebiedMap = new TreeMap();
+      
       while(nextLine!=null) {
           
         String selectionType = "";
