@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: ImageCaches.java,v 1.5 2007-06-23 10:42:55 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -63,7 +63,7 @@ public class ImageCaches extends AbstractImages {
         return getNode(node.getIntValue(FIELD_ID));
     }
 
-    protected StringBuffer getFileName(MMObjectNode node, StringBuffer buf) {        
+    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {        
         MMObjectNode originalImage = originalImage(node);
         Images images = (Images) originalImage.getBuilder();
         images.getFileName(originalImage, buf);
@@ -91,7 +91,7 @@ public class ImageCaches extends AbstractImages {
      **/
 
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters a) {
-        StringBuffer servlet = new StringBuffer();
+        StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = a.get(Parameter.REQUEST);
         if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
@@ -416,10 +416,9 @@ public class ImageCaches extends AbstractImages {
             return null;
         }
         // flatten parameters as a 'hashed' key;
-        StringBuffer sckey = new StringBuffer("");
-        Iterator<String> enumeration=params.iterator();
-        while(enumeration.hasNext()) {
-            sckey.append(enumeration.next().toString());
+        StringBuilder sckey = new StringBuilder("");
+        for (String p : params) {
+            sckey.append(p);
         }
         // skip spaces at beginning and ending, URL param escape to avoid everything strange in it.
         String ckey = "";

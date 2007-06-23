@@ -92,7 +92,7 @@ public abstract class Imaging {
         if (template != null) {
             int bracketDepth = 0;
             char quoteState = NOQUOTING; // can be - (not in quote), ' or ".
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             int i = 0;
             while (i < template.length() && template.charAt(i) == '+') i++; // ignoring leading +'es (can sometimes be one)
@@ -135,7 +135,7 @@ public abstract class Imaging {
      * Just a utitility function, used by the function above.
      * @since MMBase-1.7
      */
-    protected static void removeSurroundingQuotes(StringBuffer buf) {
+    protected static void removeSurroundingQuotes(StringBuilder buf) {
         // remove surrounding quotes --> "+contrast" will be changed to +contrast
         if (buf.length() >= 2 && (buf.charAt(0) == '"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
             buf.deleteCharAt(0);
@@ -378,7 +378,6 @@ public abstract class Imaging {
             System.out.println("original size: " + originalSize);
             System.out.println("template:predicted size:actual size (IM):actual size(JAI)");
             for (String template : templates) {
-
                 List<String> params = parseTemplate(template);
                 System.out.print(template + ":" + predictDimension(originalSize, params) + ":");
                 try {
