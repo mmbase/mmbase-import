@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.48 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.49 2007-06-23 10:43:25 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -333,7 +333,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     /**
      * @since MMBase-1.8
      */
-    protected StringBuffer getFileName(MMObjectNode node, StringBuffer buf) {
+    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
         if (fileName.equals("")) {
             String fileTitle;
@@ -446,8 +446,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     setDescription("Returns the path associated with this builder or node.");
                 }
 
-                protected StringBuffer getServletPath(Parameters a) {
-                    StringBuffer servlet = new StringBuffer();
+                protected StringBuilder getServletPath(Parameters a) {
+                    StringBuilder servlet = new StringBuilder();
                     // third argument, the servlet context, can use a relative path here, as an argument
                     String context             = (String) a.get("context");
 
@@ -468,7 +468,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
 
                 public String getFunctionValue(Node node, Parameters a) {
-                    StringBuffer servlet = getServletPath(a);
+                    StringBuilder servlet = getServletPath(a);
 
                     String session = getSession(a, node.getNumber());
                     String argument = (String) a.get("argument");

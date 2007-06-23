@@ -118,7 +118,7 @@ import java.util.Vector;
  *  Released as 1.5.</li>
  * </ul>
  * @author Marco Schmidt
- * @version $Id: ImageInfo.java,v 1.2 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ImageInfo.java,v 1.3 2007-06-23 10:42:55 michiel Exp $
  * @since MMBase-1.7.4
  */
 public class ImageInfo {
@@ -404,7 +404,7 @@ public class ImageInfo {
                 {
                     int extensionType = read();
                     if (collectComments && extensionType == 0xfe) {
-                        StringBuffer sb = new StringBuffer();
+                        StringBuilder sb = new StringBuilder();
                         int n;
                         do
                         {
@@ -1112,10 +1112,10 @@ public class ImageInfo {
     }
 
     private String readLine() throws IOException {
-        return readLine(new StringBuffer());
+        return readLine(new StringBuilder());
     }
 
-    private String readLine(StringBuffer sb) throws IOException {
+    private String readLine(StringBuilder sb) throws IOException {
         boolean finished;
         do {
             int value = read();
@@ -1197,7 +1197,7 @@ public class ImageInfo {
     }
 
     private String readLine(int firstChar) throws IOException {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append((char)firstChar);
         return readLine(result);
     }
