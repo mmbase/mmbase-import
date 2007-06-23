@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.2 2007-06-13 19:40:56 nklasens Exp $
+ * @version $Id: Attachments.java,v 1.3 2007-06-23 10:42:55 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -46,7 +46,7 @@ public class Attachments extends AbstractServletBuilder {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
-            String fileName = getFileName(node, new StringBuffer()).toString();
+            String fileName = getFileName(node, new StringBuilder()).toString();
             String title;
 
             if (fileName == null || fileName.equals("")) {
@@ -62,8 +62,8 @@ public class Attachments extends AbstractServletBuilder {
                 if (log.isDebugEnabled()) {
                     log.debug("bridge: " + usesBridgeServlet + " ses: " + ses);
                 }
-                StringBuffer servlet = new StringBuffer();
-                HttpServletRequest req = (HttpServletRequest) a.get("request");
+                StringBuilder servlet = new StringBuilder();
+                HttpServletRequest req = a.get(Parameter.REQUEST);
                 if (req != null) {
                     servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
                 } else {
@@ -76,7 +76,7 @@ public class Attachments extends AbstractServletBuilder {
                     servlet.append('/').append(fileName);
                 }
 
-                HttpServletResponse res = (HttpServletResponse) a.get("response");
+                HttpServletResponse res = a.get(Parameter.RESPONSE);
                 String url;
                 if (res != null) {
                     url = res.encodeURL(servlet.toString());

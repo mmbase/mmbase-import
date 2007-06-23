@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.5 2007-06-20 14:35:10 michiel Exp $
+ * @version $Id: Images.java,v 1.6 2007-06-23 10:42:55 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -231,7 +231,7 @@ public class Images extends AbstractImages {
         }
 
         String ses = getSession(args, num);
-        StringBuffer servlet = new StringBuffer();
+        StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = args.get(Parameter.REQUEST);
         if (req != null) {
             ServletContext sx = MMBaseContext.getServletContext();
@@ -265,7 +265,7 @@ public class Images extends AbstractImages {
         ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
         if (imageCaches != null && imageCaches.storesDimension()) {
             Dimension dim = imageCaches.getDimension(icache);
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             if(dim.getHeight() > 0) {
                 buf.append("height=\"").append(dim.getHeight()).append("\" ");
             } else {
