@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @version $Id: FileServlet.java,v 1.3 2007-05-04 12:49:09 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.4 2007-06-23 10:42:23 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -105,6 +105,10 @@ public class FileServlet extends BridgeServlet {
         }
     }
 
+    protected boolean canRead(HttpServletRequest req, File f) {
+        // something with mmbase security ?
+        return f.canRead();
+    }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         File file = getFile(req.getPathInfo(), resp);
@@ -113,9 +117,13 @@ public class FileServlet extends BridgeServlet {
             log.debug("" + file + " does not exist");
             return;
         }
-        if (! file.canRead()) {
+        if (! canRead(req, file)) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' may not be read");
             log.debug("" + file + " may not be read");
+            return;
+        }
+        if (file.isDirectory()) {
+            listing(req, resp, file);
             return;
         }
         resp.setContentType(getServletContext().getMimeType(file.getName()));
@@ -131,6 +139,59 @@ public class FileServlet extends BridgeServlet {
         in.close();
         out.close();
     }
+
+    protected void listing(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
+        if ("true".equals(getInitParameter("listings"))) {
+            resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
+            StringBuilder result = new StringBuilder();
+            result.append("<?xml version='1.0'?>\n");
+            result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
+            result.append("<head>");
+            String pathInfo = req.getPathInfo();
+            if (file.isDirectory() && ! pathInfo.endsWith("/")) {
+                resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pathInfo == null ? "" : pathInfo) + "/");
+                return;
+            }
+            result.append("<title>Directory Listing For " + pathInfo + "</title>");            
+            result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
+            result.append("</head>");
+            result.append("<body>");
+            result.append("<h1>Directory Listing For " + pathInfo + "</h1>");
+            result.append("<table class='filelisting'>");
+            if (! pathInfo.equals("/")) {
+                result.append("<tr><td /><td><a href='..'>../</a></td></tr>");
+            }
+            for (File f : file.listFiles()) {
+                result.append("<tr><td>" + new Date(f.lastModified()) + "</td><td>");
+                if (canRead(req, f)) {
+                    String name = f.getName() + (f.isDirectory() ? "/" : "");
+                    result.append("<a href='" + name + "'>" + name + "</a>");
+                } else {
+                    result.append(f.getName());
+                }
+                result.append("</td></tr>");
+            }
+            result.append("</table>");
+            result.append("<h3>" + org.mmbase.Version.get() + "</h3>");
+            result.append("</body>");
+            result.append("</html>");
+            try {
+                byte [] bytes = result.toString().getBytes("UTF-8");
+                resp.setContentLength(bytes.length);
+                BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+                out.write(bytes);
+                out.flush();
+            } catch (java.io.UnsupportedEncodingException uue) {
+                // cannot happen UTF-8 is supported.
+                log.fatal(uue);
+            }
+            return;
+        } else {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Directory listings are not enabled. (see web.xml)");
+            return;            
+        }
+    }
+
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         File file = getFile(req.getPathInfo(), resp);
         if (file.exists()) {
