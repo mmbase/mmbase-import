@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.6 2007-06-22 13:21:25 andre Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.7 2007-06-25 08:07:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -112,7 +112,7 @@ public class BasicUrlConverter implements UrlConverter {
         }
         
         if (component == null) {
-            log.debug("Not currently rendering a component");
+            log.debug("Not currently rendering a component, nor a component was specified generating url to " + path);
             // cannot be handled by Framework
             StringBuilder sb = BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
             return sb;
@@ -126,17 +126,26 @@ public class BasicUrlConverter implements UrlConverter {
             Block block;
             String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
             if (blockParam != null) {
-                 block = component.getBlock(blockParam);
-                 if (! filteredMode) {
+                if (path != null) throw new IllegalArgumentException();
+                block = component.getBlock(blockParam);
+                if (! filteredMode) {
                     map.put(BasicFramework.BLOCK.getName(), block.getName());
                     map.put(BasicFramework.COMPONENT.getName(), component.getName());
                  }
             } else {
                 block = component.getBlock(path);
-                if (block != null && ! filteredMode) {
-                    path = null; // used, determin path with 
-                    map.put(BasicFramework.BLOCK.getName(), block.getName());
-                    map.put(BasicFramework.COMPONENT.getName(), component.getName());
+                if (block != null) {
+                    if (! filteredMode) {
+                        path = null; // used, determin path with block name 
+                        map.put(BasicFramework.BLOCK.getName(), block.getName());
+                        map.put(BasicFramework.COMPONENT.getName(), component.getName());
+                    } else {
+                        // no such block
+                        if (path != null) {
+                            log.debug("No block '" + path + "' found");
+                            return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
+                        }
+                    }
                 }
                 if (block == null && state != null) {
                     block = state.getRenderer().getBlock();
@@ -145,7 +154,7 @@ public class BasicUrlConverter implements UrlConverter {
 
 
             if (block == null) {
-                log.debug("Cannot determin a block, suppose it a normal link");
+                log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
                 if (filteredMode) {
                     return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
                 } else {
@@ -228,7 +237,9 @@ public class BasicUrlConverter implements UrlConverter {
                      log.debug("Will try to display " + block);
                 }
                 if (block == null) {
-                    throw new RuntimeException("No block " + path[4] + " in component " + path[3]);
+                    log.debug("No block " + path[4] + " in component " + path[3]);
+                    return BasicUrlConverter.getUrl(page, params, request, false);
+                    
                 }
                 url.append("&block=" + block.getName());
                 log.debug("internal URL " + url);
