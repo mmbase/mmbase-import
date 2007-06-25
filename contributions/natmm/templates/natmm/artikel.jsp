@@ -31,6 +31,7 @@
       </jsp:include>
 	</td>
 	<td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;text-align:right;">
+	<br/>
 	   <jsp:include page="includes/artikel_12_column.jsp">
          <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
