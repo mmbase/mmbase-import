@@ -64,7 +64,6 @@ if(hasRightCell) {
    %><table width="539px;" border="0" cellspacing="0" cellpadding="0">
    <tr>
    	<td style="vertical-align:top;padding-right:10px;padding-bottom:10px;width:364px;">
-        <br/> 
 		<mm:compare referid="showpageintro" value="true">
             <%@include file="../includes/page_intro.jsp" %>
          </mm:compare>

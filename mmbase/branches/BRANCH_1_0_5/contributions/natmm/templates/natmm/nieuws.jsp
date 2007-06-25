@@ -81,7 +81,7 @@ if(artCnt==1&&artikelID.equals("-1")) { // *** select the unique article related
 		  <% } else { %>
 		    <td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;">
 		  <% } %>	
-			  <br/>
+		  <br/>
          <%@include file="includes/page_intro.jsp" %>
          <%@include file="includes/dossier_form.jsp" %>
          <% 
