@@ -11,7 +11,7 @@
   </head>
   <body>
     <%
-    if ("true".equals(MMBase.getMMBase().getInitParameter("sqltool")) {
+    if ("true".equals(MMBase.getMMBase().getInitParameter("sqltool"))) {
     %>
     <mm:import externid="submit" />
     <mm:import externid="query" jspvar="sqlString" vartype="string" />
