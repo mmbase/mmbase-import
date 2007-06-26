@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.117.2.1 2006-12-20 14:54:55 michiel Exp $
+ * @version $Id: Images.java,v 1.117.2.2 2007-06-26 14:15:38 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -72,6 +72,7 @@ public class Images extends AbstractImages {
      */
     protected String defaultImageType = "jpg";
 
+    private int maxArea = Integer.MAX_VALUE;
 
     /**
      * Read configurations (imageConvertClass, maxConcurrentRequest),
@@ -86,6 +87,11 @@ public class Images extends AbstractImages {
 
         if (tmp != null) {
             defaultImageType = tmp;
+        }
+
+        String ma = getInitParameter("MaxArea");
+        if (ma != null && !"".equals(ma)) {
+            maxArea = Integer.parseInt(ma);
         }
 
         ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
@@ -191,6 +197,7 @@ public class Images extends AbstractImages {
         MMObjectNode icacheNode = imageCaches.getCachedNode(node.getNumber(), template);
 
         if (icacheNode == null) {
+
             icacheNode = imageCaches.getNewNode("imagesmodule");
             String ckey = Factory.getCKey(node.getNumber(), template).toString();
             icacheNode.setValue(Imaging.FIELD_CKEY, ckey);
@@ -198,6 +205,9 @@ public class Images extends AbstractImages {
             if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
                 Dimension dimension          = getDimension(node);
                 Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
+                if (predictedDimension.getArea() > maxArea) {
+                    throw new IllegalArgumentException("The conversion '" + template + "' leads to an image which is too big (" + predictedDimension + ")");
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("" + dimension + " " + ckey + " --> " + predictedDimension);
                 }
