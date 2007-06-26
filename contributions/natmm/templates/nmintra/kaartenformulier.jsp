@@ -730,7 +730,13 @@ formulier.">
       			</html:select>
 			</td>
 			<td align="right">aantal:&nbsp;</td>
-      		<td><html:text property="aantal" size="4"/></td>
+      		<td>
+      		<html:select property="aantal">
+      			<% for (int iAantal = 1; iAantal<=10; iAantal++) { %>
+      			<html:option value="<%=String.valueOf(iAantal)%>"><%=iAantal%></html:option>
+      			<% } %>
+      		</html:select>
+      		</td>
     	</tr>
 		<tr height="10" bgcolor="#FFFFFF">
 			<td></td>
