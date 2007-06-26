@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.55.2.1 2006-12-20 14:54:55 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.55.2.2 2007-06-26 13:24:17 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -144,6 +144,13 @@ public class ImageCaches extends AbstractImages {
     }
 
     /**
+     * @since MMBase-1.8.5
+     */
+    protected boolean handleEmpty(MMObjectNode node) {
+        return node.isNull(Imaging.FIELD_HANDLE) ||
+            (node.getBuilder().getField(Imaging.FIELD_HANDLE).isNotNull() && node.getSize(Imaging.FIELD_HANDLE) == 0);
+    }
+    /**
      * If a icache node is created with empty 'handle' field, then the handle field can be filled
      * automaticly. Sadly, getValue of MMObjectNode cannot be overriden, so it cannot be done
      * completely automaticly, but that may be more transparent anyway.  Call this method (perhaps
@@ -152,8 +159,8 @@ public class ImageCaches extends AbstractImages {
      * @param node A icache node.
      */
     public void waitForConversion(MMObjectNode node) {
-        log.debug("Wating for conversion?");
-        if (node.isNull(Imaging.FIELD_HANDLE)) {
+        log.debug("Waiting for conversion?");
+        if (handleEmpty(node)) {
             log.service("Waiting for conversion");
             // handle field not yet filled, but this is not a new node
             String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
@@ -223,7 +230,7 @@ public class ImageCaches extends AbstractImages {
     protected MMObjectNode getLegacyCachedNode(int imageNumber, String template) {
         List params = Imaging.parseTemplate(template);
         String legacyCKey = "" + imageNumber + getLegacyCKey(params);
-        log.info("Trying legacy " + legacyCKey);
+        log.service("Trying legacy " + legacyCKey);
         List legacyNodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
