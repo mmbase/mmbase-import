@@ -8,7 +8,7 @@
 <html>
   <head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
-	  <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
+	 	<link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
     %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
@@ -513,7 +513,7 @@ formulier.">
 	</table>	
 
 
-	<table width ="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
 				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();"/>
@@ -547,7 +547,7 @@ formulier.">
 	</table>
 	
 	
-	<table width ="500"  bgcolor="#CCCC99" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
 				<html:radio property="rad_Gebied"value="Eenheid" onclick="jsc_optie1();"/>
@@ -583,7 +583,7 @@ formulier.">
 	</table>
 
 
-	<table width ="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
 			<td width="20" height="20" valign="top">
 				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();"/>
@@ -598,7 +598,7 @@ formulier.">
 		</tr>
 	</table>
 
-	<table width="500" bgcolor="#CCCC99" border="0" cellspacing="0">	
+	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">	
 		<tr>
 			<td width="20">
 				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();"/>
@@ -653,7 +653,7 @@ formulier.">
 	</table>		
 	
 
-	<table width="500"  bgcolor="#CCCC00" border="0" cellspacing="0">
+	<table width="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
 			<td width="96" align="left">Kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
 			<td width="139">
@@ -690,7 +690,7 @@ formulier.">
 	
 	<table width="500" border="0" cellspacing="0">
 
-		<tr bgcolor="#CCCC99">
+		<tr class="vastgoed_medium">
 	  		<td width="20">
         		<html:radio property="rad_Schaal" value="schaal"/>
       		</td>
@@ -713,7 +713,7 @@ formulier.">
 			<td></td>
 			<td></td>
 		</tr>
-    	<tr bgcolor="#CCCC00">
+    	<tr class="vastgoed_dark">
 			<td><html:radio property="rad_Schaal" value="formaat"/></td>
 			<td align="right">formaat:&nbsp;</td>
 
@@ -738,7 +738,7 @@ formulier.">
 			<td></td>
 			<td></td>
 		</tr>
-        <tr bgcolor="#CCCC99">
+        <tr class="vastgoed_medium">
             <td>
 				<html:radio property="rad_Gevouwen" value="gevouwen"/>
 			</td>
@@ -756,7 +756,7 @@ formulier.">
 
 			<td></td>
 		</tr>
-        <tr bgcolor="#CCCC00">
+        <tr class="vastgoed_dark">
             <td><html:radio property="rad_Gevouwen" value="opgerold"/></td>
 			<td align="left">&nbsp;opgerold&nbsp;</td>
 			<td></td>
@@ -784,7 +784,7 @@ formulier.">
 		</tr> 
 	</table>	
 
-	<table width="500" bgcolor="#CCCC66" border="0" cellspacing="0">
+	<table width="500" class="vastgoed_dark" border="0" cellspacing="0">
 		<tr height="5">
 			<td width="5"></td>
 			<td width="440"></td>
