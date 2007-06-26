@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.4 2007-06-07 16:07:47 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.5 2007-06-26 15:28:12 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -423,7 +423,7 @@ public class MMBase extends ProcessorModule {
     }
 
     // javadoc inherited
-    protected void shutdown() {
+    public void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
 
         // there all over the place static references to mmbasroot are maintained, which I cannot
@@ -433,7 +433,8 @@ public class MMBase extends ProcessorModule {
         oAlias = null;
         insRel = null;
         typeRel = null;
-        mmobjs.clear(); mmobjs = null;
+        mmobjs.clear(); 
+        mmobjs = null;
         cloudModel = null;
         storageManagerFactory = null;
         rootBuilder = null;
