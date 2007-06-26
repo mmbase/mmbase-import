@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.5 2007-06-23 10:42:55 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.6 2007-06-26 13:25:49 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -148,6 +148,15 @@ public class ImageCaches extends AbstractImages {
     }
 
     /**
+     * Whether the 'handle' field of this icaches node is to be considered empty, and a conversion
+     * must therefor still be triggered.
+     * @since MMBase-1.8.5
+     */
+    protected boolean handleEmpty(MMObjectNode node) {
+        return node.isNull(Imaging.FIELD_HANDLE) ||
+            (node.getBuilder().getField(Imaging.FIELD_HANDLE).isNotNull() && node.getSize(Imaging.FIELD_HANDLE) == 0);
+    }
+    /**
      * If a icache node is created with empty 'handle' field, then the handle field can be filled
      * automaticly. Sadly, getValue of MMObjectNode cannot be overriden, so it cannot be done
      * completely automaticly, but that may be more transparent anyway.  Call this method (perhaps
@@ -157,7 +166,7 @@ public class ImageCaches extends AbstractImages {
      */
     public boolean waitForConversion(MMObjectNode node) {
         log.debug("Wating for conversion?");
-        if (node.isNull(Imaging.FIELD_HANDLE)) {
+        if (handleEmpty(node)) {
             log.service("Waiting for conversion");
             // handle field not yet filled, but this is not a new node
             String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
