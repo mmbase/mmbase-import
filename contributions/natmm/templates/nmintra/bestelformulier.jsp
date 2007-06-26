@@ -12,7 +12,9 @@
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
     %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
-			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
+			 > <mm:node number="<%= paginaID %>" notfound="skipbody">
+			 <%--<mm:field name="titel" />--%>
+			 </mm:node></title>
 		<meta http-equiv="imagetoolbar" content="no">
 		<script language="javascript" src="scripts/launchcenter.js"></script>
 		<script language="javascript" src="scripts/cookies.js"></script>
