@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.36 2007-03-23 15:34:27 michiel Exp $
+# $Id: build.properties.default,v 1.37 2007-06-26 09:38:08 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -40,14 +40,14 @@ jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 sourceforge.loc=http://kent.dl.sourceforge.net/sourceforge
 # ---- MMBase.org location ---
 mmbase.loc=http://www.mmbase.org/download/jars
+mmaven.loc=http://www.mmbase.org/maven
 
 
 # ----- Servlet api ----
-servlet.version=jakarta-servletapi-4
-servlet.file=${servlet.version}.tar.gz
-servlet.dest=${download.dir}/${servlet.file}
-servlet.loc=${mmbase.loc}/jakarta-servletapi/${servlet.file}
-servlet.jar=${expand.dir}/${servlet.version}/lib/servlet.jar
+servlet.version=2.4
+servlet.file=servletapi-${servlet.version}.jar
+servlet.jar=${download.dir}/${servlet.file}
+servlet.loc=${mmaven.loc}/servletapi/jars/${servlet.file}
 
 # ----- Hsqldb ----
 hsqldb.version=hsqldb_1_8_0_7

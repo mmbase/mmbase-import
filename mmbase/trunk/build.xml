@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.163 2007-06-18 10:07:19 michiel Exp $
+$Id: build.xml,v 1.164 2007-06-26 09:38:08 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -763,6 +763,8 @@ Build-compiler: ${build.compiler}
       <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
       <fileset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/resources/src" defaultexcludes="yes" />
+      <fileset dir="${applications.home}/jumpers/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
       <fileset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
@@ -966,10 +968,9 @@ Build-compiler: ${build.compiler}
 
   <target name="init.get" depends="download.init.get">
     <echo message="servlet" />
-    <antcall target="downloadgz">
+    <antcall target="download">
       <param name="sourcefile" value="${servlet.loc}"/>
-      <param name="destfile" value="${servlet.dest}"/>
-      <param name="expandedfile" value="${servlet.jar}"/>
+      <param name="destfile" value="${servlet.jar}"/>
     </antcall>
 
     <echo message="hsqldb" />
