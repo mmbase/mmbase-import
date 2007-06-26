@@ -109,20 +109,18 @@ private void readData() {
       
       while(nextLine!=null) {
           
-        String selectionType = "";
-        String selectionCategory = "";
-        String selectionValue = "";
+        String selectionEenheid = "";
+        String selectionGebied = "";
         
         String[] tokens = nextLine.split(separator);
         
-        if (tokens.length < 3) {
+        if (tokens.length < 2) {
             log.warn("line in Nelis file contains less then expected tokens.");
         } else {
-            selectionType = tokens[0].trim();
-            selectionCategory = tokens[1].trim();
-            selectionValue = tokens[2].trim();
+            selectionEenheid = tokens[0].trim();
+            selectionGebied = tokens[1].trim();
             
-            addLineToMaps(selectionType, selectionCategory, selectionValue);
+            addLineToMaps(selectionEenheid, selectionGebied);
         }
             nextLine = dataFileReader.readLine();
         }
@@ -131,7 +129,7 @@ private void readData() {
         log.info(e);
       }
                  
-     // Provincies are constant and hardcoded unlike other values that come from Nelis file.  
+     // Provincies & regios are constant and hardcoded unlike other values that come from Nelis file.  
     Map dummy = new TreeMap();
     dummy.put("Groningen", new Boolean(false));
     dummy.put("Friesland", new Boolean(false));
@@ -144,20 +142,23 @@ private void readData() {
     dummy.put("Zuid-Holland", new Boolean(false));
     dummy.put("Zeeland", new Boolean(false));
     dummy.put("Noord-Brabant", new Boolean(false));
-    gebiedMap.put("Provincie", dummy);    
+    gebiedMap.put("Provincie", dummy);   
+    
+    dummy = new TreeMap();
+    dummy.put("Gelderland", new Boolean(false));
+    dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
+    dummy.put("Natuurbeheer", new Boolean(false));
+    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
+    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
+    dummy.put("Stichting Participaties NM", new Boolean(false));
+    dummy.put("Overijssel en Flevoland", new Boolean(false));
+    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
+    gebiedMap.put("Regio", dummy);
 }
 
-private void addLineToMaps(String selectionType, String selectionCategory, String selectionValue){
-    
-    //we need to find a way to reflect these three lines to the maps
-    // 1st line is the regio
-    //2nd 3rd to fill eenheid/natuurgebied(en) selections 
-    
-    //log.debug("*" + selectionType + "*" + selectionCategory + "*" + selectionValue + "*");
-    insertKeyToSubMap(natGebMap, selectionCategory, selectionValue);
-    insertKeyToSubMap(gebiedMap, "Eenheid", selectionCategory);
-    insertKeyToSubMap(gebiedMap, "Regio", selectionType);
-    
+private void addLineToMaps(String eenheid, String gebied){
+    insertKeyToSubMap(natGebMap, eenheid, gebied);
+    insertKeyToSubMap(gebiedMap, "Eenheid", eenheid);
 }
 
 // we are using Map of Maps to represent the selection boxes. 
