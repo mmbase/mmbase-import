@@ -10,6 +10,11 @@ public class AfdelingBean {
    private String regioName;
    private int[] individueleBoekingenTotal;
    private int[] groepsBoekingenTotal;
+   // to support percentages
+   private int individueleBoekingenLedenTotal;
+   private int individueleBoekingenDeelnemersTotal;
+   private int groepsBoekingenLedenTotal;
+   private int groepsBoekingenDeelnemersTotal;
    
 	public String getAfdelingName() {
 		return afdelingName;
@@ -35,5 +40,29 @@ public class AfdelingBean {
 	public void setRegioName(String regioName) {
 		this.regioName = regioName;
 	}
+   public int getGroepsBoekingenDeelnemersTotal() {
+      return groepsBoekingenDeelnemersTotal;
+   }
+   public void setGroepsBoekingenDeelnemersTotal(int groepsBoekingenDeelnemersTotal) {
+      this.groepsBoekingenDeelnemersTotal = groepsBoekingenDeelnemersTotal;
+   }
+   public int getGroepsBoekingenLedenTotal() {
+      return groepsBoekingenLedenTotal;
+   }
+   public void setGroepsBoekingenLedenTotal(int groepsBoekingenLedenTotal) {
+      this.groepsBoekingenLedenTotal = groepsBoekingenLedenTotal;
+   }
+   public int getIndividueleBoekingenDeelnemersTotal() {
+      return individueleBoekingenDeelnemersTotal;
+   }
+   public void setIndividueleBoekingenDeelnemersTotal(int individueleBoekingenDeelnemersTotal) {
+      this.individueleBoekingenDeelnemersTotal = individueleBoekingenDeelnemersTotal;
+   }
+   public int getIndividueleBoekingenLedenTotal() {
+      return individueleBoekingenLedenTotal;
+   }
+   public void setIndividueleBoekingenLedenTotal(int individueleBoekingenLedenTotal) {
+      this.individueleBoekingenLedenTotal = individueleBoekingenLedenTotal;
+   }
 
 }

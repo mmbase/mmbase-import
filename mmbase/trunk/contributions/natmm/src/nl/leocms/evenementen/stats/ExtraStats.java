@@ -546,6 +546,8 @@ public class ExtraStats {
              currentExcelRow++;
              int maxRow = 0;
              int[] thisBoekingenTypeTotal = new int[] {0,0,0,0,0};
+             int totalLedenValue = 0;
+             int totalDeelnemersValue = 0;
              Map deelnemers = new HashMap();
              jxl.write.Number nValue = null;
 
@@ -604,10 +606,13 @@ public class ExtraStats {
 	
 	                 if(sStatsType.equals("leden")) {
 		                 int deelnemersValue = ((Integer)deelnemers.get(sListTypeName)).intValue();
-		                 if (deelnemersValue!=0)
+                       totalLedenValue += value;
+                       totalDeelnemersValue += deelnemersValue;
+		                 if (deelnemersValue!=0) {
 		                    value = value * 100 / deelnemersValue;
-		                 else
+                       } else {
 		                    value = 0;
+                       }
 	                 }
 	
 	                 thisBoekingenTypeTotal[columnNo-1] += value;
@@ -616,21 +621,36 @@ public class ExtraStats {
 	             //}
                  rowNo++;
             }
+  
                
             // print TOTAL
             if (columnNo==1) {
                staticLabel = new Label(0,rowNo,"TOTAAL");
                sheet.addCell(staticLabel);
              }
+            if (columnNo != 5) {
              nValue = new jxl.write.Number(columnNo, rowNo, thisBoekingenTypeTotal[columnNo-1]);
+            } else {
+               int percentage = (totalDeelnemersValue > 0) ? (100*totalLedenValue/totalDeelnemersValue) : 0;
+               thisBoekingenTypeTotal[columnNo-1] = percentage;
+               nValue = new jxl.write.Number(columnNo, rowNo, percentage);
+            }
              sheet.addCell(nValue);
              maxRow = (rowNo>maxRow) ? rowNo : maxRow;
              
              // for totals sheet
              if(isIndividueleBoekingenType){
             	 afdeling.setIndividueleBoekingenTotal(thisBoekingenTypeTotal);
+                if (columnNo == 5) {
+                   afdeling.setIndividueleBoekingenLedenTotal(afdeling.getIndividueleBoekingenLedenTotal() + totalLedenValue);
+                   afdeling.setIndividueleBoekingenDeelnemersTotal(afdeling.getIndividueleBoekingenDeelnemersTotal() + totalDeelnemersValue);
+                }
              } else if(isGroepsBoekingenType) {
             	 afdeling.setGroepsBoekingenTotal(thisBoekingenTypeTotal);
+                if (columnNo == 5) {
+                   afdeling.setGroepsBoekingenLedenTotal(afdeling.getGroepsBoekingenLedenTotal() + totalLedenValue);
+                   afdeling.setGroepsBoekingenDeelnemersTotal(afdeling.getGroepsBoekingenDeelnemersTotal() + totalDeelnemersValue);
+                }
              }
              
              columnNo++;
@@ -727,6 +747,10 @@ public class ExtraStats {
          jxl.write.Number nValue = null;
          int[] individueleBoekingenGrandTotal = new int[] {0,0,0,0,0};
          int[] groepsBoekingenGrandTotal = new int[] {0,0,0,0,0};
+         int individueleBoekingenGrandTotalLedenValue = 0;
+         int individueleBoekingenGrandTotalDeelnemersValue = 0;
+         int groepsBoekingenGrandTotalLedenValue = 0;
+         int groepsBoekingenGrandTotalDeelnemersValue = 0;
          Collections.reverse(afdelingen);
          for (Iterator iter = afdelingen.iterator(); iter.hasNext();) {
 			AfdelingBean afdeling = (AfdelingBean) iter.next();
@@ -742,12 +766,17 @@ public class ExtraStats {
                 sheet.addCell(nValue);
                 individueleBoekingenGrandTotal[i] += afdeling.getIndividueleBoekingenTotal()[i];
 	   		}
+            // grand total percentages require tracking of nominator and denominator
+            individueleBoekingenGrandTotalLedenValue += afdeling.getIndividueleBoekingenLedenTotal();
+            individueleBoekingenGrandTotalDeelnemersValue += afdeling.getIndividueleBoekingenDeelnemersTotal();
             
             for (int i = 0; i < 5; i++) {
             	nValue = new jxl.write.Number(i+8, currentExcelRow, afdeling.getGroepsBoekingenTotal()[i]);
                 sheet.addCell(nValue);
                 groepsBoekingenGrandTotal[i] += afdeling.getGroepsBoekingenTotal()[i];
 	   		}
+            groepsBoekingenGrandTotalLedenValue += afdeling.getGroepsBoekingenLedenTotal();
+            groepsBoekingenGrandTotalDeelnemersValue += afdeling.getGroepsBoekingenDeelnemersTotal();
 		 }
          
          currentExcelRow++;
@@ -758,16 +787,25 @@ public class ExtraStats {
          staticLabel = new Label(0,currentExcelRow,"GRAND TOTAL");
          sheet.addCell(staticLabel);
          
-         for (int i = 0; i < 5; i++) {
+         int grandPercentage = 0;
+         for (int i = 0; i < 4; i++) {
          	 nValue = new jxl.write.Number(i+2, currentExcelRow, individueleBoekingenGrandTotal[i]);
              sheet.addCell(nValue);
 	   	 }
+         // percentage grand totals
+         grandPercentage = (individueleBoekingenGrandTotalDeelnemersValue > 0) ? (100*individueleBoekingenGrandTotalLedenValue/individueleBoekingenGrandTotalDeelnemersValue) : 0;
+         nValue = new jxl.write.Number(4+2, currentExcelRow, grandPercentage);
+         sheet.addCell(nValue);
          
-         for (int i = 0; i < 5; i++) {
+         for (int i = 0; i < 4; i++) {
 	     	 nValue = new jxl.write.Number(i+8, currentExcelRow, groepsBoekingenGrandTotal[i]);
 	         sheet.addCell(nValue);
    		 }
-
+         // percentage grand totals
+         grandPercentage = (groepsBoekingenGrandTotalDeelnemersValue > 0) ? (100*groepsBoekingenGrandTotalLedenValue/groepsBoekingenGrandTotalDeelnemersValue) : 0;
+         nValue = new jxl.write.Number(4+8, currentExcelRow, grandPercentage);
+         sheet.addCell(nValue);
+         
 		 workbook.write();
 		 workbook.close();
 
