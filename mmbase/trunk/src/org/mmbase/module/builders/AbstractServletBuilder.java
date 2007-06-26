@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.49 2007-06-23 10:43:25 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.50 2007-06-26 13:28:32 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -321,7 +321,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
 
-    protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\ ]+");
+    protected static final Pattern legalizeFileName = Pattern.compile("[%\\/\\:\\;\\\\ ]+");
 
 
     /**
