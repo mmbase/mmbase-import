@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.6 2007-06-23 10:42:55 michiel Exp $
+ * @version $Id: Images.java,v 1.7 2007-06-26 14:19:56 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -71,6 +71,7 @@ public class Images extends AbstractImages {
      */
     protected String defaultImageType = "jpg";
 
+    private int maxArea = Integer.MAX_VALUE;
 
     /**
      * Read configurations (imageConvertClass, maxConcurrentRequest),
@@ -85,6 +86,10 @@ public class Images extends AbstractImages {
 
         if (tmp != null) {
             defaultImageType = tmp;
+        }
+        String ma = getInitParameter("MaxArea");
+        if (ma != null && !"".equals(ma)) {
+            maxArea = Integer.parseInt(ma);
         }
 
         ImageCaches imageCaches = (ImageCaches) mmb.getBuilder("icaches");
@@ -199,6 +204,9 @@ public class Images extends AbstractImages {
                 Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
                 if (log.isDebugEnabled()) {
                     log.debug("" + dimension + " " + ckey + " --> " + predictedDimension);
+                }
+                if (predictedDimension.getArea() > maxArea) {
+                    throw new IllegalArgumentException("The conversion '" + template + "' leads to an image which is too big (" + predictedDimension + ")");
                 }
                 if (imageCaches.storesDimension()) {
                     icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());

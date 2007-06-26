@@ -98,6 +98,14 @@
          with LegacyCKey on true.
     -->
     <property name="LegacyCKey">false</property>
+
+    <!--
+        Maximal size of produces icaches. A million square pixels. (1000x1000). That should be
+        plenty big enough for the web, but you may want to increase or decrease this.  Defaults to
+        Integer.MAX_VALUE.  If an image conversion would lead to a predicted dimension with an area
+        bigger that this, an IllegalArgumentException is thrown.
+    -->
+    <property name="MaxArea">1000000</property>
   </properties>
 
   <fieldlist>
