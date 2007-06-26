@@ -114,7 +114,7 @@
 <!-- =================================================================== -->
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
-    <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
+    <unjar src="${build.dir}/lib/servletapi-2.4.jar" dest="build/rmmcitmp"/>
     <!--
     <unjar src="${xml-apis.jar}" dest="build/rmmcitmp"/>
     -->

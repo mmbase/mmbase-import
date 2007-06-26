@@ -90,7 +90,8 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="share.dir"    location="../share" />
 
-  <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
+  <property name="servlet.jar" value="${build.dir}/lib/servletapi-2.4.jar"/>
+  <property name="jspapi.jar" value="${build.dir}/lib/jsp-api-2.0.jar"/>
   <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
@@ -341,7 +342,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
-        <pathelement path="${xalan.jar}" />
+        <pathelement path="${jspapi.jar}" />
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${concurrent.jar}" />
         <pathelement path="${mail.jar}" />
@@ -443,7 +444,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
-        <pathelement path="${xalan.jar}" />
+        <pathelement path="${jspapi.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${activation.jar}" />
@@ -531,7 +532,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
-        <pathelement path="${xalan.jar}" />
+        <pathelement path="${jspapi.jar}" />
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
