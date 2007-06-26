@@ -506,9 +506,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Uitleg over dit invoer deel van het
-formulier.">
-
+						alt="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
@@ -518,7 +516,7 @@ formulier.">
 	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();"/>
+				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();" style="background:vastgoed_dark"/>
 			</td>
 			<td width="220">Natuurgebied(en):</td>
 
@@ -528,7 +526,7 @@ formulier.">
 			<td rowspan="2" height="110">&nbsp;</td>
 			<td></td>
 			<td rowspan="2" width="249" valign="top">
-				<select NAME="sel_NatGeb" style="width:100%;" size="6" Multiple>
+				<select NAME="sel_NatGeb" style="width:100%;" size="6">
             	</select>
 			</td>
 
@@ -552,8 +550,7 @@ formulier.">
 	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied"value="Eenheid" onclick="jsc_optie1();"/>
-
+				<html:radio property="rad_Gebied"value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_medium"/>
 			</td>
 			<td width="220">Eenheid / Regio / Provincie:</td>
 			<td>&nbsp;</td>
@@ -588,7 +585,7 @@ formulier.">
 	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
 			<td width="20" height="20" valign="top">
-				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();"/>
+				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();" style="background:vastgoed_dark"/>
 			</td>
 
 			<td width="220" valign="top">Nederland:</td>
@@ -603,7 +600,7 @@ formulier.">
 	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">	
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();"/>
+				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();" style="background:vastgoed_medium"/>
 			</td>
 			<td colspan="4">Coördinaten:&nbsp;</td>
 			<td>&nbsp;</td>
@@ -646,9 +643,7 @@ formulier.">
 			<td align="right">	
 				<a href="javascript:giveInfo(1);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Uitleg over dit invoer deel van het
-formulier.">
-
+						alt="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
@@ -682,8 +677,7 @@ formulier.">
 			<td align="right">	
 				<a href="javascript:giveInfo(2);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Uitleg over dit invoer deel van het
-formulier.">
+						alt="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
@@ -694,7 +688,7 @@ formulier.">
 
 		<tr class="vastgoed_medium">
 	  		<td width="20">
-        		<html:radio property="rad_Schaal" value="schaal"/>
+        		<html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_medium"/>
       		</td>
 			<td width="100" align="right">schaal:&nbsp;</td>
       		<td width="100">
@@ -716,7 +710,7 @@ formulier.">
 			<td></td>
 		</tr>
     	<tr class="vastgoed_dark">
-			<td><html:radio property="rad_Schaal" value="formaat"/></td>
+			<td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_dark"/></td>
 			<td align="right">formaat:&nbsp;</td>
 
       		<td>
@@ -748,7 +742,7 @@ formulier.">
 		</tr>
         <tr class="vastgoed_medium">
             <td>
-				<html:radio property="rad_Gevouwen" value="gevouwen"/>
+				<html:radio property="rad_Gevouwen" value="gevouwen" style="background:vastgoed_medium"/>
 			</td>
 			<td align="left">&nbsp;gevouwen&nbsp;</td>
 
@@ -765,7 +759,7 @@ formulier.">
 			<td></td>
 		</tr>
         <tr class="vastgoed_dark">
-            <td><html:radio property="rad_Gevouwen" value="opgerold"/></td>
+            <td><html:radio property="rad_Gevouwen" value="opgerold" style="background:vastgoed_dark"/></td>
 			<td align="left">&nbsp;opgerold&nbsp;</td>
 			<td></td>
 			<td></td>
@@ -785,8 +779,7 @@ formulier.">
 				<a href="javascript:giveInfo(3);">
 
 					<img src="media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
-						alt="Uitleg over dit invoer deel van het
-formulier.">
+						alt="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
