@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.183 2007-04-09 19:19:18 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.184 2007-06-26 12:57:22 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -413,6 +413,9 @@ public class DatabaseStorageManager implements StorageManager {
                     encoding = "CP1252";
                 }
                 untrimmedResult = new String(bytes.toByteArray(), encoding);
+                if (log.isDebugEnabled()) {
+                    log.debug("Got " + untrimmedResult + " " + new String(untrimmedResult.getBytes("ISO-8859-1"), "UTF-8") + " with " + encoding);
+                }
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
@@ -1436,7 +1439,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (factory.hasOption(Attributes.LIE_CP1252)) {
                 try {
                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                        log.info("Lying CP-1252");
+                        log.debug("Lying CP-1252");
                         encoding = "CP1252";
                         setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
                     } else {
