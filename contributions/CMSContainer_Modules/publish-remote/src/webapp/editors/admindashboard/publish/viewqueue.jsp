@@ -80,7 +80,7 @@
 				</table>
 			</mm:listnodescontainer>
 			<br/>
-			<a href="../index.jsp" target="_top"><fmt:message key="admindashboard.publish.viewqueue.back" /></a>
+			<a href="../index.jsp"><fmt:message key="admindashboard.publish.viewqueue.back" /></a>
 			</div>
 		</div>
 		

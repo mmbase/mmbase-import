@@ -31,7 +31,7 @@
 				</c:forEach>
 			</table>
 			<p>
-				<a href="../index.jsp" target="_top"><fmt:message key="admindashboard.system.viewlibs.back" /></a>
+				<a href="../index.jsp"><fmt:message key="admindashboard.system.viewlibs.back" /></a>
 			</p>
 			</div>
 		</div>
