@@ -3,13 +3,13 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >  
-  <mm:import externid="formsubmit" />
+  <mm:import externid="formtest" />
   <mm:fieldlist nodetype="people" fields="gender,${di:setting(pageContext, 'core', 'admin_personfields')},address,zipcode,city,email,country">
     <tr>
       <td><mm:fieldinfo type="guiname" />:</td>
       <td>
         <mm:fieldinfo type="input" />
-        <mm:present referid="formsubmit">
+        <mm:present referid="formtest">
           <mm:fieldinfo type="errors" />
         </mm:present>
       </td>
