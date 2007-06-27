@@ -400,6 +400,14 @@ function validationMessage() {
 		alert("Geen kaartsoort(en) geselecteerd.");
 		return false;
 	}
+	if (document.KaartenForm.rad_Gebied[3].checked) {
+		if ((document.KaartenForm.linksX.value =="") || (document.KaartenForm.linksY.value =="") || (document.KaartenForm.rechtsX.value =="") || (document.KaartenForm.rechtsY.value =="")
+			|| (isNaN(document.KaartenForm.linksX.value)) || (isNaN(document.KaartenForm.linksY.value)) || (isNaN(document.KaartenForm.rechtsX.value)) || (isNaN(document.KaartenForm.rechtsY.value)) ) {
+		alert("Geen coördinaten opgegeven.");
+		return false;
+		
+		}
+	}
 	return true;
 }
 
@@ -652,7 +660,7 @@ if(twoColumns) {
 
 	<table width="500"  class="vastgoed_dark" border="0" cellspacing="0">
 		<tr>
-			<td width="96" align="left">Kaarten:&nbsp;<br>klik hier voor vergroting en informatie</td>
+			<td width="96" align="left">Kaarten:&nbsp;<br>klik op afbeelding voor vergroting en informatie</td>
 			<td width="139">
 				<img id="kartPicture" style="cursor:pointer" src="media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
 					onClick="javascript:small_window('includes/vastgoed/kaart_popup.jsp');">
@@ -694,8 +702,16 @@ if(twoColumns) {
       		<td width="100">
 				<html:select style="width:100%;" property="schaal">
 					<html:option value="1:500">1:500</html:option>
-					<html:option value="1:1000">1:1000</html:option>
-					<html:option  value="1:5000">1:5000</html:option>
+					<html:option value="1:1.000">1:1.000</html:option>
+					<html:option value="1:2.500">1:2.500</html:option>
+					<html:option  value="1:5.000">1:5.000</html:option>
+					<html:option value="1:7.500">1:7.500</html:option>
+					<html:option value="1:10.000">1:10.000</html:option>
+					<html:option  value="1:12.500">1:12.500</html:option>
+					<html:option value="1:15.000">1:15.000</html:option>
+					<html:option value="1:17.500">1:17.500</html:option>
+					<html:option value="1:20.000">1:20.000</html:option>
+					<html:option value="1:25.000">1:25.000</html:option>
 				</html:select>
 	  		</td>
       		<td width="200">&nbsp;</td>

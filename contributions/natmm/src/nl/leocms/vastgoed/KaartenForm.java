@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.8 2007-06-22 08:22:06 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.9 2007-06-27 13:27:12 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -55,7 +55,7 @@ public class KaartenForm extends ActionForm{
       //init for first load
 		aantal="1";
 		rad_Schaal = "schaal";
-		schaal = "1:5000";
+		schaal = "1:5.000";
 		formaat = "A4";
 		rad_Gevouwen = "gevouwen";
         rad_Gebied = ""; //rad_Gebied = natuurgebiedKey;
