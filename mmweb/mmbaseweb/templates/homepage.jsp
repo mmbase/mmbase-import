@@ -194,7 +194,7 @@
 	      <xsl:value-of select="count(//item)" />
 	    </xsl:template>
 	  </mm:xslt>
-	</mm:formatter></a> new issues<br />
+	</mm:formatter> new issues</a><br />
 	<mm:link page="http://www.mmbase.org/jira/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10000&status=5&status=6&updated:previous=-1w&sorter/field=updated&sorter/order=DESC">
 	  <a href="${_}">
 	</mm:link>
@@ -216,7 +216,7 @@
 	      <xsl:value-of select="count(//item)" />
 	    </xsl:template>
 	  </mm:xslt>
-	</mm:formatter></a> issues solved.<br />
+	</mm:formatter> issues solved</a>.<br />
 	<a href="/browseproject">Go to bugtracker &raquo;&raquo;</a></p>
 
 	<mm:node number="portal_developers"><mm:field name="number"><mm:compare value="$portal">
