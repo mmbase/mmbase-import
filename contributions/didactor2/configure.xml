@@ -43,6 +43,8 @@
   <property name="mmbase.logfile" value="didactor" />
   <property name="mmbaseroot.database" value="mysql" />
   <property name="mmbaseroot.basename" value="mmb" />
+  <property name="mmbaseroot.language" value="en" />
+  <property name="mmbaseroot.datadir" value="" />
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
   <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
