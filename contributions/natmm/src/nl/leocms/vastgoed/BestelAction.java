@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.12 2007-06-27 08:24:28 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.13 2007-06-27 10:21:30 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -55,12 +55,20 @@ public class BestelAction  extends Action {
          basket.removeItem(deleteAction);
          
          // delete action returns to cart
-         log.debug("deleted now mapping forward delete");
+         log.debug("deleted now mapping forward delete.");
          return mapping.findForward("delete");
       }
       
       // processing the purchase and forwarding send
       log.debug("processing purchase");
+      
+      // if kart is empty then no processing will be made
+      if (basket.getItems().size() == 0) {
+         log.debug("cart is empty. forwarding send without processing.");
+         // 'order processed' message is supressed. a quick fix using attributes.
+         request.setAttribute("empty", "true");
+         return mapping.findForward("send");
+      }
       
       // process the shopping cart as a purchase
       BestelForm bestelForm = (BestelForm) form;
