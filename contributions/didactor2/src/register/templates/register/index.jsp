@@ -12,11 +12,12 @@
     </mm:param>
   </mm:treeinclude>
 
-  <mm:import externid="formok">false</mm:import>
-  <mm:compare referid="formok" value="true">
+  <mm:import externid="formsubmit">false</mm:import>
+
+  <mm:compare referid="formsubmit" value="true">
     <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids" />
   </mm:compare>
-  <mm:compare referid="formok" value="false">
+  <mm:compare referid="formsubmit" value="false">
     <mm:treeinclude page="/register/register_form.jsp" objectlist="$includePath" referids="$referids" />
   </mm:compare>
 
