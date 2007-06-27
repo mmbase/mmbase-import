@@ -100,6 +100,10 @@ function validationMessage() {
 		alert("Voer uw naam en email in.");
 		return false;
 	}
+	if((document.BestelForm.email.value.indexOf("@natuurmonumenten.nl") == -1)) {
+		alert("Je moet een e-mailadres van natuurmonumenten invullen.");
+		return false;
+	}
 	return true;
 }
 -->
@@ -188,7 +192,7 @@ if(twoColumns) {
       
       <html:link 
          page="/nmintra/KaartenInitAction.eb">
-         <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Koop nog een kaart
+         <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Bestel nog een kaart 
       </html:link>
       <br/><br/>
       
