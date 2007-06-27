@@ -26,6 +26,7 @@
     </mm:import>
     <mm:compare referid="formsubmit" value="true">
       <mm:valid>
+        <mm:log>VAlid form</mm:log>
         <p>
           Form is valid, can be submitted! 
         </p>
@@ -35,9 +36,8 @@
         
         <mm:treefile id="thanks" cloud="cloud" page="/register/index.jsp"
                      objectlist="$includePath" referids="$referids">
-          <mm:param name="formsubmit">true</mm:param>
+          <mm:param name="formok">true</mm:param>
         </mm:treefile>
-        
         
         <mm:log>Redirecting to ${thanks}</mm:log>
         <mm:redirect referid="thanks" />

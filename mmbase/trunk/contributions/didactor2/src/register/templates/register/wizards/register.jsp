@@ -137,10 +137,9 @@
                       </mm:fieldlist>
                       <th><di:translate key="register.delete" /></th>
                     </tr>
-                    <mm:relatednodes type="people" role="classrel" id="related"/> <!-- register/index.jsp used to do that -->
-                    <mm:relatednodes type="people" role="related" add="related">
-                      <mm:field name="number" id="person" write="false"/>
-                      <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,person" id="url" write="false" />
+                    <mm:relatednodes type="people" role="classrel" id="related" orderby="number"/> <!-- register/index.jsp used to do that -->
+                    <mm:relatednodes type="people" role="related" add="related" orderby="number">
+                      <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,_node@person" id="url" write="false" />
                       <tr>
                         <mm:fieldlist nodetype="people" fields="number,${di:setting(pageContext, 'core', 'admin_personfields')},username">
                           <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
