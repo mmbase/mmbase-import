@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >       
-  <mm:import externid="formsubmit" />
+  <mm:import externid="formtest" />
   <mm:form id="form">
     
     <mm:import id="buffer">
@@ -15,7 +15,7 @@
         
         <tr class="registerSubmit">
           <td colspan="2">
-            <input type="hidden" name="formsubmit" value="true" />
+            <input type="hidden" name="formtest" value="true" />
             <mm:present referid="provider">
               <input type="hidden" name="provider" value="${provider}" />
             </mm:present>
@@ -24,9 +24,10 @@
         </tr>
       </table>
     </mm:import>
-    <mm:compare referid="formsubmit" value="true">
+    <mm:compare referid="formtest" value="true">
+      <mm:log>Testing form</mm:log>
       <mm:valid>
-        <mm:log>VAlid form</mm:log>
+        <mm:log>Valid!</mm:log>
         <p>
           Form is valid, can be submitted! 
         </p>
@@ -36,7 +37,7 @@
         
         <mm:treefile id="thanks" cloud="cloud" page="/register/index.jsp"
                      objectlist="$includePath" referids="$referids">
-          <mm:param name="formok">true</mm:param>
+          <mm:param name="formsubmit">true</mm:param>
         </mm:treefile>
         
         <mm:log>Redirecting to ${thanks}</mm:log>
