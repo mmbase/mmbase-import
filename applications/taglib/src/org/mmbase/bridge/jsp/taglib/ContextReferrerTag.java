@@ -17,6 +17,7 @@ import javax.servlet.jsp.jstl.core.*;
 import java.io.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -32,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.4 2007-06-14 14:30:16 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.5 2007-06-27 13:17:08 michiel Exp $
  * @see ContextTag
  */
 
@@ -689,4 +690,18 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
     }
 
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public FormTag getFormTag(boolean t, Attribute form) throws JspTagException {
+        FormTag formTag;
+        if (form == null || form == Attribute.NULL) {
+            formTag = (FormTag) pageContext.getAttribute(FormTag.KEY, FormTag.SCOPE);
+            if (formTag == null && t) throw new JspTagException("No form-tag found (" + FormTag.KEY + ")");
+        } else {
+            formTag = (FormTag) findParentTag(FormTag.class, form != null ? (String) form.getValue(this) : null, true);
+        }
+        return formTag;
+    }
 }
