@@ -32,7 +32,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.4.2.2 2007-02-21 16:26:34 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.4.2.3 2007-06-27 13:20:33 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -102,7 +102,7 @@ public class BinaryHandler extends AbstractTypeHandler {
                     return "";
                 }
             } else {
-                FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
+                FormTag form =  tag.getFormTag(false, null);
                 if (form != null) {
                     form.setValid(false);
                 }

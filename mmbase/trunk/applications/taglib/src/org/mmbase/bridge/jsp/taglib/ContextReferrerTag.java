@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.97 2007-06-14 14:31:34 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.98 2007-06-27 13:18:20 michiel Exp $
  * @see ContextTag
  */
 
@@ -677,6 +677,21 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         } else {
             return value == null ? null : Casting.wrap(value, ContentTag.getCharTransformer(helper.getEscape(), this));
         }
+    }
+
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public FormTag getFormTag(boolean t, Attribute form) throws JspTagException {
+        FormTag formTag;
+        if (form == null || form == Attribute.NULL) {
+            formTag = (FormTag) pageContext.getAttribute(FormTag.KEY, FormTag.SCOPE);
+            if (formTag == null && t) throw new JspTagException("No form-tag found (" + FormTag.KEY + ")");
+        } else {
+            formTag = (FormTag) findParentTag(FormTag.class, form != null ? (String) form.getValue(this) : null, true);
+        }
+        return formTag;
     }
 
 }
