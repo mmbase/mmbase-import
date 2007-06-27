@@ -39,7 +39,7 @@ public class TableTag extends CloudReferrerTag {
     private String sortOrder;
     int size;
     int offset;
-    private Hashtable htmlLabels;
+    private Map<String, String> htmlLabels;
 
     /**
      * Wrapper for the 'maxitems' attribute
@@ -70,7 +70,7 @@ public class TableTag extends CloudReferrerTag {
      * Return a label for a given identifier.
      */
     public String getLabel(String labelname) {
-        return ((String)htmlLabels.get(labelname)).replaceAll("\\$CONTEXT", ((HttpServletRequest) pageContext.getRequest()).getContextPath());
+        return (htmlLabels.get(labelname)).replaceAll("\\$CONTEXT", ((HttpServletRequest) pageContext.getRequest()).getContextPath());
     }
 
     /**
@@ -103,10 +103,11 @@ public class TableTag extends CloudReferrerTag {
      * the org.mmbase.storage.search.SortOrder interface.
      */
     public int getSortOrder() {
-        if ("down".equals(sortOrder))
+        if ("down".equals(sortOrder)) {
             return 2; //org.mmbase.storage.search.SortOrder.DESCENDING;
-        else
+        } else {
             return 1;// org.mmbase.storage.search.SortOrder.ASCENDING;
+        }
     }
 
     /**
@@ -127,11 +128,8 @@ public class TableTag extends CloudReferrerTag {
         sortOrder = "";
         size = 0;
         offset = 0;
-
-        String configfile = org.mmbase.module.core.MMBaseContext.getConfigPath() + 
-                java.io.File.separator + "table" + 
-                java.io.File.separator + "layout.properties";
-        htmlLabels = Util.getHtmlLabels(configfile);
+        // every time??
+        htmlLabels = Util.getHtmlLabels("table/layout.properties");
 
         QueryContainer ct = (QueryContainer)findParentTag(QueryContainer.class, null, true);
         Query nq = ct.getQuery();
