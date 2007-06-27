@@ -1,0 +1,22 @@
+<mm:cloud
+    method="delegate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+	>
+  <jsp:output omit-xml-declaration="yes" />
+
+  <mm:import externid="webblock" required="true" />
+  
+  <p>On the front-end, following are presented mixed, sorted on position. </p>
+  <mm:node referid="webblock">
+    <mm:include page="wizard.jspx">
+      <mm:param name="type">urls</mm:param>
+    </mm:include>
+    <mm:include page="wizard.jspx">
+      <mm:param name="type">news</mm:param>
+    </mm:include>
+    <mm:include page="wizard.jspx">
+        <mm:param name="type">xmlnews</mm:param>
+    </mm:include>
+  </mm:node>
+</mm:cloud>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="group_constraints_type">
+   <option id="">none</option>
+   <option id="NOutOfM">From these metadefinitions at least minvalues and at most maxvalues should have one or more answers</option>
+</optionlist>
