@@ -3,7 +3,9 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="userlist.title" />
+<cmscedit:head title="userlist.title">
+   <script src="userlist.js" type="text/javascript"></script>
+</cmscedit:head>   
 <body>
 <mm:cloud loginpage="../login.jsp" rank="administrator" jspvar="cloud">
 <div style="float: left">
@@ -66,6 +68,11 @@
 				<tr>
 					<td style="padding-right: 10px"><a href="UserInitAction.do?id=<mm:field name='number'/>"><mm:field name="username" /></a></td>
 					<td style="padding-right: 10px"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></td>
+               <td>
+                  <a href="javascript:info('<mm:field name="number" />')">
+                     <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/>
+                  </a>
+               </td>
 					<td><mm:maydelete>
 						<a href="DeleteUserAction.do?id=<mm:field name='number'/>">
 							<img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="userlist.removeuser" />"
