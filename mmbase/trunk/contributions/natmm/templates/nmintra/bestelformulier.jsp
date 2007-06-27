@@ -265,13 +265,14 @@ if(twoColumns) {
       </table>
       
       <br/>
-      <html:submit value="Verzenden" />
+      <html:submit property="send" value="Verzenden" />
       
    </html:form>
    
    <%
    if ((request.getParameter("send") != null) && (request.getParameter("send").equals("Verzenden"))
-   && (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email"))) ) {
+   && (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email"))) 
+   && (request.getAttribute("empty") == null) ) {
    %>
    <div style="color:red;"><b><bean:message bundle="LEOCMS" key="shoppingcart.processed" /></b></div>
    <%
