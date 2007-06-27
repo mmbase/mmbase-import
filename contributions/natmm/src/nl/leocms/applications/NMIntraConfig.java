@@ -120,6 +120,7 @@ public class NMIntraConfig {
    public static String defaultFZAddress = "@nmintraconf.defaultFZAddress@";
    public static String toEmailAddress   = "@nmintraconf.toEmailAddress@";
    public static String newsEmailAddress = "@nmintraconf.newsEmailAddress@";
+   public static String gisEmailAddress = "@nmintraconf.gisEmailAddress@";
 
    public static String sDocumentsUrl = "@nmintraconf.sDocumentsUrl@";
    public static String sDocumentsRoot = "@nmintraconf.sDocumentsRoot@";
