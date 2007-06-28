@@ -34,7 +34,8 @@ if(depth!=1){
             <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>             
             <a href="${_}" title="${di:translate(pageContext, 'education.new')}  ${dummyname} ${di:translate(pageContext, 'education.aanmaken')}" 
                target="text">
-            <di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" /></a>
+              <di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
+            </a>
           </mm:link>
         </nobr></td>
       </tr>
@@ -131,31 +132,31 @@ if(depth!=1){
           <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
           <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
         </mm:compare>
-            <mm:compare referid="the_last_parent" value="true">
-               <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
-            </mm:compare>
-
-            
-            <%@include file="tree_shift_child.jsp" %>
-            
-            <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="htmlpages" type="guitype"/></mm:import>
-            <mm:compare referid="the_last_element" value="true" inverse="true">
-               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
-            </mm:compare>
-            <mm:compare referid="the_last_element" value="true">
-               <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
-            </mm:compare>
-            <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td><nobr>
-              <mm:link referid="wizardjsp" referids="_node@origin">
-                <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
-                <mm:param name="objectnumber">new</mm:param>           
-                <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
-                <a href="${_}"                   
-                   title="${di:translate(pageContext, 'education.new')} ${dummyname}"
-                   target="text"><di:translate key="education.new" /> ${dummyname}</a>
-              </mm:link>
-            </nobr></td>
+        <mm:compare referid="the_last_parent" value="true">
+          <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
+        </mm:compare>
+        
+        
+        <%@include file="tree_shift_child.jsp" %>
+        
+        <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="htmlpages" type="guitype"/></mm:import>
+        <mm:compare referid="the_last_element" value="true" inverse="true">
+          <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+        </mm:compare>
+        <mm:compare referid="the_last_element" value="true">
+          <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
+        </mm:compare>
+        <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+        <td><nobr>
+          <mm:link referid="wizardjsp" referids="_node@origin">
+            <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
+            <mm:param name="objectnumber">new</mm:param>           
+            <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
+            <a href="${_}"                   
+               title="${di:translate(pageContext, 'education.new')} ${dummyname}"
+               target="text"><di:translate key="education.new" /> ${dummyname}</a>
+          </mm:link>
+        </nobr></td>
       </tr>
     </table>
   </mm:compare>
