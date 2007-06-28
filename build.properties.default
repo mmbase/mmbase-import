@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.37 2007-06-26 09:38:08 michiel Exp $
+# $Id: build.properties.default,v 1.38 2007-06-28 08:23:25 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -43,11 +43,16 @@ mmbase.loc=http://www.mmbase.org/download/jars
 mmaven.loc=http://www.mmbase.org/maven
 
 
-# ----- Servlet api ----
+# ----- Servlet/jsp-api api ----
 servlet.version=2.4
 servlet.file=servletapi-${servlet.version}.jar
 servlet.jar=${download.dir}/${servlet.file}
 servlet.loc=${mmaven.loc}/servletapi/jars/${servlet.file}
+
+jspapi.version=2.0
+jspapi.file=jsp-api-${jspapi.version}.jar
+jspapi.jar=${download.dir}/${jspapi.file}
+jspapi.loc=${mmaven.loc}/jspapi/jars/${jspapi.file}
 
 # ----- Hsqldb ----
 hsqldb.version=hsqldb_1_8_0_7
