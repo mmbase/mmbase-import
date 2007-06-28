@@ -15,9 +15,13 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.Parameters;
 
 /**
- *
+ * Responsible for the proper handling of urls within the framework. 
+ * Called by FrameworkFilter to resolve userfriendly links into technical urls.
+ * You should implement UrlConverter if you want to create and resolve your own
+ * userfriendly links within your framework.
+ * 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.1 2007-06-18 22:18:24 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.2 2007-06-28 11:18:19 andre Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
@@ -33,8 +37,7 @@ public interface UrlConverter {
      * here in your code.
      *
      * @param path The path (generally a relative URL) to create an URL for.
-     * @param component The component requesting the modified URL
-     * @param urlParameters The parameters to be passed to the page
+     * @param parameters Parameters The parameters to be passed to the page
      * @param frameworkParameters The parameters that are required by the framework
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;). 
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is 

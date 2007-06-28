@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.28 2007-06-18 22:18:24 michiel Exp $
+ * @version $Id: Framework.java,v 1.29 2007-06-28 11:18:19 andre Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
@@ -49,8 +49,7 @@ public interface Framework extends UrlConverter {
      * here in your code.
      *
      * @param path The path (generally a relative URL) to create an URL for.
-     * @param component The component requesting the modified URL
-     * @param urlParameters The parameters to be passed to the page
+     * @param parameters The parameters to be passed to the page
      * @param frameworkParameters The parameters that are required by the framework
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;). 
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is 
