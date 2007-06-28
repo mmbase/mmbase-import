@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.396 2007-06-28 18:22:17 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.397 2007-06-28 21:31:02 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4795,7 +4795,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <example><![CDATA[
       <os:cache>
         <mm:include page="http://site.which.sometimes.does.not.work.com" timeout="200" />
-        <c:if test="${_responseCode eq -2}">
+        <c:if test="${_responseCode ne 200}">
           <os:usecached />
         </c:if>
       </os:cache>]]>
