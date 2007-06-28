@@ -62,7 +62,7 @@
                   <td>
                     <nobr>
                       &nbsp;
-                      <mm:link referid="listjsp" referids="_node@startnodes">
+                      <mm:link referid="listjsp" referids="_node@startnodes,education">
                         <mm:param name="wizard">config/people/people_unlink</mm:param>
                         <mm:param name="nodepath">roles,people</mm:param>
                         <mm:param name="orderby">people.lastname</mm:param>
