@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id: web.xml,v 1.35 2007-06-07 12:03:28 michiel Exp $
+  $Id: web.xml,v 1.36 2007-06-28 18:35:39 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -117,6 +117,15 @@
   </context-param>
 
 
+  <filter>
+    <filter-name>FrameworkFilter</filter-name>
+    <filter-class>org.mmbase.framework.FrameworkFilter</filter-class>
+    <init-param>
+      <param-name>excludes</param-name>
+      <param-value>([.]ico$|[.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$|[.]jsp$|[.]do$)|/errorpages|/editors</param-value>
+    </init-param>
+  </filter>
+
   <!--
     Filter for jumpers
     Uncomment this code if you want to activate the jumpers filter.
@@ -133,6 +142,12 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   -->
+  <filter-mapping>
+    <filter-name>FrameworkFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
 
   <!-- The base MMBase servlet informs about the current MMBase version -->
   <servlet>
