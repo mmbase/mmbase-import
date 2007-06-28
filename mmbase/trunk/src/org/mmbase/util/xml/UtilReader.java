@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.30 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: UtilReader.java,v 1.31 2007-06-28 11:56:34 michiel Exp $
  */
 public class UtilReader {
 
@@ -210,7 +210,7 @@ public class UtilReader {
                         if (type.equals("map")) {
                             Collection<Map.Entry<String,String>> entryList = new ArrayList<Map.Entry<String,String>>();
 
-                            for (Element entry : reader.getChildElements(p,"entry")) {
+                            for (Element entry : reader.getChildElements(p, "entry")) {
                                 String key = null;
                                 String value = null;
 
@@ -226,14 +226,14 @@ public class UtilReader {
                                 }
                             }
                             if (maps.containsKey(name)) {
-                                log.service("Property '" + name + "'(" + entryList + "') of " + url + " is shadowed");
+                                log.service("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
                                 maps.put(name, entryList);
                             }
                         } else {
                             String value = reader.getElementValue(p);
                             if (properties.containsKey(name)) {
-                                log.service("Property '" + name + "'(" + value + "') of " + url + " is shadowed");
+                                log.service("Property '" + name + "' ('" + value + "') of " + url + " is shadowed");
                             } else {
                                 properties.put(name, value);
                             }
@@ -247,7 +247,7 @@ public class UtilReader {
         if (properties.size() == 0) {
             log.service("No properties read from " + configList);
         } else {
-            log.service("Read " + properties.keySet() + " from " + configList);
+            log.service("Read " + properties.entrySet() + " from " + configList);
         }
     }
 
