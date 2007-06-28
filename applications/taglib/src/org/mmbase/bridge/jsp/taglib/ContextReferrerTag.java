@@ -16,6 +16,7 @@ import javax.servlet.jsp.jstl.core.*;
 
 import java.io.*;
 
+import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
@@ -32,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.98 2007-06-27 13:18:20 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.99 2007-06-28 08:50:42 andre Exp $
  * @see ContextTag
  */
 
