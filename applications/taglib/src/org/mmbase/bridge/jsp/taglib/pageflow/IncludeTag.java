@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.76 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: IncludeTag.java,v 1.77 2007-06-28 18:22:45 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -64,6 +64,8 @@ public class IncludeTag extends UrlTag {
     protected Attribute notFound        = Attribute.NULL;
 
     protected Attribute resource        = Attribute.NULL;
+
+    protected Attribute timeOut        = Attribute.NULL;
     //protected Attribute configuration   = Attribute.NULL;
 
 
@@ -92,6 +94,12 @@ public class IncludeTag extends UrlTag {
 
     public void setResource(String r) throws JspTagException {
         resource = getAttribute(r);
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public void setTimeout(String t) throws JspTagException {
+        timeOut = getAttribute(t);
     }
     /*
     public void setConfiguration(String r) throws JspTagException {
@@ -125,6 +133,9 @@ public class IncludeTag extends UrlTag {
             URL includeURL = new URL(absoluteUrl);
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
+            int to = timeOut.getInt(this, 10000);
+            connection.setConnectTimeout(to);
+            connection.setReadTimeout(to);
 
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
@@ -132,11 +143,13 @@ public class IncludeTag extends UrlTag {
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     StringBuilder koekjes = new StringBuilder();
-                    for (int i=0; i < cookies.length; i++) {
+                    String sep = "";
+                    for (Cookie cookie : cookies) {
                         if (log.isDebugEnabled()) {
-                            log.debug("setting cookie " + i + ":" + cookies[i].getName() + "=" + cookies[i].getValue());
+                            log.debug("setting cookie:" + cookie.getName() + "=" + cookie.getValue());
                         }
-                        koekjes.append((i > 0 ? ";" : "")).append(cookies[i].getName()).append("=").append(cookies[i].getValue());
+                        koekjes.append(sep).append(cookie.getName()).append("=").append(cookie.getValue());
+                        sep = ";";
                     }
                     connection.setRequestProperty("Cookie", koekjes.toString());
                 }
@@ -192,14 +205,17 @@ public class IncludeTag extends UrlTag {
             } catch (java.net.ConnectException ce) {
                 result = "For " + includeURL + ": " + ce.getMessage();
                 responseCode = -1;
+            } catch (java.net.SocketTimeoutException ste) {
+                result = "";
+                responseCode = -2;
             }
+
 
             handleResponse(responseCode, result, absoluteUrl);
 
             if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
             }
-
         } catch (IOException e) {
             throw new TaglibException (e.getMessage(), e);
         }
@@ -209,9 +225,11 @@ public class IncludeTag extends UrlTag {
      * @since MMBase-1.8
      */
     protected void handleResponse(int code, String result, String url) throws JspTagException {
-
+        pageContext.setAttribute("_responseCode", code);
+        log.info("" + code);
         String output;
         switch(code) {
+        case -2:
         case 200:
             output = result;
             break;
