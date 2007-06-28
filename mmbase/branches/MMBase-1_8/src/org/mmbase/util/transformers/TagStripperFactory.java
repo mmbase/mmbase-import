@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.4.2.2 2007-04-19 12:29:19 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.4.2.3 2007-06-28 09:39:54 michiel Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
@@ -29,7 +29,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
     private static final String NL_TOKEN = "XXXX_NL_XXXX";
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("tags", String.class, "NONE"),  // allowed tags, default no tags are permitted.
+        new Parameter("tags", String.class, ""),  // allowed tags, default no tags are permitted.
         new Parameter("addbrs", Boolean.class, Boolean.FALSE)
     };
 
@@ -54,6 +54,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         if (tags.equals("XSS")) {
             tagList = XSS;
         } else if (tags.equals("")) {
+            tagList = NONE;
+        } else if (tags.equals("NONE")) {
             tagList = NONE;
         } else {
             throw new RuntimeException("Unknonw value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
