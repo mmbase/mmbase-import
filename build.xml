@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.164 2007-06-26 09:38:08 michiel Exp $
+$Id: build.xml,v 1.165 2007-06-28 08:23:12 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -350,6 +350,7 @@ builddate=${builddate}
     <!-- used when making tld's in taglib -->
 
     <copy file="${servlet.jar}"               todir="${compile.lib.dir}" />
+    <copy file="${jspapi.jar}"                todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}"            tofile="${compile.lib.dir}/commons-fileupload.jar" />
     <copy file="${log4j.jar}"                 tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javaactivation.jar}"        todir="${compile.lib.dir}" />
@@ -971,6 +972,12 @@ Build-compiler: ${build.compiler}
     <antcall target="download">
       <param name="sourcefile" value="${servlet.loc}"/>
       <param name="destfile" value="${servlet.jar}"/>
+    </antcall>
+
+    <echo message="jspapi" />
+    <antcall target="download">
+      <param name="sourcefile" value="${jspapi.loc}"/>
+      <param name="destfile" value="${jspapi.jar}"/>
     </antcall>
 
     <echo message="hsqldb" />
