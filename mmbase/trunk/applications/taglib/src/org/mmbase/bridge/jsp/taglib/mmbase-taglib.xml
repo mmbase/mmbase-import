@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.395 2007-06-18 17:29:21 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.396 2007-06-28 18:22:17 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4775,12 +4775,30 @@ like the parameter list or the session (where ever it is available) --&gt;
       </info>
       <since>MMBase-1.8</since>
     </attribute>
+    <attribute>
+      <name>timeout</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        For 'external' includes you can indicate a 'timeout' in milliseconds.
+      </info>
+      <since>MMBase-1.9</since>
+    </attribute>
     <see tag="param" />
     <see tag="url" />
     <see tag="haspage" />
     <see tag="treeinclude" />
     <see tag="leafinclude" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
+    </example>
+    <example><![CDATA[
+      <os:cache>
+        <mm:include page="http://site.which.sometimes.does.not.work.com" timeout="200" />
+        <c:if test="${_responseCode eq -2}">
+          <os:usecached />
+        </c:if>
+      </os:cache>]]>
     </example>
   </tag>
   <tag>
