@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -81,7 +82,28 @@ private Map copyMaps(Map map) {
 public Set getEenheidList() {
     // calling map getter for a refresh
     Map temp = getNatGebMap();
-    return temp.keySet();
+    //copying to a new Set to support .add() method. 
+    Set copySet = new TreeSet();
+    Set mapSet = temp.keySet();
+    Iterator setIterator = mapSet.iterator();
+    while(setIterator.hasNext()) {
+       copySet.add(setIterator.next());
+    }
+    return copySet;
+ }
+
+//procides access to the list of eenheids to be used directly in forms
+public Set getEenheidListWithDepartments() {
+    // calling map getter for a refresh
+    Set temp = getEenheidList();
+    // Centraal kanttor and Regio kanttors are also requested to appear on the list
+    temp.add("Centraal kantoor");
+    Map regios = (Map) gebiedMap.get("Regio");
+    Iterator mapIterator = regios.keySet().iterator();
+    while(mapIterator.hasNext()) {
+       temp.add(mapIterator.next());
+    }
+    return temp;
  }
 
 
@@ -147,12 +169,10 @@ private void readData() {
     dummy = new TreeMap();
     dummy.put("Gelderland", new Boolean(false));
     dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
-    dummy.put("Natuurbeheer", new Boolean(false));
-    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
-    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
-    dummy.put("Stichting Participaties NM", new Boolean(false));
-    dummy.put("Overijssel en Flevoland", new Boolean(false));
-    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
+    dummy.put("Noord-Brabant/Limburg", new Boolean(false));
+    dummy.put("Noord-Holland/Utrecht", new Boolean(false));
+    dummy.put("Overijssel/Flevoland", new Boolean(false));
+    dummy.put("Zuid-Holland/Zeeland", new Boolean(false));
     gebiedMap.put("Regio", dummy);
 }
 

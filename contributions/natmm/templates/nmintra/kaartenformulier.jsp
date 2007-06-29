@@ -218,11 +218,11 @@ function jsc_GeefInfo(id_DIV)
 function small_window(NaamPagina) {
 var newWindow;
 var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=520,height=680, top='+(20)+',left='+(20);
-var fullLink;
+var fullLink = '/natmm-intranet/nmintra/';
 for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 	if (document.KaartenForm.sel_Kaart[i].selected) {
 		var kartNode = document.KaartenForm.sel_Kaart[i].value;
-		fullLink = NaamPagina + "?node=" + kartNode;
+		fullLink += NaamPagina + "?node=" + kartNode;
 		var windowName = kartNode;
 		newWindow = window.open(fullLink, windowName, props);
 		newWindow.focus();
@@ -387,6 +387,15 @@ function validationMessage() {
 	}
 	if(!radioChecked) {
 		alert("Geen gebied(en) geselecteerd of coördinaten opgegeven.");
+		return false;
+	}
+	// gebied and eenheid/regio/provincie validations
+	if ((document.KaartenForm.rad_Gebied[0].checked) && (document.KaartenForm.sel_NatGeb.selectedIndex == -1)) {
+		alert("Geen gebied geselecteerd.");
+		return false;
+	}
+	if ((document.KaartenForm.rad_Gebied[1].checked) && (document.KaartenForm.sel_Areaal.selectedIndex == -1)) {
+		alert("Geen eenheid/regio/provincie geselecteerd.");
 		return false;
 	}
 	// document.KaartenForm.sel_Kaart
@@ -558,7 +567,7 @@ if(twoColumns) {
 	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied"value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_medium"/>
+				<html:radio property="rad_Gebied" value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_medium"/>
 			</td>
 			<td width="220">Eenheid / Regio / Provincie:</td>
 			<td>&nbsp;</td>
