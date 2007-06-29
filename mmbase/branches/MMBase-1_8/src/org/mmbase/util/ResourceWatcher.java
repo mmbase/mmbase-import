@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.13.2.1 2007-05-16 14:55:18 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.13.2.2 2007-06-29 10:28:57 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -142,9 +142,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             return;
         }
         resources.add(resourceName);
-        log.service("Started watching '" + resourceName + "' for resource loader " + resourceLoader.getContext());
         if (log.isDebugEnabled()) {
-            log.debug("(now watching " + resources + ")");
+            log.debug("Started watching '" + resourceName + "' for resource loader " + resourceLoader.getContext());
+            log.trace("(now watching " + resources + ")");
         }
         if (running) {
             createFileWatcher(resourceName);
