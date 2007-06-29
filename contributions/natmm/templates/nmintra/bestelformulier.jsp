@@ -178,7 +178,7 @@ if(twoColumns) {
          <tr>
             <td class="vastgoed_dark">Eenheid:</td>
             <td class="vastgoed_medium"><html:select property="eendheid">
-                  <html:options name="nelis" property="eenheidList" />
+                  <html:options name="nelis" property="eenheidListWithDepartments" />
                </html:select>
             </td>
          </tr>
