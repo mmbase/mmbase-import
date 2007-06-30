@@ -66,7 +66,7 @@
   </tr>
   </mm:listnodes>
   <tr>
-    <td colspan="${colspan + 3}" class="batches">
+    <td colspan="${colspan + 3}"<mm:compare referid="size" value="0" inverse="true"> class="batches"</mm:compare>>
       <mm:compare referid="size" value="0">
         <div class="message">
           <h3>No nodes found</h3>
