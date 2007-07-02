@@ -1,6 +1,6 @@
 <table
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
     class="turn">
   <jsp:directive.attribute name="file"     type="java.lang.String" required="true" />
   <jsp:directive.attribute name="link"     type="java.lang.String" required="true" />
