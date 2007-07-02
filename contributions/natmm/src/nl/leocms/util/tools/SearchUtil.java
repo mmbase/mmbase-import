@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class SearchUtil {
 
@@ -43,7 +43,7 @@ public class SearchUtil {
    }
    private static boolean articleMatchesConstraint(long embargo, String use_verloopdatum, long verloopdatum, long nowSec, int quarterOfAnHour) {
       if ((embargo < (nowSec+quarterOfAnHour) ) 
-         && (use_verloopdatum == "0" || verloopdatum > nowSec )) {
+         && ("0".equals(use_verloopdatum) || verloopdatum > nowSec )) {
          return true; 
          } else { 
          return false;
