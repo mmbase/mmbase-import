@@ -31,11 +31,11 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.17 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ExampleBuilder.java,v 1.18 2007-07-02 14:28:29 michiel Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
-public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
+public class ExampleBuilder extends MMObjectBuilder { 
     private static final Logger log = Logging.getLoggerInstance(ExampleBuilder.class);
 
 
