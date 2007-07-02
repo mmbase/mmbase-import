@@ -517,6 +517,9 @@ if(twoColumns) {
 
 	<table>
 		<tr>
+			<td><h3>Bestelformulier</h3></td>
+		</tr>
+		<tr>
 			<td width="450">
 			Selecteer gebied(en) of geef de coördinaten op:
 			</td>
@@ -530,10 +533,10 @@ if(twoColumns) {
 	</table>	
 
 
-	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();" style="background:vastgoed_dark"/>
+				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();" style="background:vastgoed_medium"/>
 			</td>
 			<td width="220">Natuurgebied(en):</td>
 
@@ -564,10 +567,10 @@ if(twoColumns) {
 	</table>
 	
 	
-	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_light" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_medium"/>
+				<html:radio property="rad_Gebied" value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_light"/>
 			</td>
 			<td width="220">Eenheid / Regio / Provincie:</td>
 			<td>&nbsp;</td>
@@ -599,10 +602,10 @@ if(twoColumns) {
 	</table>
 
 
-	<table width ="500"  class="vastgoed_dark" border="0" cellspacing="0">
+	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20" height="20" valign="top">
-				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();" style="background:vastgoed_dark"/>
+				<html:radio property="rad_Gebied" value="Nederland" onclick="jsc_optie2();" style="background:vastgoed_medium"/>
 			</td>
 
 			<td width="220" valign="top">Nederland:</td>
@@ -614,10 +617,10 @@ if(twoColumns) {
 		</tr>
 	</table>
 
-	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">	
+	<table width="500" class="vastgoed_light" border="0" cellspacing="0">	
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();" style="background:vastgoed_medium"/>
+				<html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();" style="background:vastgoed_light"/>
 			</td>
 			<td colspan="4">Coördinaten:&nbsp;</td>
 			<td>&nbsp;</td>
@@ -667,7 +670,7 @@ if(twoColumns) {
 	</table>		
 	
 
-	<table width="500"  class="vastgoed_dark" border="0" cellspacing="0">
+	<table width="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="96" align="left">Kaarten:&nbsp;<br>klik op afbeelding voor vergroting en informatie</td>
 			<td width="139">
@@ -703,9 +706,9 @@ if(twoColumns) {
 	
 	<table width="500" border="0" cellspacing="0">
 
-		<tr class="vastgoed_dark">
+		<tr class="vastgoed_medium">
 	  		<td width="20">
-        		<html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_dark"/>
+        		<html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_medium"/>
       		</td>
 			<td width="100" align="right">schaal:&nbsp;</td>
       		<td width="100">
@@ -734,8 +737,8 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-    	<tr class="vastgoed_medium">
-			<td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_medium"/></td>
+    	<tr class="vastgoed_light">
+			<td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_light"/></td>
 			<td align="right">formaat:&nbsp;</td>
 
       		<td>
@@ -759,9 +762,9 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-        <tr class="vastgoed_dark">
+        <tr class="vastgoed_medium">
             <td>
-				<html:radio property="rad_Gevouwen" value="gevouwen" style="background:vastgoed_dark"/>
+				<html:radio property="rad_Gevouwen" value="gevouwen" style="background:vastgoed_medium"/>
 			</td>
 			<td align="left">&nbsp;gevouwen&nbsp;</td>
 
@@ -777,8 +780,8 @@ if(twoColumns) {
 
 			<td></td>
 		</tr>
-        <tr class="vastgoed_medium">
-            <td><html:radio property="rad_Gevouwen" value="opgerold" style="background:vastgoed_medium"/></td>
+        <tr class="vastgoed_light">
+            <td><html:radio property="rad_Gevouwen" value="opgerold" style="background:vastgoed_light"/></td>
 			<td align="left">&nbsp;opgerold&nbsp;</td>
 			<td></td>
 			<td></td>
@@ -793,7 +796,7 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-        <tr class="vastgoed_dark">
+        <tr class="vastgoed_medium">
 			<td></td>
             <td>aantal:&nbsp;</td>
       		<td>
@@ -826,7 +829,7 @@ if(twoColumns) {
 		</tr> 
 	</table>	
 
-	<table width="500" class="vastgoed_dark" border="0" cellspacing="0">
+	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">
 		<tr height="5">
 			<td width="5"></td>
 			<td width="440"></td>
@@ -863,7 +866,7 @@ if(twoColumns) {
 		
 		<html:link 
         page="/nmintra/KaartenAction.eb?shopping_cart">
-        Terug naar winkelwagentje...
+        Terug naar mijn bestelling...
 </html:link>
 
 		</td>
