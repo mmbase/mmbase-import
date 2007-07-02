@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="news" maintainer="mmbase.org" version="0" extends="object">
-  <class>org.mmbase.util.functions.ExampleBuilder</class>
+  <class>org.mmbase.mynews.MyNewsBuilder</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">NewsItem</singular>
@@ -109,6 +109,34 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
       </datatype>
+    </field>
+    <field name="lastmodified" state="system">
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="lastmodifier" state="system">
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
+      <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="magazine" state="virtual">
+      <descriptions>
+        <description xml:lang="en">A virtual field, backreferring to the magazine</description>
+      </descriptions>
+      <editor>
+        <positions>
+          <list>5</list>
+        </positions>
+      </editor>
+      <datatype base="NODE" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
   </fieldlist>
   <functionlist>
