@@ -21,8 +21,8 @@
     if you don't want to use jndi you can remove the above properties
     and set the mailhost using the mailhost properties like so:
     -->
-    <property name="mailhost">smtp</property>
     <!--
+    <property name="mailhost">smtp</property>
     <property name="mailport"></property>
     <property name="user"></property>
     <property name="password"></property>
