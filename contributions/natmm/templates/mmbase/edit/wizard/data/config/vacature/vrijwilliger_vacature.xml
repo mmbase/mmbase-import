@@ -62,7 +62,7 @@
          <prompt>omschrijving</prompt>
       </field>
       <field name="functieinhoud" ftype="html" rows="16">
-         <prompt>wat houdt de vrijwilligersfunctie in?</prompt>
+         <prompt>Wat verwachten we van de vrijwilliger?</prompt>
       </field>
       <field name="functieomvang" ftype="html" rows="16" dtrequired="false">
          <prompt>functieomvang</prompt>
