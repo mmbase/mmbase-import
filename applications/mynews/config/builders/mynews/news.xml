@@ -131,12 +131,13 @@
       <descriptions>
         <description xml:lang="en">A virtual field, backreferring to the magazine</description>
       </descriptions>
-      <editor>
-        <positions>
-          <list>5</list>
-        </positions>
-      </editor>
-      <datatype base="NODE" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="utitle" state="virtual">
+      <descriptions>
+        <description xml:lang="en">Another silly example of a virtual field</description>
+      </descriptions>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
   </fieldlist>
   <functionlist>
