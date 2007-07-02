@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.7 2007-04-26 19:36:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.8 2007-07-02 10:14:01 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -135,6 +135,9 @@ version: $Id: mmbase-taglib.xml,v 1.374.2.7 2007-04-26 19:36:32 michiel Exp $
     <name>treefile</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.lang.String treefile(java.lang.String, javax.servlet.jsp.PageContext, java.lang.Object)</function-signature>
+    <!--
+    <function-signature>java.lang.String treefile(java.lang.String, java.lang.Object)</function-signature>
+    -->
     <since>MMBase-1.8.4</since>
     <see tag="treefile" />
   </function>
@@ -8132,4 +8135,30 @@ The 0 is just counter, which starts at 0 on every page.
     <path>/META-INF/tags/mml/search.tagx</path>
   </tag-file>
   -->
+  <tag-file>
+    <type>util.html</type>
+    <name>option</name>
+    <path>/META-INF/tags/mm/u/option.tagx</path>
+    <info>
+      Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.
+    </info>
+    <example><pre><![CDATA[
+    <mm:option name="a" value="hoi" compare="${a}" />
+]]></pre>
+    </example>
+    <since>MMBase-1.8.5</since>
+  </tag-file>
+  <tag-file>
+    <type>util.html</type>
+    <name>radio</name>
+    <path>/META-INF/tags/mm/u/radio.tagx</path>
+    <info>
+      Like the HTML input radio tag, which it produces. It only support also a 'compare' attribute to support added checked="checked" or not.
+    </info>
+    <example><pre><![CDATA[
+    <mm:option name="a" value="hoi" compare="${a}" />
+]]></pre>
+    </example>
+    <since>MMBase-1.8.5</since>
+  </tag-file>
 </taglib>
