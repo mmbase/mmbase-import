@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.16 2007-02-27 13:38:34 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.17 2007-07-02 15:23:08 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -242,13 +242,18 @@ public class MMBaseEntry implements IndexEntry {
                     }
                     case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
                     case org.mmbase.bridge.Field.TYPE_BINARY : {
-                        String mimeType = "unknown";
-                        mimeType = "" + n.getFunctionValue("mimetype", null);
+                        String mimeType = "unknown";                        
+                        try {
+                            mimeType = "" + n.getFunctionValue("mimetype", null);
+                        } catch (NotFoundException nfe) {
+                            //
+                        }
                         Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
+                        
                         if (extractor != null) {
                             byte[] help = n.getByteValue(fieldName);
                             log.service("Analyzing document of " + n.getNumber() + " with " + extractor + " " + n.getByteValue(fieldName).length);
-
+                            
                             InputStream input = new ByteArrayInputStream(help);
                             try {
                                 documentText = extractor.extract(input);
