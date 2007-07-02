@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
-    <node number="8000" owner="system" alias="component.forum">
-        <name>forum</name>
-        <classname>nl.didactor.component.forum.DidactorForum</classname>
-    </node>
-</components>

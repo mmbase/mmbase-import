@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE taglibcontent PUBLIC "-//MMBase//DTD taglibcontent 1.0//EN" "http://www.mmbase.org/dtd/taglibcontent_1_0.dtd">
-<taglibcontent>
-  <parameterizedescaper id="smilies">
-    <class>org.mmbase.applications.mmbob.util.transformers.SmileyFactory</class>
-    <info>Generates nices smilies</info>
-  </parameterizedescaper>
-</taglibcontent>

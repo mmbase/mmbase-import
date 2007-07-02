@@ -1,8 +1,0 @@
-This directory contains security related settings.
-On default the security is configured with an xml in 'context/config.xml' (referred to by
-security.xml).
-
-When installing an other security implementation (like 'cloud context security'), it usually
-suffices to make this directory empty, and place the relevant jar in WEB-INF/lib
-(because such jars can contain there own security.xml).
-

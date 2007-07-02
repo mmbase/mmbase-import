@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_evenement_distance">
-      <field name="name" ftype="line"><prompt>naam</prompt></field>
-      <!-- 
-      <field name="isoninternet" ftype="enum"><prompt>selectie optie op internet</prompt><optionlist select="ja_nee"/></field>
-      -->
-      <list include="config/evenement/zoek_related_evenement_blueprint.xml" />
-</form-schema>
