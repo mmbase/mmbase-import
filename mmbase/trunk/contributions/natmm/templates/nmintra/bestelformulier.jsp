@@ -83,10 +83,6 @@
    
    
    
-   
-   
-   
-   
    <%@page import="nl.leocms.vastgoed.NelisReader" %>
    <% 
    NelisReader nelis = NelisReader.getInstance();
@@ -157,34 +153,33 @@ if(twoColumns) {
     <a name="top">
     <%--%@include file="includes/back_print.jsp" %>--%>
     
-    
-
-   
-   <h3>Mijn bestelling</h3>
    
    <html:form action="/nmintra/BestelAction" method="POST"  onsubmit="return validationMessage()" >
       <b><html:errors bundle="LEOCMS"/></b>
       <table border="0" cellpadding="4" cellspacing="4">
+      	<tr>
+			<td><h3>Mijn bestelling</h3></td>
+		</tr>
          <tr>
-            <td class="vastgoed_dark">Naam:</td>
-            <td class="vastgoed_medium"><html:text property="naam" size="44"/>
+            <td class="vastgoed_medium">Naam:</td>
+            <td class="vastgoed_light"><html:text property="naam" size="44"/>
                
             </td>
          </tr>
          <tr>
-            <td class="vastgoed_dark">E-mail:</td>
-            <td class="vastgoed_medium"><html:text property="email" size="44"/></td>
+            <td class="vastgoed_medium">E-mail:</td>
+            <td class="vastgoed_light"><html:text property="email" size="44"/></td>
          </tr>
          <tr>
-            <td class="vastgoed_dark">Eenheid:</td>
-            <td class="vastgoed_medium"><html:select property="eendheid">
+            <td class="vastgoed_medium">Eenheid:</td>
+            <td class="vastgoed_light"><html:select property="eendheid">
                   <html:options name="nelis" property="eenheidListWithDepartments" />
                </html:select>
             </td>
          </tr>
          <tr>
-            <td class="vastgoed_dark">Alternatief bezorgadres:</td>
-            <td class="vastgoed_medium"><html:textarea property="bezorgadres" cols="40" rows="5"></html:textarea></td>
+            <td class="vastgoed_medium">Alternatief bezorgadres:</td>
+            <td class="vastgoed_light"><html:textarea property="bezorgadres" cols="40" rows="5"></html:textarea></td>
          </tr>     
       </table>
       
@@ -199,11 +194,11 @@ if(twoColumns) {
       
       <table border="0" cellpadding="4" cellspacing="4">
          <tr>
-            <td class="vastgoed_dark">kaartsoort</td>
-            <td class="vastgoed_dark">natuurgebied,eenheid,regio,coordinaten etc.</td>
-            <td class="vastgoed_dark">schaal of formaat</td>
-            <td class="vastgoed_dark">aantal</td>
-            <td class="vastgoed_dark">gerold of gevouwen</td>
+            <td class="vastgoed_medium">kaartsoort</td>
+            <td class="vastgoed_medium">natuurgebied,eenheid,regio,coordinaten etc.</td>
+            <td class="vastgoed_medium">schaal of formaat</td>
+            <td class="vastgoed_medium">aantal</td>
+            <td class="vastgoed_medium">gerold of gevouwen</td>
             <td></td>
             <td></td>
          </tr>
