@@ -245,7 +245,7 @@ if(twoColumns) {
                   <html:link 
                      page="/nmintra/KaartenInitAction.eb" 
                      paramId="number" paramName="i">
-                     <img src="media/vastgoed/refresh.gif" border="0" alt="terug" title="terug"/>
+                     <img src="media/vastgoed/arrowleft_default.gif" border="0" alt="terug" title="terug"/>
                   </html:link>
                   
                </td>

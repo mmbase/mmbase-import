@@ -523,7 +523,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg." title="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
@@ -625,11 +625,11 @@ if(twoColumns) {
 
 		<tr>
 			<td>&nbsp;</td>
-			<td width="150" align="right">linksonder X:&nbsp;</td>
+			<td width="150" style="text-align:right;">linksonder X:&nbsp;</td>
 			<td width="50">
               <html:text style="width:100%;" property="linksX" size="7"/>
 			</td>
-			<td width="50" align="right">Y:&nbsp;</td>
+			<td width="50" style="text-align:right;">Y:&nbsp;</td>
 			<td width="50">
 				<html:text style="width:100%;" property="linksY" size="7"/>
 			</td>
@@ -637,11 +637,11 @@ if(twoColumns) {
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td align="right">rechtsboven X:&nbsp;</td>
+			<td style="text-align:right;">rechtsboven X:&nbsp;</td>
 			<td>
              <html:text style="width:100%;" property="rechtsX" size="7"/>
 			</td>
-			<td align="right">Y:&nbsp;</td>
+			<td style="text-align:right;">Y:&nbsp;</td>
 			<td>
 			 <html:text style="width:100%;" property="rechtsY" size="7"/>    
 			</td>
@@ -660,7 +660,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(1);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg." title="Klik hier voor uitleg.">
 				</a>
 			</td>
 		</tr> 
@@ -671,7 +671,7 @@ if(twoColumns) {
 		<tr>
 			<td width="96" align="left">Kaarten:&nbsp;<br>klik op afbeelding voor vergroting en informatie</td>
 			<td width="139">
-				<img id="kartPicture" style="cursor:pointer" src="media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart" 
+				<img id="kartPicture" style="cursor:pointer" src="media/vastgoed/Nicolao_Visscher.jpg" width="132" height="107" border="0" alt="Klik hier voor vergroting en meer gegevens van deze kaart"  title="Klik hier voor vergroting en meer gegevens van deze kaart"
 					onClick="javascript:small_window('includes/vastgoed/kaart_popup.jsp');">
 
 			</td>
@@ -694,7 +694,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(2);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg." title="Klik hier voor uitleg." >
 				</a>
 			</td>
 		</tr> 
@@ -703,9 +703,9 @@ if(twoColumns) {
 	
 	<table width="500" border="0" cellspacing="0">
 
-		<tr class="vastgoed_medium">
+		<tr class="vastgoed_dark">
 	  		<td width="20">
-        		<html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_medium"/>
+        		<html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_dark"/>
       		</td>
 			<td width="100" align="right">schaal:&nbsp;</td>
       		<td width="100">
@@ -734,8 +734,8 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-    	<tr class="vastgoed_dark">
-			<td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_dark"/></td>
+    	<tr class="vastgoed_medium">
+			<td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_medium"/></td>
 			<td align="right">formaat:&nbsp;</td>
 
       		<td>
@@ -748,14 +748,8 @@ if(twoColumns) {
 
       			</html:select>
 			</td>
-			<td align="right">aantal:&nbsp;</td>
-      		<td>
-      		<html:select property="aantal">
-      			<% for (int iAantal = 1; iAantal<=10; iAantal++) { %>
-      			<html:option value="<%=String.valueOf(iAantal)%>"><%=iAantal%></html:option>
-      			<% } %>
-      		</html:select>
-      		</td>
+			<td></td>
+      		<td></td>
     	</tr>
 		<tr height="10" bgcolor="#FFFFFF">
 			<td></td>
@@ -765,9 +759,9 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-        <tr class="vastgoed_medium">
+        <tr class="vastgoed_dark">
             <td>
-				<html:radio property="rad_Gevouwen" value="gevouwen" style="background:vastgoed_medium"/>
+				<html:radio property="rad_Gevouwen" value="gevouwen" style="background:vastgoed_dark"/>
 			</td>
 			<td align="left">&nbsp;gevouwen&nbsp;</td>
 
@@ -783,13 +777,35 @@ if(twoColumns) {
 
 			<td></td>
 		</tr>
-        <tr class="vastgoed_dark">
-            <td><html:radio property="rad_Gevouwen" value="opgerold" style="background:vastgoed_dark"/></td>
+        <tr class="vastgoed_medium">
+            <td><html:radio property="rad_Gevouwen" value="opgerold" style="background:vastgoed_medium"/></td>
 			<td align="left">&nbsp;opgerold&nbsp;</td>
 			<td></td>
 			<td></td>
 			<td></td>
 
+        </tr>
+        <tr height="10" bgcolor="#FFFFFF">
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+        <tr class="vastgoed_dark">
+			<td></td>
+            <td>aantal:&nbsp;</td>
+      		<td>
+      		<html:select style="width:100%;" property="aantal">
+      			<% for (int iAantal = 1; iAantal<=10; iAantal++) { %>
+      			<html:option value="<%=String.valueOf(iAantal)%>"><%=iAantal%></html:option>
+      			<% } %>
+      		</html:select>
+      		</td>
+			<td></td>
+			<td></td>
+			
         </tr>
   </table>
 	
@@ -804,7 +820,7 @@ if(twoColumns) {
 				<a href="javascript:giveInfo(3);">
 
 					<img src="media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg." title="Klik hier voor uitleg." >
 				</a>
 			</td>
 		</tr> 
@@ -837,7 +853,7 @@ if(twoColumns) {
 
 			<td>Toevoegen aan mijn bestelling:&nbsp;</td>
 			<td align="right">
-			<input type="image" src="media/vastgoed/wwagen.jpg" name="send"/>
+			<input type="image" src="media/vastgoed/wwagen.jpg" name="send" alt="Toevoegen aan mijn bestelling." title="Toevoegen aan mijn bestelling."/>
 			</td>
 			<td></td>
 		</tr>
