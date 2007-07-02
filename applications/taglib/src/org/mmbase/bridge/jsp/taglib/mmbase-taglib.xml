@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.397 2007-06-28 21:31:02 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.398 2007-07-02 10:12:51 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8265,7 +8265,20 @@ The 0 is just counter, which starts at 0 on every page.
     <mm:option name="a" value="hoi" compare="${a}" />
 ]]></pre>
     </example>
-    <since>MMBase-1.9</since>
+    <since>MMBase-1.8.5</since>
+  </tag-file>
+  <tag-file>
+    <type>util.html</type>
+    <name>radio</name>
+    <path>/META-INF/tags/mm/u/radio.tagx</path>
+    <info>
+      Like the HTML input radio tag, which it produces. It only support also a 'compare' attribute to support added checked="checked" or not.
+    </info>
+    <example><pre><![CDATA[
+    <mm:radio name="a" value="hoi" compare="${a}" />
+]]></pre>
+    </example>
+    <since>MMBase-1.8.5</since>
   </tag-file>
   <tag-file>
     <type>util.html</type>
