@@ -18,7 +18,7 @@ if(twoColumns) {
 <div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
-    <a name="top">
+    <a name="top"></a>
     
     <div align="right">
        <mm:node number="<%= rbLogoID %>" notfound="skipbody"><img src="<mm:image template='s(120x80)'/>" border="0" alt=""></mm:node>
@@ -88,14 +88,13 @@ if(twoColumns) {
       <mm:list nodes="<%= startnodeId %>"  path="<%= vraagPath %>" orderby="<%= vraagOrderby %>"
          ><mm:size jspvar="size" write="false" >
          <mm:isgreaterthan value="1">
-        	<mm:first><p> <b>Inhoud:</b></mm:first>
+        	<mm:first><p class="black"><b>Inhoud:</b></mm:first>
          	<mm:node element="vraagbaak">  
           		<li/> <a href="<%= ph.createPaginaUrl(startnodeId,request.getContextPath()) %>#<mm:field name="number"/>"><mm:field name="titel"/></a>
          	</mm:node>
 		</mm:isgreaterthan>
       	</mm:size>
       </mm:list>
-
       </p><br/>
       
       <mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
@@ -108,17 +107,14 @@ if(twoColumns) {
          >
          <mm:node element="vraagbaak" id="this_vraagbaak">  
          <mm:field name="number" jspvar="dummy" vartype="String" write="false" ><% currentVraag = dummy; %></mm:field>
-         <a name="<%=currentVraag%>">
+         <a name="<%=currentVraag%>"></a>
          <jsp:include page="includes/relatedvraagbaak.jsp">
          	<jsp:param name="v" value="<%=currentVraag%>"/>
          	<jsp:param name="c" value="<%=startnodeId%>"/>
          </jsp:include>
          </mm:node>
      </mm:list>
-      
-      
-      
-      
+       
       <mm:node number="<%= paginaID %>">
          <%@include file="includes/relatedcompetencies.jsp" %>
       </mm:node>
