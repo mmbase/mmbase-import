@@ -46,7 +46,6 @@
 
   <target name="build" >
     <echo message="Building components: ${components}" />
-    <delete file="${build.webapp.dir}/WEB-INF/taglib.tld" />
     <delete file="${build.webapp.dir}/WEB-INF/web.xml" />
   	
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
@@ -224,7 +223,8 @@
                classpathref="classpath" />
 
         <if>
-          <!-- pretty ridiculous   DIDACTOR-4 -->
+          <!-- pretty ridiculous. See DIDACTOR-4 
+          -->
           <available file="src/${component}/java/hibernate.cfg.xml" type="file"/>
           <then>
             <!-- hibernate configuration -->
@@ -249,9 +249,22 @@
           </then>
         </if>
 
-        <jar jarfile="${build.webapp.dir}/WEB-INF/lib//didactor-${component}.jar"
-             includes="**"
-             basedir="${build.dir}/classes/${component}" />
+        <if>
+          <available file="src/${component}/metainf" />
+          <then>
+            <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
+                 includes="**"
+                 basedir="${build.dir}/classes/${component}">
+              <metainf dir="src/${component}/metainf">
+                <include name="**" />
+              </metainf>
+            </jar>
+          </then>
+          <else>
+            <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
+                 includes="**" />
+          </else>
+        </if>
       </then>
     </if>
     <if>
@@ -356,7 +369,8 @@
         <if>
           <available file="src/${component}/webinf/web-extra.xml" />
           <then>
-            <property name="mergeXmlFile"           location="src/${component}/webinf/web-extra.xml" />
+            <property name="mergeXmlFile"     
+                      location="src/${component}/webinf/web-extra.xml" />
             <xslt style="merge-web.xml.xslt"
                   in="${build.webapp.dir}/WEB-INF/web.xml"
                   out="${build.webapp.dir}/WEB-INF/web.help.xml">
