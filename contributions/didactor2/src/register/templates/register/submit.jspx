@@ -3,6 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     > 
+  <jsp:output omit-xml-declaration="true" />
   <!-- template for password: 6 alphanumerics -->
   <mm:import id="template">CCCCCC</mm:import>
 
