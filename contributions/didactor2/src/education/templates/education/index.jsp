@@ -1,7 +1,10 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="java.util.*"
-%>
+%><%--
+TODO: This JSP is much too big, and polluted with all kinds of functionality.
+
+--%>
 <mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
 <mm:cloud method="delegate">
   <jsp:directive.include file="/shared/setImports.jsp" />
@@ -66,14 +69,16 @@
            <%
            // A user can have access to only "opened" top learnblocks (lession)
            Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
-           Object[] arrObjects = {nodeEducation, nodeUser};
-           hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, arrObjects);
+           // WTF, calling the _first_ method?
+           // Result of getMethods is not even sorted (see javadoc)!, and it _also_ returns the public methods of Object.
+           // We are prety lucky that this even works!!
+           hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, nodeEducation, nodeUser);
            %>
          </mm:node>
        </mm:node>
      </mm:related>
    </mm:node>
-   
+
    <mm:import externid="reset" />
    <mm:present referid="reset">
      <jsp:scriptlet>session.setAttribute("educationBookmarks", null);</jsp:scriptlet>
@@ -82,8 +87,7 @@
 <%
     if (educationNumber != null && educationNumber.length() > 0) {
         session.setAttribute("lasteducation", educationNumber);
-    }
-    else {
+    } else {
         educationNumber = (String) session.getAttribute("lasteducation");
     }
     if (educationNumber != null && educationNumber.length() > 0) {
@@ -93,9 +97,8 @@
             session.setAttribute("educationBookmarks",bookmarks);
         }
         if (learnObject != null && learnObject.length() > 0) {
-            bookmarks.put(educationNumber+",learnobject",learnObject);
-        }
-        else {
+            bookmarks.put(educationNumber + ",learnobject", learnObject);
+        } else {
             learnObject = (String) bookmarks.get(educationNumber+",learnobject");
             //System.err.println("read "+educationNumber+",learnobject="+learnObject+" from session");
             if (learnObject != null) {
@@ -104,14 +107,14 @@
         }
         if (learnObjectType != null && learnObjectType.length() > 0) {
             bookmarks.put(educationNumber+",learnobjecttype",learnObjectType);
-        }
-        else  {
+        } else  {
             learnObjectType = (String) bookmarks.get(educationNumber+",learnobjecttype");
             if (learnObjectType != null) {
                 %><mm:import id="learnobjecttype" reset="true"><%= learnObjectType %></mm:import><%
             }
         }
-        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import><%
+        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import>        <mm:log><%=bookmarks%></mm:log>
+<%
     }
 %>
 
@@ -119,9 +122,9 @@
 <!-- TODO when refreshing the page (F5) the old iframe content is shown -->
 <!-- TODO pre and postassessment are showed in the tree -->
 <!-- TODO split index and tree code in two seperate jsp templates -->
-<mm:import id="gfx_item_none"><mm:treefile page="/gfx/spacer.gif" objectlist="$includePath" referids="$referids" /></mm:import>
-<mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" referids="$referids" /></mm:import>
-<mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" referids="$referids" /></mm:import>
+<mm:import id="gfx_item_none"><mm:treefile page="/gfx/spacer.gif" objectlist="$includePath" /></mm:import>
+<mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" /></mm:import>
+<mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" /></mm:import>
 
 <mm:import externid="justposted" />
 
@@ -255,6 +258,7 @@
 //There is a JS error here
 //(added try/catch)
 //Does anybody know, what the problem is?
+//--> Probably the problem is, that it is a bloody mess!
 try{
             if (level > 1) {
                 // also open parents
@@ -338,17 +342,21 @@ catch(err){};
 
 
 <div class="rows">
-   <div class="navigationbar">
-      <div class="pathbar">
-         <mm:node number="$education">
-            <mm:field name="name"/>
-         </mm:node>
-      </div>
-
-      <mm:import id="stepNavigator">
-         <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.previous" />" alt="<di:translate key="education.previous" />" /></a>
-         <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="${mm:url('gfx/spacer.gif', pageContext)}" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
-         <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
+  <div class="navigationbar">
+    <div class="pathbar">
+      <mm:node number="$education">
+        <mm:field name="name"/>
+      </mm:node>
+    </div>
+    
+    <mm:import id="stepNavigator">
+      <a href="javascript:previousContent();"><img src="${mm:treefile('/gfx/icon_arrow_last.gif', pageContext, includePath)}" width="14" height="14" border="0" 
+                                                   title="${di:translate(pageContext, 'education.previous')}" 
+                                                   alt="${di:translate(pageContext, 'education.previous')}" 
+                                                   />
+      </a>
+      <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="${mm:url('gfx/spacer.gif', pageContext)}" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
+      <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
        </mm:import>
        <div class="stepNavigator">
          <mm:write referid="stepNavigator" escape="none" />
@@ -562,12 +570,12 @@ catch(err){};
 <mm:present referid="frame">
    <script>
       closeAll();
-      openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="education"/>');
-      openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="education"/>');
+      openContent('${learnobjectype}','${education}');
+      openOnly('div${learnobject}','img${education}');
 
 
       <mm:write referid="frame" jspvar="sFrameURL" vartype="String">
-         content.location.href='<%= sFrameURL.replaceAll("&amp;","&") %>';
+         content.location.href='<%= sFrameURL.replaceAll("&amp;","&") %>'; // wtf
       </mm:write>
    </script>
 </mm:present>
@@ -576,25 +584,24 @@ catch(err){};
 <script type="text/javascript">
    closeAll();
 
-   <%// we open need menu item in case it is a reference from another education%>
+   <%-- we open need menu item in case it is a reference from another education --%>
    <mm:present referid="the_only_node_to_show">
-      openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="the_only_node_to_show"/>');
-      openOnly('div<mm:write referid="the_only_node_to_show"/>','img<mm:write referid="the_only_node_to_show"/>');
+      openContent('${learnobjectype}','${the_only_node_to_show}');
+      openOnly('div${the_only_node_to_show}','img${the_only_node_to_show}');
    </mm:present>
 
 
    <mm:notpresent referid="the_only_node_to_show">
       <mm:present referid="learnobject">
-         openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="learnobject"/>');
-         openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="learnobject"/>');
+         openContent('${learnobjecttype}','${learnobject}');
+         openOnly('div${learnobject}','img${learnobject}');
       </mm:present>
 
       <mm:notpresent referid="learnobject">
-           if (contentnumber.length >= 1) {
-               openContent(contenttype[0],contentnumber[0]);
-               openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
-           }
-
+        if (contentnumber.length >= 1) {
+           openContent(contenttype[0],contentnumber[0]);
+           openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
+        }
       </mm:notpresent>
    </mm:notpresent>
 
