@@ -3,6 +3,12 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
+<% // to keep rubriek style during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
+if (request.getParameter("rb") != null) {
+	iRubriekStyle = Integer.parseInt(request.getParameter("rb"));
+}%>
+<bean:define value="<%= String.valueOf(iRubriekStyle) %>" id="rubriekBean" />
+
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
@@ -152,7 +158,6 @@ if(twoColumns) {
     <tr><td style="padding:10px;padding-top:18px;">
     <a name="top">
     <%--%@include file="includes/back_print.jsp" %>--%>
-    
    
    <html:form action="/nmintra/BestelAction" method="POST"  onsubmit="return validationMessage()" >
       <b><html:errors bundle="LEOCMS"/></b>
@@ -186,7 +191,7 @@ if(twoColumns) {
       <br/>
       
       <html:link 
-         page="/nmintra/KaartenInitAction.eb">
+         page="/nmintra/KaartenInitAction.eb" paramId="rb" paramName="rubriekBean">
          <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Bestel nog een kaart 
       </html:link>
       <br/><br/>
@@ -236,18 +241,18 @@ if(twoColumns) {
                <td class="vastgoed_light"><%= item.getAantal()%></td>
                <td class="vastgoed_light"><%= item.getGevouwenOfOpgerold()%></td>
                <td>
-                  
+                  <%String updateLink = "/nmintra/KaartenInitAction.eb?rb=" + iRubriekStyle; %>
                   <html:link 
-                     page="/nmintra/KaartenInitAction.eb" 
+                     page="<%=updateLink%>" 
                      paramId="number" paramName="i">
                      <img src="media/vastgoed/arrowleft_default.gif" border="0" alt="terug" title="terug"/>
                   </html:link>
                   
                </td>
                <td>
-                  
+                  <%String deleteLink = "/nmintra/BestelAction.eb?rb=" + iRubriekStyle; %>
                   <html:link 
-                     page="/nmintra/BestelAction.eb" 
+                     page="<%=deleteLink%>" 
                      paramId="delete" paramName="i">
                      <img src="media/vastgoed/remove.gif" border="0" alt="verwijderen" title="verwijderen"/>
                   </html:link>
@@ -262,6 +267,7 @@ if(twoColumns) {
       <br/>
       <html:submit property="send" value="Verzenden" />
       
+      <input type="hidden" name="rb" value="<%=iRubriekStyle%>"/>
    </html:form>
    
    <%
