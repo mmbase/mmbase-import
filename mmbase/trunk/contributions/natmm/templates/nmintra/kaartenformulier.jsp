@@ -3,6 +3,12 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
+<% // to keep rubriek style during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
+if (request.getParameter("rb") != null) {
+	iRubriekStyle = Integer.parseInt(request.getParameter("rb"));
+}%>
+<bean:define value="<%= String.valueOf(iRubriekStyle) %>" id="rubriekBean" />
+
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
@@ -863,9 +869,8 @@ if(twoColumns) {
 		<tr height="5">
 			<td></td>
 			<td>
-		
 		<html:link 
-        page="/nmintra/KaartenAction.eb?shopping_cart">
+        page="/nmintra/KaartenAction.eb?shopping_cart" paramId="rb" paramName="rubriekBean">
         Terug naar mijn bestelling...
 </html:link>
 
@@ -877,7 +882,8 @@ if(twoColumns) {
 	</table>
  
 <input type="hidden" name="number" value="<%=request.getParameter("number")%>"/>
- 
+
+<input type="hidden" name="rb" value="<%=iRubriekStyle%>"/>
 </html:form>
 
 <% 
