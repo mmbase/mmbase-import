@@ -2,7 +2,6 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
     >
   <jsp:output omit-xml-declaration="yes" />
 
@@ -25,7 +24,7 @@
           </div>
         </mm:isnotempty>
       </mm:field>
-      <di-t:pos2relatedimage />      
+      <di:pos2relatedimage />      
       <mm:field name="body" escape="pl,links" />
       <mm:relatednodes type="images" role="posrel" offset="1" orderby="posrel.pos">
         <mm:image mode="img" template="s(100)" />
@@ -39,7 +38,7 @@
             </mm:field>
           </mm:compare>
         </mm:field>
-        <di-t:pos2relatedimage />
+        <di:pos2relatedimage />
         <mm:field name="body" escape="none" /> <!-- sigh, an html field, will probably result invalid HTML -->
 
         <!-- probably need some nicer html here: -->
