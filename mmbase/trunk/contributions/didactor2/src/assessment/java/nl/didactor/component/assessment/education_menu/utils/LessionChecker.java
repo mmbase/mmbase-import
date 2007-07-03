@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
 /**
  * WTF is a 'Lession'?
  * @javadoc
- * @version $Id: LessionChecker.java,v 1.4 2007-07-03 08:33:57 michiel Exp $
+ * @version $Id: LessionChecker.java,v 1.5 2007-07-03 08:50:07 michiel Exp $
  */
 
 public class LessionChecker {
@@ -28,82 +28,82 @@ public class LessionChecker {
     */
     
     public static Set<String> getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
-       Set<String> hsetResult = new HashSet<String>();
+       Set<String> resultSet = new HashSet<String>();
        Cloud cloud = nodeEducation.getCloud();
        
-       NodeList nlVirtual = cloud.getList("" + nodeEducation.getNumber(),
-                                          "educations,posrel,learnblocks",
-                                          "learnblocks.number",
-                                          null,
-                                          "posrel.pos",
-                                          null, null, true);
+       NodeList relatedLearnBlocks = cloud.getList("" + nodeEducation.getNumber(),
+                                             "educations,posrel,learnblocks",
+                                             "learnblocks.number",
+                                             null,
+                                             "posrel.pos",
+                                             null, null, true);
        
-       int intCounter = 0;
-       boolean boolStatusBlocked = false;
-       boolean boolFirstHasFeedback = false;
+       int counter = 0;
+       boolean statusBlocked = false;
+       boolean firstHasFeedback = false;
        
-       for (NodeIterator it = nlVirtual.nodeIterator(); it.hasNext(); ) {
-           Node nodeVirtual = it.nextNode();
-           Node nodeLearnBlock = cloud.getNode(nodeVirtual.getStringValue("learnblocks.number"));
+       for (NodeIterator it = relatedLearnBlocks.nodeIterator(); it.hasNext(); ) {
+           Node clusterNode = it.nextNode();
+           Node learnBlock = cloud.getNode(clusterNode.getIntValue("learnblocks.number"));
            
            
-           if (boolStatusBlocked) {
+           if (statusBlocked) {
                //It means the rest of learnblocks is closed.
-               previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
-               hsetResult.add("" + nodeLearnBlock.getNumber());
+               previousOneHasGotNoFeedbackRelated(learnBlock);
+               resultSet.add("" + learnBlock.getNumber());
            } else {
-               NodeList nlVirtual2 = cloud.getList("" + nodeLearnBlock.getNumber(),
-                                                   "learnblocks,classrel,people",
-                                                   "classrel.number",
-                                                   "people.number='" + nodeUser.getNumber() + "'",
-                                                   null,
-                                                   null, null, true);
+               NodeList classRels = cloud.getList("" + learnBlock.getNumber(),
+                                                  "learnblocks,classrel,people",
+                                                  "classrel.number",
+                                                  "people.number='" + nodeUser.getNumber() + "'",
+                                                  null,
+                                                  null, null, true);
                
                
-               if (nlVirtual2.size() == 0) {
+               if (classRels.size() == 0) {
                    //blocked
-                   boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
+                   statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
                } else {
-                   if (cloud.getNode(nlVirtual2.getNode(0).getStringValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
-                       feedbackRelated(nodeLearnBlock);                       
-                       if (intCounter == 0) {
-                           boolFirstHasFeedback = true;
+                   if (cloud.getNode(classRels.getNode(0).getIntValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
+                       feedbackRelated(learnBlock);                       
+                       if (counter == 0) {
+                           firstHasFeedback = true;
                        }
                    } else {
                        //blocked
-                       boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
+                       statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
                    }
                }
            }
            
-           intCounter++;
+           counter++;
        }
        
-       return hsetResult;
+       return resultSet;
     }
     
     
     
     
 
-    private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<String> hsetResult, int intCounter, boolean boolStatusBlocked, boolean boolFirstHasFeedback){
-      if(intCounter == 0){
+    private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<String> resultSet, int counter, boolean statusBlocked, boolean firstHasFeedback){
+      if(counter == 0) {
           log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
-      } else{
-          boolStatusBlocked = true;
+      } else {
+          statusBlocked = true;
       }
       
-      if (intCounter == 1) {
-          if (!boolFirstHasFeedback) {
+      if (counter == 1) {
+          if (!firstHasFeedback) {
               //The first learnblock has got no feedback
-              previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
-              hsetResult.add("" + nodeLearnBlock.getNumber());
+              previousOneHasGotNoFeedbackRelated(nodeLearnBlock);
+              resultSet.add("" + nodeLearnBlock.getNumber());
           }
       }
       
       log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got no feedback related.");
       
-      return boolStatusBlocked;
+      return statusBlocked;
    }
 
 
@@ -115,7 +115,7 @@ public class LessionChecker {
    }
 
 
-   private static void previousOne_HasGot_No_FeedbackRelated(Node nodeLearnBlock){
+   private static void previousOneHasGotNoFeedbackRelated(Node nodeLearnBlock){
       log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is blocked because the previous one has got no feedback.");
    }
 }
