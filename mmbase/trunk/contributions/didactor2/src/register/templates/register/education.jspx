@@ -3,6 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >  
+  <jsp:output omit-xml-declaration="true" />
   <!-- 
        shows the education selector (if more than one), or just the name of the education (of only one)
        You can switch this of in the CSS if you don't want it, or override this file. (it's called with treeinclude)
