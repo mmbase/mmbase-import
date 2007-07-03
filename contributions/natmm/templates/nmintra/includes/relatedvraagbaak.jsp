@@ -60,7 +60,6 @@ if (printView) { %>
   
   <mm:field name="intro" />
   
-  
   <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <mm:first><br/></mm:first>
       
