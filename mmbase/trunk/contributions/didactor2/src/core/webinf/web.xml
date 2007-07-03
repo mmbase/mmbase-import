@@ -183,10 +183,6 @@
     <welcome-file>welcome.html</welcome-file>
   </welcome-file-list>
 
-  <taglib>
-    <taglib-uri>http://www.didactor.nl/ditaglib_1.0</taglib-uri>
-    <taglib-location>/WEB-INF/taglib.tld</taglib-location>
-  </taglib>
 
   <error-page>
     <error-code>400</error-code>
