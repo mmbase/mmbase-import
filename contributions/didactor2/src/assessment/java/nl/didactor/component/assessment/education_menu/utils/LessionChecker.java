@@ -5,103 +5,104 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
+
+/**
+ * WTF is a 'Lession'?
+ * @javadoc
+ * @version $Id: LessionChecker.java,v 1.4 2007-07-03 08:33:57 michiel Exp $
+ */
+
 public class LessionChecker {
 
 
-   private static Logger log = Logging.getLoggerInstance(LessionChecker.class.getName());
-
+   private static final Logger log = Logging.getLoggerInstance(LessionChecker.class);
+    
    /**
     * Checks that learnblocks are blocked for this particular user.
     * It is advised to call this method only once during the education menu building
-    * The goal is perfomance improving.
+    * The goal is performance improving.
     *
     * @param nodeEducation Node
     * @param nodeUser Node
-    * @return HashSet
+    * @return Set
     */
-
-   public static HashSet getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
-      HashSet hsetResult = new HashSet();
-      Cloud cloud = nodeEducation.getCloud();
-
-      NodeList nlVirtual = cloud.getList("" + nodeEducation.getNumber(),
-                                         "educations,posrel,learnblocks",
-                                         "learnblocks.number",
-                                         null,
-                                         "posrel.pos",
-                                         null, null, true);
-
-      Integer intCounter = new Integer(0);
-      Boolean boolStatusBlocked = new Boolean(false);
-      Boolean boolFirstHasFeedback = new Boolean(false);
-
-      for (NodeIterator it = nlVirtual.nodeIterator(); it.hasNext(); ) {
-         Node nodeVirtual = it.nextNode();
-         Node nodeLearnBlock = cloud.getNode(nodeVirtual.getStringValue("learnblocks.number"));
-
-
-
-         if (boolStatusBlocked.booleanValue()) {
-            //It means the rest of learnblocks is closed.
-            previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
-            hsetResult.add("" + nodeLearnBlock.getNumber());
-         }
-         else {
-            NodeList nlVirtual2 = cloud.getList("" + nodeLearnBlock.getNumber(),
-                                                "learnblocks,classrel,people",
-                                                "classrel.number",
-                                                "people.number='" + nodeUser.getNumber() + "'",
-                                                null,
-                                                null, null, true);
-
-
-            if (nlVirtual2.size() == 0) {
-               //blocked
-               boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
-            }
-            else {
-               if (cloud.getNode(nlVirtual2.getNode(0).getStringValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
-                  feedbackRelated(nodeLearnBlock);
-
-                  if (intCounter.intValue() == 0) {
-                     boolFirstHasFeedback = new Boolean(true);
-                  }
+    
+    public static Set<String> getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
+       Set<String> hsetResult = new HashSet<String>();
+       Cloud cloud = nodeEducation.getCloud();
+       
+       NodeList nlVirtual = cloud.getList("" + nodeEducation.getNumber(),
+                                          "educations,posrel,learnblocks",
+                                          "learnblocks.number",
+                                          null,
+                                          "posrel.pos",
+                                          null, null, true);
+       
+       int intCounter = 0;
+       boolean boolStatusBlocked = false;
+       boolean boolFirstHasFeedback = false;
+       
+       for (NodeIterator it = nlVirtual.nodeIterator(); it.hasNext(); ) {
+           Node nodeVirtual = it.nextNode();
+           Node nodeLearnBlock = cloud.getNode(nodeVirtual.getStringValue("learnblocks.number"));
+           
+           
+           if (boolStatusBlocked) {
+               //It means the rest of learnblocks is closed.
+               previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
+               hsetResult.add("" + nodeLearnBlock.getNumber());
+           } else {
+               NodeList nlVirtual2 = cloud.getList("" + nodeLearnBlock.getNumber(),
+                                                   "learnblocks,classrel,people",
+                                                   "classrel.number",
+                                                   "people.number='" + nodeUser.getNumber() + "'",
+                                                   null,
+                                                   null, null, true);
+               
+               
+               if (nlVirtual2.size() == 0) {
+                   //blocked
+                   boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
+               } else {
+                   if (cloud.getNode(nlVirtual2.getNode(0).getStringValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
+                       feedbackRelated(nodeLearnBlock);                       
+                       if (intCounter == 0) {
+                           boolFirstHasFeedback = true;
+                       }
+                   } else {
+                       //blocked
+                       boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
+                   }
                }
-               else {
-                  //blocked
-                  boolStatusBlocked = noFeedbackRelated(nodeLearnBlock, hsetResult, intCounter, boolStatusBlocked, boolFirstHasFeedback);
-               }
-            }
-         }
+           }
+           
+           intCounter++;
+       }
+       
+       return hsetResult;
+    }
+    
+    
+    
+    
 
-         intCounter = new Integer(intCounter.intValue() + 1);
+    private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<String> hsetResult, int intCounter, boolean boolStatusBlocked, boolean boolFirstHasFeedback){
+      if(intCounter == 0){
+          log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
+      } else{
+          boolStatusBlocked = true;
       }
-
-      return hsetResult;
-   }
-
-
-
-
-
-   private static Boolean noFeedbackRelated(Node nodeLearnBlock, HashSet hsetResult, Integer intCounter, Boolean boolStatusBlocked, Boolean boolFirstHasFeedback){
-      if(intCounter.intValue() == 0){
-         log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
+      
+      if (intCounter == 1) {
+          if (!boolFirstHasFeedback) {
+              //The first learnblock has got no feedback
+              previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
+              hsetResult.add("" + nodeLearnBlock.getNumber());
+          }
       }
-      else{
-         boolStatusBlocked = new Boolean(true);
-      }
-
-      if (intCounter.intValue() == 1) {
-         if (!boolFirstHasFeedback.booleanValue()) {
-            //The first learnblock has got no feedback
-            previousOne_HasGot_No_FeedbackRelated(nodeLearnBlock);
-            hsetResult.add("" + nodeLearnBlock.getNumber());
-         }
-      }
-
+      
       log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got no feedback related.");
-
+      
       return boolStatusBlocked;
    }
 
