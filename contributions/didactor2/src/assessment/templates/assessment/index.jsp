@@ -2,8 +2,8 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="org.mmbase.bridge.*,java.util.ArrayList" %>
 
-<mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:content postprocessor="reducespace" expires="0">
+<mm:cloud method="delegate">
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:import externid="coachmode">false</mm:import>
@@ -20,11 +20,11 @@
       if( document.getElementById("toggle_div" + number).style.display=='none' ){
         document.getElementById("toggle_div" + number).style.display = '';
         document.getElementById("toggle_image" + number).src = "<mm:treefile page="/assessment/gfx/minus.gif"
-                                  objectlist="$includePath" referids="$referids"/>";
+                                  objectlist="$includePath" />";
       } else {
         document.getElementById("toggle_div" + number).style.display = 'none';
         document.getElementById("toggle_image" + number).src = "<mm:treefile page="/assessment/gfx/plus.gif"
-                                  objectlist="$includePath" referids="$referids"/>";
+                                  objectlist="$includePath" />";
       }
     }
 
@@ -35,13 +35,13 @@
           document.getElementById("toggle_div" + toggles[i]).style.display = '';
         }
         document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/minus.gif"
-                                  objectlist="$includePath" referids="$referids"/>";
+                                  objectlist="$includePath" />";
       } else {
         for (i=0;i<toggles.length;i++) {
           document.getElementById("toggle_div" + toggles[i]).style.display = 'none';
         }
         document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/plus.gif"
-                                  objectlist="$includePath" referids="$referids"/>";
+                                  objectlist="$includePath" />";
       }
     }
     function doAction(prompt) {
