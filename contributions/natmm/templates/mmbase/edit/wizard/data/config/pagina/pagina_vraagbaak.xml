@@ -59,7 +59,10 @@
          </relation>         
          <relation destination="vraagbaak_keywords" role="related">
             <object />
-         </relation>    
+         </relation>   
+         <relation destination="images" role="posrel">
+            <object />
+         </relation>
       </object>
     </relation>
    </action>
