@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.3 2007-06-21 13:11:30 michiel Exp $
+ * @version $Id: Functions.java,v 1.4 2007-07-04 13:57:38 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -19,6 +19,8 @@ public class Functions {
     public void setNode(Node n) {
         node = n;
     }
+
+
     
     /**
      * Returns the locale assciated with this education.
@@ -89,4 +91,5 @@ public class Functions {
             return uname + System.currentTimeMillis();
         }
     }
+
 }
