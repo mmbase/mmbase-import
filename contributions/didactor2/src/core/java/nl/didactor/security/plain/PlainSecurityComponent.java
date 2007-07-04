@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.16 2007-06-13 13:58:39 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.17 2007-07-04 13:56:46 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -65,20 +65,31 @@ public class PlainSecurityComponent implements AuthenticationComponent {
 
     }
 
+    protected String getUserName(HttpServletRequest request) {
+        String un = request == null ? null : request.getParameter("username");
+        if (un == null && request != null) un = (String) request.getAttribute("username");
+        return un;
+    }
+    protected String getPassword(HttpServletRequest request) {
+        String p = request == null ? null : request.getParameter("password");
+        if (p == null && request != null) p = (String) request.getAttribute("password");
+        return p;
+    }
+
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         checkBuilder();
 
 
 
-        String sLogin = request == null ? null : request.getParameter("username");
-        String sPassword = request == null ? null : request.getParameter("password");
+        String login    = getUserName(request);
+        String password = getPassword(request);
 
-        if (sLogin == null || sPassword == null) {
+        if (login == null || password == null) {
             log.debug("Did not find matching credentials");
             return null;
         }
 
-        MMObjectNode user = users.getUser(sLogin, sPassword);
+        MMObjectNode user = users.getUser(login, password);
         if (user == null) {
             log.debug("Found credentials, but no matching user. Returning null");
             return null;
@@ -158,9 +169,9 @@ public class PlainSecurityComponent implements AuthenticationComponent {
 
 
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
-        String sLogin    = request == null ? null : request.getParameter("username");
-        String sPassword = request == null ? null : request.getParameter("password");
-        if (sLogin != null && sPassword != null) {
+        String login    = getUserName(request);
+        String password = getPassword(request);
+        if (login != null && password != null) {
             return getLoginPage(request) + "?reason=failed";
         } else {
             return getLoginPage(request);
@@ -172,7 +183,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
     
     public void logout(HttpServletRequest request, HttpServletResponse respose) {
-        log.debug("logout() called");
+        log.debug("logout called");
         HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             session.removeAttribute("didactor-plainlogin-userid");
