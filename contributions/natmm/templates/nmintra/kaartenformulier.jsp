@@ -3,11 +3,19 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-<% // to keep rubriek style during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
+<% // to keep rubriek style&place during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
 if (request.getParameter("rb") != null) {
 	iRubriekStyle = Integer.parseInt(request.getParameter("rb"));
-}%>
-<bean:define value="<%= String.valueOf(iRubriekStyle) %>" id="rubriekBean" />
+}
+if (request.getParameter("rbid") != null) {
+	rubriekId = request.getParameter("rbid");
+}
+if (request.getParameter("pgid") != null) {
+	paginaID = request.getParameter("pgid");
+}
+breadcrumbs.set(0, rubriekId);
+String rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID;
+%>
 
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
@@ -869,8 +877,9 @@ if(twoColumns) {
 		<tr height="5">
 			<td></td>
 			<td>
+		<%String gotoKartLink = "/nmintra/KaartenAction.eb" + rubriekParams + "&shopping_cart"; %>
 		<html:link 
-        page="/nmintra/KaartenAction.eb?shopping_cart" paramId="rb" paramName="rubriekBean">
+        page="<%=gotoKartLink%>">
         Terug naar mijn bestelling...
 </html:link>
 
@@ -883,7 +892,9 @@ if(twoColumns) {
  
 <input type="hidden" name="number" value="<%=request.getParameter("number")%>"/>
 
-<input type="hidden" name="rb" value="<%=iRubriekStyle%>"/>
+	<input type="hidden" name="rb" value="<%=iRubriekStyle%>"/>
+	<input type="hidden" name="rbid" value="<%=rubriekId%>"/>
+    <input type="hidden" name="pgid" value="<%=paginaID%>"/>
 </html:form>
 
 <% 
