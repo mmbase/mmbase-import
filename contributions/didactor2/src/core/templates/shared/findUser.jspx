@@ -4,19 +4,6 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <mm:cloudinfo type="user" id="username" write="false" />
-  <!-- get the $user -->
-  <mm:listnodescontainer type="people">
-    <mm:constraint operator="equal" field="username" referid="username" />
-    <mm:listnodes>
-      <mm:first>
-        <mm:node>
-          <mm:field id="user" name="number" write="false" />
-        </mm:node>
-      </mm:first>
-    </mm:listnodes>
-    <mm:notpresent referid="user">
-      <mm:import id="user">0</mm:import>
-    </mm:notpresent>
-  </mm:listnodescontainer>
+  <mm:import externid="user"    from="request" />
+
 </jsp:root>
