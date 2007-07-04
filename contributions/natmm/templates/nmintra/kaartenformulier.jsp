@@ -3,25 +3,14 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-<% // to keep rubriek style&place during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
-if (request.getParameter("rb") != null) {
-	iRubriekStyle = Integer.parseInt(request.getParameter("rb"));
-}
-if (request.getParameter("rbid") != null) {
-	rubriekId = request.getParameter("rbid");
-}
-if (request.getParameter("pgid") != null) {
-	paginaID = request.getParameter("pgid");
-}
-breadcrumbs.set(0, rubriekId);
-String rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID;
-%>
+<%@include file="includes/vastgoed/override_templateparams.jsp" %>
 
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
   <head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 	 	<link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
@@ -540,7 +529,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg." title="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg" title="Klik hier voor uitleg">
 				</a>
 			</td>
 		</tr> 
@@ -677,7 +666,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(1);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg." title="Klik hier voor uitleg.">
+						alt="Klik hier voor uitleg" title="Klik hier voor uitleg">
 				</a>
 			</td>
 		</tr> 
@@ -711,7 +700,7 @@ if(twoColumns) {
 			<td align="right">	
 				<a href="javascript:giveInfo(2);">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg." title="Klik hier voor uitleg." >
+						alt="Klik hier voor uitleg" title="Klik hier voor uitleg" >
 				</a>
 			</td>
 		</tr> 
@@ -837,7 +826,7 @@ if(twoColumns) {
 				<a href="javascript:giveInfo(3);">
 
 					<img src="media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
-						alt="Klik hier voor uitleg." title="Klik hier voor uitleg." >
+						alt="Klik hier voor uitleg" title="Klik hier voor uitleg" >
 				</a>
 			</td>
 		</tr> 
@@ -865,12 +854,12 @@ if(twoColumns) {
 			<td></td>
 			<td></td>
 		</tr>
-		<tr height="50">
+		<tr height="40">
 	  		<td></td>
-
 			<td>Toevoegen aan mijn bestelling:&nbsp;</td>
 			<td align="right">
-			<input type="image" src="media/vastgoed/wwagen.jpg" name="send" alt="Toevoegen aan mijn bestelling." title="Toevoegen aan mijn bestelling."/>
+			<br/>
+			<html:submit property="send" value="Bewaar mijn bestelling" />
 			</td>
 			<td></td>
 		</tr>
