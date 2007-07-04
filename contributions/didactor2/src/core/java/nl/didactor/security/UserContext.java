@@ -3,21 +3,19 @@ package nl.didactor.security;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.RelationStep;
+
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Map;
-import java.util.Collection;
-import java.util.Vector;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * This security-related class wraps around a user node. This object
  * contains all information about a user, it can also report back
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: UserContext.java,v 1.7 2007-06-14 12:50:40 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: UserContext.java,v 1.8 2007-07-04 13:56:46 michiel Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -70,14 +68,26 @@ public class UserContext extends org.mmbase.security.BasicUser {
         //wrappedNode = node.getCloud().getNode(node.getNumber());
         owner = node.getStringValue("username");
         identifier = owner;
-        String rankstring = "people";
         this.wrappedNode = node == null ? 0 : node.getNumber();
+        Rank proposedRank = Rank.getRank("didactor user");
+        List<MMObjectNode> roles = node.getRelatedNodes("roles", RelationStep.DIRECTIONS_DESTINATION);
+        for (MMObjectNode role : roles) {
+            String roleName = role.getStringValue("name");
+            if (roleName.equals("courseeditor")) {
+                Rank editor = Rank.getRank("editor");
+                if (editor.getInt() > proposedRank.getInt()) {
+                    proposedRank = editor;
+                }
+                continue;
+            }
+            if (roleName.equals("systemadministrator")) {
+                proposedRank = Rank.ADMIN; 
+                break;
+            }
 
-        if ("admin".equals(owner)) {
-            rank = Rank.ADMIN;
-        } else {
-            rank = Rank.getRank(rankstring);
         }
+        rank = proposedRank;
+
     }
 
     /**
