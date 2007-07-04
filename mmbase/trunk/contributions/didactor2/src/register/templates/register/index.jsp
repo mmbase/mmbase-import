@@ -2,7 +2,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %>
-<mm:cloud  authenticate="asis">
+<mm:cloud>
   <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:content postprocessor="reducespace" language="$language" expires="0">
     
@@ -23,4 +23,3 @@
 
 </mm:content>
 </mm:cloud>
-

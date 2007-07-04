@@ -1,14 +1,13 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib tagdir="/WEB-INF/tags/di/core" prefix="di-t" 
 %><%@page import="java.util.*"
 %><%--
 TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
---%>
-<mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
-<mm:cloud method="delegate">
+--%><mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
+<mm:cloud rank="didactor user">
   <jsp:directive.include file="/shared/setImports.jsp" />
-
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
@@ -23,7 +22,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
   
   <mm:import externid="learnobject" jspvar="learnObject"/>
   <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
-  <mm:import jspvar="educationNumber" externid="education" from="this" />
+  <mm:import jspvar="educationNumber" externid="education" from="this" vartype="integer" />
   <mm:import externid="fb_madetest"/>
   
   <!--
@@ -85,12 +84,12 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
    </mm:present>
 
 <%
-    if (educationNumber != null && educationNumber.length() > 0) {
+    if (educationNumber != null) {
         session.setAttribute("lasteducation", educationNumber);
     } else {
-        educationNumber = (String) session.getAttribute("lasteducation");
+        educationNumber = (Integer) session.getAttribute("lasteducation");
     }
-    if (educationNumber != null && educationNumber.length() > 0) {
+    if (educationNumber != null) {
         HashMap bookmarks = (HashMap) session.getAttribute("educationBookmarks");
         if (bookmarks== null) {
             bookmarks = new HashMap();
@@ -322,6 +321,9 @@ catch(err){};
   //-->
 </script>
 
+<%--
+Something seems wrong. I think that currently, the 'lastpage' field is never filled.
+--%>
 <mm:listnodescontainer type="classrel">
   <mm:constraint field="snumber" value="${user}" />
   <mm:composite operator="or">
