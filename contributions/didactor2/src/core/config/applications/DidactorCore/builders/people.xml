@@ -398,6 +398,9 @@
     <function key="peopleGenerateUserName" name="generateUserName">
       <class>nl.didactor.functions.Functions</class>
     </function>
+    <function key="peopleClass" name="class">
+      <class>nl.didactor.functions.PeopleClassFunction</class>
+    </function>
   </functionlist>
 
 </builder>
