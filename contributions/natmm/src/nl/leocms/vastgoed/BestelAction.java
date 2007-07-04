@@ -20,13 +20,15 @@ import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.applications.NMIntraConfig;
 
 import java.util.ArrayList;
+import java.text.DateFormat;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.13 2007-06-27 10:21:30 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.14 2007-07-04 08:32:43 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -90,6 +92,7 @@ public class BestelAction  extends Action {
          // mail message: kart values for buyer
          addLineToMessage(messagePlain, messageHtml, "Bestelformulier");
          addLineToMessage(messagePlain, messageHtml, "---------------");
+         addLineToMessage(messagePlain, messageHtml, "Datum: " + DateFormat.getInstance().format(new Date()));
          addLineToMessage(messagePlain, messageHtml, "Naam: " + bestelForm.getNaam());
          addLineToMessage(messagePlain, messageHtml, "Email: " + bestelForm.getEmail());
          addLineToMessage(messagePlain, messageHtml, "Eendheid: " + bestelForm.getEendheid());
