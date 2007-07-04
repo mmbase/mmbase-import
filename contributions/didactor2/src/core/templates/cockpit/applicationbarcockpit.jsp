@@ -1,8 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
- %>
-<mm:cloud method="delegate" authenticate="asis">
-<%@include file="/shared/setImports.jsp" %>
+%><mm:cloud method="asis">
+<jsp:directive.include file="/shared/setImports.jsp" />
 <div class="applicationMenubarCockpit" style="white-space: nowrap">
   <mm:node number="$user" notfound="skipbody">
     <div class="menuItemApplicationMenubar">
@@ -37,6 +36,8 @@
       </mm:relatednodescontainer>
     </mm:node>
 
+    <mm:cloudinfo type="user" />
+    <!-- WTF -->
     <mm:present referid="education">
       <mm:notpresent referid="showcmshelp">
         <mm:node number="$education" notfound="skip">
@@ -93,7 +94,6 @@ function printThis() {
 
 </mm:node>
 <!-- please do not remove &nbsp; otherwise there will be overlapping of divs if there is no cloud access -->
-
 &nbsp;
   </div>
 </mm:cloud>
