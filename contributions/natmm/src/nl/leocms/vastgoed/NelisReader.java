@@ -168,11 +168,11 @@ private void readData() {
     
     dummy = new TreeMap();
     dummy.put("Gelderland", new Boolean(false));
-    dummy.put("Groningen/Friesland/Drenthe", new Boolean(false));
-    dummy.put("Noord-Brabant/Limburg", new Boolean(false));
-    dummy.put("Noord-Holland/Utrecht", new Boolean(false));
-    dummy.put("Overijssel/Flevoland", new Boolean(false));
-    dummy.put("Zuid-Holland/Zeeland", new Boolean(false));
+    dummy.put("Groningen, Friesland en Drenthe", new Boolean(false));
+    dummy.put("Noord-Brabant en Limburg", new Boolean(false));
+    dummy.put("Noord-Holland en Utrecht", new Boolean(false));
+    dummy.put("Overijssel en Flevoland", new Boolean(false));
+    dummy.put("Zuid-Holland en Zeeland", new Boolean(false));
     gebiedMap.put("Regio", dummy);
 }
 
