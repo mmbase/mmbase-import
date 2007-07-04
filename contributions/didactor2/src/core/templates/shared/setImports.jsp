@@ -18,37 +18,22 @@
 <%--
   Step 6: Based on the student and the education, try to find the class.
 --%>
-<mm:import externid="class" />
-<mm:isempty referid="class">
-  <mm:isgreaterthan referid="user" value="0">
-    <mm:present referid="education">
-      <mm:listcontainer path="people,classes,educations" fields="people.number,educations.number,classes.number">
-        <mm:constraint field="people.number"     referid="user" />
-        <mm:constraint field="educations.number" referid="education" />
-          <mm:list>
-            <mm:remove referid="class"/>
-            <mm:field name="classes.number" id="class" write="false" />
-          </mm:list>
-        </mm:listcontainer>
-      </mm:present>
-  </mm:isgreaterthan>
-</mm:isempty>
-
+<mm:import externid="class"    from="request" />
 
 <%--
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
   to make sure that this user may log in. 
 --%>
-<mm:import escape="trimmer" id="validatemessage">
-  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids,user" />
-</mm:import>
+<mm:log>validate: <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:log>
+<mm:import escape="trimmer" id="validatemessage"><mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+<mm:log>BLA : ${validatemessage}</mm:log>
 
 <mm:isnotempty referid="validatemessage">
-  <mm:cloud method="delegate"  authenticate="didactor-logout"/>
+  <mm:cloud method="logout" />
   <% if (! response.isCommitted()) { %>
   <mm:redirect page="/declined.jsp" referids="validatemessage@message">
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
   </mm:redirect>
   <% } %>
-
+  
 </mm:isnotempty>

@@ -2,7 +2,7 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud rank="basic user">
+  <mm:cloud rank="didactor user">
     <jsp:directive.include file="setImports.jsp" />
 
     <mm:isgreaterthan referid="user" value="0">
