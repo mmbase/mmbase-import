@@ -2,7 +2,7 @@ function giveInfo(infoIndex)
 {
 var infoMessages = new Array();
 
-infoMessages[0] = "Kies gebied waarvan je kaart wilt toevoegen aan je bestelling. Je kunt slechts één gebied per keer toevoegen aan je bestelling.";
+infoMessages[0] = "Kies één gebied waarvan je kaart wilt toevoegen aan je bestelling. Je kunt slechts één gebied per keer toevoegen aan je bestelling.";
 
 infoMessages[1] = "Let op, niet alle kaartsoorten zijn bij elke schaal en/of gebied leverbaar. Bij een niet leverbare keuze krijg je een bericht van de GIS-afdeling. Geef speciale wensen op bij opmerkingen.";
 
