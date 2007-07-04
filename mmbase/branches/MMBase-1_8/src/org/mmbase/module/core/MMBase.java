@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.5 2007-06-26 15:28:12 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.6 2007-07-04 10:00:20 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -433,7 +433,7 @@ public class MMBase extends ProcessorModule {
         oAlias = null;
         insRel = null;
         typeRel = null;
-        mmobjs.clear(); 
+        if (mmobjs != null) mmobjs.clear(); 
         mmobjs = null;
         cloudModel = null;
         storageManagerFactory = null;
