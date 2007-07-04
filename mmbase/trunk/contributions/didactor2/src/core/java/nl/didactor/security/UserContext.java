@@ -15,7 +15,7 @@ import java.util.*;
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @author Michiel Meeuwissen
- * @version $Id: UserContext.java,v 1.8 2007-07-04 13:56:46 michiel Exp $
+ * @version $Id: UserContext.java,v 1.9 2007-07-04 15:52:29 michiel Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -24,6 +24,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
     private final String identifier ;
     private final String owner;
     private final Rank rank;
+    private final Set<String> roles;
 
     /**
      * Copy constructor which only resets the application. This is needed because 'asis' is
@@ -35,17 +36,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         identifier = uc.identifier;
         owner = uc.owner;
         rank = uc.rank;
-    }
-
-    /**
-     * From the org.mmbase.security.UserContext interface
-     */
-    public UserContext() {
-        super("name/password");
-        identifier = "";
-        owner = "";
-        rank = null;
-        wrappedNode = 0;
+        roles = uc.roles;
     }
 
     /**
@@ -57,6 +48,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         this.owner = owner;
         this.rank = rank;
         wrappedNode = 0;
+        roles = new HashSet<String>();
     }
 
     /**
@@ -69,10 +61,9 @@ public class UserContext extends org.mmbase.security.BasicUser {
         owner = node.getStringValue("username");
         identifier = owner;
         this.wrappedNode = node == null ? 0 : node.getNumber();
-        Rank proposedRank = Rank.getRank("didactor user");
-        List<MMObjectNode> roles = node.getRelatedNodes("roles", RelationStep.DIRECTIONS_DESTINATION);
-        for (MMObjectNode role : roles) {
-            String roleName = role.getStringValue("name");
+        roles = getRoles(node);
+        Rank proposedRank = Rank.ANONYMOUS;
+        for (String roleName : getRoles()) {
             if (roleName.equals("courseeditor")) {
                 Rank editor = Rank.getRank("editor");
                 if (editor.getInt() > proposedRank.getInt()) {
@@ -84,12 +75,33 @@ public class UserContext extends org.mmbase.security.BasicUser {
                 proposedRank = Rank.ADMIN; 
                 break;
             }
-
+            Rank user = Rank.getRank("didactor user");
+            if (user.getInt() > proposedRank.getInt()) {
+                proposedRank = user;
+            }
+        }
+        if (proposedRank == Rank.ANONYMOUS) {
+            throw new org.mmbase.security.SecurityException("No role");
         }
         rank = proposedRank;
 
     }
 
+    public static Set<String> getRoles(MMObjectNode node) {
+        Set<String> result = new HashSet<String>();
+        if (node != null) {
+            List<MMObjectNode> roles = node.getRelatedNodes("roles", RelationStep.DIRECTIONS_DESTINATION);
+            for (MMObjectNode role : roles) {
+                result.add(role.getStringValue("name"));
+            }
+        }
+        return result;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+    
     /**
      * From the org.mmbase.security.UserContext interface
      */
