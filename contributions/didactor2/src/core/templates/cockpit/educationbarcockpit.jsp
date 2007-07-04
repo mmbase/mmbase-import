@@ -1,7 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<mm:cloud>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:cloud method="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <div class="educationMenubarCockpit" style="white-space: nowrap">
 <mm:isgreaterthan referid="user" value="0">
@@ -17,7 +16,7 @@
       </mm:relatednodes>
     </mm:node>
   </mm:present>
-  <%-- MMbob section - link to class forum --%>
+  <-- MMbob section - link to class forum --%>
   <mm:notpresent referid="education">
     <mm:node number="$provider">
       <mm:relatedcontainer path="settingrel,components">

@@ -1,10 +1,8 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
-%>
-
-<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
-<%@include file="/shared/setImports.jsp" %>
+%><mm:cloud method="asis">
+<jsp:directive.include file="/shared/setImports.jsp" />
 <div class="educationMenubar">
 <mm:isgreaterthan referid="user" value="0">
 
@@ -17,7 +15,7 @@
               xmlhttp.open('GET', '${_}', true);              
               xmlhttp.onreadystatechange = function() {
                   if (xmlhttp.readyState == 4) {
-                      var ser = new XMLSerializer();
+                  var ser = new XMLSerializer();
                       var s = ser.serializeToString(xmlhttp.responseXML);
                       document.getElementById('progressMeter').innerHTML = s; 
                   }
