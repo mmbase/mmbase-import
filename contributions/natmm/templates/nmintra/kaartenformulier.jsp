@@ -221,7 +221,7 @@ function jsc_GeefInfo(id_DIV)
 function small_window(NaamPagina) {
 var newWindow;
 var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=520,height=680, top='+(20)+',left='+(20);
-var fullLink = '/natmm-intranet/nmintra/';
+var fullLink = '/nmintra/';
 for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 	if (document.KaartenForm.sel_Kaart[i].selected) {
 		var kartNode = document.KaartenForm.sel_Kaart[i].value;
@@ -389,7 +389,7 @@ function validationMessage() {
 		i++;
 	}
 	if(!radioChecked) {
-		alert("Geen gebied(en) geselecteerd of coördinaten opgegeven.");
+		alert("Geen gebied geselecteerd of coördinaten opgegeven.");
 		return false;
 	}
 	// gebied and eenheid/regio/provincie validations
@@ -401,17 +401,7 @@ function validationMessage() {
 		alert("Geen eenheid/regio/provincie geselecteerd.");
 		return false;
 	}
-	// document.KaartenForm.sel_Kaart
-	var kartSelected = false;
-	i = 0;
-	while((i < document.KaartenForm.sel_Kaart.length) && (kartSelected == false)) {
-		kartSelected = document.KaartenForm.sel_Kaart[i].selected;
-		i++;
-	}
-	if(!kartSelected) {
-		alert("Geen kaartsoort(en) geselecteerd.");
-		return false;
-	}
+	// coordinates
 	if (document.KaartenForm.rad_Gebied[3].checked) {
 		if ((document.KaartenForm.linksX.value =="") || (document.KaartenForm.linksY.value =="") || (document.KaartenForm.rechtsX.value =="") || (document.KaartenForm.rechtsY.value =="")
 			|| (isNaN(document.KaartenForm.linksX.value)) || (isNaN(document.KaartenForm.linksY.value)) || (isNaN(document.KaartenForm.rechtsX.value)) || (isNaN(document.KaartenForm.rechtsY.value)) ) {
@@ -419,6 +409,17 @@ function validationMessage() {
 		return false;
 		
 		}
+	}	
+	// map selection
+	var kartSelected = false;
+	i = 0;
+	while((i < document.KaartenForm.sel_Kaart.length) && (kartSelected == false)) {
+		kartSelected = document.KaartenForm.sel_Kaart[i].selected;
+		i++;
+	}
+	if(!kartSelected) {
+		alert("Geen kaartsoort geselecteerd.");
+		return false;
 	}
 	return true;
 }
@@ -524,7 +525,7 @@ if(twoColumns) {
 		</tr>
 		<tr>
 			<td width="450">
-			Selecteer gebied(en) of geef de coördinaten op:
+			Selecteer gebied of geef de coördinaten op:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
@@ -541,7 +542,7 @@ if(twoColumns) {
 			<td width="20">
 				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();" style="background:vastgoed_medium"/>
 			</td>
-			<td width="220">Natuurgebied(en):</td>
+			<td width="220">Natuurgebied:</td>
 
 			<td>&nbsp;</td>
 		</tr>
@@ -661,7 +662,7 @@ if(twoColumns) {
 	<table>
 		<tr>
 			<td width="450">
-				Selecteer de gewenste kaart(en):
+				Selecteer de gewenste kaart:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(1);">
