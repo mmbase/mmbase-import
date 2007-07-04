@@ -1,8 +1,7 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8"  buffer="500kb"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><mm:cloud method="delegate" authenticate="asis" id="cloud">
-<jsp:directive.include file="/shared/setImports.jsp" />
+%><mm:cloud id="cloud" method="asis">
 <mm:content postprocessor="none">  
 
   <div class="columns">
