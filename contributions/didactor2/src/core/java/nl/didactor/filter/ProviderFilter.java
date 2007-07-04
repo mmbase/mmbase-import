@@ -14,7 +14,11 @@ import javax.servlet.http.*;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
+import org.mmbase.storage.search.*;
+
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.servlet.*;
@@ -27,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.8 2007-06-14 08:38:07 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.9 2007-07-04 13:59:01 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -126,6 +130,34 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
     }
 
+    protected String getSessionName() {
+        return "cloud_mmbase";
+    }
+
+    protected Cloud getCloud(HttpServletRequest req) {
+        HttpSession session = req.getSession(false); // false: do not create a session, only use it
+        if (session == null) {
+            return ContextProvider.getDefaultCloudContext().getCloud("mmbase"); 
+        } else {
+            log.debug("from session");
+            Object c = session.getAttribute(getSessionName());
+            if (c != null) {
+                if (c instanceof Cloud) {
+                    return (Cloud) c;
+                } else {
+                    log.warn("" + c + " is not a Cloud, but a " + c.getClass());
+                    return ContextProvider.getDefaultCloudContext().getCloud("mmbase"); 
+                }
+            } else {
+                return ContextProvider.getDefaultCloudContext().getCloud("mmbase"); 
+            }
+        }
+    }
+
+    protected Node getUser(Cloud cloud) {
+        return nl.didactor.security.Authentication.getCurrentUserNode(cloud);
+    }
+
 
     /**
      * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the 
@@ -148,7 +180,24 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
         String educationParameter = req.getParameter("education");
         String providerParameter  = req.getParameter("provider");
-        
+
+        Cloud cloud = getCloud(req);
+        HttpSession session = req.getSession(false);        
+        Map<String, Object> userAttributes;
+        if (session == null) {
+            userAttributes = new HashMap<String, Object>();
+            userAttributes.put("user", 0);
+        } else {
+            userAttributes = (Map<String, Object>) session.getAttribute("nl.didactor.user_attributes");
+            if (userAttributes == null) {
+                userAttributes = new HashMap<String, Object>();
+                session.setAttribute("nl.didactor.user_attributes", userAttributes);
+            }
+            
+            Node user = getUser(cloud);
+            userAttributes.put("user", user == null ? 0 : user.getNumber());
+        }
+
         String key = serverName + contextPath + ':' + educationParameter + ':' + providerParameter;
         Map<String, Object> attributes = providerCache.get(key);
         if (attributes == null) {
@@ -161,7 +210,6 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
             attributes = new HashMap<String, Object>();
 
-            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");            
             Node provider = null;            
             {
                 if (cloud.hasNode(providerParameter)) {
@@ -223,7 +271,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
                 if (education != null) {
                     log.debug("Found education " + education.getNumber());
-                    attributes.put("education", "" + education.getNumber()); 
+                    attributes.put("education", education.getNumber()); 
                 } else {
                     log.warn("No education found for " + key);
                     attributes.put("education", null);
@@ -240,7 +288,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             Locale locale; 
             if (provider != null) {
                 log.debug("Found provider " + provider.getNumber());
-                attributes.put("provider", "" + provider.getNumber());                
+                attributes.put("provider", provider.getNumber());
                 locale = findLocale(provider, education);
             } else {
                 log.warn("No provider found for " + key);
@@ -282,11 +330,35 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             }
         }
 
+        
+        // Based on the student and the education, try to find the class.
+        String c = request.getParameter("class");
+        if (c != null) {
+            userAttributes.put("class", cloud.getNode(c));
+        } else {
+            if (userAttributes.get("class") == null) {
+                try {
+                    Node user = cloud.getNode((Integer) userAttributes.get("user"));
+                    Function fun = user.getFunction("class");
+                    Parameters params = fun.createParameters();
+                    params.set("education", attributes.get("education"));
+                    Node claz = (Node) fun.getFunctionValue(params);
+                    userAttributes.put("class", claz);
+                } catch (NotFoundException nfe) {
+                    // never mind
+                    userAttributes.put("class", null);
+                }
+            }
+        }
+
         // copy all attributes to the request.
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
         assert request.getAttribute("provider") != null : "attributes" + attributes; 
+        for (Map.Entry<String, Object> entry : userAttributes.entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
 
         filterChain.doFilter(request, response);
     }
