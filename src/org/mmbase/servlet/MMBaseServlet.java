@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.66 2007-06-20 14:27:16 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.67 2007-07-04 09:35:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -496,7 +496,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     protected static String getRequestURL(HttpServletRequest req) {
         String result = req.getRequestURI();
         String queryString = req.getQueryString();
-        if (queryString!=null) result += "?" + queryString;
+        if (queryString != null) result += "?" + queryString;
         return result;
     }
 
@@ -512,7 +512,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             synchronized (servletCountLock) {
                 servletCount--;
                 ServletReferenceCount s = runningServlets.get(this);
-                if (s!=null) {
+                if (s != null) {
                     if (s.refCount == 0) {
                         runningServlets.remove(this);
                     } else {
@@ -544,7 +544,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 printCount++;
                 ServletReferenceCount s = runningServlets.get(this);
                 if (s == null) {
-                    runningServlets.put(this, new ServletReferenceCount(this, url, 0));
+                    runningServlets.put(this, new ServletReferenceCount(url, 0));
                 } else {
                     s.refCount++;
                     s.uris.add(url);
@@ -605,26 +605,18 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     private class ServletReferenceCount {
         /**
-         * The servlet do debug
-         * @scope private
-         */
-        MMBaseServlet servlet;
-        /**
          * List of URIs that call the servlet
-         * @scope private
          */
-        List<String> uris = new ArrayList<String>();
+        final List<String> uris = new ArrayList<String>();
         /**
          * Nr. of references
-         * @scope private
          */
         int refCount;
 
         /**
          * Create a new ReferenceCountServlet using the jamesServlet
          */
-        ServletReferenceCount(MMBaseServlet servlet, String uri, int refCount) {
-            this.servlet = servlet;
+        ServletReferenceCount(String uri, int refCount) {
             uris.add(uri);
             this.refCount = refCount;
         }
@@ -633,7 +625,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
          * Return a description containing servlet info and URI's
          */
         public String toString() {
-            return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+uris+")";
+            return "servlet(" + MMBaseServlet.this + "), refcount(" + (refCount + 1) + "), uri's(" + uris + ")";
         }
     }
 
