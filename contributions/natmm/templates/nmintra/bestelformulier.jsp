@@ -3,25 +3,14 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-<% // to keep rubriek style&place during kart application, we pass a request parameter that overrides the rubriekstyle from templateheader.jsp
-if (request.getParameter("rb") != null) {
-	iRubriekStyle = Integer.parseInt(request.getParameter("rb"));
-}
-if (request.getParameter("rbid") != null) {
-	rubriekId = request.getParameter("rbid");
-}
-if (request.getParameter("pgid") != null) {
-	paginaID = request.getParameter("pgid");
-}
-breadcrumbs.set(0, rubriekId);
-String rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID;
-%>
+<%@include file="includes/vastgoed/override_templateparams.jsp" %>
 
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
   <head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 	 	<link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
@@ -192,16 +181,16 @@ if(twoColumns) {
          </tr>
          <tr>
             <td class="vastgoed_medium">Alternatief bezorgadres:</td>
-            <td class="vastgoed_light"><html:textarea property="bezorgadres" cols="40" rows="5"></html:textarea></td>
+            <td class="vastgoed_light"><html:textarea property="bezorgadres" cols="44" rows="5"></html:textarea></td>
          </tr>     
       </table>
       
-      <br/>
+      <br/><br/>
       
       <%String buyNewLink = "/nmintra/KaartenInitAction.eb" + rubriekParams; %>
       <html:link 
          page="<%=buyNewLink%>">
-         <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Bestel nog een kaart 
+         <img border="0" src="media/vastgoed/w_wagentje_op_trans.gif"/>Bestel nog een kaart 
       </html:link>
       <br/><br/>
       
@@ -254,7 +243,7 @@ if(twoColumns) {
                   <html:link 
                      page="<%=updateLink%>" 
                      paramId="number" paramName="i">
-                     <img src="media/vastgoed/arrowleft_default.gif" border="0" alt="terug" title="terug"/>
+                     <img src="media/vastgoed/arrowleft_default.gif" border="0" alt="Bestelling wijzigen" title="Bestelling wijzigen"/>
                   </html:link>
                   
                </td>
@@ -263,7 +252,7 @@ if(twoColumns) {
                   <html:link 
                      page="<%=deleteLink%>" 
                      paramId="delete" paramName="i">
-                     <img src="media/vastgoed/remove.gif" border="0" alt="verwijderen" title="verwijderen"/>
+                     <img src="media/vastgoed/remove.gif" border="0" alt="Verwijderen" title="Verwijderen"/>
                   </html:link>
                   
                </td>
