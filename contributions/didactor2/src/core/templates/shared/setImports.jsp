@@ -1,4 +1,7 @@
 <%--
+  THIS JSP IS NEARLY DEPRECATED.
+
+ 
   Figure out the following variables:
   - current username (into variable $username)
   - current user id (into variable $user)
@@ -24,10 +27,7 @@
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
   to make sure that this user may log in. 
 --%>
-<mm:log>validate: <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:log>
 <mm:import escape="trimmer" id="validatemessage"><mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
-<mm:log>BLA : ${validatemessage}</mm:log>
-
 <mm:isnotempty referid="validatemessage">
   <mm:cloud method="logout" />
   <% if (! response.isCommitted()) { %>
