@@ -17,7 +17,7 @@
       <list include="config/vraagbaak_keywords/zoek_vraagbaak_related_vraagbaak_keywords.xml" />       
    </item>
    <command name="search" nodepath="vraagbaak" age="-1" fields="titel,metatags" orderby="titel">
-      <prompt>zoek vraagbaak</prompt>
+      <prompt>zoek artikel</prompt>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[titel]</search-fields>
