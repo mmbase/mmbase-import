@@ -216,6 +216,17 @@
             <exclude name="**/*.java"/>
           </fileset>
         </copy>
+
+        <mkdir dir="${build.dir}/classes/${component}/org/mmbase/config" />
+
+        <copy todir="${build.dir}/classes/${component}/org/mmbase/config">
+          <fileset 
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/config">
+            <include name="**"/>
+          </fileset>
+        </copy>
+
         <javac srcdir="src/${component}/java"
                destdir="${build.dir}/classes/${component}"
                deprecation="off"
@@ -262,7 +273,9 @@
           </then>
           <else>
             <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
-                 includes="**" />
+                 includes="**"
+                 basedir="${build.dir}/classes/${component}"
+                 />
           </else>
         </if>
       </then>
