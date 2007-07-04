@@ -5,7 +5,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud method="delegate">
+  <mm:cloud rank="didactor user">
     <jsp:directive.include file="/shared/setImports.jsp" />
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
