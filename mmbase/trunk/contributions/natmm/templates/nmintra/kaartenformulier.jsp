@@ -525,7 +525,7 @@ if(twoColumns) {
 		</tr>
 		<tr>
 			<td width="450">
-			Selecteer gebied of geef de coördinaten op:
+			Selecteer één gebied of geef de coördinaten op:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
