@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.222 2007-06-19 13:59:30 michiel Exp $
+ * @version $Id: MMBase.java,v 1.223 2007-07-04 10:04:08 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -239,6 +239,32 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
+     * This method tries to configure the persistence directory of OSCache, if possible (OSCache is
+     * available, and necessary (no 'cache.path' property is configured for OSCache). Then, a
+     * directory named 'oscache' in the mmbase data directory is used to set the 'cache.path'
+     * property of the ServletCacheAdminidstrator class of OSCache.
+     * @since MMBase-1.9
+     */
+    protected  void configureOSCache() {
+        try {
+            Properties p = new Properties();
+            java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("oscache.properties");
+            if (is != null) {
+                p.load(is);
+            }
+            if (p.getProperty("cache.path") == null) {
+                p.setProperty("cache.path", getInitParameter("datadir") + java.io.File.separator + "oscache");
+            }
+            
+            Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
+            java.lang.reflect.Method m = osCache.getMethod("getInstance", javax.servlet.ServletContext.class, Properties.class);
+            m.invoke(null, MMBaseContext.getServletContext(), p);
+            log.service("Using " + p + " for oscache");                
+        } catch (Exception e) {
+            log.service(e.getMessage());
+        }
+    }
+    /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
@@ -251,6 +277,8 @@ public class MMBase extends ProcessorModule {
 	    return;
         }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
+
+        configureOSCache();
 
         mmbaseState = STATE_STARTED_INIT;
 
@@ -445,7 +473,7 @@ public class MMBase extends ProcessorModule {
     }
 
     // javadoc inherited
-    protected void shutdown() {
+    public void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
 
         // there all over the place static references to mmbasroot are maintained, which I cannot
@@ -455,7 +483,7 @@ public class MMBase extends ProcessorModule {
         oAlias = null;
         insRel = null;
         typeRel = null;
-        mmobjs.clear(); mmobjs = null;
+        if (mmobjs != null) { mmobjs.clear(); mmobjs = null;}
         cloudModel = null;
         storageManagerFactory = null;
         rootBuilder = null;

@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.67 2007-07-04 09:35:53 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.68 2007-07-04 10:04:08 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -581,20 +581,40 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
            servletInstanceCount--;
             if (servletInstanceCount == 0) {
-                log.info("Unloaded servlet mappings");
-                associatedServlets.clear();
-                servletMappings.clear();
-                log.info("No MMBase servlets left; modules can be shut down");
-                Module.shutdownModules();
-                ThreadGroup threads = MMBaseContext.getThreadGroup();
-                log.service("Send interrupt to " + threads.activeCount() + " threads in " +
-                            threads + " of " + threads.getParent());
-                threads.interrupt();
-                Thread.yield();
-                org.mmbase.util.FileWatcher.shutdown();
-                org.mmbase.cache.CacheManager.shutdown();
-                Logging.shutdown();
-                mmbase = null;
+                try {
+                    log.info("Unloaded servlet mappings");
+                    associatedServlets.clear();
+                    servletMappings.clear();
+                    log.info("No MMBase servlets left; modules can be shut down");
+                    MMBase.getMMBase().shutdown();
+                    Module.shutdownModules();
+                } catch (Throwable t) {
+                    log.error(t.getMessage(), t);
+                }   
+                try {
+                    ThreadGroup threads = MMBaseContext.getThreadGroup();
+                    log.service("Send interrupt to " + threads.activeCount() + " threads in " +
+                                threads + " of " + threads.getParent());
+                    threads.interrupt();
+                    Thread.yield();
+                } catch (Throwable t) {
+                    log.error(t.getMessage(), t);
+                }
+                try {
+                    org.mmbase.util.FileWatcher.shutdown();
+                } catch (Throwable t) {
+                    log.error(t.getMessage(), t);
+                }
+                try {
+                    org.mmbase.cache.CacheManager.shutdown();
+                } catch (Throwable t) {
+                    log.error(t.getMessage(), t);
+                }
+                try {
+                    Logging.shutdown();
+                } catch (Throwable t) {
+                    System.err.println(t.getMessage());
+                }
             }
         }
    }
