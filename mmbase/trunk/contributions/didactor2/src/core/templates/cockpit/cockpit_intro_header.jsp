@@ -3,11 +3,11 @@
 <mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
 <mm:content postprocessor="reducespace">
-  <mm:cloud method="delegate" authenticate="asis">	
+  <mm:cloud method="asis">	
     <jsp:directive.include file="/shared/setImports.jsp" />
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
-        <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+        <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext, includePath)}" />
         <mm:write referid="extraheader" escape="none" />
       </head>
       <body class="componentbody" <mm:write referid="extrabody" escape="none" />> <%-- body is unbalanced in this file. --%>

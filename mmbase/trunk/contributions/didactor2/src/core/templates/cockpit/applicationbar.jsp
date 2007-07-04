@@ -1,10 +1,10 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><mm:cloud method="delegate" authenticate="asis">
+%><mm:cloud method="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <mm:locale language="${locale}">
 <div class="applicationMenubar">
-  <mm:hasrank value="didactor-anonymous">
+  <mm:hasrank value="anonymous">
     <div class="menuItemApplicationMenubar login">
       <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
                    id="startpage" write="false" />
@@ -17,12 +17,12 @@
           <mm:fieldlist nodetype="people" fields="username">
             <mm:fieldinfo type="guiname" />
           </mm:fieldlist>
-          <input id="loginUsername" type="text" size="20" name="username" value="${newusername}" />
+          <input id="loginUsername" type="text" size="20" name="username" value="${sessionScope.registerPerson.username}" />
           <mm:fieldlist nodetype="people" fields="password">
             <mm:fieldinfo type="guiname" />
           </mm:fieldlist>
-          <input id="loginPassword" type="password" size="20" name="password" value="${newpassword}" />
-          <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
+          <input id="loginPassword" type="password" size="20" name="password" value="${sessionScope.registerPassword}" />
+          <input class="formbutton" id="loginSubmit" type="submit" value="${di:translate(pageContext, 'core.login')}" />
         </p>
       </form>
       <mm:node number="component.register" notfound="skipbody">
@@ -34,7 +34,7 @@
       </mm:node>
     </div>
   </mm:hasrank>
-  <mm:hasrank minvalue="basic user">
+  <mm:hasrank minvalue="didactor user">
     <div class="menuItemApplicationMenubar">
       <mm:import externid="reset" />
       <mm:treefile page="/index.jsp" objectlist="$includePath" referids="reset?" write="false"> 
@@ -44,14 +44,14 @@
 
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
-      <mm:node number="$user">
-        <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar">
+      <mm:node number="${user}">
+        <a title="${di:translate(pageContext, 'core.logout')}" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar">
         <di:translate key="core.logout" />
         <di:person />
       </a>
       </mm:node>
     </div>
-     
+    
     <div class="menuSeperatorApplicationMenubar"></div>
     
     <div class="menuItemApplicationMenubar">

@@ -9,8 +9,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
-%>
-<mm:cloud method="delegate" authenticate="asis">
+%><mm:cloud method="asis">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <script language="JavaScript1.1" type="text/javascript">
 
@@ -35,7 +34,7 @@ keepalive();
 %>
 
 <div class="providerMenubar">
-<mm:hasrank minvalue="basic user">
+<mm:hasrank minvalue="didactor user">
   <mm:node referid="provider">
     <mm:relatednodes role="settingrel" type="components">
       <mm:field name="name" jspvar="cname" write="false" vartype="String">
@@ -77,7 +76,7 @@ keepalive();
     <mm:param name="scope">provider</mm:param>
   </mm:treeinclude>
 </mm:hasrank>
-<mm:hasrank value="didactor-anonymous">
+<mm:hasrank value="anonymous">
   <div class="provideranonymous">
     <mm:node referid="provider">
       <mm:nodeinfo type="gui" />
