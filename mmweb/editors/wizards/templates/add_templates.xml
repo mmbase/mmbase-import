@@ -2,26 +2,31 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="related" destination="templates" minoccurs="0" maxoccurs="1">
 	<title>Stramien van deze pagina</title>
-	<command name="search" nodepath="templates" fields="title" age="-1">
+	<command name="search" nodepath="templates" fields="name,url" age="-1">
 		<prompt></prompt>
 		<search-filter>
-        		<name>Titel bevat</name>
-	        	<search-fields>title</search-fields>
+		   <name>Naam bevat</name>
+		   <search-fields>name</search-fields>
+		</search-filter>
+		<search-filter>
+		   <name>URL bevat</name>
+		   <search-fields>url</search-fields>
 		</search-filter>
 	</command>
-	<!-- <command name="startwizard" inline="true" wizardname="wizards/templates/templates" objectnumber="new"/> -->
 	
 	<item>
-		<title>Stramien</title>
+		<title>Stramien of template</title>
 		<description></description>
-		<field name="title" ftype="data" >
-			<prompt>Titel</prompt>
+		<field name="name" ftype="data" >
+			<prompt>Naam template</prompt>
+		</field>
+		<field name="url" ftype="data" >
+			<prompt>URL template</prompt>
 		</field>
 	</item>
 
 	<action type="create">
-		<relation role="related" destinationtype="templates" >
-		</relation>
+		<relation role="related" destinationtype="templates" />
 	</action>
 </list>
 
