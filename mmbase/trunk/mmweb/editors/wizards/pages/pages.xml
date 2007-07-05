@@ -8,7 +8,14 @@
 	
 	<action include="wizards/pages/delete_pages.xml" />
 
-	<action include="wizards/pages/load_pages.xml" />
+	<action type="load">
+		<relation destination="templates" role="related" />
+		<relation destination="pages" role="posrel" />
+		<relation destination="news" role="posrel" />
+		<relation destination="articles" role="posrel" />
+		<relation destination="documentation" role="posrel" />
+		<relation destination="organisation" role="posrel" />
+	</action>
 
 	<steps>
 		<step form-schema="edit_page" />
