@@ -1,4 +1,4 @@
-<mm:cloud method="delegate"
+<mm:cloud method="asis"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
