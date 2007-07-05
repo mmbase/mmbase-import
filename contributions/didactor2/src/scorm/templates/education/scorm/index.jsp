@@ -15,7 +15,6 @@
 
 <%@page import="nl.didactor.utils.zip.Unpack"%>
 <%@page import="nl.didactor.utils.files.FileCopier"%>
-<%@page import="nl.didactor.utils.files.CommonUtils"%>
 
 <%@page import="nl.didactor.component.scorm.player.MenuCreator"%>
 
@@ -33,23 +32,12 @@
 
 
 <%
-//   System.out.println("a=" + request.);
-
-//String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
-//  String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
-
-    String directory = getServletContext().getRealPath("/education/files");
-    String baseUrl = "http://localhost/education/files";
-
-   if (directory == null || baseUrl == null) {
-       throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
-   }
-
-   directory += "/scorm";
-
+    org.mmbase.servlet.FileServlet.init((HttpServletResponse) pageContext.getResponse());
+    File directory = org.mmbase.servlet.FileServlet.getFile("scorm");
+    directory.mkdirs();
 
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-   Node nodePackage = null;
+   Node packageNode = null;
    File newDir = null;
    File newDir_ = null;
    File fileStoreDir = null;
@@ -117,23 +105,23 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                     //------------- Uploading of new package ----------------
                     
                     //Create a new node which describes this package
-                    nodePackage = cloud.getNodeManager("packages").createNode();
-                    nodePackage.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
-                    nodePackage.setValue("type", "SCORM");
-                    nodePackage.commit();
+                    packageNode = cloud.getNodeManager("packages").createNode();
+                    packageNode.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
+                    packageNode.setValue("type", "SCORM");
+                    packageNode.commit();
                     
                     fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
 
                      try {
                          //Internal server error
-                         newDir = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber()));
+                         newDir = new File(directory, "" + packageNode.getNumber());
                          newDir.mkdirs();
-                         newDir_ = new File(newDir.getAbsolutePath() + "_");
+                         newDir_ = new File(directory, packageNode.getNumber()  + "_");
                          newDir_.mkdirs();
-                         
-                         File savedFile = new File(CommonUtils.fixPath(directory) + File.separator + nodePackage.getNumber(), fileName);
+
+                         File savedFile = new File(newDir, fileName);
                          item.write(savedFile);
-                         fileSrc = new File(CommonUtils.fixPath(directory + File.separator + fileName));
+                         fileSrc = new File(directory, fileName);
                          
                          uploadOK = true;
                          savedFile = null;
@@ -144,11 +132,11 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                      
                      try {// A error during unpacking .zip
                          if(uploadOK) {
-                             Unpack.unzipFileToFolder(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + File.separator + fileName), CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_"));
+                             Unpack.unzipFileToFolder(directory + File.separator + packageNode.getNumber() + File.separator + fileName, directory + File.separator + packageNode.getNumber() + "_");
                          }
                      } catch(Exception e) {
                          msg = "UNZIP Error: " + e.toString();
-                         nodePackage.delete(true);
+                         packageNode.delete(true);
                          Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
                          Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
                          uploadOK = false;
@@ -158,16 +146,16 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                      //check manifest file here
                      if(uploadOK) {
                          try {
-                             File file = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME));
+                             File file = MenuCreator.getManifest(packageNode);
                              XMLDocument xmlDocument = new XMLDocument();
                              xmlDocument.loadDocument(file);
                              CP_Core cp_core = new CP_Core(xmlDocument);
-                             nodePackage.setValue("version", "" + cp_core.getRootManifestElement().getAttributeValue("version"));
-                             nodePackage.setValue("name", fileName);
-                             nodePackage.commit();
+                             packageNode.setValue("version", "" + cp_core.getRootManifestElement().getAttributeValue("version"));
+                             packageNode.setValue("name", fileName);
+                             packageNode.commit();
                          } catch(Exception e) {
                              msg = "Error parsing manifest file: " + e.toString();
-                             nodePackage.delete(true);
+                             packageNode.delete(true);
                              Unpack.deleteFolderIncludeSubfolders(newDir.getAbsolutePath(), false);
                              Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
                              uploadOK = false;
@@ -175,27 +163,14 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                      }
                      
 
-                     //Copying player with own package ID config
-                     filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
-                     ServletContext sc = getServletConfig().getServletContext();
-                     
-                     FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
-                     
-                     
-                     
+                     // THIS IS ABSURD
+
                      //Get structure of menu and write it to our instance of player
                      try {
-                         MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", baseUrl + "/scorm/" + nodePackage.getNumber() + "_" + "/");
-                         String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber(), "");
-                         /*
-                           DidactorSettings didactorSetings = new DidactorSettings();
-                           didactorSetings.setPackageName("" + nodePackage.getNumber());
-                           didactorSetings.setSettingsFilePath("Z:/SCORM/sequence/reload-settings.xml");
-                           didactorSetings.setPackageManifestPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME);
-                           
-                           ScormManager scormManager = new ScormManager(didactorSetings);
-                         */
-                         File fileMenuConfig = new File(directory + File.separator + nodePackage.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
+                         MenuCreator menuCreator = new MenuCreator(packageNode); 
+                         "http://", baseUrl + "/scorm/" + packageNode.getNumber() + "_" + "/");
+                         String[] arrstrJSMenu = menuCreator.parse(true);
+                         File fileMenuConfig = new File(directory, packageNode.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
                          RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileMenuConfig, "rw");
                          for(int f = 0; f < arrstrJSMenu.length; f++) {
                              rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
@@ -208,13 +183,6 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                          // wtf
                      }
 
-
-
-                     if(uploadOK) {
-                         // wtf
-                         //Clean up the folder
-                         //                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
-                     }
                  } // item = filename
              }// item is form field
          } // while
@@ -243,11 +211,9 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
 </head>
 <body>
 <%
-    File dir = new File(directory);
-    File[] farray = dir.listFiles();
-    if (farray == null)
-    {
-       throw new ServletException("'" + directory + "' does not appear to be a directory! Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
+    File[] farray = directory.listFiles();
+    if (farray == null) {
+    throw new ServletException("'" + directory.getAbsolutePath() + "' does not appear to be a directory! ");
     }
 %>
 
@@ -292,9 +258,8 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
             <tr class="listheader">
                <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
                   <th/>
-               </mm:islessthan>
-
-               <th>#</th>
+               </mm:islessthan>	       
+               <th colspan="2">#</th>
                <th><di:translate key="scorm.scormpackagelisttablename" /></th>
                <th><di:translate key="scorm.scormpackagelisttableversion" /></th>
                <th><di:translate key="scorm.scormpackagelisttablestatus" /></th>
@@ -305,7 +270,8 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
             <%
                int fileNum = 0;
             %>
-            <mm:listnodes type="packages" orderby="uploaddate" constraints="type LIKE 'SCORM'">
+	    
+            <mm:listnodes type="packages" orderby="uploaddate" directions="down" constraints="type LIKE 'SCORM'"><!-- wtf -->
 
                <mm:import id="imported" reset="true"><mm:field name="importdate"/></mm:import>
                <%
@@ -323,7 +289,9 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                         </a>
                      </td>
                   </mm:islessthan>
-
+		  <td class="field">
+		    <mm:field name="number" />
+		  </td>
                   <td class="field"><mm:field name="name"/></td>
                   <td class="field"><!-- mm:field name="filename"/ --></td>
                   <td class="field"><mm:field name="version"/></td>

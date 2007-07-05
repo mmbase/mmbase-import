@@ -1,7 +1,7 @@
 <%
-   fileStoreDir  = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID));
-   fileTempDir   = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID + "_"));
-   filePlayerDir = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID + "_player"));
+   fileStoreDir  = new File(directory, requestDeletePackageID);
+   fileTempDir   = new File(directory, requestDeletePackageID + "_");
+   filePlayerDir = new File(directory, requestDeletePackageID + "_player");
 
    try
    {
