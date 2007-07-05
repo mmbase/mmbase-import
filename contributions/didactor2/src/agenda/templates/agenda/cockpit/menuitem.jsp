@@ -5,14 +5,13 @@
 <%-- agenda is only valid in the 'provider' scope --%>
 <%-- TODO use translate tag for use of more languages --%>
 <mm:compare referid="scope" value="provider">
-  <mm:cloud method="delegate" jspvar="cloud">
-  <%@include file="/shared/setImports.jsp" %>
-  <mm:compare referid="type" value="div">
-    <div class="menuSeperator"> </div>
-    <div class="menuItem" id="menuAgenda">
-      <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">agenda</a>
-    </div>
-  </mm:compare>
+  <mm:cloud method="asis">
+    <mm:compare referid="type" value="div">
+      <div class="menuSeperator"> </div>
+      <div class="menuItem" id="menuAgenda">
+        <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">agenda</a>
+      </div>
+    </mm:compare>
   
   <mm:compare referid="type" value="option">
     <option value="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>">
