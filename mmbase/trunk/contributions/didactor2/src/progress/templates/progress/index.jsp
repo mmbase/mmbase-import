@@ -2,10 +2,9 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
 %><%@page import="java.util.*" 
-%>
-<mm:content postprocessor="none">
+%><mm:content postprocessor="none">
 
-<mm:cloud method="delegate">
+<mm:cloud rank="didactor user">
 
   <jsp:directive.include file="/shared/setImports.jsp" />
   <jsp:directive.include file="/education/tests/definitions.jsp" />
@@ -20,6 +19,7 @@
   </mm:islessthan>
 
   <di:getsetting id="sort" component="core" setting="personorderfield" write="false" />
+
   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
@@ -178,7 +178,6 @@
                     <tr>
                       <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
                     </tr>
-                    <mm:log>class = ${classNode}</mm:log>
                     <mm:relatednodes role="classrel" type="people" id="student" orderby="$sort" >
                       <di:hasrole role="student" referid="student">
                         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,student,classNode@class">
@@ -199,45 +198,44 @@
                 <mm:compare referid="class" regexp="|null" inverse="true">
                   <mm:node referid="class">
                     <mm:timer name="teacher_people">
-                      <mm:relatednodes type="people" orderby="$sort" >
-                      <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
-                      <di:hasrole role="student" referid="studentnumber">
-                        <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
-                          <mm:param name="student"><mm:field name="number"/></mm:param>
-                          <mm:param name="direct_connection">false</mm:param>
-                        </mm:treeinclude>
-                      </di:hasrole>
-                   </mm:relatednodes>
+                      <mm:relatednodes type="people" role="classrel" orderby="$sort" id="student">
+                        <di:hasrole role="student" referid="student">
+                          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,student">
+                            <mm:param name="direct_connection">false</mm:param>
+                          </mm:treeinclude>
+                        </di:hasrole>
+                      </mm:relatednodes>
                     </mm:timer>
                  </mm:node>
                 </mm:compare>
               </di:hasrole>
-
+              
            <%--
              If the user has role 'coach' he may see all students in his workgroup.
            --%>
+           <di:hasrole role="teacher" inverse="true">
               <di:hasrole role="coach">
                 <mm:compare referid="class" valueset=",null" inverse="true">
                   <mm:node referid="class">
                     <mm:timer name="work">
-                    <mm:related path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
-                      <mm:node element="workgroups">
-                        <!-- oddddd -->
-                        <mm:relatednodes type="people" orderby="$sort">
-                          <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
-                          <di:hasrole role="student" referid="studentnumber">
-                            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
-                              <mm:param name="student"><mm:field name="number"/></mm:param>
-                              <mm:param name="direct_connection">false</mm:param>
-                            </mm:treeinclude>
-                          </di:hasrole>
-                        </mm:relatednodes>
-                      </mm:node>
+                      <mm:related path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
+                        <mm:node element="workgroups">
+                          <!-- oddddd -->
+                          <mm:relatednodes type="people" role="related" orderby="$sort">
+                            <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
+                            <di:hasrole role="student" referid="studentnumber">
+                              <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,studentnumber@student">
+                                <mm:param name="direct_connection">false</mm:param>
+                              </mm:treeinclude>
+                            </di:hasrole>
+                          </mm:relatednodes>
+                        </mm:node>
                     </mm:related>
                     </mm:timer>
                   </mm:node>  
                 </mm:compare>
               </di:hasrole>
+           </di:hasrole>
             </tr>
           </table>
 
