@@ -3,9 +3,9 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
-%><mm:cloud method="delegate" jspvar="cloud">
-   <jsp:directive.include file="/shared/setImports.jsp" />
-   <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
+%><mm:cloud rank="editor">
+<jsp:directive.include file="/shared/setImports.jsp" />
+<jsp:directive.include file="/education/wizards/roles_defs.jsp" />
 
    <mm:import externid="e" jspvar="chosen_education" vartype="string">${education}</mm:import>
    <style type="text/css">
@@ -37,9 +37,7 @@
      <mm:link referids="e?" page=".">
        <mm:param name="mode">components</mm:param>       
        <a class="${mode eq 'components' ? education_top_menu_selected : ''}"
-          href="${_}">
-         <di:translate key="education.educationmenucomponents" />
-       </a>
+          href="${_}"><di:translate key="education.educationmenucomponents" /></a>
      </mm:link>
    </mm:islessthan>
 

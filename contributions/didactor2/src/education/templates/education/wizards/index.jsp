@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><mm:content postprocessor="reducespace" expires="0">
-<mm:cloud rank="basic user" method="sessiondelegate">
+<mm:cloud rank="editor">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
@@ -38,8 +38,7 @@
   </mm:treeinclude>
 
 
-<table 
-    cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
    <tr class="navigationbar">
       <td colspan="2" class="titlebar">
         <img src="${mm:treefile('/gfx/icon_agenda.gif', pageContext, includePath)}" 
