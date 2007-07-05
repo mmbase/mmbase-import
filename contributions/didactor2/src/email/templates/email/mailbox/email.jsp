@@ -71,7 +71,7 @@
         <mm:node number="$email" notfound="skip">
           <di:translate key="email.from" />: <mm:field name="from" /> <br />
           <di:translate key="email.to_caption" />: <mm:field name="to" /> <br />
-          <di:translate key="email.date" />: <mm:field name="gui(date)" /> <br />
+          <di:translate key="email.date" />: <mm:field name="date"><mm:time format=":FULL.FULL" /></mm:field> <br />
           <di:translate key="email.subject" />: <mm:field name="subject"/> <br />
           <mm:functioncontainer>
             <mm:param name="field">headers</mm:param>
