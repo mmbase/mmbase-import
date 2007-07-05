@@ -7,18 +7,16 @@
 
     <date>2005-12-24</date>
 
-    <edition>$Id: lucene.xml,v 1.8 2007-04-02 14:30:34 andre Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.9 2007-07-05 13:01:30 michiel Exp $</edition>
 
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
-
         <surname>van Rooden</surname>
       </author>
 
       <author>
         <firstname>Michiel</firstname>
-
         <surname>Meeuwissen</surname>
       </author>
     </authorgroup>
@@ -188,10 +186,10 @@
 
 <programlisting>
   &lt;list type="documents"&gt;
-    &lt;mmsq:field name="title" /&gt;
+    &lt;mmsq:field name="title" boost="2" /&gt;
     &lt;mmsq:field name="subtitle" /&gt;
     &lt;mmsq:field name="intro" /&gt;
-    &lt;mmsq:field name="body" /&gt;
+    &lt;mmsq:field name="body" optional=".*" /&gt;
     &lt;mmsq:field name="kindofdocument"  alias="kindofdocument" keyword="true" /&gt;
     &lt;mmsq:related path="items,meetings,kindofmeetings" element="kindofmeetings"&gt;
       &lt;mmsq:field name="meetings.date" alias="date" keyword="true" /&gt;
@@ -200,6 +198,14 @@
     &lt;/mmsq:related&gt;
   &lt;/list&gt;
 </programlisting>
+<para>
+  The 'boost' attribute will make indexing in given field 'heavier'. 
+</para>
+<para>
+  The 'optional' attribute contains a regular expression which is matched on the node-manager of the
+  found node.  If it not matches, then it is not indexed. This is useful if the given type has
+  inherited types of which not all have the specified field.
+</para>
     </section>
 
     <section>
