@@ -389,6 +389,10 @@
       </datatype>
     </field>
 
+    <field name="isonline" state="virtual">
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
   </fieldlist>
 
   <functionlist>
