@@ -3,6 +3,7 @@
 
 <mm:node number="component.assessment" notfound="skip">
    <mm:node number="$learnobject" jspvar="nodeLearnObject">
+     <mm:hasrelationmanager role="DescriptionRel" sourcemanager="$_node" destinationmanager="object" >
       <mm:related path="descriptionrel,object" searchdir="destination">
          <a href="#" style="text-decoration:none">
             <% //so that Mozilla thinks the table below is an URL and shows a correct cursor :) %>
@@ -60,5 +61,6 @@
             </table>
          </a>
       </mm:related>
+      </mm:hasrelationmanager>
    </mm:node>
 </mm:node>
