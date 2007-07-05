@@ -3,31 +3,26 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
-<mm:content postprocessor="reducespace">
-  <mm:cloud method="asis">
-    <jsp:directive.include file="/shared/setImports.jsp" />
-    <%-- ugly <html and <body are opened, but not closed in this file --%>
-    <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <mm:write referid="extraheader" escape="none" />    
-        <mm:link page="/core/js/sarissa/sarissa.js">
-          <script src="${_}"><!-- Help IE --></script>
-        </mm:link>    
-        <mm:link page="/core/js/utils.js">
-          <script src="${_}"><!-- Help IE --></script>
-        </mm:link>
-        <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}" />
-      </head>
-      <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
-      
-      <div class="">
-        <mm:import externid="reset" />
-        <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath"
-                        referids="$referids,reset?"/>
-        <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids"
-                        />
-        <mm:treeinclude page="/cockpit/educationbar.jsp" objectlist="$includePath" referids="$referids" />
-      </div>
-      
+<mm:cloud method="asis">
+  <html xmlns="http://www.w3.org/1999/xhtml"><%-- UGLY: opened, but not closed in this file --%>
+    <head>
+      <mm:write referid="extraheader" escape="none" />    
+      <mm:link page="/core/js/sarissa/sarissa.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>    
+      <mm:link page="/core/js/utils.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}" />
+    </head>
+    <body class="componentbody" ${extrabody}> <%-- UGLY: opened, but not closed in this file --%>
+    <div class="">
+      <mm:import externid="reset" />
+      <mm:treeinclude page="/cockpit/applicationbar.jsp" objectlist="$includePath"
+                      referids="$referids,reset?"/>
+      <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids" />
+      <mm:treeinclude page="/cockpit/educationbar.jsp" objectlist="$includePath" referids="$referids" />
+    </div>
+    
   </mm:cloud>
-</mm:content>
+  
