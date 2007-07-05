@@ -217,15 +217,20 @@
           </fileset>
         </copy>
 
-        <mkdir dir="${build.dir}/classes/${component}/org/mmbase/config" />
-
-        <copy todir="${build.dir}/classes/${component}/org/mmbase/config">
-          <fileset 
-              defaultexcludes="${defaultexcludes}"
-              dir="src/${component}/config">
-            <include name="**"/>
-          </fileset>
-        </copy>
+        <if>
+          <available file="src/${component}/config" type="file"/>
+          <then>
+            <mkdir dir="${build.dir}/classes/${component}/org/mmbase/config" />
+            
+            <copy todir="${build.dir}/classes/${component}/org/mmbase/config">
+              <fileset 
+                  defaultexcludes="${defaultexcludes}"
+                  dir="src/${component}/config">
+                <include name="**"/>
+              </fileset>
+            </copy>
+          </then>
+        </if>
 
         <javac srcdir="src/${component}/java"
                destdir="${build.dir}/classes/${component}"
