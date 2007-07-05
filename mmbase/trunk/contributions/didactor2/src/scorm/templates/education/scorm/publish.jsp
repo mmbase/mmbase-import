@@ -2,8 +2,8 @@
 
 
 <%
-   fileStoreDir = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID));
-   fileTempDir  = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID + "_"));
+   fileStoreDir = new File(directory, requestDeletePackageID);
+   fileTempDir  = new File(directory, requestDeletePackageID + "_");
 %>
 
 <mm:node number="<%= requestPublishPackageID %>">
