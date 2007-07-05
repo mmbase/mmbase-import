@@ -20,6 +20,7 @@
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
   <html>
     <head>
+      <!-- why do we use meta-headers?, when we can set real ones.  -->
       <meta http-equiv="Content-Style-Type" content="text/css" />
       <!-- why is this in dutch -->
       <meta http-equiv="Content-Language" content="nl" />
@@ -30,7 +31,7 @@
     <meta name="rating" content="General" />
     <meta name="robots" content="all" />
     <title>Didactor</title>
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/loginpage.css" objectlist="$includePath" referids="$referids" />" />
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/loginpage.css" objectlist="$includePath"  />" />
     <mm:write referid="extraheader" escape="none" />
     <script language="javascript">
     <!--   
@@ -101,6 +102,6 @@
 </html>
 </mm:cloud>
 
-<mm:cloud method="delegate" authenticate="didactor-logout"/>
+<mm:cloud method="logout" />
 
 </mm:content>
