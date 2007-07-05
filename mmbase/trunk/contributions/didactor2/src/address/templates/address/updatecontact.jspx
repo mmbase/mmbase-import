@@ -27,10 +27,13 @@
     <mm:node referid="contact">
       <!-- wtf -->
       <mm:maywrite>
-        <mm:list nodes="$user" path="people,addressbooks,contacts" constraints="contacts.number=$contact" max="1">
-          <mm:import id="editable">true</mm:import>
-        </mm:list>
-        <mm:import id="editable">true</mm:import>
+        <mm:nodeinfo type="type">
+          <mm:compare value="contacts">
+            <mm:list nodes="$user" path="people,addressbooks,contacts" constraints="contacts.number=$contact" max="1">
+              <mm:import id="editable">true</mm:import>
+            </mm:list>
+          </mm:compare>
+        </mm:nodeinfo>
       </mm:maywrite>
       
       <!-- addressbook value is not always provided -->
@@ -80,7 +83,9 @@
                     <td><mm:fieldinfo type="guiname" /></td>
                     <td>
                       <mm:fieldinfo type="${editable eq 'true' ? 'input' : 'guivalue'}" />
-                      <mm:fieldinfo type="errors" />
+                      <mm:present referid="editable">
+                        <mm:fieldinfo type="errors" />
+                      </mm:present>
                     </td>
                   </tr>
                 </mm:fieldlist>
