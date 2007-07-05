@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.17 2007-07-02 15:23:08 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.18 2007-07-05 11:20:51 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -209,8 +209,8 @@ public class MMBaseEntry implements IndexEntry {
                     type = field.getDataType().getBaseType();
                     // stepField.getType will not do, because this is the actual database type (when multilevel)
                     // changed especially because of datetimes...
-                } else if (fieldDefinition.optional != null) {
-                    log.debug("found optional field " + fieldName + " in node " + n.getNumber());
+                } else {
+                    log.debug("found optional, or virtual, field " + fieldName + " in node " + n.getNumber());
                     n = getNode(fieldDefinition);
                     fieldName = getRealField(fieldDefinition);
                     type = n.getNodeManager().getField(fieldName).getDataType().getBaseType();
@@ -246,15 +246,18 @@ public class MMBaseEntry implements IndexEntry {
                         try {
                             mimeType = "" + n.getFunctionValue("mimetype", null);
                         } catch (NotFoundException nfe) {
+                            log.warn("No mimetype-function found for node with binary field '" + fieldName + "'");
                             //
                         }
                         Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
                         
                         if (extractor != null) {
-                            byte[] help = n.getByteValue(fieldName);
-                            log.service("Analyzing document of " + n.getNumber() + " with " + extractor + " " + n.getByteValue(fieldName).length);
+                            if (log.isServiceEnabled()) {
+                                byte[] help = n.getByteValue(fieldName);                            
+                                log.service("Analyzing document of " + n.getNumber() + " with " + extractor + " " + help.length);
+                            }
                             
-                            InputStream input = new ByteArrayInputStream(help);
+                            InputStream input = n.getInputStreamValue(fieldName);
                             try {
                                 documentText = extractor.extract(input);
                             } catch (Exception e) {
