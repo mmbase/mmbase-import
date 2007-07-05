@@ -1,11 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:import externid="type" />
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:import externid="type" />
 <mm:import externid="scope">none</mm:import>
 <mm:compare referid="scope" value="provider">
-  <mm:cloud>
-    <jsp:directive.include file="/shared/setImports.jsp" />
-    <mm:treefile page="/links/index.jsp" objectlist="$includePath" referids="$referids"
+  <mm:cloud method="asis">
+    <mm:treefile page="/links/index.jspx" objectlist="$includePath" referids="$referids"
                  write="false" id="treefile" />
     <mm:compare referid="type" value="div">
       <div class="menuSeperator"> </div>
