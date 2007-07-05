@@ -9,6 +9,8 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 <mm:cloud rank="didactor user">
 
+  <di-t:copybook><mm:relatednodes path="madetests,tests" id="madetests" element="tests"/></di-t:copybook>
+
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
@@ -113,7 +115,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
                 %><mm:import id="learnobjecttype" reset="true"><%= learnObjectType %></mm:import><%
             }
         }
-        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import>        <mm:log><%=bookmarks%></mm:log>
+        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import>
 <%
     }
 %>
@@ -128,199 +130,11 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 <mm:import externid="justposted" />
 
-<script type="text/javascript">
-<!--
-
-  var ITEM_NONE = "<mm:write referid="gfx_item_none" />";
-  var ITEM_OPENED = "<mm:write referid="gfx_item_opened" />";
-  var ITEM_CLOSED = "<mm:write referid="gfx_item_closed" />";
-  var currentnumber = -1;
-  var contenttype = new Array();
-  var contentnumber = new Array();
-
-  function addContent( type, number ) {
-    contenttype[contenttype.length] = type;
-    contentnumber[contentnumber.length] = number;
-    if ( contentnumber.length == 1 ) {
-      currentnumber = contentnumber[0];
-    }
-  }
-
-  function nextContent() {
-    for(var count = 0; count <= contentnumber.length; count++) {
-     if ( contentnumber[count] == currentnumber ) {
-       if ( count < contentnumber.length ) {
-         if ("tests" == contenttype[count]) {
-           alert("<di:translate key="education.testalert" />");
-           return;
-         }
-         var opentype = contenttype[count+1];
-         var opennumber = contentnumber[count+1];
-       }
-     }
-   }
-   openContent( opentype, opennumber );
-   openOnly('div'+opennumber,'img'+opennumber);
-  }
-
-  function previousContent() {
-    for(var count = 0; count <= contentnumber.length; count++) {
-      if ( contentnumber[count] == currentnumber ) {
-        if ( count > 0 ) {
-          if ("tests" == contenttype[count]) {
-            alert("<di:translate key="education.testalert" />");
-            return;
-          }
-          var opentype = contenttype[count-1];
-          var opennumber = contentnumber[count-1];
-        }
-      }
-    }
-    openContent( opentype, opennumber );
-    openOnly('div'+opennumber,'img'+opennumber);
-  }
-
-
-  function openContent( type, number ) {
-
-    if (document.getElementById('content-'+currentnumber)) {
-      document.getElementById('content-'+currentnumber).className = "";
-    }
-    if ( number > 0 ) {
-      currentnumber = number;
-    }
-
-
-    switch ( type ) {
-      case "educations":
-
-   //    note that document.content is not supported by mozilla!
-   //    so use frames['content'] instead
-
-        frames['content'].location.href = addParameter('<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>', 'edu='+number);
-        break;
-      case "learnblocks":
-      case "htmlpages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-      case "tests":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-      case "pages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-      case "flashpages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-    }
-    frames['content'].scrollTop = '0px';
-    document.body.scrollTop = '0px';
-    if (document.getElementById('content-'+currentnumber)) {
-    document.getElementById('content-'+currentnumber).className = "selectedContent";
-    }
-
-  }
-
-  function openClose(div, img) {
-    var realdiv = document.getElementById(div);
-    var realimg = document.getElementById(img);
-    if (realdiv != null) {
-      if (realdiv.getAttribute("opened") == "1") {
-        realdiv.setAttribute("opened", "0");
-        realdiv.style.display = "none";
-        realimg.src = ITEM_CLOSED;
-      } else {
-        realdiv.setAttribute("opened", "1");
-        realdiv.style.display = "block";
-        realimg.src = ITEM_OPENED;
-      }
-    }
-  }
-
-  function openOnly(div, img) {
-    var realdiv = document.getElementById(div);
-    var realimg = document.getElementById(img);
-    // alert("openOnly("+div+","+img+"); - "+realdiv);
-    if (realdiv != null) {
-        realdiv.setAttribute("opened", "1");
-        realdiv.style.display = "block";
-        realimg.src = ITEM_OPENED;
-
-        var className = realdiv.className;
-        if (className) {
-            // ignore "lbLevel" in classname to get the level depth
-            var level = className.substring(7,className.length);
-            // alert("level = "+level);
-            var findparent = realdiv;
-            var findparentClass = className;
-
-
-//There is a JS error here
-//(added try/catch)
-//Does anybody know, what the problem is?
-//--> Probably the problem is, that it is a bloody mess!
-try{
-            if (level > 1) {
-                // also open parents
-                do {
-                    findparent = findparent.parentNode;
-                    findparentClass = findparent.className || "";
-                } while (findparent && findparentClass.indexOf("lbLevel") != 0);
-                if (findparent) {
-                    var divid = findparent.id;
-                    var imgid = "img"+divid.substring(3,divid.length);
-                    openOnly(divid,imgid);
-                }
-            }
-}
-catch(err){};
-
-
-        }
-    } else { // find enclosing div
-        var finddiv = realimg;
-        while (finddiv != null && (! finddiv.className || finddiv.className.substring(0,7) != "lbLevel")) {
-            finddiv = finddiv.parentNode;
-            // if (finddiv.className) alert(finddiv.className.substring(0,7));
-        }
-        if (finddiv != null) {
-            var divid = finddiv.id;
-            var imgid = "img"+divid.substring(3,divid.length);
-            openOnly(divid,imgid);
-        }
-    }
-  }
-
-  function closeAll() {
-    var divs = document.getElementsByTagName("div");
-    for (i=0; i<divs.length; i++) {
-      var div = divs[i];
-      var cl = "" + div.className;
-      if (cl.match("lbLevel")) {
-        divs[i].style.display = "none";
-      }
-    }
-  }
-
-  function removeButtons() {
-    // Remove all the buttons in front of divs that have no children
-    var imgs = document.getElementsByTagName("img");
-    for (i=0; i<imgs.length; i++) {
-      var img = imgs[i];
-      var cl = "" + img.className;
-      if (cl.match("imgClose")) {
-        if (img.getAttribute("haschildren") != "1") {
-          img.src = ITEM_NONE;
-        }
-      }
-    }
-  }
-
-
-
-
-  //-->
-</script>
+<mm:link page="/education/tree.js.jsp">
+  <script type="text/javascript" src="${_}">
+    
+  </script>
+</mm:link>
 
 <%--
 Something seems wrong. I think that currently, the 'lastpage' field is never filled.
@@ -379,7 +193,8 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                //-->
             </script>
 
-            <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" title="" alt="" />
+            <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}" 
+                 onclick="openClose('div${_node}','img${_node}')" title="" alt="" />
             <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a>
 
             <mm:field id="previousnumber" name="number" write="false"/>
@@ -448,9 +263,7 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
 
                                  <%// have to skip the first entrance in scorm tree %>
                                  <mm:compare referid="block_this_first_htmlpage" value="false">
-
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
-
                                        <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
 
                                        <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
@@ -463,24 +276,32 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
 
 
                                           <mm:present referid="the_only_node_to_show">
-                                             <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                                             <a href="<mm:url referids="provider,learnobjecttype,education,class,fb_madetest" page="index.jsp">
-                                                         <mm:param name="learnobject"><mm:write referid="learnobjectnumber"/></mm:param>
-                                                      </mm:url>"
-
-                                                   style="padding-left: 0px"><mm:field name="name"/></a>
+                                             <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}"
+                                                  onclick="" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                                             <mm:link page="." referids="provider,learnobjecttype,education,class,fb_madetest,learnobjectnumber@learnobject">
+                                               <a href="${_}" style="padding-left: 0px"><mm:field name="name"/></a>
+                                             </mm:link>
                                           </mm:present>
 
-                                          <mm:notpresent referid="the_only_node_to_show">
+                                          <mm:notpresent referid="the_only_node_to_show">                                            
                                              <%
                                                 if((hsetBlockedLessions == null) || (!hsetBlockedLessions.contains(sCurrentTreeLeafID))){
                                                    %>
-                                                      <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                                                   <mm:nodeinfo type="type" >
+
+                                                     <img class="imgClosed openable" 
+                                                          src="${gfx_item_closed}" id="img${_node}" 
+                                                          onclick="openClose('div${_node}', 'img${_node}')" 
+                                                          style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                                                     <a href="javascript:openContent('${_}', '${_node}' ); openOnly('div${_node}','img${_node}');" 
+                                                        style="padding-left: 0px"><mm:field name="name"/></a>
+                                                   </mm:nodeinfo>
                                                    <%
-                                                }
-                                                else{
+                                                } else{
                                                    %>
-                                                      <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="#" style="padding-left: 0px; color:#CCCCCC"><mm:field name="name"/></a>
+                                                      <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}"
+                                                           style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                                                      <a href="#" style="padding-left: 0px; color:#CCCCCC"><mm:field name="name"/></a>
                                                    <%
                                                 }
                                              %>
