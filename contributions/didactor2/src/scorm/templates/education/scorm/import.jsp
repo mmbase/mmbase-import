@@ -13,8 +13,8 @@
 
     <mm:log jspvar="log">
 <%
-   fileStoreDir = new File(CommonUtils.fixPath(directory + File.separator + requestImportPackageID));
-   fileTempDir  = new File(CommonUtils.fixPath(directory + File.separator + requestImportPackageID + "_"));
+   fileStoreDir = new File(directory, requestImportPackageID);
+   fileTempDir  = new File(directory, requestImportPackageID + "_");
    fileTempDir.mkdirs();
 
    String[] arrstrFiles = fileStoreDir.list();
@@ -25,7 +25,7 @@
    {// This is a check for internal server error during unpacking .zip because of
     // the archive already has been tested during upload
     // and it seems the archive should be ok
-      Unpack.unzipFileToFolder(CommonUtils.fixPath(fileStoreDir.getAbsolutePath() + File.separator + sFileName), CommonUtils.fixPath(fileTempDir.getAbsolutePath()));
+      Unpack.unzipFileToFolder(new File(fileStoreDir, sFileName), fileTempDir.getAbsolutePath());
    }
    catch(Exception e)
    {
@@ -36,7 +36,7 @@
 
    try {//Importing the package
        log.info("Importing");
-       File fileManifest = new File(CommonUtils.fixPath(fileTempDir.getAbsolutePath()  + File.separator + CP_Core.MANIFEST_NAME));
+       File fileManifest = new File(fileTempDir, CP_Core.MANIFEST_NAME);
        XMLDocument xmlDocument = new XMLDocument();
        xmlDocument.loadDocument(fileManifest);
        
