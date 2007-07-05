@@ -29,7 +29,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.61.2.1 2007-04-20 12:12:36 pierre Exp $
+ * @version $Id: BasicQuery.java,v 1.61.2.2 2007-07-05 11:35:01 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -385,13 +385,19 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        BasicStepField sf = new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
-        if (! implicitFields.remove(sf)) {; // it's explicitly added now
-            sf = query.addField(step, ((BasicField)field).coreField); // XXX Casting is wrong
+        org.mmbase.core.CoreField cf = ((BasicField)field).coreField; /// XXX Casting is wrong
+        BasicStepField sf = new BasicStepField(step, cf);
+        if (! implicitFields.remove(sf)) {// it's explicitly added now
+            if (cf.inStorage()) {
+                sf = query.addField(step, cf); 
+            } else {
+                log.debug("Not adding the field " + field + " because it is not in storage (this is a virtual field)");
+            }
         }
         explicitFields.add(sf);
         return sf;
     }
+
     public StepField addField(String fieldIdentifier) {
         // code copied from createStepField, should be centralized
         if (used) throw new BridgeException("Query was used already");
