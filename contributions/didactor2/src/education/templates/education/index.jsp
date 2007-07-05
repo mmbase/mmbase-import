@@ -6,8 +6,9 @@
 TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 --%><mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
+
 <mm:cloud rank="didactor user">
-  <jsp:directive.include file="/shared/setImports.jsp" />
+
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
