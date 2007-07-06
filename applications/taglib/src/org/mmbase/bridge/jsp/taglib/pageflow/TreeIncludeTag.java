@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.23 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.24 2007-07-06 11:27:54 johannes Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -52,13 +52,13 @@ public class TreeIncludeTag extends IncludeTag {
         }
     }
 
-    public void initTag() throws JspTagException {
-        super.initTag(false);
+    protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        super.initTag(internal);
         url.setLegacy();
         if (log.isDebugEnabled()) {
-            log.debug("leaffile end of starttag: " + url.toString());
+            log.debug("TreeInclude end of starttag: " + url.toString());
         }
     }
 
