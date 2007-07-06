@@ -12,17 +12,19 @@ package org.mmbase.framework;
 import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 
 /**
  * A framework displays and processes components.
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.30 2007-07-06 19:05:09 michiel Exp $
+ * @version $Id: Framework.java,v 1.31 2007-07-06 20:28:30 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
+
+    public static final Parameter<Integer> PARAMETER_ACTION   = new Parameter<Integer>("action", Integer.class);
 
     /**
      * CSS-id to be used on block
@@ -136,7 +138,11 @@ public interface Framework extends UrlConverter {
     public String getUserBuilder();
 
     
+    /** 
+     * Prepares a map of parameters to add to URL
+     */
 
+    public Map<String, Object> prefix(State state, Map<String, Object> params);
     /**
      * Configures this framework, given (a piece of) an XML
      */
