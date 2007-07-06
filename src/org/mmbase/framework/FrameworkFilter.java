@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.8 2007-07-06 14:22:47 andre Exp $
+ * @version $Id: FrameworkFilter.java,v 1.9 2007-07-06 20:28:30 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -179,6 +179,8 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (log.isDebugEnabled()) {
                 log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
             }
+
+            State state = State.getState(request, true);
             if (forwardUrl != null && !forwardUrl.equals("")) {
                 /* 
                  * RequestDispatcher: If the path begins with a "/" it is interpreted
@@ -190,6 +192,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
                 chain.doFilter(request, response);
             }
+            state.end();
         } else {
             if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
             chain.doFilter(request, response);
