@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.29 2007-06-28 11:18:19 andre Exp $
+ * @version $Id: Framework.java,v 1.30 2007-07-06 19:05:09 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
@@ -135,12 +135,10 @@ public interface Framework extends UrlConverter {
      */
     public String getUserBuilder();
 
+    
+
     /**
-     * Called by UrlFilter passing the HttpServletRequest with an URL that should be checked whether it is an 
-     * 'userfriendly' URL to be converted to a technical URL.
-     *
-     * @param  request  HttpServletRequest
-     * @return the converted technical URL
+     * Configures this framework, given (a piece of) an XML
      */
-    //public String convertUrl(HttpServletRequest request);
+    public void configure(org.w3c.dom.Element element);
 }

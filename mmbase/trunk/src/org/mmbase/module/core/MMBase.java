@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.223 2007-07-04 10:04:08 michiel Exp $
+ * @version $Id: MMBase.java,v 1.224 2007-07-06 19:05:09 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -349,16 +349,32 @@ public class MMBase extends ProcessorModule {
             host = localHost;
         }
 
-        tmp = getInitParameter("FRAMEWORK");
-        if (tmp != null && !tmp.equals("")) {
-            try {
-                log.info("Initializing framework class: [" + tmp + "]");
-                framework = (Framework)Class.forName(tmp).newInstance();
-            } catch (Exception e) {
-                log.error(e);
-            }
-        }
-        if (framework == null) framework = new BasicFramework();
+        org.mmbase.util.ResourceWatcher frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
+                public void onChange(String resourceName) {
+                    try {
+                        org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, org.mmbase.framework.Framework.class);
+                        if (fwConfiguration == null)  {
+                            framework = new BasicFramework();
+                        } else {
+                            org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
+                            String frameworkClass = el.getAttribute("class");
+                            org.w3c.dom.Element descrElement = (org.w3c.dom.Element) el.getElementsByTagName("description").item(0);
+                            String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(descrElement);
+                            log.debug("## Framework description: " + description);
+                            log.info("Initializing framework class: [" + frameworkClass + "]: " + description);
+                            framework = (Framework) Class.forName(frameworkClass).newInstance();                    
+                            framework.configure(el);
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        framework = new BasicFramework();
+                    }
+                }
+            };
+        frameworkWatcher.add("framework.xml");
+        frameworkWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        frameworkWatcher.start();
+        frameworkWatcher.onChange();
 
         org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
 
