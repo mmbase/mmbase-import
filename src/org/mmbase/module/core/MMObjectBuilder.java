@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.416 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.417 2007-07-06 08:20:04 johannes Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1946,7 +1946,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.
      */
-    public final String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         if (log.isDebugEnabled()) {
             log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
         }
