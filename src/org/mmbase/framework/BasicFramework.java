@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.46 2007-07-06 11:00:20 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.47 2007-07-06 11:53:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -93,7 +93,6 @@ public class BasicFramework implements Framework {
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         Object previousRenderer = request.getAttribute(Renderer.KEY);
-        request.setAttribute(Renderer.KEY, renderer);
         if (log.isDebugEnabled()) {
             log.info("Rendering " + renderer);
         }
@@ -104,6 +103,8 @@ public class BasicFramework implements Framework {
             log.info("Processing " + renderer.getBlock() + " " + renderer.getBlock().getProcessor());
             renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
         }
+        request.setAttribute(Renderer.KEY, renderer);
+
         request.setAttribute(COMPONENT_ID_KEY, "mm" + state.getPrefix());
         setBlockParameters(state, blockParameters);
         request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", 
@@ -181,6 +182,7 @@ public class BasicFramework implements Framework {
             id = count;
             count++;
             String a = request.getParameter(ACTION.getName());
+            log.debug("Action " + a);
             int action = a == null ? -1 : Integer.parseInt(a);
             return action == id;
         }
