@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.27 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: TreeFileTag.java,v 1.28 2007-07-06 11:27:54 johannes Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -56,10 +56,13 @@ public class TreeFileTag extends UrlTag {
     }
 
     protected void initTag(boolean internal) throws JspTagException {
-        super.initTag(internal);
-        url.setLegacy();
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        super.initTag(internal);
+        url.setLegacy();
+        if (log.isDebugEnabled()) {
+            log.debug("TreeFile end of starttag: " + url.toString());
+        }
     }
     
 
