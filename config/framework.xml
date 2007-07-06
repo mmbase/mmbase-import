@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<framework
+    class="org.mmbase.framework.BasicFramework"
+    xmlns="http://www.mmbase.org/xmlns/framework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework framework.xsd">
+  <!--
+      version: $Id: framework.xml,v 1.1 2007-07-06 13:50:51 andre Exp $
+  -->
+  <!-- 
+      In this file the classes of the UrlConverters need to be listed in the order
+      in which they are to be chained.
+  -->
+  <description xml:lang="en">
+    Short description of this framework. This is the BasicFramework.
+  </description>
+  
+  <urlconverter class="org.mmbase.framework.BasicUrlConverter">
+    <description xml:lang="en">
+      This is some description...
+    </description>
+    <param name="stub">Test</param>
+  </urlconverter>
+</framework>
