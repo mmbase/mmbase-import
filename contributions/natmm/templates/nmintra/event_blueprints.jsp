@@ -19,6 +19,21 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
       <%@include file="includes/back_print.jsp" %>
+      
+      <mm:node number="<%= paginaID %>">
+        <mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
+      	<% 
+         	if(text!=null && !HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+         	   %>
+             <div class="black" style="margin-top: 20px !important; margin-bottom: 20px !important;">
+               <mm:write />
+             </div>
+             <%
+            } 
+         %>
+      	</mm:field>
+      </mm:node>   
+      
       <%
       ListUtil lu = new ListUtil(cloud);
 
