@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.24 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.25 2007-07-06 07:42:10 michiel Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
@@ -53,8 +53,8 @@ public class LeafIncludeTag extends IncludeTag {
     }
     
     protected void initTag(boolean internal) throws JspTagException {
-        super.initTag(internal);
         th.setCloud(getCloudVar());
+        super.initTag(internal);
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         url.setLegacy();
     }
