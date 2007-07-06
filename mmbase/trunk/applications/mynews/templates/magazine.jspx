@@ -1,0 +1,36 @@
+<div 
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    class="test ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <mm:import externid="mag">default.mags</mm:import>
+  <mm:cloud>
+    <mm:node number="$mag">
+      <h1><mm:field  name="title" /></h1>
+      <mm:field  name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+      <div class="intro">
+        <mm:field  escape="p" name="intro"/>
+      </div>
+      <mm:field  escape="p" name="body"/>
+      <table>
+        <tr><th>title</th><th class="navigate">&amp;nbsp;</th></tr>
+        <mm:relatednodes  role="posrel" type="news" orderby="posrel.pos" max="10">
+          <tr>
+            <td><mm:field name="title" /></td>
+            <td  class="navigate link">
+              <mm:link page="article" referids="_node@n">
+                <a href="${_}">
+                  <mm:link page="/mmbase/style/images/next.png">
+                    <img src="${_}" alt="link" />
+                  </mm:link>
+                </a>
+              </mm:link>
+            </td>
+          </tr> 
+        </mm:relatednodes>
+      </table>
+    </mm:node>
+  </mm:cloud>
+</div>
