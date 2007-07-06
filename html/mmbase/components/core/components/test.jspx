@@ -62,6 +62,8 @@
           Using mm:component <em>inside</em> this component. It should work as expected.
         </p>
         <mm:component name="core" block="servers" />
+        <p>And another time, so that you can see, that states are distinct</p>
+        <mm:component name="core" block="servers" />
       </div>
     </c:otherwise>
   </c:choose>
