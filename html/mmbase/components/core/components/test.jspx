@@ -5,11 +5,16 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <mm:import externid="a" from="request">A</mm:import>
-  <mm:import externid="b" from="request">B</mm:import>
+  <mm:import externid="a" >A</mm:import>
+  <mm:import externid="b" >B</mm:import>
+
   <c:choose>
-    <c:when test="${empty requestScope['org.mmbase.framework.renderer']}">
-      PROCESSING.
+    <c:when test="${! empty requestScope['org.mmbase.framework.processor']}">
+      <mm:log>RENDERER:  ${requestScope['org.mmbase.framework.processor']}</mm:log>
+  
+      <mm:write request="a" value="${param.a}" />
+      <mm:write request="b" value="${param.b}" />
+      <mm:log>PROCESSING.</mm:log>
     </c:when>
     <c:otherwise>
       <div 
@@ -41,14 +46,22 @@
         </p>
         <mm:link>
           <mm:param framework="true" name="process">true</mm:param>
-          <form action="${_}">
+          <form method="post" action="${_}">
+            <p>Form with ${_}</p>
+
             <table>
               <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
               <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
               <tr><td colspan="100"><input type="submit" /></td></tr>
             </table>
+
           </form>
         </mm:link>
+        <h2>Sub-component</h2>
+        <p>
+          Using mm:component <em>inside</em> this component. It should work as expected.
+        </p>
+        <mm:component name="core" block="servers" />
       </div>
     </c:otherwise>
   </c:choose>
