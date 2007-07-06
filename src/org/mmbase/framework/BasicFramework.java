@@ -33,7 +33,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.49 2007-07-06 14:22:47 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.50 2007-07-06 18:40:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -59,7 +59,7 @@ public class BasicFramework implements Framework {
 
     public static final Parameter<Boolean> PROCESS  = new Parameter<Boolean>("process", Boolean.class);
 
-    protected final ChainedUrlConverter chainedUrlConverter = new ChainedUrlConverter();
+    protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
     
     public BasicFramework() {
         this.configure();
@@ -67,11 +67,11 @@ public class BasicFramework implements Framework {
 
     public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
-        return chainedUrlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
-        log.debug("we're calling chainedUrlConverter");
-        return chainedUrlConverter.getInternalUrl(page, params, frameworkParameters);
+        log.debug("we're calling urlConverter");
+        return urlConverter.getInternalUrl(page, params, frameworkParameters);
     }
 
     public String getName() {
@@ -96,39 +96,17 @@ public class BasicFramework implements Framework {
             NodeList urlconverters = el.getElementsByTagName("urlconverter");
             for (int i = 0; i < urlconverters.getLength(); i++) {
                 Element element = (Element) urlconverters.item(i);
-                log.info("Found an UrlConverter: " + element.getAttribute("class"));
-                
-                //UrlConverter uc = ComponentRepository.getInstance(element);
-                UrlConverter uc = getUCInstance(element.getAttribute("class"));
-                chainedUrlConverter.add(uc);
+                UrlConverter uc = (UrlConverter) ComponentRepository.getInstance(element);
+                urlConverter.add(uc);
             }
+            log.info("Found an UrlConverter: " + urlConverter);
+                
 
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
         }
     }
-    
-     /**
-      * Instantiates UrlConverters.
-      *
-      * @param className classname of an UrlConverter implementation
-      * @throws ClassNotFoundException
-      */
-    private UrlConverter getUCInstance(String className) throws ClassNotFoundException {
-        UrlConverter uc = null;
-        Class clazz = Class.forName(className);
-        
-        try {
-            uc = (UrlConverter) clazz.newInstance();
-        } catch (InstantiationException ie) {
-            log.error("Unable to instantiate class '" + clazz + "': " + ie);
-        } catch (IllegalAccessException iae) {
-            log.error("IllegalAccessException instantiating class " + clazz + "': " + iae);
-        }
-        
-        return uc;
-    }
-    
+
     public Block getBlock(Parameters frameworkParameters) {
         Component comp  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
         if (comp == null) return null;
