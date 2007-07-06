@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.11 2007-07-06 14:22:47 andre Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.12 2007-07-06 18:40:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -172,7 +172,6 @@ public class BasicUrlConverter implements UrlConverter {
                 } else {
                     log.warn("Needing state, but no state found ");
                 }
-                log.debug("Processing " + map.get("action"));
             }
 
             Processor processor = (Processor) request.getAttribute(Processor.KEY);
@@ -251,7 +250,7 @@ public class BasicUrlConverter implements UrlConverter {
 
                 Block block = comp.getBlock(path[4]);
                 if (log.isDebugEnabled()) {
-                     log.debug("Will try to display " + block);
+                    log.debug("Will try to display " + block);
                 }
                 if (block == null) {
                     log.debug("No block " + path[4] + " in component " + path[3]);
