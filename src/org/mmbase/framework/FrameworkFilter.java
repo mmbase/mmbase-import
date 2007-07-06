@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.9 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.10 2007-07-06 21:19:31 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -107,13 +107,18 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
     
 
     public static String getPath(HttpServletRequest request) {
-        String path = (String) request.getAttribute("javax.servlet.forward.request_uri");
-        if (path != null) path = path.substring(request.getContextPath().length());
-        path = (String) request.getRequestURI();
-        if (path != null) path = path.substring(request.getContextPath().length());
+        String path = (String) request.getAttribute("javax.servlet.forward.servlet");
+        if (path == null) {
+            path = (String) request.getAttribute("javax.servlet.forward.request_uri");
+            if (path != null) path = path.substring(request.getContextPath().length());
+        }
+        if (path == null) {
+            path = (String) request.getRequestURI();
+            if (path != null) path = path.substring(request.getContextPath().length());
+        }
         // i think path is always != null now.
-        if (path == null) path = request.getServletPath();
         if (path == null) path = request.getPathInfo();
+
         return path;
     }
     

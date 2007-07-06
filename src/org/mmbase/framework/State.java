@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.1 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: State.java,v 1.2 2007-07-06 21:19:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -37,21 +37,26 @@ public class State {
     }
 
     private int count = 1;
-    private int id = 0;
+    private String id;
+    private final int depth;
     private Renderer renderer = null;
     private Processor processor = null;
     private final ServletRequest request;
-    private final Object previousState;
+    private final State previousState;
     
-    private State(ServletRequest r) {
+    public State(ServletRequest r) {
         request = r;
-        previousState = r.getAttribute(KEY);
+        previousState = (State) r.getAttribute(KEY);
+        depth = previousState != null  ? previousState.getDepth() + 1 : 0;
         request.setAttribute(KEY, this);
     }
     
     
     public Renderer.WindowState getWindowState() {
         return Renderer.WindowState.NORMAL;
+    }
+    public int getDepth() {
+        return depth;
     }
     
     public ServletRequest getRequest() {
@@ -65,7 +70,7 @@ public class State {
         processor = null;
             
     }
-    public boolean componentRendering() {
+    public boolean isRendering() {
         return renderer != null || processor != null;
     }
    
@@ -73,23 +78,29 @@ public class State {
         return renderer != null ? renderer.getBlock() :
             (processor != null ? processor.getBlock() : null);
     }
+    protected int start() {
+        if (renderer == null && processor == null) {
+            id = previousState == null ? "" + count : previousState.getId() + '.' + count;
+        }
+        return count++;
+    }
     /**
      * @returns whether action must be performed
      */
     public boolean render(Renderer rend) {
+        int i = start();
         renderer = rend;
         if (processor != null) {
             log.debug("Just processed " + processor);
         }
-        id = count;
-        count++;
         String a = request.getParameter(Framework.PARAMETER_ACTION.getName());
         log.debug("Action " + a);
         int action = a == null ? -1 : Integer.parseInt(a);
-        return action == id;
+        return action == i;
     }
     public void process(Processor processor) {
         if (renderer != null) throw new IllegalStateException();
+        start();
         this.processor = processor;
     }
     
@@ -102,7 +113,7 @@ public class State {
     /**
      * Returns the id of the current renderer
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
     public String toString() {

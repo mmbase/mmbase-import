@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.1 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.2 2007-07-06 21:19:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -55,7 +55,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         if (component == null) {
             // if no explicit component specified, suppose current component, if there is one:
-            if (state != null && state.componentRendering()) {
+            if (state != null && state.isRendering()) {
                 component = state.getBlock().getComponent();
             } else {
                 log.debug("No state object found");
@@ -69,7 +69,10 @@ public class MMBaseUrlConverter implements UrlConverter {
             
             // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
             
-            boolean filteredMode = request.getServletPath().startsWith("/mmbase/") || (state == null && explicitComponent);
+            boolean filteredMode = 
+                (state == null && explicitComponent) ||
+                request.getServletPath().startsWith("/mmbase/");
+
 
             Map<String, Object> map = new TreeMap<String, Object>();
 
@@ -152,9 +155,10 @@ public class MMBaseUrlConverter implements UrlConverter {
             if (category == null) {
                 Block.Type[] classification = block.getClassification();
             }
-            String page = filteredMode ? 
+            boolean subComponent = state != null && state.getDepth() > 0;
+            String page = filteredMode && ! subComponent ? 
                 "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
-                path == null ? FrameworkFilter.getPath(request) : path;
+                path == null || subComponent ? FrameworkFilter.getPath(request) : path;
             StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
             return sb;            
 
