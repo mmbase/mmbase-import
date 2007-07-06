@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.framework;
 
 import java.io.IOException;
@@ -24,15 +33,15 @@ import org.mmbase.util.logging.Logging;
  * form.
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
- * The filtering and conversion to a URL pointing to an existing JSP template is 
+ * The filtering and conversion to an URL pointing to an existing JSP template is 
  * done by implementations of UrlConverter.
  *
- * @author Andr&eacute; vanToly &lt;andre@toly.nl&gt;
- * @version $Id: FrameworkFilter.java,v 1.7 2007-06-22 13:21:25 andre Exp $
+ * @author Andr&eacute; van Toly
+ * @version $Id: FrameworkFilter.java,v 1.8 2007-07-06 14:22:47 andre Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
-	
+    
     private static final Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
     
     /**
@@ -114,9 +123,9 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * URL conversion is only done when the URI does not match one of the excludes in web.xml.
      * Waits for MMBase to be up.
      *
-     * @param request	incoming request
-     * @param response	outgoing response
-     * @param chain		a chain object, provided for by the servlet container
+     * @param request   incoming request
+     * @param response  outgoing response
+     * @param chain     a chain object, provided for by the servlet container
      * @throws ServletException thrown when an exception occurs
      * @throws IOException thrown when an exception occurs
      */
@@ -148,7 +157,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (path != null) {
                 try {
                     if (excludePattern != null && excludePattern.matcher(path).find()) {
-                        chain.doFilter(request, response);	// url is excluded from further actions
+                        chain.doFilter(request, response);  // url is excluded from further actions
                         return;
                     }
                 } catch (Exception e) {
@@ -166,11 +175,9 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 params.set(Parameter.RESPONSE, res);
             }
             String forwardUrl = fw.getInternalUrl(path, req.getParameterMap().entrySet(), params).toString();
-
-
             
             if (log.isDebugEnabled()) {
-                log.debug("Received '" + forwardUrl + "' from UrlConverter, forwarding.");
+                log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
             }
             if (forwardUrl != null && !forwardUrl.equals("")) {
                 /* 
@@ -183,11 +190,11 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
                 chain.doFilter(request, response);
             }
-    	} else {
-    	    if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
-    	    chain.doFilter(request, response);
-    	}
+        } else {
+            if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
+            chain.doFilter(request, response);
+        }
     }
-	
+    
 }
 
