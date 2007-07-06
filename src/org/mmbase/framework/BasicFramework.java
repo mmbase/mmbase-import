@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.44 2007-06-29 09:01:53 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.45 2007-07-06 07:59:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -43,6 +43,8 @@ public class BasicFramework implements Framework {
     public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
     public static final Parameter<Integer> ACTION   = new Parameter<Integer>("action", Integer.class);
     public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
+
+    public static final Parameter<Boolean> PROCESS  = new Parameter<Boolean>("process", Boolean.class);
 
     protected UrlConverter urlConverter = new BasicUrlConverter(this); // could be made configurable
 
@@ -72,7 +74,7 @@ public class BasicFramework implements Framework {
     }
 
     public Parameters createParameters() {
-        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION, CATEGORY);
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, ACTION, CATEGORY, PROCESS);
     }
 
     public boolean makeRelativeUrl() {
