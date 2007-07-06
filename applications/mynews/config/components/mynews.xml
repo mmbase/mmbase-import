@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="mynews"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <description xml:lang="nl">MyNews</description>
+  <description xml:lang="en">MyNews</description>
+
+  <block name="magazine" 
+         classification="mynews entrance mmbase.examples"
+         mimetype="text/html">
+    <head jsp="head.jspx" />
+    <body jsp="magazine.jspx">
+      <param name="mag" />
+    </body>
+  </block>
+
+  <block name="article" 
+         classification="mynews"
+         mimetype="text/html">
+    <head jsp="head.jspx" />
+    <body jsp="article.jspx">
+      <param name="n" />
+    </body>
+  </block>
+
+
+</component>
