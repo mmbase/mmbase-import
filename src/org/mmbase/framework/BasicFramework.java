@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.47 2007-07-06 11:53:27 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.48 2007-07-06 13:20:32 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -100,8 +100,11 @@ public class BasicFramework implements Framework {
 
         request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
         if (state.render(renderer)) {
-            log.info("Processing " + renderer.getBlock() + " " + renderer.getBlock().getProcessor());
+            Processor processor = renderer.getBlock().getProcessor();            
+            log.service("Processing " + renderer.getBlock() + " " + processor);
+            request.setAttribute(Processor.KEY, processor);
             renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
+            request.setAttribute(Processor.KEY, null);
         }
         request.setAttribute(Renderer.KEY, renderer);
 
@@ -153,6 +156,7 @@ public class BasicFramework implements Framework {
         private int count = 1;
         private int id = 0;
         private Renderer renderer = null;
+        private Processor processor = null;
         private final HttpServletRequest request;
         private final Object previousState;
 
@@ -186,6 +190,10 @@ public class BasicFramework implements Framework {
             int action = a == null ? -1 : Integer.parseInt(a);
             return action == id;
         }
+        public void process(Processor processor) {
+            this.processor = processor;
+        }
+
         public String getPrefix() {
             //return "_" + renderer.getBlock().getComponent().getName() + "_" +
             //renderer.getBlock().getName() + "_" + count + "_";
@@ -193,6 +201,9 @@ public class BasicFramework implements Framework {
         }
         public Renderer getRenderer() {
             return renderer;
+        }
+        public Processor getProcessor() {
+            return processor;
         }
         /**
          * Returns the id of the current renderer
