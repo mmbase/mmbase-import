@@ -75,7 +75,7 @@ if(!artikelID.equals("-1")) {
          <table width="100%" border="0" cellspacing="2" cellpadding="2">
             <tr>
                 <td></td>
-                <td rowspan="3" align="right"><img src="media/logos/nmlogo_small.jpg" alt="" border="0"></td>
+                <td rowspan="3" align="right"><%-- removed old logo --%></td>
             </tr>
             <tr>
                 <td rowspan="2"><span style="font-weight: bold;">NATUURROUTES VAN NATUURMONUMENTEN</span></td>
@@ -167,9 +167,15 @@ if(!artikelID.equals("-1")) {
                </mm:related>  
                </div>
             </td>
+            
+            <%-- nieuw huisstijl--%>
+            <td valign="top" width="159">
+            <img src="media/natmm_logo_rgb1.gif" width="159" height="216" style="padding:0;">
+            </td>
+            
             </tr>
             <tr>
-             <td align="right" valign="bottom">
+             <td align="right" valign="bottom" colspan="2">
                <table width="100%" cellspacing="0" cellpadding="1">
                <tr>
                   <td width="100%"></td>
@@ -182,7 +188,7 @@ if(!artikelID.equals("-1")) {
          </tr>
          </table>
 
-         </td>
+         </td>         
       </tr>
    </table>
    </body>
