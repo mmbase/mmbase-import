@@ -12,6 +12,7 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
@@ -23,23 +24,17 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
- * Basic implementation of UrlConverter
+ * Basic implementation of UrlConverter.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.10 2007-07-06 14:18:55 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.11 2007-07-06 14:22:47 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
-
-    protected final BasicFramework framework;
-
-    BasicUrlConverter(BasicFramework parent) {
-        framework = parent;
-    }
 
     /**
      * General utility function to create an Url
@@ -98,7 +93,7 @@ public class BasicUrlConverter implements UrlConverter {
             log.debug(" framework parameters " + frameworkParameters);
         }
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-
+		BasicFramework framework = (BasicFramework) MMBase.getMMBase().getFramework();
         BasicFramework.State state = framework.getState(request, false);
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));

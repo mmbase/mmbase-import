@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.11 2006-11-11 21:32:10 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.12 2007-07-06 14:22:47 andre Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -113,7 +113,8 @@ public class ComponentRepository {
      */
     public static Object getInstance(Element classElement, Object... args) 
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        String className = classElement.getAttribute("name"); 
+        String className = classElement.getAttribute("name");
+        if ("".equals(className)) className = classElement.getAttribute("class"); // for urlconverters config (not ok yet)
         Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
