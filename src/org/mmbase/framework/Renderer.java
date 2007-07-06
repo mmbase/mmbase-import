@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: Renderer.java,v 1.14 2007-07-06 21:49:49 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -30,6 +30,10 @@ public interface Renderer {
     }
 
     enum Type {
+        /**
+         * Not yet rendering
+         */
+        NOT,
         /**
          * Rendering for 'HEAD' typically happens in the &lt;head&gt; block of HTML, and can
          * e.g. produces links to javascript.
