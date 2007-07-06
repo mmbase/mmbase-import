@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.7 2007-06-25 08:07:23 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.8 2007-07-06 11:00:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -108,6 +108,8 @@ public class BasicUrlConverter implements UrlConverter {
             // if no explicit component specified, suppose current component, if there is one:
             if (state != null) {
                 component = state.getRenderer().getBlock().getComponent();
+            } else {
+                log.debug("No state object found");
             }
         }
         
@@ -117,6 +119,7 @@ public class BasicUrlConverter implements UrlConverter {
             StringBuilder sb = BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
             return sb;
         } else {
+            
             // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
             
             boolean filteredMode = request.getServletPath().startsWith("/mmbase/") || (state == null && explicitComponent);
@@ -162,7 +165,17 @@ public class BasicUrlConverter implements UrlConverter {
                 }
             }
             if (log.isDebugEnabled()) {
-                log.debug("Rendering component " + component + " generating URL to " + block);
+                log.debug("Rendering component " + component + " generating URL to " + block + " State " + state);
+            }
+            boolean process = Boolean.TRUE.equals(frameworkParameters.get("process"));
+            if (process) {
+                // get current compoennts ids
+                if (state != null) {
+                    map.put("action", state.getId());
+                } else {
+                    log.warn("Needing state, but no state found ");
+                }
+                log.debug("Processing " + map.get("action"));
             }
 
             Parameters blockParameters = block.createParameters();
