@@ -93,7 +93,7 @@ if(hasRightCell) {
       	<% } %>
       </td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-<% if (!isNaardermeer.equals("false")) { %>			
+<% if (isNaardermeer.equals("true")) { %>			
    		<img src="media/trans.gif" height="226" width="1">
 	  <% } %>
 	  <br/>

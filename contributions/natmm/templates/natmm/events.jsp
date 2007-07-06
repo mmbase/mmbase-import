@@ -20,6 +20,10 @@ if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) {
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+
+<%-- Any template calling others need to pass isNaardermeer as PaginaHelper/mm:import fails--%>
+<%request.setAttribute("isNaardermeer", isNaardermeer);%>
+
 <!-- /cache:cache -->
 
 <%@include file="includes/calendar.jsp" %>
