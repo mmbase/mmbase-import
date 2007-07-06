@@ -5,6 +5,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     class="test ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
   <mm:import externid="mag">default.mags</mm:import>
   <mm:cloud>
     <mm:node number="$mag">
@@ -15,7 +16,7 @@
       </div>
       <mm:field  escape="p" name="body"/>
       <table>
-        <tr><th>title</th><th class="navigate">&amp;nbsp;</th></tr>
+        <tr><th>title</th><th class="navigate" /></tr>
         <mm:relatednodes  role="posrel" type="news" orderby="posrel.pos" max="10">
           <tr>
             <td><mm:field name="title" /></td>

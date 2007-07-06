@@ -5,6 +5,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     class="test ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
   <mm:cloud>
     <mm:import externid="n" required="true" />
     <mm:node number="$n">      
