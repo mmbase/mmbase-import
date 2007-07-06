@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.25 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: LeafFileTag.java,v 1.26 2007-07-06 11:27:54 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -58,13 +58,13 @@ public class LeafFileTag extends UrlTag {
         }
     }
 
-    public void initTag() throws JspTagException {
-        super.initTag(false);
+    protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        super.initTag(internal);
         url.setLegacy();
         if (log.isDebugEnabled()) {
-            log.debug("leaffile end of starttag: " + url.toString());
+            log.debug("LeafFile end of starttag: " + url.toString());
         }
     }
 
