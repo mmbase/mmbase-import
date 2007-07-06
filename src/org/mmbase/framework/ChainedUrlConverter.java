@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.1 2007-07-06 14:22:47 andre Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.2 2007-07-06 15:29:51 andre Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -59,9 +59,9 @@ public class ChainedUrlConverter implements UrlConverter {
         StringBuilder p = new StringBuilder(path);
         for (UrlConverter uc : uclist) {
             StringBuilder b = uc.getUrl(p.toString(), params, frameworkParameters, escapeAmps);
-            log.debug("ChainedUrlConverter has: " + b.toString());
+            log.debug("ChainedUrlConverter has: " + b);
             if (b != null) return b;
-            p = b;
+            //p = b;
         }
         return p;   // this seems incorrect (what if nothing is resolved by one of the uc's? then params etc. are lost)
     }
@@ -76,9 +76,9 @@ public class ChainedUrlConverter implements UrlConverter {
         StringBuilder p = new StringBuilder(path);
         for (UrlConverter uc : uclist) {
             StringBuilder b = uc.getInternalUrl(p.toString(), params, frameworkParameters);
-            log.debug("ChainedUrlConverter has: " + b.toString());
+            log.debug("ChainedUrlConverter has: " + b);
             if (b != null) return b;
-            p = b;
+            //p = b;
         }
         return p;   // this seems incorrect (what if nothing is resolved by one of the uc's? then params etc. are lost)
     }
