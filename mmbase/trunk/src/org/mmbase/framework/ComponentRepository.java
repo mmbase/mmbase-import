@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.13 2007-07-06 18:40:39 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.14 2007-07-06 20:28:30 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -121,7 +121,17 @@ public class ComponentRepository {
             argTypes.add(arg.getClass());
         }
         Class[] argTypesArray = argTypes.toArray(new Class[] {});
-        Constructor constructor = claz.getConstructor(argTypesArray);
+        Constructor constructor = null;
+        for (Constructor c : claz.getConstructors()) {
+            Class[] parameterTypes = c.getParameterTypes();
+            if (parameterTypes.length != argTypesArray.length) continue;
+            for (int i = 0; i < parameterTypes.length; i++) {
+                if (! parameterTypes[i].isAssignableFrom(argTypesArray[i])) continue;
+            }
+            constructor = c;
+            break;
+        }
+        if (constructor == null) throw new NoSuchMethodError();
         Object o = constructor.newInstance(args);
 
         NodeList params = classElement.getElementsByTagName("param");
