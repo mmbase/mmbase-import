@@ -21,6 +21,7 @@ if(NatMMConfig.hasClosedUserGroup) {
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 <%-- Fix for NMCMS-261. Any template calling others need to pass isNaardermeer as PaginaHelper/mm:import fails--%>
 <%request.setAttribute("isNaardermeer", isNaardermeer);%>
+
 <mm:locale language="nl"><% // used in <mm:time time=".." format="dd-MM-yyyy"/> %>
 <%
 

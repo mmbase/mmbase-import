@@ -12,6 +12,10 @@ expireTime = 0;
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+
+<%-- Any template calling others need to pass isNaardermeer as PaginaHelper/mm:import fails--%>
+<%request.setAttribute("isNaardermeer", isNaardermeer);%>
+
 <mm:node number="<%= paginaID %>">
 <%@include file="actie/includes/navsettings.jsp" %>
   <% if (isNaardermeer.equals("true")) { %>		

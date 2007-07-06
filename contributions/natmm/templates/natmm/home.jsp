@@ -7,6 +7,10 @@
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+
+<%-- Any template calling others need to pass isNaardermeer as PaginaHelper/mm:import fails--%>
+<%request.setAttribute("isNaardermeer", isNaardermeer);%>
+
 <% if(artikelID.equals("-1")) { %>
    <mm:list nodes="<%=paginaID%>" path="pagina,contentrel,artikel" fields="artikel.number" orderby="contentrel.pos" directions="up" max="1">
    	<mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
