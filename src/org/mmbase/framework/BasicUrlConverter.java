@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.9 2007-07-06 13:51:35 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.10 2007-07-06 14:18:55 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -146,7 +146,7 @@ public class BasicUrlConverter implements UrlConverter {
                     }
                 } else {
                     // no such block
-                    if (path != null) {
+                    if (path != null && ! "".equals(path)) {
                         log.debug("No block '" + path + "' found");
                         return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
                     }
