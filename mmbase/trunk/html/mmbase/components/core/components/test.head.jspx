@@ -1,3 +1,5 @@
-<script language="javascript">
-  alert("hello");
-</script>
+<style>
+  body {
+  background-color: #ffff00;
+}
+</style>
