@@ -12,13 +12,19 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.util.xml.DocumentReader;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
@@ -27,7 +33,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.48 2007-07-06 13:20:32 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.49 2007-07-06 14:22:47 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -38,6 +44,13 @@ public class BasicFramework implements Framework {
     public final static String KEY = "org.mmbase.framework.state";
     public final static String RENDER_ID = "org.mmbase.framework.render_id";
 
+    public static final String XSD_FRAMEWORK = "framework.xsd";
+    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
+    static {
+        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_FRAMEWORK, BasicFramework.class);
+    }
+
+
     public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
     public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
     public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
@@ -46,21 +59,76 @@ public class BasicFramework implements Framework {
 
     public static final Parameter<Boolean> PROCESS  = new Parameter<Boolean>("process", Boolean.class);
 
-    protected UrlConverter urlConverter = new BasicUrlConverter(this); // could be made configurable
-
+    protected final ChainedUrlConverter chainedUrlConverter = new ChainedUrlConverter();
+    
+    public BasicFramework() {
+        this.configure();
+    }
 
     public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
-        return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        return chainedUrlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
-        return urlConverter.getInternalUrl(page, params, frameworkParameters);
+        log.debug("we're calling chainedUrlConverter");
+        return chainedUrlConverter.getInternalUrl(page, params, frameworkParameters);
     }
 
     public String getName() {
         return "BASIC";
     }
 
+    /**
+     * Configures the framework by reading its config file 'config/framework.xml'
+     * containing a list with UrlConverters.
+     */
+    protected void configure() {
+        log.info("Configuring the BasicFramework - " + this);
+        try {
+            ResourceLoader loader =  ResourceLoader.getConfigurationRoot();
+            Document doc = loader.getDocument("framework.xml", true, BasicFramework.class);
+            Element el = doc.getDocumentElement();
+
+            Element descrElement = (Element) el.getElementsByTagName("description").item(0);
+            String description = DocumentReader.getNodeTextValue(descrElement);
+            log.debug("## Framework description: " + description);
+            
+            NodeList urlconverters = el.getElementsByTagName("urlconverter");
+            for (int i = 0; i < urlconverters.getLength(); i++) {
+                Element element = (Element) urlconverters.item(i);
+                log.info("Found an UrlConverter: " + element.getAttribute("class"));
+                
+                //UrlConverter uc = ComponentRepository.getInstance(element);
+                UrlConverter uc = getUCInstance(element.getAttribute("class"));
+                chainedUrlConverter.add(uc);
+            }
+
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+    }
+    
+     /**
+      * Instantiates UrlConverters.
+      *
+      * @param className classname of an UrlConverter implementation
+      * @throws ClassNotFoundException
+      */
+    private UrlConverter getUCInstance(String className) throws ClassNotFoundException {
+        UrlConverter uc = null;
+        Class clazz = Class.forName(className);
+        
+        try {
+            uc = (UrlConverter) clazz.newInstance();
+        } catch (InstantiationException ie) {
+            log.error("Unable to instantiate class '" + clazz + "': " + ie);
+        } catch (IllegalAccessException iae) {
+            log.error("IllegalAccessException instantiating class " + clazz + "': " + iae);
+        }
+        
+        return uc;
+    }
+    
     public Block getBlock(Parameters frameworkParameters) {
         Component comp  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
         if (comp == null) return null;
