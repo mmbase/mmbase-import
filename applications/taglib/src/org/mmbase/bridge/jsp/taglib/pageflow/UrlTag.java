@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.108 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: UrlTag.java,v 1.109 2007-07-06 11:00:49 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -116,7 +116,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             url.invalidate();
         }
         if (log.isDebugEnabled()) {
-            log.debug("adding parameter " + key + "/" + value + "--> "  + parameters);
+            log.debug("adding parameter " + key + "/" + value + "--> "  + frameworkParameters);
         }
     }
 
@@ -124,7 +124,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         extraParameters = new ArrayList<Map.Entry<String, Object>>();
         frameworkParameters = new ArrayList<Map.Entry<String, Object>>();
         parameters = new UrlParameters(this);
-        helper.useEscaper(false);
+        helper.useEscaper    (false);
         if (referid != Attribute.NULL) {
             if (page != Attribute.NULL) {
                 throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
