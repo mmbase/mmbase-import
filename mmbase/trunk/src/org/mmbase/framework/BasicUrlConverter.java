@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.8 2007-07-06 11:00:20 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.9 2007-07-06 13:51:35 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicUrlConverter implements UrlConverter {
@@ -91,7 +91,8 @@ public class BasicUrlConverter implements UrlConverter {
         return show;
     }
     
-    public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
+    public StringBuilder getUrl(String path, 
+                                Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
             log.debug(" framework parameters " + frameworkParameters);
@@ -129,7 +130,7 @@ public class BasicUrlConverter implements UrlConverter {
             Block block;
             String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
             if (blockParam != null) {
-                if (path != null) throw new IllegalArgumentException();
+                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
                 block = component.getBlock(blockParam);
                 if (! filteredMode) {
                     map.put(BasicFramework.BLOCK.getName(), block.getName());
@@ -142,13 +143,14 @@ public class BasicUrlConverter implements UrlConverter {
                         path = null; // used, determin path with block name 
                         map.put(BasicFramework.BLOCK.getName(), block.getName());
                         map.put(BasicFramework.COMPONENT.getName(), component.getName());
-                    } else {
-                        // no such block
-                        if (path != null) {
-                            log.debug("No block '" + path + "' found");
-                            return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
-                        }
                     }
+                } else {
+                    // no such block
+                    if (path != null) {
+                        log.debug("No block '" + path + "' found");
+                        return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
+                    }
+                    
                 }
                 if (block == null && state != null) {
                     block = state.getRenderer().getBlock();
@@ -161,14 +163,14 @@ public class BasicUrlConverter implements UrlConverter {
                 if (filteredMode) {
                     return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
                 } else {
-                    
+                    throw new IllegalArgumentException("not such block '" + path + " for component " + block);
                 }
             }
             if (log.isDebugEnabled()) {
                 log.debug("Rendering component " + component + " generating URL to " + block + " State " + state);
             }
-            boolean process = Boolean.TRUE.equals(frameworkParameters.get("process"));
-            if (process) {
+            boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
+            if (processUrl) {
                 // get current compoennts ids
                 if (state != null) {
                     map.put("action", state.getId());
@@ -178,17 +180,24 @@ public class BasicUrlConverter implements UrlConverter {
                 log.debug("Processing " + map.get("action"));
             }
 
-            Parameters blockParameters = block.createParameters();
+            Processor processor = (Processor) request.getAttribute(Processor.KEY);
 
+            
 
-            for (Object e : request.getParameterMap().entrySet()) {
-                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                String k = entry.getKey();
-                if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in  servletpath, or not relevant
-                if (filteredMode && k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
-                if (filteredMode && k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
-                map.put(k, entry.getValue()[0]);
+            if (processor == null) {
+                for (Object e : request.getParameterMap().entrySet()) {
+                    Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                    String k = entry.getKey();
+                    if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in  servletpath, or not relevant
+                    if (filteredMode && k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
+                    if (filteredMode && k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
+                    map.put(k, entry.getValue()[0]);
+                }
+            } else {
+                log.debug("Now processing " + processor);
             }
+
+            Parameters blockParameters = block.createParameters();
             for (Map.Entry<String, Object> entry : parameters) {
                 blockParameters.set(entry.getKey(), entry.getValue());                
             }
