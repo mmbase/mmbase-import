@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.16 2007-06-20 10:12:23 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.17 2007-07-06 21:19:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
@@ -97,6 +97,10 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
             frameworkParams.setAutoCasting(true);
             for (Map.Entry<String, Object> entry : extraFrameworkParameters) {
                 frameworkParams.set(entry.getKey(), entry.getValue());
+            }
+            State state = State.getState(pageContext.getRequest(), true);
+            if (state.isRendering()) {
+                state = new State(pageContext.getRequest());
             }
             fw.render(renderer, params, frameworkParams, w, windowStateValue);
             used = true;
