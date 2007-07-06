@@ -33,7 +33,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.50 2007-07-06 18:40:39 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.51 2007-07-06 19:05:09 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -61,9 +61,6 @@ public class BasicFramework implements Framework {
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
     
-    public BasicFramework() {
-        this.configure();
-    }
 
     public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
@@ -82,13 +79,9 @@ public class BasicFramework implements Framework {
      * Configures the framework by reading its config file 'config/framework.xml'
      * containing a list with UrlConverters.
      */
-    protected void configure() {
+    public void configure(Element el) {
         log.info("Configuring the BasicFramework - " + this);
         try {
-            ResourceLoader loader =  ResourceLoader.getConfigurationRoot();
-            Document doc = loader.getDocument("framework.xml", true, BasicFramework.class);
-            Element el = doc.getDocumentElement();
-
             Element descrElement = (Element) el.getElementsByTagName("description").item(0);
             String description = DocumentReader.getNodeTextValue(descrElement);
             log.debug("## Framework description: " + description);
