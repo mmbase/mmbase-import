@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.224 2007-07-06 19:05:09 michiel Exp $
+ * @version $Id: MMBase.java,v 1.225 2007-07-07 07:26:21 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -357,12 +357,7 @@ public class MMBase extends ProcessorModule {
                             framework = new BasicFramework();
                         } else {
                             org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
-                            String frameworkClass = el.getAttribute("class");
-                            org.w3c.dom.Element descrElement = (org.w3c.dom.Element) el.getElementsByTagName("description").item(0);
-                            String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(descrElement);
-                            log.debug("## Framework description: " + description);
-                            log.info("Initializing framework class: [" + frameworkClass + "]: " + description);
-                            framework = (Framework) Class.forName(frameworkClass).newInstance();                    
+                            framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el);
                             framework.configure(el);
                         }
                     } catch (Exception e) {
