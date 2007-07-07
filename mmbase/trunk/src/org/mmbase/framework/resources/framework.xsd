@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id : $
+  @version $Id: framework.xsd,v 1.2 2007-07-07 11:58:29 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -16,7 +16,17 @@
       schemaLocation="http://www.w3.org/2001/03/xml.xsd"
       />
 
-  <xsd:attribute name="class" type="xsd:string" />
+  <xsd:element name="framework">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="class" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
    
   <xsd:element name="description">
     <xsd:complexType>
@@ -29,25 +39,23 @@
   </xsd:element>
 
   <xsd:element name="urlconverter">
-    <xsd:attribute name="class" type="xsd:string" />
     <xsd:complexType>
-	  <xsd:sequence>
-		<xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
-		<xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
-	  </xsd:sequence>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="class" type="xsd:string" />    
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="description" type="xsd:string" />
-
   <xsd:element name="param">
     <xsd:complexType>
-	  <xsd:simpleContent>
-	    <xsd:extension base="xsd:string">
-		  <xsd:attribute name="name" type="xsd:string" />
-	    </xsd:extension>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="name" type="xsd:string" />
+        </xsd:extension>
       </xsd:simpleContent>
-	</xsd:complexType>
+    </xsd:complexType>
   </xsd:element>
-
+  
 </xsd:schema>
