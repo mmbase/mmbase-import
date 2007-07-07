@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.13 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.14 2007-07-07 07:24:09 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -100,6 +100,9 @@ public final class BasicUrlConverter implements UrlConverter {
 
     public boolean equals(Object o) {
         return o instanceof BasicUrlConverter;
+    }
+    public String toString() {
+        return "COPY";
     }
 
 }

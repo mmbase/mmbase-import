@@ -12,7 +12,6 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
@@ -28,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.2 2007-07-06 21:19:31 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.3 2007-07-07 07:24:09 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -40,7 +39,7 @@ public class MMBaseUrlConverter implements UrlConverter {
         framework = fw;
     }
 
-    public StringBuilder getUrl(String path, 
+    public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
@@ -61,15 +60,15 @@ public class MMBaseUrlConverter implements UrlConverter {
                 log.debug("No state object found");
             }
         }
-        
+
         if (component == null) {
             log.debug("Not currently rendering a component, nor a component was specified generating url to " + path);
             return null;
         } else {
-            
+
             // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
-            
-            boolean filteredMode = 
+
+            boolean filteredMode =
                 (state == null && explicitComponent) ||
                 request.getServletPath().startsWith("/mmbase/");
 
@@ -89,7 +88,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 block = component.getBlock(path);
                 if (block != null) {
                     if (! filteredMode) {
-                        path = null; // used, determin path with block name 
+                        path = null; // used, determin path with block name
                         map.put(BasicFramework.BLOCK.getName(), block.getName());
                         map.put(BasicFramework.COMPONENT.getName(), component.getName());
                     }
@@ -99,7 +98,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                         log.debug("No block '" + path + "' found");
                         return null;
                     }
-                    
+
                 }
                 if (block == null && state != null) {
                     block = state.getRenderer().getBlock();
@@ -145,7 +144,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
             Parameters blockParameters = block.createParameters();
             for (Map.Entry<String, Object> entry : parameters) {
-                blockParameters.set(entry.getKey(), entry.getValue());                
+                blockParameters.set(entry.getKey(), entry.getValue());
             }
             if (state != null) {
                 map.putAll(framework.prefix(state, blockParameters.toMap()));
@@ -156,11 +155,11 @@ public class MMBaseUrlConverter implements UrlConverter {
                 Block.Type[] classification = block.getClassification();
             }
             boolean subComponent = state != null && state.getDepth() > 0;
-            String page = filteredMode && ! subComponent ? 
+            String page = filteredMode && ! subComponent ?
                 "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
                 path == null || subComponent ? FrameworkFilter.getPath(request) : path;
             StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
-            return sb;            
+            return sb;
 
         }
     }
@@ -171,9 +170,9 @@ public class MMBaseUrlConverter implements UrlConverter {
             String sp = FrameworkFilter.getPath(request);
             String[] path = sp.split("/");
             if (log.isDebugEnabled()) {
-                log.debug("Going to filter " + Arrays.asList(path));           
+                log.debug("Going to filter " + Arrays.asList(path));
             }
-            if (path.length >= 3) { 
+            if (path.length >= 3) {
                 assert path[0].equals("");
                 assert path[1].equals("mmbase");
                 String category = path[2];
@@ -191,7 +190,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
                 StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
                 if (path.length == 3) return url;
-                
+
                 Component comp = ComponentRepository.getInstance().getComponent(path[3]);
                 if (comp == null) {
                     log.debug("No such component, ignoring this too");
@@ -208,7 +207,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 if (block == null) {
                     log.debug("No block " + path[4] + " in component " + path[3]);
                     return null;
-                    
+
                 }
                 url.append("&block=" + block.getName());
                 log.debug("internal URL " + url);
@@ -217,10 +216,14 @@ public class MMBaseUrlConverter implements UrlConverter {
                 log.debug("path length " + path.length);
                 return null;
             }
-        } else {            
+        } else {
             log.debug("Leaving unfiltered");
             return null;
         }
+    }
+
+    public String toString() {
+        return "/mmbase/";
     }
 
 }
