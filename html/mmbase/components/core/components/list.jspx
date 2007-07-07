@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <div
     class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
@@ -8,12 +7,16 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
-    <h1>Components admin page</h1>
     <mm:cloud rank="administrator">
-      <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
       <mm:import externid="component" from="request" />
       <mm:import externid="view"      from="request" />
       <mm:notpresent referid="component">
+        <h1>Components admin page</h1>
+        <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
+        <mm:function set="utils" name="mmbase">
+          <p>Framework: ${_.framework}</p>
+        </mm:function>
+
         <p>Available components:</p>
         <ul>
           <mm:listfunction id="comp" set="components" name="list" >
