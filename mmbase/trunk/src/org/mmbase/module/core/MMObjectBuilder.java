@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.417 2007-07-06 08:20:04 johannes Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.418 2007-07-07 12:46:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1574,7 +1574,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Functions in fieldnames can be given in the format 'functionname(fieldname)'. An old format allows 'functionname_fieldname' instead,
      * though this only applies to the text functions 'short', 'html', and 'wap'.
      * Functions can be nested, i.e. 'html(shorted(body))'.
-     * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
+     * Derived builders should override this method only if they want to provide virtual fieldnames. To provide additonal functions,
      * call {@link #addFunction} instead. See also the source code for {@link org.mmbase.util.functions.ExampleBuilder}.
      * @param node the node whos efields are queries
      * @param field the fieldname that is requested
@@ -1944,7 +1944,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.
+     * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.  
+     * 
+     * You can implement a new smart-path for your builders, with a class like {@link
+     * org.mmbase.module.core.SmartPathFunction} in stead, and configure it in your builder xml as
+     * the implementation for the 'smartpath' function. This makes extensions less dependent on
+     * precise arguments (e.g. 'documentRoot' is not relevant for 'resourceloader' implementation),
+     * and makes this function pluggable on all builders. See also  MMB-1449.
+     * 
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         if (log.isDebugEnabled()) {
