@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.47 2007-06-20 17:15:10 michiel Exp $
+ * @version $Id: Utils.java,v 1.48 2007-07-07 13:32:06 michiel Exp $
  */
 
 public class Utils {
@@ -240,7 +240,7 @@ public class Utils {
      * @param       params  params to be used. eg.: $username will be replaced by the values in the hashtable, if a 'username' key is in the hashtable.
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
-    public static String getText(Node node, String defaultvalue, Map<String, Object> params) {
+    public static String getText(Node node, String defaultvalue, Map<String, ?> params) {
         return fillInParams(getText(node, defaultvalue), params);
     }
 
@@ -332,7 +332,7 @@ public class Utils {
      * @param       text    The text what should be placed in the textnode.
      * @param       params  optional params which should be used in a replace action.
      */
-    public static void storeText(Node node, String text, Map<String, Object> params) {
+    public static void storeText(Node node, String text, Map<String, ?> params) {
         storeText(node, fillInParams(text, params));
     }
 
@@ -451,10 +451,10 @@ public class Utils {
      * @param       transformer     The transformer.
      * @param       params          The params to be placed. Standard name/value pairs.
      */
-    protected static void setStylesheetParams(Transformer transformer, Map<String, Object> params, Cloud cloud) {
+    protected static void setStylesheetParams(Transformer transformer, Map<String, ?> params, Cloud cloud) {
         if (params == null) return;
 
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
+        for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (log.isDebugEnabled()) {
                 log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
             }
@@ -476,7 +476,7 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map<String, Object> params, Cloud cloud) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map<String, ?> params, Cloud cloud) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
         if (xslFile == null) throw new RuntimeException("No xslFile given");
         Source xsl;
@@ -549,7 +549,7 @@ public class Utils {
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map<String, Object> params, Cloud cloud) throws TransformerException {
+    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map<String, ?> params, Cloud cloud) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, xslFile, uri, res, params, cloud);
         return res.getNode();
@@ -565,7 +565,7 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map<String, Object> params, Cloud cloud) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map<String, ?> params, Cloud cloud) throws TransformerException {
         if (log.isTraceEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         StringWriter res = new StringWriter();
@@ -579,7 +579,7 @@ public class Utils {
         //new StreamResult(out), null);
     }
 
-    public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map<String, Object> params, Cloud cloud) throws TransformerException {
+    public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map<String, ?> params, Cloud cloud) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, uri.resolveToURL(xslFile, null), uri, res, params, cloud);
         return res.getNode();
@@ -617,7 +617,7 @@ public class Utils {
        any curly braces, the template is assumed to be a valid xpath (instead
        of plain data). Else the template is assumed to be a valid attribute template.
     */
-    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map<String, Object> params) {
+    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map<String, ?> params) {
         if (attributeTemplate == null) return null;
         StringBuilder result = new StringBuilder();
 
@@ -690,9 +690,9 @@ public class Utils {
      * @param     params  the table with params (name/value pairs)
      * @return    The resulting string
      */
-    public static String fillInParams(String text, Map<String, Object> params) {
+    public static String fillInParams(String text, Map<String, ?> params) {
         if (params == null) return text;
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
+        for (Map.Entry<String, ?> entry : params.entrySet()) {
             // accept both $xxx and {$xxx}
             text = multipleReplace(text, "{$" + entry.getKey() + "}", org.mmbase.util.Casting.toString(entry.getValue()));
             text = multipleReplace(text, "$" + entry.getKey(), org.mmbase.util.Casting.toString(entry.getValue()));
