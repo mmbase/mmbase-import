@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.1 2007-07-06 23:00:14 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.2 2007-07-07 07:22:34 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -31,7 +31,7 @@ public class MyNewsUrlConverter implements UrlConverter {
         framework = fw;
     }
 
-    public StringBuilder getUrl(String path, 
+    public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
@@ -47,16 +47,16 @@ public class MyNewsUrlConverter implements UrlConverter {
         } else {
             log.debug("No state object found");
         }
-        
+
         if (component == null || !component.getName().equals("mynews")) {
             log.debug("Not currently rendering mynews component");
             return null;
-        } else {            
-            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.            
-            boolean filteredMode = 
+        } else {
+            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
+            boolean filteredMode =
                 (state == null && explicitComponent) ||
                 request.getServletPath().startsWith("/magazine");
-            
+
             log.debug("Using " + component);
 
             Block block;
@@ -70,12 +70,12 @@ public class MyNewsUrlConverter implements UrlConverter {
                     log.debug("No block '" + path + "' found");
                     return null;
                 }
-                
+
             }
             if (block == null && state != null) {
                 block = state.getRenderer().getBlock();
             }
-            
+
             if (block == null) {
                 log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
                 if (filteredMode) {
@@ -85,12 +85,10 @@ public class MyNewsUrlConverter implements UrlConverter {
                 }
             }
 
-
             Object n = null;
             for (Map.Entry e : parameters) {
                 if (e.getKey().equals("n")) n = e.getValue();
             }
-
 
             return new StringBuilder("/magazine/" + (block.getName().equals("article") ? n : ""));
         }
@@ -103,9 +101,9 @@ public class MyNewsUrlConverter implements UrlConverter {
             String sp = FrameworkFilter.getPath(request);
             String[] path = sp.split("/");
             if (log.isDebugEnabled()) {
-                log.debug("Going to filter " + Arrays.asList(path));           
+                log.debug("Going to filter " + Arrays.asList(path));
             }
-            if (path.length >= 2) { 
+            if (path.length >= 2) {
                 StringBuilder result = new StringBuilder("/mmbase/components/mynews/render.jspx");
                 assert path[0].equals("");
                 assert path[1].equals("magazine");
@@ -119,10 +117,15 @@ public class MyNewsUrlConverter implements UrlConverter {
                 log.debug("path length " + path.length);
                 return null;
             }
-        } else {            
+        } else {
             log.debug("Leaving unfiltered");
             return null;
         }
     }
+
+    public String toString() {
+        return "/magazine/";
+    }
+
 
 }
