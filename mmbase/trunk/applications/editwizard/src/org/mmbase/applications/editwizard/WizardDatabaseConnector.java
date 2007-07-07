@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.48 2007-06-20 17:15:10 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.49 2007-07-07 13:32:06 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -577,7 +577,7 @@ public class WizardDatabaseConnector {
         Element results = dove.executeRequest(cmd, userCloud, binaries);
         NodeList errors = Utils.selectNodeList(results, ".//error");
         if (errors.getLength() > 0){
-            StringBuffer errorMessage = new StringBuffer("Errors received from MMBase Dove servlet: ");
+            StringBuilder errorMessage = new StringBuilder("Errors received from MMBase Dove servlet: ");
             for (int i = 0; i < errors.getLength(); i++){
                 errorMessage.append(Utils.getText(errors.item(i))).append("\n");
             }

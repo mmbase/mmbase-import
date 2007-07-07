@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.154 2007-06-20 17:15:10 michiel Exp $
+ * @version $Id: Wizard.java,v 1.155 2007-07-07 13:32:06 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1315,9 +1315,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
             String searchString = Utils.getAttribute(singleNode, "searchdir", null);
 
-            StringBuffer fdatapath = null;
+            StringBuilder fdatapath = null;
             String tmp = Utils.getAttribute(singleNode, "fdatapath", null);
-            if (tmp != null) fdatapath = new StringBuffer(tmp);
+            if (tmp != null) fdatapath = new StringBuilder(tmp);
 
             if (fdatapath != null) {
                 if (searchString != null || role != null || destination != null) {
@@ -1325,7 +1325,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 }
             } else {
                 // determine role
-                fdatapath = new StringBuffer();
+                fdatapath = new StringBuilder();
 
                 if (role != null) {
                     fdatapath.append("@role='").append(role).append('\'');

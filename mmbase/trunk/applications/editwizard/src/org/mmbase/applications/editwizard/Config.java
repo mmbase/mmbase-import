@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.68 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: Config.java,v 1.69 2007-07-07 13:32:06 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -111,7 +111,7 @@ public class Config implements java.io.Serializable {
      *
      * @since MMBase-1.7
      */
-    protected Map<String, String> attributes;
+    protected Map<String, Object> attributes;
 
 
     //   public String context; (contained in attributes now)
@@ -122,7 +122,7 @@ public class Config implements java.io.Serializable {
         public String page;
         public HashMap<String, Stack<SubConfig>> popups = new HashMap<String, Stack<SubConfig>>(); // all popups now in use below this (key -> Config)
 
-        public HashMap<String, String> attributes = new HashMap<String, String>();
+        public HashMap<String, Object> attributes = new HashMap<String, Object>();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -164,8 +164,8 @@ public class Config implements java.io.Serializable {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map<String, String> getAttributes() {
-            Map<String, String> attributeMap = new HashMap<String, String>(attributes);
+        public Map<String, Object> getAttributes() {
+            Map<String, Object> attributeMap = new HashMap<String, Object>(attributes);
             return attributeMap;
         }
 
@@ -302,8 +302,8 @@ public class Config implements java.io.Serializable {
         public void configure(Config.Configurator configurator) throws WizardException {
             super.configure(configurator);
             title        = configurator.getParam("title", title);
-            pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
-            maxpagecount = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
+            pagelength   = configurator.getParam("pagelength", Integer.valueOf(pagelength));
+            maxpagecount = configurator.getParam("maxpagecount", Integer.valueOf(maxpagecount));
             startNodes   = configurator.getParam("startnodes", startNodes);
 
             // Get nodepath parameter. if a (new) parameter was passed,
@@ -335,10 +335,10 @@ public class Config implements java.io.Serializable {
 
             }
 
-            age = configurator.getParam("age", new Integer(age)).intValue();
+            age = configurator.getParam("age", Integer.valueOf(age));
             if (age >= 99999) age=-1;
 
-            start           = configurator.getParam("start", new Integer(start)).intValue();
+            start           = configurator.getParam("start", Integer.valueOf(start));
             searchType      = configurator.getParam("searchtype", searchType);
             searchFields    = configurator.getParam("searchfields", searchFields);
             searchValue     = configurator.getParam("searchvalue", searchValue);
@@ -369,7 +369,7 @@ public class Config implements java.io.Serializable {
             if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
-                StringBuffer constraintsBuffer;
+                StringBuilder constraintsBuffer;
                 // search type: default
                 String sType = searchType;
                 // get the actual field to search on.
@@ -417,7 +417,7 @@ public class Config implements java.io.Serializable {
                         if (constraintsBuffer != null) {
                             constraintsBuffer.append(" OR ");
                         } else {
-                            constraintsBuffer = new StringBuffer();
+                            constraintsBuffer = new StringBuilder();
                         }
                         if (sType.equals("like")) {
                             constraintsBuffer.append("lower([").append(tok).append("])").append(where);
@@ -481,7 +481,7 @@ public class Config implements java.io.Serializable {
                 // so we can make up a nice default for fields.
                 if (fields == null) {
                     if (cloud != null) {
-                        StringBuffer fieldsBuffer = new StringBuffer();
+                        StringBuilder fieldsBuffer = new StringBuilder();
                         FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
                             Field field = i.nextField();
@@ -530,7 +530,7 @@ public class Config implements java.io.Serializable {
 
                 if (search >= SEARCH_YES && searchFields == null) {
                     if (cloud != null) {
-                        StringBuffer searchFieldsBuffer = new StringBuffer();
+                        StringBuilder searchFieldsBuffer = new StringBuilder();
                         FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
@@ -570,8 +570,8 @@ public class Config implements java.io.Serializable {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map<String, String> getAttributes() {
-            Map<String, String> attributeMap = super.getAttributes();
+        public Map<String, Object> getAttributes() {
+            Map<String, Object> attributeMap = super.getAttributes();
             // mandatory attributes
             attributeMap.put("nodepath", nodePath);
             attributeMap.put("fields",   fields);
@@ -633,7 +633,7 @@ public class Config implements java.io.Serializable {
             }
             */
             if (config.attributes == null) {
-                config.attributes = new HashMap<String, String>();
+                config.attributes = new HashMap<String, Object>();
                 fillAttributes(config.attributes);
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
@@ -775,13 +775,13 @@ public class Config implements java.io.Serializable {
         protected int  getParam(String paramName, int def) {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
-            return new Integer(i).intValue();
+            return Integer.parseInt(i);
         }
 
         protected Integer getParam(String paramName, Integer def) {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
-            return new Integer(i);
+            return Integer.parseInt(i);
         }
 
         protected boolean getParam(String paramName, boolean def) {
@@ -801,7 +801,7 @@ public class Config implements java.io.Serializable {
          * first call are added.  No arrays supported, only single values.
          * @since MMBase-1.7
          */
-        protected void fillAttributes(Map<String, String> map) {
+        protected void fillAttributes(Map<String, Object> map) {
             map.putAll(config.attributes);  // start with setting in global config
 
             Enumeration<String> e = request.getParameterNames();
