@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.3 2007-07-06 21:49:49 michiel Exp $
+ * @version $Id: State.java,v 1.4 2007-07-07 09:18:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -52,10 +52,18 @@ public class State {
         request.setAttribute(KEY, this);
     }
     
-    
+    /**
+     * The current window state of rendering. As yet unimplemented.
+     * @todo
+     */
     public Renderer.WindowState getWindowState() {
         return Renderer.WindowState.NORMAL;
     }
+
+    /**
+     * With recursive includes of blocks, it may occur that the state is only for components inside 
+     * a certain other component's block. In that case the depth &gt; 0.
+     */
     public int getDepth() {
         return depth;
     }
@@ -63,23 +71,43 @@ public class State {
     public ServletRequest getRequest() {
         return request;
     }
+
+    /**
+     * At the end of the request, this method must be called, to indicate that
+     * this state is no longer in use.
+     */
     public void end() {
         request.setAttribute(KEY, previousState);
+        count = 0;
     }
+    
+    /**
+     * After rendering (a certain renderer of) a block, the state must be informed about that.
+     */
     public void endBlock() {
         renderer = null;
         processor = null;
             
     }
+
+    /**
+     * Whether something is rendered right now. 
+     */
     public boolean isRendering() {
         return renderer != null || processor != null;
     }
    
+    /**
+     * The currently rendered block, or <code>null</code>
+     */
     public Block getBlock() {
         return renderer != null ? renderer.getBlock() :
             (processor != null ? processor.getBlock() : null);
     }
     protected int start() {
+        if (count == 0) {
+            trow new IllegalStateException("State " + state + " was already marked for end.");
+        }
         if (processor == null) {
             id = previousState == null ? "" + count : previousState.getId() + '.' + count;
             return count++;
@@ -90,7 +118,10 @@ public class State {
         }
     }
     /**
-     * @returns whether action must be performed
+     * Puts this state in 'render' mode.
+     * @return whether action must be performed
+     * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
+     * or when the belonging request was already 'ended'.
      */
     public boolean render(Renderer rend) {
         if (rend.getType().ordinal() < type.ordinal()) {
@@ -110,6 +141,11 @@ public class State {
         int action = a == null ? -1 : Integer.parseInt(a);
         return action == i;
     }
+    /**
+     * Puts this state in 'process' mode
+     * @throws IllegalStateException If the renderer for block block was already rendered.
+     * or when the belonging request was already 'ended'.
+     */
     public void process(Processor processor) {
         if (renderer != null) throw new IllegalStateException();
         start();
@@ -123,7 +159,8 @@ public class State {
         return processor;
     }
     /**
-     * Returns the id of the current renderer
+     * Returns the id of the current block, which uniquely identifies it on the current page (or
+     * http request).
      */
     public String getId() {
         return id;
