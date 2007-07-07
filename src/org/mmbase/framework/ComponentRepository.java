@@ -22,15 +22,19 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.15 2007-07-07 07:24:09 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.16 2007-07-07 09:05:51 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
 
     public static final String XSD_COMPONENT = "component.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/component";
+
+    public static final String XSD_FRAMEWORK = "framework.xsd";
+    public static final String NAMESPACE_FRAMEWORK = "http://www.mmbase.org/xmlns/framework";
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_COMPONENT, ComponentRepository.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_FRAMEWORK + ".xsd", XSD_COMPONENT, ComponentRepository.class);
     }
 
     private static final Logger log = Logging.getLoggerInstance(ComponentRepository.class);
@@ -135,14 +139,17 @@ public class ComponentRepository {
         if (constructor == null) throw new NoSuchMethodError();
         Object o = constructor.newInstance(args);
 
-        NodeList params = classElement.getElementsByTagName("param");
+        NodeList params = classElement.getChildNodes();
         for (int i = 0 ; i < params.getLength(); i++) {
             try {
-                Element param = (Element) params.item(i);
-                String name = param.getAttribute("name");
-                String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
-                Method method = claz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), String.class);
-                method.invoke(o, value);
+                Node node = params.item(i);
+                if (node instanceof Element && node.getNodeName().equals("param")) {
+                    Element param = (Element)node;
+                    String name = param.getAttribute("name");
+                    String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
+                    Method method = claz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), String.class);
+                    method.invoke(o, value);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
