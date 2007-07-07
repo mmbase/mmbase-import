@@ -1,11 +1,11 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.Parameters,javax.servlet.jsp.JspException"
+<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"   jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.Parameters,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.72 2007-06-21 15:50:23 nklasens Exp $
+     * @version  $Id: list.jsp,v 1.73 2007-07-07 13:32:38 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -332,7 +332,9 @@ for (int i = pageOffset; i<pagecount && i - pageOffset <maxpages; i++) {
     pages.appendChild(pagenode);
 }
 
-java.util.Map<String,String> params = listConfig.getAttributes();
+
+java.util.Map<String, Object> params = listConfig.getAttributes();
+
 
 
 params.put("start",      String.valueOf(start));
@@ -363,8 +365,7 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-java.net.URL ew_path = new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), ".");
-params.put("ew_path", ew_path.toString() );
+params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
 
 
 log.trace("Doing the transformation for " + listConfig.template);
