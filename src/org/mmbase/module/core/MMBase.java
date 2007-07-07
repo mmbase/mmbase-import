@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.226 2007-07-07 09:06:55 michiel Exp $
+ * @version $Id: MMBase.java,v 1.227 2007-07-07 13:37:23 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -260,7 +260,7 @@ public class MMBase extends ProcessorModule {
             java.lang.reflect.Method m = osCache.getMethod("getInstance", javax.servlet.ServletContext.class, Properties.class);
             m.invoke(null, MMBaseContext.getServletContext(), p);
             log.service("Using " + p + " for oscache");                
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.service(e.getMessage());
         }
     }
@@ -358,8 +358,11 @@ public class MMBase extends ProcessorModule {
                             framework = new BasicFramework();
                         } else {
                             org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
-                            framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el);
-                            framework.configure(el);
+                            try {
+                                framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el, el);
+                            } catch (NoSuchMethodError nsme) {
+                                framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el);
+                            }
                         }
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
