@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.225 2007-07-07 07:26:21 michiel Exp $
+ * @version $Id: MMBase.java,v 1.226 2007-07-07 09:06:55 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -352,6 +352,7 @@ public class MMBase extends ProcessorModule {
         org.mmbase.util.ResourceWatcher frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
                 public void onChange(String resourceName) {
                     try {
+                        org.mmbase.framework.ComponentRepository.getInstance();
                         org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, org.mmbase.framework.Framework.class);
                         if (fwConfiguration == null)  {
                             framework = new BasicFramework();
