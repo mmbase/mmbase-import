@@ -267,9 +267,7 @@ Applications build file
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="oscache-cache"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
+
     <ant dir="codings"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
@@ -292,6 +290,11 @@ Applications build file
   </target>
 
   <target name="fullinstall" depends="install">
+
+    <ant dir="oscache-cache"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
     <ant dir="packaging"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
