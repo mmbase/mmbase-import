@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.3 2007-07-07 07:24:09 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.4 2007-07-07 07:50:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -35,8 +35,14 @@ public class MMBaseUrlConverter implements UrlConverter {
 
     private final Framework framework;
 
+    protected String dir = "/mmbase/";
+
     public MMBaseUrlConverter(Framework fw) {
         framework = fw;
+    }
+
+    public void setDir(String d) {
+        dir = d;
     }
 
     public StringBuilder getUrl(String path,
@@ -70,7 +76,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
             boolean filteredMode =
                 (state == null && explicitComponent) ||
-                request.getServletPath().startsWith("/mmbase/");
+                request.getServletPath().startsWith(dir);
 
 
             Map<String, Object> map = new TreeMap<String, Object>();
@@ -156,7 +162,7 @@ public class MMBaseUrlConverter implements UrlConverter {
             }
             boolean subComponent = state != null && state.getDepth() > 0;
             String page = filteredMode && ! subComponent ?
-                "/mmbase/" + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
+                dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
                 path == null || subComponent ? FrameworkFilter.getPath(request) : path;
             StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
             return sb;
@@ -166,7 +172,7 @@ public class MMBaseUrlConverter implements UrlConverter {
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
-        if (page.startsWith("/mmbase")) {
+        if (page.startsWith(dir)) {
             String sp = FrameworkFilter.getPath(request);
             String[] path = sp.split("/");
             if (log.isDebugEnabled()) {
@@ -174,7 +180,7 @@ public class MMBaseUrlConverter implements UrlConverter {
             }
             if (path.length >= 3) {
                 assert path[0].equals("");
-                assert path[1].equals("mmbase");
+                //assert path[1].equals("mmbase");
                 String category = path[2];
                 if (! category.equals("_")) {
                     boolean categoryOk = false;
@@ -223,7 +229,7 @@ public class MMBaseUrlConverter implements UrlConverter {
     }
 
     public String toString() {
-        return "/mmbase/";
+        return dir;
     }
 
 }
