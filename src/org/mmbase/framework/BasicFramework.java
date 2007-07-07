@@ -33,7 +33,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.52 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.53 2007-07-07 07:23:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -58,7 +58,9 @@ public class BasicFramework implements Framework {
     public static final Parameter<Boolean> PROCESS  = new Parameter<Boolean>("process", Boolean.class);
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
-    
+
+    protected final LocalizedString description      = new LocalizedString("description");
+
 
     public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
@@ -78,12 +80,9 @@ public class BasicFramework implements Framework {
      * containing a list with UrlConverters.
      */
     public void configure(Element el) {
-        log.info("Configuring the BasicFramework - " + this);
         try {
-            Element descrElement = (Element) el.getElementsByTagName("description").item(0);
-            String description = DocumentReader.getNodeTextValue(descrElement);
-            log.debug("## Framework description: " + description);
-            
+            description.fillFromXml("description", el);
+
             NodeList urlconverters = el.getElementsByTagName("urlconverter");
             for (int i = 0; i < urlconverters.getLength(); i++) {
                 Element element = (Element) urlconverters.item(i);
@@ -103,7 +102,7 @@ public class BasicFramework implements Framework {
         if (! urlConverter.contains(buc)) {
             urlConverter.add(buc);
         }
-        log.info("Found an UrlConverter: " + urlConverter);
+        log.info("Configured BasicFrameWork: " + this);
 
     }
 
@@ -114,7 +113,7 @@ public class BasicFramework implements Framework {
         return block;
     }
 
-    
+
     public Block getBlock(Component component, String blockName) {
         return component.getBlock(blockName);
     }
@@ -145,18 +144,18 @@ public class BasicFramework implements Framework {
         try {
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
             if (state.render(renderer)) {
-                Processor processor = renderer.getBlock().getProcessor();            
+                Processor processor = renderer.getBlock().getProcessor();
                 log.service("Processing " + renderer.getBlock() + " " + processor);
                 request.setAttribute(Processor.KEY, processor);
                 renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
                 request.setAttribute(Processor.KEY, null);
             }
             request.setAttribute(Renderer.KEY, renderer);
-            
+
             request.setAttribute(COMPONENT_ID_KEY, "mm" + getPrefix(state));
             setBlockParameters(state, blockParameters);
-            request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", 
-                                 new LocalizationContext(renderer.getBlock().getComponent().getBundle(), Locale.getDefault())); 
+            request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request",
+                                 new LocalizationContext(renderer.getBlock().getComponent().getBundle(), Locale.getDefault()));
             // should _not_ use default locale!
             renderer.render(blockParameters, frameworkParameters, w, windowState);
         } finally {
@@ -188,7 +187,7 @@ public class BasicFramework implements Framework {
     protected String getPrefix(final State state) {
         //return "_" + renderer.getBlock().getComponent().getName() + "_" +
         //renderer.getBlock().getName() + "_" + count + "_";
-        return "_bfw_" + state.getId() + "_";
+        return "_" + state.getId();
     }
     protected Map<String, Object> getMap(final State state, final Map<String, Object> params) {
         return new AbstractMap<String, Object>() {
@@ -212,5 +211,8 @@ public class BasicFramework implements Framework {
         };
     }
 
+    public String toString() {
+        return getName() + ": " + description + ": " + urlConverter.toString();
+    }
 
 }
