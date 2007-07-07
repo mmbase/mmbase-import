@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.2 2007-07-06 20:30:55 michiel Exp $
+      version: $Id: framework.xml,v 1.3 2007-07-07 07:51:06 michiel Exp $
   -->
   <!-- 
       In this file the classes of the UrlConverters need to be listed in the order
@@ -14,11 +14,14 @@
   <description xml:lang="en">
     Short description of this framework. This is the BasicFramework.
   </description>
-  
+
+  <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter" />
+
   <urlconverter class="org.mmbase.framework.MMBaseUrlConverter">
     <description xml:lang="en">
-      This is some description...
+      The MMBase urlconverter handles about pretty URL's in /mmbase/
     </description>
-    <param name="stub">Test</param>
+    <param name="dir">/mmbase/</param>
   </urlconverter>
+
 </framework>
