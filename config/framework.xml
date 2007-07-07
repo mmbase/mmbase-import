@@ -3,9 +3,10 @@
     class="org.mmbase.framework.BasicFramework"
     xmlns="http://www.mmbase.org/xmlns/framework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework framework.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework 
+                        http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.3 2007-07-07 07:51:06 michiel Exp $
+      version: $Id: framework.xml,v 1.4 2007-07-07 11:59:23 michiel Exp $
   -->
   <!-- 
       In this file the classes of the UrlConverters need to be listed in the order
@@ -17,9 +18,10 @@
 
   <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter" />
 
+
   <urlconverter class="org.mmbase.framework.MMBaseUrlConverter">
     <description xml:lang="en">
-      The MMBase urlconverter handles about pretty URL's in /mmbase/
+      The MMBase urlconverter handles about pretty URL's in /mmbase/.
     </description>
     <param name="dir">/mmbase/</param>
   </urlconverter>
