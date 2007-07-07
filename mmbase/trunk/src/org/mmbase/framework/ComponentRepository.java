@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.14 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.15 2007-07-07 07:24:09 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -109,7 +109,8 @@ public class ComponentRepository {
 
     /**
      * Instantaties any object using an Dom Element and constructor arguments. Sub-param tags are
-     * used on set-methods on the newly created object.
+     * used on set-methods on the newly created object. This is a pretty generic method, it should
+     * perhaps be moved to org.mmbase.util.
      */
     public static Object getInstance(Element classElement, Object... args) 
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
