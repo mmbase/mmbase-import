@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.4 2007-07-07 09:18:26 michiel Exp $
+ * @version $Id: State.java,v 1.5 2007-07-07 09:20:12 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -106,7 +106,7 @@ public class State {
     }
     protected int start() {
         if (count == 0) {
-            trow new IllegalStateException("State " + state + " was already marked for end.");
+            throw new IllegalStateException("State " + this + " was already marked for end.");
         }
         if (processor == null) {
             id = previousState == null ? "" + count : previousState.getId() + '.' + count;
