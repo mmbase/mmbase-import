@@ -45,7 +45,7 @@ import nl.leocms.applications.*;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.10 2006-09-11 15:35:32 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.11 2007-07-09 13:39:42 ieozden Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -212,6 +212,7 @@ public final class UrlConverter {
          log.debug("No matching page found, interception stopped");
          return null;
       } else {
+         log.debug("matching page : " + page.getIntValue("number"));
          int pPos = rubriekenPad.indexOf(rh.getUrlPathToRootString(rubriek,"").toString());
          if(pPos>0) {
             rubriekenPad = rubriekenPad.substring(0,pPos);
@@ -251,7 +252,7 @@ public final class UrlConverter {
       cache.putJSPEntry(forwardUrl.toString(),url);
       if (params != null) { forwardUrl.append('&').append(params); }
 
-      log.debug(forwardUrl);
+      log.debug("forward url: " + forwardUrl);
       return forwardUrl.toString();
 
    }
