@@ -99,6 +99,8 @@
       <param name="builder" type="String" />
     </body>
   </block>
+
+
   
   <block name="builders-actions" 
          mimetype="text/html">
@@ -123,6 +125,20 @@
     </body>
   </block>
   
+  <block name="security" 
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <description xml:lang="en">Shows details of security configuration</description>
+    <body jsp="security.jspx" />
+  </block>
+
+  <block name="authenticate" 
+         classification="mmbase.examples"
+         mimetype="text/html">
+    <description xml:lang="en">Shows details of security configuration</description>
+    <body jsp="authenticate.jspx" />
+  </block>
+
   <block name="transactions" 
          classification="mmbase.admin"
          mimetype="text/html">
@@ -212,7 +228,7 @@
   </block>
 
   <block name="component-block-tree" 
-         classification="mmbase.components"
+         classification=""
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
     <body jsp="components/tree.jspx">
