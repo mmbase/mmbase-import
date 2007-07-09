@@ -290,29 +290,30 @@ public class RubriekHelper {
     public ArrayList getRubriekWithRubriekenUrlPath(String path, Node parentNode) {
       NodeList nl = cloud.getNodeManager("rubriek").getList(null, "number", "DOWN");  
       Iterator iter = nl.listIterator();
-      // FIX FOR NMCMS-206
-      // matching rubrieks must be returned by reverse order of their length
-      // the longest rubriek we can find that matches the passed url, will be the first in the returned list
+      
       ArrayList rubriekNodeList = new ArrayList();
-      TreeMap sortMap = new TreeMap();
       Node rubriek = null;
       String rubriekUrl;
       while (iter.hasNext()) {
          rubriek = (Node) iter.next();
          rubriekUrl = getUrlPathToRootString(rubriek,"").toString();
          if (path.indexOf(rubriekUrl)>-1) {
-             sortMap.put(new Integer(rubriekUrl.length()), rubriek);
-            rubriekNodeList.add(rubriek); //commentout to switch to new approach fix
+            rubriekNodeList.add(rubriek);
          }
       }
-      TreeSet sortedKeys = new TreeSet(Collections.reverseOrder());
-      sortedKeys.addAll(sortMap.keySet());
-      Iterator keysIterator = sortedKeys.iterator();
-      while(keysIterator.hasNext()) {
-          Integer i = (Integer) keysIterator.next();
-          Node sortedRubriek = (Node) sortMap.get(i);
-          //rubriekNodeList.add(sortedRubriek);  //un-comment to switch to new approach fix
-      }
+      
+      // FIX FOR NMCMS-206
+      // matching rubrieks must be returned by reverse order of their length
+      // the longest rubriek we can find that matches the passed url, will be the first in the returned list
+      Collections.sort( rubriekNodeList, new Comparator()
+      {
+      public int compare( Object a, Object b )
+         {
+         Integer aLength = new Integer(getUrlPathToRootString((Node) a,"").toString().length());
+         Integer bLength = new Integer(getUrlPathToRootString((Node) b,"").toString().length());
+         return ( bLength ).compareTo( aLength );
+         }
+      } );
       
       return rubriekNodeList;
    }
