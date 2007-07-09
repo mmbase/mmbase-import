@@ -8,15 +8,16 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.16 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: ListProvider.java,v 1.14 2006-09-05 11:55:01 michiel Exp $
  */
 public interface ListProvider extends ContextProvider, LoopTag {
     /**
@@ -63,6 +64,7 @@ public interface ListProvider extends ContextProvider, LoopTag {
      * @since MMBase-1.8
      */
     public class ListProviderLoopTagStatus implements LoopTagStatus {
+        private static final Logger log = Logging.getLoggerInstance(ListProviderLoopTagStatus.class);
 
         private final ListProvider prov;
         public ListProviderLoopTagStatus(ListProvider l) {

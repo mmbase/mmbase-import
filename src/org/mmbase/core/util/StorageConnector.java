@@ -15,6 +15,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Index;
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: StorageConnector.java,v 1.15 2006-09-25 17:15:45 michiel Exp $
  */
 public class StorageConnector {
 
@@ -93,7 +94,7 @@ public class StorageConnector {
     protected final MMObjectBuilder builder;
 
     // indices for the storage layer
-    private Map<String, Index> indices = new HashMap<String, Index>();
+    private Map<String, Index> indices = new HashMap();
 
     /**
      * @javadoc
@@ -217,13 +218,6 @@ public class StorageConnector {
         // use storage factory if present
         log.debug("Getting node from storage");
         node = mmb.getStorageManager().getNode(nodeBuilder, number);
-        if (nodeBuilder == mmb.getInsRel() && node.getOType() != nodeBuilder.getObjectType()) {
-            // the builder was unknown en we falled back to insrel. 
-            // Perhaps it would have been better to fall back to object?
-            if (node.getNumber() <= 0) {
-                node = mmb.getStorageManager().getNode(mmb.getRootBuilder(), number);
-            }
-        }
         // store in cache if indicated to do so
         if (useCache) {
             if (log.isDebugEnabled()) {
@@ -261,13 +255,8 @@ public class StorageConnector {
             }
             nodeBuilder = mmb.getBuilder(builderName);
             if (nodeBuilder == null) {
-                if (builderName.endsWith("rel")) {
-                    nodeBuilder = mmb.getInsRel();
-                } else {
-                    nodeBuilder = mmb.getRootBuilder();
-                }
-                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
-
+                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
+                nodeBuilder = mmb.getBuilder("object");
             }
         }
         return nodeBuilder;
@@ -301,13 +290,13 @@ public class StorageConnector {
      * @return List containing real nodes, directly from this Builders
      */
     public List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals) throws SearchQueryException  {
-        List<MMObjectNode> result = new ArrayList<MMObjectNode>();
+        List<MMObjectNode> result = new ArrayList();
 
         int numbersSize = 0;
         NodeSearchQuery query = new NodeSearchQuery(builder);
         BasicStep step = (BasicStep) query.getSteps().get(0); // casting is ugly !!
 
-        List<Integer> subResult = new ArrayList<Integer>();
+        List<Integer> subResult = new ArrayList();
 
         for (MMObjectNode node : virtuals) {
             // check if this node is already in cache
@@ -352,7 +341,7 @@ public class StorageConnector {
         List<MMObjectNode> rawNodes = getRawNodes(query, true);
         // convert this list to a map, for easy reference when filling result.
          // would the creation of this Map not somehow be avoidable?
-        Map<Integer, MMObjectNode> rawMap = new HashMap<Integer, MMObjectNode>();
+        Map<Integer, MMObjectNode> rawMap = new HashMap();
         for (MMObjectNode n : rawNodes) {
             rawMap.put(n.getNumber(), n); 
         }
@@ -364,7 +353,7 @@ public class StorageConnector {
     /**
      * @since MMBase-1.8.2
      */
-    protected boolean assertSizes(Collection<MMObjectNode> virtuals, Collection<MMObjectNode> result) {
+    protected boolean assertSizes(Collection virtuals, Collection result) {
         if (virtuals.size() != result.size()) {
             log.error(" virtuals " + virtuals + " result " + result);
             return false;
@@ -389,10 +378,10 @@ public class StorageConnector {
 
         // Wrap in modifiable query, replace fields by one count field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-        Step step = query.getSteps().get(0);
+        Step step = (Step) query.getSteps().get(0);
         CoreField numberField = builder.getField(MMObjectBuilder.FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(step, numberField, AggregatedField.AGGREGATION_TYPE_COUNT);
-        List<StepField> newFields = new ArrayList<StepField>(1);
+        List<StepField> newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
 
@@ -408,7 +397,7 @@ public class StorageConnector {
         return result.getIntValue(MMObjectBuilder.FIELD_NUMBER);
     }
 
-    private void verifyBuilderQuery(SearchQuery query) {
+    private void verifyBuilderQuery(SearchQuery query) throws SearchQueryException {
         String builderName = null;
         if (query instanceof NodeQuery) {
             builderName = ((NodeQuery)query).getNodeManager().getName();
@@ -433,7 +422,7 @@ public class StorageConnector {
      * (in that case searching a result should certainly returns such a chained map, because then of
      * course you don't have those).
      */
-    protected QueryResultCache getCache(SearchQuery query) {
+    protected Map<SearchQuery, List<MMObjectNode>> getCache(SearchQuery query) {
         List<Step> steps = query.getSteps();
         if (steps.size() == 3) {
             Step step0 = steps.get(0);
@@ -471,7 +460,7 @@ public class StorageConnector {
             results = builder.getMMBase().getSearchQueryHandler().getNodes(query, builder);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Found from cache" + getCache(query).getName() + " " + results);
+                log.debug("Found from cache" + ((Cache) getCache(query)).getName() + " " + results);
             }
         }
         return results;
@@ -540,7 +529,7 @@ public class StorageConnector {
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
     private void processSearchResults(List<MMObjectNode> results) {
-        Map<Integer, Set<MMObjectNode>> convert = new HashMap<Integer, Set<MMObjectNode>>();
+        Map<Integer, Set<MMObjectNode>> convert = new HashMap();
         int convertCount = 0;
         int convertedCount = 0;
         int cacheGetCount = 0;
@@ -582,7 +571,7 @@ public class StorageConnector {
                     Set<MMObjectNode> nodes = convert.get(nodeType);
                     // create an new entry for the type, if not yet there...
                     if (nodes == null) {
-                        nodes = new HashSet<MMObjectNode>();
+                        nodes = new HashSet();
                         convert.put(nodeType, nodes);
                     }
                     nodes.add(node);
@@ -622,7 +611,7 @@ public class StorageConnector {
             // and put them into one big hashmap (integer/node)
             // after that replace all the nodes in result, that
             // were invalid.
-            Map<Integer, MMObjectNode> convertedNodes = new HashMap<Integer, MMObjectNode>();
+            Map<Integer, MMObjectNode> convertedNodes = new HashMap();
 
             // process all the different types (builders)
             for (Map.Entry<Integer, Set<MMObjectNode>> typeEntry : convert.entrySet()) {
@@ -637,15 +626,12 @@ public class StorageConnector {
                     continue;
                 }
                 if(typedefNode == null) {
-                    typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
-                    log.error("Could not find typedef node #" + nodeType + " taking " + typedefNode + " in stead");
+                    // builder not known in typedef?
+                    // skip this builder and process to next one..
+                    // TODO: research: add incorrect node to node's cache?
+                    log.error("Could not find typedef node #" + nodeType);
+                    continue;
                 }
-                String tableName = typedefNode.getBuilder().getTableName();
-                if (! tableName.equals("typedef")) {
-                    typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
-                    log.error("The type of node '" + nodeType + "' is not typedef (but '" + tableName + "'). This is an error. Taking '" + typedefNode + "' in stead.");
-                }
-
                 MMObjectBuilder conversionBuilder = builder.getMMBase().getBuilder(typedefNode.getStringValue("name"));
                 if(conversionBuilder == null) {
                     // could not find the builder that was in typedef..
@@ -670,14 +656,14 @@ public class StorageConnector {
 
             // insert all the corrected nodes that were found into the list..
             for(int i = 0; i < results.size(); i++) {
-                MMObjectNode current = results.get(i);
+                MMObjectNode current = (MMObjectNode) results.get(i);
                 Integer number = Integer.valueOf(current.getNumber());
                 if(convertedNodes.containsKey(number)) {
                     // converting the node...
                     results.set(i, convertedNodes.get(number));
                     convertedCount ++;
                 }
-                current = results.get(i);
+                current = (MMObjectNode) results.get(i);
                 if(current.getNumber() < 0) {
                     // never happened to me, and never should!
                     throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
@@ -782,9 +768,9 @@ public class StorageConnector {
             }
         }
 
-        List<Constraint> childs = constraints.getChilds();
+        List childs = constraints.getChilds();
         if (childs.size() == 1) {
-            query.setConstraint(childs.get(0));
+            query.setConstraint((FieldValueConstraint) childs.get(0));
         } else if (childs.size() > 1) {
             query.setConstraint(constraints);
         }

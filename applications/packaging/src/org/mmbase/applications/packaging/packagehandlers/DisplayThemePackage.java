@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -157,7 +158,7 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
      * @return       Description of the Return Value
      */
     private boolean installTheme(JarFile jf, installStep step) {
-    String themename = null;
+	String themename = null;
         Enumeration e = jf.entries();
         increaseProgressBar(100);
         // downloading is 30%
@@ -172,26 +173,26 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
 
             // only unpack all files except the theme file
             if (name.indexOf("META-INF")==-1) {
-            String localfile = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+name;
+	        String localfile = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+name;
                 if (name.indexOf("theme.xml")!=-1) {
-                localfile = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+name;
-            themename = name.substring(0,name.indexOf('/'));
-            String dirname = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+"images"+File.separator+themename;
-                        File d = new File(dirname);
-                        if (!d.exists()) {
-                            d.mkdir();
-            }
-                dirname = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+themename;
-                        d = new File(dirname);
-                        if (!d.exists()) {
-                            d.mkdir();
-            }
-            dirname = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+"css"+File.separator+themename;
-                        d = new File(dirname);
-                        if (!d.exists()) {
-                            d.mkdir();
-            }
-            }
+        		localfile = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+name;
+			themename = name.substring(0,name.indexOf('/'));
+			String dirname = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+"images"+File.separator+themename;
+                    	File d = new File(dirname);
+                    	if (!d.exists()) {
+                        	d.mkdir();
+			}
+        		dirname = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+themename;
+                    	d = new File(dirname);
+                    	if (!d.exists()) {
+                        	d.mkdir();
+			}
+			dirname = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+"css"+File.separator+themename;
+                    	d = new File(dirname);
+                    	if (!d.exists()) {
+                        	d.mkdir();
+			}
+	        } 
 
 
                 installStep substep = step.getNextInstallStep();
@@ -220,22 +221,22 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
                         f.printStackTrace();
                     }
                 }
+	    }
         }
-        }
-    if (themename != null) {
+	if (themename != null) {
                 installStep substep = step.getNextInstallStep();
                 substep.setUserFeedBack("adding theme to manager ... ");
-        if (addThemeName(themename)) {
+		if (addThemeName(themename)) {
                         substep.setUserFeedBack("adding theme to manager ... done ");
-        } else {
+		} else {
                         substep.setUserFeedBack("adding theme to manager ... failed ");
-        }
-    }
+		}
+	}
         increaseProgressBar(100);
         // downloading is 70%
         return true;
     }
-
+   
     private boolean addThemeName(String themename) {
         String themedir = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator;
         ExtendedDocumentReader reader = new ExtendedDocumentReader(themedir + "themes.xml", DisplayThemePackage.class);
@@ -243,7 +244,8 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
         body += "<!DOCTYPE themes PUBLIC \"//MMBase - themes //\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
         body += "<themes>\n";
         boolean found = false;
-        for (Element n: reader.getChildElements("themes", "theme")) {
+        for (Iterator ns = reader.getChildElements("themes", "theme"); ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String oldname = n.getAttribute("id");
             String oldfile = n.getAttribute("file");
             body += "\t<theme id=\"" + oldname + "\" file=\"" + oldfile + "\" />\n";
@@ -257,7 +259,7 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
             body += "</themes>\n";
             saveFile(themedir + "themes.xml", body);
         }
-    return true;
+	return true;
     }
 
 

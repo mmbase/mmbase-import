@@ -18,14 +18,13 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractSequentialBridgeList.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: AbstractSequentialBridgeList.java,v 1.2 2006-09-13 09:46:00 michiel Exp $
  * @since   MMBase-1.7
  */
 
-abstract public  class AbstractSequentialBridgeList<E extends Comparable<? super E>>
-    extends AbstractSequentialList<E> implements BridgeList<E> {
+abstract public  class AbstractSequentialBridgeList<E> extends AbstractSequentialList<E> implements BridgeList<E> {
 
-    private Map<Object,Object> properties = new HashMap<Object,Object>();
+    private Map properties = new HashMap();
 
     // javadoc inherited
     public Object getProperty(Object key) {
@@ -39,14 +38,13 @@ abstract public  class AbstractSequentialBridgeList<E extends Comparable<? super
 
     // javadoc inherited
     public void sort() {
-        Collections.sort(this);
+        Collections.sort((List) this);
     }
 
     // javadoc inherited
-    public void sort(Comparator<? super E> comparator) {
+    public void sort(Comparator comparator) {
         Collections.sort(this, comparator);
     }
-    abstract public BridgeList<E> subList(int a, int b);
 
 
 }

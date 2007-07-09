@@ -75,10 +75,6 @@
       </xsl:if>
       <xsl:apply-templates select="tag" mode="base" />    
       <xsl:if test="$version = '2.0'">
-        <!--
-            See MMB-1348
-            It seems that the present tag-file entries cause the problem.
-        -->
         <xsl:apply-templates select="tag-file" />
         <xsl:apply-templates select="function" mode="base" />
       </xsl:if>
@@ -107,9 +103,6 @@
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
-        <xsl:if test="not(bodycontent) and not(body-content)">
-          <body-content>JSP</body-content>
-        </xsl:if>
         <xsl:apply-templates select="attribute"/> 
         <xsl:apply-templates select="extends" />
       </tag>

@@ -19,17 +19,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.16 2007-06-19 14:58:02 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.11 2006-09-12 16:57:07 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
     private static final Logger log = Logging.getLoggerInstance(ReloadableModule.class);
-
-    public ReloadableModule() {
-    }
-    public ReloadableModule(String name) {
-        super(name);
-    }
 
     /**
      * Reloads the configuration file.
@@ -41,10 +35,11 @@ public abstract class ReloadableModule extends Module {
      *
      * @return Whether successful.
      */
-    protected boolean reloadConfiguration() {
-        ModuleReader parser = getModuleReader();
+
+    protected boolean reloadConfiguration(String moduleName) {
+        ModuleReader parser = getModuleReader(moduleName);
         if (parser == null) {
-            log.error("Configuration missing for module " + getName() + " with path '" + configurationPath + "': Canceling reload");
+            log.error("Configuration missing for: " + moduleName + " Canceling reload");
             return false;
         } else {
             return reloadConfiguration(parser);
@@ -62,22 +57,21 @@ public abstract class ReloadableModule extends Module {
             return false;
         }
 
+        properties = parser.getProperties();
         setMaintainer(parser.getMaintainer());
         setVersion(parser.getVersion());
-        properties = parser.getProperties();
-        parser.getLocalizedDescription(getLocalizedDescription());
-        parser.getLocalizedGUIName(getLocalizedGUIName());
-        loadInitParameters();
         return true;
     }
+
 
     /**
      * This method should be called when the module should be reloaded.
      */
+
     public abstract void reload();
 
     {
-        addFunction(new AbstractFunction<Void>("reload") {
+        addFunction(new AbstractFunction("reload") {
                 public Void getFunctionValue(Parameters arguments) {
                     ReloadableModule.this.reload();
                     return null;

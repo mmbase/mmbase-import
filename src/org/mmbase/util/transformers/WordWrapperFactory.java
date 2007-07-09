@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
+import java.util.*;
 import java.io.*;
 import org.mmbase.util.functions.*;
 
@@ -26,7 +27,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(WordWrapperFactory.class);
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<Integer>("length", Integer.class, 80)
+        new Parameter("length", Integer.class, new Integer(80))
     };
 
     public Parameters createParameters() {
@@ -43,10 +44,10 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
             log.debug("Creating transformer, with " + parameters);
         }
         final int length = ((Integer) parameters.get("length")).intValue();
-        return new ReaderTransformer() {
+        return new ReaderTransformer() {            
 
             public Writer transform(Reader r, Writer w) {
-                StringBuilder word = new StringBuilder();  // current word
+                StringBuffer word = new StringBuffer();  // current word
                 try {
                     log.trace("Starting wrapping words.");
                     int ll = 0; // 'line lenght'
@@ -67,7 +68,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
                             } else {
                                 ll += word.length();
                                 if (ll < length) {
-                                    w.write(c);
+                                    w.write(c);                             
                                 }
                                 ll++;
                             }

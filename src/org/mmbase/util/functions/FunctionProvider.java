@@ -19,20 +19,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.16 2007-06-07 15:23:56 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.14 2006-09-15 17:03:30 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
 
-    protected Map<String, Function<?>> functions = Collections.synchronizedMap(new HashMap<String, Function<?>>());
+    protected Map<String, Function> functions = Collections.synchronizedMap(new HashMap<String, Function>());
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
-    protected Function<Collection<Function<?>>> getFunctions = new AbstractFunction<Collection<Function<?>>>("getFunctions") {
+    protected Function getFunctions = new AbstractFunction("getFunctions") {
             {
                 setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
             }
-            public Collection<Function<?>> getFunctionValue(Parameters arguments) {
+            public Collection<Function> getFunctionValue(Parameters arguments) {
                 return getFunctions();
             }
         };
@@ -67,14 +67,12 @@ public abstract class FunctionProvider {
     /**
      * Adds a function to the FunctionProvider. So, you can implement any function and add it to the
      * provider, to make it provide this function too.
-     * @return The function previously assigned with this name or <code>null</code> if no such function.
      */
-    public Function addFunction(Function function) {
-        Function oldValue = functions.put(function.getName(), function);
+    public void addFunction(Function function) {
+        Object oldValue = functions.put(function.getName(), function);
         if (oldValue != null) {
             log.debug("Replaced " + oldValue + " by " + function);
         }
-        return oldValue;
     }
 
     /**
@@ -114,7 +112,7 @@ public abstract class FunctionProvider {
     /**
      * Returns a Collection of all functions currently provided by the FunctionProvider.
      */
-    public Collection<Function<?>> getFunctions() {
+    public Collection<Function> getFunctions() {
         return Collections.unmodifiableCollection(functions.values());
     }
 

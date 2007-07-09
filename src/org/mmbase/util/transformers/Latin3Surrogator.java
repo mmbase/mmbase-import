@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: Latin3Surrogator.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Latin3Surrogator.java,v 1.3 2003-05-12 11:15:35 michiel Exp $
  */
 public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);
@@ -111,8 +111,8 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        HashMap h = new HashMap();
         h.put("xmetodo".toUpperCase(), new Config(getClass(), XMETODO));
         h.put("hmetodo".toUpperCase(), new Config(getClass(), HMETODO));
         return h;

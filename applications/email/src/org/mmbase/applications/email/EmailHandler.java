@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
+import org.mmbase.util.StringObject;
 import org.mmbase.module.core.*;
-import org.mmbase.module.SendMailInterface;
 
 
 import org.mmbase.util.logging.Logger;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.23 2007-06-21 15:50:19 nklasens Exp $
+ * @version $Id: EmailHandler.java,v 1.18 2006-07-06 11:50:26 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -58,25 +58,29 @@ public class EmailHandler {
 
 
         String from = node.getStringValue("from");
-        Set<NodeRecipient>   toGroup = getAttachedGroups(node);
+        Set   toGroup = getAttachedGroups(node);
 
         // get Body of the mail (including url based)
         String body = node.getStringValue("body");
 
-        Map<String, String> headers = getHeaders(node);
+        Map headers = getHeaders(node);
 
         if (toGroup.size() > 0) {
             // bulk-mailing
-            Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>(getTo(node));
+            Set toUsers = new LinkedHashSet(getTo(node));
             toUsers.addAll(toGroup);
 
             // loop all the users we need to mail
-            for (NodeRecipient to : toUsers) {
+            Iterator i = toUsers.iterator();
+            while (i.hasNext()) {
+                // get the next user we need to email
+                NodeRecipient to = (NodeRecipient) i.next();
                 sendMail(node, from, to, body, headers);
 
                 // make sure that CC and BCC are only on first mail, otherwise those poor people get a lot of mail.
                 headers.put("CC", null);
                 headers.put("BCC", null);
+
             }
         } else {
             // one simple mail
@@ -99,8 +103,8 @@ public class EmailHandler {
      * Reads some fields from the given node and returns it as a Map with mail-headers.
      * The considered fields are replyto, cc, bcc and subject.
      */
-    private static Map<String, String> getHeaders(MMObjectNode node) {
-        Map<String, String> headers = new HashMap<String, String>();
+    private static Map getHeaders(MMObjectNode node) {
+        Map headers = new HashMap();
 
         MMObjectBuilder email = node.getBuilder();
         // headers.put("From", node.getStringValue("from"));
@@ -113,8 +117,7 @@ public class EmailHandler {
         if (email.hasField("bcc")) {
             headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
         }
-        // subject field is obligotary
-        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); 
+        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); // subject field is obligory
         return headers;
     }
 
@@ -132,8 +135,8 @@ public class EmailHandler {
      * get the To header if its not set directly
      * try to obtain it from related objects.
      */
-    private static Set<NodeRecipient> getTo(MMObjectNode node) {
-        Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
+    private static Set getTo(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
         String to = node.getStringValue("to");
         if (to != null && !to.equals("")) {
             toUsers.add(new NodeRecipient(-1, to));
@@ -146,12 +149,14 @@ public class EmailHandler {
     /**
      * Get the email addresses of related users, which are related to related groups.
      */
-    private static Set<NodeRecipient> getAttachedGroups(MMObjectNode node) {
-        Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
+    private static Set getAttachedGroups(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
         if (MMBase.getMMBase().getBuilder(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
-            List<MMObjectNode> rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
+            List rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
             if (rels != null) {
-                for (MMObjectNode pnode: rels) {
+                Iterator i = rels.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode pnode = (MMObjectNode) i.next();
                     toUsers.addAll(getAttachedUsers(pnode));
                 }
             }
@@ -164,13 +169,15 @@ public class EmailHandler {
     /**
      * Get the email addresses of related users;
      */
-    private static Set<NodeRecipient> getAttachedUsers(MMObjectNode node) {
-        Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
+    private static Set getAttachedUsers(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
         // try and find related users
         if (MMBase.getMMBase().getBuilder(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
-            List<MMObjectNode> rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
+            List rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
             if (rels != null) {
-                for (MMObjectNode pnode : rels) {
+                Iterator i = rels.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode pnode = (MMObjectNode) i.next();
                     toUsers.add(new NodeRecipient(pnode.getNumber(), pnode.getStringValue(EmailBuilder.usersEmailField)));
                 }
             }
@@ -242,6 +249,42 @@ public class EmailHandler {
 
 
     /**
+    * convert 'html' to 'plain' text
+    * this removes the br and p tags and converts them
+    * to returns and dubble returns for email use.
+    */
+    private static String html2plain(String input) {
+        // define the result string
+        StringBuffer result = new StringBuffer();
+
+        // setup a tokenizer on all returns and linefeeds so
+        // we can remove them
+        StringTokenizer tok = new StringTokenizer(input,"\n\r");
+        while (tok.hasMoreTokens()) {
+            // add the content part stripped of its return/linefeed
+            result.append(tok.nextToken());
+        }
+
+        // now use the html br and p tags to insert
+        // the wanted returns
+        StringObject obj = new StringObject(result.toString());
+        obj.replace("<br/>","\n");
+        obj.replace("<br />","\n");
+        obj.replace("<BR/>","\n");
+        obj.replace("<BR />","\n");
+        obj.replace("<br>","\n");
+        obj.replace("<BR>","\n");
+        obj.replace("<p>","\n\n");
+        obj.replace("<p/>","\n\n");
+        obj.replace("<p />","\n\n");
+        obj.replace("<P>","\n\n");
+
+
+        // return the coverted body
+        return obj.toString();
+    }
+
+    /**
      * Sends one email. The body is a bit parsed. It can be an URL, in which case the result will be
      * fetched, and the body replaced.  It can also contain with &lt;DONTMAIL&gt; (why not at least
      * start??) in which case nothing happens. It can contain &lt;multipart (why not at least
@@ -251,22 +294,20 @@ public class EmailHandler {
      * @return whether successful
      */
 
-    private static boolean sendMail(MMObjectNode node, String from, NodeRecipient to,  String body, Map<String, String> headers) {
+    private static boolean sendMail(MMObjectNode node, String from, NodeRecipient to,  String body, Map headers) {
         String obody = body;
-
-        // WTF!
 
         // if the body starts with a url call that url
         if (obody.indexOf("http://") == 0) {
             body = getUrlExtern(obody, "", "" + to.nodeNumber);
 
                 // convert html to plain text unless a the html tag is found
-            if (body.indexOf("<html>") == -1 && body.indexOf("<HTML>") == -1) {
+            if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
                 //body=html2plain(body);
             }
         }
 
-        String osubject = headers.get("Subject");
+        String osubject = (String) headers.get("Subject");
 
         // if the subject starts with a url call that url
         if (osubject != null && osubject.indexOf("http://") == 0) {
@@ -280,7 +321,7 @@ public class EmailHandler {
         // the headers for html mail
         if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
             headers.put("Mime-Version", "1.0");
-            headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\""); // oh no!
+            headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\"");
         }
 
         // is the don't mail tag set ? this allows
@@ -292,7 +333,7 @@ public class EmailHandler {
             // if the subject contains 'fakemail'
             // perform all actions butt don't really
             // mail. This is done for testing
-            String subject = headers.get("Subject");
+            String subject = (String) headers.get("Subject");
             if (subject != null && subject.indexOf("fakemail")!=-1) {
                 // add one to the sendmail counter
                 // refix numberofmailsend++;

@@ -12,14 +12,15 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
 import org.mmbase.bridge.*;
+import org.mmbase.core.CoreField;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.23 2007-02-23 16:26:48 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.20 2006-09-25 13:58:29 michiel Exp $
  */
-public class BasicFieldList extends BasicList<Field> implements FieldList {
+public class BasicFieldList extends BasicList<Field> implements FieldList<Field> {
 
     NodeManager nodemanager = null;
 
@@ -32,13 +33,13 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
         this.nodemanager = nodemanager;
     }
 
-    @Override
-    protected Field convert(Object o) {
+    public Field convert(Object o, int index) {
         if (o instanceof BasicField) {
             return (Field) o;
         } else if (o instanceof Field) {
             // core-field does not have a node-manager, fix that.
             Field f = new BasicField((Field)o, nodemanager);
+            set(index, f);
             return f;
         } else { // give it up
             // perhaps we could anticipated DataType, String those kind of things too.
@@ -46,6 +47,10 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
             // shoudl not happen!
             return (Field) o;
         }
+    }
+
+    protected Field validate(Object o) throws ClassCastException {
+        return (Field)o;
     }
 
     public Field getField(int index) {
@@ -56,7 +61,7 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
         return new BasicFieldIterator();
     }
 
-    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
+    protected class BasicFieldIterator extends BasicIterator implements FieldIterator<Field> {
 
         public Field nextField() {
             return next();

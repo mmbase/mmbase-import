@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.40 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: EnumHandler.java,v 1.38 2006-06-06 17:47:43 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -49,7 +49,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8
      */
     protected Iterator getIterator(Node node, Field field) throws JspTagException  {
-        DataType<Object> dataType = field.getDataType();
+        DataType dataType = field.getDataType();
         Locale locale = tag.getLocale();
         return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
     }
@@ -74,7 +74,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                         resource = enumType;
 
                     }
-                    Class<?> type;
+                    Class type;
                     switch(field.getType()) {
                     case Field.TYPE_STRING:  type = String.class; break;
                     case Field.TYPE_INTEGER: type = Integer.class; break;
@@ -132,7 +132,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");

@@ -20,18 +20,17 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.16 2007-06-18 17:29:21 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.14 2006-09-29 10:01:40 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
 
-    protected List<Entry<String, Object>>       entries      = null;
+    protected List       entries      = null;
 
     private Attribute name    = Attribute.NULL;
     private Attribute value   = Attribute.NULL;
     private Attribute referid = Attribute.NULL;
-    private Attribute framework = Attribute.NULL;
     private ParamHandler paramHandler;
     private boolean handled;
 
@@ -48,22 +47,12 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
         referid = getAttribute(r);
     }
 
-    /**
-     * @since MMBase-1.9
-     */
-    public void setFramework(String f) throws JspTagException {
-        framework = getAttribute(f);
-    }
-
     public void addParameter(String key, Object value) throws JspTagException {
-        if (entries == null) entries = new ArrayList<Entry<String, Object>>();
-        entries.add(new Entry<String, Object>(key, value));
+        if (entries == null) entries = new ArrayList();
+        entries.add(new Entry(key, value));
         if (log.isDebugEnabled()) {
             log.debug("entries " + entries);
         }
-    }
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Param-tag does not receive framework parameters");
     }
 
     public int doStartTag() throws JspException {
@@ -77,25 +66,16 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
      * @since MMBase-1.9
      */
     protected void addParameter(Object value) throws JspTagException {
-        boolean frameworkParameter = framework.getBoolean(this, false);
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {
                 for (Map.Entry<String, String> entry : StringSplitter.map(((CharSequence) value).toString()).entrySet()) {
-                    if (frameworkParameter) {
-                        paramHandler.addFrameworkParameter(entry.getKey(), entry.getValue());                        
-                    } else {
-                        paramHandler.addParameter(entry.getKey(), entry.getValue());
-                    }
+                    paramHandler.addParameter(entry.getKey(), entry.getValue());
                 }
             } else {
                 throw new TaglibException("You must specifiy a 'name' attribute if the value is not a comma separated String of <name>=<value> pairs.");
             }
         } else {
-            if (frameworkParameter) {
-                paramHandler.addFrameworkParameter(name.getString(this), value);
-            } else {
-                paramHandler.addParameter(name.getString(this), value);
-            }
+            paramHandler.addParameter(name.getString(this), value);
         }
     }
 

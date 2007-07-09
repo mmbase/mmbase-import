@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.52 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: DateHandler.java,v 1.47 2006-07-08 13:04:47 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -51,7 +51,26 @@ public class DateHandler extends AbstractTypeHandler {
         return Calendar.getInstance(tag.getTimeZone());
     }
 
-    protected DateTimePattern getPattern(DataType<Object> dt) throws JspTagException {
+    private void yearFieldValue(Calendar cal, StringBuffer buffer) {
+        if (EXIST_YEAR_0) {
+            // the year '0' does not really exist in gregorian, So 4 BC == -3, 1 BC == 0
+            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
+                buffer.append("-");
+                buffer.append(cal.get(Calendar.YEAR) - 1);
+            } else {
+                buffer.append(cal.get(Calendar.YEAR));
+            }
+        } else {
+            // perhaps this is simpler..
+            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
+                buffer.append("-");
+            }
+            buffer.append(cal.get(Calendar.YEAR));
+        }
+    }
+
+
+    protected DateTimePattern getPattern(DataType dt) throws JspTagException {
         DateTimePattern dateTimePattern;
         if (! (dt instanceof DateTimeDataType)) {
             // backwards compatibility
@@ -71,7 +90,7 @@ public class DateHandler extends AbstractTypeHandler {
                     doTime = time;
                 }
             }
-            StringBuilder buf = new StringBuilder();
+            StringBuffer buf = new StringBuffer();
             if (doDate) {
                 buf.append("yyyy-MM-dd");
             }
@@ -101,7 +120,7 @@ public class DateHandler extends AbstractTypeHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
@@ -125,7 +144,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append("id=\"").append(fieldid).append("\" class=\"mm_search\">");
             buffer.append("<option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
-            buffer.append(">&#xA0;</option>");
+            buffer.append(">&nbsp;</option>");
             buffer.append("<option value=\"less\" ");
             if (searchi.equals("less")) buffer.append(" selected=\"selected\" ");
             buffer.append(">&lt;</option>");
@@ -137,7 +156,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append(">=</option>");
             buffer.append("</select>");
         }
-        DataType<Object> dt = field.getDataType();
+        DataType dt = field.getDataType();
         DateTimePattern dateTimePattern = getPattern(dt);
         Calendar minDate = getInstance();
         Calendar maxDate = getInstance();
@@ -153,10 +172,12 @@ public class DateHandler extends AbstractTypeHandler {
 
 
         Locale locale = tag.getLocale();
-        List<String> parsed = dateTimePattern.getList(locale);
+        List parsed = dateTimePattern.getList(locale);
 
+        Iterator parsedPattern = parsed.iterator();
         boolean first = true;
-        for (String pattern : parsed) {
+        while(parsedPattern.hasNext()) {
+            String pattern = (String) parsedPattern.next();
             if (pattern.length() < 1) continue;
             char firstChar = pattern.charAt(0);
             if (firstChar ==  '\'') {
@@ -283,12 +304,13 @@ public class DateHandler extends AbstractTypeHandler {
         return false;
     }
 
+
     /**
      * @return The given Calendar instance or <code>null</code>
      */
     protected Calendar getSpecifiedValue(final Field field, Calendar cal) throws JspTagException {
         String fieldName = field.getName();
-        DataType<Object> dt = field.getDataType();
+        DataType dt = field.getDataType();
         if (log.isDebugEnabled()) {
             log.debug("Using " + dt);
         }
@@ -300,9 +322,11 @@ public class DateHandler extends AbstractTypeHandler {
 
 
         Locale locale = tag.getLocale();
-        List<String> parsed = dateTimePattern.getList(locale);
-        int maxField = Calendar.ERA;
-        for(String pattern : parsed) {
+        List parsed = dateTimePattern.getList(locale);
+        Iterator parsedPattern = parsed.iterator();
+        boolean first = true;
+        while(parsedPattern.hasNext()) {
+            String pattern = (String) parsedPattern.next();
             if (pattern.length() < 1) continue;
             char firstChar = pattern.charAt(0);
             if (firstChar ==  '\'') {
@@ -322,20 +346,12 @@ public class DateHandler extends AbstractTypeHandler {
                         cal = null;
                     } else {
                         if (cal != null) {
-                            int f = element.getField();
-                            if (f > maxField) maxField = f;
-                            cal.set(f, value - element.getOffset());
+                            cal.set(element.getField(), value - element.getOffset());
                         }
                     }
                 }
             } catch (java.lang.NumberFormatException e) {
                 throw new TaglibException("Not a valid number (" + e.toString() + ") in field " + fieldName, e);
-            }
-        }
-        if (cal != null) {
-            // set all less significant fields to 0;
-            for (int f = maxField; f <= Calendar.MILLISECOND; f++) {
-                cal.set(f, 0);
             }
         }
 

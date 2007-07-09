@@ -10,10 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
+import java.util.Iterator;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -54,7 +56,9 @@ public class EmailExpireHandler implements Runnable {
             MMBase mmbase = MMBase.getMMBase();
             while (!mmbase.isShutdown()) {
                 // get the nodes we want to expire
-                for (MMObjectNode expiredNode : parent.getDeliveredMailOlderThan(expiretime)) {
+                for (Iterator i = parent.getDeliveredMailOlderThan(expiretime).iterator(); i.hasNext(); ) {
+                    // get next node
+                    MMObjectNode expiredNode = (MMObjectNode)i.next();
                     log.service("Removing successfully mailed email 'one shot' email node " + expiredNode.getNumber());
                     // remove all its relations
                     expiredNode.removeRelations();

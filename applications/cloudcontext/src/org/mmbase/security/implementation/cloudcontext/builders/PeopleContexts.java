@@ -11,7 +11,6 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
-import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 
 /**
@@ -21,7 +20,7 @@ import org.mmbase.core.CoreField;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.8 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: PeopleContexts.java,v 1.6 2005-07-14 11:48:01 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
@@ -29,7 +28,7 @@ public class PeopleContexts extends Contexts {
 
     protected String peopleBuilder = "people";
     public boolean init() {
-        String s = getInitParameters().get("peoplebuilder");
+        String s = (String) getInitParameters().get("peoplebuilder");
         if (s != null) {
             peopleBuilder = s;
         }
@@ -43,12 +42,12 @@ public class PeopleContexts extends Contexts {
             CoreField field = node.getBuilder().getField("account");
             if (field != null) {
                 switch (field.getType()) {
-                case Field.TYPE_STRING:
+                case CoreField.TYPE_STRING:
                     if (node.getStringValue("account").equals(user.getIdentifier())) {
                         return true;
                     }
                     break;
-                case Field.TYPE_NODE:
+                case CoreField.TYPE_NODE:
                     if (node.getIntValue("account") == user.getNode().getNumber()) {
                         return true;
                     }

@@ -13,6 +13,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
+import org.mmbase.module.core.*;
 
 import java.io.*;
 import java.util.*;
@@ -36,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.29 2007-04-25 12:59:23 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.23 2006-09-12 18:38:10 michiel Exp $
  */
 public class FunctionSets {
 
@@ -48,7 +49,7 @@ public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
-    private static final Map<String, FunctionSet> functionSets = new HashMap<String, FunctionSet>();
+    private static final Map<String, FunctionSet> functionSets = new HashMap();
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
@@ -124,20 +125,22 @@ public class FunctionSets {
 
     private static void readSets(ResourceWatcher watcher) {
 
-        List<URL> resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
+        List resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
         log.service("Using " + resources);
-        ListIterator<URL> i = resources.listIterator();
+        ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = i.previous();
+                URL u = (URL) i.previous();
                 log.service("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource source = new InputSource(con.getInputStream());
                     DocumentReader reader = new DocumentReader(source, FunctionSets.class);
 
-                    for (Element n: reader.getChildElements("functionsets", "functionset")) {
+                    for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+                        Element n = (Element)ns.next();
+
                         String setName     = n.getAttribute("name");
                         if (functionSets.containsKey(setName)) {
                             log.warn("The function-set '" + setName + "' did exist already");
@@ -168,8 +171,9 @@ public class FunctionSets {
         FunctionSet functionSet = new FunctionSet(setName, setDescription);
         functionSets.put(setName, functionSet);
 
-        for (Element element: reader.getChildElements("functionset", "function")) {
-            String functionName = reader.getElementAttributeValue(element, "name");
+        for (Iterator functionElements = reader.getChildElements("functionset", "function"); functionElements.hasNext();) {
+            Element element = (Element)functionElements.next();
+            String functionName = reader.getElementAttributeValue(element,"name");
             if (functionName != null) {
 
                 Element a = reader.getElementByPath(element, "function.type");
@@ -187,8 +191,8 @@ public class FunctionSets {
 
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
-                ReturnType returnType = null;
-        if (a != null) {
+               	ReturnType returnType = null;
+		if (a != null) {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
@@ -202,7 +206,8 @@ public class FunctionSets {
 
                 /* obtaining field definitions for a result Node... useful ??
 
-                for (Element return_element: reader.getChildElements(a, "field")) {
+                for (Enumeration n2 = reader.getChildElements(a, "field"); n2.hasMoreElements();) {
+                    Element return_element = (Element)n2.nextElement();
                     String returnFieldName = reader.getElementAttributeValue(return_element, "name");
                     String returnFieldValueType = reader.getElementAttributeValue(return_element, "type");
                     String returnFieldDescription = reader.getElementAttributeValue(return_element, "description");
@@ -216,20 +221,16 @@ public class FunctionSets {
                 // read the parameters
 
                 Parameter[] parameters = Parameter.readArrayFromXml(element);
-                for (Parameter param : parameters) {
-                    if (param.getClass().isPrimitive() && param.getDefaultValue() == null) {
-                        // that would give enigmatic IllegalArgumentExceptions, so fix that.
-                        param.setDefaultValue(Casting.toType(param.getClass(), -1));
-                        log.debug("Primitive parameter '" + param + "' had default value null, which is impossible for primitive types. Setting to " + param.getDefaultValue());
-                    }
-                }
 
                 try {
-                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
+                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName);
+                    fun.setType(type);
                     fun.setDescription(description);
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.error(e);
+                    log.error(Logging.stackTrace(e));
+                    log.error(Logging.stackTrace(e.getCause()));
                 }
             }
         }

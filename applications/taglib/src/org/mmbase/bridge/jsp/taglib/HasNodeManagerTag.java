@@ -11,6 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
+import org.mmbase.bridge.NotFoundException;
+
 import javax.servlet.jsp.JspTagException;
 
 
@@ -18,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasNodeManagerTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: HasNodeManagerTag.java,v 1.1 2005-08-25 11:05:51 michiel Exp $
  * @since MMBase-1.8
  */
 

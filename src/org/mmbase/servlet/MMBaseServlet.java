@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.68 2007-07-04 10:04:08 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.55 2006-11-21 15:16:33 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -47,7 +47,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * MMBase reference. While null, servlet does not accept request.
      */
-    protected static MMBase mmbase = null;
+    protected MMBase mmbase = null;
     // private   static String context;
 
 
@@ -55,11 +55,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     // members needed for refcount functionality.
 
     /**
-     * To keep track of the currently running servlets, you can use this logger.
+     * To keep track of the currently running servlets
+     * switch the following boolean to true.
      *
+     * @bad-constant
      */
-    private static final Logger servletsLog =  Logging.getLoggerInstance("org.mmbase.SERVLETS");
-
+    private static final boolean logServlets = true;
     private static int servletCount; // Number of running servlets
     /**
      *  Lock to sync add and remove of threads
@@ -68,7 +69,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * Map containing currently running servlets
      */
-    private static Map<MMBaseServlet, ServletReferenceCount> runningServlets = new HashMap<MMBaseServlet, ServletReferenceCount>();
+    private static Map<MMBaseServlet, ServletReferenceCount> runningServlets = new HashMap();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -78,15 +79,15 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     private static int servletInstanceCount = 0;
     // servletname -> servletmapping
     // obtained from web.xml
-    private static Map<String, List<String>> servletMappings    = new HashMap<String, List<String>>();
+    private static Map<String, List<String>> servletMappings    = new HashMap();
     // topic -> servletname
     // set by isntantiated servlets
-    private static Map<String, ServletEntry> associatedServlets = new HashMap<String, ServletEntry>();
+    private static Map<String, ServletEntry> associatedServlets = new HashMap();
     // topic -> servletmapping
     // set by instantiated servlets
-    private static Map<String, ServletEntry> associatedServletMappings = new HashMap<String, ServletEntry>();
+    private static Map<String, ServletEntry> associatedServletMappings = new HashMap();
     // mapping to servlet instance
-    private static Map<String, HttpServlet> mapToServlet = new HashMap<String, HttpServlet>();
+    private static Map<String, HttpServlet> mapToServlet = new HashMap();
 
     private long start = System.currentTimeMillis();
 
@@ -120,7 +121,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected Map<String, Integer> getAssociations() {
-        return new HashMap<String, Integer>();
+        return new HashMap();
     }
 
     /**
@@ -147,7 +148,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * Returns the MMBase instance.
      * @since MMBase-1.7
      */
-    public  MMBase getMMBase() {
+    public MMBase getMMBase() {
         return mmbase;
     }
 
@@ -197,7 +198,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             // default: one minute
             retryAfter = 60;
         } else {
-            retryAfter = Integer.valueOf(retryAfterParameter);
+            retryAfter = new Integer(retryAfterParameter).intValue();
         }
 
         if (! MMBaseContext.isInitialized()) {
@@ -233,7 +234,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     log.service("Reading servlet mappings from " + url);
                     DocumentReader webDotXml = new DocumentReader(path, false);
 
-                    for (Element mapping: webDotXml.getChildElements("web-app", "servlet-mapping")) {
+                    for (Iterator mappingsIter = webDotXml.getChildElements("web-app", "servlet-mapping"); mappingsIter.hasNext();) {
+                        Element mapping = (Element) mappingsIter.next();
                         Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
                         String name = webDotXml.getElementValue(servName);
                         if (!(name.equals(""))) {
@@ -242,7 +244,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                             if (!(pattern.equals(""))) {
                                 List<String> ls = servletMappings.get(name);
                                 if (ls == null) {
-                                    ls = new ArrayList<String>();
+                                    ls = new ArrayList();
                                     servletMappings.put(name, ls);
                                 }
                                 ls.add(pattern);
@@ -265,11 +267,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         }
 
         String hold = servletContext.getInitParameter("stall-server");
+        log.info("stall-server: '" + hold + "'");
         if ("yes".equals(hold) || "true".equals(hold)) {
-            log.service(getServletName() + ": Waiting until MMBase is started");
+            log.info("Waiting until MMBase is started");
             Runnable starter = new MMBaseStartThread.Job(this);
             starter.run();
-            log.service(getServletName() + ": Ready to receive requests.");
+            log.info("Ready");
         } else {
             if (initialize) {
                 // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
@@ -298,7 +301,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     public static List<String> getServletMappings(String servletName) {
         List<String> ls = servletMappings.get(servletName);
         if (ls == null) {
-            return Collections.emptyList();
+            return Collections.EMPTY_LIST;
         } else {
             return Collections.unmodifiableList(ls);
         }
@@ -314,12 +317,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @param function the function that identifies the type of association
      * @return an unmodifiable list of servlet mappings associated with the function
      */
-    public static List<String> getServletMappingsByAssociation(String function) {
+    public static List getServletMappingsByAssociation(String function) {
         // check if any mappings were explicitly set for this function
         // if so, return that list.
         ServletEntry mapping = associatedServletMappings.get(function);
         if (mapping != null) {
-            List<String> mappings = new ArrayList<String>();
+            List mappings = new ArrayList();
             mappings.add(mapping.name);
             return mappings;
         }
@@ -328,7 +331,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (name != null) {
             return getServletMappings(name);
         } else {
-            return Collections.emptyList();
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -412,10 +415,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         pw.print(org.mmbase.Version.get());
         String q = req.getQueryString();
         if ("starttime".equals(q)) {
-            res.setHeader("Cache-Control", "no-cache");
             pw.print("\nUp since " + new Date((long) MMBase.startTime * 1000));
         } else if ("uptime".equals(q)) {
-            res.setHeader("Cache-Control", "no-cache");
             int seconds = (int) (System.currentTimeMillis() / 1000) - MMBase.startTime;
             int days = seconds / (60 * 60 * 24);
             seconds %=  60 * 60 * 24;
@@ -430,7 +431,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
         } else if ("server".equals(q)) {
             String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for other ap-servers.
-            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getCanonicalHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
         }
         pw.close();
     }
@@ -496,7 +497,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     protected static String getRequestURL(HttpServletRequest req) {
         String result = req.getRequestURI();
         String queryString = req.getQueryString();
-        if (queryString != null) result += "?" + queryString;
+        if (queryString!=null) result += "?" + queryString;
         return result;
     }
 
@@ -507,12 +508,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected void decRefCount(HttpServletRequest req) {
-        if (servletsLog.isDebugEnabled()) {
+        if (logServlets) {
             String url = getRequestURL(req) + " " + req.getMethod();
             synchronized (servletCountLock) {
                 servletCount--;
                 ServletReferenceCount s = runningServlets.get(this);
-                if (s != null) {
+                if (s!=null) {
                     if (s.refCount == 0) {
                         runningServlets.remove(this);
                     } else {
@@ -535,7 +536,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
 
     protected void incRefCount(HttpServletRequest req) {
-        if (servletsLog.isDebugEnabled()) {
+        if (logServlets) {
             String url = getRequestURL(req) + " " + req.getMethod();
             int curCount;
             synchronized (servletCountLock) {
@@ -544,7 +545,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 printCount++;
                 ServletReferenceCount s = runningServlets.get(this);
                 if (s == null) {
-                    runningServlets.put(this, new ServletReferenceCount(url, 0));
+                    runningServlets.put(this, new ServletReferenceCount(this, url, 0));
                 } else {
                     s.refCount++;
                     s.uris.add(url);
@@ -554,9 +555,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
                     synchronized(servletCountLock) {
-                        servletsLog.debug("Running servlets: " + curCount);
-                        for (Object element : runningServlets.values())
-                            servletsLog.debug(element);
+                        log.info("Running servlets: " + curCount);
+                        for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
+                            log.info(e.next());
                     }
 
                 }// curCount>0
@@ -572,7 +573,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             log.debug(" " + getServletName() + " was not initialized");
         }
         log.debug("Disassociating this servlet with mappings");
-        for (String mapping :  getServletMappings(getServletConfig().getServletName())) {
+        Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
+        while (i.hasNext()) {
+            String mapping=(String)i.next();
             mapToServlet.remove(mapping);
         }
         super.destroy();
@@ -581,40 +584,20 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
            servletInstanceCount--;
             if (servletInstanceCount == 0) {
-                try {
-                    log.info("Unloaded servlet mappings");
-                    associatedServlets.clear();
-                    servletMappings.clear();
-                    log.info("No MMBase servlets left; modules can be shut down");
-                    MMBase.getMMBase().shutdown();
-                    Module.shutdownModules();
-                } catch (Throwable t) {
-                    log.error(t.getMessage(), t);
-                }   
-                try {
-                    ThreadGroup threads = MMBaseContext.getThreadGroup();
-                    log.service("Send interrupt to " + threads.activeCount() + " threads in " +
-                                threads + " of " + threads.getParent());
-                    threads.interrupt();
-                    Thread.yield();
-                } catch (Throwable t) {
-                    log.error(t.getMessage(), t);
-                }
-                try {
-                    org.mmbase.util.FileWatcher.shutdown();
-                } catch (Throwable t) {
-                    log.error(t.getMessage(), t);
-                }
-                try {
-                    org.mmbase.cache.CacheManager.shutdown();
-                } catch (Throwable t) {
-                    log.error(t.getMessage(), t);
-                }
-                try {
-                    Logging.shutdown();
-                } catch (Throwable t) {
-                    System.err.println(t.getMessage());
-                }
+                log.info("Unloaded servlet mappings");
+                associatedServlets.clear();
+                servletMappings.clear();
+                log.info("No MMBase servlets left; modules can be shut down");
+                Module.shutdownModules();
+                ThreadGroup threads = MMBaseContext.getThreadGroup();
+                log.service("Send interrupt to " + threads.activeCount() + " threads in " +
+                            threads + " of " + threads.getParent());
+                threads.interrupt();
+                Thread.yield();
+                org.mmbase.util.FileWatcher.shutdown();
+                org.mmbase.cache.CacheManager.shutdown();
+                Logging.shutdown();
+                mmbase = null;
             }
         }
    }
@@ -625,18 +608,26 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     private class ServletReferenceCount {
         /**
-         * List of URIs that call the servlet
+         * The servlet do debug
+         * @scope private
          */
-        final List<String> uris = new ArrayList<String>();
+        MMBaseServlet servlet;
+        /**
+         * List of URIs that call the servlet
+         * @scope private
+         */
+        List uris = new ArrayList();
         /**
          * Nr. of references
+         * @scope private
          */
         int refCount;
 
         /**
          * Create a new ReferenceCountServlet using the jamesServlet
          */
-        ServletReferenceCount(String uri, int refCount) {
+        ServletReferenceCount(MMBaseServlet servlet, String uri, int refCount) {
+            this.servlet = servlet;
             uris.add(uri);
             this.refCount = refCount;
         }
@@ -645,7 +636,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
          * Return a description containing servlet info and URI's
          */
         public String toString() {
-            return "servlet(" + MMBaseServlet.this + "), refcount(" + (refCount + 1) + "), uri's(" + uris + ")";
+            return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+uris+")";
         }
     }
 

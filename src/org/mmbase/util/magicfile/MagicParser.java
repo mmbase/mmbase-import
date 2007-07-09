@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: MagicParser.java,v 1.10 2005-10-07 18:41:29 michiel Exp $
  * @todo NOT TESTED YET
  */
 
@@ -38,8 +39,11 @@ public class MagicParser implements DetectorProvider {
     public final static String DEFAULT_MAGIC_FILE = "/etc/mime-magic";
     
     private static final Logger log = Logging.getLoggerInstance(MagicParser.class);
-    private List<Detector> detectors;
+    private List detectors;
 
+    // what a mess:
+    // I think all of these members must be removed:
+    private boolean parsingFailure = false;
     private int offset;
     private String type;
     private String typeAND;
@@ -60,7 +64,7 @@ public class MagicParser implements DetectorProvider {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
             String line;
-            detectors = new Vector<Detector>();
+            detectors = new Vector();
 
             while ((line = br.readLine()) != null) {
                 Detector d = createDetector(line);
@@ -74,7 +78,7 @@ public class MagicParser implements DetectorProvider {
         };
     }
 
-    public List<Detector> getDetectors() {
+    public List getDetectors() {
         return detectors;
     }
     // --------------------------------------------------------------------------------
@@ -115,8 +119,10 @@ public class MagicParser implements DetectorProvider {
             // '&': In sublevel we can start relatively to where the previous match ended
             // '(': Read value at first address, and add that at second to it
             if (c == '&') {
+                parsingFailure = true;
                 throw new UnsupportedOperationException("parseOffsetString: >& offset feature not implemented\n(Tt is used only for HP Printer Job Language type)");
             } else if (c == '(') {
+                parsingFailure = true;
                 throw new UnsupportedOperationException("parseOffsetString: indirect offsets not implemented");
             }
             offset = Integer.decode(s.substring(startIndex, m)).intValue();
@@ -458,6 +464,7 @@ public class MagicParser implements DetectorProvider {
             log.warn(e.getMessage());
         } catch (Exception e) {
             log.error("parse failure at " + level + ": " + e.getMessage() + " for [" + line + "]");
+            parsingFailure = true;
         }
         detector.setType(type);
         detector.setOffset("" + offset);
@@ -481,8 +488,9 @@ public class MagicParser implements DetectorProvider {
 
         writer.write(
             "<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
-        for (Detector detector : getDetectors()) {
-            detector.toXML(writer);
+        Iterator i = getDetectors().iterator();
+        while (i.hasNext()) {
+            ((Detector)i.next()).toXML(writer);
         }
         writer.write("</detectorlist>\n</magic>\n");
         writer.close();

@@ -11,6 +11,7 @@ package org.mmbase.module.gui.html;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -26,7 +27,7 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
     
     private MMBase mmb;
     String type;
-    Vector<MultilevelCacheEntry> queue = new Vector<MultilevelCacheEntry>(50);
+    Vector queue = new Vector(50);
 
     public MultilevelSubscribeNode(MMBase mmb,String type) {
         this.mmb = mmb;
@@ -46,9 +47,9 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
     }
 
     public synchronized void clearEntrys() {
-        Enumeration<MultilevelCacheEntry> e=queue.elements();
+        Enumeration e=queue.elements();
         while (e.hasMoreElements()) {
-            MultilevelCacheEntry n=e.nextElement();
+            MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
             // call the entry's clear that will remove all observers
             // too including myself !
             n.clear();

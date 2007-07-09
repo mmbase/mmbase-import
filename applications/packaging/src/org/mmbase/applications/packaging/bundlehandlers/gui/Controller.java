@@ -14,8 +14,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.bundlehandlers.BundleVersionContainer;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 import org.mmbase.bridge.Cloud;
@@ -52,18 +57,18 @@ public class Controller {
     }
 
 
-    public List<MMObjectNode> getBundles() {
+    public List getBundles() {
         // signal action to for package discovery
         ProviderManager.resetSleepCounter();
 
         // get the current best bundles
-        Iterator<BundleContainer> bundles = BundleManager.getBundles();
+        Iterator bundles = BundleManager.getBundles();
 
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (bundles.hasNext()) {
-            BundleInterface  b = bundles.next();
+            BundleInterface  b = (BundleInterface)bundles.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id",b.getId());
             virtual.setValue("name",b.getName());
@@ -78,19 +83,19 @@ public class Controller {
     }
 
 
-    public List<MMObjectNode> getBundleVersions(String id) {
+    public List getBundleVersions(String id) {
         // get the bundles of one id (all versions)
-        Iterator<BundleVersionContainer> bundleversions = BundleManager.getBundleVersions(id);
+        Iterator bundleversions = BundleManager.getBundleVersions(id);
 
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (bundleversions.hasNext()) {
-            BundleVersionContainer  bvc = bundleversions.next();
+            BundleVersionContainer  bvc = (BundleVersionContainer)bundleversions.next();
 
-            Iterator<BundleInterface> bundles = bvc.getBundles();
+            Iterator bundles = bvc.getBundles();
             while (bundles.hasNext()) {
-                BundleInterface  b = bundles.next();
+                BundleInterface  b = (BundleInterface)bundles.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("id",b.getId());
                 virtual.setValue("name",b.getName());
@@ -110,23 +115,23 @@ public class Controller {
     }
 
 
-    public List<MMObjectNode> getBundleNeededPackages(String id,String wv,String newuser) {
+    public List getBundleNeededPackages(String id,String wv,String newuser) {
         // get the bundles of one id (all versions)
         BundleInterface bundle = BundleManager.getBundle(id);
-        Iterator<HashMap<String, String>> neededpackages = bundle.getNeededPackages();
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        Iterator neededpackages = bundle.getNeededPackages();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (neededpackages.hasNext()) {
-            HashMap<String, String> np = neededpackages.next();
+            HashMap np = (HashMap)neededpackages.next();
 
             MMObjectNode virtual = builder.getNewNode("admin");
-            virtual.setValue("name",np.get("name"));
-            virtual.setValue("id",np.get("id"));
-            virtual.setValue("type",np.get("type"));
-            virtual.setValue("maintainer",np.get("maintainer"));
-            virtual.setValue("version",np.get("version"));
-            PackageInterface fp = PackageManager.getPackage(np.get("id"));
+            virtual.setValue("name",(String)np.get("name"));
+            virtual.setValue("id",(String)np.get("id"));
+            virtual.setValue("type",(String)np.get("type"));
+            virtual.setValue("maintainer",(String)np.get("maintainer"));
+            virtual.setValue("version",(String)np.get("version"));
+            PackageInterface fp = PackageManager.getPackage((String)np.get("id"));
             if (fp != null) {
                 String state = fp.getState();
                 String provider = (fp.getProvider()).getName();
@@ -140,7 +145,7 @@ public class Controller {
                 virtual.setValue("licensetype",fp.getLicenseType());
                 virtual.setValue("licenseversion",fp.getLicenseVersion());
                 virtual.setValue("licensebody",fp.getLicenseBody());
-                List<Object> l = fp.getRelatedPeople("initiators");
+                List l = fp.getRelatedPeople("initiators");
                 if (l != null) virtual.setValue("initiators",getRelatedPeopleString(l,"initiators"));
                 l = fp.getRelatedPeople("supporters");
                 if (l != null) virtual.setValue("supporters",getRelatedPeopleString(l,"supporters"));
@@ -158,11 +163,11 @@ public class Controller {
     }
 
 
-    public String getRelatedPeopleString(List<Object> people,String type) {
+    public String getRelatedPeopleString(List people,String type) {
         String body = "";
         if (people != null) {
-            for (Object object : people) {
-            Person pr = (Person)object;
+            for (Iterator i = people.iterator(); i.hasNext();) {
+            Person pr = (Person)i.next();
                 if (type.equals("initiators")) {
                     body += "\t\t\t<initiator name=\""+pr.getName()+"\" company=\""+pr.getCompany()+"\" />\n";
                 } else if (type.equals("developers")) {

@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module;
 
-import org.mmbase.module.core.MMBaseContext;
 import java.util.*;
 import java.net.*;
-import java.lang.reflect.*;
 import org.xml.sax.*;
 
 import org.mmbase.util.*;
@@ -23,11 +21,11 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * An MMBase Module is an extension of this class, which is configured by an XML file in the &lt;mmbase
- * config dir&gt;/modules directory. All modules whose xml configuration file defines them as 'active' are
- * automaticly loaded and initialized.
+ * An MMBase Module is an extension of this class, which is configured by an XML in the &lt;mmbase
+ * config dir &gt;/modules directory. All XML's (which are defined 'active') in this directory are
+ * automaticly loaded, and all found 'Module's are then initialized.
  *
- * There are several modules which are more or less compulsary in MMBase, like the 'mmbaseroot'
+ * There are several Modules which are more or less compulsary in MMBase, like the 'mmbaseroot'
  * module, the actual core of MMBase implemented by {@link org.mmbase.module.core.MMBase}, and the
  * 'jdbc' module.
  *
@@ -35,19 +33,16 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.91 2007-06-19 14:58:02 michiel Exp $
+ * @version $Id: Module.java,v 1.82 2006-09-13 15:21:26 michiel Exp $
  */
-public abstract class Module extends DescribedFunctionProvider {
+public abstract class Module extends FunctionProvider {
 
     /**
-     * State identifier for module startup time.
+     * @javadoc
      */
-    public final String STATE_START_TIME = "Start Time";
+    static Map<String, Module> modules;
 
     private static final Logger log = Logging.getLoggerInstance(Module.class);
-
-    // A map containing all currently loaded modules by name.
-    private static Map<String, Module> modules;
 
     /**
      * This function returns the Module's version number as an Integer.
@@ -55,7 +50,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function<Integer> getVersionFunction = new AbstractFunction<Integer>("getVersion") {
+    protected Function getVersionFunction = new AbstractFunction("getVersion") {
         public Integer getFunctionValue(Parameters arguments) {
             return getVersion();
         }
@@ -67,51 +62,34 @@ public abstract class Module extends DescribedFunctionProvider {
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function<String> getMaintainerFunction = new AbstractFunction<String>("getMaintainer") {
+    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer") {
         public String getFunctionValue(Parameters arguments) {
             return getMaintainer();
         }
     };
 
-    /**
-     * Properties (initparameters) set by reading (or re-reading) the module configuration.
-     */
-    protected Map<String, String> properties;
-
-    // the path to the Module configuration (xml) file, without the xml extension, and without the modules dir
-    protected String configurationPath;
-
-    // the state map, containing runtime-generated information as name-value pairs.
-    private Map<String, String> states = new Hashtable<String, String>();
-
-
-    // the name of the module maintainer
+    private String moduleName = null;
+    protected Map<String, String> state = new Hashtable<String, String>();
+    protected Map<String, String> properties; // would like this to be LinkedHashMap (predictable order)
     private String maintainer;
-
-    // the module version
     private int version;
 
     // startup call.
     private boolean started = false;
 
-
-    /**
-     * @deprecated
-     */
     public Module() {
         addFunction(getVersionFunction);
         addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
-        setState(STATE_START_TIME, startedAt);
+        state.put("Start Time", startedAt);
     }
 
-    public Module(String name) {
-        super(name);
-        addFunction(getVersionFunction);
-        addFunction(getMaintainerFunction);
-        String startedAt = (new Date(System.currentTimeMillis())).toString();
-        setState(STATE_START_TIME, startedAt);
+    public final void setName(String name) {
+        if (moduleName == null) {
+            moduleName = name;
+        }
     }
+
     /**
      * @since MMBase-1.8
      */
@@ -122,22 +100,15 @@ public abstract class Module extends DescribedFunctionProvider {
     /**
      * @since MMBase-1.8
      */
-    public static ModuleReader getModuleReader(String configurationPath) {
+    public static ModuleReader getModuleReader(String moduleName) {
         try {
-            InputSource is = getModuleLoader().getInputSource(configurationPath + ".xml");
+            InputSource is = getModuleLoader().getInputSource(moduleName + ".xml");
             if (is == null) return null;
             return new ModuleReader(is);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e);
             return null;
         }
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public ModuleReader getModuleReader() {
-        return Module.getModuleReader(configurationPath);
     }
 
     /**
@@ -195,33 +166,17 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
-     * Returns a state value by name.
-     * @since MMBase-1.9
+     * state, returns the state hashtable that is/can be used to debug. Should
+     * be overridden when live state should be done.
      */
-    public String getState(String name) {
-        return states.get(name);
-    }
-
-    /**
-     * Sets a state value by name.
-     * @since MMBase-1.9
-     */
-    public String setState(String name, String value) {
-        return states.put(name, value);
-    }
-
-    /**
-     * Returns the module's runtime-generated state information as a unmodifiable map with name-value pairs.
-     * @since MMBase-1.9
-     */
-    public Map<String, String> getStates() {
-        return Collections.unmodifiableMap(states);
+    public Map<String, String> state() {
+        return state;
     }
 
     /**
      * Sets an init-parameter key-value pair
      */
-    public void setInitParameter(String key, String value) {
+    public void setInitParameter(String key,String value) {
         if (properties != null) {
             properties.put(key, value);
         }
@@ -236,15 +191,11 @@ public abstract class Module extends DescribedFunctionProvider {
             if (value == null) {
                 key = key.toLowerCase();
                 value = properties.get(key);
-                // Can also set properties in web.xml/context.xml
-                if (value == null && MMBaseContext.isInitialized()) {
-                    value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
-                }
                 // try the system property, set on the JVM commandline
                 // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
                 // -Dmmbaseroot.machinename=myname
                 if (value == null) {
-                    value = System.getProperty(getName() + "." + key);
+                    value = System.getProperty(moduleName+"."+key);
                 }
             }
             return value;
@@ -255,6 +206,23 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
+     * Returns the properties to the subclass.
+     */
+    protected Map<String, String>  getProperties(String propertytable) {
+        //String filename="/usr/local/vpro/james/adminopen/modules/";
+        //return results;
+        return null;
+        //return Environment.getProperties(this,propertytable);
+    }
+
+    /**
+     * Returns one propertyvalue to the subclass.
+     */
+    protected String getProperty(String name, String var) {
+        return "";
+    }
+
+    /**
      * Gets own modules properties
      */
     public Map<String, String> getInitParameters() {
@@ -262,20 +230,22 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
-     * Override properties through application context
+     * override properties through application context
      * @param contextPath path in application context where properties are located
-     * @since MMBase 1.8.5
+     * @since MMBase 1.8.2
      */
-    public void loadInitParameters() {
+    public void loadInitParameters(String contextPath) {
         try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase/" + getName());
-            properties.putAll(contextMap);
-
+            Map contextMap = ApplicationContextReader.getProperties(contextPath);
+            if (!contextMap.isEmpty()) {
+                properties.putAll(contextMap);
+            }
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
     }
 
+    
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -290,19 +260,19 @@ public abstract class Module extends DescribedFunctionProvider {
         }
     }
 
+    /**
+     *  Returns the name of the module
+     * @return the module name
+     */
+    public final String getName() {
+        return moduleName; // org.mmbase
+    }
 
     /**
-     * Provide some info on the module;
-     * By default, this returns the module description for the default locale
-     * @deprecated use getDescription
+     * provide some info on the module
      */
     public String getModuleInfo() {
-        String value = getDescription();
-        if (value != null) {
-            return value;
-        } else {
-            return "No module info provided";
-        }
+        return "No module info provided";
     }
 
     /**
@@ -310,6 +280,7 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     public void maintainance() {
     }
+
 
     /**
      * Calls shutdown of all registered modules.
@@ -366,9 +337,6 @@ public abstract class Module extends DescribedFunctionProvider {
         }
     }
 
-    /**
-     * @since MMBase-1.8.3
-     */
     public static boolean hasModule(String name) {
         boolean check = modules.containsKey(name.toLowerCase());
         if (!check) {
@@ -479,11 +447,12 @@ public abstract class Module extends DescribedFunctionProvider {
      * @return A HashTable with <module-name> --> Module-instance
      */
     private static synchronized Map<String, Module>  loadModulesFromDisk() {
-        Map<String, Module> results = new HashMap<String, Module>();
+        Map<String, Module> results = new HashMap();
         ResourceLoader moduleLoader = getModuleLoader();
         Collection<String> modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + moduleLoader + " the following module XML's were found " + modules);
         for (String file : modules) {
+            String fileName = ResourceLoader.getName(file);
             ModuleReader parser = null;
             try {
                 InputSource is = moduleLoader.getInputSource(file);
@@ -492,53 +461,32 @@ public abstract class Module extends DescribedFunctionProvider {
                 log.error(e);
             }
             if (parser != null && parser.getStatus().equals("active")) {
-                // obtain module name. Use the filename of the xml if the name property is not set
-                String moduleName = parser.getName();
-                if (moduleName == null) {
-                    moduleName = ResourceLoader.getName(file);
-                }
                 String className = parser.getClassName();
                 // try starting the module and give it its properties
                 try {
-                    log.service("Loading module " + moduleName + " with class " + className);
+                    log.service("Loading module " + fileName + " with class " + className);
                     Module mod;
                     if (parser.getURLString() != null){
                         log.service("loading module from jar " + parser.getURLString());
                         URL url = new URL(parser.getURLString());
                         URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
-                        Class<?> newClass = c.loadClass(className);
-                        try {
-                            Constructor constructor = newClass.getConstructor(String.class);
-                            mod = (Module) constructor.newInstance(moduleName);
-                        } catch (NoSuchMethodException nsme) {
-                            log.warn(nsme);
-                            mod = (Module) newClass.newInstance();
-                            mod.setName(moduleName);
-                        }
+                        Class newClass = c.loadClass(className);
+                        mod = (Module) newClass.newInstance();
                     } else {
-                        Class<?> newClass = Class.forName(className);
-                        try {
-                            Constructor constructor = newClass.getConstructor(String.class);
-                            mod =  (Module) constructor.newInstance(moduleName);
-                        } catch (NoSuchMethodException nsme) {
-                            log.warn(nsme);
-                            mod = (Module) newClass.newInstance();
-                            mod.setName(moduleName);
-                        }
+                        Class newClass = Class.forName(className);
+                        mod = (Module) newClass.newInstance();
                     }
 
-                    mod.configurationPath = ResourceLoader.getName(file);
+                    results.put(fileName, mod);
 
-                    results.put(moduleName, mod);
+                    mod.properties = parser.getProperties();
+
+                    // set the module name property using the module's filename
+                    // maybe we need a parser.getName() function to improve on this
+                    mod.setName(fileName);
 
                     mod.setMaintainer(parser.getMaintainer());
                     mod.setVersion(parser.getVersion());
-                    parser.getLocalizedDescription(mod.getLocalizedDescription());
-                    parser.getLocalizedGUIName(mod.getLocalizedGUIName());
-
-                    mod.properties = parser.getProperties();
-                    mod.loadInitParameters();
-
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
                               "which was specified in the module:'" + file + " '(" + cnfe + ")" );

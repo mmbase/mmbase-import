@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.56 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: HtmlBase.java,v 1.55 2006-09-11 10:44:27 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -135,6 +135,7 @@ public class HtmlBase extends ProcessorModule {
      * show Objects
      */
     public Vector doObjects(scanpage sp, StringTagger tagger) {
+        Object tmp;
         String result=null;
         MMObjectNode node;
         Vector results=new Vector();
@@ -143,7 +144,7 @@ public class HtmlBase extends ProcessorModule {
         String dbsort=tagger.Value("DBSORT");
         String dbdir=tagger.Value("DBDIR");
         MMObjectBuilder bul=mmb.getBuilder(type);
-        long begin=System.currentTimeMillis();
+        long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
             e = bul.search(where);
@@ -175,7 +176,7 @@ public class HtmlBase extends ProcessorModule {
             }
         }
         tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
-        long end=System.currentTimeMillis();
+        long end=(long)System.currentTimeMillis();
         log.debug("doObjects("+type+")="+(end-begin)+" ms");
         return results;
     }
@@ -345,11 +346,11 @@ public class HtmlBase extends ProcessorModule {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    private Vector<Integer> searchNumbers(MMObjectBuilder builder, String where) {
+    private Vector searchNumbers(MMObjectBuilder builder, String where) {
         // In order to support this method:
         // - Exceptions of type SearchQueryExceptions are caught.
         // - The result is converted to a vector.
-        Vector<Integer> results = new Vector<Integer>();
+        Vector results = new Vector();
         NodeSearchQuery query;
         if (where != null && where.startsWith("MMNODE ")) {
             // MMNODE expression.
@@ -361,10 +362,10 @@ public class HtmlBase extends ProcessorModule {
 
         // Wrap in modifiable query, replace fields by just the "number"-field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-        Step step = query.getSteps().get(0);
+        Step step = (Step) query.getSteps().get(0);
         FieldDefs numberFieldDefs = builder.getField(MMObjectBuilder.FIELD_NUMBER);
         StepField field = query.getField(numberFieldDefs);
-        List<StepField> newFields = new ArrayList<StepField>(1);
+        List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
 
@@ -394,8 +395,9 @@ public class HtmlBase extends ProcessorModule {
         MMObjectBuilder bul=null;
         int otype=-1;
         int snode=-1;
+        int onode=-1;
         Vector results=new Vector();
-        Vector<Integer> wherevector=null;
+        Vector wherevector=null;
         String type=tagger.Value("TYPE");
         String where=tagger.Value("WHERE");
 
@@ -490,7 +492,7 @@ public class HtmlBase extends ProcessorModule {
                     if (d==dnumber || s==dnumber) {
                         String result="";
                         int n=inode.getIntValue("number");
-                        MMObjectNode dnode=bul.getNode(""+n);
+                        MMObjectNode dnode=(MMObjectNode)bul.getNode(""+n);
                         if (dnode!=null) {
                             result=dnode.getStringValue(fieldname);
                             if (result!=null && !result.equals("null")) {
@@ -517,6 +519,7 @@ public class HtmlBase extends ProcessorModule {
         // relations it has.
 
         int snumber=-1;
+        int dnumber=-1;
         String bulname=null;
 
         //obtain source number
@@ -589,7 +592,7 @@ public class HtmlBase extends ProcessorModule {
                     if (d==dnumber || s==dnumber) {
                         String result="";
                         int n=inode.getIntValue("number");
-                        MMObjectNode dnode=bul.getNode(""+n);
+                        MMObjectNode dnode=(MMObjectNode)bul.getNode(""+n);
                         if (dnode!=null) {
                             result=dnode.getStringValue(fieldname);
                             if (result!=null && !result.equals("null")) {
@@ -618,6 +621,7 @@ public class HtmlBase extends ProcessorModule {
         MMObjectBuilder bul=null;
         int otype=-1;
         int snode=-1;
+        int onode=-1;
         Vector results=new Vector();
         try {
             String type=tok.nextToken();
@@ -746,8 +750,8 @@ public class HtmlBase extends ProcessorModule {
                 String type = tok.nextToken();
                 int i = mmb.getTypeDef().getIntValue(type);
                 int j = 0;
-                for (Object element : org.mmbase.cache.NodeCache.getCache().values()) {
-                    MMObjectNode n=(MMObjectNode)element;
+                for (Iterator e = org.mmbase.cache.NodeCache.getCache().values().iterator(); e.hasNext();) {
+                    MMObjectNode n=(MMObjectNode)e.next();
                     if (n.getOType()==i) j++;
                 }
                 result = "" + j;
@@ -845,8 +849,8 @@ public class HtmlBase extends ProcessorModule {
         return "no command defined";
     }
 
-    public Hashtable<Integer, MMObjectNode> getSearchHash(Vector se,String mapper) {
-        Hashtable<Integer, MMObjectNode> results=new Hashtable<Integer, MMObjectNode>();
+    public Hashtable getSearchHash(Vector se,String mapper) {
+        Hashtable results=new Hashtable();
         Enumeration t = se.elements();
         MMObjectNode node;
         while (t.hasMoreElements()) {
@@ -869,6 +873,15 @@ public class HtmlBase extends ProcessorModule {
         if (inlist.length() >= 1 ) inlist.setLength(inlist.length()-1);
         inlist.append( ") ");
         return inlist.toString();
+    }
+
+    private String getFile(String file) {
+        String results=null;
+        byte[] buffer=getFileBytes(file);
+        if (buffer!=null) {
+            results=new String(buffer);
+        }
+        return results;
     }
 
     private byte[] getFileBytes(String file) {
@@ -895,9 +908,11 @@ public class HtmlBase extends ProcessorModule {
 
     public Vector doMultiLevel(scanpage sp, StringTagger tagger) throws MultiLevelParseException {
         String result=null,fieldname;
+        Object tmp;
         MMObjectNode node;
+        int snode=-1,onode=-1;
         Integer hash;
-        Vector results=null,nodes;
+        Vector results=null,nodes,wherevector=null;
         Enumeration e,f;
         boolean reload=true;
 
@@ -946,7 +961,7 @@ public class HtmlBase extends ProcessorModule {
                 log.debug("doMultiLevel cache MISS "+hash);
             }
             ClusterBuilder clusterBuilder = mmb.getClusterBuilder();
-            long begin=System.currentTimeMillis(),len;
+            long begin=(long)System.currentTimeMillis(),len;
 
             // strip the fields of their function codes so we can query the needed
             // fields (teasers.number,shorted(episodes.title)
@@ -981,7 +996,7 @@ public class HtmlBase extends ProcessorModule {
             }
 
             multilevel_cache.put(hash,results,type,tagger);
-            long end=System.currentTimeMillis();
+            long end=(long)System.currentTimeMillis();
             len=(end-begin);
             if (len>200) {
                 log.debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp.req_line+")");
@@ -1125,6 +1140,7 @@ public class HtmlBase extends ProcessorModule {
     }
 
     public String doObjects(StringTagger tagger) {
+        Object tmp;
         String result=null;
         MMObjectNode node;
         String results="";
@@ -1134,7 +1150,7 @@ public class HtmlBase extends ProcessorModule {
         String dbdir=tagger.Value("DBDIR");
         //log.debug("TYPE="+type);
         MMObjectBuilder bul=mmb.getBuilder(type);
-        long begin=System.currentTimeMillis();
+        long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
             e = bul.search(where);
@@ -1165,7 +1181,7 @@ public class HtmlBase extends ProcessorModule {
             }
             results+="\n";
         }
-        long end=System.currentTimeMillis();
+        long end=(long)System.currentTimeMillis();
         //log.debug("MMbase -> doObject ("+type+")="+(end-begin)+" ms");
         return results;
     }
@@ -1209,7 +1225,7 @@ public class HtmlBase extends ProcessorModule {
     public String getSearchAge(StringTokenizer tok) {
         String builder=tok.nextToken();
         log.debug("getSearchAge(): BUILDER="+builder);
-        MMObjectBuilder bul=mmb.getBuilder(builder);
+        MMObjectBuilder bul=(MMObjectBuilder)mmb.getBuilder(builder);
         if (bul!=null) {
             return bul.getSearchAge();
         } else {

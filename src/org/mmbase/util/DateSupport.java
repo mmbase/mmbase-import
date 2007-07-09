@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.28 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
  */
 public class DateSupport {
 
@@ -547,6 +547,23 @@ public class DateSupport {
     /**
      * @obsolete Do not use this method ever!!
      */
+    private static long convertStringToLongWithTimeZone(String date, int hour, int minutes) {
+        // Set timezone
+        Calendar calendar = setTimeZone(hour, minutes);
+
+        // Now convert the datestring to calendardate
+        calendar = parseDate(calendar, date);
+
+        // calculate the milliseconds since 1970
+        Date mydate = calendar.getTime();
+
+        // return this calculation
+        return mydate.getTime();
+    }
+
+    /**
+     * @obsolete Do not use this method ever!!
+     */
     private static Calendar setTimeZone(int hours, int minutes) {
         log.warn("obsolete setTimeZone was used!!");
 
@@ -587,17 +604,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
+        cal.set(Calendar.MINUTE, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
+        cal.set(Calendar.SECOND, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
+        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
+        cal.set(Calendar.YEAR, new Integer(token).intValue());
         return (cal);
     }
 
@@ -615,17 +632,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
+        cal.set(Calendar.YEAR, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
+        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
+        cal.set(Calendar.MINUTE, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
+        cal.set(Calendar.SECOND, new Integer(token).intValue());
         return (cal);
     }
 

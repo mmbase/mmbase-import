@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.90 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: Queries.java,v 1.86 2007-02-25 18:12:16 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -212,17 +212,17 @@ abstract public class Queries {
     public static int getOperator(String s) {
         String op = s.toUpperCase();
         // first: determine operator:
-        if (op.equals("<") || op.equals("LESS") || op.equals("LT")) {
+        if (op.equals("<") || op.equals("LESS")) {
             return FieldCompareConstraint.LESS;
-        } else if (op.equals("<=") || op.equals("LESS_EQUAL") || op.equals("LE")) {
+        } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
             return FieldCompareConstraint.LESS_EQUAL;
-        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("") || op.equals("EQ")) {
+        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
             return FieldCompareConstraint.EQUAL;
-        } else if (op.equals("!=") || op.equals("NOT_EQUAL") || op.equals("NE")) {
+        } else if (op.equals("!=") || op.equals("NOT_EQUAL")) {
             return FieldCompareConstraint.NOT_EQUAL;
-        } else if (op.equals(">") || op.equals("GREATER") || op.equals("GT")) {
+        } else if (op.equals(">") || op.equals("GREATER")) {
             return FieldCompareConstraint.GREATER;
-        } else if (op.equals(">=") || op.equals("GREATER_EQUAL") || op.equals("GE")) {
+        } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
             return FieldCompareConstraint.GREATER_EQUAL;
         } else if (op.equals("LIKE")) {
             return FieldCompareConstraint.LIKE;
@@ -438,7 +438,7 @@ abstract public class Queries {
                         Node node = cloud.getNode((String)value);
                         value = Integer.valueOf(node.getNumber());
                     } else {
-                        value = -1; // non existing node number. Integer.parseInt((String) value);
+                        value = Integer.parseInt((String) value);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Iterator i = ((Collection) value).iterator();
@@ -634,14 +634,7 @@ abstract public class Queries {
             SortOrder sortOrder = (SortOrder) i.next();
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
-            if (sortOrder instanceof DateSortOrder) {
-                query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
-                                   sortOrder.isCaseSensitive(),
-                                   ((DateSortOrder)sortOrder).getPart());
-            } else {
-                query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
-                                   sortOrder.isCaseSensitive());
-            }
+            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());
         }
     }
 

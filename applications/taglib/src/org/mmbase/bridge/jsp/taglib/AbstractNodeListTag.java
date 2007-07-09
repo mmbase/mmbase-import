@@ -11,13 +11,14 @@ package org.mmbase.bridge.jsp.taglib;
 
 
 import java.util.*;
+import org.mmbase.util.Casting;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.jstl.core.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
@@ -29,11 +30,10 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.78 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.76 2006-09-05 11:55:01 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
-
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 
     private static final int QUERY_WARN_SIZE = 1000;
@@ -63,7 +63,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     private Query generatingQuery;
 
-    protected BridgeList<Node> getReturnList() {
+    protected NodeList getReturnList() {
         return listHelper.getReturnList();
     }
 
@@ -148,7 +148,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected static class NodesAndTrim {
         boolean  needsTrim;
-        BridgeList<Node> nodeList;
+        NodeList nodeList;
     }
 
     protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
@@ -217,10 +217,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
-            if (o instanceof Collection) {
-                o  = new CollectionNodeList((Collection) o, getCloudVar());
-            } else {
-                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList (or some other Collection of Nodes), but" + (o == null ? "NULL" : "a " + o.getClass()));
+            if (! (o instanceof NodeList)) {
+                if (o instanceof Collection) {
+                    NodeList list = getCloudVar().createNodeList();
+                    list.addAll((Collection) o);
+                    o = list;
+                } else {
+                    throw new JspTagException("Context variable " + getReferid() + " is not a NodeList (or some other Collection of Nodes), but" + (o == null ? "NULL" : "a " + o.getClass()));
+                }
             }
             if (orderby != Attribute.NULL) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
@@ -235,7 +239,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
             }
-            return setReturnValues((BridgeList<Node>) o, true);
+            return setReturnValues((NodeList) o, true);
         }
         return NOT_HANDLED;
     }
@@ -249,7 +253,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  list is empty. THis value should be passed as the result of {
      *  @link #doStartTag}.
      */
-    protected int setReturnValues(BridgeList<Node> nodes) throws JspTagException {
+    protected int setReturnValues(NodeList nodes) throws JspTagException {
         return setReturnValues(nodes, false);
     }
 
@@ -264,14 +268,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
      *  list is empty. This value should be passed as the result of {@link #doStartTag}.
      */
-    protected int setReturnValues(BridgeList<Node> nodes, boolean trim) throws JspTagException {
+    protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
         Query query = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
 
         if (query != null) {
             // get changeOn value for mm:changed tag
-            List<SortOrder> ls = query.getSortOrders();
+            List ls = query.getSortOrders();
             if (ls.size() > 0) {
-                StepField sf= ls.get(0).getField();
+                StepField sf= ((SortOrder)ls.get(0)).getField();
                 if (query instanceof NodeQuery) {
                     nodes.setProperty("orderby", sf.getFieldName());
                 } else {

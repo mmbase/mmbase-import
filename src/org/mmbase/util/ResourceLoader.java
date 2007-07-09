@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.50 2007-06-22 12:46:48 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.41 2006-09-13 09:47:36 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -143,7 +143,7 @@ public class ResourceLoader extends ClassLoader {
      */
     protected static final String INDEX = "INDEX";
 
-    private static  ResourceLoader configRoot = null;
+    public static  ResourceLoader configRoot = null;
     private static  ResourceLoader webRoot = null;
     private static  ResourceLoader systemRoot = null;
     private static ServletContext  servletContext = null;
@@ -207,6 +207,9 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
+    private List<PathURLStreamHandler> roots;
+
+
     static {
         // make sure it works a bit before servlet-startup.
         init(null);
@@ -249,7 +252,7 @@ public class ResourceLoader extends ClassLoader {
      */
     public static String getName(String path) {
         //avoid NullPointerException in util method
-        if (path == null) {
+        if (path == null){
             return null;
         }
         int i = path.lastIndexOf('/');
@@ -290,7 +293,7 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
         if (path.length() > 0 && path.charAt(path.length() - 1) == '/') path = path.substring(0, path.length() - 1);
-
+        String dir = getDirectory(path);
         int i = path.lastIndexOf('/');
         path = path.substring(i + 1);
         if (path.length() > 0 && path.charAt(0) == '/') path = path.substring(1);
@@ -373,8 +376,8 @@ public class ResourceLoader extends ClassLoader {
             systemRoot = new ResourceLoader();
             systemRoot.roots.add(systemRoot.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
             File[] roots = File.listRoots();
-            for (File element : roots) {
-                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(element, true));
+            for (int i = 0; i <roots.length; i++) {
+                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(roots[i], true));
             }
 
         }
@@ -422,20 +425,17 @@ public class ResourceLoader extends ClassLoader {
         return  ResourceLoader.getWebRoot().getChildResourceLoader(request.getServletPath()).getParentResourceLoader();
     }
 
+
     /**
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
      */
-    private final URL context;
+    private URL context;
 
 
     /**
      * Child resourceloaders have a parent.
      */
-    private final ResourceLoader parent;
-
-
-    private final List<PathURLStreamHandler> roots;
-
+    private ResourceLoader parent = null;
 
     /**
      * This constructor instantiates a new root resource-loader. This constructor is protected (so you may use it in an extension), but normally use:
@@ -444,7 +444,6 @@ public class ResourceLoader extends ClassLoader {
     protected ResourceLoader() {
         super();
         roots        = new ArrayList<PathURLStreamHandler>();
-        parent       = null;
         try {
             context = newURL(PROTOCOL + ":/");
         } catch (MalformedURLException mue) {
@@ -461,8 +460,10 @@ public class ResourceLoader extends ClassLoader {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
         roots   = new ArrayList<PathURLStreamHandler>();
-        for (PathURLStreamHandler o : cl.roots) {
+        Iterator i = cl.roots.iterator();
         // hmm, don't like this code, but don't know how else to copy the inner object.
+        while (i.hasNext()) {
+            Object o = i.next();
             if (o instanceof FileURLStreamHandler) {
                 roots.add(new FileURLStreamHandler((FileURLStreamHandler) o));
             } else if (o instanceof NodeURLStreamHandler) {
@@ -557,7 +558,7 @@ public class ResourceLoader extends ClassLoader {
             return Collections.list(getResources(name));
         } catch (IOException io) {
             log.warn(io);
-            return Collections.emptyList();
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -598,8 +599,8 @@ public class ResourceLoader extends ClassLoader {
         }
         String [] dirs = context.split("/");
         ResourceLoader rl = this;
-        for (String element : dirs) {
-            rl =  new ResourceLoader(rl, element);
+        for (int i = 0; i < dirs.length; i++) {
+            rl =  new ResourceLoader(rl, dirs[i]);
         }
         return rl;
 
@@ -631,11 +632,13 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getChildContexts(Pattern, boolean)}
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
-     * @param directories {@link #getChildContexts(Pattern, boolean)} supplies <code>true</code> {@link #getResourcePaths(Pattern, boolean)} supplies <code>false</code>
+     * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
      */
     protected Set<String> getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
         Set<String> results = new TreeSet<String>(); // a set with fixed iteration order
-        for (PathURLStreamHandler cf : roots) {
+        Iterator i = roots.iterator();
+        while (i.hasNext()) {
+            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
             cf.getPaths(results, pattern, recursive, directories);
         }
         return results;
@@ -693,7 +696,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
-     * configuration is in XML.
+     * configuration in in XML.
      *
      * @param name The name of the resource to be loaded
      * @return The Document if succesful, <code>null</code> if there is no such resource.
@@ -706,16 +709,16 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
-     * configuration is in XML.
+     * configuration in in XML.
      *
      * @param name The name of the resource to be loaded
      * @param validation If <code>true</code>, validate the xml. By dtd if one of the first lines starts with &lt;!DOCTYPE, by XSD otherwise
-     * @param baseClass If validation is <code>true</code>, the base class to search for the validating xsd or dtd
+     * @param baseClass If validation is <code>true</code>, the base class to serach for the validating xsd or dtd
      * @return The Document if succesful, <code>null</code> if there is no such resource.
      * @throws SAXException If the resource does not present parseable XML.
      * @throws IOException
      */
-    public Document getDocument(String name, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException  {
+    public Document getDocument(String name, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException  {
         return getDocument(getResource(name), validation, baseClass);
     }
 
@@ -723,7 +726,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Static version of {@link #getDocument(String, boolean, Class)}, can e.g. be used in combination with {@link #getResourceList(String)}
      */
-    public static Document getDocument(URL url, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException {
+    public static Document getDocument(URL url, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException {
         boolean xsd = validation;
         if (validation) {
             // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
@@ -762,7 +765,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             }
         }
-
+        
     }
 
     /**
@@ -887,15 +890,9 @@ public class ResourceLoader extends ClassLoader {
      * @return A List of all files associated with the resource.
      */
     public List<File> getFiles(String name) {
-        List<File> result = new ArrayList<File>();
-        if (name.startsWith("file://")) {
-            try {
-                result.add(new File(new URL(name).getFile()));
-                return result;
-            } catch (MalformedURLException mfue) {
-                log.warn(mfue);
-            }
-        }
+
+
+        List<File> result = new ArrayList();
         for (PathURLStreamHandler o : roots) {
             if (o instanceof FileURLStreamHandler) {
                 result.add(((FileURLStreamHandler) o).getFile(name));
@@ -911,9 +908,11 @@ public class ResourceLoader extends ClassLoader {
      *         Used by {@link ResourceWatcher}.
      */
     Node getResourceNode(String name) {
-        for (PathURLStreamHandler o : roots) {
+        Iterator i = roots.iterator();
+        while (i.hasNext()) {
+            Object o = i.next();
             if (o instanceof NodeURLStreamHandler) {
-                return ((NodeConnection) o.openConnection(name)).getResourceNode();
+                return ((NodeConnection) (((PathURLStreamHandler) o).openConnection(name))).getResourceNode();
             }
         }
         return null;
@@ -926,7 +925,9 @@ public class ResourceLoader extends ClassLoader {
         long lastModified = -1;
         URL  usedUrl = null;
 
-        for (PathURLStreamHandler cf : roots) {
+        Iterator i = roots.iterator();
+        while (i.hasNext()) {
+            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
             URLConnection con = cf.openConnection(name);
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
@@ -950,7 +951,9 @@ public class ResourceLoader extends ClassLoader {
      * @throws IllegalArgumentException if <code>file</code> is not a file associated with the resource with given name.
      */
     URL shadowed(File f, String name) {
-        for (PathURLStreamHandler cf : roots) {
+        Iterator i = roots.iterator();
+        while (i.hasNext()) {
+            PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
             if (cf instanceof NodeURLStreamHandler) {
                 URLConnection con = cf.openConnection(name);
                 if (con.getDoInput()) {
@@ -968,19 +971,6 @@ public class ResourceLoader extends ClassLoader {
                         } catch (MalformedURLException mfue) {
                             assert false : mfue;
                         }
-                    }
-                }
-            }
-        }
-        for (File file : getFiles(name)) {
-            if (file.equals(f)) {
-                return null;
-            } else {
-                if (file.exists()) {
-                    try {
-                        return file.toURL(); // f is shadowed!
-                    } catch (MalformedURLException mfue) {
-                        assert false : mfue;
                     }
                 }
             }
@@ -1068,8 +1058,8 @@ public class ResourceLoader extends ClassLoader {
 
 
     protected  class FileURLStreamHandler extends PathURLStreamHandler {
-        private final File fileRoot;
-        private final boolean writeable;
+        private File fileRoot;
+        private boolean writeable;
         FileURLStreamHandler(File root, boolean w) {
             fileRoot = root;
             writeable = w;
@@ -1112,10 +1102,10 @@ public class ResourceLoader extends ClassLoader {
             }
             return new FileConnection(u, getFile(name), writeable);
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
-        private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         File f = new File(dir, name);
@@ -1127,13 +1117,13 @@ public class ResourceLoader extends ClassLoader {
             if (f.isDirectory()) { // should always be true
                 File [] files = f.listFiles(filter);
                 if (files == null) return results;
-                for (File element : files) {
-                    if (element.getName().equals("")) continue;
-                    if (recursive != null && element.isDirectory()) {
-                        getPaths(results, pattern, recursive + element.getName() + "/", directories);
+                for (int j = 0; j < files.length; j++) {
+                    if (files[j].getName().equals("")) continue;
+                    if (recursive != null && files[j].isDirectory()) {
+                        getPaths(results, pattern, recursive + files[j].getName() + "/", directories);
                     }
-                    if (element.canRead() && (directories == element.isDirectory())) {
-                        results.add((recursive == null ? "" : recursive) + element.getName());
+                    if (files[j].canRead() && (directories == files[j].isDirectory())) {
+                        results.add((recursive == null ? "" : recursive) + files[j].getName());
                     }
 
                 }
@@ -1157,8 +1147,8 @@ public class ResourceLoader extends ClassLoader {
      * rights) and deleting by <code>getOutputStream().write(null)</code>
      */
     private class FileConnection extends URLConnection {
-        private final File file;
-        private final boolean writeable;
+        private File file;
+        private boolean writeable;
         FileConnection(URL u, File f, boolean w) {
             super(u);
             this.file = f;
@@ -1252,7 +1242,7 @@ public class ResourceLoader extends ClassLoader {
      * URLStreamHandler for NodeConnections.
      */
     protected class NodeURLStreamHandler extends PathURLStreamHandler {
-        private final int type;
+        private int type;
         NodeURLStreamHandler(int type) {
             this.type    = type;
         }
@@ -1272,11 +1262,11 @@ public class ResourceLoader extends ClassLoader {
             }
             return new NodeConnection(u, name, type);
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
-                    Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  type);
+                    Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  new Integer(type));
                     Constraint nameConstraint = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("LIKE"),  ResourceLoader.this.context.getPath().substring(1) + "%");
 
                     BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
@@ -1285,7 +1275,9 @@ public class ResourceLoader extends ClassLoader {
 
 
                     query.setConstraint(constraint);
-                    for (Node node :  resourceBuilder.getList(query)) {
+                    Iterator i = resourceBuilder.getList(query).iterator();
+                    while (i.hasNext()) {
+                        Node node = (Node) i.next();
                         String url = node.getStringValue(RESOURCENAME_FIELD);
                         String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
                         int pos = subUrl.indexOf('/');
@@ -1327,8 +1319,8 @@ public class ResourceLoader extends ClassLoader {
      */
     private class NodeConnection extends URLConnection {
         Node node;
-        final String name;
-        final int type;
+        String name;
+        int type;
         NodeConnection(URL url, String name, int t) {
             super(url);
             this.name = name;
@@ -1352,16 +1344,16 @@ public class ResourceLoader extends ClassLoader {
                 try {
                     NodeQuery query = resourceBuilder.createQuery();
                     Constraint constraint1 = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("="), realName);
-                    Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), type);
+                    Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), new Integer(type));
 
                     BasicCompositeConstraint  constraint  = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
                     constraint.addChild(constraint1);
                     constraint.addChild(constraint2);
 
                     query.setConstraint(constraint);
-                    Iterator<Node> i = resourceBuilder.getList(query).iterator();
+                    Iterator i = resourceBuilder.getList(query).iterator();
                     if (i.hasNext()) {
-                        node = i.next();
+                        node = (Node) i.next();
                         return node;
                     }
                 } catch (BridgeException sqe) {
@@ -1378,7 +1370,7 @@ public class ResourceLoader extends ClassLoader {
         public boolean getDoOutput() {
             getResourceNode();
             return
-                (node != null && node.mayWrite()) ||
+                (node != null && node.mayWrite()) || 
                 (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
         }
 
@@ -1475,49 +1467,40 @@ public class ResourceLoader extends ClassLoader {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        public Set getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (log.isDebugEnabled()) {
                 log.debug("Getting " + (directories ? "directories" : "files") + " matching '" + pattern + "' in '" + root + "'");
             }
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
 
-        private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
+        private  Set getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + ResourceLoader.this.context.getPath();
-                    final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
-                    final Collection<String> c = servletContext.getResourcePaths(resourcePath);
-
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("CurrentRoot '" + currentRoot + "' resourcePath '" + resourcePath + "' c: " + c);
-                    }
-
+                    String currentRoot  = root + ResourceLoader.this.context.getPath();
+                    String resourcePath = currentRoot + (recursive == null ? "" : recursive);
+                    Collection c = servletContext.getResourcePaths(resourcePath);
                     if (c == null) return results;
-
-                    for (String res : c) {
-                        log.trace(res);
+                    Iterator j = c.iterator();
+                    while (j.hasNext()) {
+                        String res = (String) j.next();
                         if (res.equals(resourcePath + "/")) {
                             // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
                             continue;
                         }
 
                         String newResourcePath = res.substring(currentRoot.length());
-                        final boolean isDir = newResourcePath.endsWith("/");
+                        boolean isDir = newResourcePath.endsWith("/");
                         if (isDir) {
-                            newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1);
                             // subdirs
                             if (recursive != null) {
-                                getPaths(results, pattern, newResourcePath, directories);
+                                getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
                             }
-                            if (newResourcePath.equals("")) continue;
+                            if (newResourcePath.equals("/")) continue;
                         }
-                        if ((pattern == null || pattern.matcher("/" + newResourcePath).matches()) && (directories == isDir)) {
-                            log.debug("Adding " + newResourcePath);
+                        if ((pattern == null || pattern.matcher(newResourcePath).matches()) && (directories == isDir)) {
+                            if (isDir) newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1) ;
                             results.add(newResourcePath);
-                        } else {
-                            log.debug(newResourcePath + " does not match " + pattern);
                         }
                     }
                 } catch (NoSuchMethodError nsme) {
@@ -1530,12 +1513,9 @@ public class ResourceLoader extends ClassLoader {
                     // old app-server (orion 1.5.4: java.lang.NoSuchMethodError: javax.servlet.ServletContext.getResourcePaths(Ljava/lang/String;)Ljava/util/Set;)
                     // simply ignore, running on war will not work in such app-servers
                 } catch (Throwable t) {
-                    log.error(t.getMessage(), t);
+                    log.error(Logging.stackTrace(t));
                     // ignore
                 }
-            }
-            if (log.isTraceEnabled()) {
-                log.trace("Returning " + results);
             }
             return results;
         }
@@ -1591,7 +1571,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             } catch (Throwable t) {
                 log.warn(t);
-                return Collections.enumeration( Collections.EMPTY_LIST);
+                return Collections.enumeration(Collections.EMPTY_LIST);
             }
         }
         public URLConnection openConnection(String name) {
@@ -1611,9 +1591,9 @@ public class ResourceLoader extends ClassLoader {
             return getPaths(results, pattern, recursive, directories, "", null);
         }
 
-        private Set<String> getPaths(final Set<String> results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
+        private Set<String> getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
-                List<String> subDirs = new ArrayList<String>();
+                List subDirs = new ArrayList();
                 Enumeration<URL> e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
                 if (searchUp != null && resourceDir.startsWith("..")) resourceDir = "";
                 while (e.hasMoreElements()) {
@@ -1660,7 +1640,8 @@ public class ResourceLoader extends ClassLoader {
                     }
                 }
                 if (recursive) {
-                    for (String dir: subDirs) {
+                    for (Iterator iter = subDirs.iterator(); iter.hasNext();) {
+                        String dir = (String) iter.next();
                         String newDir = "".equals(resourceDir) ? dir : resourceDir + dir;
                         getPaths(results, pattern, recursive, directories, newDir, null);
                     }
@@ -1738,7 +1719,7 @@ public class ResourceLoader extends ClassLoader {
      */
     private class NotAvailableConnection extends URLConnection {
 
-        private final String name;
+        private String name;
 
         private NotAvailableConnection(URL u, String n) {
             super(u);
@@ -1785,7 +1766,7 @@ public class ResourceLoader extends ClassLoader {
 
         URLConnection inputConnection  = null;
         URLConnection outputConnection = null;
-        final String name;
+        String name;
 
 
         MMURLConnection(URL u) {
@@ -1811,7 +1792,9 @@ public class ResourceLoader extends ClassLoader {
             if (inputConnection != null) {
                 return inputConnection;
             }
-            for(PathURLStreamHandler cf : ResourceLoader.this.roots) {
+            Iterator i = ResourceLoader.this.roots.iterator();
+            while(i.hasNext()) {
+                PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
                 URLConnection c = cf.openConnection(name);
                 if (c.getDoInput()) {
                     inputConnection = c;
@@ -1855,9 +1838,9 @@ public class ResourceLoader extends ClassLoader {
             }
 
             // search connection which will be used for reading, and check if it can be used for writing
-            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();            
+            ListIterator i = ResourceLoader.this.roots.listIterator();
             while (i.hasNext()) {
-                PathURLStreamHandler cf = i.next();
+                PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
                 URLConnection c = cf.openConnection(name);
                 if (c.getDoInput()) {
                     if(c.getDoOutput()) { // prefer the currently read one.
@@ -1870,7 +1853,7 @@ public class ResourceLoader extends ClassLoader {
                 // the URL used for reading, could not be written.
                 // Now iterate backwards, and search one which can be.
                 while (i.hasPrevious()) {
-                    PathURLStreamHandler cf = i.previous();
+                    PathURLStreamHandler cf = (PathURLStreamHandler) i.previous();
                     URLConnection c = cf.openConnection(name);
                     if (c.getDoOutput()) {
                         outputConnection = c;
@@ -1947,8 +1930,9 @@ public class ResourceLoader extends ClassLoader {
                 arg = argv[1];
             }
             if (arg.equals("*") || arg.equals("**")) {
-                for (String s : resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**"))) {
-                    System.out.println("" + s);
+                Iterator i = resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**")).iterator();
+                while (i.hasNext()) {
+                    System.out.println("" + i.next());
                 }
             } else {
                 InputStream resource = resourceLoader.getResourceAsStream(arg);

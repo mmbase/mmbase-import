@@ -60,18 +60,18 @@ public class Controller {
      *
      * @return    The providerHandlers value
      */
-    public List<MMObjectNode> getProviderHandlers() {
+    public List getProviderHandlers() {
         // get the current provider handlers we have installed
-        HashMap<String, String> providerhandlers = ProviderManager.getProviderHandlers();
+        HashMap providerhandlers = ProviderManager.getProviderHandlers();
 
         // create a result list
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator<String> e = providerhandlers.keySet().iterator();
+        Iterator e = providerhandlers.keySet().iterator();
         while (e.hasNext()) {
-            String key = e.next();
-            String value = providerhandlers.get(key);
+            String key = (String) e.next();
+            String value = (String) providerhandlers.get(key);
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", key);
@@ -133,8 +133,8 @@ public class Controller {
      * @param  url  The feature to be added to the SubscribeProvider attribute
      * @return      Description of the Return Value
      */
-    public List<MMObjectNode> addSubscribeProvider(String url) {
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+    public List addSubscribeProvider(String url) {
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
@@ -156,8 +156,8 @@ public class Controller {
      * @param  path  The feature to be added to the DiskProvider attribute
      * @return       Description of the Return Value
      */
-    public List<MMObjectNode> addDiskProvider(String name, String path) {
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+    public List addDiskProvider(String name, String path) {
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
@@ -176,18 +176,18 @@ public class Controller {
      *
      * @return    The providers value
      */
-    public List<MMObjectNode> getProviders() {
+    public List getProviders() {
         // signal action to for package discovery
         ProviderManager.resetSleepCounter();
 
         // get the current providers
-        Iterator<ProviderInterface> providers = ProviderManager.getProviders();
+        Iterator providers = ProviderManager.getProviders();
 
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (providers.hasNext()) {
-            ProviderInterface provider = providers.next();
+            ProviderInterface provider = (ProviderInterface) providers.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("method", provider.getMethod());
             virtual.setValue("name", provider.getName());
@@ -205,11 +205,11 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The providerInfo value
      */
-    public List<MMObjectNode> getProviderInfo(String name) {
+    public List getProviderInfo(String name) {
         // get the current providers
         ProviderInterface provider = ProviderManager.get(name);
 
-        List<MMObjectNode> list = new ArrayList<MMObjectNode>();
+        List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         MMObjectNode virtual = builder.getNewNode("admin");

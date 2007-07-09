@@ -44,7 +44,7 @@ public class CommandLauncher {
      * Counts how many comands are launched
      * Also used for () identification
      */
-    private static int counter = 0;
+    protected static int counter = 0;
 
     /**
      * The process object representing the external process
@@ -447,8 +447,8 @@ public class CommandLauncher {
      */
     public void printCommandLine(String[] commandArgs) {
         StringBuffer buf = new StringBuffer();
-        for (String element : commandArgs) {
-            buf.append(element);
+        for (int i = 0; i < commandArgs.length; i++) {
+            buf.append(commandArgs[i]);
             buf.append(' ');
         }
         buf.append(lineSeparator);

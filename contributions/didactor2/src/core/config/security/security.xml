@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE security PUBLIC "-//MMBase/DTD security config 1.0//EN" "http://www.mmbase.org/dtd/security_1_0.dtd">
-<security active="true">
-  <key>1234</key>
-  <authentication class="nl.didactor.security.Authentication" />
-  <!-- the following one provides hardly any node-authorization, it is mainly to be able to add preDelete.-->
-  <authorization  class="nl.didactor.security.Authorization" />
-</security>

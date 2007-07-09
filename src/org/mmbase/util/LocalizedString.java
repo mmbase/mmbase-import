@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.31 2007-05-23 13:19:59 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.26 2006-08-30 20:37:33 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -203,8 +203,8 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * Returns a Map representation of the localisation setting represented by this
      * LocalizedString. It is an unmodifiable mapping: Locale -> localized value.
      */
-    public Map<Locale, String> asMap() {
-        if (values == null) return Collections.emptyMap();
+    public Map asMap() {
+        if (values == null) return Collections.EMPTY_MAP;
         return Collections.unmodifiableMap(values);
     }
 
@@ -224,7 +224,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * For LocalizedString this returns the String for the default Locale (see {@link #getDefault}).
      */
     public String toString() {
-        return get((Locale) null);
+        return get(null);
     }
 
 
@@ -246,7 +246,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         Locale loc = null;
         if (xmlLang != null && (! xmlLang.equals(""))) {
 
-            String[] split = xmlLang.split("[-_]", 3);
+            String[] split = xmlLang.split("-");
             if (split.length == 1) {
                 loc = new Locale(split[0]);
             } else if (split.length == 2) {
@@ -257,51 +257,6 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         }
         return loc;
     }
-
-    /**
-     * Degrades a Locale object to a more general Locale. Principally this means that first the
-     * 'variant' will be dropped and then the country. As an extra the 'variant' is also degraded
-     * progressively. This is done by taking away parts (from the end) which are separated by
-     * underscore characters. Also, after degrading the country, also locales are tried with no
-     * country, but with a variant only.
-     * So e.g. nl_BE_a_b is degraded to nl_BE_a, then nl_BE, then nl__a_b, then nl__a, then nl.
-     *
-     * @param locale The locale to be degraded
-     * @param originalLocale The original locale (used to find back the original variant after
-     * dropping the country)
-     * @return A degraded Locale of <code>null</code> if the locale could not be degraded any further.
-     *
-     * @since MMBase-1.8.5
-     */
-    public static Locale degrade(Locale locale, Locale originalLocale) {
-        String language = locale.getLanguage();
-        String country  = locale.getCountry();
-        String variant  = locale.getVariant();
-        if (variant != null && ! "".equals(variant)) {
-            String[] var = variant.split("_");
-            if (var.length > 1) {
-                StringBuilder v = new StringBuilder(var[0]);
-                for (int i = 1; i < var.length - 1; i++) {
-                    v.append('_');
-                    v.append(var[i]);
-                }
-                return new Locale(language, country, v.toString());
-            } else {
-                return new Locale(language, country);
-            }
-        }
-        if (! "".equals(country)) {
-            String originalVariant = originalLocale.getVariant();
-            if (originalVariant  != null && ! "".equals(originalVariant)) {
-                return new Locale(language, "", originalVariant);
-            } else {
-                return new Locale(language);
-            }
-        }
-        // cannot be degraded any more.
-        return null;
-    }
-
 
     /**
      * This utility determines the value of an xml:lang attribute. So, given a {@link java.util.Locale}
@@ -343,7 +298,6 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      */
 
     public void fillFromXml(final String tagName, final Element element) {
-        if (element == null) return;
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {

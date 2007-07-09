@@ -591,7 +591,8 @@ public class SearchUtil {
     public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List<String> types) {
         Cloud cloud = query.getCloud();
         SortedSet<Integer> set = new TreeSet<Integer>();
-        for (String type : types) {
+        for (Iterator<String> iter = types.iterator(); iter.hasNext();) {
+            String type = iter.next();
             NodeManager manager = cloud.getNodeManager(type);
             set.add(manager.getNumber());
         }

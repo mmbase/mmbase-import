@@ -37,8 +37,8 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        HashMap h = new HashMap();
         h.put("escape_url".toUpperCase(), new Config(Url.class, ESCAPE));
         h.put("escape_url_param".toUpperCase(), new Config(Url.class, PARAM_ESCAPE));
         return h;

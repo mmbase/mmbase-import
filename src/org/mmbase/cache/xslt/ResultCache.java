@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.12 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: ResultCache.java,v 1.10 2006-09-04 12:53:51 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache<String, String> {
@@ -49,7 +49,7 @@ public class ResultCache extends Cache<String, String> {
 
     static {
         cache = new ResultCache(cacheSize);
-        cache.putCache();
+        putCache(cache);
     }
 
     public String getName() {
@@ -138,7 +138,7 @@ public class ResultCache extends Cache<String, String> {
             if (log.isDebugEnabled()) {
                 log.debug("Getting result of XSL transformation: " + key);
             }
-            result = get(key);
+            result = (String) get(key);
         }
         if (result == null) {
             try {

@@ -11,6 +11,10 @@ package org.mmbase.util.transformers;
 
 import java.util.*;
 import java.io.*;
+import java.util.regex.*;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.*;
 
@@ -90,9 +94,9 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     protected class Status {
         int replaced = 0;
-        Set<Object> used = null;
+        Set used = null;
         {
-            if (replaceFirstAll) used = new HashSet<Object>();
+            if (replaceFirstAll) used = new HashSet();
         }
     }
     protected Status newStatus() {
@@ -291,9 +295,6 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                     w.write(line);
                 }
                 line = reader.readLine();
-                if (line != null) {
-                    w.write("\n");
-                }
             }
         } catch (java.io.IOException e) {
             log.error(e.toString());
@@ -349,8 +350,8 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         }
     }
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put(base() + "_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
         h.put(base() + "_XMLTEXT",        new Config(RegexpReplacer.class, XMLTEXT,  "Search and replaces regexps, only in XML text() blocks."));
         h.put(base() + "_WORDS",          new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
@@ -360,37 +361,6 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         return Collections.unmodifiableMap(h);
     }
 
-    public static void main(String [] argv) {
-        CharTransformer trans = new ChunkedTransformer(XMLTEXT) {
-                protected boolean replace(String string, Writer w, Status status) throws IOException {
-                    w.write(string);
-                    return false;
-                }
-                protected String base() {
-                    return "test";
-                }
-            };
-        CharTransformer trans2 = new BufferedReaderTransformer() {
-                protected void transform(PrintWriter bw, String line) {
-                    bw.println(line);
-                }
-            };
-        long startTime = System.currentTimeMillis();
-        if (argv.length > 0) {
-            if("buf1".equals(argv[0])) {
-                trans.transform(new BufferedReader(new InputStreamReader(System.in)), new BufferedWriter(new OutputStreamWriter(System.out)));
-            } else if ("buf2".equals(argv[0])) {
-                trans2.transform(new InputStreamReader(System.in), new BufferedWriter(new OutputStreamWriter(System.out)));
-            } else {
-                System.err.println("Don't understand '" + argv[0] + "'");
-            }
-        } else {
-            trans.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
-        }
-        long duration = System.currentTimeMillis() - startTime;
-        System.err.println("Converstion took " + duration + " ms");
-        
-        
-    }
+
 
 }

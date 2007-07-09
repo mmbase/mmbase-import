@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  * Who tag, provides functionality for listing users of a channel.
  *
  * @author Pierre van Rooden
- * @version $Id: WhoTag.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: WhoTag.java,v 1.12 2005-01-30 16:46:35 nico Exp $
  */
  
 public class WhoTag extends AbstractNodeListTag {
@@ -44,7 +44,7 @@ public class WhoTag extends AbstractNodeListTag {
             channel = n.getStringValue("number");
         }
 
-        Hashtable<String, Object> params=new Hashtable<String, Object>();
+        Hashtable params=new Hashtable();
         params.put("CHANNEL",channel);
         try {
             Cloud cloud=getCloudVar();

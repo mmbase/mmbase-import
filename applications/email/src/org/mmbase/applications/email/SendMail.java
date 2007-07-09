@@ -15,7 +15,6 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.naming.*;
 
-import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.26 2007-07-02 17:27:54 nklasens Exp $
+ * @version $Id: SendMail.java,v 1.18 2006-08-03 08:57:10 johannes Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -40,10 +39,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
     /**
      */
-    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) {
-        if (log.isServiceEnabled()) {
-            log.service("Sending (multipart) mail to " + to);
-        }
+    public boolean sendMultiPartMail(String from, String to, Map headers, MimeMultipart mmpart) {
         try {
 
             MimeMessage msg = constructMessage(from, to, headers);
@@ -58,7 +54,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         } catch (javax.mail.MessagingException e) {
             emailFailed++;
             log.error("JMimeSendMail failure: " + e.getMessage());
-            log.debug(e);
+            log.debug(Logging.stackTrace(e));
         }
         return false;
     }
@@ -67,11 +63,11 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      * {@inheritDoc}
      */
     public String getModuleInfo() {
-        return "Sends mail through J2EE/JavaMail, supporting MultiPart";
+        return ("Sends mail through J2EE/JavaMail, supporting MultiPart");
     }
 
 
-    protected Session session;
+    private Session session;
 
     /**
      */
@@ -87,23 +83,21 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             MMBase mmb = MMBase.getMMBase();
             mailEncoding = mmb.getEncoding();
             String encoding = getInitParameter("encoding");
-            if (encoding != null && !encoding.equals("")) {
+            if (encoding != null && !encoding.equals(""))
                 mailEncoding = encoding;
-            }
 
             String smtpHost = getInitParameter("mailhost");
-            String smtpPort = getInitParameter("mailport");
-
-            String userName  = getInitParameter("user");
-            String password  = getInitParameter("password");
-
             String context = getInitParameter("context");
             String dataSource = getInitParameter("datasource");
             session = null;
-            if (dataSource == null) {
+            if (smtpHost == null) {
                 if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
+                }
+                if (dataSource == null) {
+                    dataSource = "mail/Session";
+                    log.warn("The property 'datasource' is missing, taking default " + dataSource);
                 }
 
                 Context initCtx = new InitialContext();
@@ -123,24 +117,22 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 if (dataSource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
+                log.info(
+                    "EMail module is configured using 'mailhost' property.\n"
+                        + "Consider using J2EE compliant 'context' and 'datasource'\n"
+                        + "Which means to put something like this in your web.xml:\n"
+                        + "  <resource-ref>\n"
+                        + "     <description>Email module mail resource</description>\n"
+                        + "     <res-ref-name>mail/MMBase</res-ref-name>\n"
+                        + "     <res-type>javax.mail.Session</res-type>\n"
+                        + "     <res-auth>Container</res-auth>\n"
+                        + "  </resource-ref>\n"
+                        + " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)");
 
                 Properties prop = System.getProperties();
-                StringBuilder buf = new StringBuilder(smtpHost);
                 prop.put("mail.smtp.host", smtpHost);
-
-                if (smtpPort != null && smtpPort.trim().length() > 0) {
-                    prop.put("mail.smtp.port", smtpPort);
-                    buf.append(':').append(smtpPort);
-                }
-                // When username and password are specified, turn on smtp authentication.
-                boolean smtpAuth = userName != null && userName.trim().length() != 0 && password != null;
-                prop.setProperty("mail.smtp.auth", Boolean.toString(smtpAuth));
-                if (smtpAuth) buf.insert(0, userName + "@");
-
-                session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
-
-                log.info("Module SendMail started SMTP: " + buf);
+                session = Session.getInstance(prop, null);
+                log.info("Module SendMail started (smtphost = " + smtpHost + ")");
             }
 
         } catch (javax.naming.NamingException e) {
@@ -152,7 +144,10 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
-    protected MimeMessage constructMessage(String from, String to, Map<String, String> headers) throws MessagingException {
+    protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
+        if (log.isServiceEnabled()) {
+            log.service("SendMail sending mail to " + to);
+        }
         // construct a message
         MimeMessage msg = new MimeMessage(session);
         if (from != null && !from.equals("")) {
@@ -161,22 +156,18 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
         msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
-        String cc = headers.get("CC");
-        if (cc != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+        if (headers.get("CC") != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("CC")));
         }
-        String bcc = headers.get("BCC");
-        if (bcc != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(bcc));
+        if (headers.get("BCC") != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("BCC")));
         }
 
-        String replyTo = headers.get("Reply-To");
-        if (replyTo != null) {
-            msg.setReplyTo(InternetAddress.parse(replyTo));
+        if (headers.get("Reply-To") != null) {
+            msg.setReplyTo(InternetAddress.parse((String)headers.get("Reply-To")));
         }
-        String sub = headers.get("Subject");
-        if (sub == null || "".equals(sub)) sub = "<no subject>";
-        msg.setSubject(headers.get("Subject"));
+
+        msg.setSubject((String)headers.get("Subject"));
 
         return msg;
     }
@@ -184,19 +175,17 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     /**
      * Send mail with headers
      */
-    public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
-        if (log.isServiceEnabled()) {
-            log.service("Sending mail to " + to + " Headers " + headers);
-        }
+    public boolean sendMail(String from, String to, String data, Map headers) {
         try {
             MimeMessage msg = constructMessage(from, to, headers);
+
             msg.setText(data, mailEncoding);
             Transport.send(msg);
             log.debug("SendMail done.");
             return true;
         } catch (MessagingException e) {
-            log.error("SendMail failure: " + e.getMessage() + " from: " + from + " to: " + to);
-            log.debug(e);
+            log.error("SendMail failure: " + e.getMessage() + "from: " + from + " to: " + to);
+            log.debug(Logging.stackTrace(e));
         }
         return false;
     }

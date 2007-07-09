@@ -19,7 +19,7 @@ import org.xml.sax.InputSource;
 
 /**
  * @javadoc
- * @version $Id: XMLDynamicFlashReader.java,v 1.9 2007-06-21 15:50:26 nklasens Exp $
+ * @version $Id: XMLDynamicFlashReader.java,v 1.8 2005-02-24 16:03:34 michiel Exp $
  */
 
 public class XMLDynamicFlashReader {
@@ -97,8 +97,8 @@ public class XMLDynamicFlashReader {
 
     /**
     */
-    public Vector<Hashtable> getReplaces() {
-        Vector<Hashtable> results = new Vector<Hashtable>();
+    public Vector getReplaces() {
+        Vector results = new Vector();
         Node n1 = document.getFirstChild();
         if (n1 != null) {
             Node n2 = n1.getFirstChild();
@@ -168,8 +168,8 @@ public class XMLDynamicFlashReader {
 
     /**
     */
-    public Vector<Hashtable> getDefines() {
-        Vector<Hashtable> results = new Vector<Hashtable>();
+    public Vector getDefines() {
+        Vector results = new Vector();
         Node n1 = document.getFirstChild();
         if (n1 != null) {
             Node n2 = n1.getFirstChild();

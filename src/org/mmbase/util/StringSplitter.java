@@ -17,7 +17,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: StringSplitter.java,v 1.10 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: StringSplitter.java,v 1.9 2006-09-29 10:00:19 michiel Exp $
  */
 public class StringSplitter {
 
@@ -29,7 +29,7 @@ public class StringSplitter {
      * @return a (modifiable) List containing the elements
      */
     static public List<String> split(String string, String delimiter) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList();
         if (string == null) return result;
         for (String v : string.split(delimiter)) {
             result.add(v.trim());
@@ -56,7 +56,7 @@ public class StringSplitter {
     static public List<String> splitFunctions(CharSequence attribute) {
         int commaPos =  0;
         int nested   =  0;
-        List<String>  result = new ArrayList<String>();
+        List<String>  result = new ArrayList();
         int i;
         int length   =  attribute.length();
         for(i = 0; i < length; i++) {
@@ -82,7 +82,7 @@ public class StringSplitter {
      */
 
     static public Map<String, String> map(String string) {
-        Map<String, String>map = new HashMap<String, String>();
+        Map<String, String>map = new HashMap();
         List<String> keyValues = split(string);
         for (String kv : keyValues) {
             if ("".equals(kv)) continue;

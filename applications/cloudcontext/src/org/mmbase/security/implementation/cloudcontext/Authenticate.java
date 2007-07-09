@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.20 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.17 2006-02-20 18:34:16 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -43,7 +43,7 @@ public class Authenticate extends Authentication {
     private boolean allowEncodedPassword = false;
 
     private static Properties extraAdmins = new Properties();      // Admins to store outside database.
-    protected static Map<String, User>      loggedInExtraAdmins = new HashMap<String, User>();
+    protected static Map      loggedInExtraAdmins = new HashMap();
 
 
     protected void readAdmins(InputStream in) {
@@ -88,22 +88,9 @@ public class Authenticate extends Authentication {
 
     }
 
-    /**
-     * {@inheritDoc}
-     * @since MMBase-1.9
-     */
-    public org.mmbase.bridge.Node getNode(org.mmbase.bridge.Cloud cloud) throws SecurityException {
-        return cloud.getNode(cloud.getUser().getIdentifier());
-    }
-
-    public String getUserBuilder() {
-        return "mmbaseusers";
-    }
-
-
     // javadoc inherited
     public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
-        if (log.isTraceEnabled()) {
+        if (log.isDebugEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
@@ -157,8 +144,8 @@ public class Authenticate extends Authentication {
             if (li == null) {
                 throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }
-            String userName = li.getMap().get(PARAMETER_USERNAME.getName());
-            String rank     = li.getMap().get(PARAMETER_RANK.getName());
+            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
                 User user = new LocalAdmin(userName, s);
@@ -182,7 +169,7 @@ public class Authenticate extends Authentication {
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
-        return loggedInExtraAdmins.get(userName);
+        return (User) loggedInExtraAdmins.get(userName);
     }
 
     // javadoc inherited

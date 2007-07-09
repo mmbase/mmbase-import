@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.35 2007-06-20 13:28:43 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.31 2006-09-27 20:48:26 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -43,7 +43,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     private static CloudContext cloudContext;
 
 
-    protected Attribute cloudId = Attribute.NULL;
+    private Attribute cloudId = Attribute.NULL;
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
 
@@ -88,11 +88,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * @return a Cloud
      */
     public Cloud getCloudVar() throws JspTagException {
-        CloudProvider provider = findCloudProvider(false);
-        if (provider != null) return provider.getCloudVar();
-        Cloud c = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
-        if (c != null) return c;
-        throw new JspTagException("Could not find parent cloud provider");
+        return findCloudProvider().getCloudVar();
     }
 
 
@@ -118,23 +114,20 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected Node getNodeOrNull(String key) throws JspTagException {
         Object n = getObject(key);
-        if (n == null) {
-            return null;
-        } else if (n instanceof Node) {
+        if (n instanceof Node) {
             log.debug("found a Node in Context");
             return (Node) n;
         } else if ((n instanceof String) || (n instanceof Number)) {
-            Cloud cloud = getCloudVar();
-            if (! getCloudVar().hasNode(n.toString())) return null;
             log.debug("found a Node Number in Context");
+            if (! getCloudVar().hasNode(n.toString())) return null;
             return getCloudVar().getNode(n.toString());
         } else {
-            return org.mmbase.util.Casting.toNode(n, getCloudVar());
+            throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
         }
     }
 
 
-    public void fillStandardParameters(Parameters p) throws JspTagException {
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         CloudProvider prov = findCloudProvider(false);
         if (prov != null) {

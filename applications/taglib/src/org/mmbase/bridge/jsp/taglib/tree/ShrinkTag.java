@@ -21,9 +21,9 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.6 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: ShrinkTag.java,v 1.5 2005-03-14 19:02:35 michiel Exp $
  */
-public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
+public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer { 
 
     private static final Logger log = Logging.getLoggerInstance(ShrinkTag.class);
     private int startDepth;
@@ -36,7 +36,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     public int size() {
         if (! foundSize) { // avoid determining size if it is never requested
             size = index;
-            while (tree.getShrinkStack().peek().depth < endDepth) {
+            while (((Entry) tree.getShrinkStack().peek()).depth < endDepth) {
                 size ++;
             }
             foundSize = true;
@@ -49,7 +49,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         log.debug("starttag");
         doStartTagHelper();
 
-        Stack<Entry> stack  = tree.getShrinkStack();
+        Stack stack  = tree.getShrinkStack();
 
 
         if (log.isDebugEnabled()) {
@@ -57,7 +57,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         }
         if (stack.size() == 0) return SKIP_BODY;
 
-        Entry entry = stack.peek();
+        Entry entry = (Entry) stack.peek();
 
         startDepth = entry.depth;
         depth      = startDepth;
@@ -65,7 +65,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         foundSize = false;
         foundBody = false;
         write     = false;
-
+        
         helper.setValue("");
         helper.useEscaper(false);
 
@@ -78,12 +78,12 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     }
     public void doInitBody() throws JspException {
         // called once, if there is a body.
-        log.debug("initbody");
-        Stack<Entry> stack  = tree.getShrinkStack();
+        log.debug("initbody");        
+        Stack stack  = tree.getShrinkStack();
         if (stack.size() > 0) {
-            Entry entry = stack.peek();
+            Entry entry = (Entry) stack.peek();
             log.debug("making available now " + entry.string);
-            helper.setValue(entry.string);
+            helper.setValue(entry.string); 
             helper.doAfterBody();
             write = helper.getWrite().getBoolean(this, false);
             if (write) {
@@ -105,15 +105,15 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
             foundBody = true;
         }
 
-        Stack<Entry> stack  = tree.getShrinkStack();
+        Stack stack  = tree.getShrinkStack();
 
         stack.pop();
         if (stack.size() > 0) {
-            Entry entry = stack.peek();
-            depth = entry.depth;
-            if (depth >= endDepth) {
+            Entry entry = (Entry) stack.peek();
+            depth = entry.depth;            
+            if (depth >= endDepth) { 
                 log.debug("making available now " + entry.string);
-                helper.setValue(entry.string);
+                helper.setValue(entry.string); 
                 if (write) {
                     try {
                         pageContext.getOut().write(Casting.toString(helper.getValue()));
@@ -147,17 +147,17 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     public int doEndTag() throws JspTagException {
         log.debug("endtag");
         if (! foundBody) { // write everything to page!
-            Stack<Entry> stack  = tree.getShrinkStack();
+            Stack stack  = tree.getShrinkStack();
             if (stack.size() > 0) {
                 log.debug("no body, doing work");
-                Entry entry = stack.peek();
+                Entry entry = (Entry) stack.peek();
                 StringBuffer value = new StringBuffer();
                 while (depth >= endDepth) {
                     log.debug("writing now " + entry.string);
                     value.append(entry.string);
                     stack.pop();
                     if (stack.size() == 0) break;
-                    entry = stack.peek();
+                    entry = (Entry) stack.peek();
                     depth = entry.depth;
                 }
                 helper.setValue(value.toString());

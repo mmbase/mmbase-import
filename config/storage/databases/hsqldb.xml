@@ -58,9 +58,9 @@
     <type-mapping name="FLOAT" type="FLOAT" />
     <type-mapping name="INTEGER" type="INTEGER" />
     <type-mapping name="NODE" type="INTEGER" />
-    <type-mapping name="STRING" type="VARCHAR({0,number,########})" />
-    <type-mapping name="XML"    type="VARCHAR({0,number,########})" />
-    <type-mapping name="BINARY"  type="BINARY" />
+    <type-mapping name="STRING" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+    <type-mapping name="XML" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+    <type-mapping name="BINARY" min-size="1" max-size="16777216" type="BINARY" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
 

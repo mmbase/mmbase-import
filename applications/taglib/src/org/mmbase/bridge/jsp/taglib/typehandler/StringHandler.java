@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.61 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: StringHandler.java,v 1.58 2006-07-09 13:48:06 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -53,14 +53,14 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         if(! search) {
-            StringBuilder buffer = new StringBuilder();
+            StringBuffer buffer = new StringBuffer();
             try {
                 Object v = getFieldValue(node, field, true);
                 String value = org.mmbase.util.Casting.toString(v);
                 value = tag.decode(value, node);
                 StringDataType dataType = (StringDataType) field.getDataType();
 
-                if (dataType.getPattern().matcher("a\na").matches()) {
+                if (dataType.getPattern().matcher("\n").matches()) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
@@ -88,7 +88,7 @@ public class StringHandler extends AbstractTypeHandler {
                             //
                             // HTML is broken.
 
-                            buffer.append(' ');
+                            buffer.append(" ");
                         }
                     } else {
                         Xml.XMLEscape(value, buffer);
@@ -108,7 +108,7 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append("\" />");
                 }
             } catch (ClassCastException cce) {
-                DataType<Object> dt = field.getDataType();
+                DataType dt = field.getDataType();
                 log.error("Expected StringDataType for field " + field + " but found " + dt.getClass().getName() + ":"+ dt);
                 throw cce;
             }
@@ -130,7 +130,7 @@ public class StringHandler extends AbstractTypeHandler {
                 return eh.useHtmlInput(node, field);
             }
         }
-        String fieldValue = (String) getFieldValue(node, field);
+        String fieldValue = (String) getFieldValue(field);
 
         if (fieldValue != null) {
             String fieldName = field.getName();
@@ -143,7 +143,7 @@ public class StringHandler extends AbstractTypeHandler {
 
         return false;
     }
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    protected Object getFieldValue(Field field) throws JspTagException {
         String fieldName = field.getName();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
 
@@ -180,16 +180,13 @@ public class StringHandler extends AbstractTypeHandler {
         // cannot call getSearvhValue, because sql excaping is done twice then :-(
     }
 
-    protected int getOperator(Field field) {
-        if (field.getType() == Field.TYPE_STRING) {
-            return FieldCompareConstraint.LIKE;
-        } else {
-            return FieldCompareConstraint.EQUAL;
-        }
+    protected int getOperator() {
+        return FieldCompareConstraint.LIKE;
     }
-
-
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    protected String getSearchValue(String string) {
+        return "%" + string.toUpperCase() + "%";
+    }
+   public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);

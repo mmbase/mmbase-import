@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.54 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: INFO.java,v 1.51 2005-08-31 11:46:55 nklasens Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -56,7 +56,7 @@ public class INFO extends ProcessorModule {
     /**
      * @scope private
      */
-    Hashtable<String,SortedVector> DirCache=new Hashtable<String,SortedVector>();
+    Hashtable DirCache=new Hashtable();
 
     /**
      * Constructor for
@@ -74,12 +74,6 @@ public class INFO extends ProcessorModule {
         rnd=new RandomPlus();
     }
 
-    /**
-     * Returns one propertyvalue to the subclass (original in Module).
-     */
-    protected String getProperty(String name, String var) {
-        return ""; // really unsure what this is supposed to do?
-    }
 
     /**
      * Generate a list of values from a command to the processor.
@@ -539,14 +533,14 @@ public class INFO extends ProcessorModule {
                     String domain = tmp.substring(tmp.lastIndexOf('.'));
                     tmp = tmp.substring(0,tmp.lastIndexOf('.'));
                     tmp = tmp.substring(tmp.lastIndexOf('.')+1);
-                    domain = tmp + domain;
+                    domain = tmp+domain;
                     if (domain!=null) {
-                        String serverdomain = getProperty("server","Domain");
+                        String serverdomain=getProperty("server","Domain");
                         return toYesNo(serverdomain.equals(domain));
                     }
                     return toYesNo(false);
                 } else {
-                    String servername = getProperty("server","MachineName");
+                    String servername=getProperty("server","MachineName");
                     return toYesNo(servername.equals(tmp));
                 }
             }
@@ -555,13 +549,7 @@ public class INFO extends ProcessorModule {
             return HttpAuth.getRemoteUser(sp.req);
         }
     }
-    /**
-     * Returns the properties to the subclass.
-     */
-    protected Map getProperties(String propertytable) {
-         return null;
-     }
- 
+
     /**
      * Returns a continues range of values with two set numerical boundaries and a step-increase, or
      * the range of characters of the alphabet. <br />
@@ -946,6 +934,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("WEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=(days/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -993,6 +983,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("GWEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=((days+3)/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1016,6 +1008,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("NEXTGWEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=((days+3)/7)+2;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1248,7 +1242,7 @@ public class INFO extends ProcessorModule {
         // scan the disk
         File scanfile = new File(documentroot+base);
         //debug(documentroot+base);
-        SortedVector fullres=DirCache.get(documentroot+base);
+        SortedVector fullres=(SortedVector)DirCache.get(documentroot+base);
         if (fullres==null) {
             fullres=getDirTimes(scanfile);
             DirCache.put(documentroot+base,fullres);
@@ -1320,8 +1314,8 @@ public class INFO extends ProcessorModule {
         String theFileName;
         String files[] = scanfile.list();
         if (files!=null) {
-            for (String element : files) {
-                theFileName=element;
+            for (int i=0;i<files.length;i++) {
+                theFileName=files[i];
                 theFile = new File(scanfile,theFileName);
                 if (theFile.isDirectory() && theFileName.length()==10) {
                     d=DateSupport.parsedbmdate(theFileName);

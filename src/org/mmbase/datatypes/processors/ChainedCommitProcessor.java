@@ -16,7 +16,7 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.6 2007-03-29 15:22:48 pierre Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.3 2006-09-06 18:23:02 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -24,7 +24,7 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
 
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<CommitProcessor> processors = new ArrayList<CommitProcessor>();
+    private ArrayList processors = new ArrayList();
 
     public ChainedCommitProcessor add(CommitProcessor proc) {
         processors.add(proc);
@@ -32,8 +32,13 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
     }
 
     public void commit(Node node, Field field) {
-        for (CommitProcessor proc : processors) {
-            proc.commit(node, field);
+        Iterator i = processors.iterator();
+        while (i.hasNext()) {
+            Object proc = i.next();
+            if (i instanceof CommitProcessor) {
+                CommitProcessor commitProc = (CommitProcessor) proc;
+                commitProc.commit(node, field);
+            }
         }
         return;
     }
@@ -44,8 +49,8 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
 
     public Object clone() {
         try {
-            ChainedCommitProcessor clone = (ChainedCommitProcessor)super.clone();
-            clone.processors = (ArrayList<CommitProcessor>) processors.clone();
+            Object clone = super.clone();
+            ((ChainedCommitProcessor) clone).processors = (ArrayList) processors.clone();
             return clone;
         } catch (CloneNotSupportedException cnse) {
             //

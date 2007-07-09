@@ -28,11 +28,13 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.8 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.6 2006-04-11 22:57:36 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DurationHandler.class);
+
+    private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
 
     /**
      * @param tag
@@ -62,7 +64,7 @@ public class DurationHandler extends AbstractTypeHandler {
             currentHours   = help / 60;
         }
 
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         buffer.append("<input type=\"hidden\" class=\"" + getClasses(field) + "\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");

@@ -7,9 +7,14 @@
  */
 package org.mmbase.core.event;
 
+import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * This class communicates a node event. in case of a change event, it contains
@@ -18,11 +23,14 @@ import org.mmbase.util.HashCodeUtil;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.32 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: NodeEvent.java,v 1.28 2006-09-11 12:17:22 michiel Exp $
  */
 public class NodeEvent extends Event {
 
+
     private static final long serialVersionUID = 1L;
+
+    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     /**
      * Event type speicfic for MMBase nodes.
@@ -46,8 +54,8 @@ public class NodeEvent extends Event {
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.oldValues = oldValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(oldValues));
-        this.newValues = newValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(newValues));
+        this.oldValues = oldValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(oldValues));
+        this.newValues = newValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(newValues));
     }
 
 
@@ -73,7 +81,7 @@ public class NodeEvent extends Event {
         case TYPE_DELETE:
             return oldValues.keySet();
         default:
-            return Collections.emptySet();
+            return Collections.EMPTY_SET;
         }
     }
 
@@ -103,8 +111,8 @@ public class NodeEvent extends Event {
 
     public String toString() {
         String changedFields = "";
-        for (Object element : getChangedFields()) {
-            changedFields = changedFields + (String) element + ",";
+        for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
+            changedFields = changedFields + (String) i.next() + ",";
         }
         return "Node event: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
     }
@@ -210,7 +218,7 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map<String, Object> getOldValues(){
+    public final Map getOldValues(){
         return oldValues;
     }
 
@@ -223,19 +231,19 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map<String, Object> getNewValues(){
+    public final Map getNewValues(){
         return newValues;
     }
 
 
     public static void main(String[] args) {
         //test serializable
-        Map<String,Object>  oldv = new HashMap<String,Object>(), newv = new HashMap<String,Object>();
+        Map  oldv = new HashMap(), newv = new HashMap();
         oldv.put("een","veen");
         oldv.put("twee","vtwee");
         newv.putAll(oldv);
 
-        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, Event.TYPE_CHANGE);
+        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.TYPE_CHANGE);
         System.out.println("event 1: " + event.toString());
 
     }

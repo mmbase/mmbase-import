@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.23 2007-02-10 16:49:27 nklasens Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.22 2006-02-14 13:27:27 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -31,6 +31,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
     private static final Logger log = Logging.getLoggerInstance(ListConditionTag.class);
 
     private Attribute  value        = Attribute.NULL;
+    private Attribute  parentListId = Attribute.NULL;
     private Attribute  inverse      = Attribute.NULL;
 
     protected final static int CONDITION_FIRST = 1;

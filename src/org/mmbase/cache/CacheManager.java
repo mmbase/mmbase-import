@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.18 2007-06-21 17:54:36 andre Exp $
+ * @version $Id: CacheManager.java,v 1.8 2006-09-04 12:53:51 michiel Exp $
  */
 public class CacheManager {
 
@@ -33,7 +33,7 @@ public class CacheManager {
     /**
      * All registered caches
      */
-    private static final Map<String, Cache<?,?>> caches = new ConcurrentHashMap<String, Cache<?,?>>();
+    private static final Map<String, Cache> caches = new ConcurrentHashMap<String, Cache>();
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -44,24 +44,6 @@ public class CacheManager {
      */
     public static Cache getCache(String name) {
         return caches.get(name);
-    }
-
-    /**
-     * Returns a cache wrapped in a 'Bean', so it is not a Map any more. This makes it easier
-     * accesible by tools which want that (like EL).
-     * @since MMBase-1.9
-     */
-    public static Bean getBean(String name) {
-        return new Bean(getCache(name));
-    }
-    public static Set<Bean> getQueryCaches() {
-        Set<Bean> result = new HashSet<Bean>();
-        for (Cache c : caches.values()) {
-            if (c instanceof QueryResultCache) {
-                result.add(new Bean(c));
-            }
-        }
-        return result;
     }
 
     /**
@@ -81,7 +63,7 @@ public class CacheManager {
      * @param cache A cache.
      * @return The previous cache of the same type (stored under the same name)
      */
-    public static Cache putCache(Cache cache) {
+    protected static Cache putCache(Cache cache) {
         Cache old = caches.put(cache.getName(), cache);
         configure(configReader, cache.getName());
         return old;
@@ -114,13 +96,13 @@ public class CacheManager {
             if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getSystemId());
         }
 
-        for (Element cacheElement: xmlReader.getChildElements("caches", "cache")) {
+        Iterator e =  xmlReader.getChildElements("caches", "cache");
+        while (e.hasNext()) {
+            Element cacheElement = (Element) e.next();
             String cacheName =  cacheElement.getAttribute("name");
             if (only != null && ! only.equals(cacheName)) {
                 continue;
             }
-            // TODO: fix again when everybody runs 1.5.0_08, because of
-            // generics bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
             Cache cache = getCache(cacheName);
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
@@ -128,8 +110,10 @@ public class CacheManager {
                 String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
-                    Map<String,String> configValues = new HashMap<String,String>();
-                    for (Element attrNode: xmlReader.getChildElements(cacheImpl, "param")) {
+                    Iterator it = xmlReader.getChildElements(cacheImpl, "param");
+                    Map configValues = new HashMap();
+                    while (it.hasNext()) {
+                        Element attrNode = (Element)it.next();
                         String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
                         String paramValue = xmlReader.getElementValue(attrNode);
                         configValues.put(paramName, paramValue);
@@ -139,7 +123,7 @@ public class CacheManager {
                 String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
                 cache.setActive(status.equalsIgnoreCase("active"));
                 try {
-                    Integer size = Integer.valueOf(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
+                    Integer size = new Integer(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
                     cache.setMaxSize(size.intValue());
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
@@ -165,7 +149,7 @@ public class CacheManager {
                         queryCache.getReleaseStrategy().removeAllStrategies();
                         log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
-                        List<ReleaseStrategy> strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
+                        List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
                             log.debug("found " + strategies.size() + " globally configured strategies");
                             queryCache.addReleaseStrategies(strategies);
@@ -194,17 +178,17 @@ public class CacheManager {
      * @since 1.8
      */
     private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List<ReleaseStrategy> result = new ArrayList<ReleaseStrategy>();
-
-        List<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
-        if(strategyParentIterator.size() == 0){
+        List<ReleaseStrategy> result = new ArrayList();
+        Iterator<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
+        if(!strategyParentIterator.hasNext()){
             return null;
         } else{
-            parentElement = strategyParentIterator.get(0);
+            parentElement = strategyParentIterator.next();
 
             //now find the strategies
-            for (Element strategy: reader.getChildElements(parentElement, "strategy")) {
-                String strategyClassName = reader.getElementValue(strategy);
+            Iterator<Element> strategyIterator = reader.getChildElements(parentElement, "strategy");
+            while(strategyIterator.hasNext()){
+                String strategyClassName = reader.getElementValue(strategyIterator.next());
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
                     ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
@@ -305,72 +289,10 @@ public class CacheManager {
      */
     public static void shutdown() {
         log.info("Clearing all caches");
-        for(Cache<?,?> cache : caches.values()) {
+        for(Cache cache : caches.values()) {
             cache.clear();
         }
         caches.clear();
     }
 
-   
-    /**
-     * Used in config/functions/caches.xml
-     */
-    public Object remove(String name, Object key) {
-        Cache cache = getCache(name);
-        if (cache == null) throw new IllegalArgumentException();
-        return cache.remove(key);
-    }
-
-    public static class Bean<K, V> {
-        /* private final Cache<K, V> cache; // this line prevents building in Java 1.5.0_07 probably because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620 */
-		private final Cache cache;
-        public Bean(Cache<K, V> c) {
-            cache = c;
-        }
-        public String getName() { return cache.getName(); }
-        public String getDescription() { return cache.getDescription(); }
-        public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
-        public Set<Map.Entry<K, V>> getEntrySet() { return new HashSet<Map.Entry<K, V>>(cache.entrySet()); }
-        public Set<K> getKeySet() { return new HashSet<K>(cache.keySet()); }
-        public int getHits() { return cache.getHits(); }
-        public int getMisses() { return cache.getMisses(); }
-        public int getPuts() { return cache.getPuts(); }
-        public  int getMaxSize() { return cache.maxSize(); }
-        public  int getSize() { return cache.size(); }
-        public double getRatio() { return cache.getRatio(); }
-        public String getStats() { return cache.getStats(); }
-        public String toString() { return cache.toString(); }
-        public boolean isActive() { return cache.isActive(); }
-        public int getByteSize() { return cache.getByteSize(); }
-        public int getCheapByteSize() { return cache.getCheapByteSize(); }
-        public boolean isEmpty() { return cache.isEmpty(); }
-        public ReleaseStrategy getReleaseStrategy() { return cache instanceof QueryResultCache ? ((QueryResultCache) cache).getReleaseStrategy() : null;}
-        public Map<K, V> getMap() {  return cache; }
-        public Map<K, Integer> getCounts() {
-            return new AbstractMap<K, Integer>() {
-                public Set<Map.Entry<K, Integer>> entrySet() {
-                    return new AbstractSet<Map.Entry<K, Integer>>() {
-                        public int size() {
-                            return cache.size();
-                        }
-                        public Iterator<Map.Entry<K, Integer>> iterator() {
-                            return new Iterator<Map.Entry<K, Integer>>() {
-                                private Iterator<K> iterator = new HashSet<K>(cache.keySet()).iterator();
-                                public boolean hasNext() {
-                                    return iterator.hasNext();
-                                }
-                                public Map.Entry<K, Integer> next() {
-                                    K key = iterator.next();
-                                    return new org.mmbase.util.Entry<K, Integer>(key, cache.getCount(key));
-                                }
-                                public void remove() {
-                                    throw new UnsupportedOperationException();
-                                }
-                            };
-                        }
-                    };
-                }
-            };
-        }
-    }
 }

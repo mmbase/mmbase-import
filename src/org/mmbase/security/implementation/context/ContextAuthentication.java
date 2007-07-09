@@ -15,9 +15,11 @@ import org.mmbase.security.SecurityException;
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+
 import org.xml.sax.InputSource;
 
-import javax.xml.xpath.*;
+import org.apache.xpath.XPathAPI;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.26 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ContextAuthentication.java,v 1.23 2006-09-27 10:59:21 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap<String, ContextLoginModule>();
+    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap();
     private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */
@@ -76,17 +78,14 @@ public class ContextAuthentication extends Authentication {
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
         if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath );
-
-        XPathFactory xf = XPathFactory.newInstance();
-        NodeList found;
+        NodeIterator found;
         try {
-            found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
-        } catch(XPathExpressionException xe) {
-            throw new SecurityException("error executing query: '"+xpath+"' ", xe);
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            throw new SecurityException("error executing query: '"+xpath+"' ", te);
         }
         // we now have a list of login modules.. process them all, and load them...
-        for(int i = 0; i < found.getLength(); i++) {
-            Node contains = found.item(i);
+        for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
             NamedNodeMap nnm = contains.getAttributes();
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();

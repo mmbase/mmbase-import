@@ -7,6 +7,13 @@
  */
 package org.mmbase.core.event;
 
+import java.util.Properties;
+
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * This class is the event broker implementation for the NodeEvent
  *
@@ -14,6 +21,8 @@ package org.mmbase.core.event;
  * @since MMBase-1.8
  */
 public class IdEventBroker extends AbstractEventBroker {
+
+    private static Logger log = Logging.getLoggerInstance(NodeEventBroker.class);
 
 
     // javadoc inherited

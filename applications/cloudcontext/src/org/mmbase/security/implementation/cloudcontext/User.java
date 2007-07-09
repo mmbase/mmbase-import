@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.24 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: User.java,v 1.22 2006-08-30 18:04:56 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
@@ -40,7 +40,7 @@ public class User extends BasicUser implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public User(MMObjectNode n, long l, String app) {
+    protected User(MMObjectNode n, long l, String app) {
         super(app);
         if (n == null) throw new IllegalArgumentException();
         node = n;
@@ -99,7 +99,7 @@ public class User extends BasicUser implements MMBaseObserver {
     }
 
 
-    public SortedSet<Integer> getGroups() {
+    public SortedSet getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }
 

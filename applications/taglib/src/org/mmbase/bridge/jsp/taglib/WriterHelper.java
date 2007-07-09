@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.94 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: WriterHelper.java,v 1.89 2006-09-07 13:55:41 michiel Exp $
  */
 
 public class WriterHelper {
@@ -51,7 +51,6 @@ public class WriterHelper {
     static final int TYPE_FLOAT   = 9;
     static final int TYPE_DECIMAL = 10;
     static final int TYPE_DATE    = 11;
-    static final int TYPE_SET     = 12;
 
 
     static final int TYPE_NODE    = 20;
@@ -88,8 +87,6 @@ public class WriterHelper {
             return TYPE_VECTOR;
         } else if ("list".equals(t)) {
             return TYPE_LIST;
-        } else if ("set".equals(t)) {
-            return TYPE_SET;
         } else if ("bytes".equals(t)) {
             return TYPE_BYTES;
         } else if ("fileitem".equals(t)) {
@@ -129,7 +126,7 @@ public class WriterHelper {
      * 'underscore' stack, containing the values for '_'.
      * @since MMBase_1.8
      */
-    private   Stack<Object> _Stack;
+    private   Stack _Stack;
     // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
@@ -274,7 +271,7 @@ public class WriterHelper {
             if (e == null) {
                 return (CharTransformer) thisTag.getPageContext().findAttribute(ContentTag.ESCAPER_KEY);
             } else {
-                return ContentTag.getCharTransformer(e, thisTag);
+                return ContentTag.getCharTransformer((String) e, thisTag);
             }
         } else {
             return null;
@@ -288,26 +285,26 @@ public class WriterHelper {
      */
     public void setValueOnly(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
-        if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR && vartype != TYPE_SET) {
+        if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
             // Take one element of list if vartype defined not to be a list.
             // this is usefull when using mm:includes and passing a var which also can be on the request
-            if (v instanceof Collection) {
-                Collection<?> l = (Collection<?>) v;
+            if (v instanceof List) {
+                List l = (List) v;
                 if (l.size() > 0) {
                     // v = l.get(l.size() - 1); // last element
-                    v = l.iterator().next();               // first element, allows for 'overriding'.
+                    v = l.get(0);               // first element, allows for 'overriding'.
                 } else {
                     v = null;
                 }
             }
         }
-        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR || vartype == TYPE_SET) {
+        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR) {
             switch (vartype) {
                 // these accept a value == null (meaning that they are empty)
             case TYPE_LIST:
                 if (! (v instanceof List)) {
                     if ("".equals(v)) {
-                        v = new ArrayList<Object>();
+                        v = new ArrayList();
                     } else {
                         v = Casting.toList(v, listDelimiter.getString(thisTag));
                     }
@@ -317,31 +314,17 @@ public class WriterHelper {
                 if (v == null) {
                     // if a vector is requested, but the value is not present,
                     // make a vector of size 0.
-                    v = new Vector<Object>();
+                    v = new Vector();
                 } else if (! (v instanceof Vector)) {
                     // if a vector is requested, but the value is not a vector,
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
                         // make a vector of size 1.
-                        Vector<Object> vector = new Vector<Object>();
+                        Vector vector = new Vector();
                         vector.add(v);
                         v = vector;
                     } else {
-                        v = new Vector<Object>((Collection<?>)v);
-                    }
-                }
-                break;
-            case TYPE_SET:
-                if (v == null) {
-                    v = new HashSet<Object>();
-                } else if (! (v instanceof Set)) {
-                    if (! (v instanceof Collection)) {
-                        // not even a Collection!
-                        Set<Object> set = new HashSet<Object>();
-                        set.add(v);
-                        v = set;
-                    } else {
-                        v = new HashSet<Object>((Collection<?>)v);
+                        v = new Vector((Collection)v);
                     }
                 }
                 break;
@@ -420,9 +403,9 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack<Object>) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
-            _Stack = new Stack<Object>();
+            _Stack = new Stack();
             pushed = false;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
@@ -464,7 +447,7 @@ public class WriterHelper {
 
         // If this tag explicitely specified an escaper, and also a jspvar attribute, then use it too for the jspvar value itself:
         String e = getEscape();
-        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer(e, thisTag);
+        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer((String) e, thisTag);
         Object jspValue = ct != null ? Casting.wrap(value, ct) : value;
         thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, jspValue);
     }
@@ -589,7 +572,6 @@ public class WriterHelper {
         }
         pop_Stack();
         _Stack = null;
-        pushed = false;
         bodyContent = null;
         value = null;
         log.debug("End of doEndTag");

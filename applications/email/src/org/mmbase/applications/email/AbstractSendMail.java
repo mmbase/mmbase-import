@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import org.mmbase.module.*;
+import java.util.*;
+
+import org.mmbase.module.Module;
 import org.mmbase.util.*;
 
 /**
@@ -18,7 +20,9 @@ import org.mmbase.util.*;
  * @application Mail
  * @author Michiel Meeuwissen
  */
-abstract public class AbstractSendMail extends WatchedReloadableModule implements SendMailInterface {
+abstract public class AbstractSendMail extends Module implements SendMailInterface {
+
+    public void onload() { }
 
     /**
      * Send mail without extra headers
@@ -32,6 +36,20 @@ abstract public class AbstractSendMail extends WatchedReloadableModule implement
      */
     public boolean sendMail(Mail mail) {
         return sendMail(mail.from, mail.to, mail.text, mail.headers);
+    }
+
+    /**
+     * checks the e-mail address
+     */
+    public String verify(String name) {
+        throw new UnsupportedOperationException("cannot verify e-mail");
+    }
+
+    /**
+     * gives all the members of a mailinglist
+     */
+    public List expand(String name) {
+        throw new UnsupportedOperationException("cannot expand e-mail");
     }
 
 

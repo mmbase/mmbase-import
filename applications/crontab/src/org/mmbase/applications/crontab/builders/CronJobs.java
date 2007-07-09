@@ -17,7 +17,6 @@ import org.mmbase.util.logging.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b> 
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.5 2007-02-05 14:39:10 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder implements Runnable {
 
@@ -85,13 +84,11 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
      */
     public int insert(String owner, MMObjectNode objectNodenode) {
         int number = super.insert(owner, objectNodenode);
+        Node node = getCloud().getNode(number);
         try {
-            if (cronDaemon != null) {
-		        Node node = getCloud().getNode(number);
             cronDaemon.add(createCronEntry(node));
-            }
         } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + number + " error " + e.getMessage(), e);
+            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage(), e);
         }
         return number;
     }
@@ -130,13 +127,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
     }
 
     private CronEntry createCronEntry(Node node) throws Exception {
-        // should consider getRelatedNodes("mmservers") for the last argument of CronEntry        
-        return new CronEntry("" + node.getNumber(),
-                             node.getStringValue("crontime"), 
-                             node.getStringValue("name"), 
-                             node.getStringValue("classfile"), 
-                             node.getStringValue("config"),
-                             node.getIntValue("type"));
+        return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"),node.getIntValue("type"));
     }
 
     private Cloud getCloud() {

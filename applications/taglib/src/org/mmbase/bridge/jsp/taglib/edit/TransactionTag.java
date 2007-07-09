@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.25 2007-06-27 13:27:00 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.23 2006-08-30 18:00:15 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -73,17 +73,12 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             log.debug("value of commit: " + commit);
         }
         transaction = null;
-        boolean foundThis = false;
         if (getId() != null) { // look it up from session
             log.debug("looking up transaction in context");
             try {
                 Object o = getObject(getId());
-                if (o == this) {
-                    foundThis = true;
-                } else if (o instanceof Transaction) {
+                if (o instanceof Transaction) {
                     transaction = (Transaction) getObject(getId());
-                } else if (o instanceof TransactionTag) {
-                    transaction = ((TransactionTag)o).transaction;
                 } else {
                     throw new JspTagException("The object with id " + getId() + " is not a transaction, but " + (o == null ? "NULL" : "a " + o.getClass()));
                 }
@@ -98,7 +93,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
             }
             transaction = findCloudProvider().getCloudVar().getTransaction(n);
-            if (getId() != null && ! foundThis) { // put it in context
+            if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
                 getContextProvider().getContextContainer().register(getId(), transaction);
             }
@@ -124,13 +119,11 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
-        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new JspTagException(ioe.toString());
-                }
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
             }
         }
         return SKIP_BODY;

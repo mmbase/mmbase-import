@@ -7,6 +7,10 @@
  */
 package org.mmbase.core.event;
 
+import java.util.Properties;
+import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
+
 /**
  * This class is the event broker implementation for the RelationEvent
  *
@@ -14,6 +18,8 @@ package org.mmbase.core.event;
  * @since MMBase-1.8
  */
 public class RelationEventBroker extends AbstractEventBroker {
+
+    private static Logger log = Logging.getLoggerInstance(RelationEventBroker.class);
 
     /**
      * use this property to make shure your listener only gets the relation

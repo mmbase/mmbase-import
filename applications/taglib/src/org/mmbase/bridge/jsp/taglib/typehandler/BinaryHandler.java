@@ -33,11 +33,11 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.11 2007-06-27 13:21:57 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.5 2006-09-29 15:11:48 pierre Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
-    private static final Logger log = Logging.getLoggerInstance(BinaryHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(ByteHandler.class);
     /**
      * Constructor 
      * @param tag
@@ -50,7 +50,7 @@ public class BinaryHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        StringBuilder show = new StringBuilder();
+        StringBuffer show = new StringBuffer();
         if (node != null) {
             Function gui = node.getFunction("gui");
             Parameters args = gui.createParameters();
@@ -58,8 +58,8 @@ public class BinaryHandler extends AbstractTypeHandler {
             args.set(Parameter.LANGUAGE, tag.getLocale().getLanguage());
             args.set("session",  tag.getSessionName());
             PageContext pc = tag.getContextTag().getPageContext();
-            args.set(Parameter.RESPONSE, (HttpServletResponse) pc.getResponse());
-            args.set(Parameter.REQUEST,  (HttpServletRequest) pc.getRequest());
+            args.set(Parameter.RESPONSE, (HttpServletResponse)pc.getResponse());
+            args.set(Parameter.REQUEST, (HttpServletRequest)pc.getRequest());
             args.set(Parameter.LOCALE, tag.getLocale());
             show.append("" + gui.getFunctionValue(args));
         }
@@ -74,8 +74,9 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * Returns the field value as specified by the client's post.
      */
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    protected Object getFieldValue(Field field) throws JspTagException {
         if (MultiPart.isMultipart(tag.getPageContext())) {
+            ContextContainer cc = tag.getContextProvider().getContextContainer();
             ContextTag ct = tag.getContextTag();
             FileItem bytes = ct.getFileItem(prefix(field.getName()));
             return bytes;
@@ -85,11 +86,11 @@ public class BinaryHandler extends AbstractTypeHandler {
     }
 
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
-        Object fieldValue = getFieldValue(node, field);
+        Object fieldValue = getFieldValue(field);
 
         if (fieldValue != null) {
-            DataType<Object> dt = field.getDataType();
-            Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
+            DataType dt = field.getDataType();
+            Collection col = dt.validate(fieldValue, node, field);
             if (col.size() == 0) {
                 // do actually set the field, because some datatypes need cross-field checking
                 // also in an mm:form, you can simply commit.
@@ -102,18 +103,18 @@ public class BinaryHandler extends AbstractTypeHandler {
                     return "";
                 }
             } else {
-                FormTag form =  tag.getFormTag(false, null);
+                FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
                 if (form != null) {
                     form.setValid(false);
                 }
                 if (errors) {
-                    StringBuilder show = new StringBuilder("<div id=\"");
+                    StringBuffer show = new StringBuffer("<div id=\"");
                     show.append(prefixError(field.getName()));
                     show.append("\" class=\"mm_check_error\">");
                     Locale locale =  tag.getLocale();
-                    Iterator<LocalizedString> i = col.iterator();
+                    Iterator i = col.iterator();
                     while (i.hasNext()) {
-                        LocalizedString error = i.next();
+                        LocalizedString error = (LocalizedString) i.next();
                         show.append("<span>");
                         Xml.XMLEscape(error.get(locale), show);
                         show.append("</span>");
@@ -136,15 +137,6 @@ public class BinaryHandler extends AbstractTypeHandler {
     protected void setValue(Node node, Field field, FileItem bytes) throws JspTagException {
         if (bytes.getSize() > 0) {
             String fileName = bytes.getName();
-            int pos1 = fileName.lastIndexOf("/");
-            int pos2 = fileName.lastIndexOf("\\");
-            int pos = pos1 > pos2 ? pos1 : pos2;
-            if (pos > 0) {
-                fileName = fileName.substring(pos + 1);
-                if ("".equals(fileName)) {
-                    fileName = bytes.getName();
-                }
-            }
             String fileType = bytes.getContentType();
 
             try {
@@ -186,7 +178,7 @@ public class BinaryHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        FileItem bytes = (FileItem) getFieldValue(node, field);
+        FileItem bytes = (FileItem) getFieldValue(field);
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }

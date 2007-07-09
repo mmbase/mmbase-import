@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: EventManager.java,v 1.14 2006-09-11 12:17:22 michiel Exp $
  */
 public class EventManager {
 
@@ -51,7 +51,7 @@ public class EventManager {
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
-    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet<AbstractEventBroker>();
+    private final Set<AbstractEventBroker> eventBrokers = new CopyOnWriteArraySet();
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
@@ -66,16 +66,16 @@ public class EventManager {
     private static AbstractEventBroker findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
-            Class<?> aClass = Class.forName(className);
+            Class aClass = Class.forName(className);
             return (AbstractEventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
-            log.error("could not find class with name '" + className + "'", e);
+            log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
-            log.error("could not instantiate class with name '" + className + "'", e);
+            log.error("could not instantiate class with name" + className, e);
         } catch (IllegalAccessException e) {
-            log.error("the constructor of '" + className + "' is not accessible", e);
+            log.error("the constructor of " + className + " is not accessible", e);
         } catch (ClassCastException e) {
-            log.error("'" + className + "' is not a AbstractEventBroker", e);
+            log.error("" + className + " is not a AbstratEventBroker");
         }
         return null;
     }
@@ -96,9 +96,9 @@ public class EventManager {
     protected void configure(String resource) {
         log.service("Configuring the event manager");
         eventBrokers.clear();
-        Iterator<URL> i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
+        Iterator i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
         while (i.hasNext()) {
-            URL url = i.next();
+            URL url = (URL) i.next();
             try {
                 if (url.openConnection().getDoInput()) {
 
@@ -106,9 +106,11 @@ public class EventManager {
                     DocumentReader configReader = new DocumentReader(config);
 
                     // find the event brokers
-                    for (Element element: configReader.getChildElements("eventmanager.brokers", "broker")) {
+                    Iterator e = configReader.getChildElements("eventmanager.brokers", "broker");
+                    while (e.hasNext()) {
+                        Element element = (Element) e.next();
                         String className = element.getAttribute("class");
-                        AbstractEventBroker broker = findInstance(className);
+                        AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
                         if (broker != null) {
                             if (log.isDebugEnabled()) {
                                 log.debug("adding event broker: " + broker);

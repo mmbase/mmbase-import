@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueConstraint.java,v 1.12 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicFieldValueConstraint.java,v 1.11 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
@@ -85,7 +85,8 @@ implements FieldValueConstraint {
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("BasicFieldValueConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("BasicFieldValueConstraint(inverse:").
+        append(isInverse()).
         append(", field:").append(getFieldName()).
         append(", casesensitive:").append(isCaseSensitive()).
         append(", operator:").append(getOperatorDescription()).

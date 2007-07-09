@@ -18,10 +18,8 @@
      <% Runtime runtime = Runtime.getRuntime(); %>
      <mm:import externid="gc" />
 		<mm:present referid="gc">
-      <mm:cloud rank="administrator">
-        <%  runtime.gc();%>
-      </mm:cloud>
-    </mm:present>    
+		  <% // runtime.gc();%>
+        </mm:present>    
 		  <%
         long freeMemory = runtime.freeMemory();
         long maxMemory  = runtime.totalMemory();

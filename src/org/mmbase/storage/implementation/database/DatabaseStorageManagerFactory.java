@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.47 2007-06-15 08:58:25 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.42 2006-10-03 14:39:37 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -261,12 +261,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         // why is this not stored in real properties?
 
         setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, transactionIsolation);
+        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
-        for (String element : STANDARD_SQL_KEYWORDS) {
-            disallowedFields.put(element, null); // during super.load, the null values will be replaced by actual replace-values.
+        // create a default disallowedfields list:
+        // get the standard sql keywords
+        for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
+            disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
         }
 
         // get the extra reserved sql keywords (according to the JDBC driver)
@@ -307,7 +309,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             String databaseResourcePath;
             // First, determine the database name from the parameter set in mmbaseroot
             String databaseName = mmbase.getInitParameter("database");
-            if (databaseName != null && ! "".equals(databaseName)) {
+            if (databaseName != null) {
                 // if databasename is specified, attempt to use the database resource of that name
                 if (databaseName.endsWith(".xml")) {
                     databaseResourcePath = databaseName;
@@ -338,10 +340,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 }
             }
             // get configuration
-            java.net.URL url = ResourceLoader.getConfigurationRoot().getResource(databaseResourcePath);
-            log.service("Configuration used for database storage: " + url);
+            log.service("Configuration used for database storage: " + databaseResourcePath);
             try {
-                InputSource in = ResourceLoader.getInputSource(url);
+                InputSource in = ResourceLoader.getConfigurationRoot().getInputSource(databaseResourcePath);
                 reader = new StorageReader(this, in);
             } catch (java.io.IOException ioe) {
                 throw new StorageConfigurationException(ioe);
@@ -383,7 +384,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 }
             }
             if (basePath == null) {
-                log.warn("Cannot determin a Binary File Base Path");
+                log.warn("Cannot determin a a Binary File Base Path");
                 return null;
             }
             File baseDir = new File(basePath);

@@ -10,16 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.transformers.*;
 import javax.servlet.jsp.*;
+import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.13 2007-06-18 17:29:21 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.10 2006-09-27 20:48:26 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -31,7 +33,6 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
     
     private Attribute type    = Attribute.NULL;
     private Attribute referid = Attribute.NULL;
-    private Attribute inverse = Attribute.NULL;
            
     private ParameterizedTransformerFactory factory;
 
@@ -42,15 +43,8 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
         referid = getAttribute(r);
     }
 
-    public void setInverse(String i) throws JspTagException {
-        inverse = getAttribute(i);
-    }
-
     public void addParameter(String key, Object value) throws JspTagException {
         parameters.set(key, value);
-    }
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Escaper does not receive framework parameters");
     }
 
     public void chain(CharTransformer trans) throws JspTagException {
@@ -76,9 +70,6 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
             } else {
                 transformer = new ChainedCharTransformer();
             }
-        }
-        if (inverse.getBoolean(this, false)) {
-            transformer = new InverseCharTransformer(transformer);
         }
 
         return super.doStartTag();

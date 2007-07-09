@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.13 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: BasicEditor.java,v 1.10 2006-09-29 10:04:51 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -41,12 +41,12 @@ public class BasicEditor extends Editor {
     private static final FunctionProvider patterns = PatternNodeFunctionProvider.getInstance();
 
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("url", String.class, "/mmbase/edit/basic/"),
-        new Parameter<Map>("urlparams", Map.class, null),
-        new Parameter<String>("icon", String.class, ""),
-        new Parameter<Map>("iconparams", Map.class, null),
-        new Parameter<String>("when", String.class, "always"),
-        new Parameter<String>("target", String.class, "new"),
+        new Parameter("url", String.class, "/mmbase/edit/basic/"),
+        new Parameter("urlparams", Map.class, null),
+        new Parameter("icon", String.class, ""),
+        new Parameter("iconparams", Map.class, null),
+        new Parameter("when", String.class, "always"),
+        new Parameter("target", String.class, "new"),
         Parameter.CLOUD
     };
 
@@ -65,7 +65,7 @@ public class BasicEditor extends Editor {
 
         String nodenr = "";
         if (!nodenrList.isEmpty()) {    // get the first node from this list to edit
-            nodenr = nodenrList.get(0);
+            nodenr = (String) nodenrList.get(0);
         }
 
         makeHTML(nodenr, context);
@@ -135,7 +135,7 @@ public class BasicEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuilder show = new StringBuilder(url);
+        StringBuffer show = new StringBuffer(url);
         HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {

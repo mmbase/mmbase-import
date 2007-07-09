@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.15 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.13 2006-06-27 07:31:45 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -57,26 +57,26 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        Iterator<Step> i = query.getSteps().iterator();
+        Iterator i = query.getSteps().iterator();
         while (i.hasNext()) {
-            Step step = i.next();
+            Step step = (Step) i.next();
             String table = step.getTableName();
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
-            Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
+            Set nodes = step.getNodes();
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
                 return true;
             }
         }
         return false;
     }
 
-    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // no strategy for relation events
     	log.debug("basic strategy: flush: relation event");
         return true;

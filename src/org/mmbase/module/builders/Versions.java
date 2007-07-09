@@ -18,15 +18,15 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.21 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: Versions.java,v 1.18 2006-09-11 10:50:28 pierre Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
     private static final Logger log = Logging.getLoggerInstance(Versions.class);
 
-    private Hashtable<String, Vector<VersionCacheNode>> cacheVersionHandlers = new Hashtable<String, Vector<VersionCacheNode>>();
+    private Hashtable cacheVersionHandlers = new Hashtable();
 
-    private Map<String, Integer> versionsCache = new Hashtable<String, Integer>();
+    private Map versionsCache = new Hashtable();
 
     private boolean initialized = false;
 
@@ -37,11 +37,12 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         if (!initialized) {
             super.init();
             startCacheTypes();
-            List<MMObjectNode> versionNodes = getNodes();
-            for (MMObjectNode versionNode : versionNodes) {
+            List versionNodes = getNodes();
+            for (Iterator iter = versionNodes.iterator(); iter.hasNext();) {
+                MMObjectNode versionNode = (MMObjectNode) iter.next();
                 String name = versionNode.getStringValue("name");
                 String type = versionNode.getStringValue("type");
-                Integer number = versionNode.getNumber();
+                Integer number = new Integer(versionNode.getNumber());
 
                 String key = type + "_" + name;
                 if (versionsCache.containsKey(key)) {
@@ -80,7 +81,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
         String key = type + "_" + name;
         if (versionsCache.containsKey(key)) {
-            Integer number = versionsCache.get(key);
+            Integer number = (Integer) versionsCache.get(key);
             retval = getNode(number.intValue());
         }
         return retval;
@@ -110,7 +111,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             int number = insert("system", node);
 
             String key = type + "_" + name;
-            versionsCache.put(key, number);
+            versionsCache.put(key, new Integer(number));
         } else {
             node.setValue("maintainer", maintainer);
             node.setValue("version", version);
@@ -137,8 +138,8 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             parser.setBuilder(this);
             cacheVersionHandlers = parser.getCacheVersions(cacheVersionHandlers);
         }
-        for (Enumeration<String> e = cacheVersionHandlers.keys(); e.hasMoreElements();) {
-            String bname = e.nextElement();
+        for (Enumeration e = cacheVersionHandlers.keys(); e.hasMoreElements();) {
+            String bname = (String) e.nextElement();
             MMObjectBuilder builder = mmb.getBuilder(bname);
             if (builder != null) {
                 builder.addLocalObserver(this);
@@ -159,10 +160,11 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
                 + event.getBuilderName() + " " + NodeEvent.newTypeToOldType(event.getType()));
         }
         String builder = event.getBuilderName();
-        Vector<VersionCacheNode> subs = cacheVersionHandlers.get(builder);
+        Vector subs = (Vector) cacheVersionHandlers.get(builder);
         int inumber = event.getNodeNumber();
         if (subs != null) {
-            for (VersionCacheNode cnode : subs) {
+            for (Enumeration e = subs.elements(); e.hasMoreElements();) {
+                VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
                 cnode.handleChanged(builder, inumber);
             }
         }

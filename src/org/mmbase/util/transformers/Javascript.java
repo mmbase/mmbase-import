@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class Javascript extends ConfigurableReaderTransformer implements CharTransformer {
     private final static String SINGLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
-    private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_DOUBLE_QUOTES";
+    private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
     public final static int ESCAPE_SINGLE_QUOTES    = 1;     
     public final static int ESCAPE_DOUBLE_QUOTES    = 2;     
 
@@ -47,7 +47,6 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 int c = r.read();
                 if (c == -1) break;
                 if(c == escapeChar) w.write('\\');
-                if(c == '\\') w.write('\\');
                 w.write(c);
             }
         } catch (java.io.IOException e) {
@@ -85,8 +84,8 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put(SINGLE_QUOTES, new Config(Sql.class, ESCAPE_SINGLE_QUOTES, "Escape single quotes for Javascript statements"));
         h.put(DOUBLE_QUOTES, new Config(Sql.class, ESCAPE_DOUBLE_QUOTES, "Escape single quotes for Javascript statements"));
         return h;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.37 2007-06-07 12:47:55 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.30 2006-09-29 10:02:58 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -86,13 +87,12 @@ public class NodeListHelper implements ListProvider {
 
     /**
      * Data member to hold an iteration of the values to return.
-     * This variable is set in {@link #setReturnValues(BridgeList, boolean)}, which
+     * This variable is set in {@link #setReturnValues(NodeList, boolean)}, which
      * should be called from {@link AbstractNodeListTag#doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
-    protected ListIterator<Node> nodeIterator;
-    protected BridgeList<Node> returnList;
-
+    protected NodeIterator nodeIterator;
+    protected NodeList     returnList;
 
     /**
      * The current item
@@ -178,7 +178,7 @@ public class NodeListHelper implements ListProvider {
         return comparator.getString(thisTag);
     }
 
-    public BridgeList<Node> getReturnList() {
+    public NodeList getReturnList() {
         return returnList;
     }
 
@@ -193,14 +193,14 @@ public class NodeListHelper implements ListProvider {
     /**
      * @since MMBase-1.9
      */
-    protected Cloud getCloud(BridgeList<Node> nodes, Cloud cloud) throws JspTagException {
+    protected Cloud getCloud(NodeList nodes, Cloud cloud) throws JspTagException {
         if (cloud != null) return cloud;
         if (cloud == null) {
             Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            Node n = nodes.get(0);
+            Node n = nodes.getNode(0); 
             if (n != null) {
                 cloud = n.getCloud();
             } else {
@@ -213,14 +213,14 @@ public class NodeListHelper implements ListProvider {
         }
         return cloud;
     }
-    public int setReturnValues(BridgeList<Node> nodes, boolean trim) throws JspTagException {
+    public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
         Cloud cloud = null;
 
         if (add != Attribute.NULL) {
             Object addObject = thisTag.getObjectConditional(add.getString(thisTag));
             if (addObject != null) {
                 if (addObject instanceof Collection) {
-                    nodes.addAll((Collection<Node>) addObject);
+                    nodes.addAll((Collection) addObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.add(Casting.toNode(addObject, cloud));
@@ -231,7 +231,7 @@ public class NodeListHelper implements ListProvider {
             Object retainObject = thisTag.getObjectConditional(retain.getString(thisTag));
             if (retainObject != null) {
                 if (retainObject instanceof Collection) {
-                    nodes.retainAll((Collection<Node>) retainObject);
+                    nodes.retainAll((Collection) retainObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
@@ -242,7 +242,7 @@ public class NodeListHelper implements ListProvider {
             Object removeObject = thisTag.getObjectConditional(remove.getString(thisTag));
             if (removeObject != null) {
                 if (removeObject instanceof Collection) {
-                    nodes.removeAll((Collection<Node>) removeObject);
+                    nodes.removeAll((Collection) removeObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
                     nodes.remove((Casting.toNode(removeObject, cloud)));
@@ -269,7 +269,7 @@ public class NodeListHelper implements ListProvider {
             if (offseti < 0) {
                 offseti = 0;
             }
-            nodes = nodes.subList(offseti, to);
+            nodes = nodes.subNodeList(offseti, to);
 
         }
         returnList   = nodes;
@@ -282,7 +282,7 @@ public class NodeListHelper implements ListProvider {
             f.setCloud(cloud);
         }
 
-        nodeIterator = returnList.listIterator();
+        nodeIterator = returnList.nodeIterator();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
@@ -302,7 +302,7 @@ public class NodeListHelper implements ListProvider {
         // serve parent timer tag:
         TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), thisTag.getClass().getName());
+            timerHandle = t.startTimer(getId(), getClass().getName());
         }
         /*
         if (thisTag.getReferid() != null) {
@@ -357,8 +357,7 @@ public class NodeListHelper implements ListProvider {
         if (t != null) {
             t.haltTimer(timerHandle);
         }
-        doFinally();
-        previousValue = null;
+
         return EVAL_PAGE;
     }
 
@@ -367,7 +366,7 @@ public class NodeListHelper implements ListProvider {
      * The first ordered field is used to determin the 'changed' status of a Node in a NodeList.
      * @since MMBase-1.8
      */
-    protected String getFirstOrderedField(BridgeList<Node> returnList, NodeManager nextNodeManager) {
+    protected String getFirstOrderedField(NodeList returnList, NodeManager nextNodeManager) {
         // the orderby attribute is arranged in AbstractNodeListTag#setReturnValues
         // Perhaps its code could more logically be present here.
         /*
@@ -412,12 +411,12 @@ public class NodeListHelper implements ListProvider {
     public void setNext() throws JspTagException {
         try {
             currentItemIndex ++;
-            Node next = nodeIterator.next();
+            Node next = nodeIterator.nextNode();
             while (next == null) {
                 log.warn("Found null in node list " + returnList + " skipping");
                 currentItemIndex ++;
                 if (nodeIterator.hasNext()) {
-                    next = nodeIterator.next();
+                    next = nodeIterator.nextNode();
                 } else {
                     return;
                 }

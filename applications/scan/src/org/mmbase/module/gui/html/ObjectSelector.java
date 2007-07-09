@@ -11,6 +11,7 @@ package org.mmbase.module.gui.html;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -31,7 +32,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.24 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ObjectSelector.java,v 1.23 2006-09-11 10:04:59 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -92,8 +93,9 @@ public class ObjectSelector implements CommandHandlerInterface {
         if (node!=null) {
             FieldDefs def;
             String DBName,val;
-            for (Object element : obj.getFields(FieldDefs.ORDER_EDIT)) {
-                def=(FieldDefs)element;
+            Object o;
+            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) {
+                def=(FieldDefs)i.next();
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
                     val=obj.getGUIIndicator(DBName,node);
@@ -123,6 +125,9 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectNode node=ed.getEditNode();
 
         if (node!=null && node.getIntValue("number")!=-1) {
+            FieldDefs def;
+            String DBName,val;
+            Object o;
             Enumeration e=stateMngr.mmBase.getInsRel().getRelations(ed.getEditNodeNumber());
             MMObjectNode rel;
             for (;e.hasMoreElements();) {
@@ -150,10 +155,10 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    Vector<String> getAllowedBuilders(String user) {
-        Vector<String> allowed=null;
+    Vector getAllowedBuilders(String user) {
+        Vector allowed=null;
         if (stateMngr.mmBase.getAuthType().equals("basic")) {
-            allowed=new Vector<String>();
+            allowed=new Vector();
             ClusterBuilder clusterBuilder = stateMngr.mmBase.getClusterBuilder();
             Vector tables=new Vector();
             tables.addElement("typedef");
@@ -202,23 +207,25 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectNode node=ed.getEditNode();
 
         String user=args.Value("USER");
-        Vector<String> allowed=null;
+        Vector allowed=null;
         if (user!=null && !user.equals("")) {
             allowed=getAllowedBuilders(user);
         }
 
         if (node!=null) {
-            String name;
-            Hashtable<String, Vector> res=ed.getRelationTable();
-            Enumeration<String> e=res.keys();
+            FieldDefs def;
+            String DBName,val,name;
+            Object o;
+            Hashtable res=ed.getRelationTable();
+            Enumeration e=res.keys();
             MMObjectNode rel;
             MMObjectNode other;
             Vector qw;
             for (;e.hasMoreElements();) {
-                name=e.nextElement();
+                name=(String)e.nextElement();
 
                 if (allowed==null || allowed.contains(name)) {
-                    qw=res.get(name);
+                    qw=(Vector)res.get(name);
                     for (Enumeration h=qw.elements();h.hasMoreElements();) {
                         other=(MMObjectNode)h.nextElement();
                         rel=(MMObjectNode)h.nextElement();
@@ -273,6 +280,10 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectBuilder obj=ed.getBuilder();
         MMObjectNode node=ed.getEditNode();
         if (node!=null) {
+            FieldDefs def;
+            String DBName,val;
+            Object o;
+
             // find all the typeRel that are allowed
             Enumeration e=stateMngr.mmBase.getTypeRel().getAllowedRelations(node);
             MMObjectNode trn;

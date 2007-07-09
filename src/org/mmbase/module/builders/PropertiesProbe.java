@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * there load and info from the config module).
  *
  * @sql
- * @version $Id: PropertiesProbe.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: PropertiesProbe.java,v 1.11 2005-01-25 12:45:19 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -83,7 +83,7 @@ public class PropertiesProbe implements Runnable {
             StepField keyField = query.getField(parent.getField("key"));
             BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(keyField, "LASTVISIT");
             StepField valueField = query.getField(parent.getField("value"));
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(valueField, 10536);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(valueField, new Integer(10536));
             constraint2.setOperator(FieldCompareConstraint.LESS);
 
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
@@ -92,10 +92,10 @@ public class PropertiesProbe implements Runnable {
 
             query.setConstraint(constraint);
 
-            List<MMObjectNode> nodes = parent.getNodes(query);
+            List nodes = parent.getNodes(query);
             int max=0;
-            for (Iterator<MMObjectNode> i = nodes.iterator(); i.hasNext() && max<1000;) {
-                MMObjectNode node = i.next();
+            for (Iterator i = nodes.iterator(); i.hasNext() && max<1000;) {
+                MMObjectNode node = (MMObjectNode)i.next();
                 int number = node.getIntValue("parent");
                 log.info("Want delete on : " + number);
                 deleteProperties(number);
@@ -119,8 +119,9 @@ public class PropertiesProbe implements Runnable {
         */
         try {
             NodeSearchQuery query = new NodeSearchQuery(parent);
-            List<MMObjectNode> nodes = parent.getNodes(query);
-            for (MMObjectNode node : nodes) {
+            List nodes = parent.getNodes(query);
+            for (Iterator i = nodes.iterator(); i.hasNext();) {
+                MMObjectNode node = (MMObjectNode)i.next();
                 parent.removeNode(node);
             }
         } catch (Exception e) {}

@@ -9,11 +9,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
+import java.util.Iterator;
 import java.lang.reflect.Method;
 
-import java.util.*;
-
-import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
@@ -59,13 +57,13 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.44 2007-06-21 16:17:21 michiel Exp $
+ * @version $Id: Logging.java,v 1.40 2006-07-15 19:51:45 michiel Exp $
  */
 
 
 public class Logging {
 
-    private static Class<?>  logClass    = SimpleTimeStampImpl.class; // default Logger Implementation
+    private static Class  logClass    = SimpleTimeStampImpl.class; // default Logger Implementation
     private static boolean configured = false;
     private static final Logger log   = getLoggerInstance(Logging.class); // logger for this class itself
 
@@ -104,18 +102,6 @@ public class Logging {
         machineName = mn;
     }
 
-    /**
-     * @since MMBase-1.8.5
-     */
-    public static Map<String, String> getInitParameters() {
-        try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-logging");
-            return contextMap;
-        } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain properties from application context: " + ne.getMessage());
-            return new HashMap<String, String>();
-        }
-    }
 
     /**
      * Configure the logging system.
@@ -166,17 +152,16 @@ public class Logging {
 
         String classToUse    = SimpleImpl.class.getName(); // default
         String configuration = "stderr,info";              // default
-
-        Map<String, String> overrides = getInitParameters();
         try { // to read the XML configuration file
-            String claz = overrides.containsKey("class") ? overrides.get("class") : reader.getElementValue("logging.class");
+           String claz = reader.getElementValue("logging.class");
             if (claz != null) {
                 classToUse = claz;
             }
-            String config = overrides.containsKey("configuration") ? overrides.get("configuration") : reader.getElementValue("logging.configuration");
+            String config = reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
         } catch (Exception e) {
-            log.error("Exception during parsing: " + e.getMessage(), e);
+            log.error("Exception during parsing: " + e);
+            log.error(stackTrace(e));
         }
 
 
@@ -184,7 +169,7 @@ public class Logging {
         // System.out.println("(Depending on your selected logging system no more logging");
         // System.out.println("might be written to this file. See the configuration of the");
         // System.out.println("selected logging system for more hints where logging will appear)");
-        Class<?> logClassCopy = logClass; // if something's wrong, we can restore the current value.
+        Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
             if (configured) {
@@ -208,12 +193,12 @@ public class Logging {
         log.service("Logging configured");
         log.debug("Now watching " + configWatcher.getResources());
         log.debug("Replacing wrappers " + LoggerWrapper.getWrappers());
-        for (LoggerWrapper wrapper : LoggerWrapper.getWrappers()) {
+        Iterator wrappers = LoggerWrapper.getWrappers().iterator();
+        while (wrappers.hasNext()) {
+            LoggerWrapper wrapper = (LoggerWrapper) wrappers.next();
             wrapper.setLogger(getLoggerInstance(wrapper.getName()));
             log.debug("Replaced logger " + wrapper.getName());
         }
-
-        ResourceLoader.initLogging();
     }
 
     /**
@@ -225,13 +210,13 @@ public class Logging {
     public static void configureClass(String configuration) {
         try { // to configure
             // System.out.println("Found class " + logClass.getName());
-            Method conf = logClass.getMethod("configure", String.class);
-            conf.invoke(null, configuration);
+            Method conf = logClass.getMethod("configure", new Class[] { String.class } );
+            conf.invoke(null, new Object[] { configuration } );
         } catch (NoSuchMethodException e) {
             log.debug("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
-            log.error("Invocation Exception while configuration class. " + logClass + " with configuration String '" + configuration + "' :" + e.getMessage(), e);
+            log.error("Invocation Exception while configuration class. " + e.getMessage(), e);
         } catch (Exception e) {
             log.error("", e);
         }
@@ -253,8 +238,8 @@ public class Logging {
     public  static Logger getLoggerInstance (String s) {
         // call the getLoggerInstance static method of the logclass:
         try {
-            Method getIns = logClass.getMethod("getLoggerInstance", String.class);
-            Logger logger =  (Logger) getIns.invoke(null, s);
+            Method getIns = logClass.getMethod("getLoggerInstance", new Class[] { String.class } );
+            Logger logger =  (Logger) getIns.invoke(null, new Object[] {s});
             if (configured) {
                 return logger;
             } else {
@@ -270,7 +255,7 @@ public class Logging {
      * Most Logger categories in MMBase are based on class name.
      * @since MMBase-1.6.4
      */
-    public static Logger getLoggerInstance(Class<?> cl) {
+    public static Logger getLoggerInstance(Class cl) {
         return getLoggerInstance(cl.getName());
     }
 
@@ -299,19 +284,13 @@ public class Logging {
      */
     public static void shutdown() {
         try {
-            if (configured) {
-                for (LoggerWrapper wrapper : LoggerWrapper.getWrappers()) {
-                    wrapper.setLogger(SimpleImpl.getLoggerInstance("org.mmbase.SHUTDOWN"));
-                }
-                if (logClass != null) {
-                    Method shutdown = logClass.getMethod("shutdown");
-                    shutdown.invoke(null);
-                }
-                configured = false;
+            if (logClass != null) {
+                Method shutdown = logClass.getMethod("shutdown", new Class[] {} );
+                shutdown.invoke(null, new Object[] {} );
             }
         } catch (NoSuchMethodException e) {
             // System.err.println("No such method"); // okay, nothing to shutdown.
-        } catch (Throwable e) {
+        } catch (Exception e) {
             System.err.println(e + stackTrace(e));
         }
 
@@ -404,26 +383,26 @@ public class Logging {
 
         boolean mmbaseClassesFound = false;
         int appended = 0;
-        for (StackTraceElement element : stackTrace) {
-           String className = element.getClassName();
+        for (int i = 0; i < stackTrace.length; i++) {
+           String className = stackTrace[i].getClassName();
 
            if (className.indexOf("org.mmbase") > -1) {
                mmbaseClassesFound = true;
                // show mmbase taglib
                if (className.indexOf("bridge.jsp.taglib") > -1) {
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                }
            } else {
                if (mmbaseClassesFound) {
                    // show none mmbase method which invoked an mmbase method.
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                    break;
                }
                // show compiled jsp lines
                if (className.indexOf("_jsp") > -1) {
-                   buf.append("\n        at ").append(element);
+                   buf.append("\n        at ").append(stackTrace[i]);
                    appended++;
                }
            }

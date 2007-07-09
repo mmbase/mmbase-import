@@ -14,12 +14,13 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.Cacheable;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.46 2007-04-07 17:12:53 nklasens Exp $
+ * @version $Id: Cache.java,v 1.40 2006-09-07 12:28:03 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -53,11 +54,11 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
-    void setImplementation(String clazz, Map<String,String> configValues) {
+    void setImplementation(String clazz, Map configValues) {
         try {
             Class clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
+                implementation = (CacheImplementationInterface) clas.newInstance();
                 implementation.config(configValues);
             }
         } catch (ClassNotFoundException cnfe) {
@@ -109,7 +110,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     }
 
     public Set<Map.Entry<K,V>> entrySet() {
-        if (! active) return new HashSet<Map.Entry<K,V>>();
+        if (! active) return new HashSet();
         return implementation.entrySet();
     }
 
@@ -203,7 +204,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return implementation.containsKey(key);
     }
 
-    public int getCount(K key) {
+    public int getCount(Object key) {
         return implementation.getCount(key);
     }
 
@@ -326,14 +327,6 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      */
     public boolean equals(Object o) {
         // odd, but this is accordinding to javadoc of Map.
-        if (o == this)
-            return true;
-
-        if (!(o instanceof Cache))
-            return false;
-        Cache<?,?> c = (Cache<?,?>) o;
-        if (!c.getName().equals(getName()))
-            return false;;
         return implementation.equals(o);
     }
 
@@ -342,9 +335,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * @see java.util.Map#hashCode()
      */
     public int hashCode() {
-        int hash = getName().hashCode();
-        hash = HashCodeUtil.hashCode(hash, implementation.hashCode());
-        return hash;
+        return implementation.hashCode();
     }
 
 
@@ -359,7 +350,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#keySet()
      */
-    public Set<K> keySet() {
+    public Set keySet() {
         return implementation.keySet();
     }
 
@@ -367,7 +358,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll(Map<? extends K,? extends V> t) {
+    public void putAll(Map t) {
         implementation.putAll(t);
     }
 
@@ -383,7 +374,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#values()
      */
-    public Collection<V> values() {
+    public Collection values() {
         return implementation.values();
     }
 
@@ -395,6 +386,83 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
     public Cache putCache() {
         return CacheManager.putCache(this);
+    }
+
+    /**
+     * @see CacheManager#getCache(String)
+     */
+    protected static Cache putCache(Cache cache) {
+        return CacheManager.putCache(cache);
+    }
+
+    /**
+     * @see CacheManager#getCache(String)
+     */
+    public static Cache getCache(String name) {
+        return CacheManager.getCache(name);
+    }
+
+    /**
+     * @see CacheManager#getCaches
+     */
+    public static Set getCaches() {
+        return CacheManager.getCaches();
+    }
+
+    /**
+     * @see CacheManager#getTotalByteSize
+     */
+    public static int getTotalByteSize() {
+        return CacheManager.getTotalByteSize();
+    }
+
+    /*
+    public void notify(CacheMessage message) {
+        switch(message.getType()) {
+        case CacheMessage.TYPE_CLEAR:  clear(); break;
+        case CacheMessage.TYPE_DELETE: remove(message.getKey()); break;
+        }
+    }
+    */
+
+    public static void main(String args[]) {
+        Cache mycache = new Cache(20000000) {
+                public String getName()        { return "test cache"; }
+                public String getDescription() { return ""; }
+            };
+        Runtime rt = Runtime.getRuntime();
+        rt.gc();
+        long usedBefore = rt.totalMemory() - rt.freeMemory();
+
+        System.out.println("putting some strings in cache");
+        mycache.put("aaa", "AAA"); // 6 bytes
+        mycache.put("bbb", "BBB"); // 6 bytes
+
+        System.out.println("putting an hashmap in cache");
+        Map m = new HashMap();
+        m.put("ccc", "CCCCCC"); // 9
+        m.put("ddd", "DDD");    // 6
+        m.put("abc", "EEE");    // 6
+        mycache.put("eee", m);  // 3
+
+
+        //String[] list = new String[1000000];
+        //ArrayList list = new ArrayList();
+        // should cause 16M of char
+        for (int i = 1000000; i < 2000000; i++) {
+            mycache.put("a" + 1000000 + i, "b" + 1000000 + i);
+            //list[i - 1000000] = "a" + i + "b" + i;
+            //list.add("a" + i + "b" + i);
+            //list.add(new String( new byte[] {}).intern());
+        }
+        rt.gc();
+
+        long usedAfter = rt.totalMemory() - rt.freeMemory();
+
+        System.out.println("1M of String costs "  + (usedAfter - usedBefore) + " bytes");
+        System.out.println("Sizeof reports " + SizeOf.getByteSize(mycache));
+        System.out.println("size of cache: " + mycache.getByteSize() + " ");
+
     }
 
 }

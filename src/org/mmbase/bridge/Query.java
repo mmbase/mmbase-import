@@ -19,11 +19,11 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.44 2007-04-20 12:18:37 pierre Exp $
+ * @version $Id: Query.java,v 1.40 2006-07-31 13:30:25 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, Cloneable {
+public interface Query extends SearchQuery, Cacheable, Cloneable {
 
     /**
      * Returns the Cloud for which this Query was defined.
@@ -262,7 +262,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param v value
      * @return the new Constraint.
      */
-    FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v);
+    FieldValueInConstraint createConstraint(StepField f, SortedSet v);
 
     /**
      * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.
@@ -304,24 +304,19 @@ public interface Query extends SearchQuery, Cloneable {
      * Adds an order on a certain field.
      * @param f field
      * @param direction {@link SortOrder#ORDER_ASCENDING} or {@link SortOrder#ORDER_DESCENDING}
-     * @param part part to sort on for a date value
      * @return new SortOrder
      * @see org.mmbase.storage.search.implementation.BasicSearchQuery#addSortOrder
-     * @since MMBase-1.9
-     */
-    SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive, int part);
-
-    /**
-     * Defaulting version of {@link #addSortOrder(StepField, int, boolean, int)} (no date parts)
      * @since MMBase-1.8
      */
     SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive);
 
     /**
-     * Defaulting version of {@link #addSortOrder(StepField, int, boolean, int)} (sorting case
-     * insensitively, and no date parts).
+     * Defaulting version of {@link #addSortOrder(StepField, int, boolean)} (sorting case
+     * insensitively).
      */
     SortOrder addSortOrder(StepField f, int direction);
+
+
 
     /**
      * Adds a node to a step.
@@ -330,7 +325,7 @@ public interface Query extends SearchQuery, Cloneable {
      */
     void addNode(Step s, Node node);
 
-    /**
+    /** 
      * @since MMBase-1.8
      */
     void addNode(Step s, int number);

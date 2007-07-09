@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * previous value will remain intact).
  *
  * @author Michiel Meeuwissen
- * @version $Id: IgnoreEmptyProcessor.java,v 1.3 2007-03-21 07:08:51 michiel Exp $
+ * @version $Id: IgnoreEmptyProcessor.java,v 1.1 2006-07-06 14:58:03 michiel Exp $
  * @since MMBase-1.8.1
  */
 
@@ -27,9 +27,8 @@ public class IgnoreEmptyProcessor implements Processor {
     private static final long serialVersionUID = 1L;
 
     public final Object process(Node node, Field field, Object value) {
-        if (node == null) return value;
+        Object prevValue = node.getValue(field.getName());
         if (value == null || "".equals(value)) {
-            Object prevValue = node.getValue(field.getName());
             return  prevValue;
         }
         return value;

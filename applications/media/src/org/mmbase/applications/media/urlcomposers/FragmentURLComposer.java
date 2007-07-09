@@ -28,7 +28,7 @@ import java.util.*;
 public class FragmentURLComposer extends URLComposer  {
     protected MMObjectNode fragment;
     
-    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
+    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
         super.init(provider, source, fragment, info, cacheExpireObjects);
         
         if (cacheExpireObjects != null) {

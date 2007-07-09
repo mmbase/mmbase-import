@@ -11,16 +11,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
-
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 
 /**
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicRelationList.java,v 1.21 2006-06-13 19:08:31 michiel Exp $
  */
-public class BasicRelationList extends AbstractNodeList<Relation> implements RelationList {
+public class BasicRelationList extends BasicNodeList implements RelationList {
 
     BasicRelationList() {
         super();
@@ -34,11 +34,29 @@ public class BasicRelationList extends AbstractNodeList<Relation> implements Rel
         super(c, nodemanager);
     }
 
-
-    public Relation getRelation(int index) {
-        return get(index);
+    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
+        if (o instanceof MMObjectNode) {
+            if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
+                return o;
+            } else {
+                throw new IllegalArgumentException("Requires a relation node, but builder of " + o + " is " + ((MMObjectNode) o).getBuilder());
+            }
+        } else {
+            if (! (o instanceof Relation)) throw new ClassCastException("" + o + " is not a Relation, but a "  + o.getClass());
+            return o;
+        }
     }
 
+    /**
+     *
+     */
+    public Relation getRelation(int index) {
+        return (Relation)get(index);
+    }
+
+    /**
+     *
+     */
     public RelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
@@ -47,18 +65,21 @@ public class BasicRelationList extends AbstractNodeList<Relation> implements Rel
         }
     }
 
+    /**
+     *
+     */
     public RelationIterator relationIterator() {
         return new BasicRelationIterator();
     }
 
-    protected class BasicRelationIterator extends BasicIterator implements RelationIterator {
+    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
 
         public Relation nextRelation() {
-            return next();
+            return (Relation)next();
         }
 
         public Relation previousRelation() {
-            return previous();
+            return (Relation)previous();
         }
     }
 }

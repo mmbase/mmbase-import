@@ -38,30 +38,31 @@ public class NodeEventHelper {
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
         if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
-        Map<String, Object> oldEventValues;
-        Map<String, Object> newEventValues;
+        Map oldEventValues;
+        Map newEventValues;
 
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
             newEventValues = Collections.unmodifiableMap(node.getValues());
-            oldEventValues = Collections.emptyMap();
+            oldEventValues = Collections.EMPTY_MAP;
             break;
         case Event.TYPE_CHANGE:
             oldEventValues = Collections.unmodifiableMap(node.getOldValues());
-            newEventValues = new HashMap<String, Object>();
-            Map<String, Object> values = node.getValues();
-            for (String key : oldEventValues.keySet()) {
-                    newEventValues.put(key, values.get(key));
-                }
+            newEventValues = new HashMap();
+            Map values = node.getValues();
+            for(Iterator i = oldEventValues.keySet().iterator(); i.hasNext(); ) {
+                Object key = i.next();
+                newEventValues.put(key, values.get(key));
+            }
             break;
         case Event.TYPE_DELETE:
-            newEventValues = Collections.emptyMap();
+            newEventValues = Collections.EMPTY_MAP;
             oldEventValues = Collections.unmodifiableMap(node.getValues());
             break;
         default: {
-            oldEventValues = Collections.emptyMap();
-            newEventValues = Collections.emptyMap();
+            oldEventValues = Collections.EMPTY_MAP;
+            newEventValues = Collections.EMPTY_MAP;
             // err.
         }
         }

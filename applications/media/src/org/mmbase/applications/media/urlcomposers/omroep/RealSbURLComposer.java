@@ -11,14 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.9 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.8 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
@@ -49,7 +48,7 @@ public class RealSbURLComposer extends RealURLComposer {
     protected String getBand() {
         return "smalband";
     }
-    public String getGUIIndicator(Map<String,Locale> options) {
+    public String getGUIIndicator(Map options) {
         return super.getGUIIndicator(options) + " (" + getBand() +")";
     }
 

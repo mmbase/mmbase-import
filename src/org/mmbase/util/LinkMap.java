@@ -37,7 +37,7 @@ import java.util.*;
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LinkMap.java,v 1.2 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: LinkMap.java,v 1.1 2006-09-13 17:45:56 michiel Exp $
  * @since MMBase-1.9.0
  */
 public class LinkMap<K, V> extends AbstractMap<K,V> {
@@ -90,10 +90,10 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
         this(m1, m2, Changes.NONE);
     }
     public Set<Map.Entry<K,V>> entrySet() {
-        return new AbstractSet<Map.Entry<K,V>>() {
+        return new AbstractSet() {
             public Iterator<Map.Entry<K,V>> iterator() {
                 final Iterator<Map.Entry<K,V>> i = map1.entrySet().iterator();
-                return new Iterator<Map.Entry<K,V>>() {
+                return new Iterator() {
                     public boolean hasNext() {
                         return i.hasNext();
                         }
@@ -153,15 +153,15 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
 
     public static void main(String[] args) {
         System.out.println("Please run with -ea");
-        Map<String,String> values = new HashMap<String,String>();
+        Map values = new HashMap();
         values.put("a", "A");
         values.put("b", "B");
 
         System.out.println("values: " + values);
         {
             final String key = "b"; final String value = "C";
-            Map<String,String> originals = new HashMap<String,String>();
-            Map<String,String> wrapper = new LinkMap<String,String>(values, originals, LinkMap.Changes.CONSERVE);
+            Map originals = new HashMap();
+            Map wrapper = new LinkMap(values, originals, LinkMap.Changes.CONSERVE);
 
             wrapper.put(key, value);
 
@@ -177,8 +177,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
 
         {
             final String key = "b"; final String value = "D";
-            Map<String,String> wrapper = new LinkMap<String,String>(values, new HashMap<String,String>(),
-                                                                    LinkMap.Changes.SECOND);
+            Map wrapper = new LinkMap(values, new HashMap(), LinkMap.Changes.SECOND);
             wrapper.put(key, value);
             Object newValue = wrapper.get(key);
             Object oldValue = values.get(key);

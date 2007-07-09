@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.13 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: ChangeManager.java,v 1.12 2006-03-31 19:09:04 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -32,11 +32,11 @@ public final class ChangeManager {
      * nodes' builders.
      * @param changes a map with node/change value pairs
      */
-    public void commit(Map<MMObjectNode,String> changes) {
-        for (Iterator<Map.Entry<MMObjectNode,String>> i = changes.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<MMObjectNode,String> e = i.next();
-            MMObjectNode node = e.getKey();
-            String change = e.getValue();
+    public void commit(Map changes) {
+        for (Iterator i = changes.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry)i.next();
+            MMObjectNode node = (MMObjectNode)e.getKey();
+            String change = (String)e.getValue();
             commit(node, change);
             i.remove();
         }

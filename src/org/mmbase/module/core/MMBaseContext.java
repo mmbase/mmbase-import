@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.55 2007-04-19 13:29:36 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.53 2006-08-30 20:59:40 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -215,7 +215,9 @@ public class MMBaseContext {
      */
     public synchronized static void initHtmlRoot() throws ServletException {
         if (!initialized || sx == null) {
-            throw new RuntimeException("The init(ServletContext) method should be called first.");
+            String message = "The init(ServletContext) method should be called first.";
+            log.error(message);
+            throw new RuntimeException(message);
         }
         if (!htmlRootInitialized) {
             // Init htmlroot.
@@ -272,11 +274,11 @@ public class MMBaseContext {
      * @deprecated use {@link org.mmbase.util.ResourceLoader#getConfigurationRoot} with relative path
      */
     public  synchronized static String getConfigPath() {
-        List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.size() == 0) {
             return null;
         } else {
-            return files.get(0).getAbsolutePath();
+            return ((File) files.get(0)).getAbsolutePath();
         }
     }
 
@@ -290,7 +292,9 @@ public class MMBaseContext {
      */
     public synchronized static String getHtmlRoot() {
         if (!htmlRootInitialized) {
-            throw new RuntimeException("The initHtmlRoot method should be called first.");
+            String message = "The initHtmlRoot method should be called first.";
+            log.error(message);
+            throw new RuntimeException();
         }
        return htmlRoot;
     }
@@ -306,7 +310,9 @@ public class MMBaseContext {
      */
     public synchronized static String getOutputFile() {
         if (!initialized) {
-            throw new RuntimeException("The init method should be called first.");
+            String message = "The init method should be called first.";
+            log.error(message);
+            throw new RuntimeException(message);
         }
         return outputFile;
     }
@@ -322,7 +328,9 @@ public class MMBaseContext {
         if (! htmlRootUrlPathInitialized) {
             log.info("Finding root url");
             if (! initialized) {
-                throw new RuntimeException("The init method should be called first.");
+                String message = "The init method should be called first.";
+                log.error(message);
+                throw new RuntimeException(message);
             }
             if (sx == null) { // no serlvetContext -> no htmlRootUrlPath
                 htmlRootUrlPathInitialized = true;

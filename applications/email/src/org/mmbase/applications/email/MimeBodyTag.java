@@ -37,9 +37,10 @@ public class MimeBodyTag {
     private String related;
     private String alt;
     private String formatter;
+    private String attachmentid;
     private String filepath;
     private String filename;
-    private Vector<MimeBodyTag> altnodes; // synchronized?
+    private Vector altnodes; // synchronized?
     private MimeMultipart relatednodes;
     private String number;
     private String field;
@@ -60,7 +61,7 @@ public class MimeBodyTag {
         if (altnodes==null) {
             //altnodes=new MimeMultipart("alternative");
             //altnodes.addBodyPart(getMimeBodyPart());
-            altnodes = new Vector<MimeBodyTag>();
+            altnodes = new Vector();
         }
         //altnodes.addBodyPart(sub.getMimeBodyPart());
         altnodes.addElement(sub);
@@ -113,6 +114,7 @@ public class MimeBodyTag {
     }
 
     public void setAttachment(String attachmentid) {
+        this.attachmentid=attachmentid;
     }
 
     public String getFormatter() {
@@ -232,9 +234,9 @@ public class MimeBodyTag {
                     result.addBodyPart(wrapper);
                 }
 
-                Enumeration<MimeBodyTag> e=altnodes.elements();
+                Enumeration e=altnodes.elements();
                 while (e.hasMoreElements()) {
-                    MimeBodyTag t=e.nextElement();
+                    MimeBodyTag t=(MimeBodyTag)e.nextElement();
             
                     r=t.getRelatedpart();
                     if (r==null) {

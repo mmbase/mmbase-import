@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
     extends="content" maintainer="mmbase.org" name="xmlnews" version="0">
   <status>active</status>
   <searchage>14</searchage>
@@ -25,9 +25,7 @@
   </descriptions>
 
   <fieldlist>
-
-    <field name="date">
-
+    <field>
       <gui>
         <guiname xml:lang="nl">Datum</guiname>
         <guiname xml:lang="en">Date</guiname>
@@ -40,9 +38,11 @@
       <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="today" />
       </datatype>
-
+      <db>
+        <name>date</name>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
+      </db>
     </field>
-
   </fieldlist>
 
   <functionlist>

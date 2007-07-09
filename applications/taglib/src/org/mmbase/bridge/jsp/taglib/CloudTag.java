@@ -38,14 +38,11 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.152 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.145 2006-09-27 20:48:26 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
 
-
-    public static final String KEY = "org.mmbase.cloud";
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     private static String INITIAL_REALM_PREFIX = "initial-";
 
@@ -81,7 +78,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Attribute cloudName = Attribute.NULL;
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
-    private Object prevCloud;
 
     /**
      * @since MMBase-1.7
@@ -95,10 +91,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     //private int method = CloudContext.METHOD_UNSET; // how to log on, method can eg be 'http'.
     private Attribute method = Attribute.NULL;
     private Attribute logonatt = Attribute.NULL;
-    private List<String> logon;
+    private List logon;
     private Attribute pwd = Attribute.NULL;
     private Attribute rank = Attribute.NULL;
     private Attribute sessionName = Attribute.NULL;
+
+    private Attribute onfail = Attribute.NULL;
 
     private HttpSession session;
     private HttpServletRequest request;
@@ -168,14 +166,18 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         return r;
     }
 
+    /**
+     * @since MMBase-1.7
+     */
+    public void setOnfail(String of) throws JspTagException {
+        onfail = getAttribute(of);
+    }
+
     // javadoc inherited (from ParameterHandler)
     public void addParameter(String key, Object value) {
         if (cloud != null) {
             cloud.setProperty(key, value);
         }
-    }
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Cloudtag does not receive framework parameters");
     }
 
     /**
@@ -187,7 +189,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return true;
         }
         String rankString = rank.getString(this);
-        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
+        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS);
     }
 
     public void setJspvar(String jv) {
@@ -270,9 +272,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             log.debug("Searching cookie " + cookie);
         }
         if (cookies != null) {
-            for (Cookie element : cookies) {
-                if (element.getName().equals(cookie) && (!"".equals(element.getValue()))) {
-                    return element;
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals(cookie) && (!"".equals(cookies[i].getValue()))) {
+                    return cookies[i];
                 }
             }
         }
@@ -313,11 +315,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 try {
                     String url = response.encodeRedirectURL(thisPage);
                     log.debug("Redirecting to " + url);
-                    if (! response.isCommitted()) {
-                        response.sendRedirect(url);
-                    } else {
-                        return false;
-                    }
+                    response.sendRedirect(url);
                 } catch (IOException e) {
                     throw new TaglibException(e);
                 }
@@ -341,17 +339,17 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             String cookie = REALM + getSessionName();
             log.debug("removing cookie");
             if (cookies != null) {
-                for (Cookie element : cookies) {
+                for (int i = 0; i < cookies.length; i++) {
                     String path = request.getContextPath();
                     if (path.equals("")) path = "/";
-                    if (element.getName().equals(cookie)) {
+                    if (cookies[i].getName().equals(cookie)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("removing cookie with value " + element);
+                            log.debug("removing cookie with value " + cookies[i]);
                         }
-                        element.setValue("");
-                        element.setMaxAge(0); // remove
-                        element.setPath(path);
-                        response.addCookie(element);
+                        cookies[i].setValue("");
+                        cookies[i].setMaxAge(0); // remove
+                        cookies[i].setPath(path);
+                        response.addCookie(cookies[i]);
                     }
                 }
             }
@@ -508,12 +506,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud == null) {
             return SKIP_BODY;
         }
-        prevCloud = pageContext.getAttribute(KEY, SCOPE);
-        if (prevCloud != null) {
-            log.debug("Found previous cloud " + prevCloud);
-        }
-        pageContext.setAttribute(KEY, cloud, SCOPE);
-
         cloud.setProperty("request", request);
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
@@ -898,7 +890,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 log.debug("username not correct");
                 return denyHTTP("<h2 class=\"mm_cloud\">" + bundle.getString("cloudtag.wronguser") + "</h2><p class\"mm_cloud\">" + bundle.getString("cloudtag.mustbe") + logon + "</p>");
             } else {
-                logon = new ArrayList<String>();
+                logon = new ArrayList();
                 logon.add(userName);
             }
         } else { // logon == null
@@ -949,9 +941,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 setName(cloudNamePassed); // THIS SEEM DANGEROUS
             }
             user.setAutoCasting(true);
-            Enumeration<String> enumeration = request.getParameterNames();
+            Enumeration enumeration = request.getParameterNames();
             while (enumeration.hasMoreElements()) {
-                String key = enumeration.nextElement();
+                String key = (String) enumeration.nextElement();
                 String value = (String) org.mmbase.bridge.jsp.taglib.util.ContextContainer.fixEncoding(request.getParameter(key), pageContext);
                 if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);
@@ -1025,9 +1017,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 String existingQuery = toFile.substring(existingQueryPosition + 1);
                 log.debug("Found existing query " + existingQuery);
                 String[] parameters = existingQuery.split("&");
-                for (String element : parameters) {
-                    if (element.startsWith("referrer=")) {
-                        referrer = org.mmbase.util.Encode.decode("escape_url", element.substring(9));
+                for (int i = 0; i < parameters.length; i++) {
+                    if (parameters[i].startsWith("referrer=")) {
+                        referrer = org.mmbase.util.Encode.decode("escape_url", parameters[i].substring(9));
                         if (referrer.startsWith("?")) referrer = "." + referrer; // tomcat 5, referrerPage can be "", which is inconvenient, because using it as action for login.jsp whill be empty string, will post to login.jsp again
                         log.debug("Found existing referrer " + referrer);
                         break;
@@ -1340,7 +1332,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public int doEndTag() throws JspTagException {
-        pageContext.setAttribute(KEY, prevCloud, SCOPE);
         return super.doEndTag();
     }
 

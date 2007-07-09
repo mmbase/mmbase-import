@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.23 2006-11-12 14:29:33 michiel Exp $
+ * @version $Id: CreateNodeTag.java,v 1.22 2005-11-23 10:29:39 michiel Exp $
  */
 
 public class CreateNodeTag extends NodeTag {
@@ -47,7 +47,7 @@ public class CreateNodeTag extends NodeTag {
 
         setNodeVar(node);
         fillVars();
-        return EVAL_BODY;
+        return EVAL_BODY_BUFFERED;
     }
 
 

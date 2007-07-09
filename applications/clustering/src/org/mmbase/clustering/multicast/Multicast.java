@@ -16,6 +16,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.UtilReader;
 
+
 /**
  * Multicast is a thread object that reads the receive queue
  * and spawns them to call the objects (listeners) who need to know.
@@ -25,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.12 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: Multicast.java,v 1.10 2006-07-06 11:40:48 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -72,7 +73,8 @@ public class Multicast extends ClusterManager {
 
     /**
      */
-    public Multicast() {
+
+    public Multicast(){
         readConfiguration(reader.getProperties());
         start();
     }
@@ -80,29 +82,29 @@ public class Multicast extends ClusterManager {
     /**
      * @since MMBase-1.8.1
      */
-    protected synchronized void readConfiguration(Map<String,String> configuration) {
+    protected synchronized void readConfiguration(Map configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = configuration.get("multicastport");
+        String tmp = (String) configuration.get("multicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = configuration.get("multicasthost");
+        tmp = (String) configuration.get("multicasthost");
         if (tmp != null && !tmp.equals("")) {
             multicastHost = tmp;
         }
 
-        tmp = configuration.get("multicastTTL");
+        tmp = (String) configuration.get("multicastTTL");
         if (tmp != null && !tmp.equals("")) {
             try {
                 multicastTTL = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = configuration.get("dpsize");
+        tmp = (String) configuration.get("dpsize");
         if (tmp != null && !tmp.equals("")) {
             try {
                 dpsize = Integer.parseInt(tmp);
@@ -110,9 +112,10 @@ public class Multicast extends ClusterManager {
         }
 
         log.info("multicast host: " + multicastHost +
-                 ", port: " + multicastPort +
-                 ", TTL: " + multicastTTL +
+                 ", port: " + multicastPort + 
+                 ", TTL: " + multicastTTL + 
                  ", datapacketsize: " + dpsize);
+
     }
 
     protected synchronized void startCommunicationThreads() {
@@ -134,7 +137,7 @@ public class Multicast extends ClusterManager {
             log.service("Stopped communication sender " + mcs);
             mcs = null;
         }
-        if (mcr != null) {
+        if (mcr != null) { 
             mcr.stop();
             log.service("Stopped communication receiver " + mcr);
             mcr = null;

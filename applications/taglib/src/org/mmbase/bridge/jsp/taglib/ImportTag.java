@@ -12,6 +12,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.60 2007-06-20 13:31:29 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.58 2005-05-18 08:04:16 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -78,7 +79,7 @@ public class ImportTag extends ContextReferrerTag {
         Object value = null;
         helper.overrideWrite(false);
         log.trace("dostarttag of import");
-
+        
         if (getId() == null) {
             log.trace("No id was given, using externid ");
             useId = (String) externid.getValue(this);
@@ -87,11 +88,11 @@ public class ImportTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
 
-
+        
         if (externid != Attribute.NULL) {
 
             boolean res = reset.getBoolean(this, false);
-            if (log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) { 
                 log.trace("Externid was given " + externid.getString(this));
             }
             if (from.getString(this).equals("")) {
@@ -141,9 +142,6 @@ public class ImportTag extends ContextReferrerTag {
             setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
                 ContextContainer cc = getContextProvider().getContextContainer();
-                if (log.isDebugEnabled()) {
-                    log.debug("Using " + cc + " to register" + useId);
-                }
                 cc.reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
@@ -202,12 +200,8 @@ public class ImportTag extends ContextReferrerTag {
                 }
                 boolean res = reset.getBoolean(this, false);
                 // should this be more general? Also in other contextwriters?
-                ContextProvider cp = getContextProvider();
-                ContextContainer cc = cp.getContextContainer();
-                if (log.isDebugEnabled()) {
-                    log.debug("registering in " + cp + " with container " + cc);
-                }
-                cc.register(useId, helper, !res);
+
+                getContextProvider().getContextContainer().register(useId, helper, !res);
 
             } else {
                 if (helper.getJspvar() == null) {

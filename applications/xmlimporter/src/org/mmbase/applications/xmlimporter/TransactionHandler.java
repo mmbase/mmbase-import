@@ -13,6 +13,8 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.Module;
+import org.mmbase.module.sessionInfo;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.12 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: TransactionHandler.java,v 1.10 2006-05-15 10:14:34 andre Exp $
  */
 
 public class TransactionHandler extends Module  {
@@ -34,6 +36,19 @@ public class TransactionHandler extends Module  {
 
    /** Current version number. */
    private static String version="1.12.2001";
+
+   /** Hashtable to store a UserTransactionInfo object for each user. */
+   private static Hashtable transactionsPerUser = new Hashtable();
+
+   /** Hashtable to store a UserTransactionInfo object for each user. */
+   private static Consultant consultant;
+
+   /** XML file header, consisting of XML and DOCTYPE declaration. */
+   private final String xmlHeader =
+   "<?xml version='1.0'?>\n"
+      + "<!DOCTYPE transactions "
+      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' "
+      + "'http://www.mmbase.org/dtd/transactions_1_0.dtd'>\n";
 
    /**
     * Create new TransactionHandler.
@@ -57,6 +72,28 @@ public class TransactionHandler extends Module  {
 
    private String getTime() {
       return new Date().toString();
+   }
+
+   /**
+    * Get transaction info for this user.
+    * A UserTransactionInfo object is stored for each user,
+    * holding information on the transactions held by that user.
+    * Use this method to access it.
+    * @param user the user.
+    */
+   private UserTransactionInfo userInfo(String user) {
+      if (!transactionsPerUser.containsKey(user)) {
+         if (log.isDebugEnabled()) {
+            log.debug("Create UserTransactionInfo for user "+user);
+         }
+         // make acess to all variables indexed by user;
+         UserTransactionInfo uti = new UserTransactionInfo();
+         transactionsPerUser.put(user, uti);
+         uti.user = new User(user);
+      } else {
+         log.warn("UserTransactionInfo already known for user "+user);
+      }
+      return ((UserTransactionInfo) transactionsPerUser.get(user));
    }
 
    /**

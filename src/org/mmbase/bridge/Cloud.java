@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.61 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: Cloud.java,v 1.59 2006-09-07 12:48:23 pierre Exp $
  */
 public interface Cloud {
 
@@ -588,7 +588,7 @@ public interface Cloud {
      * Retrieves all properties previously set for this cloud.
      * @since MMBase-1.8
      */
-    public Map<Object, Object> getProperties();
+    public Map getProperties();
 
     /**
      * Returns all Function objects from a function set.
@@ -601,7 +601,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Collection<Function<?>> getFunctions(String setName);
+    public Collection getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.

@@ -16,13 +16,14 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.104 2007-06-19 21:04:50 michiel Exp $
+ * @version $Id: Casting.java,v 1.91 2006-09-27 20:39:37 michiel Exp $
  */
 
 import java.util.*;
 import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
+import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
@@ -48,12 +49,7 @@ public class Casting {
      * XXX: According to http://en.wikipedia.org/wiki/ISO_8601, the standard allows ' ' in stead of
      * 'T' if no misunderstanding arises, which is the case here. So I don't think this is 'loose'.
      */
-    public final static ThreadLocal<DateFormat> ISO_8601_LOOSE =
-        new ThreadLocal<DateFormat>() {
-        protected synchronized DateFormat initialValue() {
-                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            }
-    };
+    public final static DateFormat ISO_8601_LOOSE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     /**
      * A Date formatter that creates a ISO 8601 datetime according to UTC/GMT.
@@ -63,28 +59,13 @@ public class Casting {
      *
      * XXX: Hmm, we parse with UTC now, while we don't store them as such.
      */
-    public final static ThreadLocal<DateFormat> ISO_8601_UTC =
-        new ThreadLocal<DateFormat>() {
-        protected synchronized DateFormat initialValue() {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-                df.setTimeZone(TimeZone.getTimeZone("UTC"));
-                return df;
-            }
-    };
+    public final static DateFormat ISO_8601_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+    static {
+        ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
-    public final static ThreadLocal<DateFormat> ISO_8601_DATE =
-        new ThreadLocal<DateFormat>() {
-        protected synchronized DateFormat initialValue() {
-                return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            }
-    };
-    public final static ThreadLocal<DateFormat> ISO_8601_TIME =
-        new ThreadLocal<DateFormat>() {
-        protected synchronized DateFormat initialValue() {
-                return new SimpleDateFormat("HH:mm:ss", Locale.US);
-            }
-    };
-
+    public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public final static DateFormat ISO_8601_TIME = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
 
 
@@ -114,7 +95,6 @@ public class Casting {
         }
     }
 
-
     /**
      * Tries to 'cast' an object for use with the provided class. E.g. if value is a String, but the
      * type passed is Integer, then the string is act to an Integer.
@@ -125,7 +105,7 @@ public class Casting {
      * @return value the converted value
      * @since MMBase-1.8
      */
-    public static <C> C toType(Class<C> type, Object value) {
+    public static Object toType(Class type, Object value) {
         return toType(type, null, value);
     }
 
@@ -142,68 +122,68 @@ public class Casting {
      * @return value the converted value
      * @since MMBase-1.8
      */
-    public static <C> C toType(Class<C> type, Cloud cloud, Object value) {
+    public static Object toType(Class type, Cloud cloud, Object value) {
         if (value != null && isType(type, value))  {
-            return (C) value;
+            return value;
         } else {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
-                return (C) Boolean.valueOf(toBoolean(value));
+                return Boolean.valueOf(toBoolean(value));
             } else if (type.equals(Byte.TYPE) || type.equals(Byte.class)) {
-                return (C) Byte.valueOf(toInteger(value).byteValue());
+                return new Byte(toInteger(value).byteValue());
             } else if (type.equals(Character.TYPE) || type.equals(Character.class)) {
                 String chars = toString(value);
                 if (chars.length() > 0) {
-                    return (C) Character.valueOf(chars.charAt(0));
+                    return new Character(chars.charAt(0));
                 } else {
-                    return (C) Character.valueOf(Character.MIN_VALUE);
+                    return new Character(Character.MIN_VALUE);
                 }
             } else if (type.equals(Short.TYPE) || type.equals(Short.class)) {
-                return (C) Short.valueOf(toInteger(value).shortValue());
+                return new Short(toInteger(value).shortValue());
             } else if (type.equals(Integer.TYPE) || type.equals(Integer.class)) {
-                return (C) toInteger(value);
+                return toInteger(value);
             } else if (type.equals(Long.TYPE) || type.equals(Long.class)) {
-                return (C) Long.valueOf(toLong(value));
+                return new Long(toLong(value));
             } else if (type.equals(Float.TYPE) || type.equals(Float.class)) {
-                return (C) Float.valueOf(toFloat(value));
+                return new Float(toFloat(value));
             } else if (type.equals(Double.TYPE) || type.equals(Double.class)) {
-                return (C) Double.valueOf(toDouble(value));
+                return new Double(toDouble(value));
             } else if (type.equals(Number.class)) {
                 Number res;
                 try {
-                    res = Long.valueOf("" + value);
+                    res = new Long("" + value);
                 } catch (NumberFormatException nfe) {
                     try {
-                        res = Double.valueOf("" + value);
+                        res = new Double("" + value);
                     } catch (NumberFormatException nfe1) {
-                        res = Integer.valueOf(-1);
+                        res = new Integer(-1);
                     }
                 }
-                return (C) res;
+                return res;
             } else if (type.equals(byte[].class)) {
-                return (C) toByte(value);
+                return toByte(value);
             } else if (type.equals(String.class)) {
-                return (C) toString(value);
+                return toString(value);
             } else if (type.equals(Date.class)) {
-                return (C) toDate(value);
+                return toDate(value);
             } else if (type.equals(Node.class)) {
                 try {
                     if (cloud == null) {
                         if (anonymousCloud == null) anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
                         cloud = anonymousCloud;
                     }
-                    return (C) toNode(value, cloud);
+                    return toNode(value, cloud);
                 } catch (Exception e) {
                     // suppose that that was because mmbase not running
-                    return (C) (value instanceof Node ? value : null);
+                    return value instanceof Node ? value : null;
                 }
             } else if (type.equals(Document.class)) {
-                return (C) toXML(value);
+                return toXML(value);
             } else if (type.equals(List.class)) {
-                return (C) toList(value);
+                return toList(value);
             } else if (type.equals(Map.class)) {
-                return (C) toMap(value);
+                return toMap(value);
             } else if (type.equals(Collection.class)) {
-                return (C) toCollection(value);
+                return toCollection(value);
             } else {
                 if (value == null || "".equals(value)) {
                     // just to avoid the error
@@ -211,7 +191,7 @@ public class Casting {
                 }
                 log.error("Dont now how to convert to " + type);
                 // don't know
-                return (C) value;
+                return value;
             }
         }
     }
@@ -231,13 +211,12 @@ public class Casting {
             Node.class.isAssignableFrom(type) ||
             Document.class.isAssignableFrom(type) ||
             Collection.class.isAssignableFrom(type) ||
-            Date.class.isAssignableFrom(type) ||
             Map.class.isAssignableFrom(type);
     }
 
     /**
      * Convert an object to a String.
-     * <code>null</code> is converted to an empty string.
+     * 'null' is converted to an empty string.
      * @param o the object to convert
      * @return the converted value as a <code>String</code>
      */
@@ -249,7 +228,7 @@ public class Casting {
             return "";
         }
 
-        return toStringBuilder(new StringBuilder(), o).toString();
+        return toStringBuffer(new StringBuffer(), o).toString();
     }
 
     /**
@@ -270,25 +249,6 @@ public class Casting {
     }
 
     /**
-     * Convert an object to a string, using a StringBuilder
-     * @param buffer The StringBuilder with which to create the string
-     * @param o the object to convert
-     * @return the StringBuilder used for conversion (same as the buffer parameter)
-     * @since MMBase-1.9
-     */
-    public static StringBuilder toStringBuilder(StringBuilder buffer, Object o) {
-        if (o == null) {
-            return buffer;
-        }
-        try {
-            toWriter(new StringBuilderWriter(buffer), o);
-        } catch (java.io.IOException e) {}
-        return buffer;
-    }
-
-    private static org.mmbase.storage.search.implementation.database.BasicSqlHandler sqlHandler = 
-        new org.mmbase.storage.search.implementation.database.BasicSqlHandler();
-    /**
      * Convert an object to a string, using a Writer.
      * @param writer The Writer with which to create (write) the string
      * @param o the object to convert
@@ -300,22 +260,16 @@ public class Casting {
             return writer;
         }
         Object s = wrap(o, null);
-        if (s instanceof org.mmbase.storage.search.SearchQuery) {
-            try {
-                s = sqlHandler.toSql((org.mmbase.storage.search.SearchQuery) s, sqlHandler);
-            } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            }
-        }
         writer.write(s.toString());
         return writer;
     }
 
     /**
-     * Wraps an object in another object with a toString as we desire. Casting can now be done with
+     * Wraps it in an object with a toString as we desire. Casting can now be done with
      * toString() on the resulting object.
      *
      * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the
-     * page (taglib calls Casting, but JSTL of course doesn't).
+     * page (taglib calls Casting, but they of course don't).
      *
      * @todo  Not everything is wrapped (and can be unwrapped) already.
      * @param o        The object to be wrapped
@@ -326,8 +280,6 @@ public class Casting {
     public static Object wrap(final Object o, final CharTransformer escaper) {
         if (o == null) {
             return escape(escaper, "");
-        } else if (o instanceof Unwrappable) {
-            return o;
         } else if (o instanceof Node) {
             return new NodeMap((Node)o) {
                     public Object getValue(String fieldName) {
@@ -347,7 +299,7 @@ public class Casting {
                     private static final long serialVersionUID = 1L; // increase this if object chages.
                     public String toString() {
                         long time = getTime();
-                        return time == -1 ? "-1" : ("" + time / 1000);
+                        return time == -1 ? ("" + time) : ("" + time / 1000);
                     }
                 };
         } else if (o instanceof org.w3c.dom.Node) {
@@ -426,7 +378,11 @@ public class Casting {
         } else if (o instanceof Map) {
             return new ArrayList(((Map)o).entrySet());
         } else {
-            return Collections.singletonList(o);
+            List l = new ArrayList();
+            if (o != null) {
+                l.add(o);
+            }
+            return l;
         }
     }
 
@@ -455,7 +411,9 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o);
         } else {
-            return Collections.singletonMap(o, o);
+            Map m = new HashMap();
+            m.put(o, o);
+            return m;
         }
     }
 
@@ -463,7 +421,7 @@ public class Casting {
      * Transforms an object to a collection. If the object is a collection already, then nothing
      * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
      * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
-     *
+     * 
      * @since MMBase-1.8
      */
     public static Collection toCollection(Object o) {
@@ -473,10 +431,12 @@ public class Casting {
             return ((Map)o).entrySet();
         } else if (o instanceof String) {
             return StringSplitter.split((String)o);
-        } else if (o instanceof Object[]) {
-            return Arrays.asList((Object[]) o);
         } else {
-            return Collections.singletonList(o);
+            List l = new ArrayList();
+            if (o != null) {
+                l.add(o);
+            }
+            return l;
         }
     }
 
@@ -548,8 +508,7 @@ public class Casting {
         if (obj instanceof InputStream) {
             return (InputStream) obj;
         } else {
-            byte[] bytes = toByte(obj);
-            return new ByteArrayInputStream(bytes, 0, bytes.length);
+            return new ByteArrayInputStream(toByte(obj));
         }
     }
 
@@ -557,11 +516,10 @@ public class Casting {
     /**
      * Convert an object to an Node.
      * If the value is Numeric, the method
-     * tries to obtain the mmbase object with that number.
-     * A <code>Map</code> returns a virtual <code>Node</code> representing the map, (a
-     * {@link MapNode}).
-     * All remaining situations return the node with the alias <code>i.toString()</code>, which can
-     * be <code>null</code> if no node which such an alias.
+     * tries to obtrain the object with that number.
+     * If it is a String, the method tries to obtain the object with
+     * that alias.
+     * All remaining situations return <code>null</code>.
      * @param i the object to convert
      * @param cloud the Cloud to use for loading a node
      * @return the value as a <code>Node</code>
@@ -603,16 +561,14 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Date) {
             long timeValue = ((Date)i).getTime();
-
-            if (timeValue != -1) timeValue /= 1000;
-
+            if (timeValue !=-1) timeValue = timeValue / 1000;
             if (timeValue > Integer.MAX_VALUE) {
-                res = Integer.MAX_VALUE;
-            } else if (timeValue < Integer.MIN_VALUE) {
-                res = Integer.MIN_VALUE;
-            } else {
-                res = (int) timeValue;
+                timeValue = Integer.MAX_VALUE;
             }
+            if (timeValue < Integer.MIN_VALUE) {
+                timeValue = Integer.MIN_VALUE;
+            }
+            res = (int) timeValue;
         } else if (i instanceof Number) {
             long l = ((Number)i).longValue();
             if (l > Integer.MAX_VALUE) {
@@ -626,16 +582,16 @@ public class Casting {
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a float or double represented as String.
+                // not an integer? perhaps it is a fload or double represented as String.
                 try {
-                    res = toInt(Double.valueOf("" + i), def); // recursive to hit the check on MAX_VALUE/MIN_VALUE also here.
+                    res = Double.valueOf("" + i).intValue();
                 } catch (NumberFormatException ex) {
+
                     // try if the value is a string representing a boolean.
                     if(i instanceof String){
-                        String s = ((String)i).toLowerCase();
-                        if (s.equals("true") || s.equals("yes")) {
+                        if(((String)i).toLowerCase().equals(("true"))){
                             res = 1;
-                        } else if(s.equals("false") || s.equals("no")) {
+                        }else if(((String)i).toLowerCase().equals(("false"))){
                             res = 0;
                         }
                     }
@@ -707,7 +663,7 @@ public class Casting {
         if (i instanceof Integer) {
             return (Integer)i;
         } else {
-            return Integer.valueOf(toInt(i));
+            return new Integer(toInt(i));
         }
     }
 
@@ -734,12 +690,8 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
-                String s = ((String)i).toLowerCase();
-                if (s.equals("true") || s.equals("yes")) {
-                    return 1;
-                } else if(s.equals("false") || s.equals("no")) {
-                    return 0;
-                }
+                if(((String)i).toLowerCase().equals("true")) return 1;
+                if(((String)i).toLowerCase().equals("false")) return 0;
             }
             try {
                 res = Long.parseLong("" + i);
@@ -790,17 +742,23 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
-                String s = ((String)i).toLowerCase();
-                if (s.equals("true") || s.equals("yes")) {
+                if(((String)i).toLowerCase().equals("true")) {
                     res = 1;
-                } else if(s.equals("false") || s.equals("no")) {
+                } else if(((String)i).toLowerCase().equals("false")) {
                     res = 0;
                 }
             }
             try {
                 res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {
-                // use default
+//              try if the value is a string representing a boolean.
+                if(i instanceof String){
+                    if(((String)i).toLowerCase().equals(("true"))){
+                        res = 1;
+                    } else if(((String)i).toLowerCase().equals(("false"))){
+                        res = 0;
+                    }
+                }
             }
         }
         return res;
@@ -844,10 +802,9 @@ public class Casting {
             } catch (NumberFormatException e) {
 //              try if the value is a string representing a boolean.
                 if(i instanceof String){
-                    String s = ((String)i).toLowerCase();
-                    if (s.equals("true") || s.equals("yes")) {
+                    if(((String)i).toLowerCase().equals(("true"))){
                         res = 1;
-                    } else if(s.equals("false") || s.equals("no")) {
+                    }else if(((String)i).toLowerCase().equals(("false"))){
                         res = 0;
                     }
                 }
@@ -942,7 +899,7 @@ public class Casting {
             DOCUMENTBUILDER = dfactory.newDocumentBuilder();
             DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
         } catch (ParserConfigurationException pce) {
-            log.error("[sax parser]: " + pce.toString(), pce);
+            log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));
         }
     }
     /**
@@ -955,7 +912,7 @@ public class Casting {
         if (value == null) {
             return null;
         }
-        if (log.isTraceEnabled()) {
+        if (log.isDebugEnabled()) {
             log.trace("using xml string:\n" + value);
         }
         try {
@@ -968,7 +925,7 @@ public class Casting {
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
                 doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
             }
-            if (log.isTraceEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.trace("parsed: " + XMLWriter.write(doc, false, true));
             }
             if (!errorHandler.foundNothing()) {
@@ -976,12 +933,11 @@ public class Casting {
             }
             return doc;
         } catch (org.xml.sax.SAXException se) {
-            if (log.isDebugEnabled()) {
-                log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
-            }
+            log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
         } catch (java.io.IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
+            log.error(msg);
             throw new IllegalArgumentException(msg);
         }
     }
@@ -1087,26 +1043,6 @@ public class Casting {
         }
         public CharSequence getString() {
             return string;
-        }
-    }
-
-    /**
-     * Clases implementint this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
-     * @since MMBase-1.9
-     */
-    public static interface Unwrappable {
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static boolean equals(Object o1, Object o2) {
-        if (o1 == null) return o2 == null;
-
-        if (o1 instanceof org.w3c.dom.Node) {
-            return (o2 instanceof org.w3c.dom.Node && ((org.w3c.dom.Node) o1).isEqualNode((org.w3c.dom.Node) o2));
-        } else {
-            return o1.equals(o2);
         }
     }
 

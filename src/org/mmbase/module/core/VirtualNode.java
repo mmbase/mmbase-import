@@ -19,7 +19,7 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.15 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.12 2005-12-10 14:23:07 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
 
@@ -29,13 +29,6 @@ public class VirtualNode extends MMObjectNode {
      */
     public VirtualNode(MMObjectBuilder parent) {
         super(parent, false);
-    }
-
-    /**
-     * Alternate constructor, to create a node with the values given.
-     */
-    public VirtualNode(Map<String, Object> values) {
-        super(new VirtualBuilder(MMBase.getMMBase()), values);
     }
 
 
@@ -83,8 +76,8 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
-    public Enumeration<MMObjectNode> getRelations() {
-        return new java.util.Vector<MMObjectNode>(0).elements();
+    public Enumeration getRelations() {
+        return new java.util.Vector(0).elements();
     }
 
     /**

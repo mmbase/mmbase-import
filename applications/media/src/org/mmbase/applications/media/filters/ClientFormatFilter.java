@@ -10,8 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 
-import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.Format;
 import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,10 +31,12 @@ public class ClientFormatFilter implements Filter {
         // nothing to be configured on default.
     }
     
-    final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
-        List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
+    final public List filter(List urlcomposers) {
+        List filteredUrlcomposers = new ArrayList();
         
-        for (URLComposer urlcomposer : urlcomposers) {
+        for (Iterator urlcomposerlist = urlcomposers.iterator();urlcomposerlist.hasNext();) {
+            URLComposer urlcomposer = (URLComposer)urlcomposerlist.next();
+            
             Object format = urlcomposer.getInfo().get("format");
             if (log.isDebugEnabled()) {
                 log.debug("Client specified format = " + format);

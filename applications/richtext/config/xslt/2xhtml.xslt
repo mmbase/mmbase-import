@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.25 2007-06-20 14:29:55 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.20 2006-09-29 17:06:22 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -22,6 +22,7 @@
   <xsl:param name="cloud">mmbase</xsl:param>
   <xsl:param name="request"></xsl:param>
   <xsl:param name="formatter_requestcontext">/</xsl:param>
+
 
   <!--
       The thumbwidth parameter specifies the size of inline images.
@@ -46,7 +47,7 @@
 
 
 
-  <xsl:param name="newstype">xmlnews</xsl:param>
+  <xsl:variable name="newstype">xmlnews</xsl:variable>
   <!-- I had an 'xmlnews' type... Can easily switch beteen them like
        this.  Perhaps you prefer 'news' itself to contain XML fields. -->
 
@@ -60,28 +61,28 @@
 
   <!-- how to present a node -->
   <xsl:template match="o:object">
-    <xsl:apply-templates select="o:field" mode="top" />
+    <xsl:apply-templates select="o:field" />
   </xsl:template>
 
 
    <!-- how to present a news node -->
-   <xsl:template match="o:object[@type=$newstype and not(o:unfilledField)]" mode="top">
-     <xsl:apply-templates select="o:field[@name='title']"    mode="top"/>
-     <xsl:apply-templates select="o:field[@name='subtitle']" mode="top"/>
-     <xsl:apply-templates select="o:field[@name='intro']" mode="top"/>
-     <xsl:apply-templates select="o:field[@name='body']" mode="top"/>
+   <xsl:template match="o:object[@type=$newstype and not(o:unfilledField)]">
+     <xsl:apply-templates select="o:field[@name='title']"    />
+     <xsl:apply-templates select="o:field[@name='subtitle']" />
+     <xsl:apply-templates select="o:field[@name='intro']" />
+     <xsl:apply-templates select="o:field[@name='body']" />
    </xsl:template>
 
 
-  <xsl:template match="o:object[@type=$newstype]/o:field[@name='title']" mode="top">
+  <xsl:template match="o:object[@type=$newstype]/o:field[@name='title']" >
     <h1><xsl:value-of select="." /></h1>
   </xsl:template>
-  <xsl:template match="o:object[@type=$newstype]/o:field[@name='subtitle']" mode="top">
+  <xsl:template match="o:object[@type=$newstype]/o:field[@name='subtitle']" >
     <h2><xsl:value-of select="." /></h2>
   </xsl:template>
 
 
-  <xsl:template match="o:field[@format='xml']" mode="top">
+  <xsl:template match="o:field[@format='xml']">
     <xsl:choose>
       <xsl:when test="mmxf:mmxf">
         <xsl:choose>
@@ -90,13 +91,13 @@
           </xsl:when>
           <xsl:otherwise>
             <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-            <p></p>
+            <p />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise><!-- null -->
         <!-- make sure not to spit out something empty, because that may confuse certain browers -->
-        <p></p>
+        <p />
       </xsl:otherwise>
     </xsl:choose>
 
@@ -110,8 +111,8 @@
     <xsl:value-of select="node:function($cloud, string(@id ), 'url', $request)" />
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">   
-    <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'servletpath')" />
+  <xsl:template match="o:object[@type = 'images' or @type ='attachments' or @type='icaches']" mode="url">   
+    <xsl:value-of select="node:function($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
 
@@ -192,7 +193,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumb)" />
-    <img src="{node:saxonFunction($cloud, string($icache/@id ), 'servletpath')}" >
+    <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -204,7 +205,7 @@
 
   <!-- 
        Produces the presentation for an object which is related somewhere already inside an a
-       tag. This means that it has to be careful to produce more a-tags.
+       tag. This means that it has to be careful to produces more a-tags.
   -->
   <xsl:template match="o:object" mode="in_a">
     <xsl:param name="relation" />    
@@ -231,7 +232,7 @@
   <xsl:template match="o:object" mode="icon">
     <img width="16" height="16" class="icon">
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
-      <xsl:attribute name="src"><xsl:value-of select="node:saxonFunction($cloud, string(@id), 'iconurl')" /></xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
     </img>
   </xsl:template>
 
@@ -266,8 +267,8 @@
           </xsl:when>
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
-            <xsl:variable name="width"><xsl:value-of select="node:saxonFunction($cloud, string(@id ), 'width')" /></xsl:variable>
-            <xsl:variable name="height"><xsl:value-of select="node:saxonFunction($cloud, string(@id ), 'height')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(@id ), 'height')" /></xsl:variable>
             <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
               <xsl:attribute name="id">
                 <xsl:value-of select="$relation/o:field[@name = 'id']" />
@@ -282,9 +283,9 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $popupsize)" />
-            <xsl:variable name="href"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
-            <xsl:variable name="width"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'width')" /></xsl:variable>
-            <xsl:variable name="height"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'height')" /></xsl:variable>
+            <xsl:variable name="href"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'height')" /></xsl:variable>
             <a href="{$href}"
                onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
 
@@ -382,7 +383,7 @@
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'urls']|o:object[@type = 'segments']" mode="inline">
+  <xsl:template match="o:object[@type = 'urls' or @type = 'segments']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
@@ -422,7 +423,7 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="title">
-    <xsl:variable name="index" select="node:saxonFunction($cloud, string(@id), 'index')" />
+    <xsl:variable name="index" select="node:function($cloud, string(@id), 'index')" />
     <xsl:choose>
       <xsl:when test="$index = ''">
         <xsl:value-of select="./o:field[@name='title']" />
@@ -445,17 +446,15 @@
        to determine the relations and calls jumps to with_relations mode, where the 'relations'
        parameter becomes available (all relations pointing to this element).
   -->
-  
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
-     <!-- store all 'relation' nodes of this node for convenience in $rels:-->
+    <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
     <!-- also for conveniences: all related nodes to this node-->
-    <xsl:variable name="related_to_node"   select="id($rels/@related)" />
+    <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
 
-
-    <xsl:variable name="relations" select="id($rels/@object)[o:field[@name='id'] = current()/@id]" />
+    <xsl:variable name="relations" select="//o:objects/o:object[@id=$rels/@object and o:field[@name='id'] = current()/@id]" />
 
     <xsl:apply-templates select="." mode="with_relations">
       <xsl:with-param name="relations" select="$relations" />
@@ -508,20 +507,20 @@
       <!-- it has body, and precisely one relation, make body clickable -->
       <xsl:when test="node() and count($relations) = 1">
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
-        <xsl:apply-templates select="id($toNodeNumber)" mode="inline_body">
+        <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline_body">
           <xsl:with-param name="relation" select="$relations[1]" />
           <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
       </xsl:when>
-      <xsl:when test="not(node()) and count($relations) = 1 and $in_a = 'yes'">        
+      <xsl:when test="not(node()) and count($relations) = 1 and $in_a = 'yes'">
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
-        <xsl:apply-templates select="id($toNodeNumber)" mode="in_a">
+        <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="in_a">
           <xsl:with-param name="relation" select="$relations[1]" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:when test="not(node()) and count($relations) = 1">
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
-        <xsl:apply-templates select="id($toNodeNumber)" mode="inline">
+        <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
           <xsl:with-param name="relation" select="$relations[1]" />
         </xsl:apply-templates>
       </xsl:when>
@@ -555,7 +554,7 @@
       <xsl:variable name="last"     select="last()" />
       <xsl:choose>
         <xsl:when test="$in_a = 'yes'">
-          <xsl:apply-templates select="id($toNodeNumber)" mode="in_a">
+          <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="in_a">
             <xsl:with-param name="relation" select="." />
             <xsl:with-param name="position" select="$position" />
             <xsl:with-param name="last"     select="$last" />
@@ -563,7 +562,7 @@
           </xsl:apply-templates>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="id($toNodeNumber)" mode="inline">
+          <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
             <xsl:with-param name="relation" select="." />
             <xsl:with-param name="position" select="$position" />
             <xsl:with-param name="last"     select="$last" />

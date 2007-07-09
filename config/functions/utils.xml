@@ -25,28 +25,5 @@
     <method>value_and_stir</method>
   </function>
 
-  <!--
-  <function name="filename">
-    <description>
-      Makes filename of commons file upload's FileItem.getName.
-    </description>
-    <type>class</type>
-    <class>org.mmbase.util.functions.Utils</class>
-    <method>getFileItemName</method>
-    <param name="filename" type="String" />
-  </function>
-  -->
-
-  <function name="cloudcontext">
-    <type>singleton</type>
-    <class>org.mmbase.bridge.ContextProvider</class>
-    <method>getDefaultCloudContext</method>
-  </function>
-
-  <function name="mmbase">
-    <type>class</type>
-    <class>org.mmbase.module.core.MMBase</class>
-    <method>getMMBase</method>
-  </function>
 
 </functionset>

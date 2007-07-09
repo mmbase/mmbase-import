@@ -60,7 +60,7 @@ public class BasicPackage implements PackageInterface {
     private installStep bundlestep;
     private boolean dependsfailed = false;
     private BundleInterface parentbundle = null;
-    private ArrayList<Object> initiators, supporters, contacts, developers;
+    private ArrayList initiators, supporters, contacts, developers;
     private float progressbar = 0;
     private float progressstep = 1;
 
@@ -69,7 +69,7 @@ public class BasicPackage implements PackageInterface {
     // only can provide log info but also possible fixed, feedback, stats
     // etc etc. Each step in itself can have steps again providing for things
     // like three style logging and feedback
-    private ArrayList<installStep> installsteps;
+    private ArrayList installsteps;
 
     private long lastupdated;
 
@@ -404,7 +404,7 @@ public class BasicPackage implements PackageInterface {
             step = new installStep();
         }
         if (installsteps == null) {
-            installsteps = new ArrayList<installStep>();
+            installsteps = new ArrayList();
             installsteps.add(step);
             return step;
         } else {
@@ -419,7 +419,7 @@ public class BasicPackage implements PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Iterator<installStep> getInstallSteps() {
+    public Iterator getInstallSteps() {
         if (installsteps != null) {
             return installsteps.iterator();
         } else {
@@ -446,14 +446,14 @@ public class BasicPackage implements PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Iterator<installStep> getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         // well maybe its one of my subs ?
-        Iterator<installStep> e = getInstallSteps();
+        Iterator e = getInstallSteps();
         while (e.hasNext()) {
-            installStep step = e.next();
+            installStep step = (installStep) e.next();
             Object o = step.getInstallSteps(logid);
             if (o != null) {
-                return (Iterator<installStep>) o;
+                return (Iterator) o;
             }
         }
         return null;
@@ -565,7 +565,8 @@ public class BasicPackage implements PackageInterface {
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
                 ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), BasicPackage.class);
-                for (Element n: reader.getChildElements("packagedepends", "package")) {
+                for (Iterator ns = reader.getChildElements("packagedepends", "package"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String type = n.getAttribute("type");
                     String version = n.getAttribute("version");
@@ -722,7 +723,7 @@ public class BasicPackage implements PackageInterface {
      * @param  type  Description of the Parameter
      * @return       The relatedPeople value
      */
-    public List<Object> getRelatedPeople(String type) {
+    public List getRelatedPeople(String type) {
         if (type.equals("initiators")) {
             return initiators;
         }
@@ -746,8 +747,8 @@ public class BasicPackage implements PackageInterface {
      * @param  type  Description of the Parameter
      * @return       Description of the Return Value
      */
-    private ArrayList<Object> decodeRelatedPeople(org.w3c.dom.Node n, String type) {
-        ArrayList<Object> list = new ArrayList<Object>();
+    private ArrayList decodeRelatedPeople(org.w3c.dom.Node n, String type) {
+        ArrayList list = new ArrayList();
         org.w3c.dom.Node n2 = n.getFirstChild();
         while (n2 != null) {
             if (n2.getNodeName().equals(type)) {
@@ -818,7 +819,7 @@ public class BasicPackage implements PackageInterface {
     }
 
     public installStep getBundleStep() {
-    return bundlestep;
+	return bundlestep;
     }
 
 }

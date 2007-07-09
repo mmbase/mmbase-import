@@ -15,11 +15,10 @@ import org.mmbase.storage.search.*;
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
+import org.apache.xpath.XPathAPI;
 
-import javax.xml.xpath.*;
-
-import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.46 2007-06-06 11:35:47 nklasens Exp $
+ * @version $Id: ContextAuthorization.java,v 1.41 2006-09-27 10:59:21 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -43,8 +42,7 @@ public class ContextAuthorization extends Authorization {
     private Document 	    document;
     private ContextCache    cache = new ContextCache();
 
-    protected  Cache<String, AllowingContexts> allowingContextsCache 
-        = new Cache<String, AllowingContexts>(200) { // 200 users.
+    protected  Cache<String, AllowingContexts> allowingContextsCache = new Cache(200) { // 200 users.
             public String getName()        { return "CS:AllowingContextsCache"; }
             public String getDescription() { return "Links user id to a set of contexts"; }
         };
@@ -52,9 +50,9 @@ public class ContextAuthorization extends Authorization {
     private int            maxContextsInQuery = 50; // must be configurable
 
     /** contains elements of type = Operation */
-    private Set<Operation>            globalAllowedOperations = new HashSet<Operation>();
-    private Map<String, String>       replaceNotFound         = new HashMap<String, String>();
-    private Map<UserContext, String>  userDefaultContexts     = new HashMap<UserContext, String>();
+    private Set<Operation>            globalAllowedOperations = new HashSet();
+    private Map<String, String>       replaceNotFound         = new HashMap();
+    private Map<UserContext, String>  userDefaultContexts     = new HashMap();
     private SortedSet<String>         allContexts;
 
     protected void load() {
@@ -86,10 +84,9 @@ public class ContextAuthorization extends Authorization {
             Node found;
             try {
                 log.debug("going to execute the query:" + xpath + " on file : " + configResource);
-                XPath xp = XPathFactory.newInstance().newXPath();
-                found = (Node) xp.evaluate(xpath, document, XPathConstants.NODE);
-            } catch(XPathExpressionException xe) {
-                throw new SecurityException("error executing query: '" + xpath + "' on file: '" + configResource + "'", xe);
+                found = XPathAPI.selectSingleNode(document, xpath);
+            } catch(javax.xml.transform.TransformerException te) {
+                throw new SecurityException("error executing query: '" + xpath + "' on file: '" + configResource + "'", te);
             }
             if (found == null) {
                 throw new SecurityException("Could not find user " + user.getIdentifier() + " in context security config file (" + configResource + ")") ;
@@ -136,9 +133,10 @@ public class ContextAuthorization extends Authorization {
         if (node.getStringValue("owner").equals(context)) return;
 
         // check if is a valid context for us..
-        Set<String> possible = getPossibleContexts(user, nodeNumber);
+        Set possible = getPossibleContexts(user, nodeNumber);
         if(!possible.contains(context)) {
-            throw new SecurityException("could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user);
+            String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user;
+            throw new SecurityException(msg);
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
@@ -166,25 +164,24 @@ public class ContextAuthorization extends Authorization {
     }
 
     private void setAllContexts() throws SecurityException {
-        allContexts = new TreeSet<String>();
+        allContexts = new TreeSet();
         String xpath = "/contextconfig/contexts/context";
         log.trace("going to execute the query:" + xpath );
-        NodeList found;
+        NodeIterator found;
         try {
-            XPath xp = XPathFactory.newInstance().newXPath();
-            found = (NodeList) xp.evaluate(xpath, document, XPathConstants.NODESET);
-        } catch(XPathExpressionException xe) {
-            throw new SecurityException("error executing query: '" + xpath  +"' ", xe);
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            throw new SecurityException("error executing query: '" + xpath  +"' ", te);
         }
-        for (int i = 0; i < found.getLength(); i++) {
-            Node context = found.item(i);
+        Node context;
+        for(context = found.nextNode(); context != null; context = found.nextNode()) {
             NamedNodeMap nnm = context.getAttributes();
             Node contextNameNode = nnm.getNamedItem("name");
             allContexts.add(contextNameNode.getNodeValue());
         }
     }
 
-    public Set<String> getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         if (log.isDebugEnabled()) {
             log.debug("get possible context on node #" + nodeNumber + " by user: " + user);
         }
@@ -208,28 +205,25 @@ public class ContextAuthorization extends Authorization {
                 log.debug("cache hit");
                 return list;
             }
-            list = new HashSet<String>();
+            list = new HashSet();
         }
 
         // possible contextes are dependeding of the context they're in...
         String xpath = "/contextconfig/contexts/context[@name='"+currentContext+"']/possible";
         log.debug("going to execute the query:" + xpath );
-        NodeList found;
+        NodeIterator found;
         try {
-            XPath xp = XPathFactory.newInstance().newXPath();
-            found = (NodeList) xp.evaluate(xpath, document, XPathConstants.NODESET);
-        } catch(XPathExpressionException xe) {
-            throw new SecurityException("error executing query: '" + xpath + "' ", xe);
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            throw new SecurityException("error executing query: '"+xpath+"' ", te);
         }
-
-        for(int i = 0; i < found.getLength(); i++) {
-            Node context = found.item(i);
+        Node context;
+        for(context = found.nextNode(); context != null; context = found.nextNode()) {
             NamedNodeMap nnm = context.getAttributes();
             Node contextNameNode = nnm.getNamedItem("context");
             list.add(contextNameNode.getNodeValue());
             if (log.isDebugEnabled()) {
-                log.debug("the context: " + contextNameNode.getNodeValue() + " is possible context for node #" + 
-                          nodeNumber + " by user: "  + user);
+                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
             }
         }
         synchronized(cache) {
@@ -292,8 +286,7 @@ public class ContextAuthorization extends Authorization {
             if (log.isDebugEnabled()) {
                 log.trace("going to execute the query:" + xpath );
             }
-            XPathFactory xf = XPathFactory.newInstance();
-            found = (Node) xf.newXPath().evaluate(xpath, document, XPathConstants.NODE);
+            found = XPathAPI.selectSingleNode(document, xpath);
 
             if (found == null) { // fall back to default
                 log.warn("context with name :'" + context + "' was not found in the configuration " + configResource );
@@ -304,8 +297,8 @@ public class ContextAuthorization extends Authorization {
                 if (log.isDebugEnabled()) {
                     log.trace("going to execute the query:" + xpath + " on file : " + configResource);
                 }
-                
-                found = (Node) xf.newXPath().evaluate(xpath, document, XPathConstants.NODE);
+
+                found  = XPathAPI.selectSingleNode(document, xpath);
 
                 if (found == null) {
                     throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configResource + ")");
@@ -329,13 +322,13 @@ public class ContextAuthorization extends Authorization {
             if (log.isDebugEnabled()) {
                 log.debug("going to execute the query:" + xpath + " On " + found.toString());
             }
-            NodeList grants =  (NodeList) xf.newXPath().evaluate(xpath, found, XPathConstants.NODESET);
+            NodeList grants = XPathAPI.selectNodeList(found, xpath);
 
             if (log.isDebugEnabled()) {
                 log.debug("Found " + grants.getLength() + " grants on " + operation + " for context " + context) ;
             }
 
-            Set<String> allowedGroups = new HashSet<String>();
+            Set<String> allowedGroups = new HashSet();
             for(int currentNode = 0; currentNode < grants.getLength(); currentNode++) {
                 Node contains = grants.item(currentNode);
                 NamedNodeMap nnm = contains.getAttributes();
@@ -349,7 +342,7 @@ public class ContextAuthorization extends Authorization {
                 }
             }
 
-            boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet<String>());
+            boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
             if (log.isDebugEnabled()) {
                 if (allowed) {
                     log.debug("operation " + operation + " was permitted for user with id " + user);
@@ -365,8 +358,8 @@ public class ContextAuthorization extends Authorization {
 
             return allowed;
 
-        } catch(XPathExpressionException xe) {
-            throw new java.lang.SecurityException("error executing query: '"+ xpath + "' ", xe);
+        } catch(javax.xml.transform.TransformerException te) {
+            throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
         }
 
     }
@@ -379,45 +372,37 @@ public class ContextAuthorization extends Authorization {
             log.debug("entering userInGroups(recursive) with username: '"+user+"' without any groups, so user was not found..");
             return false;
         }
+        log.debug("entering userInGroups(recursive) with username: '"+user+"' and look if the user is in the following groups:");
 
         if (log.isDebugEnabled()) {
-            log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");        
-
             Iterator<String> di = groups.iterator();
             while (di.hasNext()) {
                 log.debug("\t -> group : " + di.next());
             }
         }
 
-        Set<String> fetchedGroups = new HashSet<String>();
+        Set<String> fetchedGroups = new HashSet();
         for (String groupname : groups) {
             // get the group we are researching....
             // well, since we are already exploring ourselve, no need to do it again....
             done.add(groupname);
+            log.debug("\tresearching group with name : " + groupname);
+
             // do the xpath query...
-            String xpath = "/contextconfig/groups/group[@name='" + groupname + "']/contains";
-
-            if (log.isDebugEnabled()) {
-                log.debug("\tresearching group with name : " + groupname);
-                log.debug("\tgoing to execute the query:" + xpath );
-            }
-
-            NodeList found;
-            XPathFactory xf = XPathFactory.newInstance();
+            String xpath = "/contextconfig/groups/group[@name='"+groupname+"']/contains";
+            log.debug("\tgoing to execute the query:" + xpath );
+            NodeIterator found;
             try {
-                found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
-            } catch(XPathExpressionException xe) {
-                throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
+                found = XPathAPI.selectNodeIterator(document, xpath);
+            } catch(javax.xml.transform.TransformerException te) {
+                throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
             }
             // research the result...
-            for(int i = 0; i < found.getLength(); i++) {
-                Node contains = found.item(i);
+            for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
                 NamedNodeMap nnm = contains.getAttributes();
                 String type = nnm.getNamedItem("type").getNodeValue();
                 String named = nnm.getNamedItem("named").getNodeValue();
-                if (log.isDebugEnabled()) {
-                    log.debug("\t<contains type=\"" + type + "\" named=\"" + named + "\" />");
-                }
+                log.debug("\t<contains type=\""+type+"\" named=\""+named+"\" />");
                 if(type.equals("group")) {
                     // this is a group...
                     // when not already known, add it to our to fetch-list
@@ -497,21 +482,19 @@ public class ContextAuthorization extends Authorization {
         // get all the Operations and add them to the globalAllowedOperations set..
         String xpath = "/contextconfig/global/allowed";
         log.debug("going to execute the query:" + xpath );
-        NodeList found;
-        XPathFactory xf = XPathFactory.newInstance();
+        NodeIterator found;
         try {
-            found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
-        } catch(XPathExpressionException xe) {
-            throw new SecurityException("error executing query: '" + xpath + "' ", xe);
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            throw new java.lang.SecurityException("error executing query: '"+xpath+"' ", te);
         }
-
-        for (int i = 0 ; i < found.getLength(); i++) {
-            Node allowed = found.item(i);
+        Node allowed;
+        for(allowed = found.nextNode(); allowed != null; allowed = found.nextNode()) {
             NamedNodeMap nnm = allowed.getAttributes();
             Node contextNameNode = nnm.getNamedItem("operation");
             Operation operation = Operation.getOperation(contextNameNode.getNodeValue());
             log.info("Everyone may do operation:" + operation);
-            if(globalAllowedOperations.contains(operation)) throw new SecurityException("operation:" + operation + " already in allowed list");
+            if(globalAllowedOperations.contains(operation)) throw new java.lang.SecurityException("operation:" + operation + " already in allowed list");
             globalAllowedOperations.add(operation);
         }
     }
@@ -520,7 +503,7 @@ public class ContextAuthorization extends Authorization {
 
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
-            MMBase mmb = MMBase.getMMBase();
+            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
             builder =  mmb.getMMObject("typedef");
             if(builder == null) {
                 String msg = "builder 'typedef' not found";
@@ -544,7 +527,7 @@ public class ContextAuthorization extends Authorization {
 
     protected SortedSet<String> getDisallowingContexts(UserContext user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
-        SortedSet<String> set = new TreeSet<String>();
+        SortedSet<String> set = new TreeSet();
         for (String context : getAllContexts()) {
             if (! check(user, context, operation)) {
                 set.add(context);
@@ -575,7 +558,7 @@ public class ContextAuthorization extends Authorization {
                         contexts = disallowing;
                         inverse = true;
                     } else {
-                        contexts  = new TreeSet<String>(getAllContexts());
+                        contexts  = new TreeSet(getAllContexts());
                         contexts.removeAll(disallowing);
                         inverse = false;
                     }
@@ -588,7 +571,7 @@ public class ContextAuthorization extends Authorization {
                         return COMPLETE_CHECK;
                     } else {
                         // may read nothing
-                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), -1);
+                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
                 }

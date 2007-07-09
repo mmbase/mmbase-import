@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.24 2007-06-21 15:50:26 nklasens Exp $
+ * @version $Id: MMFlash.java,v 1.23 2005-08-26 09:09:42 michiel Exp $
  */
 public class MMFlash extends Module {
 
@@ -164,7 +164,7 @@ public class MMFlash extends Module {
 
             File outputFile = createTemporaryFile("export", ".swf");
             outputFile.delete();
-            Vector<File> tempFiles = new Vector<File>();
+            Vector tempFiles = new Vector();
             tempFiles.add(outputFile);
 
             // now feed it to the xml reader
@@ -209,9 +209,9 @@ public class MMFlash extends Module {
     /**
      * This function cleans up the temporary files in the given vector
      */
-    private void cleanup(Vector<File> tempFiles) {
+    private void cleanup(Vector tempFiles) {
         for (int i = 0; i < tempFiles.size(); i++) {
-            File tf = tempFiles.get(i);
+            File tf = (File)tempFiles.get(i);
             log.debug("Deleting temporary file " + tf.getAbsolutePath());
             tf.delete();
        }
@@ -288,7 +288,7 @@ public class MMFlash extends Module {
         File outputFile = createTemporaryFile("export", ".swf");
         outputFile.delete();
 
-        Vector<File> tempFiles = new Vector<File>();
+        Vector tempFiles = new Vector();
         tempFiles.add(outputFile);
 
         // hey ho, generate our template..
@@ -329,9 +329,10 @@ public class MMFlash extends Module {
      * how the flash should be manipulated. It allows replacements of colors,
      * fontsizes, etc.
      */
-    private String addReplaces(Vector<Hashtable> replaces, String scriptpath) {
+    private String addReplaces(Vector replaces, String scriptpath) {
         String part="";
-        for (Hashtable rep : replaces) {
+        for (Enumeration e=replaces.elements();e.hasMoreElements();) {
+            Hashtable rep=(Hashtable)e.nextElement();
             String type=(String)rep.get("type");
             if (type.equals("text")) {
                 part+="SUBSTITUTE TEXT";
@@ -419,9 +420,11 @@ public class MMFlash extends Module {
      * @param scriptpath
      * @param tempFiles Vector where all the temporary files are put into.
      */
-    private String addDefines(Vector<Hashtable> defines,String scriptpath,Vector<File> tempFiles) {
+    private String addDefines(Vector defines,String scriptpath,Vector tempFiles) {
         String part="";
-        for (Hashtable rep : defines) {
+        int counter=1;
+        for (Enumeration e=defines.elements();e.hasMoreElements();) {
+            Hashtable rep=(Hashtable)e.nextElement();
             String type=(String)rep.get("type");
             if (type.equals("image")) {
                 String id=(String)rep.get("id");
@@ -533,7 +536,10 @@ public class MMFlash extends Module {
     private byte[] generateSwtDebug(String filename) {
         Process p=null;
         DataInputStream dip= null;
+        DataInputStream diperror= null;
         String command="";
+        RandomAccessFile  dos=null;
+
         try {
             command=generatorpath+generatorprogram+" -d "+filename;
             p = (Runtime.getRuntime()).exec(command);
@@ -580,7 +586,10 @@ public class MMFlash extends Module {
     private void generateFlash(String scriptpath, String inputfile) {
         Process p=null;
         DataInputStream dip= null;
+        DataInputStream diperror= null;
         String command="";
+        RandomAccessFile  dos=null;
+
         try {
             command=generatorpath+generatorprogram+" "+inputfile;
             p = (Runtime.getRuntime()).exec(command);
@@ -674,7 +683,7 @@ public class MMFlash extends Module {
      * @param tempFiles The vector to put temporary files in
      * @return The complete path to the image
      */
-    private String mapImage(String imageline, Vector<File> tempFiles) {
+    private String mapImage(String imageline, Vector tempFiles) {
         Images bul=(Images)mmb.getMMObject("images");
         Vector params=new Vector();
         if (bul!=null) {

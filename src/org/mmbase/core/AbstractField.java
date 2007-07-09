@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.15 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.14 2006-07-18 12:40:39 michiel Exp $
  */
 
-abstract public class AbstractField extends AbstractDescriptor implements Field {
+abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
@@ -80,10 +80,15 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
 
     abstract public NodeManager getNodeManager();
 
-    public int compareTo(Field f) {
-        int compared = getName().compareTo(f.getName());
-        if (compared == 0) compared = dataType.compareTo(f.getDataType());
-        return compared;
+    public int compareTo(Object o) {
+        if (o instanceof Field) {
+            Field f = (Field) o;
+            int compared = getName().compareTo(f.getName());
+            if (compared == 0) compared = dataType.compareTo(f.getDataType());
+            return compared;
+        } else {
+            throw new ClassCastException("Object is not of type Field");
+        }
     }
 
     /**

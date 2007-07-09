@@ -1,4 +1,3 @@
-
 /*
 
 This software is OSI Certified Open Source Software.
@@ -12,6 +11,7 @@ package org.mmbase.module.database;
 
 import java.util.*;
 import java.sql.*;
+import java.sql.DriverManager;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.56 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: JDBC.java,v 1.48 2006-10-02 11:16:12 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -44,8 +44,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private DatabaseSupport databaseSupport;
     private MultiPoolHandler poolHandler;
     private JDBCProbe probe = null;
-    private String jdbcName;
-    private String jdbcPassword;
+    private String defaultName;
+    private String defaultPassword;
     private long probeTime;
     private long maxLifeTime = 120000;
 
@@ -54,16 +54,11 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         addFunction(new GetNodeListFunction("CONNECTIONS", PARAMS_PAGEINFO));
     }
 
-    public JDBC(String name) { 
-        super(name);
-    }
-
     public void onload() {
         getProps();
         getDriver();
         loadSupport();
         poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
-        poolHandler.setMaxLifeTime(maxLifeTime);
     }
 
     /*
@@ -113,8 +108,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // marmaa@vpro.nl:
             // This is how McKoi's JDBC drivers wants itself
             // to be registered; should have no effect on other drivers
-            Driver d = (Driver) Class.forName(jdbcDriver).newInstance();
-            log.service("Loaded JDBC driver: " + jdbcDriver + " " + d.getMajorVersion() + "." + d.getMinorVersion());
+            Driver driver = (java.sql.Driver) Class.forName(jdbcDriver).newInstance();
+
+            log.service("Loaded JDBC driver: " + jdbcDriver + " " + driver.getMajorVersion() + "." + driver.getMinorVersion());
 
         } catch (Exception e) {
             log.fatal("JDBC driver not found: " + jdbcDriver , e);
@@ -136,7 +132,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver == null) {
-            log.warn("getDriver(): the jdbc driver specified in jdbc.xml '" + jdbcDriver + "' does not match any actually loaded drivers " + Collections.list(DriverManager.getDrivers()));
+            log.warn("getDriver(): the jdbc driver specified in jdbc.xml does not match the actual loaded driver ");
         }
     }
 
@@ -162,20 +158,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         jdbcDriver = getInitParameter("driver");
         jdbcURL    = getInitParameter("url");
         jdbcHost   = getInitParameter("host");
-        jdbcName = getInitParameter("user");
-        if (jdbcName == null) {
-            jdbcName = "wwwtech";
-            log.warn("Name was not set, using default: '" + jdbcName +"'");
-        }
-
-        jdbcPassword = getInitParameter("password");
-
+        defaultName = getInitParameter("user");
+        defaultPassword = getInitParameter("password");
         databaseSupportClass = getInitParameter("supportclass");
         probeTime = 30000;
         String tmp = getInitParameter("probetime");
         if (tmp != null) {
             try {
-                probeTime = Float.valueOf(tmp).longValue() * 1000;
+                probeTime = (new Float(tmp)).longValue() * 1000;
                 log.info("Set jdbc-probeTime to " + probeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified probetime is not a invalid float :" + e + "(using default " + (probeTime / 1000) + " s)");
@@ -186,13 +176,30 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         tmp = getInitParameter("maxlifetime");
         if (tmp != null) {
             try {
-                maxLifeTime = (long) (Float.parseFloat(tmp) * 1000f);
+                maxLifeTime = (new Float(tmp)).longValue() * 1000;
                 log.service("Set jdbc max life time to " + maxLifeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified max life time is not a invalid float :" + e + "(using default " + (maxLifeTime / 1000) + " s)");
             }
         }
 
+        /*
+        log.trace("jdbcDriver="+jdbcDriver +
+                  "\njdbcURL="+jdbcURL +
+                  "\njdbcHost="+jdbcHost +
+                  "\ndefaultName="+defaultName +
+                  "\ndefaultPassword="+defaultPassword +
+                  "\ndatabaseSupportClass="+databaseSupportClass);
+        */
+
+        if (defaultName == null) {
+            defaultName = "wwwtech";
+            log.warn("name was not set, using default: '" + defaultName +"'");
+        }
+        if (defaultPassword == null) {
+            defaultPassword="xxxxxx";
+            log.warn("name was not set, using default: '" + defaultPassword +"'");
+        }
         tmp = getInitParameter("port");
         if (tmp != null) {
             try {
@@ -264,9 +271,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public String makeUrl(String host, int port, String dbm) {
         String url = jdbcURL;
         // $HOST $DBM $PORT
-        if (dbm == null) dbm = "mmbase";
+
         url = url.replaceAll("\\$DBM", dbm);
-        if (host == null) host = "localhost";
         url = url.replaceAll("\\$HOST", host);
         url = url.replaceAll("\\$PORT", "" + port);
 
@@ -284,7 +290,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public MultiConnection getConnection(String url) throws SQLException {
-        return poolHandler.getConnection(url, jdbcName, jdbcPassword);
+        return poolHandler.getConnection(url, defaultName, defaultPassword);
     }
 
     /**
@@ -298,7 +304,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public Connection getDirectConnection(String url) throws SQLException {
-        return DriverManager.getConnection(url, jdbcName, jdbcPassword);
+        return DriverManager.getConnection(url, defaultName, defaultPassword);
     }
 
     /**
@@ -347,8 +353,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Vector listPools(StringTagger tagger) {
         Vector results = new Vector();
-        for (Object element : poolHandler.keySet()) {
-            String name = (String) element;
+        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
+            String name = (String) i.next();
             MultiPool pool = poolHandler.get(name);
             results.addElement(stripSensistive(name));
             results.addElement("" + pool.getSize());
@@ -363,8 +369,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Vector listConnections(StringTagger tagger) {
         Vector results = new Vector();
-        for (Object element : poolHandler.keySet()) {
-            String name= (String) element;
+        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
+            String name= (String) i.next();
             MultiPool pool = poolHandler.get(name);
             for (Iterator f = pool.getBusyPool(); f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
@@ -374,7 +380,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
-            for (Iterator f = pool.getPool();f.hasNext();) {
+            for (Iterator f=pool.getPool();f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
@@ -391,14 +397,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public String getUser() {
-        return jdbcName;
+        return defaultName;
     }
 
     /**
      * @javadoc
      */
     public String getPassword() {
-        return jdbcPassword;
+        return defaultPassword;
     }
 
     /**
@@ -413,6 +419,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @return a <code>String</code> whith some information about the connection
      */
     public String toString() {
-        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + jdbcName + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
+        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultName + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
      }
 }

@@ -27,10 +27,10 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.7 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: TypeMapping.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
-public class TypeMapping implements Comparable<TypeMapping> {
+public class TypeMapping implements Comparable {
 
     /**
      * The expression this type should translate to.
@@ -68,7 +68,8 @@ public class TypeMapping implements Comparable<TypeMapping> {
     }
 
     // javadoc inherited
-    public int compareTo(TypeMapping t) {
+    public int compareTo(Object o) {
+        TypeMapping t = (TypeMapping) o;
         if (!name.equals(t.name)) {
             return name.compareTo(t.name);
         } else if (minSize != t.minSize) {
@@ -113,7 +114,7 @@ public class TypeMapping implements Comparable<TypeMapping> {
      * Returns the mappings type.
      */
     public String getType(int size) {
-        return MessageFormat.format(type,new Object[]{ Integer.valueOf(size) });
+        return MessageFormat.format(type,new Object[]{ new Integer(size) });
     }
 
     // javadoc inherited

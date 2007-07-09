@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 import org.mmbase.util.functions.*;
-import org.mmbase.bridge.Node;
+
 
 /**
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.9 2007-06-18 09:01:14 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.6 2005-10-12 19:07:31 michiel Exp $
  * @since MMBase-1.8
  */
-public interface AuthenticationData {
+public interface  AuthenticationData {
 
     static final int METHOD_UNSET     = -1;
 
@@ -28,12 +28,9 @@ public interface AuthenticationData {
      * security implementation provides the 'anonymous' authentication application.
      */
     static final int METHOD_ANONYMOUS       = 0;
-
     /**
      * Delegates authentication completely to the authentication implementation. When using http, request and response
-     * objects are added to the credentials (if the Parameters object returned by {@link
-     * #createParameters} can accept that) which can be used for user-interaction.
-     *
+     * objects are added to the credentials which can be used for user-interaction.
      */
     static final int METHOD_DELEGATE        = 1;
     /**
@@ -80,25 +77,21 @@ public interface AuthenticationData {
 
     static final int METHOD_DEFAULT = Integer.MAX_VALUE;
 
-    /**
-     * Resourcebundle containing all kind of i18n versions of parameter names and so on. Used in
-     * static block of {@link Authentication} (because no static blocks allowed in interface).
-     */
     static final String    STRINGS = "org.mmbase.security.resources.parameters";
 
     /**
-     * Common parameters for logon-info.
+     * Common parameters for logon-info
      */
-    static final Parameter<String> PARAMETER_USERNAME   = new Parameter<String>("username", String.class, true);
-    static final Parameter<String> PARAMETER_PASSWORD   = new Parameter<String>("password", String.class, true);
+    static final Parameter PARAMETER_USERNAME   = new Parameter("username", String.class, true);
+    static final Parameter PARAMETER_PASSWORD   = new Parameter("password", String.class, true);
     static final Parameter PARAMETER_USERNAMES  = new Parameter("usernames", java.util.List.class);
     static final Parameter PARAMETER_RANK       = new Parameter("rank",     Rank.class);
     //    static final Parameter PARAMETER_REMOTEADDR = new Parameter("remoteaddr",   String.class);
 
-    static final Parameter PARAMETER_SESSIONNAME   = new Parameter("sessionname",  String.class);
+    static final Parameter PARAMETER_SESSIONNAME    = new Parameter("sessionname",  String.class);
 
     // parameters used for logout
-    static final Parameter PARAMETER_LOGOUT        = new Parameter("logout",  Boolean.class);
+    static final Parameter PARAMETER_LOGOUT            = new Parameter("logout",  Boolean.class);
     static final Parameter PARAMETER_AUTHENTICATE  = new Parameter("authenticate", String.class);
 
 
@@ -111,34 +104,11 @@ public interface AuthenticationData {
     boolean isValid(UserContext userContext) throws SecurityException;
 
     /**
-     * This method returns an MMBase node that corresponds with the given UserContext
-     * @since MMBase-1.9
-     */
-    Node getNode(UserContext userContext) throws SecurityException;
-
-    /**
-     * This method returns the builder name of the nodes that will be returned by the
-     * {@link #getNode()} call.
-     * @since MMBase-1.9
-     */
-    String getUserBuilder();
-
-    /**
-     * <p>Several 'methods' to authenticate could be available. A method is a kind of protocol which
-     * must be used to authenticate some body.</p>
-     * <p>Not all authentication methods may be applicable for all communication protocols (like
-     * http, https etc).</p>
-     *
-     * <p>This method converts a user-friendly string describing the 'method' to a integer constant which can be used in
-     * {@link #getTypes(int)}.</p>
-     *
+     * Several 'methods' to authenticate could be available.
+     * This method converts a user-friendly string describing the 'method' to a integer constant which can be used in
+     * {@link #getTypes(int)}.
      * @param m A String like 'http', 'anonymous', 'loginpage', or 'delegatesession'.
-     * @return An integer contant. {@link #METHOD_DELEGATE}, {@link #METHOD_PAGELOGON}, 
-     * {@link #METHOD_HTTP}, {@link #METHOD_ASIS}, {@link #METHOD_LOGOUT}, {@link #METHOD_LOGINPAGE}
-     * {@link #METHOD_SESSIONDELEGATE}, {@link #METHOD_SESSIONLOGON}. This method was introduced
-     * before java 1.5 (where the return type would more obviously be a AuthenticionMethod
-     * enumeration).
-     * @see #getDefaultMethod
+     * @return An integer contant.
      */
     int getMethod(String m);
 
@@ -148,36 +118,24 @@ public interface AuthenticationData {
      * (which means that basic authentication of the http protocol can be used), but may not be
      * feasible for every implementation (it is e.g. useless if the security implementation does not have
      * name/password authentication).
-     *
-     * @param protocol For which protocol or <code>null</code>, which means 'for HTTP/1.1'.
+     * @param protocol For which protocol or <code>null</code>, which means 'HTTP/1.1'.
      */
     int getDefaultMethod(String protocol);
 
     /**
-     * <p>Gives all availabe authentication types. The first one can be used as the default. Typically,
-     * an implemention should at least support 'anonynmous' and 'class'.</p>
-     * <p>
-     * Since most of the time we are using HTTP any way, types for the method {@link #METHOD_HTTP}
-     * ('name/password' based) and method {@link #METHOD_LOGINPAGE} ({@link #createParameters} can
-     * request anything presentable in a HTML-form) are common too.</p>
+     * Gives all availabe authentication types. The first one can be used as the default.
      */
     String[] getTypes();
 
     /**
-     * <p>For a given method, returns the available 'applications'. The first one can be used as the
-     * default.</p>
-     *
-     * <p>Typically for the method {@link #METHOD_ANONYMOUS} at least 'anonymous' must be returned, and
-     * for {@link #METHOD_DELEGATE} at least 'class'. Everything else is optional, because
-     * are not generic.</p>
+     * For a given method, returns the available 'applications'. The first one can be used as the default.
      */
     String[] getTypes(int method);
 
     /**
      * For a given authentication type returns a parameters object to fill with credentials. {@link Parameters#toMap} can be used as the second argument
      * for {@link org.mmbase.security.Authentication#login}
-     * Given a certain 'application' this will return a {@link org.mmbase.util.functions.Parameters}
-     * which tells you excactly which parameters you can and must supply to {@link #login}.
      */
+
     Parameters createParameters(String application);
 }

@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.38 2007-06-28 08:23:25 michiel Exp $
+# $Id: build.properties.default,v 1.28 2006-09-15 17:24:40 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -37,40 +37,64 @@ jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 # --------------------------------------------------
 
 # ---- Default Sourceforge Mirror ----
-sourceforge.loc=http://kent.dl.sourceforge.net/sourceforge
+sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
 # ---- MMBase.org location ---
 mmbase.loc=http://www.mmbase.org/download/jars
-mmaven.loc=http://www.mmbase.org/maven
 
 
-# ----- Servlet/jsp-api api ----
-servlet.version=2.4
-servlet.file=servletapi-${servlet.version}.jar
-servlet.jar=${download.dir}/${servlet.file}
-servlet.loc=${mmaven.loc}/servletapi/jars/${servlet.file}
-
-jspapi.version=2.0
-jspapi.file=jsp-api-${jspapi.version}.jar
-jspapi.jar=${download.dir}/${jspapi.file}
-jspapi.loc=${mmaven.loc}/jspapi/jars/${jspapi.file}
+# ----- Servlet api ----
+servlet.version=jakarta-servletapi-4
+servlet.file=${servlet.version}.tar.gz
+servlet.dest=${download.dir}/${servlet.file}
+servlet.loc=${mmbase.loc}/jakarta-servletapi/${servlet.file}
+servlet.jar=${expand.dir}/${servlet.version}/lib/servlet.jar
 
 # ----- Hsqldb ----
-hsqldb.version=hsqldb_1_8_0_7
+hsqldb.version=hsqldb_1_8_0_4
 hsqldb.file=${hsqldb.version}.zip
 hsqldb.dest=${download.dir}/${hsqldb.file}
 hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
 
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
+
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.dest=${download.dir}/${jai.file}
+jai.dir=${expand.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai_codec.jar=${jai.dir}/jre/lib/ext/jai_codec.jar
+jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
+mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
+
+# ----- javamail ----
+javamail.version=javamail-1.3
+javamail.fileversion=javamail-1_3
+javamail.file=${javamail.fileversion}.zip
+javamail.dest=${download.dir}/${javamail.file}
+javamail.loc=${mmbase.loc}/javamail/${javamail.file}
+javamail.dir=${expand.dir}/${javamail.version}
+javamail.jar=${javamail.dir}/${javamail.version}/mail.jar
 
 # ----- javaactiovation ----
-javaactivation.version=jaf-1.1
-javaactivation.fileversion=jaf-1_1-fr
+javaactivation.version=jaf-1.0.2
+javaactivation.fileversion=jaf-1_0_2
 javaactivation.file=${javaactivation.fileversion}.zip
 javaactivation.dest=${download.dir}/${javaactivation.file}
 javaactivation.loc=${mmbase.loc}/jaf/${javaactivation.file}
 javaactivation.dir=${expand.dir}/${javaactivation.version}
 javaactivation.jar=${javaactivation.dir}/${javaactivation.version}/activation.jar
+
+# ----- Docbook stylesheets ----------
+docbook-xsl.version=docbook-xsl-1.70.1
+docbook-xsl.file=${docbook-xsl.version}.tar.gz
+docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
+docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
+docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 
 
 # ----- Log4j ----------
@@ -129,7 +153,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 
 # ----- javacc ---- 
 #https://javacc.dev.java.net/files/documents/17/13959/javacc-4.0beta1.tar.gz
-javacc.version=4.0
+javacc.version=4.0beta1
 javacc.file=javacc-${javacc.version}.tar.gz
 javacc.dest=${download.dir}/${javacc.file}
 javacc.loc=http://www.mmbase.org/download/javacc/${javacc.file}

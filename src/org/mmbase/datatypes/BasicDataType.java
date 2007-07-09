@@ -38,10 +38,10 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.74 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.62 2006-09-06 18:23:02 michiel Exp $
  */
 
-public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
+public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
     /**
      * The bundle used by datatype to determine default prompts for error messages when a
      * validation fails.
@@ -52,16 +52,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
     protected TypeRestriction     typeRestriction            = new TypeRestriction();
-    protected EnumerationRestriction enumerationRestriction  = new EnumerationRestriction((LocalizedEntryListFactory<C>) null);
+    protected EnumerationRestriction enumerationRestriction  = new EnumerationRestriction((LocalizedEntryListFactory) null);
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
      */
-    protected BasicDataType<?> origin = null;
+    protected DataType origin = null;
 
     private Object owner;
-    private Class<C> classType;
-    private C defaultValue;
+    private Class classType;
+    private Object defaultValue;
 
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
@@ -71,10 +71,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     /**
      * Create a data type object of unspecified class type
-     * @param name the name of the data types
-     */
+     * @param name the name of the data type
+s     */
     public BasicDataType(String name) {
-        this(name, (Class<C>) Object.class);
+        this(name, Object.class);
     }
 
     /**
@@ -82,7 +82,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * @param name the name of the data type
      * @param classType the class of the data type's possible value
      */
-    protected BasicDataType(String name, Class<C> classType) {
+    protected BasicDataType(String name, Class classType) {
         super(name);
         this.classType = classType;
         owner = null;
@@ -121,16 +121,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         guiName                = (LocalizedString) in.readObject();
         requiredRestriction    = (RequiredRestriction) in.readObject();
         uniqueRestriction      = (UniqueRestriction) in.readObject();
-        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory<C>) in.readObject());
+        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                  = in.readObject();
         try {
-            classType          =  (Class<C>) in.readObject();
+            classType          =  (Class) in.readObject();
         } catch (Throwable t) {
             // if some unknown class, simply fall back
-            classType         = (Class<C>) Object.class;
+            classType         = Object.class;
         }
-        defaultValue          = (C) in.readObject();
+        defaultValue          = in.readObject();
         commitProcessor       = (CommitProcessor) in.readObject();
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
@@ -148,7 +148,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * {@inheritDoc}
      * Calls both {@link #inheritProperties} and {@link #inheritRestrictions}.
      */
-    public final void inherit(BasicDataType<C> origin) {
+    public final void inherit(BasicDataType origin) {
         edit();
         inheritProperties(origin);
         inheritRestrictions(origin);
@@ -157,7 +157,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * Properties are members of the datatype that can easily be copied/clones.
      */
-    protected void inheritProperties(BasicDataType<C> origin) {
+    protected void inheritProperties(BasicDataType origin) {
         this.origin     = origin;
 
         defaultValue    = origin.getDefaultValue();
@@ -166,19 +166,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
-            getProcessors = origin.getProcessors.clone();
+            getProcessors = (Processor[]) origin.getProcessors.clone();
         }
         if (origin.setProcessors == null) {
             setProcessors = null;
         } else {
-            setProcessors = origin.setProcessors.clone();
+            setProcessors = (Processor[]) origin.setProcessors.clone();
         }
     }
 
     /**
      * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), must be reinstantiated.
      */
-    protected void cloneRestrictions(BasicDataType<C> origin) {
+    protected void cloneRestrictions(BasicDataType origin) {
         enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
         requiredRestriction    = new RequiredRestriction(origin.requiredRestriction);
         uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);
@@ -187,11 +187,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * If a datatype inherits from another datatype all its restrictions inherit too.
      */
-    protected void inheritRestrictions(BasicDataType<C> origin) {
+    protected void inheritRestrictions(BasicDataType origin) {
         if (! origin.getEnumerationFactory().isEmpty()) {
             enumerationRestriction.inherit(origin.enumerationRestriction);
             if (enumerationRestriction.value != null) {
-                LocalizedEntryListFactory<C> fact = enumerationRestriction.getEnumerationFactory();
+                LocalizedEntryListFactory fact = enumerationRestriction.getEnumerationFactory();
                 if (! origin.getTypeAsClass().equals(getTypeAsClass())) {
                     // Reevaluate XML configuration, because it was done with a 'wrong' suggestion for the wrapper class.
                     Element elm = fact.toXml();
@@ -200,7 +200,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     } else {
                         // need to clone the actual factory,
                         // since it will otherwise change the original restrictions.
-                        fact = new LocalizedEntryListFactory<C>();
+                        fact = new LocalizedEntryListFactory();
                         fact.fillFromXml(elm, getTypeAsClass());
                         enumerationRestriction.setValue(fact);
                     }
@@ -215,14 +215,14 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public BasicDataType<?> getOrigin() {
+    public DataType getOrigin() {
         return origin;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Class<C> getTypeAsClass() {
+    public Class getTypeAsClass() {
         return classType;
     }
 
@@ -252,7 +252,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      *
      * Tries to determin  cloud by node and field if possible and wraps {@link #preCast(Object, Cloud, Node, Field)}.
      */
-    //public final <D> DpreCast(D value, Node node, Field field) {
     public final Object preCast(Object value, Node node, Field field) {
         return preCast(value, getCloud(node, field), node, field);
     }
@@ -260,7 +259,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * This method is as yet unused, but can be anticipated
      */
-    //public final <D> D preCast(D value, Cloud cloud) {
     public final Object preCast(Object value, Cloud cloud) {
         return preCast(value, cloud, null, null);
     }
@@ -285,7 +283,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      *
      * Override {@link #preCast(Object, Cloud, Node, Field)}
      */
-    public final C cast(Object value, final Node node, final Field field) {
+    public final Object cast(Object value, final Node node, final Field field) {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
@@ -295,7 +293,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
-            log.error(ce);
+            log.error(ce.getMessage());
             return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
         }
     }
@@ -303,10 +301,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * Utility to avoid repetitive calling of getCloud
      */
-    protected C cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+    protected Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
-        C cast = Casting.toType(classType, cloud, preCast);
+        Object cast = Casting.toType(classType, cloud, preCast);
         return cast;
     }
 
@@ -328,7 +326,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public C getDefaultValue() {
+    public Object getDefaultValue() {
         if (defaultValue == null) return null;
         return cast(defaultValue, null, null);
     }
@@ -336,7 +334,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public void setDefaultValue(C def) {
+    public void setDefaultValue(Object def) {
         edit();
         defaultValue = def;
     }
@@ -418,7 +416,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * @javadoc
      */
-    public DataType<C> rewrite(Object owner) {
+    public DataType rewrite(Object owner) {
         if (this.owner != null) {
             if (this.owner != owner) {
                 throw new IllegalArgumentException("Cannot rewrite this datatype - specified owner is not correct");
@@ -443,25 +441,24 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public final Collection<LocalizedString> validate(C value) {
+    public final Collection /*<LocalizedString>*/ validate(Object value) {
         return validate(value, null, null);
     }
 
 
-    public final Collection<LocalizedString>  validate(final C value, final Node node, final Field field) {
+    public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
         return validate(value, node, field, true);
     }
     /**
      * {@inheritDoc}
      */
-    private final Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
-        Collection<LocalizedString> errors = VALID;
+    private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean testEnum) {
+        Collection errors = VALID;
         Object castValue;
         try {
             castValue = castToValidate(value, node, field);
             errors = typeRestriction.validate(errors, castValue, node, field);
         } catch (CastException ce) {
-            log.debug(ce);
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
         }
@@ -473,9 +470,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         errors = requiredRestriction.validate(errors, value, node, field);
 
-        errors = validateCastValueOrNull(errors, castValue, value, node, field);
-
-        if (castValue == null) {
+        if (value == null) {
             return errors; // null is valid, unless required.
         }
         if (testEnum) {
@@ -486,24 +481,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return errors;
     }
 
-    public int getEnforceStrength() {
-        int enforceStrength = Math.max(typeRestriction.getEnforceStrength(), requiredRestriction.getEnforceStrength());
-        enforceStrength = Math.max(enforceStrength, enumerationRestriction.getEnforceStrength());
-        return Math.max(enforceStrength, uniqueRestriction.getEnforceStrength());
-    }
-
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
-        return errors;
-    }
-    /**
-     * @since MMBase-1.8.4
-     */
-    protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
     }
 
-    protected StringBuilder toStringBuilder() {
-        StringBuilder buf = new StringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
@@ -512,7 +495,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             }
         }
         if (setProcessors != null) {
-            for (int i = 0; i < 13; i++) {
+            for (int i =0; i < 13; i++) {
                 buf.append(setProcessors[i] == null ? "" : ("; set [" + Fields.typeToClass(i) + "]:" + setProcessors[i] + " "));
             }
         }
@@ -529,7 +512,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     }
     public final String toString() {
-        StringBuilder buf = toStringBuilder();
+        StringBuffer buf = toStringBuffer();
         if (isFinished()) {
             buf.append(".");
         }
@@ -554,7 +537,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public DataType clone(String name) {
         try {
-            BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
+            BasicDataType clone = (BasicDataType) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             // properly inherit from this datatype (this also clones properties and processor arrays)
@@ -598,10 +581,15 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
     }
 
-    public int compareTo(DataType<C> a) {
-        int compared = getName().compareTo(a.getName());
-        if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
-        return compared;
+    public int compareTo(Object o) {
+        if (o instanceof DataType) {
+            DataType a = (DataType) o;
+            int compared = getName().compareTo(a.getName());
+            if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
+            return compared;
+        } else {
+            throw new ClassCastException("Object is not of type DataType");
+        }
     }
 
     /**
@@ -611,7 +599,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public boolean equals(Object o) {
         if (o instanceof DataType) {
-            DataType<?> a = (DataType<?>) o;
+            DataType a = (DataType) o;
             return getName().equals(a.getName()) && getTypeAsClass().equals(a.getTypeAsClass());
         }
         return false;
@@ -631,7 +619,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction<Boolean> getRequiredRestriction() {
+    public DataType.Restriction getRequiredRestriction() {
         return requiredRestriction;
     }
 
@@ -652,7 +640,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction<Boolean> getUniqueRestriction() {
+    public DataType.Restriction getUniqueRestriction() {
         return uniqueRestriction;
     }
 
@@ -666,16 +654,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
-        String value = null;
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
+        Object value = null;
         if (key != null) {
             // cast to the appropriate datatype value.
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
-            C keyValue = cast(key, node, field);
+            Object keyValue = cast(key, node, field);
             if (keyValue != null) {
-                for (Iterator<Map.Entry<C, String>> i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
-                    Map.Entry<C, String> entry = i.next();
+                for (Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) i.next();
                     if (keyValue.equals(entry.getKey()) ) {
                         value = entry.getValue();
                     }
@@ -688,22 +676,22 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public Iterator<Map.Entry<C, String>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        Iterator<Map.Entry<C, String>> i = new RestrictedEnumerationIterator(locale, cloud, node, field);
+    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+        Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field);
         return i.hasNext() ? i : null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public LocalizedEntryListFactory<C> getEnumerationFactory() {
+    public LocalizedEntryListFactory getEnumerationFactory() {
         return enumerationRestriction.getEnumerationFactory();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction<LocalizedEntryListFactory<C>> getEnumerationRestriction() {
+    public DataType.Restriction getEnumerationRestriction() {
         return enumerationRestriction;
     }
 
@@ -787,11 +775,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
-    protected abstract class AbstractRestriction<D extends Serializable>  extends StaticAbstractRestriction<D> {
+    protected abstract class AbstractRestriction extends StaticAbstractRestriction {
         protected AbstractRestriction(AbstractRestriction source) {
             super(BasicDataType.this, source);
         }
-        protected AbstractRestriction(String name, D value) {
+        protected AbstractRestriction(String name, Serializable value) {
             super(BasicDataType.this, name, value);
         }
     }
@@ -805,11 +793,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article about inner classes,
      * cloning in java</a>
      */
-    protected static abstract class StaticAbstractRestriction<D extends Serializable>  implements DataType.Restriction<D> {
+    protected static abstract class StaticAbstractRestriction implements DataType.Restriction {
         protected final String name;
         protected final BasicDataType parent;
         protected LocalizedString errorDescription;
-        protected D value;
+        protected Serializable value;
         protected boolean fixed = false;
         protected int enforceStrength = DataType.ENFORCE_ALWAYS;
 
@@ -840,7 +828,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             }
         }
 
-        protected StaticAbstractRestriction(BasicDataType parent, String name, D value) {
+        protected StaticAbstractRestriction(BasicDataType parent, String name, Serializable value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
@@ -850,11 +838,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return name;
         }
 
-        public D getValue() {
+        public Serializable getValue() {
             return value;
         }
 
-        public void setValue(D v) {
+        public void setValue(Serializable v) {
             parent.edit();
             if (fixed) {
                 throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
@@ -865,7 +853,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         public LocalizedString getErrorDescription() {
             if (errorDescription == null) {
-                // this is postponsed to first use, because otherwise 'getBaseTypeIdentifier' give correct value only after constructor of parent.
+                // this is postponsed to first use, because otherwis 'getBaesTypeIdentifier' give correct value only after constructor of parent.
                 String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
                 errorDescription = new LocalizedString(key);
                 errorDescription.setBundle(DATATYPE_BUNDLE);
@@ -893,13 +881,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
          * Restriction. If this error-collection is unmodifiable (VALID), it is replaced with a new
          * empty one first.
          */
-        protected final Collection<LocalizedString> addError(Collection<LocalizedString> errors, Object v, Node node, Field field) {
-            if (errors == VALID) errors = new ArrayList<LocalizedString>();
+        protected final Collection addError(Collection errors, Object v, Node node, Field field) {
+            if (errors == VALID) errors = new ArrayList();
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
             error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
             error.replaceAll("\\$\\{CONSTRAINTVALUE\\}", ReplacingLocalizedString.makeLiteral(valueString(node, field)));
-            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral(Casting.toString(v)));
+            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral("" + v));
             errors.add(error);
             return errors;
         }
@@ -908,7 +896,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
          * If value of a a restriction depends on node, field, then you can override this
          */
         protected String valueString(Node node, Field field) {
-            return Casting.toString(value);
+            return "" + value;
         }
 
         /**
@@ -928,10 +916,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         /**
          * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
          */
-        protected Collection<LocalizedString> validate(Collection<LocalizedString> errors, Object v, Node node, Field field) {
+        protected Collection validate(Collection errors, Object v, Node node, Field field) {
             if (absoluteParent != null && ! absoluteParent.valid(v, node, field)) {
                 int sizeBefore = errors.size();
-                Collection<LocalizedString> res = absoluteParent.addError(errors, v,  node, field);
+                Collection res = absoluteParent.addError(errors, v,  node, field);
                 if (res.size() > sizeBefore) {
                     return res;
                 }
@@ -960,10 +948,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         protected abstract boolean simpleValid(Object v, Node node, Field field);
 
-        protected final void inherit(StaticAbstractRestriction<D> source, boolean cast) {
+        protected final void inherit(StaticAbstractRestriction source, boolean cast) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            D inheritedValue = source.getValue();
-            if (cast) inheritedValue = (D) parent.cast(inheritedValue, null, null);
+            Serializable inheritedValue = source.getValue();
+            if (cast) inheritedValue = (Serializable) parent.cast(inheritedValue, null, null);
             setValue(inheritedValue);
             enforceStrength = source.getEnforceStrength();
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
@@ -994,7 +982,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     // REQUIRED
-    protected class RequiredRestriction extends AbstractRestriction<Boolean> {
+    protected class RequiredRestriction extends AbstractRestriction {
         private static final long serialVersionUID = 1L;
 
         RequiredRestriction(RequiredRestriction source) {
@@ -1016,7 +1004,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     // UNIQUE
-    protected class UniqueRestriction extends AbstractRestriction<Boolean> {
+    protected class UniqueRestriction extends AbstractRestriction {
         private static final long serialVersionUID = 1L;
         UniqueRestriction(UniqueRestriction source) {
             super(source);
@@ -1066,7 +1054,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query, constraint);
                 if (!node.isNew()) {
-                    constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, node.getNumber());
+                    constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
                     Queries.addConstraint(query, constraint);
                 }
                 if(log.isDebugEnabled()) {
@@ -1083,7 +1071,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     // TYPE
 
-    protected class TypeRestriction extends AbstractRestriction<Class<?>> {
+    protected class TypeRestriction extends AbstractRestriction {
         private static final long serialVersionUID = 1L;
         TypeRestriction(TypeRestriction source) {
             super(source);
@@ -1098,34 +1086,34 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 BasicDataType.this.cast(v, node, field);
                 return true;
             } catch (Throwable e) {
-                log.error(e);
                 return false;
             }
         }
     }
 
     // ENUMERATION
-    protected class EnumerationRestriction extends AbstractRestriction<LocalizedEntryListFactory<C>> {
+    protected class EnumerationRestriction extends AbstractRestriction {
         private static final long serialVersionUID = 1L;
 
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
-            value = value != null ? (LocalizedEntryListFactory<C>) value.clone() : null;
+            value = value != null ? (Serializable) ((LocalizedEntryListFactory) value).clone() : null;
         }
 
-        EnumerationRestriction(LocalizedEntryListFactory<C> entries) {
+        EnumerationRestriction(LocalizedEntryListFactory entries) {
             super("enumeration", entries);
         }
 
-        final LocalizedEntryListFactory<C> getEnumerationFactory() {
+        final LocalizedEntryListFactory getEnumerationFactory() {
             if(value == null) {
-                value = new LocalizedEntryListFactory<C>();
+                value = new LocalizedEntryListFactory();
             }
-            return value;
+            return (LocalizedEntryListFactory) value;
         }
 
-        public Collection<Map.Entry<C, String>> getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
-            if (value == null) return Collections.emptyList();
+        public Collection getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
+            if (value == null) return Collections.EMPTY_LIST;
+            LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
             if (cloud == null) {
                 if (node != null) {
                     cloud = node.getCloud();
@@ -1133,7 +1121,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     cloud = field.getNodeManager().getCloud();
                 }
             }
-            return value.get(locale, cloud);
+            return ef.get(locale, cloud);
         }
 
         /**
@@ -1142,7 +1130,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected Object preCast(Object v, Cloud cloud) {
             if (getValue() == null) return v;
             try {
-                return value.castKey(v, cloud);
+                return ((LocalizedEntryListFactory) value).castKey(v, cloud);
                 //return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
             } catch (NoClassDefFoundError ncdfe) {
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
@@ -1152,11 +1140,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (value == null || value.isEmpty()) {
+            if (value == null || ((LocalizedEntryListFactory) value).isEmpty()) {
                 return true;
             }
             Cloud cloud = BasicDataType.this.getCloud(node, field);
-            Collection<Map.Entry<C, String>> validValues = getEnumeration(null, cloud, node, field);
+            Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues.size() == 0) {
                 return true;
             }
@@ -1164,10 +1152,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             try {
                 candidate = BasicDataType.this.cast(v, cloud, node, field);
             } catch (CastException ce) {
-                log.info(ce);
                 return false;
             }
-            for (Map.Entry<C, String> e : validValues) {
+            Iterator i = validValues.iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
                 Object valid = e.getKey();
                 if (valid.equals(candidate)) {
                     return true;
@@ -1177,13 +1166,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
 
         protected String valueString(Node node, Field field) {
-            Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
+            Collection col = getEnumeration(null, null, node, field);
             if(col.size() == 0) return "";
             StringBuffer buf = new StringBuffer();
-            Iterator<Map.Entry<C, String>> it = col.iterator();
+            Iterator it = col.iterator();
             int i = 0;
             while (it.hasNext() && ++i < 10) {
-                Map.Entry<C, String> ent = it.next();
+                Map.Entry ent = (Map.Entry)it.next();
                 buf.append(Casting.toString(ent));
                 if (it.hasNext()) buf.append(", ");
             }
@@ -1201,14 +1190,14 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     //Also, it 'preCasts' the * keys to the right type.
 
-    protected class RestrictedEnumerationIterator implements Iterator<Map.Entry<C, String>> {
-        private final Iterator<Map.Entry<C, String>> baseIterator;
+    protected class RestrictedEnumerationIterator implements Iterator {
+        private final Iterator baseIterator;
         private final Node node;
         private final Field field;
-        private Map.Entry<C, String> next = null;
+        private Map.Entry next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
-            Collection<Map.Entry<C, String>> col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
+            Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
             if (log.isDebugEnabled()) {
                 log.debug("Restricted iterator on " + col);
             }
@@ -1221,9 +1210,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
-                final Map.Entry<C, String> entry = baseIterator.next();
-                C value = entry.getKey();
-                Collection<LocalizedString> validationResult = BasicDataType.this.validate(value, node, field, false);
+                final Map.Entry entry = (Map.Entry) baseIterator.next();
+                Object value = entry.getKey();
+                Collection validationResult = BasicDataType.this.validate(value, node, field, false);
                 if (validationResult == VALID) {
                     next = entry;
                     /*
@@ -1242,8 +1231,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     break;
                 } else if (log.isDebugEnabled()) {
                     String errors = "";
-                    for (LocalizedString localizedString : validationResult) {
-                        errors += localizedString.get(null);
+                    for (Iterator i = validationResult.iterator(); i.hasNext();) {
+                        errors += ((LocalizedString)i.next()).get(null);
                     }
                     log.debug("Value " + value.getClass() + " " + value + " does not validate : " + errors);
                 }
@@ -1254,11 +1243,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return next != null;
         }
 
-        public Map.Entry<C, String> next() {
+        public Object next() {
             if (next == null) {
                 throw new NoSuchElementException();
             }
-            Map.Entry<C, String> n = next;
+            Object n = next;
             determineNext();
             return n;
         }

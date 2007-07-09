@@ -210,14 +210,14 @@ public class DynamicDate extends Date {
         java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz E");
         if (argv.length == 0) {
             String[] demo = getDemo();
-            for (String element : demo) {
+            for (int i = 0; i < demo.length; i++) {
                 try {
-                    Date d1 = getInstance(element);
+                    Date d1 = getInstance(demo[i]);
                     System.out.print(formatter.format(d1) + "\t");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                System.out.println(element);
+                System.out.println(demo[i]);
 
             }
             System.out.println("This was demo, you can also call with an argument, to try it yourself");

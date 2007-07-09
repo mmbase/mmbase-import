@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.10 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.8 2006-09-08 18:42:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
@@ -102,9 +102,9 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
         int result = SearchQueryHandler.SUPPORT_OPTIMAL;
-        Iterator<Constraint> iChilds = childs.iterator();
+        Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
-            Constraint constraint = iChilds.next();
+            Constraint constraint = (Constraint) iChilds.next();
             int support = constraint.getBasicSupportLevel();
             if (support < result) {
                 result = support;
@@ -142,7 +142,8 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("CompositeConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
+        append(isInverse()).
         append(", operator:").append(getLogicalOperatorDescription()).
         append(", childs:").append(getChilds()).
         append(")");

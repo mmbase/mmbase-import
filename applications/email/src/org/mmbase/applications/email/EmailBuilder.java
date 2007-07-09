@@ -15,13 +15,15 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.mmbase.module.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
+import org.mmbase.util.functions.Functions;
 import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -37,7 +39,6 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.22 2007-06-21 15:50:19 nklasens Exp $ 
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -167,8 +168,8 @@ public class EmailBuilder extends MMObjectBuilder {
             log.debug("function: " + function);
         }
         if (function.equals("info")) {
-            List<?> empty = new ArrayList<Object>();
-            java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
+            List empty = new ArrayList();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("gui", "(mailtype or mailstatus) Gui representation of this object.");
             if (args == null || args.size() == 0) {
                 return info;
@@ -195,11 +196,10 @@ public class EmailBuilder extends MMObjectBuilder {
                 log.warn("Trying to mail a node with unsupported type " + mailType);
             }
 
+            String val = node.getStringValue("mailtype");
             return null;
         } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
-            if (log.isDebugEnabled()) {
-                log.debug("We are in startmail - args: " + args);
-            }
+            log.debug("We are in startmail - args: " + args);
             // check if we have arguments ifso call setType()
             setType(node, args);
 
@@ -216,6 +216,7 @@ public class EmailBuilder extends MMObjectBuilder {
             default:
                 log.warn("Trying to start a mail of a node with unsupported type " + mailType);
             }
+            String val = node.getStringValue("mailtype");
             return null;
         }
         if (log.isDebugEnabled()) {
@@ -237,8 +238,8 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param node	Email node on which to set the type
      * @param args	List with arguments
      */
-    private static void setType(MMObjectNode node, List<String> args) {
-        String type = args.get(0);
+    private static void setType(MMObjectNode node, List args) {
+        String type = (String) args.get(0);
         if ("oneshot".equals(type)) {
             node.setValue("mailtype", TYPE_ONESHOT);
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
@@ -275,7 +276,7 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param expireAge The minimum age of the desired nodes in seconds
      * @return a unmodifiable List of MMObjectNodes
      */
-    List<MMObjectNode> getDeliveredMailOlderThan(long expireAge) {
+    List getDeliveredMailOlderThan(long expireAge) {
         // calc search time based on expire time
         long age = (System.currentTimeMillis() / 1000) - expireAge;
         // query database for the nodes
@@ -288,11 +289,10 @@ public class EmailBuilder extends MMObjectBuilder {
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldCompareConstraint.LESS));
         query.setConstraint(cons);
         try {
-            // mailedtime constraints makes it useless to do a cached query.
-            return storageConnector.getNodes(query, false);
+            return getNodes(query);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage());
-            return new ArrayList<MMObjectNode>();
+            return new ArrayList();
         }
 
     }

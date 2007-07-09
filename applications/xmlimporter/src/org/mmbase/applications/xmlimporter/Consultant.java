@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Erik Visser (Finalist IT Group)
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: Consultant.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: Consultant.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public class Consultant {
 
@@ -61,7 +61,7 @@ public class Consultant {
    private TmpObject originalObject;
 
    /** the collection of mergeresults */
-   private List<TmpObject> mergeResults;
+   private List mergeResults;
 
    /** the index of the user chosen mergeresult */
    private int choice;
@@ -99,7 +99,7 @@ public class Consultant {
     * @param mergeResults The merge results to choose from.
     */
    public synchronized void consultUser(TmpObject originalObject,
-   List<TmpObject> mergeResults) {
+   List mergeResults) {
 
       this.originalObject = originalObject;
       this.mergeResults = mergeResults;
@@ -173,7 +173,7 @@ public class Consultant {
     *
     * @return The list of merge results.
     */
-   public synchronized List<TmpObject> getMergeResults() {
+   public synchronized List getMergeResults() {
       return mergeResults;
    }
 

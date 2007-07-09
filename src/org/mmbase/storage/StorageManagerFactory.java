@@ -17,6 +17,7 @@ import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.clustering.ChangeManager;
+import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
 
 import org.mmbase.util.ResourceLoader;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.30 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.28 2006-09-25 14:08:45 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -83,7 +84,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The query handler classes.
      * Assign a value to this class if you want to set a default query handler.
      */
-    protected List<Class<?>> queryHandlerClasses = new ArrayList<Class<?>>();
+    protected List<Class> queryHandlerClasses = new ArrayList<Class>();
 
     /**
      * @see #getSetSurrogator()
@@ -260,7 +261,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
-        List <Class<?>> configuredClasses = reader.getSearchQueryHandlerClasses();
+        List <Class> configuredClasses = reader.getSearchQueryHandlerClasses();
         if (configuredClasses.size() != 0) {
             queryHandlerClasses = configuredClasses;
         } else if (queryHandlerClasses.size() == 0) {
@@ -539,7 +540,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
                 key = key.toLowerCase();
             }
             if (disallowedFields.containsKey(key)) {
-                String newid = disallowedFields.get(key);
+                String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
                     if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
                         throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");

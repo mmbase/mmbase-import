@@ -114,7 +114,7 @@ TOKEN :
 | <TO: "to" >
 | <POSITIVE: ["0"-"9"] (["0"-"9"])* >
 | <THOUSANDS: "." ["0"-"9"]["0"-"9"]["0"-"9"] >
-| <TIMEZONE: "TZ" ([" ", "\n", "\t", "\r"])* ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE> (":" <POSITIVE>)?)?>
+| <TIMEZONE: "TZ" ([" ", "\n", "\t", "\r"])* ["A"-"Z"] (["A"-"Z","a"-"z", "/", "_"])* (["-", "+"] <POSITIVE>)?>
 
 }
 
@@ -274,7 +274,6 @@ void inc_period() : {}
   | "month"  { field = Calendar.MONTH; }
   | "year" {   field = Calendar.YEAR; }
   | "century" {   field = Calendar.YEAR; factor =  100;}
- | "millisecond" { field = Calendar.MILLISECOND; }
 }
 
 void this_period() : {}  {
