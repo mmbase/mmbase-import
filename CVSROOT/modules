@@ -25,7 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.31 2007-07-09 09:29:16 michiel Exp $
+# $Id: modules,v 1.32 2007-07-09 10:22:03 michiel Exp $
 
 
 # the mmbase java sources and resources
@@ -67,6 +67,9 @@ mmbase-taglib applications/taglib
 # In all itself is mainly 'build.xml'.
 all -d mmbase all &src &config &html &documentation &tests &applications &contributions
 
+# small contributions (no frameworks with thousands of files), which can be considered mere 'components'
+comptributions contributions/lucene &contributions/aselect &contributions/calendar &contributions/poll
+
 # to check out sufficiently to build a bindist.
-minimall -d mmbase all &src &config &html &applications &documentation
+minimall -d mmbase all &src &config &html &applications &documentation &comptributions
 
