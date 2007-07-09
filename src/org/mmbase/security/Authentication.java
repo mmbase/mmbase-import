@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.37 2007-04-11 09:01:30 michiel Exp $
+ * @version $Id: Authentication.java,v 1.38 2007-07-09 22:19:00 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -115,6 +115,26 @@ public abstract class Authentication extends Configurable implements Authenticat
             //    return METHOD_GIVEN_OR_ANONYMOUS;
         } else {
             throw new RuntimeException("Unknown value for 'method'  attribute (" + m + ")");
+        }
+    }
+
+
+    /**
+     * 
+     * @since MMBase-1.9
+     */
+    public static final String getMethod(int m) {
+        switch(m) {
+        case METHOD_HTTP: return "http";
+        case METHOD_ASIS: return "asis";
+        case METHOD_ANONYMOUS: return "anonymous";
+        case METHOD_LOGOUT: return "logout";
+        case METHOD_DELEGATE: return "delegate";
+        case METHOD_SESSIONDELEGATE: return "sessiondelegate";
+        case METHOD_PAGELOGON: return "pagelogon";
+        case METHOD_SESSIONLOGON: return "sessionlogon";
+        case METHOD_DEFAULT: return "default";
+        default: return "unknown";
         }
     }
 
