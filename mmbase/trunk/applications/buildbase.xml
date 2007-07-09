@@ -37,6 +37,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="debug"          value="on" />
   <property name="deprecation"    value="on" />
   <property name="nowarn"         value="off" />
+  <property name="default.excludes"         value="yes" />
 
 
   <property name="applications.dir"   location=".." />
@@ -476,16 +477,22 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.templates" depends="init" if="templates.available">
-    <copy todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
-      <fileset dir="${project.templates.dir}">
+    <copy 
+        todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
+      <fileset 
+          defaultexcludes="${default.excludes}"        
+          dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
       </fileset>
     </copy>
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
-    <copy todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
-      <fileset dir="${project.examples.dir}">
+    <copy 
+        todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
+      <fileset 
+          defaultexcludes="${default.excludes}"        
+          dir="${project.examples.dir}">
       </fileset>
     </copy>
   </target>
@@ -493,9 +500,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="install.config" depends="init" if="config.available">
-    <copy todir="${mmbase.config}" preservelastmodified="true">
-      <fileset dir="${project.config.dir}"
-               includes="${project.config.dir.includes}"
+    <copy 
+        todir="${mmbase.config}" preservelastmodified="true">
+      <fileset
+          defaultexcludes="${default.excludes}"
+          dir="${project.config.dir}"
+          includes="${project.config.dir.includes}"
                >
         <exclude name="functions/**" /> <!-- should be in the jar -->
       </fileset>
