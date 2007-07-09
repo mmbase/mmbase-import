@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="channel" maintainer="mmbase.org" version="0" extends="object">
+  <status>active</status>
+  <class>org.mmbase.applications.community.builders.Channel</class>
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Channel</singular>
+    <singular xml:lang="nl">Kanaal</singular>
+    <plural xml:lang="en">Channels</plural>
+    <plural xml:lang="nl">Kanalen</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">A channel of a community</description>
+    <description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
+  </descriptions>
+  <properties>
+    <property name="baserecordpath">/tmp/chatlogs</property>
+  </properties>
+  <fieldlist>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Title of the channel (i.e. main topic)</description>
+        <description xml:lang="nl">Titel van het kanaal (bijv hoofdonderwerp)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>title</name>
+        <type state="persistent" size="255" notnull="false">STRING</type>
+      </db>
+    </field>
+
+   <field>
+      <descriptions>
+        <description xml:lang="en">Subtitle of the channel</description>
+        <description xml:lang="nl">Subtitel van het kanaal</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Subtitle</guiname>
+        <guiname xml:lang="nl">Subtitel</guiname>
+      </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>subtitle</name>
+        <type state="persistent" size="255" notnull="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Introduction text for this channel, i.e. for whom it is ment</description>
+        <description xml:lang="nl">Introduktietekst voor dit kanaal, bijv voor het weergeven van de doelgroep</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Intro</guiname>
+        <guiname xml:lang="nl">Intro</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>intro</name>
+        <type state="persistent" size="2047" notnull="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Main description of the channel</description>
+        <description xml:lang="nl">Hoofdtekst/omschrijving van het kanaal</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Beschrijving</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>body</name>
+        <type state="persistent" size="2047" notnull="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Set this to 'true' (1) if the channel is connected to a 'session' object (not used)</description>
+        <description xml:lang="nl">Zet op 'true' (1) als het kanaal aan een sessie object is gekoppeld (niet in gebruik).</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Session</guiname>
+        <guiname xml:lang="nl">Sessie</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <list>7</list>
+        </positions>
+      </editor>
+      <db>
+        <name>session</name>
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+    
+    <field>
+      <descriptions>
+        <description xml:lang="en">State of the channel with regard on how to handle access: free access (0), login required to read (1 or 3), logon required to write (2 or 3)
+        </description>
+        <description xml:lang="nl">Status van het kanaal m.b.t. toegankelijkheid: vrije toegang (0), login nodig voor lezen (1 of 3), login nodig voor schrijven (2 of 3)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Logon State</guiname>
+        <guiname xml:lang="nl">Login status</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>      
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="0" />
+        <enumeration>
+          <entry basename="org.mmbase.applications.community.resources.channellogin" />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>state</name>
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+    
+    <field>
+      <descriptions>
+        <description xml:lang="en">Whether the channel is open (2), read only (1), scheduled to open (0) or closed (-1)</description>
+        <description xml:lang="nl">Of het kanaal open is (2), alleen open voor lezen (1), in de wachtrij om te openen (0), of dicht (-1)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Open</guiname>
+        <guiname xml:lang="nl">Open</guiname>
+      </gui>
+      <editor>
+        <positions>          
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="-1" />
+        <enumeration>
+          <entry basename="org.mmbase.applications.community.resources.channelopen" />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>open</name>
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+    
+    <field>
+      <descriptions>
+        <description xml:lang="en">Highest current message number in this channel</description>
+        <description xml:lang="nl">Hoogste volgnummer van berichten in dit kanaal</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Highest sequence</guiname>
+        <guiname xml:lang="nl">Hoogste volgordenr</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>8</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>highseq</name>
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Maximum number of users that can simultaneously log on</description>
+        <description xml:lang="nl">Maximala aantal gebruikers dat simultaan ingelogd kan zijn</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Maximum users</guiname>
+        <guiname xml:lang="nl">Maximum gebruikers</guiname>
+      </gui>
+      <db>
+        <name>maxusers</name>
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+  </fieldlist>
+  
+</builder>
+

@@ -1,0 +1,27 @@
+
+<LIST MULTILEVEL NODE="Bugtracker.Start" TYPE="pools,bugreports" PROCESSOR="MMBASE" FIELDS="bugreports.number,bugreports.bstatus,bugreports.btype,bugreports.bpriority,bugreports.version,bugreports.issue" DBSORT="bugreports.number" DBDIR="down" MEMCACHE="NO" MAX=40>
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A">
+			  #$ITEM1 
+		</TD>
+		<TD BGCOLOR="#00425A">
+			 <PART status.shtml?$ITEM2>
+		</TD>
+		<TD BGCOLOR="#00425A">
+			 <PART type.shtml?$ITEM3>
+		</TD>
+		<TD BGCOLOR="#00425A">
+			 <PART priority.shtml?$ITEM4>
+		</TD>
+		<TD BGCOLOR="#00425A">
+			 $ITEM5
+		</TD>
+		<TD BGCOLOR="#00425A">
+			 $ITEM6
+		</TD>
+		<TD BGCOLOR="#44BDAD" WIDTH="14">
+			<A HREF="fullview.shtml?$ITEM1"><IMG SRC="beeld/pijl.gif" BORDER="0" ALIGN="left"></A>
+		</TD>
+</TR>
+</LIST>

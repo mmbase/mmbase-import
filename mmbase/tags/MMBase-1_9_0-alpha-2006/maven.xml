@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
+		xmlns:ant="jelly:ant" xmlns:artifact="artifact"
+        xmlns:util="jelly:util">
+
+	<preGoal name="java:compile">
+	    <attainGoal name="javacc"/>
+	</preGoal>
+
+	<preGoal name="jar:jar">
+	    <util:available file="${maven.build.dest}/org/mmbase">
+			<!-- Date now = new Date(); -->
+			<j:new className="java.util.Date" var="timestamp" />
+			<!-- SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd.HHmmss"); -->
+			<j:new className="java.text.SimpleDateFormat" var="format">
+				<j:arg type="java.lang.String" value="yyyyMMdd" />
+			</j:new>
+			<!-- dateFormat.setTimeZone(TimeZone.getTimeZone("GMT")); -->
+			<j:invokeStatic className="java.util.TimeZone" method="getTimeZone" var="timezone">
+				<j:arg type="java.lang.String" value="GMT" />
+			</j:invokeStatic>
+			<j:invoke on="${format}" var="formattedDate" method="setTimeZone">
+				<j:arg type="java.util.TimeZone" value="${timezone}" />
+			</j:invoke>
+			<!-- dateFormat.format(now)-->
+			<j:invoke on="${format}" var="formattedDate" method="format">
+				<j:arg type="java.util.Date" value="${timestamp}" />
+			</j:invoke>
+			<echo file="${maven.build.dest}/org/mmbase/builddate.properties">${formattedDate}</echo>
+		</util:available>
+	</preGoal>
+	
+</project>

@@ -1,0 +1,18 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+      xml:lang="en" lang="en">
+  <mm:link id="to" page="." write="false" />
+  <mm:write referid="to" jspvar="url">
+    <jsp:scriptlet>response.setHeader("Refresh", "30; url=" + url);</jsp:scriptlet>
+  </mm:write>
+  <mm:content type="text/html" expires="0">
+    <head>
+      <title>Logout</title>
+      <jsp:include page="../head.links.jspx?dir=../" />
+    </head>
+    <body>
+      <mm:cloud method="logout" />
+      <a href="${to}">Terug</a>
+    </body>
+  </mm:content>
+</html>

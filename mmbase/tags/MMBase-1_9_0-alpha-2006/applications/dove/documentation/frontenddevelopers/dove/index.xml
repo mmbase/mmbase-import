@@ -1,0 +1,937 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>Dove 1.1 XML API</title>
+    <date>2002-07-20</date>
+    <edition>$Id: index.xml,v 1.3 2006-06-23 07:28:03 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+    <releaseinfo>MMBase 1.5 includes a beta version of Dove. Version 1.0 was released with MMBase 1.5.1. Version 1.1 is included with MMBase 1.6.</releaseinfo>
+  </articleinfo>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>The Dove is a support class for MMBase, which adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The current implementation (<classname>org.mmbase.applications.dove.Dove</classname>) makes use of the <interfacename>MMCI</interfacename> to communicate with MMBase. Alternate implementations (i.e. versions that work on the core) can be implemented by extending the <classname>AbstractDove</classname> class. Every implementation should at the least support the XML format presented here, though it is possible that implementations add custom commands or functionality. Commands are run by passing an XML DOM root element to an instance of Dove (the request). The calling member function returns an <interfacename>Element</interfacename> that contains the result of the passed command (the response). This document focuses on the structure of the request and response XML (the Dove Communication API). The actual mechanics for instantiation of the Dove class and calling its member functions are documented in the Dove class API.</para>
+    <para>The version noted here is version 1.1, which is included with MMBase version 1.6 and higher.</para>
+    <sidebar>
+      <title>A Note On XML Validation</title>
+      <para>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation needs to be done by the calling code.</para>
+      <para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognize attributes, so assuming this behavior is discouraged, and is not a part of the API specification.</para>
+      <note>
+        <para>Specific behavior of the default Dove implementation are included in this document as a note (like this).</para>
+      </note>
+    </sidebar>
+    <sidebar>
+      <title>A Note on Syntax</title>
+      <para>The commands handled below will include a syntax description and, were appropriate, an example.</para>
+      <programlisting format="linespecific"><![CDATA[The syntax descriptions will be in a DTD format, and shown as source text (like this).]]></programlisting>
+      <para>Only syntax relevant to the appropriate section will be shown (the actual DTD differs slightly as some elements are used in various places).</para>
+      <para>The examples are fictitious XML documents. To shorten the examples, the XML declaration and DOCTYPE elements are not included.</para>
+      <programlisting format="linespecific"><![CDATA[The XML examples, or fractions thereof, are shown as source text (like this).]]></programlisting>
+      <para>This document deals with three versions of Dove: 1.0 beta (included in MMBase 1.5), 1.0 (included in MMBase 1.5.1), and 1.1. (MMBase 1.6).</para>
+      <para>Where appropriate, notes will be used to indicate which versions support certain functionality.</para>
+    </sidebar>
+    <section id="passing_commands">
+      <title>Passing Commands</title>
+      <para>The root element of the request xml is the <sgmltag>request</sgmltag> tag.</para>
+      <para>Each request tag contains at most one <sgmltag>security</sgmltag> tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they appear in the xml.</para>
+      <programlisting format="linespecific"><![CDATA[
+<!ELEMENT request (security?,(getdata|getnew|getnewrelation|getrelations| getconstraints|getlist|put)+) >
+      ]]></programlisting>
+      <para>The commands that should be comprehended are : <sgmltag>getdata</sgmltag>, <sgmltag>getnew</sgmltag>, <sgmltag>getnewrelation</sgmltag>, <sgmltag>getrelations</sgmltag>, <sgmltag>getconstraints</sgmltag>, <sgmltag>getlist</sgmltag>, and <sgmltag>put</sgmltag>.</para>
+      <note>
+        <para>Custom Dove implementations may implement additional commands.</para>
+      </note>
+      <para>The command tags support an <sgmltag class="attribute">id</sgmltag> attribute. The attribute has no significance to the Dove, but is meant to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</para>
+      <para>The result of the commands are tallied and returned in an xml with as root the <sgmltag>response</sgmltag> tag.</para>
+      <para>The body of the xml contains either an error tag (when connecting to MMBase failed), or a list of tags containing the results of the command passed, in the order that those commands were given. The response does not contain any security information, even if the request did.</para>
+      <programlisting format="linespecific"><![CDATA[
+<!ELEMENT response (getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put|error)+ >
+      ]]></programlisting>
+      <para>Each command contains the result of that command or an <sgmltag>error</sgmltag> tag if the command failed.</para>
+      <note>
+        <para>If Dove cannot handle the command, an <sgmltag>error</sgmltag> tag is returned instead to stay compliant with the response dtd. It is recommended you validate a document before passing it to the Dove.</para>
+      </note>
+      <sidebar>
+        <title>How to Call Dove</title>
+        <para>The <classname>org.mmbase.applications.dove.Dove</classname> Java class contains the code that processes the xml tree. If you want to use the Dove from java code, you should first create a DOM tree, containing the command to run. You then instantiate Dove, using a DOM Document to be used for creating the response, and finally call the executeRequest method, passing the entity that contains the root of the request. For more information on calling the class we refer to the MMBase API documentation</para>
+        <para>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml response (in text format).</para>
+      </sidebar>
+    </section>
+    <section id="security">
+      <title>Security</title>
+      <para>It is possible to pass a <sgmltag>security</sgmltag> tag to Dove, enabling the class to log in on MMBase. The tag accepts a <sgmltag class="attribute">name</sgmltag> and <sgmltag class="attribute">password</sgmltag> attribute, as well as a <sgmltag class="attribute">cloud</sgmltag> attribute containing the name and a <sgmltag class="attribute">method</sgmltag> attribute containing the login method name. These attributes are similar in meaning to the attributes of the cloud tag in the MMBase taglib (documented elsewhere). All attributes are optional. In general, name and password will be required unless the default method for authentication is overruled.</para>
+      <programlisting format="linespecific"><![CDATA[
+<!ELEMENT security EMPTY>
+<!ATTLIST security name NMTOKEN #IMPLIED >
+<!ATTLIST security password NMTOKEN #IMPLIED >
+<!ATTLIST security method CDATA 'name/password' >
+<!ATTLIST security cloud CDATA 'mmbase' >
+      ]]></programlisting>
+      <example>
+        <title>Example:</title>
+        <programlisting format="linespecific"><![CDATA[
+<request>
+
+  <security name="admin" password="admin2k" />
+  <getdata><object number="675" /></getdata>
+
+</request>
+      ]]></programlisting>
+      </example>
+      <note>
+        <para>Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</para>
+      </note>
+    </section>
+    <section id="errors">
+      <title>Errors</title>
+      <para>When the Dove fails to execute a command it returns an <sgmltag>error</sgmltag> tag. An error tag contains a <sgmltag class="attribute">type</sgmltag> attribute that details the type of error, as follows:</para>
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>parser</title>
+            <para>The xml given is invalid or does not follow the grammar. This likely means there is a bug in the client code.</para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>server</title>
+            <para>The code invoked is either not yet implemented or another, server-related, error occurred (such as no memory, bad configuration, etc.). Server errors entirely fail a request.</para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>client</title>
+            <para>The data requested could not be retrieved or values specified were invalid. I.e. a requested node does not exist (any more), or a put failed due to invalid data.</para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+      <para>The body of the tag contains a description of the actual error.</para>
+      <programlisting format="linespecific"><![CDATA[
+<!ENTITY % errortype (server,parser,client)>
+<!ELEMENT error (#PCDATA)>
+<!ATTLIST error type %errortype #REQUIRED >
+      ]]></programlisting>
+      <para>If the error occurs due to a security issue, only the error is returned (no command is executed).</para>
+      <example>
+        <title>Example:</title>
+        <programlisting format="linespecific"><![CDATA[
+<response>
+  <error type="client">Authentication error : password invalid</error>
+</response>
+        ]]></programlisting>
+      </example>
+      <para>If the error occurred while attempting to execute a command, it occurs at the location where the error occurred.</para>
+      <example>
+        <title>Example:</title>
+        <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getdata>
+    <object number="234">
+      <error type="client">node not found</error>
+    </object>
+ </getdata>
+
+</response>
+        ]]></programlisting>
+      </example>
+      <note>
+        <para>Except during a put, Dove attempts to continue execution when it runs into an error.</para>
+      </note>
+    </section>
+  </section>
+  <section id="commands">
+    <title>Commands</title>
+    <para>The following pages list the commands that can be passed to the Dove.</para>
+    <para>An implementation should support the following commands:</para>
+    <itemizedlist>
+      <title>Dove Commands</title>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getdata</sgmltag></title>
+          <para>Retrieves an MMBase node</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getnew</sgmltag></title>
+          <para>Returns a new, empty node</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getnewrelation</sgmltag></title>
+          <para>Returns a new, empty relation node</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getrelations</sgmltag></title>
+          <para>Returns the relations of a node of a certain role</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getconstraints</sgmltag></title>
+          <para>Returns the constraints of a node type</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>getlist</sgmltag></title>
+          <para>Returns a list of nodes following a constraint</para>
+        </formalpara>
+      </listitem>
+      <listitem>
+        <formalpara>
+          <title><sgmltag>put</sgmltag></title>
+          <para>Passes changes to make to MMBase</para>
+        </formalpara>
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section id="getdata">
+    <title>getdata</title>
+    <para>A <sgmltag>getdata</sgmltag> command retrieves objects from MMBase by their number.</para>
+    <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response <sgmltag>object</sgmltag> tag contains an <sgmltag>error</sgmltag> tag describing the problem.</para>
+    <para>If you do not want to retrieve all the object's fields, you can specify the fields you want to retrieve by including <sgmltag>field</sgmltag> tags in the body of the object tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned. Note that you should not retrieve relation objects directly - use <sgmltag>getrelations</sgmltag> instead.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getdata (object+) >
+<!ATTLIST getdata id ID #IMPLIED>
+
+<!ELEMENT object (field*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+
+<!ELEMENT field EMPTY>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+  ]]></programlisting>
+    <para>The response contains, aside from the fields, the type of the object.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getdata (object+) >
+<!ATTLIST getdata id ID #IMPLIED>
+
+<!ELEMENT object (field*)>
+<!ATTLIST object did ID #IMPLIED>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA) >
+<!ATTLIST field did ID #IMPLIED>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+  ]]></programlisting>
+    <example>
+      <title>Example</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+  <getdata id="1">
+    <object number="675" />
+  </getdata>
+
+  <getdata id="2">
+    <object number="672" >
+     <field name="title" />
+    </object>
+    <object number="671" >
+     <field name="name" />
+     <field name="url" />
+    </object>
+  </getdata>
+
+</request>
+  ]]></programlisting>
+      <para>The result of this command could look like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+  <getdata id="1">
+    <object number="675" type="people">
+      <field name="firstname">Harrison</field>
+      <field name="lastname">Ford</field>
+      <field name="email">harrisonford@hollywood.com</field>
+    </object>
+  </getdata>
+
+  <getdata id="2">
+    <object number="672" type="movies">
+     <field name="title">Star Wars</field>
+    </object>
+    <object number="671" type="urls">
+     <field name="name" >Star Wars Site</field>
+     <field name="url" >http://www.starwars.com</field>
+    </object>
+  </getdata>
+</response>
+  ]]></programlisting>
+    </example>
+  </section>
+  <section id="getrelations">
+    <title>getrelations</title>
+    <para>A <sgmltag>getrelations</sgmltag> command obtains the relation objects belonging to the specified objects, filtered by a specified destination type or relation role.</para>
+    <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object's relations are retrieved and returned.</para>
+    <para>An object tag may include one or more <sgmltag>relation</sgmltag> tags, allowing to retrieve a narrow selection of relations, relating to a specified type of object or using a specified role. Restricting the selection is done by supplying a <sgmltag class="attribute">role</sgmltag> or a <sgmltag class="attribute">destinationtype</sgmltag> attribute (or both) to a relation tag.</para>
+    <para>By default, all fields of a relation are returned. If you only want to retrieve certain fields, you can do so by specifying these fields by including <sgmltag>field</sgmltag> tags in the body of the relation tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</para>
+    <note>
+      <para>In Dove 1.0, a <sgmltag>searchdir</sgmltag> attribute can be specified to limit the result
+      based on directionality. The value 'source' limits the returned relations to those that link TO the specified object FROM a 'source' object, 'destination' limits the relations to those that link FROM the specified object TO a 'destination object, and 'both' (the default) returns all relations, except those that would violate directionality (i.e. uni-directional relations).</para>
+    </note>
+    <programlisting format="linespecific"><![CDATA[
+<!ENTITY % searchdir "(source,destination,both)">
+
+<!ELEMENT getrelations (object+) >
+<!ATTLIST getrelations id ID #IMPLIED>
+
+<!ELEMENT object (relation*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+
+<!ELEMENT relation (field*)>
+<!ATTLIST relation role NMTOKEN #IMPLIED >
+<!ATTLIST relation searchdir %searchdir #IMPLIED >
+<!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
+
+<!ELEMENT field (#PCDATA) >
+<!ATTLIST field name NMTOKEN #REQUIRED >
+  ]]></programlisting>
+    <para>The response contains the requested relation objects, wrapped by the object used to retrieve them. All additional fields of the relations are also returned.</para>
+    <note>
+      <para>
+        The common relation fields <database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as field elements, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.These fields contain MMBase object numbers (snumber and dnumber of the relation). It is possible to check if the initiating node was the source or the destination of the relations, by checking whether its number is in the 'source' or in the 'destination' attribute. The role attribute contains the forward role (<database class="field">sname</database> field) of the relation.</para>
+    </note>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getrelations (object+) >
+<!ATTLIST getrelations id ID #IMPLIED>
+
+<!ELEMENT object (relation*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+
+<!ELEMENT relation (field*)>
+<!ATTLIST relation number NMTOKEN #REQUIRED >
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation role NMTOKEN #REQUIRED >
+<!ATTLIST relation source NMTOKEN #REQUIRED >
+<!ATTLIST relation destination NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA) >
+<!ATTLIST field name NMTOKEN #REQUIRED >
+  ]]></programlisting>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+  <getrelations id="1">
+    <object number="675" />
+  </getrelations>
+
+  <getrelations id="2">
+    <object number="672" >
+      <relation role="part" />
+      <relation destinationtype="scenes" role="posrel">
+        <field name="pos" />
+      </relation>
+    </object>
+  </getrelations>
+
+</request>
+  ]]></programlisting>
+      <para>Which may result in the following response:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getrelations id="1">
+    <object number="675" type="people">
+      <relation number="682" type="insrel" source="675" destination="681" role="related" />
+      <relation number="684" type="insrel" source="675" destination="683" role="related" />
+      <relation number="690" type="insrel" source="675" destination="678" role="actor" />
+    </object>
+  </getrelations>
+
+  <getrelations id="2">
+    <object number="672" type="movies">
+      <relation number="677" type="insrel" source="672" destination="678" role="part" />
+      <relation number="700" type="posrel" source="672" destination="699" role="posrel" >
+        <field name="pos" >1</field>
+      </relation>
+      <relation number="702" type="posrel" source="672" destination="701" role="posrel">
+        <field name="pos" >2</field>
+      </relation>
+      <relation number="704" type="posrel" source="672" destination="703" role="posrel">
+        <field name="pos" >3</field>
+      </relation>
+    </object>
+  </getrelations>
+
+</response>
+  ]]></programlisting>
+    </example>
+  </section>
+  <section id="nesting">
+    <title>Nesting calls (getdata/getrelations)</title>
+    <note>
+      <para>Deep nesting is possible only with Dove version 1.0 that is available with MMBase 1.5.1 and up.</para>
+    </note>
+    <para>Loading one object or set of relations at a time can be time consuming, especially if a lot of interrelated objects need to be loaded.</para>
+    <para>It is possible to define a load action of related objects in one command, by nesting objects and their relations.</para>
+    <para>The nested request should follow this DTD:</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #IMPLIED >
+
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation searchdir %searchdir #IMPLIED >
+<!ATTLIST relation role NMTOKEN #IMPLIED >
+<!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
+]]></programlisting>
+    <para>and the nested response should follow this one:</para>
+    <programlisting format="linespecific"><![CDATA[
+
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation number NMTOKEN #REQUIRED >
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation role NMTOKEN #REQUIRED>
+<!ATTLIST relation source NMTOKEN #REQUIRED >
+<!ATTLIST relation destination NMTOKEN #REQUIRED >
+
+]]></programlisting>
+    <example>
+      <title>Example</title>
+      <para>A possible combination of nesting objects and relations could look like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+<getdata id="1">
+    <object number="672">
+
+      <field name="title" />
+
+      <relation role="part">
+        <object >
+          <field name="name" />
+          <relation destinationtype="people" role=actor" >
+            <object >
+               <field name="firstname" />
+               <field name="lastname" />
+            </object>
+          </relation>
+        </object>
+      </relation>
+
+      <relation destinationtype="scenes" role="posrel">
+        <field name="pos" />
+        <object>
+          <field name="title" />
+        </object>
+      </relation>
+
+    </object>
+
+  </getdata>
+
+</request>
+  ]]></programlisting>
+      <para>And this could be the response:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getdata id="1">
+    <object number="672" type="movies">
+
+     <field name="title" >
+      <relation number="677" type="insrel" source="672" destination="678" role="part" >
+        <object number="678" type="elements">
+          <field name="name" >Han Solo</field>
+          <relation number="690" type="insrel" source="678" destination="675" role=actor" >
+            <object number="690" type="people" >
+               <field name="firstname" >Harrison</field>
+               <field name="lastname" >Ford</field>
+            </object>
+          </relation>
+        </object>
+      </relation>
+
+      <relation number="700" type="posrel" source="672" destination="699" role="posrel" >
+        <field name="pos" >1</field>
+        <object number="699" type="scenes">
+          <field name="title">Entering Mos Eisly</field>
+        </object>
+      </relation>
+      <relation number="702" type="posrel" source="672" destination="701" role="posrel">
+        <field name="pos" >2</field>
+        <object number="701" type="scenes">
+          <field name="title">These are not the droids you are looking for</field>
+        </object>
+      </relation>
+      <relation number="704" type="posrel" source="672" destination="703" role="posrel">
+        <field name="pos" >3</field>
+        <object number="703" type="scenes">
+          <field name="title">Boring conversation anyway</field>
+        </object>
+      </relation>
+
+    </object>
+  </getdata>
+
+</response>
+  ]]></programlisting>
+    </example>
+  </section>
+  <section id="getnew">
+    <title>getnew</title>
+    <para>A <sgmltag>getnew</sgmltag> command creates a new, empty object of a specified object type.</para>
+    <para>The new object is returned with a (system-generated) temporary object <sgmltag class="attribute">number</sgmltag>, and any fields for this object, with default values according to the system. This call is for generating normal objects - for generating relations use <sgmltag>getnewrelation</sgmltag>.</para>
+    <para>The command requires a <sgmltag class="attribute">type</sgmltag> attribute that holds the type to generate</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getnew EMPTY >
+<!ATTLIST getnew id ID #IMPLIED>
+<!ATTLIST getnew type NMTOKEN #REQUIRED>
+]]></programlisting>
+    <para>The response contains the new object, in a fashion similar to getdata. The getnew element itself also contains the original type passed. All fields of the object are returned.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getnew (object|error) >
+<!ATTLIST getnew id ID #IMPLIED>
+<!ATTLIST getnew type NMTOKEN #REQUIRED>
+
+<!ELEMENT object (field*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA) >
+<!ATTLIST field name NMTOKEN #REQUIRED >
+]]></programlisting>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+  <getnew type="people" />
+</request>
+]]></programlisting>
+      <para>And the result may look like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getnew id="1" type="people">
+    <object number="n62967893564" type="people">
+      <field name="firstname" />
+      <field name="lastname" />
+      <field name="email" />
+    </object>
+  </getnew>
+
+  </response>
+]]></programlisting>
+    </example>
+  </section>
+  <section id="getnewrelation">
+    <title>getnewrelation</title>
+    <para>A <sgmltag>getnewrelation</sgmltag> command creates a new, empty relation object with a specified role, source, and destination.</para>
+    <para>The new object is returned with a (system-generated) temporary object  <sgmltag class="attribute">number</sgmltag>, <sgmltag class="attribute">role</sgmltag>, <sgmltag class="attribute">source</sgmltag>, and <sgmltag class="attribute">destination</sgmltag>, and any additional fields for this object, with default values according to the system. This call is for generating relations - for normal objects use <sgmltag>getnew</sgmltag>.</para>
+    <para>The command requires a <sgmltag class="attribute">role</sgmltag>, <sgmltag class="attribute">source</sgmltag>, and <sgmltag class="attribute">destination</sgmltag> attribute that holds information for the relation to generate.
+</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getnewrelation EMPTY>
+<!ATTLIST getnewrelation id ID #IMPLIED>
+<!ATTLIST getnewrelation role NMTOKEN #REQUIRED >
+<!ATTLIST getnewrelation source NMTOKEN #REQUIRED >
+<!ATTLIST getnewrelation destination NMTOKEN #REQUIRED >
+]]></programlisting>
+    <para>The response contains the new relation, in a fashion similar to getrelations. The getnewrelation element itself also contains the original attributes passed. All additional fields of the relation are returned. </para>
+    <note>
+      <para><database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as fields, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.</para>
+    </note>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getnewrelation (relation|error)>
+<!ATTLIST getnewrelation id ID #IMPLIED>
+<!ATTLIST getnewrelation role NMTOKEN #REQUIRED >
+<!ATTLIST getnewrelation source NMTOKEN #REQUIRED >
+<!ATTLIST getnewrelation destination NMTOKEN #REQUIRED >
+
+<!ELEMENT relation (field*)>
+<!ATTLIST relation number NMTOKEN #REQUIRED >
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation role NMTOKEN #REQUIRED >
+<!ATTLIST relation source NMTOKEN #REQUIRED >
+<!ATTLIST relation destination NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA) >
+<!ATTLIST field name NMTOKEN #REQUIRED >
+]]></programlisting>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+  <getnewrelation role="posrel" source="134" destination="n72647968" />
+</request>
+]]></programlisting>
+      <para>And the result:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getnewrelation role="posrel" source="134" destination="n72647968" />
+    <relation number="n62967893568" role="posrel" type="posrel"
+              source="134" destination="n72647968" >
+      <field name="pos" >0</field>
+    </relation>
+  </getnewrelation>
+
+</response>
+]]></programlisting>
+    </example>
+  </section>
+  <section id="getconstraints">
+    <title>getconstraints</title>
+    <para>A <sgmltag>getconstraints</sgmltag> command obtains constraint information for an object type.</para>
+    <para>The type should be specified in the <sgmltag class="attribute">type</sgmltag> attribute. An optional <sgmltag class="attribute">xml:lang</sgmltag> attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible. the language specified should be in the <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format, such as 'en', 'nl', or the like.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getconstraints (object+) >
+<!ATTLIST getconstraints id ID #IMPLIED>
+<!ATTLIST getconstraints type NMTOKEN #REQUIRED>
+<!ATTLIST getconstraints xml:lang NMTOKEN "en">
+]]></programlisting>
+    <para>The response contains various tags containing basic information about the object type, the fields of the type, and any allowed relations.</para>
+    <para>Tags supported in API 1.0 are <sgmltag>singularname</sgmltag>, <sgmltag>pluralname</sgmltag>, and <sgmltag>description</sgmltag>.</para>
+    <para>The <sgmltag>fields</sgmltag> tag lists all editable fields of an object. Each <sgmltag>field</sgmltag> has its own tag, with a <sgmltag class="attribute">name</sgmltag> attribute and a number of subtags : <sgmltag>guiname</sgmltag>, <sgmltag>guitype</sgmltag>, <sgmltag>maxlength</sgmltag> and <sgmltag>required</sgmltag>.</para>
+    <para>The guitype of a field has a mime-type like format of the form datatype/presentationtype.</para>
+    <para>The datatype part is one of string, int, long, float, double, datetime, or binary.</para>
+    <para>The presentationtype may vary (common types are line, text, date, or image).</para>
+    <note>
+      <para>The <sgmltag>description</sgmltag> subtag of a field is available only in version 1.0 of the Dove.</para>
+    </note>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getconstraints (error|(singularname,pluralname,description,fields,relations))+) >
+<!ATTLIST getconstraints id ID #IMPLIED>
+<!ATTLIST getconstraints type NMTOKEN #REQUIRED >
+<!ATTLIST getconstraints xml:lang NMTOKEN "en" >
+
+<!ELEMENT singularname (#PCDATA) >
+<!ATTLIST singularname xml:lang NMTOKEN "en" >
+
+<!ELEMENT pluralname (#PCDATA) >
+<!ATTLIST pluralname xml:lang NMTOKEN "en" >
+
+<!ELEMENT description (#PCDATA) >
+<!ATTLIST description xml:lang NMTOKEN "en" >
+
+<!ELEMENT fields (field*) >
+
+<!ELEMENT relations (relation*) >
+
+<!ELEMENT relation EMPTY >
+<!ATTLIST relation role NMTOKEN #REQUIRED>
+<!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
+
+<!ELEMENT field (guiname,description,guitype,maxlength,required)>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+
+<!ELEMENT guiname (#PCDATA) >
+<!ATTLIST guiname xml:lang NMTOKEN "en" >
+
+<!ELEMENT guitype (#PCDATA) >
+
+<!ELEMENT maxlength (#PCDATA) >
+
+<!ELEMENT required (#PCDATA) >
+]]></programlisting>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+
+  <getconstraints type="people" xml:lang="nl"/>
+
+</request>
+]]></programlisting>
+      <para>And a possible result:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+ <getconstraints type="people" xml:lang="nl">
+    <singularname xml:lang="nl">Persoon</singularname>
+    <pluralname xml:lang="nl">Personen</pluralname>
+    <description xml:lang="nl">Persoonsgegevens.</description>
+    <fields>
+      <field name="firstname">
+         <guiname xml:lang="nl">Voornaam</guiname>
+         <description>Voornaam van de persoon</description>
+         <guitype>string/line</guitype>
+         <maxlength>20</maxlength>
+         <required>FALSE</required>
+      </field>
+      <field name="lastname">
+         <guiname xml:lang="nl">Achternaam</guiname>
+         <description>Achternaam van de persoon</description>
+         <guitype>string/line</guitype>
+         <maxlength>50</maxlength>
+         <required>TRUE</required>
+      </field>
+      <field name="email">
+         <guiname xml:lang="nl">Email adres</guiname>
+         <description>Email adres van de persoon</description>
+         <guitype>string/line</guitype>
+         <maxlength>35</maxlength>
+         <required>FALSE</required>
+      </field>
+    </fields>
+    <relations>
+      <relation destinationtype="images" role="related" />
+      <relation destinationtype="movies" role="actor" />
+    </relations>
+  </getconstraints>
+
+</response>
+]]></programlisting>
+    </example>
+  </section>
+  <section id="getlist">
+    <title>getlist</title>
+    <para>The <sgmltag>getlist</sgmltag>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <sgmltag>query</sgmltag> tags, each specifying the constraints to retrieve nodes with.</para>
+    <para>Each query element should have a <sgmltag class="attribute">xpath</sgmltag> attribute to indicate the nodemanager to run the list on, and optionally a <sgmltag class="attribute">where</sgmltag> attribute that contains the field-constraints.</para>
+    <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". To do a multilevel query, make a list of nodemanagers seperated by "/" such as "/*@people/roles". It is possible that in future implementations more versatile xpaths can be used</para>
+    <para>The <sgmltag class="attribute">where</sgmltag> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constraints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</para>
+    <para>Fields to retrieve can be limited in the same way as with a  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag. Note that when doing a multilevel query, you must specify an <sgmltag>object</sgmltag> tag with at least one <sgmltag>field</sgmltag>.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getlist (query+) >
+<!ATTLIST getlist id ID #IMPLIED>
+
+<!ELEMENT query (object?)>
+<!ATTLIST query xpath CDATA #REQUIRED >
+<!ATTLIST query where CDATA #IMPLIED >
+
+<!ELEMENT object (field*)>
+
+<!ELEMENT field EMPTY>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+]]></programlisting>
+    <para>The response contains a list of the <sgmltag>query</sgmltag> tags, each filled with <sgmltag>object</sgmltag> tags (and their <sgmltag>field</sgmltag> tags) that follow the constraints.
+</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT getlist (query+|error) >
+<!ATTLIST getlist id ID #IMPLIED>
+
+<!ELEMENT query (object?|error)>
+<!ATTLIST query xpath CDATA #REQUIRED >
+<!ATTLIST query where CDATA #IMPLIED >
+
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+]]></programlisting>
+    <para></para>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+
+  <getlist id="7">
+    <query xpath="/*@people" where="gender ='M'">
+      <object>
+        <field name="firstname" />
+        <field name="lastname" />
+        <field name="email" />
+      </object>
+    </query>
+  </getlist>
+
+</request>
+]]></programlisting>
+      <para>The result of this query could look something like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getlist id="7">
+    <query xpath="/*@people" where="firstname LIKE '%a%'">
+      <object number="675" type="people">
+        <field name="firstname">Harrison</field>
+        <field name="lastname">Ford</field>
+        <field name="email">harrisonford@hollywood.com</field>
+      </object>
+      <object number="234" type="people">
+        <field name="firstname">Mark</field>
+        <field name="lastname">Hammil</field>
+        <field name="email">mark12@yahoo.com</field>
+      </object>
+      <object number="296" type="people">
+        <field name="firstname">Carry</field>
+        <field name="lastname">Fisher</field>
+        <field name="email">cfish@yahoo.com</field>
+      </object>
+    </query>
+  </getlist>
+
+</response>
+]]></programlisting>
+    </example>
+    <example>
+      <title>Example with a multilevel query:</title>
+<programlisting format="linespecific"><![CDATA[
+<request>
+
+  <getlist id="7">
+    <query xpath="/*@people/roles" where="people.gender ='M'">
+      <object>
+        <field name="people.firstname" />
+        <field name="role.description" />
+      </object>
+    </query>
+  </getlist>
+
+</request>
+]]></programlisting>
+      <para>The result of this query could look something like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getlist id="7">
+    <query xpath="/*@people/roles" where="people.gender ='M' ">
+      <object number="675" type="virtualnodes_1085647783628">
+        <field name="people.firstname">Harrison</field>
+        <field name="role.description">Actor</field>
+      </object>
+    </query>
+  </getlist>
+
+</response>
+]]></programlisting>
+    </example>      
+  </section>
+  <section id="put">
+    <title>put</title>
+    <para>The <sgmltag>put</sgmltag> command is used to update MMBase by sending a set of nodes and relations to add or change. Each put command contains two node lists: the <sgmltag>original</sgmltag> tag contains a set of (original) objects that should be changed or deleted, the <sgmltag>new</sgmltag> tag contains a corresponding set of object with the needed changes, as well as a set of objects or relations that are new and need to be added.</para>
+    <note>
+      <simpara>Changes made by the put command are created through a transaction. This means that if an error occurs (i.e. because changes were invalid), nothing is changed, maintaining the consistency of the system. This same mechanism also means that large updates through Dove are discouraged as they are quite slow and eat resources.
+      </simpara>
+    </note>
+    <para>The <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in original follow the general format (specifying a <sgmltag class="attribute">number</sgmltag> attribute and <sgmltag>field</sgmltag> tags) and should be existing nodes - the contents of the fields specified in this list should match data in the database. If data is specified that is incorrect, an error is generated by the system, dictating an invalid attempt to change the data</para>
+    <note>
+      <simpara>This check is used as a way to prevent edits from concurrent users from crossing each other: If two users attempt changes on the same object at the same time, one of them will fail, which ensures that data does not become corrupted or invalid.
+      </simpara>
+    </note>
+    <para>Each object or relation in the original list should have a <sgmltag class="attribute">status</sgmltag> attribute which indicates what should happen to the object: 'change' (edit content) or 'delete' (remove the object from the cloud).</para>
+    <para>The <sgmltag>new</sgmltag> tag lists all objects that should either be changed or added - objects with a status of 'delete' should not be included in this list. New objects in this list should have the status 'new'. All data mentioned here is changed or added - note that if a field is not mentioned, the content of that field (either default or existing content) is unchanged.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ENTITY % putstatus "(change,delete,new)">
+
+<!ELEMENT put (original,new) >
+<!ATTLIST put id ID #IMPLIED>
+
+<!ELEMENT original ((object|relation)*) >
+<!ELEMENT new ((object|relation)*) >
+
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #IMPLIED >
+<!ATTLIST object status %putstatus #IMPLIED>
+
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation role NMTOKEN #IMPLIED >
+<!ATTLIST relation searchdir %searchdir #IMPLIED >
+<!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
+<!ATTLIST relation status %putstatus #IMPLIED>
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+<!ATTLIST field href CDATA #IMPLIED >
+]]></programlisting>
+    <para>If the out is successful, the <sgmltag>response</sgmltag> tag contains a result list of <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in the <sgmltag>new</sgmltag> tag.</para>
+    <para>This list consists of all changed and added nodes - deleted nodes are not included.</para>
+    <programlisting format="linespecific"><![CDATA[
+<!ELEMENT put (new|error) >
+<!ATTLIST put id ID #IMPLIED>
+
+<!ELEMENT new ((object|relation)*) >
+
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation number NMTOKEN #REQUIRED >
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation role NMTOKEN #REQUIRED>
+<!ATTLIST relation source NMTOKEN #REQUIRED >
+<!ATTLIST relation destination NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+
+]]></programlisting>
+    <example>
+      <title>Example:</title>
+      <programlisting format="linespecific"><![CDATA[
+<request>
+
+  <put>
+    <original>
+      <object number="675" status="change">
+        <field name="firstname">Harrison</field>
+        <field name="lastname">Ford</field>
+        <field name="email">harrisonford@hollywood.com</field>
+      </object>
+      <object number="296" status="delete">
+        <field name="firstname">Carry</field>
+        <field name="lastname">Fisher</field>
+        <field name="email">cfish@yahoo.com</field>
+      </object>
+    </original>
+    <new>
+      <object number="675">
+        <field name="email">harrison@aol.com</field>
+      </object>
+      <object status="new">
+        <field name="firstname">Alec</field>
+        <field name="lastname">Guinness</field>
+        <field name="email">n.a.</field>
+      </object>
+    </new>
+  </put>
+
+</request>
+]]></programlisting>
+      <para></para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <put>
+    <new>
+      <object number="675">
+        <field name="firstname">Harrison</field>
+        <field name="lastname">Ford</field>
+        <field name="email">harrison@aol.com</field>
+      </object>
+      <object number="1423">
+        <field name="firstname">Alec</field>
+        <field name="lastname">Guinness</field>
+        <field name="email">n.a.</field>
+      </object>
+    </new>
+  </put>
+
+</response>
+]]></programlisting>
+    </example>
+  </section>
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
+      Since MMBase-1.8.1 (also backported to 1.7.5), dove can be configured with an xml property
+      file in &lt;mmbase config dir&gt;/utils/dove.xml. The only recognized property at the moment
+      is 'changes' which indicates what must happen if changes in the cloud are detected
+      ('exception' to indicate an error, 'ignore' to ignore or 'warn' to log a warning). See the
+      example dove.xml for more information. The file is watched, so if you change properties, they
+      should be taken into effect a few seconds later.
+    </para>
+  </section>
+</article>
+

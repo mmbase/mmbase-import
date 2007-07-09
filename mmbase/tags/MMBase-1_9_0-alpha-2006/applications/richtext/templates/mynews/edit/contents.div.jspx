@@ -1,0 +1,28 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import id="tab">contents</mm:import>
+
+  <jsp:directive.include file="wizard.imports.jspx" />
+
+  <mm:content type="application/xml">
+    <mm:cloud rank="basic user" jspvar="cloud">
+      <h1>Contents</h1>
+      <mm:import externid="home">my.rich.magazine</mm:import>
+      <mm:node number="$home" >
+        <mm:relatednodes  id="supercat" type="categories" role="posrel" orderby="posrel.pos" searchdirs="destination">
+          <mm:tree id="cat" type="categories" role="posrel" orderby="posrel.pos" searchdir="destination">
+            <mm:grow>
+              <![CDATA[<ul>]]>
+              <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+            </mm:grow>
+            <jsp:directive.include file="cat.li.jspx" />
+            <mm:shrink />
+          </mm:tree>
+        </mm:relatednodes>
+      </mm:node>
+    </mm:cloud>
+  </mm:content>
+</div>

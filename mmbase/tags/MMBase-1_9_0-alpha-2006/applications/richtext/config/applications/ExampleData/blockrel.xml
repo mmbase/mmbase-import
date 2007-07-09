@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<blockrel exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
+
+  <!-- Templates -->
+	<node number="100101" owner="admin" snumber="1001" dnumber="2001" rtype="block" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+	<node number="100102" owner="admin" snumber="1002" dnumber="2002" rtype="block" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+	<node number="100103" owner="admin" snumber="1003" dnumber="2003" rtype="block" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+</blockrel>

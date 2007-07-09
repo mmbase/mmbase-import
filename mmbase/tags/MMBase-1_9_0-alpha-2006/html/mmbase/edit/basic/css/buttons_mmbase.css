@@ -1,0 +1,79 @@
+
+span.select {
+  background:  url(../../../style/images/next.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.select:after {
+  content: url(../../../style/images/next.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.create {
+  background:  url(../../../style/images/create.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+} 
+
+span.create:before {
+  content: url(../../../style/images/create.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.change {
+  background: url(../../../style/images/edit.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.change:before {
+  content: url(../../../style/images/edit.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.delete {
+  background:  url(../../../style/images/delete.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.delete:before {
+  content: url(../../../style/images/delete.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.previous {
+  background:  url(../../../style/images/previous.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.previous:before {
+  content: url(../../../style/images/previous.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.next {
+  background:  url(../../../style/images/next.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.next:before {
+  content: url(../../../style/images/next.png); /* makes it work in Mozilla */
+  background: white;
+}
+
+span.tree {
+  background:  url(../../../style/images/search.png); /* makes it work in IE */
+  width: 21px;
+  height: 20px;
+}
+
+span.tree:before   { 
+  content: url(../../../style/images/search.png);
+  background: white;
+}
+
+input.search:after  { content: url(../../../style/images/search.png); }
