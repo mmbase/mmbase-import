@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.14 2007-07-04 08:32:43 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.15 2007-07-09 08:14:14 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -126,11 +126,11 @@ public class BestelAction  extends Action {
             addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
             addLineToMessage(messagePlain, messageHtml, "aantal: " + item.getAantal());
             addLineToMessage(messagePlain, messageHtml, "gerold of gevouwen: " + item.getGevouwenOfOpgerold());
-            addLineToMessage(messagePlain, messageHtml, "opmerkingen: " + item.getOpmerkingen());
             addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
             //kart type details for natuurgebied and eenheid
             addLineToMessage(messagePlain, messageHtml, "detail: " + item.getKaartTypeDetail());
-
+            
+            addLineToMessage(messagePlain, messageHtml, "opmerkingen: " + item.getOpmerkingen());
             addLineToMessage(messagePlain, messageHtml, "");
 
             Relation bestelRegel = remoteRelationManager.createRelation(bestelNode, currentNode);

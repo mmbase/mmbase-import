@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.9 2007-06-27 13:27:12 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.10 2007-07-09 08:14:14 ieozden Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -46,7 +46,7 @@ public class KaartenForm extends ActionForm{
    private Map selKaartMap;
    // constants
    // these keys should be same in jsp templates and java forms and classes 
-   private static String natuurgebiedKey = "Natuurgebied(en)"; 
+   private static String natuurgebiedKey = "Natuurgebied"; 
    private static String eenheidKey = "Eenheid";
    private static String nederlandKey = "Nederland";
    private static String coordinatenKey = "Coordinaten";
