@@ -221,7 +221,10 @@ function jsc_GeefInfo(id_DIV)
 function small_window(NaamPagina) {
 var newWindow;
 var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=520,height=680, top='+(20)+',left='+(20);
-var fullLink = '/nmintra/';
+<%
+   StringBuffer pageUrl = javax.servlet.http.HttpUtils.getRequestURL(request);
+%>
+var fullLink = '<%=pageUrl.substring(0, pageUrl.lastIndexOf("/") + 1)%>';
 for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 	if (document.KaartenForm.sel_Kaart[i].selected) {
 		var kartNode = document.KaartenForm.sel_Kaart[i].value;
@@ -234,7 +237,7 @@ for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 }
 
 function jsc_defaultOptie() {
-  <logic:equal name="KaartenForm" property="rad_Gebied" value="Natuurgebied(en)">
+  <logic:equal name="KaartenForm" property="rad_Gebied" value="Natuurgebied">
   	jsc_optie0();
   </logic:equal>
     <logic:equal name="KaartenForm" property="rad_Gebied" value="Eenheid">
@@ -258,7 +261,7 @@ function jsc_optie0()
 jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
-<% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied(en)"); %>
+<% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied(en)'">
@@ -347,7 +350,7 @@ jsc_setPicture(null);
 
 function jsc_setPicture(selectedIndex) {
 	if ((selectedIndex != null) && (selectedIndex != -1)) {
-	// use Natuurgebied(en)
+	// use Natuurgebied
 	if(document.KaartenForm.rad_Gebied[0].checked) {
 		document.getElementById("kartPicture").src=imagesNat[selectedIndex]; 
  	}
@@ -518,7 +521,6 @@ if(twoColumns) {
     <%--%@include file="includes/back_print.jsp" %>--%>
     
 <html:form action="/nmintra/KaartenAction" method="POST" onsubmit="return validationMessage()">
-
 	<table>
 		<tr>
 			<td><h3>Bestelformulier</h3></td>
@@ -540,7 +542,7 @@ if(twoColumns) {
 	<table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
 		<tr>
 			<td width="20">
-				<html:radio property="rad_Gebied" value="Natuurgebied(en)" onclick="jsc_optie0();" style="background:vastgoed_medium"/>
+				<html:radio property="rad_Gebied" value="Natuurgebied" onclick="jsc_optie0();" style="background:vastgoed_medium"/>
 			</td>
 			<td width="220">Natuurgebied:</td>
 
