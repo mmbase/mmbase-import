@@ -31,7 +31,9 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
     <available file="rmmci/build.xml" property="rmmci.exists"/>
     <available file="resources/build.xml" property="resources.exists"/>
+    <available file="codings/build.xml" property="codings.exists"/>
     <available file="mynews/build.xml" property="mynews.exists"/>
+    <available file="jumpers/build.xml" property="jumpers.exists"/>
   </target>
 
   <target name="all.not.compiling" depends="" />
@@ -257,18 +259,41 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
-  <target name="install" depends="minimalistic.install">
+
+  <target name="install.rmmci" if="rmmci.exists">
+    <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+  <target name="install.codings" if="codings.exists">
+    <ant dir="codings"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install.mynews" if="mynews.exists">
+    <ant dir="mynews"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install.resources" if="resources.exists">
+    <ant dir="resources"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+  <target name="install.jumpers" if="jumpers.exists">
+    <ant dir="jumpers"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install" depends="minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers">
+
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="dove"          target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="rmmci"         target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-
-    <ant dir="codings"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <!--
@@ -276,17 +301,10 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     -->
-    <ant dir="mynews"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
 
-    <ant dir="jumpers"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
 
-    <ant dir="resources"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
+
+
   </target>
 
   <target name="fullinstall" depends="install">
