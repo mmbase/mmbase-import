@@ -58,6 +58,9 @@ if (printView) { %>
   </tr>  
   </table>
   
+  <p>
+  <%@include file="../includes/relatedimage_no_description.jsp" %>
+  
   <mm:field name="intro" />
   
   <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
@@ -70,6 +73,8 @@ if (printView) { %>
   <% if (!printView && callingNode != null) { %>
   	<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">naar boven</a></p><br/>
   <% } %>	
+
+  </p>
 
 </mm:node>
 
