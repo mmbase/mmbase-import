@@ -106,10 +106,6 @@ public class MainFilter {
                 if (filter instanceof Sorter) {
                     chainComp.add((Sorter) filter);
                 } else {
-                    if (chainComp.size() > 0) { 
-                        filters.add(chainComp);
-                        chainComp = new ChainSorter();                        
-                    }
                     filters.add(filter);
                 }
                 log.service("Added filter " + clazz + "(id=" + elementId + ")");
@@ -138,7 +134,9 @@ public class MainFilter {
                 log.error("Cannot load filter " + clazz + "\n" + ex2);
             }                   
         }
-        if (chainComp.size() > 0) filters.add(chainComp); // make sure it is at least empty
+        if (chainComp.size() > 0) {
+            filters.add(chainComp); // make sure it is at least empty
+        }
     }
 
     /**
