@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.400 2007-07-10 16:09:17 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.401 2007-07-10 16:14:56 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -146,6 +146,15 @@ version: $Id: mmbase-taglib.xml,v 1.400 2007-07-10 16:09:17 michiel Exp $
     <function-signature>java.lang.String treefile(java.lang.String, javax.servlet.jsp.PageContext, java.lang.Object)</function-signature>
     <since>MMBase-1.8.4</since>
     <see tag="treefile" />
+  </function>
+  <function>
+    <description>
+      As mm:hasalias
+    </description>
+    <name>hasalias</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Boolean hasAlias(org.mmbase.bridge.Node, java.lang.String)</function-signature>
+    <since>MMBase-1.9</since>
   </function>
 
 
