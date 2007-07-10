@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
  * of the urlcomposer list.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.5 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: ClientFormatSorter.java,v 1.6 2007-07-10 09:51:35 michiel Exp $ 
  */
 public class ClientFormatSorter extends  PreferenceSorter {
-    private static Logger log = Logging.getLoggerInstance(ClientFormatSorter.class);
+    private static final Logger log = Logging.getLoggerInstance(ClientFormatSorter.class);
 
 
     public  ClientFormatSorter() {
@@ -37,25 +37,42 @@ public class ClientFormatSorter extends  PreferenceSorter {
         }
 
         Object format = ri.getInfo().get("format");        
-        if (log.isDebugEnabled()) { log.debug("Client's preference " + format); }
-        if (format == null) {                  
-            return 0; // no client preference given
+        if (log.isDebugEnabled()) { 
+            log.debug("Client's preference " + format); 
+        }
+        if (format == null) { 
+            log.debug("no client preference given, so " + format + " is pretty normal -> 0");
+            return 0;
         } else {
             if (format instanceof Format) {
-                if (format == ri.getFormat()) return 100;
+                if (format == ri.getFormat()) {
+                    log.debug("client preference matched, so " + format + " is pretty good -> 100");
+                    return 100;
+                } else {
+                    log.debug("client preference didn't match, so " + format + " is pretty normal -> 0");
+                    return 0;
+                }
             } else if (format instanceof String) {
-                if (Format.get((String) format) == ri.getFormat()) return 100;
+                if (Format.get((String) format) == ri.getFormat()) {
+                    log.debug("client preference matched, so " + format + " is pretty good -> 100");
+                    return 100;
+                } else {
+                    log.debug("client preference didn't match, so " + format + " is pretty normal -> 0");
+                    return 0;
+                }
             } else if (format instanceof List) {
                 List formatList = (List) format;
                 int i = formatList.indexOf(ri.getFormat().toString());
-                return i == -1 ? -10000 : -i; // the higher in this list, the better, 0 is highest.
+                int result = i == -1 ? -10000 : -i; 
+                // the higher in this list, the better, 0 is highest.
+                log.debug("format list " + formatList + " (" + ri.getFormat() + ") --> " + result);
+                return result;
 
             } else {
-                log.error("Someting wrong in client's INFO, 'format' specified wrongly: " + format);
+                log.error("Someting wrong in client's INFO, 'format' specified wrongly: " + format + " ignorind and returning 0");
                 return 0;
             }
         }
-        return 0;
     }
 
 }
