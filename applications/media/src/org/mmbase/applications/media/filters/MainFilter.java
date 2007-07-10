@@ -106,10 +106,6 @@ public class MainFilter {
                 if (filter instanceof Sorter) {
                     chainComp.add((Sorter) filter);
                 } else {
-                    if (chainComp.size() > 0) {
-                        filters.add(chainComp);
-                        chainComp = new ChainSorter();
-                    }
                     filters.add(filter);
                 }
                 log.service("Added filter " + clazz + "(id=" + elementId + ")");
@@ -137,7 +133,9 @@ public class MainFilter {
                 log.error("Cannot load filter " + clazz + "\n" + ex2);
             }
         }
-        if (chainComp.size() > 0) filters.add(chainComp); // make sure it is at least empty
+        if (chainComp.size() > 0) {
+            filters.add(chainComp); // make sure it is at least empty
+        }
     }
 
     /**
@@ -145,9 +143,7 @@ public class MainFilter {
      */
 
     public List<URLComposer> filter(List<URLComposer> urls) {
-        Iterator<Filter> i = filters.iterator();
-        while (i.hasNext()) {
-            Filter filter = i.next();
+        for (Filter filter : filters) {
             if (log.isDebugEnabled()) {
                 log.debug("Using filter " + filter);
                 log.debug("before: " + urls);
@@ -156,7 +152,7 @@ public class MainFilter {
             try {
                 urls = filter.filter(urls);
             } catch (Exception filterException) {
-        log.error("Check filter "+filter+" "+filterException);
+                log.error("Check filter "+filter+" "+filterException);
             }
             if (log.isDebugEnabled()) {
                 log.debug("after: " + urls);
