@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *
  * @author Nico Klasens
- * @version $Id: SharedStorage.java,v 1.1.2.3 2006-02-21 14:27:45 michiel Exp $
+ * @version $Id: SharedStorage.java,v 1.1.2.4 2007-07-10 13:13:59 michiel Exp $
  */
 public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
@@ -321,7 +321,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
         try {
             MMObjectBuilder bul = mmbase.getMMObject(tb);
             if (bul==null) {
-                log.error("Unknown builder=" + tb);
+                log.warn("Unknown builder=" + tb);
                 return false;
             }
             if (!machine.equals(mmbase.getMachineName())) {
