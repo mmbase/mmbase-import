@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.19 2007-06-13 18:27:20 nklasens Exp $
+ * @version $Id: Functions.java,v 1.20 2007-07-10 16:14:56 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -147,6 +147,18 @@ public class Functions {
         result.setLocale(locale);
         return result;
     }
+
+    /**
+     * Checks if the supplied node has the supplied alias
+     *
+     * @param node the MMBase node to check for existing alias
+     * @param alias Name of the alias to check
+     * @return true if the alias exists for the node or false if not
+     */
+    public static boolean hasAlias(Node node, String alias) {
+         return node.getAliases().contains(alias);
+     }
+    
 
 
 }
