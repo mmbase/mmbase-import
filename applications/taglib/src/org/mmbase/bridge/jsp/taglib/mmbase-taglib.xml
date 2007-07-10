@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.8 2007-07-02 10:14:01 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.9 2007-07-10 16:07:42 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2547,6 +2547,26 @@ access the value of title:
     <since>MMBase-1.8</since>
   </tag>
   <tag>
+    <name>hasalias</name>
+    <extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.HasAliasTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      <p>
+        Checks only whether node has a certain alias.
+      </p>
+    </info>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <since>MMBase-1.8.5</since>
+  </tag>
+  <tag>
     <name>hasnode</name>
     <extends>condition</extends>
     <extends>cloudreferrer</extends>
@@ -4533,6 +4553,19 @@ like the parameter list or the session (where ever it is available) --&gt;
           Only applied when mode=img.
         </p>
       </info>
+    </attribute>
+    <attribute>
+      <name>alt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          Alt attribute of html img-tag.
+          Only applied when mode=img.
+        </p>
+      </info>
+      <since>MMBase-1.8.5</since>
     </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
