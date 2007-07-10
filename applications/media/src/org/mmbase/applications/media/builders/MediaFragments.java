@@ -33,13 +33,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.45 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: MediaFragments.java,v 1.46 2007-07-10 11:23:11 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(MediaFragments.class);
+    private static final Logger log = Logging.getLoggerInstance(MediaFragments.class);
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
@@ -145,18 +145,22 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_ROOT.equals(function)) {
             return "" + getRootFragment(node).getNumber();
         } else if (FUNCTION_AVAILABLE.equals(function)) {
-            List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
-            if (pt.size() == 0) {
-                return Boolean.TRUE;
+            if (mmb.getBuilder("publishtimes") != null) {
+                List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
+                if (pt.size() == 0) {
+                    return Boolean.TRUE;
+                } else {
+                    MMObjectNode publishtime = pt.get(0);
+                    int now   = (int) (System.currentTimeMillis() / 1000);
+                    int begin = publishtime.getIntValue("begin");
+                    int end   = publishtime.getIntValue("end");
+                    Boolean available = Boolean.TRUE;
+                    if (begin > 0 && now < begin) available = Boolean.FALSE;
+                    if (end   > 0 && now > end)   available = Boolean.FALSE;
+                    return available;
+                }
             } else {
-                MMObjectNode publishtime = pt.get(0);
-                int now   = (int) (System.currentTimeMillis() / 1000);
-                int begin = publishtime.getIntValue("begin");
-                int end   = publishtime.getIntValue("end");
-                Boolean available = Boolean.TRUE;
-                if (begin > 0 && now < begin) available = Boolean.FALSE;
-                if (end   > 0 && now > end)   available = Boolean.FALSE;
-                return available;
+                return Boolean.TRUE;
             }
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, translateURLArguments(args, null));
