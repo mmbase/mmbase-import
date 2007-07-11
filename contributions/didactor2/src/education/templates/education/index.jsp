@@ -63,22 +63,8 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
    %>
    <mm:import externid="frame"/>
 
-   <% HashSet hsetBlockedLessions = null;   %>
-   <mm:node number="component.assessment" notfound="skip">
-     <mm:related path="settingrel,educations" constraints="educations.number=$education">
-       <mm:node element="educations" jspvar="nodeEducation">
-         <mm:node number="$user" jspvar="nodeUser">
-           <%
-           // A user can have access to only "opened" top learnblocks (lession)
-           Class classLessionChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessionChecker");
-           // WTF, calling the _first_ method?
-           // Result of getMethods is not even sorted (see javadoc)!, and it _also_ returns the public methods of Object.
-           // We are prety lucky that this even works!!
-           hsetBlockedLessions = (HashSet) classLessionChecker.getMethods()[0].invoke(this, nodeEducation, nodeUser);
-           %>
-         </mm:node>
-       </mm:node>
-     </mm:related>
+   <mm:node number="$user">
+     <mm:nodelistfunction referids="education" name="blockedLearnBlocks" id="blocked" />
    </mm:node>
 
    <mm:import externid="reset" />
@@ -269,7 +255,7 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                  <mm:compare referid="block_this_first_htmlpage" value="false">
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
                                       <div 
-                                          class="${madetest ? 'completed' : (previousmadetest ? 'first_non_completed' : 'non_completed')}"
+                                          class="${madetest ? 'completed' : (previousmadetest ? 'first_non_completed' : 'non_completed')} ${mm:contains(blocked, _node) ? 'blocked' : ''}"
                                           style="padding: 0px 0px 0px ${currentdepth * 8 + 18}px;" id="content-${_node}">
                                         <script type="text/javascript">
                                           <!--
@@ -288,27 +274,14 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                           </mm:present>
 
                                           <mm:notpresent referid="the_only_node_to_show">                                            
-                                             <%
-                                                if((hsetBlockedLessions == null) || (!hsetBlockedLessions.contains(sCurrentTreeLeafID))){
-                                                   %>
-                                                   <mm:nodeinfo type="type" >
-
-                                                     <img class="imgClosed openable" 
-                                                          src="${gfx_item_closed}" id="img${_node}" 
-                                                          onclick="openClose('div${_node}', 'img${_node}')" 
-                                                          style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                                                     <a href="#" onclick="if (openOnly('div${_node}','img${_node}')) { openContent('${_}', '${_node}' ); }" 
-                                                        style="padding-left: 0px"><mm:field name="name"/></a>
-                                                   </mm:nodeinfo>
-                                                   <%
-                                                } else{
-                                                   %>
-                                                      <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}"
-                                                           style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                                                      <a href="#" style="padding-left: 0px; color:#CCCCCC"><mm:field name="name"/></a>
-                                                   <%
-                                                }
-                                             %>
+                                            <mm:nodeinfo type="type" >                                              
+                                              <img class="imgClosed" 
+                                                   src="${gfx_item_closed}" id="img${_node}" 
+                                                   onclick="openClose('div${_node}', 'img${_node}')" 
+                                                   style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                                              <a href="#" onclick="if (openOnly('div${_node}','img${_node}')) { openContent('${_}', '${_node}' ); }" 
+                                                 style="padding-left: 0px"><mm:field name="name"/></a>
+                                            </mm:nodeinfo>
                                           </mm:notpresent>
 
                                           <mm:node number="component.pop" notfound="skip">

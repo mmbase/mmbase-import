@@ -11,8 +11,9 @@
 var ITEM_OPENED = "${gfx_item_opened}";
 var ITEM_CLOSED = "${gfx_item_closed}";
 
+var may_open_future = <di:getsetting component="core" setting="may_open_future" />;
 
-// IE does not even support indexOf
+// IE does not even support indexOf, fixing that here..
 [].indexOf || (Array.prototype.indexOf = function(v,n){
   n = (n==null)?0:n; var m = this.length;
   for(var i = n; i < m; i++)
@@ -132,7 +133,13 @@ function openClose(div, img) {
             realdiv.style.display = "none";
             realimg.src = ITEM_CLOSED;
         } else {
-            if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+            if (! may_open_future) {
+                if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+                    alert('<di:translate key="education.future" />');
+                    return false;
+                }
+            }
+            if (/\bblocked\b/.test(realimg.parentNode.className)) {
                 alert('<di:translate key="education.future" />');
                 return false;
             }
@@ -149,7 +156,13 @@ function openOnly(div, img) {
     var realimg = document.getElementById(img);
     // alert("openOnly("+div+","+img+"); - "+realdiv);
     if (realdiv != null) {
-        if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+        if (! may_open_future) {
+            if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+                alert('<di:translate key="education.future" />');
+                return false;
+            }
+        }
+        if (/\bblocked\b/.test(realimg.parentNode.className)) {
             alert('<di:translate key="education.future" />');
             return false;
         }
