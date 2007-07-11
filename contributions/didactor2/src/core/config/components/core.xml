@@ -65,6 +65,8 @@
     <setting name="personfields" type="string" default="firstname,suffix,lastname" canbeempty="false" />
     <setting name="personorderfield" type="string" default="lastname" canbeempty="false" />
     <setting name="admin_personfields" type="string" default="firstname,suffix,lastname"  canbeempty="false" />
+    <setting name="may_open_future" type="boolean" default="true" />
+
   </scope>
   <scope name="classes" referid="class">
     <!-- reference back on class level to settings defined on component level
