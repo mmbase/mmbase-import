@@ -63,7 +63,7 @@ function openContent( type, number ) {
         var el = document.getElementById('content-'+currentnumber);
         var classNames = el.className.split(" ");
         var newClassNames = new Array();
-        for (var c in classNames) {
+        for each (var c in classNames) {
             if (c != 'selectedContent') {
                 newClassNames.push(c);
             }
@@ -101,6 +101,7 @@ function openContent( type, number ) {
     document.body.scrollTop = '0px';
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);
+        var orig = el.className;
         var classNames = el.className.split(" ");
         if (classNames.indexOf("selectedContent") == -1) {
             classNames.push("selectedContent");
@@ -138,7 +139,7 @@ function openOnly(div, img) {
         var className = realdiv.className;
         if (className) {
             // ignore "lbLevel" in classname to get the level depth
-            var level = className.substring(7,className.length);
+            var level = className.substring(7, className.length);
             // alert("level = "+level);
             var findparent = realdiv;
             var findparentClass = className;
@@ -169,7 +170,7 @@ function openOnly(div, img) {
         }
         if (finddiv != null) {
             var divid = finddiv.id;
-            var imgid = "img"+divid.substring(3,divid.length);
+            var imgid = "img" + divid.substring(3,divid.length);
             openOnly(divid,imgid);
         }
     }

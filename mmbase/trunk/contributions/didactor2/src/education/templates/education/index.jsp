@@ -9,13 +9,12 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 <mm:cloud rank="didactor user">
 
-  <di-t:copybook><mm:relatednodes path="madetests,tests" id="madetests" element="tests"/></di-t:copybook>
+  <di:copybook><mm:relatednodes path="madetests,tests" id="madetests" element="tests"/></di:copybook>
 
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
       <title><di:translate key="education.learnenvironmenttitle" /></title>
-      <script src="js/browser_version.js"></script>
     </mm:param>
   </mm:include>
 
@@ -130,7 +129,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 <mm:import externid="justposted" />
 
-<mm:link page="/education/tree.js.jsp">
+<mm:link page="/education/tree.js.jsp" referids="$referids">
   <script type="text/javascript" src="${_}">
     
   </script>
@@ -174,21 +173,20 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
       </a>
       <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="${mm:url('gfx/spacer.gif', pageContext)}" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
       <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
-       </mm:import>
-       <div class="stepNavigator">
-         <mm:write referid="stepNavigator" escape="none" />
-       </div>
+    </mm:import>
+    <div class="stepNavigator">
+      <mm:write referid="stepNavigator" escape="none" />
+    </div>
      </div>
      <div class="folders">
        <div class="folderHeader">
          <di:translate key="education.education" />
        </div>
-
+       
        <div class="folderLesBody">
          <mm:node number="$education" notfound="skip">
-
             <script type="text/javascript">
-               <!--
+              <!--
                addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
                //-->
             </script>
@@ -208,6 +206,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                      if((hsetThePath == null) || (hsetThePath.contains(sCurrentTreeLeafID))){
                         %>
                            <mm:nodeinfo type="type" id="nodetype" write="false" />
+                           <mm:relatednodes id="tests" type="tests" role="posrel" />   
+                           <mm:import id="previousmadetest">${madetest}</mm:import>
+                           <mm:import id="madetest">${mm:contains(madetests, tests)}</mm:import>
                            <mm:depth id="currentdepth" write="false" />
 
                            <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
@@ -264,10 +265,10 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                  <%// have to skip the first entrance in scorm tree %>
                                  <mm:compare referid="block_this_first_htmlpage" value="false">
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
-                                       <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-
-                                       <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
-                                          <script type="text/javascript">
+                                      <div 
+                                          class="${madetest ? 'completed' : (previousmadetest ? 'first-non-completed' : 'non-completed')}"
+                                          style="padding: 0px 0px 0px ${currentdepth * 8 + 18}px;" id="content-${_node}">
+                                      <script type="text/javascript">
                                           <!--
                                              addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
                                           //-->
