@@ -11,6 +11,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
   <di:copybook><mm:relatednodes path="madetests,tests" id="madetests" element="tests"/></di:copybook>
 
+
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
@@ -193,7 +194,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
 
             <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}" 
                  onclick="openClose('div${_node}','img${_node}')" title="" alt="" />
-            <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a>
+            <mm:nodeinfo type="type">
+              <a href="#" onclick="if(openOnly('div${_node}','img${_node}')) { openContent( '${_}','${_node}' ); }"><mm:field name="name"/></a>
+            </mm:nodeinfo>
 
             <mm:field id="previousnumber" name="number" write="false"/>
             <mm:relatednodescontainer type="learnobjects" role="posrel">
@@ -266,9 +269,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                  <mm:compare referid="block_this_first_htmlpage" value="false">
                                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
                                       <div 
-                                          class="${madetest ? 'completed' : (previousmadetest ? 'first-non-completed' : 'non-completed')}"
+                                          class="${madetest ? 'completed' : (previousmadetest ? 'first_non_completed' : 'non_completed')}"
                                           style="padding: 0px 0px 0px ${currentdepth * 8 + 18}px;" id="content-${_node}">
-                                      <script type="text/javascript">
+                                        <script type="text/javascript">
                                           <!--
                                              addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
                                           //-->
@@ -294,7 +297,7 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                                           src="${gfx_item_closed}" id="img${_node}" 
                                                           onclick="openClose('div${_node}', 'img${_node}')" 
                                                           style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                                                     <a href="javascript:openContent('${_}', '${_node}' ); openOnly('div${_node}','img${_node}');" 
+                                                     <a href="#" onclick="if (openOnly('div${_node}','img${_node}')) { openContent('${_}', '${_node}' ); }" 
                                                         style="padding-left: 0px"><mm:field name="name"/></a>
                                                    </mm:nodeinfo>
                                                    <%
