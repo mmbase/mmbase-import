@@ -138,7 +138,8 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
                                                    alt="${di:translate(pageContext, 'education.previous')}" 
                                                    />
       </a>
-      <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="${mm:url('gfx/spacer.gif', pageContext)}" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
+      <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a>
+      <a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
       <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
     </mm:import>
     <div class="stepNavigator">
@@ -150,7 +151,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
          <di:translate key="education.education" />
        </div>
        
-       <div class="folderLesBody">
+       <div class="folderLesBody"
+            id="education-tree"
+            >
          <mm:include page="tree.jspx" />
       </div>
    </div>
