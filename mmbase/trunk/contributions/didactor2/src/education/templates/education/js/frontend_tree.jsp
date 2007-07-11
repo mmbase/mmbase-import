@@ -23,6 +23,7 @@ var may_open_future = <di:getsetting component="core" setting="may_open_future" 
 var currentnumber = -1;
 var contenttype = new Array();
 var contentnumber = new Array();
+var open          = new Object();
 
 function addContent( type, number ) {
     contenttype[contenttype.length] = type;
@@ -124,9 +125,11 @@ function openContent( type, number ) {
 function openClose(div, img) {
     var realdiv = document.getElementById(div);
     var realimg = document.getElementById(img);
+    
     if (realdiv != null) {
-        if (realdiv.getAttribute("opened") == "1") {
-            realdiv.setAttribute("opened", "0");
+        var o = open[div];
+        if (o != null) {
+            open[div] = null;
             realdiv.style.display = "none";
             realimg.src = ITEM_CLOSED;
         } else {
@@ -140,7 +143,7 @@ function openClose(div, img) {
                 alert('<di:translate key="education.future" />');
                 return false;
             }
-            realdiv.setAttribute("opened", "1");
+            open[div] = img;
             realdiv.style.display = "block";
             realimg.src = ITEM_OPENED;
         }
@@ -163,7 +166,7 @@ function openOnly(div, img) {
             alert('<di:translate key="education.future" />');
             return false;
         }
-        realdiv.setAttribute("opened", "1");
+        open[div] = img;
         realdiv.style.display = "block";
         realimg.src = ITEM_OPENED;
 
@@ -219,6 +222,19 @@ function closeAll() {
     }
     removeButtons();
 }
+function closeAppropriate() {
+    var divs = document.getElementsByTagName("div");
+    for (i=0; i<divs.length; i++) {
+        var div = divs[i];
+        var cl = "" + div.className;
+        if (cl.match("lbLevel")) {
+            if (open[div.id] == null) {
+                divs[i].style.display = "none";
+            }
+        }
+    }
+    removeButtons();
+}
 
 function removeButtons() {
     // Remove all the buttons in front of divs that have no children
@@ -245,11 +261,7 @@ function removeButtons() {
                 var ser = new XMLSerializer();
                 var s = ser.serializeToString(xmlhttp.responseXML);
                 document.getElementById('education-tree').innerHTML = s; 
-                closeAll();
-                if (contentnumber.length >= 1) {
-                    openContent(contenttype[0], contentnumber[0]);
-                    openOnly('div'+contentnumber[0], 'img'+contentnumber[0]);
-                }
+                closeAppropriate();
             }
         }
         xmlhttp.send(null);
