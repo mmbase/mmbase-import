@@ -1,5 +1,6 @@
+// -*- mode: java; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-    <mm:content type="text/javascript" expires="0">
+    <mm:content type="text/javascript" >
 var open = new Array();
 
 <mm:import externid="mode">educations</mm:import>
@@ -51,7 +52,7 @@ function closeNode(node) {
         open[node] = false;
         el.style.display='none';
         if (img2 != null) img2.src = 'gfx/folder_closed.gif';
-        if (img.src.indexOf('last.gif')!=-1) {
+        if (img.src.indexOf('last.gif') != -1) {
             img.src='gfx/tree_pluslast.gif';
         } else {
             img.src='gfx/tree_plus.gif';
