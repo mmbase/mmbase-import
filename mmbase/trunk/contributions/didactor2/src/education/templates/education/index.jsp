@@ -96,7 +96,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
 <mm:import externid="justposted" />
 
-<mm:link page="/education/tree.js.jsp" referids="$referids">
+<mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
   <script type="text/javascript" src="${_}">
     
   </script>
