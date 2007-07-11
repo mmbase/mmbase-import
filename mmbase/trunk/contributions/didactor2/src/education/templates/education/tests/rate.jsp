@@ -166,6 +166,7 @@
   <mm:hasnode number="component.progress">
     <script language="javascript">
       window.parent.reloadProgress();
+      window.parent.reloadEducationTree();
       if (window.parent.document.documentElement && window.parent.document.documentElement.scrollTop) {
           window.parent.document.documentElement.scrollTop = 0;
       }
