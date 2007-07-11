@@ -978,3 +978,9 @@ img.pos2rel.image-right {
 span.addressbook { 
   display: block;
 }
+
+
+div.non_completed a,
+div.blocked a { 
+  color: #cccccc;
+}
