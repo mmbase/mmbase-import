@@ -3,7 +3,8 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content type="text/javascript" expires="600">
     <mm:cloud>
-    
+
+var ITEM_NONE   = '${mm:treefile("/gfx/icon_arrow_tab_none.gif", pageContext, includePath)}';
 var ITEM_OPENED = '${mm:treefile("/gfx/icon_arrow_tab_open.gif", pageContext, includePath)}';
 var ITEM_CLOSED = '${mm:treefile("/gfx/icon_arrow_tab_closed.gif", pageContext, includePath)}';
 
@@ -229,7 +230,7 @@ function removeButtons() {
             var divid = "div" + img.id.substring(3);
             var div = document.getElementById(divid);
             if (div == null || div.childNodes.length == 1) {
-                img.style.display = 'none';
+                img.src = ITEM_NONE;
             }
         }
     }
