@@ -7,12 +7,11 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * WTF is a 'Lession'?
  * @javadoc
- * @version $Id: LessionChecker.java,v 1.5 2007-07-03 08:50:07 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.1 2007-07-11 12:41:21 michiel Exp $
  */
 
-public class LessionChecker {
+public class LessonChecker {
 
 
    private static final Logger log = Logging.getLoggerInstance(LessionChecker.class);
@@ -27,8 +26,8 @@ public class LessionChecker {
     * @return Set
     */
     
-    public static Set<String> getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
-       Set<String> resultSet = new HashSet<String>();
+    public static Set<Node> getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
+       Set<Node> resultSet = new HashSet<Node>();
        Cloud cloud = nodeEducation.getCloud();
        
        NodeList relatedLearnBlocks = cloud.getList("" + nodeEducation.getNumber(),
@@ -50,7 +49,7 @@ public class LessionChecker {
            if (statusBlocked) {
                //It means the rest of learnblocks is closed.
                previousOneHasGotNoFeedbackRelated(learnBlock);
-               resultSet.add("" + learnBlock.getNumber());
+               resultSet.add(learnBlock);
            } else {
                NodeList classRels = cloud.getList("" + learnBlock.getNumber(),
                                                   "learnblocks,classrel,people",
@@ -86,7 +85,7 @@ public class LessionChecker {
     
     
 
-    private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<String> resultSet, int counter, boolean statusBlocked, boolean firstHasFeedback){
+    private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<Node> resultSet, int counter, boolean statusBlocked, boolean firstHasFeedback){
       if(counter == 0) {
           log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
       } else {
@@ -97,7 +96,7 @@ public class LessionChecker {
           if (!firstHasFeedback) {
               //The first learnblock has got no feedback
               previousOneHasGotNoFeedbackRelated(nodeLearnBlock);
-              resultSet.add("" + nodeLearnBlock.getNumber());
+              resultSet.add(nodeLearnBlock);
           }
       }
       
