@@ -10,6 +10,18 @@
     var ITEM_NONE = "${gfx_item_none}";
 var ITEM_OPENED = "${gfx_item_opened}";
 var ITEM_CLOSED = "${gfx_item_closed}";
+
+
+// IE does not even support indexOf
+[].indexOf || (Array.prototype.indexOf = function(v,n){
+  n = (n==null)?0:n; var m = this.length;
+  for(var i = n; i < m; i++)
+    if(this[i] == v)
+       return i;
+  return -1;
+});
+
+
 var currentnumber = -1;
 var contenttype = new Array();
 var contentnumber = new Array();
@@ -27,7 +39,7 @@ function nextContent() {
         if ( contentnumber[count] == currentnumber ) {
             if ( count < contentnumber.length ) {
                 if ("tests" == contenttype[count]) {
-                    alert("<di:translate key="education.testalert" />");
+                    alert('<di:translate key="education.testalert" />');
                     return;
                 }
                 var opentype = contenttype[count+1];
@@ -63,9 +75,9 @@ function openContent( type, number ) {
         var el = document.getElementById('content-'+currentnumber);
         var classNames = el.className.split(" ");
         var newClassNames = new Array();
-        for each (var c in classNames) {
-            if (c != 'selectedContent') {
-                newClassNames.push(c);
+        for (var c in classNames) {
+            if (classNames[c] != 'selectedContent') {
+                newClassNames.push(classNames[c]);
             }
         }
         el.className = newClassNames.join(" ");
@@ -120,11 +132,16 @@ function openClose(div, img) {
             realdiv.style.display = "none";
             realimg.src = ITEM_CLOSED;
         } else {
+            if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+                alert('<di:translate key="education.future" />');
+                return false;
+            }
             realdiv.setAttribute("opened", "1");
             realdiv.style.display = "block";
             realimg.src = ITEM_OPENED;
         }
     }
+    return true;
 }
 
 function openOnly(div, img) {
@@ -132,6 +149,10 @@ function openOnly(div, img) {
     var realimg = document.getElementById(img);
     // alert("openOnly("+div+","+img+"); - "+realdiv);
     if (realdiv != null) {
+        if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+            alert('<di:translate key="education.future" />');
+            return false;
+        }
         realdiv.setAttribute("opened", "1");
         realdiv.style.display = "block";
         realimg.src = ITEM_OPENED;
@@ -156,7 +177,7 @@ function openOnly(div, img) {
                 if (findparent) {
                     var divid = findparent.id;
                     var imgid = "img"+divid.substring(3,divid.length);
-                    openOnly(divid,imgid);
+                    openOnly(divid, imgid);
                 }
             }
                 
@@ -174,6 +195,7 @@ function openOnly(div, img) {
             openOnly(divid,imgid);
         }
     }
+    return true;
 }
 
 function closeAll() {
