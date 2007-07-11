@@ -5,11 +5,12 @@ import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
 import java.util.*;
+import java.lang.reflect.*;
 
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.1 2007-07-04 13:57:38 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.2 2007-07-11 12:42:02 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -46,6 +47,21 @@ public class PeopleClassFunction {
         }
         return claz;
     }
+
+
+    public Set<Node> blockedLearnBlocks() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+        // A user can have access to only "opened" top learnblocks (lession)
+        try {
+            Class classLessonChecker = Class.forName("nl.didactor.component.assessment.education_menu.utils.LessonChecker");            
+            Method method = classLessonChecker.getMethod("getBlockedLearnblocksForThisUser", Node.class, Node.class);
+            return (Set<Node>) method.invoke(null, node.getCloud().getNode(e), node);
+        } catch (ClassNotFoundException cnfe) {
+            log.debug(cnfe);
+            // if assessment not installed, then no learnblocks are blocked.
+            return new HashSet<Node>();
+        }
+    }
+
 
 
 }
