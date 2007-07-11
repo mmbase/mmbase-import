@@ -3,13 +3,9 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content type="text/javascript" expires="600">
     <mm:cloud>
-    <mm:import id="gfx_item_none"><mm:treefile page="/gfx/spacer.gif" objectlist="$includePath" /></mm:import>
-    <mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" /></mm:import>
-    <mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" /></mm:import>
     
-    var ITEM_NONE = "${gfx_item_none}";
-var ITEM_OPENED = "${gfx_item_opened}";
-var ITEM_CLOSED = "${gfx_item_closed}";
+var ITEM_OPENED = '${mm:treefile("/gfx/icon_arrow_tab_open.gif", pageContext, includePath)}';
+var ITEM_CLOSED = '${mm:treefile("/gfx/icon_arrow_tab_closed.gif", pageContext, includePath)}';
 
 var may_open_future = <di:getsetting component="core" setting="may_open_future" />;
 
@@ -220,6 +216,7 @@ function closeAll() {
             divs[i].style.display = "none";
         }
     }
+    removeButtons();
 }
 
 function removeButtons() {
@@ -227,14 +224,36 @@ function removeButtons() {
     var imgs = document.getElementsByTagName("img");
     for (i=0; i<imgs.length; i++) {
         var img = imgs[i];
-        var cl = "" + img.className;
-        if (cl.match("imgClose")) {
-            if (img.getAttribute("haschildren") != "1") {
-                img.src = ITEM_NONE;
+        if (/\bimgClosed\b/.test(img.className)) {
+            var id = img.id;
+            var divid = "div" + img.id.substring(3);
+            var div = document.getElementById(divid);
+            if (div == null || div.childNodes.length == 1) {
+                img.style.display = 'none';
             }
         }
     }
 }
+
+<mm:treefile page="/education/tree.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
+    function reloadEducationTree() {
+        var xmlhttp =  new XMLHttpRequest();
+        xmlhttp.open('GET', '${_}', true);              
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4) {
+                var ser = new XMLSerializer();
+                var s = ser.serializeToString(xmlhttp.responseXML);
+                document.getElementById('education-tree').innerHTML = s; 
+                closeAll();
+                if (contentnumber.length >= 1) {
+                    openContent(contenttype[0], contentnumber[0]);
+                    openOnly('div'+contentnumber[0], 'img'+contentnumber[0]);
+                }
+            }
+        }
+        xmlhttp.send(null);
+    }
+</mm:treefile>
 
 </mm:cloud>
 </mm:content>
