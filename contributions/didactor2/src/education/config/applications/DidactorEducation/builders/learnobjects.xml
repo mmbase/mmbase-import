@@ -67,10 +67,17 @@
         </positions>
       </editor>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-	<default value="true" />
+        <default value="true" />
         <required value="true" />
       </datatype>
     </field>
 
   </fieldlist>
+
+  <functionlist>
+    <function key="path">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+  </functionlist>
+
 </builder>
