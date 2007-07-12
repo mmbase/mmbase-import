@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.401 2007-07-10 16:14:56 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.402 2007-07-12 08:49:30 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6446,7 +6446,7 @@ The 0 is just counter, which starts at 0 on every page.
         The content-tag can also provide a default `escaping' behavior for surrounded `writer' tags.
       </p>
       <p>
-  It also tries to set reasonable cache-headers. Make sure to read the documentation of the `expires' attribute.
+        It also tries to set reasonable cache-headers. Make sure to read the documentation of the `expires' attribute.
       </p>
     </info>
     <see tag="content" attribute="expires" />
@@ -6572,6 +6572,37 @@ The 0 is just counter, which starts at 0 on every page.
       <see tag="writer" attribute="escape" />
       <see tag="function" />
       <see tag="escaper" />
+    </attribute>
+    <attribute>
+      <name>unacceptable</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+          What to do if the to-be-produced content-type seems to be unacceptable for the client.
+        </p>
+      </info>
+      <since>MMBase-1.8.5</since>
+      <possiblevalue>
+        <value></value>
+        <info>Like not using the attribute, i.e. send the content anyway.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>CRIPPLE&lt;:message&gt;</value>
+        <info>Try to cripple the type (degrade application/xtml+xml to text/html), until it is
+        acceptable. If not possible the message can be used for the NOT_ACCEPTABLE response</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>&lt;:message&gt;</value>
+        <info>Send a NOT_ACCEPTABLE with this message. If message = "_" it will be leaft empty.</info>
+      </possiblevalue>
+      <example><![CDATA[
+      <mm:content 
+      type="application/xhtml+xml"
+      unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
+      > ...      
+      ]]>
+      </example>
     </attribute>
   </tag>
   <tag>
