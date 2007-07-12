@@ -1,10 +1,10 @@
 <mm:cloud
+    method="asis"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <jsp:directive.page buffer="1000kb" />
   <!-- 
        using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
        to please IE, which is a nasty, lousy browser
@@ -14,7 +14,10 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/> 
 
-  <mm:content type="text/html" postprocessor="none" expires="0">
+  <mm:content 
+      type="application/xhtml+xml"
+      unacceptable="CRIPPLE"
+      postprocessor="none" expires="0">
 
     <jsp:directive.include file="/shared/findProvider.jspx" />
 
