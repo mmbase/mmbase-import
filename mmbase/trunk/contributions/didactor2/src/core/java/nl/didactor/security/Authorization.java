@@ -12,7 +12,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @javadoc
- * @version $Id: Authorization.java,v 1.4 2007-07-04 15:52:29 michiel Exp $
+ * @version $Id: Authorization.java,v 1.5 2007-07-12 09:52:28 michiel Exp $
  */
 public class Authorization extends org.mmbase.security.Authorization {
 
@@ -55,6 +55,9 @@ public class Authorization extends org.mmbase.security.Authorization {
                 } 
                 MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
                 MMObjectNode node = objectBuilder.getNode(nodeid);
+                if (node == null) {
+                    return true;
+                }
                 if (node.getBuilder().getTableName().equals("people")) {
                     try {
                         UserContext otherUser = new UserContext(node, "check");
