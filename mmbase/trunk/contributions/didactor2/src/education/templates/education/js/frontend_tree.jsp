@@ -254,17 +254,7 @@ function removeButtons() {
 
 <mm:treefile page="/education/tree.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
     function reloadEducationTree() {
-        var xmlhttp =  new XMLHttpRequest();
-        xmlhttp.open('GET', '${_}', true);              
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4) {
-                var ser = new XMLSerializer();
-                var s = ser.serializeToString(xmlhttp.responseXML);
-                document.getElementById('education-tree').innerHTML = s; 
-                closeAppropriate();
-            }
-        }
-        xmlhttp.send(null);
+        Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'));
     }
 </mm:treefile>
 
