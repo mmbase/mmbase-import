@@ -190,7 +190,7 @@ if(twoColumns) {
       <%String buyNewLink = "/nmintra/KaartenInitAction.eb" + rubriekParams; %>
       <html:link 
          page="<%=buyNewLink%>">
-         <img border="0" src="media/vastgoed/w_wagentje_op_trans.gif"/>Bestel nog een kaart 
+         <img border="0" src="media/vastgoed/w_wagentje_op_wit.gif"/>Bestel nog een kaart 
       </html:link>
       <br/><br/>
       
