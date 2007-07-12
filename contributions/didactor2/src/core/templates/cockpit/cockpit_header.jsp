@@ -10,6 +10,9 @@
       <mm:link page="/core/js/sarissa/sarissa.js">
         <script src="${_}"><!-- Help IE --></script>
       </mm:link>    
+      <mm:link page="/core/js/sarissa/sarissa_dhtml.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>    
       <mm:link page="/core/js/utils.js">
         <script src="${_}"><!-- Help IE --></script>
       </mm:link>
