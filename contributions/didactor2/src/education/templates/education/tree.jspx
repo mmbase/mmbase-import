@@ -32,16 +32,19 @@
       </mm:nodeinfo>
 
       <mm:field id="previousnumber" name="number" write="false"/>
-      <mm:relatednodescontainer type="learnobjects" role="posrel">
+      <mm:relatednodescontainer 
+          type="learnobjects" role="posrel">
         <mm:sortorder field="posrel.pos" direction="up"/>
         <mm:import id="showsubtree" reset="true">true</mm:import>
+        <mm:tree type="learnobjects"                  
+                 role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
+          <mm:index id="index" write="false" />
 
-        <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
           <c:if test="${(empty path) or mm:contains(path, _node.number)}">
             <mm:nodeinfo type="type" id="nodetype" write="false" />
             <mm:relatednodes id="tests" type="tests" role="posrel" />   
-            <mm:import id="previousmadetest">${madetest}</mm:import>
-            <mm:import id="madetest">${mm:contains(madetests, tests)}</mm:import>
+            <mm:import id="previousmadetest">${empty madetest or madetest}</mm:import>
+            <mm:import id="madetest">${mm:contains(madetests, tests)}</mm:import>            
             <mm:depth id="currentdepth" write="false" />
             
             <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
