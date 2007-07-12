@@ -11,7 +11,7 @@
 %><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
 %><mm:cloud method="asis">
 
-  <script language="JavaScript1.1" type="text/javascript">
+  <script  type="text/javascript">
 
 function getUrl(url){
   var i = new Image();

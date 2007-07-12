@@ -9,9 +9,8 @@
       <mm:write referid="extraheader" escape="none" />
     </head>
     <body class="componentbody" <mm:write referid="extrabody" escape="none" />> <%-- UGLY: body is unbalanced in this file. --%>
-    AAASDFJALFJKLF
     <div>
-      AA<mm:treeinclude page="/cockpit/applicationbarcockpit.jsp" objectlist="$includePath" referids="$referids"/>
+      <mm:treeinclude page="/cockpit/applicationbarcockpit.jsp" objectlist="$includePath" referids="$referids"/>
       <mm:treeinclude page="/cockpit/providerbar.jsp"          objectlist="$includePath"  referids="$referids" />
       <mm:treeinclude page="/cockpit/educationbarcockpit.jsp"  objectlist="$includePath" referids="$referids" /> 	
       
