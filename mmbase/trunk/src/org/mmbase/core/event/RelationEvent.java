@@ -18,7 +18,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.19 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: RelationEvent.java,v 1.20 2007-07-12 10:29:30 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -27,14 +27,14 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
      */
     private static final long serialVersionUID = 1L;
 
-    private final int relationSourceNumber, relationDestinationNumber;
-    // these are not final becouse they can be reset by MMObjectBuilder.notify()
-    private String relationSourceType;
-    private String relationDestinationType;
+    private final int relationSourceNumber;
+    private final int relationDestinationNumber;
+    private final String relationSourceType;
+    private final String relationDestinationType;
 
     private final int role; // the reldef node number
 
-    private NodeEvent nodeEvent;
+    private final NodeEvent nodeEvent;
 
     /**
      * Constructor for relation event
@@ -98,19 +98,6 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return role;
     }
 
-    /**
-     * I think this method is not needed.
-     * @deprecated
-     */
-    /*
-    public RelationEvent clone(String sourceType, String destType) {
-        RelationEvent clone = (RelationEvent) super.clone();
-        clone.nodeEvent = (NodeEvent) nodeEvent.clone();
-        clone.relationSourceType = sourceType;
-        clone.relationDestinationType = destType;
-        return clone;
-    }
-    */
 
     public int hashCode() {
         int result = nodeEvent.hashCode();
