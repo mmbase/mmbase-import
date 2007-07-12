@@ -76,7 +76,7 @@
     </mm:present>
     <!-- end of region cms help and faq -->
         
- <script language="JavaScript">
+ <script type="text/javascript">
 <!--
 function printThis() {
     if (frames && frames['content']) {

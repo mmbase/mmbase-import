@@ -125,7 +125,7 @@
   </mm:hasrank>
 </div>
 
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
 <!--
 function printThis() {
     if (frames && frames['content']) {
