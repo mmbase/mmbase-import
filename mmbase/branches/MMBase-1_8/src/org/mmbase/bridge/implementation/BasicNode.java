@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.5 2007-02-02 19:10:47 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.6 2007-07-12 09:35:45 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -580,6 +580,33 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         //return "" + super.toString() + " " + getNode().getNumber();
     }
 
+
+    /**
+     * Recursively deletes relations to relations
+     * @since MMBase-1.8.5
+     */
+    private void deleteRelation(MMObjectNode relation) {
+        // first delete Relations to this this relation.
+        try {
+            List subRelations = BasicCloudContext.mmb.getInsRel().getRelationNodes(relation.getNumber(), false);
+            for (Iterator i = subRelations.iterator(); i.hasNext();) {
+                MMObjectNode subRelation = (MMObjectNode) i.next();
+                deleteRelation(subRelation);
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe);
+        }
+        
+        if (cloud instanceof Transaction) {
+            String oMmbaseId = "" + relation.getValue("number");
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
+            ((BasicTransaction)cloud).add(currentObjectContext);
+            ((BasicTransaction)cloud).delete(currentObjectContext);
+        } else {
+            relation.remove(cloud.getUser());
+        }
+    }
+
     /**
      * Removes all relations of a certain type.
      *
@@ -594,7 +621,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber());
             }
         } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
+            log.error(sqe); // should not happen
         }
         if (relations != null) {
             // check first
@@ -606,14 +633,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             for (Iterator i = relations.iterator(); i.hasNext();) {
                 MMObjectNode node = (MMObjectNode)i.next();
                 if ((type == -1) || (node.getIntValue("rnumber") == type)) {
-                    if (cloud instanceof Transaction) {
-                        String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        ((BasicTransaction)cloud).add(currentObjectContext);
-                        ((BasicTransaction)cloud).delete(currentObjectContext);
-                    } else {
-                        node.remove(cloud.getUser());
-                    }
+                    deleteRelation(node);
                 }
             }
         }
