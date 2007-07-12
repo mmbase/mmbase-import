@@ -92,23 +92,23 @@ public class NMIntraConfig {
   public static String [] style1 = {
     "rode_zee",         "groene_zee",       "blauwe_zee",     "bibliotheek", "blauw_wad",  "gele_zee", "groene_boomrand",
     "geel_strand",      "oranje_helmgras",  "oranje_pompoen", "mieren",      "lnh_libelle","lnh_molen","lnh_schermerhorn",
-    "lnh_stjansvlinder","lnh_spreeuwenverg","lnh_wierdijk"  , "lnh_mieren",  "lnh_libellegeel" };
+    "lnh_stjansvlinder","lnh_spreeuwenverg","lnh_wierdijk"  , "lnh_mieren",  "lnh_libellegeel", "vraagbaak" };
   public static String [] color1 = {
      "#1E0064",          "#2C620C",          "#6585DF",        "#1E0064",     "#458FC9",    "#1E0064",  "#000099",
      "#A95500",          "#FF8E00",          "#FD7F00",        "#3F9D20",     "#3FAFB3",    "#A37C1C",  "#84854C",
-     "#224D7E",          "#B94036",          "#76A043",        "#76A043",     "#A17C1B" };
+     "#224D7E",          "#B94036",          "#76A043",        "#76A043",     "#A17C1B",    "#1E0064" };
    public static String [] color2 = {
       "#963A29",          "#3F9D20",          "#506BB5",        "#1E0064",     "#458FC9",    "#E15603",  "#6C6D01",
       "#BC9610",          "#CB8631",          "#CC6C0A",        "#3F9D20",     "#9DDAEC",    "#A37C1C",  "#B5B666",
-      "#799FCC",          "#B94036",          "#A3D568",        "#A6C185",     "#EDC047" };
+      "#799FCC",          "#B94036",          "#A3D568",        "#A6C185",     "#EDC047",    "#1E0064" };
    public static String [] color3 = {
       "#EA5C3D",          "#6B9F30",          "#6585DF",        "#81A5DC",     "#80BFF0",    "#EDBD22",  "#000099",
       "#A95500",          "#FF8E00",          "#FD7F00",        "#6FAD22",     "#9DDAEC",    "#DFB542",  "#B5B666",
-      "#799FCC",          "#F54D3F",          "#A3D568",        "#A6C185",     "#EDC047" };
+      "#799FCC",          "#F54D3F",          "#A3D568",        "#A6C185",     "#EDC047",    "#81A5DC" };
    public static String [] color4 = {
       "#FD8D73",          "#6CD230",          "#96A9DE",        "#81A5DC",     "#ADD3F0",    "#FFD54F",  "#9999CC",
       "#F5D84A ",         "#F3BF7D",          "#FEDFBF",        "#86C438",     "#9DDAEC",    "#DFB542",  "#B5B666",
-      "#799FCC",          "#F54D3F",          "#A3D568",        "#A6C185",     "#EDC047" };
+      "#799FCC",          "#F54D3F",          "#A3D568",        "#A6C185",     "#EDC047",    "#81A5DC" };
 
    public static String cssPath = "css/";
 
