@@ -13,6 +13,9 @@
       <mm:link page="/core/js/utils.js">
         <script src="${_}"><!-- Help IE --></script>
       </mm:link>
+      <mm:link page="/education/js/browser_version.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
       <link rel="stylesheet" type="text/css" href="${mm:treefile('/css/base.css', pageContext,includePath)}" />
     </head>
     <body class="componentbody" ${extrabody}> <%-- UGLY: opened, but not closed in this file --%>
