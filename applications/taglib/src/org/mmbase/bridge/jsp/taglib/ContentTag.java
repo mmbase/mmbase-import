@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.57.2.1 2007-07-12 08:50:01 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.57.2.2 2007-07-12 12:58:48 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -510,12 +510,17 @@ public class ContentTag extends LocaleTag  {
             
             String a = unacceptable.getString(this);
             if (! "".equals(a)) {
-                boolean acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                String acceptHeader = request.getHeader("Accept");
+                log.debug("a: " + acceptHeader);
+                boolean acceptable = acceptHeader.indexOf(type) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
-                        if (type.equals("application/xhtml+xml")) {
+                        log.debug("browser doesn't accept " + type + " crippling now");
+                        if (type.equals("text/html")) {
+                            acceptable = true;
+                        } else if (type.equals("application/xhtml+xml")) {
                             type = "text/html";                            
-                            acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                            acceptable = true; //request.getHeader("Accept").indexOf(type) != -1;
                         }
                         if (a.length() > 7) {
                             a = a.substring(8);
@@ -540,9 +545,9 @@ public class ContentTag extends LocaleTag  {
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
             if (enc.equals("")) {
-                response.setContentType(getType()); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
+                response.setContentType(type); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
-                response.setContentType(getType() + ";charset=" + enc);
+                response.setContentType(type + ";charset=" + enc);
             }
 
             if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
