@@ -38,7 +38,6 @@
         <mm:import id="showsubtree" reset="true">true</mm:import>
         <mm:tree type="learnobjects"                  
                  role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
-          <mm:index id="index" write="false" />
 
           <c:if test="${(empty path) or mm:contains(path, _node.number)}">
             <mm:nodeinfo type="type" id="nodetype" write="false" />
