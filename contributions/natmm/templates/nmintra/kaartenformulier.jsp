@@ -406,11 +406,24 @@ function validationMessage() {
 	}
 	// coordinates
 	if (document.KaartenForm.rad_Gebied[3].checked) {
-		if ((document.KaartenForm.linksX.value =="") || (document.KaartenForm.linksY.value =="") || (document.KaartenForm.rechtsX.value =="") || (document.KaartenForm.rechtsY.value =="")
-			|| (isNaN(document.KaartenForm.linksX.value)) || (isNaN(document.KaartenForm.linksY.value)) || (isNaN(document.KaartenForm.rechtsX.value)) || (isNaN(document.KaartenForm.rechtsY.value)) ) {
-		alert("Geen coördinaten opgegeven.");
-		return false;
+		var linksX = parseInt(document.KaartenForm.linksX.value.replace(".", ""));
+		var linksY = parseInt(document.KaartenForm.linksY.value.replace(".", ""));
+		var rechtsX = parseInt(document.KaartenForm.rechtsX.value.replace(".", ""));
+		var rechtsY = parseInt(document.KaartenForm.rechtsY.value.replace(".", ""));
 		
+		if ((linksX =="") || (linksY =="") || (rechtsX =="") || (rechtsY =="")
+			|| (isNaN(linksX)) || (isNaN(linksY)) || (isNaN(rechtsX)) || (isNaN(rechtsY)) ) {
+		alert("Geen coördinaten opgegeven.");
+		return false;		
+		}
+		// range checks
+		if ((linksX <0) || (linksX >300000) || (rechtsX <0) || (rechtsX >300000) || (linksY <0) || (linksY >650000) || (rechtsY <0) || (rechtsY >650000) ) {
+		alert("De coördinaten moeten aan de volgende voorwaarden voldoen: 0 <= X <= 300.000 en 300.000 <= Y <= 650.000.");
+		return false;	
+		}
+		if ((linksX  - rechtsX >= 0) || (linksY - rechtsY >= 0)) {
+		alert("De coördinaten voldoen niet aan de voorwaarden: XLinksonder < Xrechtsboven en Ylinksonder < Yrechtsboven.");
+		return false;	
 		}
 	}	
 	// map selection
