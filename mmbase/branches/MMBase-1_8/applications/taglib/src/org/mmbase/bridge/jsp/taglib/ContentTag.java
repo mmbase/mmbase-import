@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.57 2006-08-30 18:01:50 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.57.2.1 2007-07-12 08:50:01 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -291,8 +291,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute escaper        = Attribute.NULL;
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
-    private Attribute status         = Attribute.NULL;
-    private Attribute refresh        = Attribute.NULL;
+    private Attribute unacceptable   = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -327,13 +326,12 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    public void setStatus(String s) throws JspTagException {
-        status = getAttribute(s);
+    /**
+     * @since MMBase-1.8.5
+     */
+    public void setUnacceptable(String u) throws JspTagException {
+        unacceptable = getAttribute(u);
     }
-    public void setRefresh(String r) throws JspTagException {
-        refresh = getAttribute(r);
-    }
-
 
 
     /*
@@ -509,6 +507,33 @@ public class ContentTag extends LocaleTag  {
         if (! type.equals("")) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            
+            String a = unacceptable.getString(this);
+            if (! "".equals(a)) {
+                boolean acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                if (! acceptable) {
+                    if (a.startsWith("CRIPPLE")) {
+                        if (type.equals("application/xhtml+xml")) {
+                            type = "text/html";                            
+                            acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                        }
+                        if (a.length() > 7) {
+                            a = a.substring(8);
+                        } else {
+                            a = "_";
+                        }
+                    }
+                    if (! acceptable) {
+                        try {
+                            response.sendError(javax.servlet.http.HttpServletResponse.SC_NOT_ACCEPTABLE,
+                                               "_".equals(a) ? null : a);
+                            return SKIP_BODY;
+                        } catch (java.io.IOException ioe) {
+                            throw new JspTagException(ioe.getMessage());
+                        }
+                    }
+                }
+            }
             if (locale != null) {
                 response.setLocale(locale);
             }
