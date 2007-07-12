@@ -11,16 +11,7 @@
       <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
         <script type="text/javascript">
           function reloadProgress() {
-              var xmlhttp =  new XMLHttpRequest();
-              xmlhttp.open('GET', '${_}', true);              
-              xmlhttp.onreadystatechange = function() {
-                  if (xmlhttp.readyState == 4) {
-                  var ser = new XMLSerializer();
-                      var s = ser.serializeToString(xmlhttp.responseXML);
-                      document.getElementById('progressMeter').innerHTML = s; 
-                  }
-              }
-              xmlhttp.send(null);
+              Sarissa.updateContentFromURI('${_}', document.getElementById('progressMeter'));
           }
         </script>
       </mm:treefile>
