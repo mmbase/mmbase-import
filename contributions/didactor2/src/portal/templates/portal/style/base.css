@@ -31,15 +31,18 @@ div.column div.menu {
 }
 
 table.rounded { 
+  table-layout: fixed;
   border-spacing: 0;
   border-collapse: collapse;
   margin: 0 0 0 0;
   padding: 0 0 0 0;
+  width: 200px;
 }
 table.rounded td {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
   border: none;
+  width: 170px;
 }
 table.rounded td img {
   margin: 0 0 0 0;
@@ -57,7 +60,7 @@ table.rounded td.left,
 table.rounded td.right {
   background-color: transparent !important;
   font-size: 3pt;
-  width: 0.1%;
+  width: 15px;
 }
 
 
@@ -92,8 +95,8 @@ img.corner {
   display: block !important;
   margin-left: 0px !important
 }
-img.corner.right { 
-
+td.right img.corner { 
+  margin-right: 0px !important
 }
 
 div.x3 {
