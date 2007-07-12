@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.222 2007-06-21 13:46:51 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.223 2007-07-12 09:39:00 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -587,6 +587,24 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     /**
+     * Recursively deletes relations to relations
+     * @since MMBase-1.8.5
+     */
+    private void deleteRelation(MMObjectNode relation) {
+        // first delete Relations to this this relation.
+        // SHOULD security not be checked first?
+        try {
+            for (MMObjectNode subRelation : BasicCloudContext.mmb.getInsRel().getRelationNodes(relation.getNumber(), false)) {
+                deleteRelation(subRelation);
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe);
+        }
+        cloud.remove(relation);
+    }
+
+
+    /**
      * Removes all relations of a certain type.
      *
      * @param type  the type of relation (-1 = don't care)
@@ -612,7 +630,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // then delete
         for (MMObjectNode node : relations) {
             if ((type == -1) || (node.getIntValue("rnumber") == type)) {
-                cloud.remove(node);
+                deleteRelation(node);
             }
         }
 
