@@ -28,16 +28,17 @@
    13. create new editwizards: vraagbaak pagina <br/>   
    14. create new editwizards: begrippenlijst pagina <br/>   
    15. create new editwizards: vraagbaak trefwoorden <br/>   
-   16. relations from paginatemplates (in 12), to editwizards(vraagbaak pagina) (13) and editwizards(begrippenlijst pagina) (14) <br/>   
-   17. relations from users(admin) and menu(Contentelementen) to editwizards(vraagbaak trefwoorden) in (15) <br/> 
-   18. new typedef from: thema_plot_kaart to: bestelling_vastgoed relation: related <br/>
+   16. relations from paginatemplates (in 12), to editwizards(vraagbaak pagina) (13) and editwizards(begrippenlijst pagina) (14) <br/>
+       relations from users(admin) and menu(Contentelementen) to editwizards(vraagbaak trefwoorden) in (15) <br/>    
+   17. new typedef: thema_plot_kaart <br/>
+   18. new typerel from: thema_plot_kaart to: images relation: related <br/>
    19. new paginatemplate: Bestelformulier Thema- en Plotkaarten <br/>    
    20. new editwizards: Bewerk ThemaPlotKaarten <br/>    
    21. new menu: ThemaPlotKaarten. create relations for this node, from user(admin) and to editwizard(themaplotkaart)<br/>    
-   22. new reldef for kaart_bestel_regel <br/>
-   23. new typerel source: bestellingvastgoed, destination: themaplotkaart, relation: kaartbestelregel<br/>     
+   22. new typedef for bestelling_vastgoed <br/>
+   23. new typedef and new reldef for kaart_bestel_regel <br/>
+   24. new typerel source: bestellingvastgoed, destination: themaplotkaart, relation: kaartbestelregel<br/>     
  
-  
 <br/><br/>
 
    Processing ...<br/>
@@ -51,6 +52,7 @@
       <mm:setfield name="name">vraagbaak_keywords</mm:setfield>
       <mm:setfield name="description"></mm:setfield>
 </mm:createnode>
+
 
 2. <br/>
 <mm:listnodes type="typedef" constraints="name='vraagbaak'" max="1" id="type_vraagbaak"/>
@@ -74,6 +76,7 @@
       <mm:setfield name="rnumber"><mm:write referid="rel_posrel" /></mm:setfield>
       <mm:setfield name="max">-1</mm:setfield>
 </mm:createnode>
+
 3. <br/>
 <mm:createnode type="typerel">
       <mm:setfield name="snumber"><mm:write referid="type_vraagbaak" /></mm:setfield>
@@ -207,11 +210,6 @@
 
 
 16. <br/>
-<mm:createrelation role="related" source="pagetemplate_vraagbaak" destination="editwizard_vraagbaakpagina" />
-
-<mm:createrelation role="related" source="pagetemplate_begrippenlijst" destination="editwizard_begrippenlijstpagina" />
-
-17. <br/>
 
 <mm:listnodes type="users" constraints="account='admin'" max="1" id="user_admin" >
 	<mm:createrelation role="gebruikt" source="user_admin" destination="editwizard_trefwoordenpagina" />
@@ -221,11 +219,19 @@
 	<mm:createrelation role="posrel" source="menu_contentelementen" destination="editwizard_trefwoordenpagina" />
 </mm:listnodes>
 
+<mm:createrelation role="related" source="pagetemplate_vraagbaak" destination="editwizard_vraagbaakpagina" />
+
+<mm:createrelation role="related" source="pagetemplate_begrippenlijst" destination="editwizard_begrippenlijstpagina" />
+
+17. <br/>
+
+<mm:createnode type="typedef" id="type_themaplotkaart">
+     <mm:setfield name="name">thema_plot_kaart</mm:setfield>
+     <mm:setfield name="description"></mm:setfield>
+</mm:createnode>
+
 
 18. <br/>
-
-<mm:listnodes type="typedef" constraints="name='thema_plot_kaart'" max="1" id="type_themaplotkaart" />
-<mm:listnodes type="typedef" constraints="name='bestelling_vastgoed'" max="1" id="type_bestellingvastgoed" />
 
 <mm:createnode type="typerel">
       <mm:setfield name="snumber"><mm:write referid="type_themaplotkaart" /></mm:setfield>
@@ -235,7 +241,7 @@
 </mm:createnode>
 
 
-19.
+19. <br/>
 
 <mm:createnode type="paginatemplate" id="pagetemplate_plotkaart">
      <mm:setfield name="naam">Bestelformulier Thema- en Plotkaarten</mm:setfield>
@@ -247,7 +253,7 @@
      <mm:setfield name="contenttemplate">0</mm:setfield>
 </mm:createnode>
 
-20.
+20. <br/>
 
 <mm:createnode type="editwizards" id="editwizard_themaplotkaart">
      <mm:setfield name="name">Bewerk ThemaPlotKaarten</mm:setfield>
@@ -264,7 +270,7 @@
 </mm:createnode>
 
 
-21.
+21. <br/>
 <mm:createnode type="menu" id="menu_themaplotkaart">
       <mm:setfield name="naam">ThemaPlotKaarten</mm:setfield>
       <mm:setfield name="omschrijving"></mm:setfield>
@@ -272,14 +278,24 @@
 
 <mm:createrelation role="posrel" source="menu_themaplotkaart" destination="editwizard_themaplotkaart" />
 
-<mm:listnodes type="users" constraints="account='admin'" max="1" id="user_admin" >
-	<mm:createrelation role="gebruikt" source="user_admin" destination="menu_themaplotkaart" />
+<mm:listnodes type="users" constraints="account='admin'" max="1" id="user_admin_2" >
+	<mm:createrelation role="gebruikt" source="user_admin_2" destination="menu_themaplotkaart" />
 </mm:listnodes>
 
 
-22.
+22. <br/>
 
-<mm:listnodes type="typedef" constraints="name='kaart_bestel_regel'" max="1" id="type_kaartbestelregel" />
+<mm:createnode type="typedef" id="type_bestellingvastgoed">
+     <mm:setfield name="name">bestelling_vastgoed</mm:setfield>
+     <mm:setfield name="description"></mm:setfield>
+</mm:createnode>
+
+
+23. <br/>
+<mm:createnode type="typedef" id="type_kaartbestelregel">
+     <mm:setfield name="name">kaart_bestel_regel</mm:setfield>
+     <mm:setfield name="description"></mm:setfield>
+</mm:createnode>
 
 <mm:createnode type="reldef" id="rel_kaartbestelregel">
       <mm:setfield name="sname">kaart_bestel_regel</mm:setfield>
@@ -290,14 +306,17 @@
       <mm:setfield name="dguiname">KaartBestelRegel</mm:setfield>
 </mm:createnode>
 
-
-23.
+24. <br/>
 <mm:createnode type="typerel">
       <mm:setfield name="snumber"><mm:write referid="type_bestellingvastgoed" /></mm:setfield>
       <mm:setfield name="dnumber"><mm:write referid="type_themaplotkaart" /></mm:setfield>
       <mm:setfield name="rnumber"><mm:write referid="rel_kaartbestelregel" /></mm:setfield>
       <mm:setfield name="max">-1</mm:setfield>
 </mm:createnode>
+
+
+
+
 
 
 
