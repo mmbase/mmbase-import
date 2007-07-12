@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.61 2007-07-12 08:49:30 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.62 2007-07-12 13:49:51 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -497,12 +497,17 @@ public class ContentTag extends LocaleTag  {
             
             String a = unacceptable.getString(this);
             if (! "".equals(a)) {
-                boolean acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                String acceptHeader = request.getHeader("Accept");
+                log.debug("a: " + acceptHeader);
+                boolean acceptable = acceptHeader.indexOf(type) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
-                        if (type.equals("application/xhtml+xml")) {
+                        log.debug("browser doesn't accept " + type + " crippling now");
+                        if (type.equals("text/html")) {
+                            acceptable = true;
+                        } else if (type.equals("application/xhtml+xml")) {
                             type = "text/html";                            
-                            acceptable = request.getHeader("Accept").indexOf(type) != -1;
+                            acceptable = true; //request.getHeader("Accept").indexOf(type) != -1;
                         }
                         if (a.length() > 7) {
                             a = a.substring(8);
@@ -516,7 +521,7 @@ public class ContentTag extends LocaleTag  {
                                                "_".equals(a) ? null : a);
                             return SKIP_BODY;
                         } catch (java.io.IOException ioe) {
-                            throw new JspTagException(ioe);
+                            throw new JspTagException(ioe.getMessage());
                         }
                     }
                 }
@@ -527,9 +532,9 @@ public class ContentTag extends LocaleTag  {
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
             if (enc.equals("")) {
-                response.setContentType(getType()); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
+                response.setContentType(type); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
-                response.setContentType(getType() + ";charset=" + enc);
+                response.setContentType(type + ";charset=" + enc);
             }
 
             if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
