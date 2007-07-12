@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.9 2007-07-04 13:59:01 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.10 2007-07-12 12:01:09 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -167,7 +167,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
      * @param filterChain The FilterChain.
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws java.io.IOException, ServletException {
-        if (mmbase == null) {
+        if (mmbase == null || ! mmbase.getState()) {
             // if mmbase not yet running. Things not using mmbase can work, otherwise this may give
             // 503.
             log.debug("NO MMBASE member");
@@ -175,11 +175,28 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             return;
         }
         HttpServletRequest req = (HttpServletRequest) request;
+
+        String sp = req.getServletPath();
+        if (sp.startsWith("/images/") ||
+            sp.startsWith("/attachments/")) {
+            // no jsps here, these are blobs. 
+            log.debug("No need to filter for " + sp);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        boolean useParameters = true;
+        if(sp.startsWith("/mmbase/")) {
+            // all kind of generic jsp's can be there. reuest parameters can be used for something  else.
+            useParameters = false;
+        }
+
+
         String serverName = req.getServerName();
         String contextPath = req.getContextPath();
 
-        String educationParameter = req.getParameter("education");
-        String providerParameter  = req.getParameter("provider");
+        String educationParameter = useParameters ? req.getParameter("education") : null;
+        String providerParameter  = useParameters ? req.getParameter("provider") : null;
 
         Cloud cloud = getCloud(req);
         HttpSession session = req.getSession(false);        
@@ -332,9 +349,11 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
         
         // Based on the student and the education, try to find the class.
-        String c = request.getParameter("class");
+        String c = useParameters ? request.getParameter("class") : null;
         if (c != null) {
-            userAttributes.put("class", cloud.getNode(c));
+            if (cloud.hasNode(c)) {
+                userAttributes.put("class", cloud.getNode(c));
+            }
         } else {
             if (userAttributes.get("class") == null) {
                 try {
