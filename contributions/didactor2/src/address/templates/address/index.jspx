@@ -53,11 +53,15 @@
               <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
             </mm:node>
             
-            <!-- TODO
             <mm:node referid="education">
-              <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
+              <mm:relatednodescontainer path="related,people,roles"  searchdirs="source,destination">
+                <mm:relatednodes>
+                  <mm:field name="number" jspvar="p" vartype="integer">
+                    <jsp:scriptlet>peopleSet.add(p);</jsp:scriptlet>
+                  </mm:field>
+                </mm:relatednodes>
+              </mm:relatednodescontainer>
             </mm:node>
-            -->
 
             <mm:import externid="addressbook">-1</mm:import>
 
