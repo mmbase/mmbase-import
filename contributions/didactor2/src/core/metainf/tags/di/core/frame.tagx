@@ -9,9 +9,15 @@
       />
   <jsp:directive.attribute name="title_key"    /> 
   <jsp:directive.attribute name="rank" />
-  <mm:content postprocessor="reducespace">
+  <jsp:directive.attribute name="expires" />
+  <jsp:directive.attribute name="reset" />
+  <mm:content postprocessor="reducespace" language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
-      <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids" />
+      <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids,reset?">
+        <mm:param name="extraheader">
+          <title><di:translate key="education.learnenvironmenttitle" /></title>
+        </mm:param>
+      </mm:treeinclude>
 
       <div class="rows">
         <div class="navigationbar">

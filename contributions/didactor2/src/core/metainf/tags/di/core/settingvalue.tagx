@@ -8,10 +8,13 @@
       import="nl.didactor.component.Component" />
 
   <jsp:directive.attribute name="component"   /> 
-  <jsp:directive.attribute name="number"      required="true" type="java.lang.Integer" /> 
+  <jsp:directive.attribute name="number"     /> 
   <jsp:directive.attribute name="name"        required="true" /> 
   <jsp:directive.attribute name="write"  /> 
+
   <jsp:directive.variable name-given="_" variable-class="java.lang.String"  />
+  <mm:import jspvar="number" vartype="integer">${empty number ? requestScope.education : number}</mm:import>
+
   <mm:cloud>
   <mm:node number="${empty component ? requestScope._component.number : component}" jspvar="node" notfound="skip">
     <mm:field name="name" jspvar="compName" vartype="string" write="false" id="field">
