@@ -8,7 +8,11 @@ var ITEM_NONE   = '${mm:treefile("/gfx/icon_arrow_tab_none.gif", pageContext, in
 var ITEM_OPENED = '${mm:treefile("/gfx/icon_arrow_tab_open.gif", pageContext, includePath)}';
 var ITEM_CLOSED = '${mm:treefile("/gfx/icon_arrow_tab_closed.gif", pageContext, includePath)}';
 
-var may_open_future = <di:getsetting component="core" setting="may_open_future" />;
+var may_open_future = 
+    <di:hasrole role="coach">true || //coach</di:hasrole> 
+    <di:hasrole role="teacher">true || // teacher</di:hasrole> 
+    <di:hasrole role="systemadministrator">true || //system administrator </di:hasrole> 
+    <di:getsetting component="core" setting="may_open_future" />; // may_open_future setting
 
 // IE does not even support indexOf, fixing that here..
 [].indexOf || (Array.prototype.indexOf = function(v,n){
@@ -38,7 +42,7 @@ function nextContent() {
         if ( contentnumber[count] == currentnumber ) {
             if ( count < contentnumber.length ) {
                 if ("tests" == contenttype[count]) {
-                    alert('<di:translate key="education.testalert" />');
+                    alert('<di:translate key="education.testalert" escape="js-single-quotes" />');
                     return;
                 }
                 var opentype = contenttype[count+1];
@@ -55,7 +59,7 @@ function previousContent() {
         if ( contentnumber[count] == currentnumber ) {
             if ( count > 0 ) {
                 if ("tests" == contenttype[count]) {
-                    alert("<di:translate key="education.testalert" />");
+                    alert('<di:translate key="education.testalert" escape="js-single-quotes" />');
                     return;
                 }
                 var opentype = contenttype[count-1];
@@ -135,12 +139,12 @@ function openClose(div, img) {
         } else {
             if (! may_open_future) {
                 if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
-                    alert('<di:translate key="education.future" />');
+                    alert('<di:translate key="education.future" escape="js-single-quotes" />');
                     return false;
                 }
             }
             if (/\bblocked\b/.test(realimg.parentNode.className)) {
-                alert('<di:translate key="education.future" />');
+                alert('<di:translate key="education.future" escape="js-single-quotes" />');
                 return false;
             }
             open[div] = img;
@@ -158,12 +162,12 @@ function openOnly(div, img) {
     if (realdiv != null) {
         if (! may_open_future) {
             if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
-                alert('<di:translate key="education.future" />');
+                alert('<di:translate key="education.future" escape="js-single-quotes" />');
                 return false;
             }
         }
         if (/\bblocked\b/.test(realimg.parentNode.className)) {
-            alert('<di:translate key="education.future" />');
+            alert('<di:translate key="education.future" escape="js-single-quotes" />');
             return false;
         }
         open[div] = img;
