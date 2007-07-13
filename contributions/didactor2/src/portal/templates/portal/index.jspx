@@ -66,6 +66,9 @@
             </div>
           </mm:context>
         </c:forEach>
+
+        <mm:treeinclude debug="html" page="/cockpit/footer.jspx" objectlist="$includePath" />
+
       </body>
     </html>
   </mm:content>
