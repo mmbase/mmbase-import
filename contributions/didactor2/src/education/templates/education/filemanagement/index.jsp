@@ -8,20 +8,9 @@
 
 String dir = "didactor-files";
 
-File directory = new File(org.mmbase.servlet.FileServlet.getDirectory(), "didactor-files");
+File directory = org.mmbase.servlet.FileServlet.getFile(dir, response);
 directory.mkdir();
-           List<String> ls = org.mmbase.servlet.MMBaseServlet.getServletMappingsByAssociation("files");
-           if (ls.size() == 0) throw new Exception("No servlet associated with 'files' was installed");
-           String baseUrl = ls.get(0);
-           int pos = baseUrl.lastIndexOf("*");
-           if (pos > 0) {
-               baseUrl = baseUrl.substring(0, pos);
-           }
-           pos = baseUrl.indexOf("*");
-           if (pos == 0) {
-              baseUrl = baseUrl.substring(pos + 1);
-           }
-           baseUrl = request.getContextPath() + baseUrl + "didactor-files";
+String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.getBasePath("files") + dir;
 
     boolean uploadOK = false;
     String fileName = null;
@@ -63,9 +52,11 @@ directory.mkdir();
     }
 %>
 
-<mm:content postprocessor="reducespace">
-<mm:cloud method="asis" jspvar="cloud">
-<%@include file="/shared/setImports.jsp"%>
+<mm:content 
+    expires="0"
+    postprocessor="reducespace">
+<mm:cloud rank="editor" jspvar="cloud">
+
 <%@include file="/education/wizards/roles_defs.jsp" %>
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
 <%@include file="/education/wizards/roles_chk.jsp" %>
