@@ -2,8 +2,6 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %>
-
-
 <%@page import="java.io.File"%>
 <%@page import="java.io.RandomAccessFile"%>
 <%@page import="java.util.*"%>
@@ -21,9 +19,9 @@
 <%@page import="uk.ac.reload.jdom.XMLDocument"%>
 <%@page import="uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
 
-
-<mm:cloud method="delegate" jspvar="cloud">
-
+aaa
+<mm:cloud rank="editor" jspvar="cloud">
+<mm:cloudinfo type="user" />
 
 <mm:import from="parameters" externid="import_package"   vartype="String" jspvar="requestImportPackageID" />
 <mm:import from="parameters" externid="delete_package"   vartype="String" jspvar="requestDeletePackageID" />
@@ -32,9 +30,11 @@
 
 
 <%
-    org.mmbase.servlet.FileServlet.init((HttpServletResponse) pageContext.getResponse());
-    File directory = org.mmbase.servlet.FileServlet.getFile("scorm");
-    directory.mkdirs();
+String dir = "scorm";
+
+File directory = org.mmbase.servlet.FileServlet.getFile(dir, response);
+directory.mkdir();
+String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.getBasePath("files") + dir;
 
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
    Node packageNode = null;
@@ -67,7 +67,7 @@
 
    <mm:present referid="publish_package">
       <mm:node number="$publish_package">
-	<%@include file="publish.jsp"%>
+        <%@include file="publish.jsp"%>
       </mm:node>
    </mm:present>
    <%
@@ -75,13 +75,14 @@
 %>
 <mm:log jspvar="log">
 <%
-   log.info("Uploading SCORM package");
        
 
 
 String fileName = null;
 
 if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {
+   log.info("Uploading SCORM package");
+
     if (FileUpload.isMultipartContent(request)) {
         DiskFileUpload upload = new DiskFileUpload();
         upload.setSizeMax(-1); // allow for unlimited file sizes
@@ -168,9 +169,9 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                      //Get structure of menu and write it to our instance of player
                      try {
                          MenuCreator menuCreator = new MenuCreator(packageNode); 
-                         "http://", baseUrl + "/scorm/" + packageNode.getNumber() + "_" + "/");
                          String[] arrstrJSMenu = menuCreator.parse(true);
                          File fileMenuConfig = new File(directory, packageNode.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
+                         // i'm sorry, but wtf?
                          RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileMenuConfig, "rw");
                          for(int f = 0; f < arrstrJSMenu.length; f++) {
                              rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
@@ -192,15 +193,13 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
        uploadOK = false;
    }
 %>
-       </mm:log>
-<%@include file="/shared/setImports.jsp"%>
+</mm:log>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
 <%@include file="/education/wizards/roles_chk.jsp" %>
+
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
 <% request.getSession().setAttribute("mayupload","true"); %>
-
-
 
 <html>
 <head>
