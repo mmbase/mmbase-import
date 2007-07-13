@@ -1,21 +1,27 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%>
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator"%>
 <%
 
 // IMHO this jsp is stupid. See also: http://www.mmbase.org/jira/browse/DIDACTOR-46
 
-//    String directory = getServletContext().getRealPath("/education/files");
-//    String baseUrl = "http://localhost/education/files";
+String dir = "didactor-files";
 
-    String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
-    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
-
-    if (directory == null || baseUrl == null)
-    {
-        throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
-    }
+File directory = new File(org.mmbase.servlet.FileServlet.getDirectory(), "didactor-files");
+directory.mkdir();
+           List<String> ls = org.mmbase.servlet.MMBaseServlet.getServletMappingsByAssociation("files");
+           if (ls.size() == 0) throw new Exception("No servlet associated with 'files' was installed");
+           String baseUrl = ls.get(0);
+           int pos = baseUrl.lastIndexOf("*");
+           if (pos > 0) {
+               baseUrl = baseUrl.substring(0, pos);
+           }
+           pos = baseUrl.indexOf("*");
+           if (pos == 0) {
+              baseUrl = baseUrl.substring(pos + 1);
+           }
+           baseUrl = request.getContextPath() + baseUrl + "didactor-files";
 
     boolean uploadOK = false;
     String fileName = null;
@@ -58,7 +64,7 @@
 %>
 
 <mm:content postprocessor="reducespace">
-<mm:cloud method="delegate" jspvar="cloud">
+<mm:cloud method="asis" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
@@ -74,29 +80,21 @@
 
         String manager = null;
 
-        if ("audio".equals(mtype))
-        {
+        if ("audio".equals(mtype)) {
             manager = "audiotapes";
-        }
-        else if ("video".equals(mtype))
-        {
+        } else if ("video".equals(mtype)) {
             manager = "videotapes";
-        }
-        else if ("url".equals(mtype))
-        {
+        } else if ("url".equals(mtype)) {
             manager = "urls";
         }
 
-        if (manager == null)
-        {
-            msg = "Onbekend bestands type '"+mtype+"'";
-        }
-        else
-        {
-            Node n = cloud.getNodeManager(manager).createNode();
-            n.setValue( "urls".equals(manager) ? "name" : "title" ,fileName);
-            n.setValue("url",baseUrl+"/"+fileName);
-            n.commit();
+        if (manager == null) {
+            msg = "Unknown file type '" + mtype + "'";
+        } else {
+           Node n = cloud.getNodeManager(manager).createNode();
+           n.setValue( "urls".equals(manager) ? "name" : "title" ,fileName);
+           n.setValue("url", baseUrl + "/" + fileName); // WTF WTF WTF WTF
+           n.commit();
         }
     }
 %>
@@ -106,25 +104,15 @@
 <html>
 <head>
 <title>File manager</title>
-   <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/layout/list.css" objectlist="$includePath" referids="$referids" />" />
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
+   <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" />' />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/layout/list.css" objectlist="$includePath"  />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/mmbase/edit/wizard/style/color/list.css" objectlist="$includePath"  />" />
 </head>
 <body>
-<script>
-if (top == self) {
-    var loc = document.location.href;
-    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
-    document.location.href = loc;
-}
-</script>
 <mm:import externid="deletefile" jspvar="deletefile"/>
 <%
-    File dir = new File(directory);
-    File[] farray = dir.listFiles();
-    if (farray == null) {
-         throw new ServletException("'"+directory+"' does not appear to be a directory! Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
-    }
+    File[] farray = directory.listFiles();
+
 %>
 
 <table class="head">
@@ -202,15 +190,12 @@ if (top == self) {
                   {
                      String[] managers = {"audiotapes","videotapes","urls"};
 
-                     for (int i = 0; i < managers.length; i++)
-            {
+                     for (int i = 0; i < managers.length; i++) {
                         NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+deletefile+"'",null,null).nodeIterator();
-
-                        while(ni.hasNext())
-                        {
+                        while(ni.hasNext()) {
                            ni.nextNode().delete(true); // delete next node related with this file ...
-                        }
-                     }
+                         }
+                      }
                      file.delete(); // and delete file itself ...
                      continue;
                   }
