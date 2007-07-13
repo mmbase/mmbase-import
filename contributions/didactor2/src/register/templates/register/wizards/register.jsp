@@ -139,18 +139,22 @@
                     </tr>
                     <mm:relatednodes type="people" role="classrel" id="related" orderby="number"/> <!-- register/index.jsp used to do that -->
                     <mm:relatednodes type="people" role="related" add="related" orderby="number">
-                      <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,_node@person" id="url" write="false" />
-                      <tr>
-                        <mm:fieldlist nodetype="people" fields="number,${di:setting(pageContext, 'core', 'admin_personfields')},username">
-                          <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
-                        </mm:fieldlist>
-                        <td>
-                          <mm:link referid="url">
-                            <mm:param name="delete">true</mm:param>
-                            <a href="${_}"><di:translate key="register.delete" /></a>
-                          </mm:link>
-                        </td>
-                      </tr>
+                      <mm:countrelations type="roles">
+                        <mm:compare value="0">
+                          <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,_node@person" id="url" write="false" />
+                          <tr>
+                            <mm:fieldlist nodetype="people" fields="number,${di:setting(pageContext, 'core', 'admin_personfields')},username">
+                              <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
+                            </mm:fieldlist>
+                            <td>
+                              <mm:link referid="url">
+                                <mm:param name="delete">true</mm:param>
+                                <a href="${_}"><di:translate key="register.delete" /></a>
+                              </mm:link>
+                            </td>
+                          </tr>
+                        </mm:compare>
+                      </mm:countrelations>
                     </mm:relatednodes>
                   </table>
                 </mm:node>
