@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.50 2007-06-26 13:28:32 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.51 2007-07-13 13:48:14 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -124,20 +124,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
             }
         }
-        String result;
-        List<String> ls = MMBaseServlet.getServletMappingsByAssociation(association);
-        if (ls.size()>0) {
-            result = ls.get(0);
+        String result = MMBaseServlet.getBasePath(association);
+        if (result != null) {
             usesBridgeServlet = MMBaseServlet.getServletByMapping(result) instanceof BridgeServlet;
-            // remove mask
-            int pos = result.lastIndexOf("*");
-            if (pos > 0) {
-                result = result.substring(0, pos);
-            }
-            pos = result.indexOf("*");
-            if (pos == 0) {
-                result = result.substring(pos + 1);
-            }
         } else {
             result = getDefaultPath();
         }
