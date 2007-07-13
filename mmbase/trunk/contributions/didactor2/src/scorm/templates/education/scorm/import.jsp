@@ -45,9 +45,9 @@
        
 
 
-       nodePackage = cloud.getNode(requestImportPackageID);
-       nodePackage.setValue("importdate", "" + ((new Date()).getTime() / 1000));
-       nodePackage.commit();
+       packageNode = cloud.getNode(requestImportPackageID);
+       packageNode.setValue("importdate", "" + ((new Date()).getTime() / 1000));
+       packageNode.commit();
        
        
        msg = "Import successful";
