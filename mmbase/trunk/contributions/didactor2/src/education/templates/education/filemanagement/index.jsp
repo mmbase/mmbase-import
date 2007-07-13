@@ -127,7 +127,9 @@ String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.get
                         <option value="audio">Audio</option>
                         <option value="video">Video</option>
                      </select>
-                     <input type="submit" value="Upload" style="width:60px; text-align:center">
+                     <input type="submit" value="Upload" 
+                            onclick="if (document.forms[0].filename.value == '') return false;"
+                            style="width:60px; text-align:center">
                   </form>
                   <% if (uploadOK) { %><b><di:translate key="education.fileuploadok" /></b><% } %><b><%= msg %></b>
                </td>
