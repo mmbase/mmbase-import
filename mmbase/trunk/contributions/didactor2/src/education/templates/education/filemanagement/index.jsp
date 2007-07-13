@@ -109,14 +109,7 @@ String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.get
 <table class="head">
    <tr class="headsubtitle">
       <td>
-         <%
-            String sResults = "";
-         %>
-         <mm:import id="FTPfiles" jspvar="sTemplate" vartype="String" reset="true"><di:translate key="education.ftpfiles" /></mm:import>
-         <%
-            sResults = sTemplate.replaceAll("\\{\\$\\$\\$\\}", "" + farray.length);
-         %>
-         <div><%= sResults %></div>
+         <div><di:translate key="education.ftpfiles" arg0="<%="" + farray.length%>" /></div>
       </td>
    </tr>
 </table>
