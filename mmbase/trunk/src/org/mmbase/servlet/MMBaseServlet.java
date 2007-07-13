@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.68 2007-07-04 10:04:08 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.69 2007-07-13 13:48:15 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -350,6 +350,23 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         } else {
             return null;
         }
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String getBasePath(String function) {
+        List<String> ls = MMBaseServlet.getServletMappingsByAssociation(function);
+        if (ls.size() == 0) return null;
+        String baseUrl = ls.get(0);
+        int pos = baseUrl.lastIndexOf("*");
+        if (pos > 0) {
+            baseUrl = baseUrl.substring(0, pos);
+        }
+        pos = baseUrl.indexOf("*");
+        if (pos == 0) {
+            baseUrl = baseUrl.substring(pos + 1);
+        }
+        return baseUrl;
     }
 
 
