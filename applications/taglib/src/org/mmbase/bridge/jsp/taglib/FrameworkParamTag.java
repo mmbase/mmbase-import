@@ -20,33 +20,36 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.17 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FrameworkParamTag.java,v 1.1 2007-07-14 09:26:49 michiel Exp $
+ * @since MMBase-1.9
  */
 
-public class ParamTag extends AbstractParamTag implements ParamHandler {
-    private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
+public class FrameworkParamTag extends AbstractParamTag implements FrameworkParamHandler {
+    private static final Logger log = Logging.getLoggerInstance(FrameworkParamTag.class);
 
-    private ParamHandler paramHandler;
+    private FrameworkParamHandler paramHandler;
 
     public int doStartTag() throws JspException {
-        paramHandler = findParentTag(ParamHandler.class, null);
+        paramHandler = findParentTag(FrameworkParamHandler.class, null);
         return super.doStartTag();
     }
 
+    public void addFrameworkParameter(String key, Object value) throws JspTagException {
+        super.addParameter(key, value);
+    }
     /**
-     * @since MMBase-1.9
      */
     protected void addParameter(Object value) throws JspTagException {
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {
                 for (Map.Entry<String, String> entry : StringSplitter.map(((CharSequence) value).toString()).entrySet()) {
-                    paramHandler.addParameter(entry.getKey(), entry.getValue());
+                    paramHandler.addFrameworkParameter(entry.getKey(), entry.getValue());
                 }
             } else {
                 throw new TaglibException("You must specifiy a 'name' attribute if the value is not a comma separated String of <name>=<value> pairs.");
             }
         } else {
-            paramHandler.addParameter(name.getString(this), value);
+            paramHandler.addFrameworkParameter(name.getString(this), value);
         }
     }
 
