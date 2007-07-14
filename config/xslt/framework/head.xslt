@@ -3,14 +3,27 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     exclude-result-prefixes=""
     version = "1.0" >  
+  <!--
+      This xslt can be used in MMBase framework implementations, to merge the result 'head' of head
+      renderers, as supplied by blocks on the page, with their own head.
+      
+      See http://cvs.mmbase.org/viewcvs/html/mmbase/admin/index.jsp?revision=1.14&view=markup for a usage example.
+      
+      @version $Id: head.xslt,v 1.3 2007-07-14 15:54:35 michiel Exp $
+      @author Michiel Meeuwissen
+      @since MMBase-1.9
+  -->
   <xsl:output method="xml"
               version="1.0"
               encoding="utf-8"
               omit-xml-declaration="yes"
               indent="no"
               />
+
   <xsl:template match="head">
     <head>
+      <xsl:copy-of select="@*" />
+
       <xsl:variable name="descendants" select="./descendant-or-self::*" />
 
       <title>
@@ -47,7 +60,8 @@
                     select="$descendants/style[not(. = ./following-sibling::style and
                             string(./@media)   = string(./following-sibling::style/@media) and
                             string(./@title)   = string(./following-sibling::style/@title) and
-                            string(./@type)   = string(./following-sibling::style/@type)
+                            string(./@type)   = string(./following-sibling::style/@type) and
+                            string(./@id)   = string(./following-sibling::style/@id)
                             )]" />
 
       <xsl:for-each select="$unique-style">
@@ -57,25 +71,86 @@
         </style>
       </xsl:for-each>
 
-      <!-- meta headers must be handles smartly, (keywords?) -->
-      <!-- TODO -->
-      
       <xsl:variable name="unique-script"
                     select="$descendants/script[not(. = ./following-sibling::script and
                             string(./@charset)   = string(./following-sibling::script/@charset) and
                             string(./@defer)   = string(./following-sibling::script/@charset) and
                             string(./@language)   = string(./following-sibling::script/@language) and
                             string(./@src)   = string(./following-sibling::script/@src) and
-                            string(./@type)   = string(./following-sibling::script/@type)
+                            string(./@type)   = string(./following-sibling::script/@type) and
+                            string(./@id)   = string(./following-sibling::script/@id)
                             )]" />
 
       <xsl:for-each select="$unique-script">
-        <style>
+        <script>
           <xsl:copy-of select="@*" />
           <xsl:copy-of select="*|text()" />
-        </style>
+        </script>
       </xsl:for-each>
 
+      <xsl:variable name="unique-no-script"
+                    select="$descendants/noscript[not(. = ./following-sibling::noscript and
+                            string(./@id)   = string(./following-sibling::noscript/@id)
+                            )]" />
+
+      <xsl:for-each select="$unique-no-script">
+        <noscript>
+          <xsl:copy-of select="@*" />
+          <xsl:copy-of select="*|text()" />
+        </noscript>
+      </xsl:for-each>
+
+      <!-- 
+           support for some of the more common, sensible,  meta-headers 
+           For most of them, the content can be merged.
+      -->
+      <xsl:if test="$descendants/meta[@name = 'author']">
+        <meta name="author">
+          <xsl:attribute name="content">
+            <xsl:for-each select="$descendants/meta[@name='author']">
+              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:value-of select="@content" />
+            </xsl:for-each>
+          </xsl:attribute>
+        </meta>
+      </xsl:if>
+      <xsl:if test="$descendants/meta[@name = 'keywords']">
+        <meta name="keywords">
+          <xsl:attribute name="content">
+            <xsl:for-each select="$descendants/meta[@name='keywords']">
+              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:value-of select="@content" />
+            </xsl:for-each>
+          </xsl:attribute>
+        </meta>
+      </xsl:if>
+      <xsl:if test="$descendants/meta[@name = 'description']">
+        <meta name="description">
+          <xsl:attribute name="content">
+            <xsl:for-each select="$descendants/meta[@name='description']">
+              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:value-of select="@content" />
+            </xsl:for-each>
+          </xsl:attribute>
+        </meta>
+      </xsl:if>
+      <xsl:if test="$descendants/meta[@name = 'revised']">
+        <meta name="description">
+          <xsl:attribute name="content">
+            <xsl:for-each select="$descendants/meta[@name='revised']">
+              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:value-of select="@content" />
+            </xsl:for-each>
+          </xsl:attribute>
+        </meta>
+      </xsl:if>
+
+      <meta name="generator" content="MMBase" />
+      <!--
+          No support for http-equiv tags.
+          Framework could issue real headers.
+      -->
+    
     </head>
   </xsl:template>
   
