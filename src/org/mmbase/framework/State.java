@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.5 2007-07-07 09:20:12 michiel Exp $
+ * @version $Id: State.java,v 1.6 2007-07-14 14:14:30 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -35,6 +35,7 @@ public class State {
         }
         return state;
     }
+
 
     private int count = 1;
     private String id;
@@ -158,6 +159,7 @@ public class State {
     public Processor getProcessor() {
         return processor;
     }
+
     /**
      * Returns the id of the current block, which uniquely identifies it on the current page (or
      * http request).

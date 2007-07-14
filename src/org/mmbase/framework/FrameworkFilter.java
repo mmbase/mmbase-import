@@ -37,17 +37,12 @@ import org.mmbase.util.logging.Logging;
  * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.10 2007-07-06 21:19:31 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.11 2007-07-14 14:14:30 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
     
     private static final Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
-    
-    /**
-     * The context this servlet lives in
-     */
-    protected ServletContext ctx = null;
 
     /**
      * MMBase needs to be started first to be able to load config
@@ -83,7 +78,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      */
     public void init(FilterConfig config) throws ServletException {
         log.info("Starting UrlFilter");
-        ctx = config.getServletContext();
+        ServletContext ctx = config.getServletContext();
         String excludes = config.getInitParameter("excludes");
         if (excludes != null && excludes.length() > 0) {
             excludePattern = Pattern.compile(excludes);

@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.31 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: Framework.java,v 1.32 2007-07-14 14:14:30 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
@@ -143,8 +143,5 @@ public interface Framework extends UrlConverter {
      */
 
     public Map<String, Object> prefix(State state, Map<String, Object> params);
-    /**
-     * Configures this framework, given (a piece of) an XML
-     */
-    public void configure(org.w3c.dom.Element element);
+
 }
