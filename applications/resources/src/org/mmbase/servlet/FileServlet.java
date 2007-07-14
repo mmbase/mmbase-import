@@ -14,15 +14,19 @@ import org.mmbase.module.core.*;
 import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
+import java.util.regex.*;
 
 import java.io.*;
+import java.text.*;
 
 import org.mmbase.util.logging.*;
 
 
 /**
+ * Straight-forward filter which can serve files from one directory (the directory 'files' in the
+ * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.4 2007-06-23 10:42:23 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.5 2007-07-14 14:03:40 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -31,10 +35,17 @@ public class FileServlet extends BridgeServlet {
     private static Logger log;
 
     private static File files = null;
+    
+    private Pattern ignore = Pattern.compile("");
+
     //private static final Properties properties= new Properties();
 
     public void init() throws ServletException {
         super.init();
+        String ig = getInitParameter("ignore");
+        if (ig != null && ig.length() > 0) {
+            ignore = Pattern.compile(ig);
+        }
         log = Logging.getLoggerInstance(FileServlet.class);
     }
     public static void init(HttpServletResponse res) {
@@ -71,6 +82,8 @@ public class FileServlet extends BridgeServlet {
         }
         
     }
+
+
     protected boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
         boolean inited = super.checkInited(res);
         if (inited) {
@@ -94,14 +107,17 @@ public class FileServlet extends BridgeServlet {
         a.put("files",      50);  
         return a;
     }
-    
+
+    public static File getDirectory() {
+        return files;
+    }    
 
     public static File getFile(String pathInfo, ServletResponse res) {
         if (res != null) init((HttpServletResponse) res);
         if (pathInfo == null) {
             return files;
         } else {
-            return new File(files, pathInfo);
+            return new File(files, pathInfo.replace("/", File.separator));
         }
     }
 
@@ -110,15 +126,25 @@ public class FileServlet extends BridgeServlet {
         return f.canRead();
     }
 
+    protected boolean ignores(String pi) {
+        return pi != null && (ignore.matcher(pi).matches());
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        File file = getFile(req.getPathInfo(), resp);
+        String pi = req.getPathInfo();
+        if (ignores(pi)) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + pi + "' is not served");
+            return;
+        }
+
+        File file = getFile(pi, resp);
         if (! file.exists()) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + req.getPathInfo() + "' does not exist");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + pi + "' does not exist");
             log.debug("" + file + " does not exist");
             return;
         }
         if (! canRead(req, file)) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' may not be read");
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + pi + "' may not be read");
             log.debug("" + file + " may not be read");
             return;
         }
@@ -140,7 +166,8 @@ public class FileServlet extends BridgeServlet {
         out.close();
     }
 
-    protected void listing(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
+
+    protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
         if ("true".equals(getInitParameter("listings"))) {
             resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
             StringBuilder result = new StringBuilder();
@@ -148,26 +175,30 @@ public class FileServlet extends BridgeServlet {
             result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
             result.append("<head>");
             String pathInfo = req.getPathInfo();
-            if (file.isDirectory() && ! pathInfo.endsWith("/")) {
+            if (pathInfo == null || ! pathInfo.endsWith("/")) {
                 resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pathInfo == null ? "" : pathInfo) + "/");
                 return;
             }
             result.append("<title>Directory Listing For " + pathInfo + "</title>");            
             result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
             result.append("</head>");
-            result.append("<body>");
+            result.append("<body class='filelisting'>");
             result.append("<h1>Directory Listing For " + pathInfo + "</h1>");
-            result.append("<table class='filelisting'>");
+            result.append("<table>");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:m");
+            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filename'><a href='.'>./</a></td></tr>");
             if (! pathInfo.equals("/")) {
-                result.append("<tr><td /><td><a href='..'>../</a></td></tr>");
+                result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filename'><a href='..'>../</a></td></tr>");
             }
-            for (File f : file.listFiles()) {
-                result.append("<tr><td>" + new Date(f.lastModified()) + "</td><td>");
-                if (canRead(req, f)) {
-                    String name = f.getName() + (f.isDirectory() ? "/" : "");
+            for (File file : directory.listFiles()) {
+                String name = file.getName() + (file.isDirectory() ? "/" : "");
+                if (ignores(pathInfo + name)) continue;
+                
+                result.append("<tr><td class='lastmodified'>" + df.format(new Date(file.lastModified())) + "</td><td class='filename'>");
+                if (canRead(req, file)) {
                     result.append("<a href='" + name + "'>" + name + "</a>");
                 } else {
-                    result.append(f.getName());
+                    result.append(name);
                 }
                 result.append("</td></tr>");
             }
