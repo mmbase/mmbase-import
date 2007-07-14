@@ -10,17 +10,19 @@
 <mm:import externid="component">core</mm:import>
 <mm:import externid="block">welcome</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
-<head>
-  <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
-  <mm:link page="/mmbase/admin/css/admin.css">
-    <link rel="stylesheet" href="${_}" type="text/css" />
-  </mm:link>
-  <mm:link page="/mmbase/style/images/favicon.ico">
-    <link rel="icon" href="${_}" type="image/x-icon" />
-    <link rel="shortcut icon" href="${_}" type="image/x-icon" />
-  </mm:link>
-  <mm:component name="$component" block="$block" render="head" />
-</head>
+  <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
+      <mm:link page="/mmbase/admin/css/admin.css">
+        <link rel="stylesheet" href="${_}" type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/images/favicon.ico">
+        <link rel="icon" href="${_}" type="image/x-icon" />
+        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+      </mm:link>
+      <mm:component name="$component" block="$block" render="head" />
+    </head>
+  </mm:formatter>
 <body>
 <div id="outerheader">
   <div id="header">
@@ -41,14 +43,17 @@
   <mm:param name="id">mmbase</mm:param>
   <mm:listfunction set="components" name="blockClassification">
     <mm:stringlist referid="_.subTypes" id="cat">
-      <mm:link page="/mmbase/${cat.name}" id="link" />
+      <mm:link  id="link"><mm:frameworkparam  name="category">${cat.name}</mm:frameworkparam></mm:link>
       <li><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${cat.name}</a>
 
       <mm:compare referid="category" value="${cat.name}">
         
         <c:forEach var="subcat" items="${cat.blocks}">
           <mm:first><ul></mm:first>
-          <mm:link page="/mmbase/${category}/${subcat.component.name}/${subcat.name}">
+          <mm:link>
+            <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+            <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
+            <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
             <li><a title="${subcat.description}" href="${_}">${subcat.name}</a></li>
           </mm:link>
           <mm:last></ul></mm:last>
