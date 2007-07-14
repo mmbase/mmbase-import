@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.152 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.153 2007-07-14 09:26:49 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -173,9 +173,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud != null) {
             cloud.setProperty(key, value);
         }
-    }
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Cloudtag does not receive framework parameters");
     }
 
     /**

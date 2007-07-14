@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.402 2007-07-12 08:49:30 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.403 2007-07-14 09:26:49 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5839,15 +5839,61 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </info>
       <since>MMBase-1.7</since>
     </attribute>
+    <example>See the example for tag `url'.</example>
+  </tag>
+  <tag>
+    <name>frameworkparam</name>
+    <type>util</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FrameworkParamTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      Adds a parameter to the parent parameterprovider Tag. Param-tags can be nested; like that it
+      is possible to create map-like parameter values.
+    </info>
+    <see tag="url" />
+    <see tag="include" />
+    <see tag="functioncontainer" />
+    <see tag="url" attribute="referids" />
+    <see tag="escaper" />
+    <see tag="functioncontainer" attribute="referids"/>
     <attribute>
-      <name>framework</name>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The name of the parameter. If this attribute is missing, the value is interpreted as a , separated list of name=value pairs.
+      </info>
+    </attribute>
+    <attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The value of the parameter. Is this attribute, and 'referid', is missing, then the body of the param tag is used.
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The value of the parameter, as referred from the variable context.
+      </info>
+    </attribute>
+    <attribute>
+      <name>vartype</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        URL-like ParamHandlers can accept two types of parameters. Some parameters are meant to instruct the framework. This attribute can be used to mark a parameter like that. Defaults to false.
+        The `vartype' of the parameter. In principle url-parameters should always be string. When
+        using this attribute, the value is first cast to this type. You could e.g. set it to
+        `integer' if you want to ensure the variable is parseable as an integer.
       </info>
-      <since>MMBase-1.9</since>
     </attribute>
+    <since>MMBase-1.9</since>
     <example>See the example for tag `url'.</example>
   </tag>
   <tag>
