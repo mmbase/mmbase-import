@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.17 2007-07-14 16:20:07 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.18 2007-07-14 17:19:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -157,20 +157,22 @@ public class ComponentRepository {
         return o;
     }
 
-
-    protected Component getComponent(String name, Document doc) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        NodeList childs =  doc.getDocumentElement().getChildNodes();
-        Component component = null;
+    public static Object getInstanceWithSubElement(Element element, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+        NodeList childs =  element.getChildNodes();
+        Object instance = null;
         for (int i = 0; i < childs.getLength(); i++) {
-            try {
-                Node node = childs.item(i);
-                if (node instanceof Element && node.getNodeName().equals("class")) {
-                    component = (Component) getInstance((Element) node, name);
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
+            Node node = childs.item(i);
+            if (node instanceof Element && node.getNodeName().equals("class")) {
+                instance = (Component) getInstance((Element) node, args);
             }
         }
+        return instance;
+    }
+
+
+    protected Component getComponent(String name, Document doc) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+
+        Component component = (Component) getInstanceWithSubElement(doc.getDocumentElement(), name);
         if (component == null) {
             component = new BasicComponent(name);
         }

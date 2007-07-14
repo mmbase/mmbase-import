@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.28 2007-06-18 17:34:31 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.29 2007-07-14 17:19:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -126,8 +126,7 @@ public class BasicComponent implements Component {
             renderer = new JspRenderer(name.toUpperCase(), jsp, b);
         } else {
             try {
-                Element classElement = (Element) renderElement.getElementsByTagName("class").item(0);
-                renderer = (Renderer) ComponentRepository.getInstance(classElement, name.toUpperCase(), b);
+                renderer = (Renderer) ComponentRepository.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
@@ -150,8 +149,7 @@ public class BasicComponent implements Component {
             processor = new JspProcessor(jsp, b);
         } else {
             try {
-                Element classElement = (Element) processorElement.getElementsByTagName("class").item(0);
-                processor = (Processor) ComponentRepository.getInstance(classElement, name.toUpperCase(), b);
+                processor = (Processor) ComponentRepository.getInstanceWithSubElement(processorElement, name.toUpperCase(), b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
