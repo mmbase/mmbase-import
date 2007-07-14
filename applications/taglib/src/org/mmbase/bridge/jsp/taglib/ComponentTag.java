@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.18 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.19 2007-07-14 17:21:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -98,8 +98,8 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             for (Map.Entry<String, Object> entry : extraFrameworkParameters) {
                 frameworkParams.set(entry.getKey(), entry.getValue());
             }
-            State state = State.getState(pageContext.getRequest(), true);
-            if (state.isRendering()) {
+            State state = State.getState(pageContext.getRequest());
+            if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
                 state = new State(pageContext.getRequest());
             }
             fw.render(renderer, params, frameworkParams, w, windowStateValue);

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.6 2007-07-14 14:14:30 michiel Exp $
+ * @version $Id: State.java,v 1.7 2007-07-14 17:20:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -28,9 +28,11 @@ public class State {
     private static final Logger log = Logging.getLoggerInstance(State.class);
 
     public final static String KEY = "org.mmbase.framework.state";
-    public static State getState(ServletRequest request, boolean create) {
+
+
+    public static State getState(ServletRequest request) {
         State state = (State) request.getAttribute(KEY);
-        if (state == null && create) {            
+        if (state == null) {            
             state = new State(request);
         }
         return state;
@@ -168,7 +170,7 @@ public class State {
         return id;
     }
     public String toString() {
-        return "state:" + getId() + ":" + (renderer != null ? renderer : processor);
+        return "state:" + getId() + (isRendering() ? (":" + (renderer != null ? renderer : processor)) : "");
     }
     
 }

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.11 2007-07-14 14:14:30 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.12 2007-07-14 17:20:51 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -180,7 +180,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
             }
 
-            State state = State.getState(request, true);
+            State state = State.getState(request);
             if (forwardUrl != null && !forwardUrl.equals("")) {
                 /* 
                  * RequestDispatcher: If the path begins with a "/" it is interpreted
