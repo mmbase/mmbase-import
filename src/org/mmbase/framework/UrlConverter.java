@@ -21,8 +21,12 @@ import org.mmbase.util.functions.Parameters;
  * userfriendly links within your framework.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.2 2007-06-28 11:18:19 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.3 2007-07-14 14:14:30 michiel Exp $
  * @since MMBase-1.9
+ * @todo Parameters are passed as Collections of Map.Entry. Not sure that is handy/correct. The main
+ * reason is that you can create such objects easily from both Parameters as from Maps, and that you
+ * don't loose order, if there is one (it is also easiy to create a map from Parameters, but it has
+ * no garanteed order any more then).
  */
 public interface UrlConverter {
 

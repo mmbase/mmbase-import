@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.4 2007-07-07 07:50:20 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.5 2007-07-14 14:14:30 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -121,7 +121,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 }
             }
             if (log.isDebugEnabled()) {
-                log.debug("Rendering component " + component + " generating URL to " + block + " State " + state);
+                log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state);
             }
             boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
             if (processUrl) {
@@ -180,7 +180,7 @@ public class MMBaseUrlConverter implements UrlConverter {
             }
             if (path.length >= 3) {
                 assert path[0].equals("");
-                //assert path[1].equals("mmbase");
+                assert path[1].equals(dir.split("/")[1]);
                 String category = path[2];
                 if (! category.equals("_")) {
                     boolean categoryOk = false;
