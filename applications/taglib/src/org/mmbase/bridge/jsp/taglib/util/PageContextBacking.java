@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.15 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: PageContextBacking.java,v 1.16 2007-07-14 09:25:16 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -97,7 +97,13 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                                         }
                                         public Object getValue() {
                                             if (nul == null) {
-                                                return pageContext.findAttribute(name);
+                                                try {
+                                                    return pageContext.findAttribute(name);
+                                                } catch (java.lang.IllegalStateException ise) {
+                                                    // e.g.: session invalid
+                                                    log.warn(ise);
+                                                    return null;
+                                                }
                                             } else {
                                                 return null;
                                             }
