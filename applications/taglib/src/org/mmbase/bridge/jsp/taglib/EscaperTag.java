@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.13 2007-06-18 17:29:21 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.14 2007-07-14 09:26:49 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -48,9 +48,6 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
 
     public void addParameter(String key, Object value) throws JspTagException {
         parameters.set(key, value);
-    }
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Escaper does not receive framework parameters");
     }
 
     public void chain(CharTransformer trans) throws JspTagException {

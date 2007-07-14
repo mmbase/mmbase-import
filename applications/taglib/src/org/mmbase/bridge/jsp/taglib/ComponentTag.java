@@ -22,10 +22,10 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.17 2007-07-06 21:19:45 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.18 2007-07-14 09:26:49 michiel Exp $
  * @since MMBase-1.9
  */
-public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writer {
+public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
     private static final Logger log = Logging.getLoggerInstance(ComponentTag.class);
     private Attribute name   = Attribute.NULL;
     private Attribute render   = Attribute.NULL;
@@ -62,7 +62,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Writ
         extraParameters.add(new Entry<String, Object>(key, value));
     }
     public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Cloudtag does not receive framework parameters");
+        throw new UnsupportedOperationException("mm:component does not yet receive framework parameters");
     }
 
     private boolean used = false;

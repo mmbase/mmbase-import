@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.util.Referids;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.16 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.17 2007-07-14 09:26:49 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
@@ -35,9 +35,7 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
         parameters.add(new Entry<String, Object>(key, value));
     }
     
-    public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("Param-tag does not receive framework parameters");
-    }
+
     // javadoc inherited (from FunctionContainer)
     public List<Entry<String, Object>>  getParameters() {
         return Collections.unmodifiableList(parameters);

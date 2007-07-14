@@ -14,12 +14,12 @@ import javax.servlet.jsp.JspTagException;
  * ParamHandlers can have the &lt;mm:param&gt; tag as subtag
  *
  * @author Michiel Meeuwissen
- * @since  MMBase-1.7
+ * @since MMBase-1.9
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: ParamHandler.java,v 1.4 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FrameworkParamHandler.java,v 1.1 2007-07-14 09:26:49 michiel Exp $
  */
 
-public interface ParamHandler {
-    public void addParameter(String key, Object value) throws JspTagException;
+public interface FrameworkParamHandler {
 
+    public void addFrameworkParameter(String key, Object value) throws JspTagException;
 }
