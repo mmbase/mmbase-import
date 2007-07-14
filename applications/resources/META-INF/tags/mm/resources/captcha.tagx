@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.util.images.*" />
+  <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.util.images.*,org.mmbase.servlet.FileServlet" />
 
   <!-- Length of key to  produce. The generated key will be stored in the session attribute
        'captchakey'
@@ -58,6 +58,11 @@
   </c:if>
   <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
   <jsp:scriptlet>
+    String base = "temporary_images";
+  </jsp:scriptlet>
+  <mm:import id="baseUrl"><jsp:expression>org.mmbase.servlet.MMBaseServlet.getBasePath("files") + base</jsp:expression></mm:import>
+
+  <jsp:scriptlet>
     if (input == null) {
        input = new ByteArrayInputStream(gifBytes);
     }
@@ -66,13 +71,14 @@
         sb = sb.append(charset[rand.nextInt(28)]);
       }
     }
-
-    final File file = File.createTempFile("captcha", ".png", new File(application.getRealPath("temporary_images")));
+    final File directory =  FileServlet.getFile(base, response);
+    directory.mkdir();
+    final File file = File.createTempFile("captcha", ".png", directory);
     file.deleteOnExit();
     String captchaKey = sb.toString();
    // captchaKey = " ";
    session.setAttribute("captchakey", captchaKey);
-   session.setAttribute("captchafilename", "/temporary_images/" + file.getName());
+   session.setAttribute("captchafilename", file + file.getName());
    FileReceiver receiver = new FileReceiver(file);
    //white pixel
    ImageConversionRequest req =
@@ -89,7 +95,7 @@
   <mm:import id="filename"><jsp:expression>file.getName()</jsp:expression></mm:import>
   <mm:import id="width" vartype="integer" ><jsp:expression>width</jsp:expression></mm:import>
   <mm:import id="height" vartype="integer"><jsp:expression>height</jsp:expression></mm:import>
-  <mm:link page="/temporary_images/${filename}">
+  <mm:link page="${baseUrl}/${filename}">
     <c:choose>
       <c:when test="${width > 0}">
         <img src="${_}" alt="captcha" width="${width}" height="${height}" />
