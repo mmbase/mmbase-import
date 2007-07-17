@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * abstract locale.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class TranslateTag extends ContextReferrerTag implements Writer  { //, ParamHandler
+public class TranslateTag extends ContextReferrerTag implements Writer { //, ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(TranslateTag.class);
 
     private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -89,7 +89,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer  { //, Pa
                         String translation = "";
                         
                         if (key != null) {
-                            translation = tt.translate(key, new Object[] {sArg0, sArg1, sArg2, sArg3, sArg4});
+                            translation = tt.translate(key, sArg0, sArg1, sArg2, sArg3, sArg4);
                             if (log.isDebugEnabled()) {
                                 log.debug("Translating '" + key + "' to '" + translation + "' " + tt.translate(key));
                             }
