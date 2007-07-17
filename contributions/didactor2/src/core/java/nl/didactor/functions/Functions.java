@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.4 2007-07-04 13:57:38 michiel Exp $
+ * @version $Id: Functions.java,v 1.5 2007-07-17 14:33:24 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -90,6 +90,24 @@ public class Functions {
             log.warn(e);
             return uname + System.currentTimeMillis();
         }
+    }
+
+    public Node workgroupCoach() {
+        NodeList people = node.getRelatedNodes("people");
+        NodeIterator ni = people.nodeIterator();
+        while (ni.hasNext()) {
+            Node person = ni.nextNode();
+            NodeList roles = person.getRelatedNodes("roles");
+            NodeIterator ni2 = roles.nodeIterator();
+            while (ni.hasNext()) {
+                Node role = ni2.nextNode();
+                if (role.getStringValue("name").equals("coach")) {
+                    return person;
+                }
+            }
+        }
+        return null;
+        
     }
 
 }
