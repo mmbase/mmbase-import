@@ -16,16 +16,16 @@ import java.util.*;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class DidactorBuilder extends MMObjectBuilder {
-    private org.mmbase.util.Encode encoder = null;
+
     private static final Logger log = Logging.getLoggerInstance(DidactorBuilder.class);
 
-    private SortedSet preInsertComponents = new TreeSet();
-    private SortedSet postInsertComponents = new TreeSet();
+    private SortedSet<EventInstance> preInsertComponents  = new TreeSet<EventInstance>();
+    private SortedSet<EventInstance> postInsertComponents = new TreeSet<EventInstance>();
 
-    private SortedSet preCommitComponents = new TreeSet();
-    private SortedSet postCommitComponents = new TreeSet();
+    private SortedSet<EventInstance> preCommitComponents  = new TreeSet<EventInstance>();
+    private SortedSet<EventInstance> postCommitComponents = new TreeSet<EventInstance>();
 
-    private SortedSet preDeleteComponents = new TreeSet();
+    private SortedSet<EventInstance> preDeleteComponents  = new TreeSet<EventInstance>();
 
     public boolean init() {
         checkAddTmpField("_justinserted");
@@ -69,28 +69,29 @@ public class DidactorBuilder extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         node.setValue("_justinserted", "true");
-        Iterator i = preInsertComponents.iterator();
-        while (i.hasNext()) {
-            Component c = ((EventInstance)i.next()).component;
-            log.debug("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+        for (EventInstance e : preInsertComponents) {
+            Component c = e.component;
+            if (log.isDebugEnabled()) {
+                log.debug("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            }
             c.preInsert(node);
         }
         int res = super.insert(owner, node);
 
-        Collection fields = getFields();
-        Iterator it = fields.iterator();
-        while (it.hasNext()) {
-            FieldDefs fd = (FieldDefs) it.next();
+        for (FieldDefs fd : (Collection<FieldDefs>) getFields()) {
             if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
-                log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.getValues().get(fd.getDBName()) + "]");
+                if (log.isDebugEnabled()) {
+                    log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.getValues().get(fd.getDBName()) + "]");
+                }
                 setFieldValue(owner, node, fd.getDBName());
             }
         }
 
-        i = postInsertComponents.iterator();
-        while (i.hasNext()) {
-            Component c = ((EventInstance)i.next()).component;
-            log.debug("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+        for (EventInstance e : postInsertComponents) {
+            Component c = e.component;
+            if (log.isDebugEnabled()) {
+                log.debug("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            }
             c.postInsert(node);
         }
         return res;
@@ -102,8 +103,7 @@ public class DidactorBuilder extends MMObjectBuilder {
      * method for all registered components.
      */
     public MMObjectNode preCommit(MMObjectNode node) {
-        Iterator i = preCommitComponents.iterator();
-        if (i.hasNext()) {
+        if (preCommitComponents.size() > 0) {
             if (node.getValue("_justinserted") != null) {
                 // the preCommit() is called on the newly inserted node since the new storage layer.
                 // pre-insert behavior should be handled by preinsert handlers, and not by
@@ -111,8 +111,8 @@ public class DidactorBuilder extends MMObjectBuilder {
                 return node;
             }
         }
-        while (i.hasNext()) {
-            Component c = ((EventInstance)i.next()).component;
+        for (EventInstance e : preCommitComponents) {
+            Component c = e.component;
             log.info("Firing " + c.getName() + ".preCommit() on object of type '" + node.getBuilder().getTableName() + "'");
             c.preCommit(node);
         }
@@ -127,19 +127,15 @@ public class DidactorBuilder extends MMObjectBuilder {
     public boolean commit(MMObjectNode node) {
         boolean bSuperCommit = super.commit(node);
 
-        Collection fields = getFields();
-        Iterator it = fields.iterator();
-        while (it.hasNext()) {
-            FieldDefs fd = (FieldDefs)it.next();
+        for (FieldDefs fd : (Collection<FieldDefs>) getFields()) {
             if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && fd.getDBPos() == 300) {
                 log.debug("Have to process set on field [" + fd.getDBName() + "] with value [" + node.getValues().get(fd.getDBName()) + "]");
                 setFieldValue(node.getStringValue("owner"), node, fd.getDBName());
             }
         }
 
-        Iterator i = postCommitComponents.iterator();
-        while (i.hasNext()) {
-            Component c = ((EventInstance)i.next()).component;
+        for (EventInstance e : postCommitComponents) {
+            Component c = e.component;
             log.debug("Firing " + c.getName() + ".postCommit() on object of type '" + node.getBuilder().getTableName() + "'");
             c.postCommit(node);
         }
@@ -153,9 +149,8 @@ public class DidactorBuilder extends MMObjectBuilder {
      * delete events on nodes before the bridge complains.
      */
     public boolean preDelete(MMObjectNode node) {
-        Iterator i = preDeleteComponents.iterator();
-        while (i.hasNext()) {
-            Component c = ((EventInstance)i.next()).component;
+        for (EventInstance e : preDeleteComponents) {
+            Component c = e.component;
             log.info("Firing " + c.getName() + ".preDelete() on object of type '" + node.getBuilder().getTableName() + "'");
             c.preDelete(node);
         }
@@ -177,7 +172,7 @@ public class DidactorBuilder extends MMObjectBuilder {
             if (fd.getDBState() == FieldDefs.DBSTATE_VIRTUAL && node.getNumber() != -1 && fd.getDBPos() == 300) {
                 log.debug("Getting field [" + field + "] from db fields thingie");
                 // Special Didactor case: field was added by a component.xml file, we read it from a related fields node
-                Vector fieldNodes = node.getRelatedNodes("fields");
+                List fieldNodes = node.getRelatedNodes("fields");
                 for (int i=0; i<fieldNodes.size(); i++) {
                     MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
                     if (field.equals(fieldNode.getStringValue("name"))) {
@@ -193,7 +188,7 @@ public class DidactorBuilder extends MMObjectBuilder {
     }
 
     private void setFieldValue(String owner, MMObjectNode node, String field) {
-        Vector fieldNodes = node.getRelatedNodes("fields");
+        List fieldNodes = node.getRelatedNodes("fields");
         for (int i=0; i<fieldNodes.size(); i++) {
             MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
             if (field.equals(fieldNode.getStringValue("name"))) {
