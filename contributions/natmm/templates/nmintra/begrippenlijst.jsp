@@ -44,10 +44,19 @@ if(twoColumns) {
 
 <% if(vraagNode != null) { %>
 	 
-	 <jsp:include page="includes/relatedvraagbaak.jsp">
-         	<jsp:param name="v" value="<%=vraagNode%>"/>
-     </jsp:include>
-         
+	<%-- directly forwarding to not the vraagbaak, but a/the page that includes the vraagbaak --%>
+    <% String vraagpageLink = ""; %>
+  
+    <mm:node number="<%=vraagNode%>" >
+		<mm:relatednodes type="pagina" max="1" >
+  			<mm:field name="number" jspvar="page_node" vartype="String" write="false" >
+  			<% vraagpageLink = "vraagbaak.jsp?p=" + page_node + "#" + vraagNode; %>
+			</mm:field>
+		</mm:relatednodes>
+    </mm:node>
+    
+    <mm:redirect page="<%=vraagpageLink%>" /> 
+      
 <% } else {%>
 
     <%@include file="includes/back_print.jsp" %>
