@@ -4,9 +4,7 @@
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %>
 <mm:content type="text/plain" postprocessor="trimmer">
-<mm:cloud method="delegate">
-
-<jsp:directive.include file="/shared/setImports.jsp" />
+<mm:cloud rank="didactor user">
 <jsp:directive.include file="/education/tests/definitions.jsp" />
 
 
@@ -16,8 +14,9 @@
 
 <mm:node number="$student" notfound="skip">
 
-   <%-- find user's copybook --%>
-   <jsp:directive.include file="find_copybook.jsp" />
+  <di:copybook>
+    <mm:node id="copybookNo" />
+  </di:copybook>
 
    <mm:present referid="copybookNo">
    <os:cache time="${empty copybookNo ? 600 : 0}" key="progress-${education}-${student}-${copybookNo}">
