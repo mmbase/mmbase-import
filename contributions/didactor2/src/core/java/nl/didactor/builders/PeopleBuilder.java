@@ -161,13 +161,9 @@ public class PeopleBuilder extends DidactorBuilder {
             int now = (int)(System.currentTimeMillis() / 1000);    
             int oldtime = node.getIntValue("lastactivity");
             if (now - oldtime > 60 * 5) {
-                return Integer.valueOf(0);
+                return Boolean.FALSE;
             } else {
-                int islogged = node.getIntValue("islogged");
-                if (islogged == 0) {
-                    return Integer.valueOf(0);
-                }
-                return Integer.valueOf(1);
+                return node.getIntValue("islogged") == 0 ? Boolean.FALSE : Boolean.TRUE;
             }
         }
 
