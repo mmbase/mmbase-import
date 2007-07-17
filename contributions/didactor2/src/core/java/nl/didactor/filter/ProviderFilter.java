@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.10 2007-07-12 12:01:09 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.11 2007-07-17 14:34:49 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -158,6 +158,50 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         return nl.didactor.security.Authentication.getCurrentUserNode(cloud);
     }
 
+    protected Node getEducation(Cloud cloud, Node provider, String[] urls, Map<String, Object> attributes) {
+        
+        Node education = null;
+        NodeList educations;
+        if (provider != null) {
+            educations = provider.getRelatedNodes("educations");
+            if (educations.size() == 0) {
+                log.warn("Provider " + provider + " has no education");
+                educations = cloud.getNodeManager("educations").getList(null, null, null);
+            }
+        } else {
+            // there was no provider found yet, so we try educations only
+            educations = cloud.getNodeManager("educations").getList(null, null, null);
+        }
+        
+        for (String u : urls) {
+            education = selectByRelatedUrl(educations, u);
+            if (education != null) break;
+        }                    
+        
+        
+        if (education == null && provider != null) {
+            // no url related to the educations, simply take one related to the provider if
+            // that was found.
+            NodeList eds = provider.getRelatedNodes("educations");
+            if (eds.size() > 0) {
+                education = eds.nodeIterator().nextNode();
+            }   
+        }
+        
+        if (education == null && educations.size() > 0) {
+            // Still no education found, if there are education at all, simply guess one.
+            education = educations.nodeIterator().nextNode();
+        }
+        
+        if (education != null) {
+            log.debug("Found education " + education.getNumber());
+            attributes.put("education", education.getNumber()); 
+        } else {
+            attributes.put("education", null);
+        }
+        return education;
+    }
+    
 
     /**
      * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the 
@@ -194,12 +238,20 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
         String serverName = req.getServerName();
         String contextPath = req.getContextPath();
+        HttpSession session = req.getSession(false);        
 
-        String educationParameter = useParameters ? req.getParameter("education") : null;
+
+        String educationParameter = useParameters && session != null ? (String) session.getAttribute("education") : null;
+        if (educationParameter == null && useParameters) educationParameter = req.getParameter("education");
+
+        if (educationParameter != null && useParameters && session != null) {
+            // remember some explicit education parameter in the session.
+            session.setAttribute("education", educationParameter);
+        }
+
         String providerParameter  = useParameters ? req.getParameter("provider") : null;
 
         Cloud cloud = getCloud(req);
-        HttpSession session = req.getSession(false);        
         Map<String, Object> userAttributes;
         if (session == null) {
             userAttributes = new HashMap<String, Object>();
@@ -252,56 +304,24 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                     }                    
                 }
             }
-            Node education = null;                
-            {
-                NodeList educations;
-                if (provider != null) {
-                    educations = provider.getRelatedNodes("educations");
-                    if (educations.size() == 0) {
-                        log.warn("Provider " + provider + " has no education");
-                        educations = cloud.getNodeManager("educations").getList(null, null, null);
-                    }
-                } else {
-                    // there was no provider found yet, so we try educations only
-                    educations = cloud.getNodeManager("educations").getList(null, null, null);
-                }
-                
-                for (String u : urls) {
-                    education = selectByRelatedUrl(educations, u);
-                    if (education != null) break;
-                }                    
+            Node education = getEducation(cloud, provider, urls, attributes);
 
-                
-                if (education == null && provider != null) {
-                    // no url related to the educations, simply take one related to the provider if
-                    // that was found.
-                    NodeList eds = provider.getRelatedNodes("educations");
-                    if (eds.size() > 0) {
-                        education = eds.nodeIterator().nextNode();
-                    }   
-                }
-
-                if (education == null && educations.size() > 0) {
-                    // Still no education found, if there are education at all, simply guess one.
-                    education = educations.nodeIterator().nextNode();
-                }
-
-                if (education != null) {
-                    log.debug("Found education " + education.getNumber());
-                    attributes.put("education", education.getNumber()); 
-                } else {
-                    log.warn("No education found for " + key);
-                    attributes.put("education", null);
-                }
-                // try determining provider if education found, but not yet a provider
-                if (provider == null && education != null) {
-                    NodeList providers = education.getRelatedNodes("providers");
-                    if (providers.size() > 0) {
-                        provider = providers.nodeIterator().nextNode();
-                    }
+            // try determining provider if education found, but not yet a provider
+            if (provider == null && education != null) {
+                NodeList providers = education.getRelatedNodes("providers");
+                if (providers.size() > 0) {
+                    provider = providers.nodeIterator().nextNode();
                 }
             }
 
+
+            if (provider == null) {
+                NodeList providers = cloud.getNodeManager("providers").getList(null, null, null);
+                if (providers.size() > 0) {
+                    provider = providers.getNode(0);
+                    education = getEducation(cloud, provider, urls, attributes);
+                }
+            }
             Locale locale; 
             if (provider != null) {
                 log.debug("Found provider " + provider.getNumber());
@@ -316,6 +336,10 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             attributes.put("javax.servlet.jsp.jstl.fmt.locale.request", locale);
             attributes.put("language", locale.toString());
             attributes.put("locale", locale);
+
+            if (education == null) {
+                log.warn("No education found for " + key);
+            }
 
             if (provider == null) {
                 if (req.getServletPath().startsWith("/mmbase")) {
@@ -355,12 +379,13 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 userAttributes.put("class", cloud.getNode(c));
             }
         } else {
-            if (userAttributes.get("class") == null) {
+            Object education = attributes.get("education");
+            if (education != null && userAttributes.get("class") == null) {
                 try {
                     Node user = cloud.getNode((Integer) userAttributes.get("user"));
                     Function fun = user.getFunction("class");
                     Parameters params = fun.createParameters();
-                    params.set("education", attributes.get("education"));
+                    params.set("education", education);
                     Node claz = (Node) fun.getFunctionValue(params);
                     userAttributes.put("class", claz);
                 } catch (NotFoundException nfe) {
