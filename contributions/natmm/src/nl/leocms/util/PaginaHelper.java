@@ -1233,6 +1233,11 @@ public class PaginaHelper {
 
 		// set the rubriekID on basis of the paginaID
 		if(!paginaID.equals("-1")&&rubriekID.equals("-1")) {
+		   // pages might be called with a url with anchors attached after #
+          if (paginaID.indexOf("#") != -1) {
+             paginaID = paginaID.substring(0, paginaID.indexOf("#"));
+          }
+          
 			 NodeList nlRubriek = cloud.getList(paginaID,
 														"pagina,posrel,rubriek",
 														"rubriek.number",
