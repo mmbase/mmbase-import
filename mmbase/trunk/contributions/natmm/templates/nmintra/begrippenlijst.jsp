@@ -2,7 +2,7 @@
 <mm:cloud jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%
@@ -55,7 +55,7 @@ if(twoColumns) {
 		</mm:relatednodes>
     </mm:node>
     
-    <mm:redirect page="<%=vraagpageLink%>" /> 
+    <mm:redirect page="<%=vraagpageLink%>" />
       
 <% } else {%>
 
@@ -78,47 +78,10 @@ if(twoColumns) {
 	    	<br/>
     	</div>
     	
-    
-    
     </mm:listnodes>
     
     <% } %>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <%-- These are article related view items - MIGHT BE REMOVED 
-    <% 
-      if(!"false".equals(request.getParameter("showteaser"))) { 
-         %>
-         <%@include file="includes/relatedteaser.jsp" %>
-         <%
-      }
-      String startnodeId = articleId;
-      String articlePath = "artikel";
-      String articleOrderby = "";
-      if(articleId.equals("-1")) { 
-      startnodeId = paginaID;
-      articlePath = "pagina,contentrel,artikel";
-      articleOrderby = "contentrel.pos";
-      }
-      %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
-         ><%@include file="includes/relatedarticle.jsp" 
-      %></mm:list>
-      <mm:node number="<%= paginaID %>">
-         <%@include file="includes/relatedcompetencies.jsp" %>
-      </mm:node>
-      <%@include file="includes/pageowner.jsp" 
-    %>
-     THE ABOVE BLOCK MIGHT BE SELECTIVELY REMOVED --%>
-    
-    
-    
+     
     
     </td>
 </tr>
@@ -152,5 +115,5 @@ if(twoColumns) {
 } %>
 
 <%@include file="includes/footer.jsp" %>
-</cache:cache>
+
 </mm:cloud>
