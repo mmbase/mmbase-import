@@ -4,4 +4,5 @@
   <field name="naam"/>
   <field name="type_gebied"/>
   <relation destination="images" role="related"/>
+  <field name="opmerking"/>
 </action>
