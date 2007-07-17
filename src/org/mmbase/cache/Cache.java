@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.46 2007-04-07 17:12:53 nklasens Exp $
+ * @version $Id: Cache.java,v 1.47 2007-07-17 08:32:00 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -36,17 +36,17 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * The number of times an element was succesfully retrieved from this cache.
      */
-    private int hits = 0;
+    private long hits = 0;
 
     /**
      * The number of times an element could not be retrieved from this cache.
      */
-    private int misses = 0;
+    private long misses = 0;
 
     /**
      * The number of times an element was committed to this cache.
      */
-    private int puts = 0;
+    private long puts = 0;
 
     public Cache(int size) {
         implementation = new LRUHashtable<K, V>(size);
@@ -167,7 +167,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Returns the number of times an element was succesfully retrieved
      * from the table.
      */
-    public int getHits() {
+    public long getHits() {
         return hits;
     }
 
@@ -175,14 +175,14 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Returns the number of times an element cpould not be retrieved
      * from the table.
      */
-    public int getMisses() {
+    public long getMisses() {
         return misses;
     }
 
     /**
      * Returns the number of times an element was committed to the table.
      */
-    public int getPuts() {
+    public long getPuts() {
         return puts;
     }
 
