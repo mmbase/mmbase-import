@@ -67,4 +67,10 @@
     </field>
  
   </fieldlist>
+
+  <functionlist>
+    <function name="coach" key="workgroupCoach">
+      <class>nl.didactor.functions.Functions</class>
+    </function>
+  </functionlist>
 </builder>
