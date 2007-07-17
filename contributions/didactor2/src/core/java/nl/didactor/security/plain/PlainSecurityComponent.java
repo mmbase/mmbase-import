@@ -21,14 +21,14 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.17 2007-07-04 13:56:46 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.18 2007-07-17 14:37:23 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
     private static final Logger log = Logging.getLoggerInstance(PlainSecurityComponent.class);
 
     private PeopleBuilder users;
-    private final Map properties = new HashMap();
+    private final Map<String, String> properties = new HashMap<String, String>();
 
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if (users == null) {
@@ -61,7 +61,9 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        properties.putAll(props);
+        for (String prop : Collections.list((Enumeration<String>) props.propertyNames())) {
+            properties.put(prop, props.getProperty(prop));
+        }
 
     }
 
