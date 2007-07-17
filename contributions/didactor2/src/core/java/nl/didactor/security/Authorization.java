@@ -12,7 +12,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @javadoc
- * @version $Id: Authorization.java,v 1.5 2007-07-12 09:52:28 michiel Exp $
+ * @version $Id: Authorization.java,v 1.6 2007-07-17 14:36:46 michiel Exp $
  */
 public class Authorization extends org.mmbase.security.Authorization {
 
@@ -86,6 +86,7 @@ public class Authorization extends org.mmbase.security.Authorization {
         if (operation.equals(Operation.DELETE)) {
             MMObjectBuilder objectBuilder = MMBase.getMMBase().getBuilder("object");
             MMObjectNode node = objectBuilder.getNode(nodeid);
+            if (node == null) return;
             MMObjectBuilder builder = node.getBuilder();
             if (builder instanceof DidactorBuilder) {
                 DidactorBuilder dbuilder = (DidactorBuilder)builder;
