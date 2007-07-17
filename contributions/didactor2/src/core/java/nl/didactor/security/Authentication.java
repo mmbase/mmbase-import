@@ -86,11 +86,14 @@ public class Authentication extends org.mmbase.security.Authentication {
     protected org.mmbase.security.UserContext request(org.mmbase.security.UserContext uc, HttpServletRequest req) {
         Node n = org.mmbase.bridge.util.SearchUtil.findNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase"), "people", "username", uc.getIdentifier());
         req.setAttribute("user", n == null ? "0" : n.getNumber());
-        Function fun = n.getFunction("class");
-        Parameters params = fun.createParameters();
-        params.set("education", req.getAttribute("education"));
-        Node claz = (Node) fun.getFunctionValue(params);
-        req.setAttribute("class", claz);
+        Object education = req.getAttribute("education");
+        if (education != null) {
+            Function fun = n.getFunction("class");
+            Parameters params = fun.createParameters();
+            params.set("education", education);
+            Node claz = (Node) fun.getFunctionValue(params);
+            req.setAttribute("class", claz);
+        }
         return uc;
     }
     /**
