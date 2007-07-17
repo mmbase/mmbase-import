@@ -20,12 +20,12 @@ import nl.leocms.util.ApplicationHelper;
 
 public class NelisReader
 { 
-    // ASSUMES A 3 COLUMN FORMAT (REGIO/EENHEID/GEBIED)
+    // ASSUMES A 2 COLUMN FORMAT (EENHEID/GEBIED)
     // seperator and nelis file are configured in readData() method
     private Map natGebMap;
     private Map gebiedMap;
     private long timeStamp;
-    private final static long  EXPIRE_INTERVAL = 2 * 60 * 60 * 1000; //two hours of refresh interval till last read 
+    private final static long  EXPIRE_INTERVAL = 2 * 60 * 60 * 1000; //two hours of refresh interval since last read 
     private static final Logger log = Logging.getLoggerInstance(NelisReader.class);
     
     
@@ -149,6 +149,13 @@ private void readData() {
         dataFileReader.close();
       } catch(Exception e) {
         log.info(e);
+        // If Nelis file absent first time then maps will be null. In this case we instantiate for a graceful degradation.
+        if (natGebMap == null) {
+           natGebMap = new TreeMap();
+        }
+        if (gebiedMap == null) {
+           gebiedMap= new TreeMap();
+        }
       }
                  
      // Provincies & regios are constant and hardcoded unlike other values that come from Nelis file.  
