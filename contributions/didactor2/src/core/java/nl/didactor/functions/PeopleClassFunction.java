@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.2 2007-07-11 12:42:02 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.3 2007-07-17 14:35:58 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -38,7 +38,7 @@ public class PeopleClassFunction {
         NodeList foundClasses = classes.getList(query);
         Node claz;
         if (foundClasses.size() > 1) {
-            log.warn("more classes related!");
+            log.warn("more classes related! for node " + node.getNumber());
             claz = foundClasses.getNode(0);
         } else if (foundClasses.size() == 1) {
             claz = foundClasses.getNode(0);
