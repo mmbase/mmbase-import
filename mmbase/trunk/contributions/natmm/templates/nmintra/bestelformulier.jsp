@@ -141,7 +141,7 @@ function validationMessage() {
 	<%@include file="includes/calendar.jsp" %>   
 
 <% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(!twoColumns) { %>colspan="2"<% } %>><%--@include file="includes/pagetitle.jsp" --%></td>
+<td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
 <% 
 if(twoColumns) { 
    String rightBarTitle = "";
