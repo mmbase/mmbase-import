@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.15 2007-07-09 08:14:14 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.16 2007-07-17 14:04:45 ieozden Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -184,10 +184,11 @@ public class BestelAction  extends Action {
       
       // here we reset basket and bestelforms
       ShoppingBasketHelper.removeShoppingBasket(request);
-      bestelForm.setNaam(null);
-      bestelForm.setEmail(null);
-      bestelForm.setEendheid(null);
-      bestelForm.setBezorgadres(null);
+      // NMCMS-327. Customer requests these fields not erased after a shopping cart submit. Hence commented-out.
+      //bestelForm.setNaam(null);
+      //bestelForm.setEmail(null);
+      //bestelForm.setEendheid(null);
+      //bestelForm.setBezorgadres(null);
       
       log.debug("processed purchase now forwarding send");
       return mapping.findForward("send");
