@@ -3,6 +3,6 @@
 <optionlist name="typen_gebied">
    <option id="Coordinaten">Coordinaten</option>
    <option id="Eenheid">Eenheid</option>
-   <option id="Natuurgebied(en)">Natuurgebied(en)</option>
+   <option id="Natuurgebied">Natuurgebied</option>
    <option id="Nederland">Nederland</option>
 </optionlist>
