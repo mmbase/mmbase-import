@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.16 2007-06-08 12:20:31 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.17 2007-07-17 14:32:20 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
@@ -110,21 +110,19 @@ public class TranslateTable {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("#")) {
-                    continue;
-                }
+            
+            // we want to profit from Properties#load (all kind of handy features),
+            // but we also want the property files to be in unicode. 
+            // Following trick with Transforming readers and so on, arranges that.
+            Properties props = new Properties();
+            InputStream in = new ReaderInputStream(new org.mmbase.util.transformers.TransformingReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"), 
+                                                                                                       new org.mmbase.util.transformers.UnicodeEscaper()), "ISO-8859-1"); 
+            props.load(in);
 
-                int equalsign = line.indexOf("=");
-                if (equalsign == -1) {
-                    continue;
-                }
-
-                String key = line.substring(0, equalsign).trim();
-                String value = line.substring(equalsign + 1, line.length()).trim();
-
+            for (Map.Entry entry : props.entrySet()) {
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
+                
                 String fkey = namespace;
                 if (!"".equals(locale)) {
                     fkey += "." + locale;
@@ -324,7 +322,7 @@ public class TranslateTable {
             }
         }
     }
-    public String translate(String tkey, Object[] args) {
+    public String translate(String tkey, Object... args) {
         String translation = translate(tkey);
         if (log.isDebugEnabled()) {
             log.debug("Formatting " + translation + " " + Arrays.asList(args) + " (" + translationLocale + ")");
