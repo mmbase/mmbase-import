@@ -282,6 +282,10 @@
 	<mm:createrelation role="gebruikt" source="user_admin_2" destination="menu_themaplotkaart" />
 </mm:listnodes>
 
+<mm:listnodes type="users" constraints="account='admin'" max="1" id="user_admin_3" >
+	<mm:createrelation role="gebruikt" source="user_admin_3" destination="editwizard_themaplotkaart" />
+</mm:listnodes>
+
 
 22. <br/>
 
