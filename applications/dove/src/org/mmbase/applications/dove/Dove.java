@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.78.2.2 2007-05-10 12:01:25 michiel Exp $
+ * @version $Id: Dove.java,v 1.78.2.3 2007-07-18 05:27:44 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -93,13 +93,13 @@ public class Dove extends AbstractDove {
     private boolean isDataField(NodeManager nodeManager, Field f) {
         String fname = f.getName();
         return (nodeManager.hasField(fname)) && // skip temporary fields
-               (!"owner".equals(fname)) && // skip owner/otype/number fields!
-               (!"otype".equals(fname)) &&
-               (!"number".equals(fname)) &&
-               (!"snumber".equals(fname)) &&
-               (!"dnumber".equals(fname)) &&
-               (!"rnumber".equals(fname)) &&
-               (!"dir".equals(fname));
+            (!"owner".equals(fname)) &&
+            (!"otype".equals(fname)) && // skip owner/otype/number fields!
+            (!"number".equals(fname)) &&
+            (!"snumber".equals(fname)) &&
+            (!"dnumber".equals(fname)) &&
+            (!"rnumber".equals(fname)) &&
+            (!"dir".equals(fname));
     }
 
     /**
@@ -116,7 +116,7 @@ public class Dove extends AbstractDove {
     }
 
     private boolean isEditableField(NodeManager nodeManager, String fname) {
-        return isDataField(nodeManager, fname) && nodeManager.getField(fname).getState() == Field.STATE_PERSISTENT;
+        return isDataField(nodeManager, fname) && ! nodeManager.getField(fname).isReadOnly();
     }
 
     /**
@@ -202,7 +202,7 @@ public class Dove extends AbstractDove {
                     Element err = addContentElement(ERROR, "field with name " + fname + " does not exist", out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 }
-                field = getNextElement(field,FIELD);
+                field = getNextElement(field, FIELD);
             }
         }
         // load relations
@@ -611,7 +611,7 @@ public class Dove extends AbstractDove {
                 String fname=fielddef.getName();
                 // Filter out the owner/otype/number/CacheCount fields and
                 // the virtual fields.
-                if (isDataField(nm,fielddef)) {
+                if (isDataField(nm, fielddef)) {
                     Element field=doc.createElement(FIELD);
                     field.setAttribute(ELM_NAME,fname);
                     fields.appendChild(field);
@@ -696,8 +696,8 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      */
     public void getList(Element in, Element out, Cloud cloud) {
-        Element query=getFirstElement(in);
-        while (query!=null) { // select all child tags, should be 'query'
+        Element query = getFirstElement(in);
+        while (query != null) { // select all child tags, should be 'query'
             if (query.getTagName().equals(QUERY)) {
                 String xpath = query.getAttribute(ELM_XPATH); // get xpath (nodetype);
                 String where = query.getAttribute(ELM_WHERE); // get constraints;
@@ -717,15 +717,15 @@ public class Dove extends AbstractDove {
                     if (orderby!=null) {
                         querydata.setAttribute(ELM_ORDERBY, orderby);
                     }
-                    if (directions!=null) {
+                    if (directions != null) {
                         querydata.setAttribute(ELM_DIRECTIONS, directions);
                     }
                     out.appendChild(querydata);
 
                     // get node template
-                    Element node=getFirstElement(query);
+                    Element node = getFirstElement(query);
 
-                    if (xpath.indexOf("/*@")!=0) {
+                    if (xpath.indexOf("/*@") != 0) {
                         Element err = addContentElement(ERROR,"invalid xpath",out);
                         err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
@@ -735,7 +735,7 @@ public class Dove extends AbstractDove {
                         if (nodepath.indexOf("/") == -1) {
                             // If there is no '/' seperator, we only get fields from one nodemanager. This is the fastest
                             // way of getting those.
-                            i = cloud.getNodeManager(xpath.substring(3)).getList(where,orderby,directions).nodeIterator();
+                            i = cloud.getNodeManager(nodepath).getList(where, orderby, directions).nodeIterator();
                         } else {
                             // If there are '/' seperators, we need to do a multilevel search. Therefore we first need to
                             // get a list of all the fields (as subnodes) to query.
@@ -753,8 +753,8 @@ public class Dove extends AbstractDove {
                         }
                         
                         for(; i.hasNext(); ) {
-                            org.mmbase.bridge.Node n=i.nextNode();
-                            Element data=doc.createElement(OBJECT);
+                            org.mmbase.bridge.Node n = i.nextNode();
+                            Element data = doc.createElement(OBJECT);
                             data.setAttribute(ELM_NUMBER, ""+n.getNumber());
                             querydata.appendChild(data);
                             getDataNode(node,data,n);
