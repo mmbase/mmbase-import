@@ -14,6 +14,14 @@
    <jsp:param name="rs" value="<%= styleSheet %>" />
    <jsp:param name="sr" value="1" />
 </jsp:include>
+
+<%
+int imagesInARow = 3;
+if (isNaardermeer.equals("true")) {
+	imagesInARow = 2;
+} 
+%>
+
 <table class="dotline"><tr><td height="3"></td></tr></table>
 <table border="0" cellspacing="0" cellpadding="0">
 	<tr>
@@ -35,15 +43,15 @@
 						</mm:compare>
 						</mm:field>
 				    </mm:list>
-					<mm:node number="<%= images_number %>"><img src="<mm:image template="s(175)" /></mm:node>" alt="<mm:field name="alt_tekst" />" border="0" vspace="5" hspace="5"></a><br>
+      				<mm:node number="<%= images_number %>"><img src="<mm:image template="s(175)" /></mm:node>" alt="<mm:field name="alt_tekst" />" border="0" vspace="5" hspace="5"></a><br>
 					<mm:field name="images.titel" jspvar="sTitle" vartype="String" write="false">
                   <%= sTitle.substring(0,1).toUpperCase() + sTitle.substring(1) %>
                </mm:field>  
    			</td>
-				<% if(imgCnt % 3 == 0){ %></tr><tr><% } %>
+				<% if(imgCnt % imagesInARow == 0){ %></tr><tr><% } %>
 			</mm:field>
 			<mm:last>
-				<% if(imgCnt % 3 != 0){  if(imgCnt % 2 == 0){%><td>&nbsp;</td><td>&nbsp;</td><%} else if(imgCnt % 1 == 0){%><td>&nbsp;</td><% } %></tr><% } %>
+				<% if(imgCnt % imagesInARow != 0){  if(imgCnt % 2 == 0){%><td>&nbsp;</td><td>&nbsp;</td><%} else if(imgCnt % 1 == 0){%><td>&nbsp;</td><% } %></tr><% } %>
 			</mm:last>
 		</mm:list>
 	<% } %>
