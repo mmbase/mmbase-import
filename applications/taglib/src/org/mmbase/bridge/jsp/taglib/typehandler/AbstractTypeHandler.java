@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.53 2007-06-27 13:21:57 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.54 2007-07-18 07:50:47 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -400,14 +400,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected String prefixID(String s) throws JspTagException {
         String prefix = tag.getPrefix();
-        if (! prefix.equals("")) prefix += "_";
-        return "mm_" + prefix + s;
+        return "mm_" + prefix + (prefix.length() != 0 ? "_" : "") + s;
     }
 
     protected String prefixError(String s) throws JspTagException {
         String prefix = tag.getPrefix();
-        if (! prefix.equals("")) prefix += "_";
-        return "mm_check_" + prefix + s;
+        return "mm_check_" + prefix + (prefix.length() != 0 ? "_" : "") + s;
     }
 
 

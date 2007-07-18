@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.35 2007-06-21 15:50:24 nklasens Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.36 2007-07-18 07:50:47 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -64,9 +64,9 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         Object value;
         String refid = valueId.getString(this);
         if (body != null) {
-            if (! refid.equals("")) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
+            if (refid.length() != 0) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
             value = body;
-        } else if (! refid.equals("")) {
+        } else if (refid.length() != 0) {
             value = getObject(refid);
         } else {
             value = "";

@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.18 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.19 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -66,7 +66,7 @@ public class XmlHandler extends StringHandler {
             }
             buffer.append(value);
             String opt = tag.getOptions();
-            if (opt != null && opt.indexOf("noempty") > -1 && value.equals("")) {
+            if (opt != null && opt.indexOf("noempty") > -1 && value.length() == 0) {
                 buffer.append(" ");
             }
             buffer.append("</textarea>");

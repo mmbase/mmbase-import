@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.75 2006-10-17 12:09:13 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.76 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -141,7 +141,7 @@ public class ImageTag extends FieldTag {
 
     private int getMode() throws JspTagException {
         String m = mode.getString(this).toLowerCase();
-        if (m.equals("") || m.equals("url")) {
+        if (m.length() == 0 || m.equals("url")) {
             return MODE_URL;
         } else if (m.equals("attributes")) {
             return MODE_HTML_ATTRIBUTES;
@@ -155,7 +155,7 @@ public class ImageTag extends FieldTag {
 
     private String getCrop() throws JspTagException {
         String m = crop.getString(this).toLowerCase();
-        if (m.equals("")) {
+        if (m.length() == 0) {
             return null;
         } else if (m.equals("middle")) {
             return CROP_MIDDLE;

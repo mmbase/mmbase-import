@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -76,7 +76,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
         Query query = c.getQuery();
         String elementString = element.getString(this);
         Step step;
-        if (elementString.equals("")) {
+        if (elementString.length() == 0) {
             if (query instanceof NodeQuery) {
                 step = ((NodeQuery) query).getNodeStep();
             } else {

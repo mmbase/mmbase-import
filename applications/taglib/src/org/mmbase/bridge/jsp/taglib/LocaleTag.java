@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.29 2007-05-16 14:45:39 michiel Exp $
+ * @version $Id: LocaleTag.java,v 1.30 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class LocaleTag extends CloudReferrerTag  {
@@ -100,7 +100,7 @@ public class LocaleTag extends CloudReferrerTag  {
             }
         }
         String tz = timezone.getString(this);
-        if (timezone != null && ! tz.equals("")) {
+        if (tz.length() != 0) {
             pageContext.setAttribute(TZ_KEY, TimeZone.getTimeZone(tz), SCOPE);
         } else {
             if (pageContext.getAttribute(TZ_KEY, SCOPE) == null) {
@@ -141,7 +141,7 @@ public class LocaleTag extends CloudReferrerTag  {
      */
     protected void determineLocaleFromAttributes() throws JspTagException {
         String l = language.getString(this);
-        if (! l.equals("")) {
+        if (l.length() != 0) {
             if (l.equalsIgnoreCase("client")) {
                 locale = pageContext.getRequest().getLocale();
             } else {

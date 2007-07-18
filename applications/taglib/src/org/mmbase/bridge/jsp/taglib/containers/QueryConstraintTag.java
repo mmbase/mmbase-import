@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.8 2007-07-18 07:50:47 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -94,7 +94,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
 
     public boolean getCaseSensitive() throws JspTagException {
         String cs = caseSensitive.getString(this).toUpperCase();
-        if (cs.equals("") || cs.equals("FALSE")) {
+        if (cs.length() == 0 || cs.equals("FALSE")) {
             return false;
         }  else if (cs.equals("TRUE")) {
             return true;
