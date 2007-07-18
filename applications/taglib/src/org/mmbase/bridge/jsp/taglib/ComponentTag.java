@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.20 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.21 2007-07-18 10:33:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -62,7 +62,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
         extraParameters.add(new Entry<String, Object>(key, value));
     }
     public void addFrameworkParameter(String key, Object value) {
-        throw new UnsupportedOperationException("mm:component does not yet receive framework parameters");
+        extraFrameworkParameters.add(new Entry<String, Object>(key, value));
     }
 
     private boolean used = false;
