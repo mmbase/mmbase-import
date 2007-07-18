@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="crontab"
-    defaultblock="frontend"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
@@ -12,7 +11,7 @@
 
   <block 
       classification="mmbase.admin"
-      name="admin"
+      name="crontab"
       mimetype="text/html" >
     <description xml:lang="en">Administrates the mmbase crontab</description>      
     <body jsp="/mmbase/crontab/component.jspx">
