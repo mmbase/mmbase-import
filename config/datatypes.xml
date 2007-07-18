@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.53 2007-06-07 09:15:20 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.54 2007-07-18 05:38:18 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -215,6 +215,18 @@
         The values of this field are restricted to the possible 'security contexts' of the current user as defined by the MMBase Security implementation.
       </description>
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
+    <specialization base="eline" id="security_context">
+      <description xml:lang="en">
+        Uses 'setContext' and 'getContext'. The idea is to use this type for a 'virtual' field.
+      </description>
+      <setprocessor >
+        <class name="org.mmbase.datatypes.processors.ContextProcessor$Set" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ContextProcessor$Get" />
+      </getprocessor>
     </specialization>
 
     <specialization id="whitespacereplacer">
