@@ -136,8 +136,7 @@ img {
   margin: 0; 
 }
 
-#navigation li a
-{
+#navigation li a {
   display: block;
   padding: 5px 0 5px 0.5em;
   border-left: 1px solid #002828;
@@ -155,6 +154,13 @@ img {
   background-color: #ccc; 
 }
 
+#navigation li .component {  
+  visibility: hidden;
+  border-left: #103838;
+} 
+#navigation li li:hover .component {  
+  visibility: visible;
+}
 #navigation li li a {
   display: block;
   padding: 5px 0 5px 1em;
