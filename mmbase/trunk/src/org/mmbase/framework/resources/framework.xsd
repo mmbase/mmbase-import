@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.2 2007-07-07 11:58:29 michiel Exp $
+  @version $Id: framework.xsd,v 1.3 2007-07-18 07:49:18 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -27,6 +27,16 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="urlconverters">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
    
   <xsd:element name="description">
     <xsd:complexType>
@@ -44,7 +54,8 @@
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
-      <xsd:attribute name="class" type="xsd:string" />    
+      <xsd:attribute name="class" type="xsd:string" />
+      <xsd:attribute name="position" type="xsd:integer"  />
     </xsd:complexType>
   </xsd:element>
 
@@ -53,6 +64,7 @@
       <xsd:simpleContent>
         <xsd:extension base="xsd:string">
           <xsd:attribute name="name" type="xsd:string" />
+          <xsd:attribute name="type" type="xsd:string" default="String" />
         </xsd:extension>
       </xsd:simpleContent>
     </xsd:complexType>

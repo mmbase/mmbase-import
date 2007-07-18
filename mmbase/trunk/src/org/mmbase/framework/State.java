@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.7 2007-07-14 17:20:39 michiel Exp $
+ * @version $Id: State.java,v 1.8 2007-07-18 07:49:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -45,6 +45,7 @@ public class State {
     private Renderer renderer = null;
     private Renderer.Type type = Renderer.Type.NOT;
     private Processor processor = null;
+    private Parameters frameworkParameters = null;
     private final ServletRequest request;
     private final State previousState;
     
@@ -90,7 +91,7 @@ public class State {
     public void endBlock() {
         renderer = null;
         processor = null;
-            
+        frameworkParameters = null;
     }
 
     /**
@@ -98,6 +99,14 @@ public class State {
      */
     public boolean isRendering() {
         return renderer != null || processor != null;
+    }
+
+    /**
+     * Returns the parameters which were used to initialize rendering of the current block.
+     * Or <code>null</code> if currently this state is not 'rendering'.
+     */
+    public Parameters getFrameworkParameters() {
+        return frameworkParameters;
     }
    
     /**
@@ -107,10 +116,11 @@ public class State {
         return renderer != null ? renderer.getBlock() :
             (processor != null ? processor.getBlock() : null);
     }
-    protected int start() {
+    protected int start(Parameters frameworkParameters) {
         if (count == 0) {
             throw new IllegalStateException("State " + this + " was already marked for end.");
         }
+        this.frameworkParameters = frameworkParameters;
         if (processor == null) {
             id = previousState == null ? "" + count : previousState.getId() + '.' + count;
             return count++;
@@ -126,7 +136,7 @@ public class State {
      * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
      * or when the belonging request was already 'ended'.
      */
-    public boolean render(Renderer rend) {
+    public boolean render(Renderer rend, Parameters frameworkParameters) {
         if (rend.getType().ordinal() < type.ordinal()) {
             throw new IllegalStateException();
         }
@@ -136,7 +146,7 @@ public class State {
         }
         type = rend.getType();
 
-        int i = start();
+        int i = start(frameworkParameters);
         renderer = rend;
 
         String a = request.getParameter(Framework.PARAMETER_ACTION.getName());
@@ -149,9 +159,9 @@ public class State {
      * @throws IllegalStateException If the renderer for block block was already rendered.
      * or when the belonging request was already 'ended'.
      */
-    public void process(Processor processor) {
+    public void process(Processor processor, Parameters frameworkParameters) {
         if (renderer != null) throw new IllegalStateException();
-        start();
+        start(frameworkParameters);
         this.processor = processor;
     }
     
