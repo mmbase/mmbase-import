@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.75 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.76 2007-07-18 07:50:47 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -344,7 +344,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     }
                 }
             } else {
-                if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
+                if (body == null || body.length() == 0) body = "<mmxf />"; // something random that will at least parse.
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);

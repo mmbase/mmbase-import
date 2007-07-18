@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.153 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.154 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -184,7 +184,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return true;
         }
         String rankString = rank.getString(this);
-        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
+        return rankString.length() == 0 || rankString.equals(Rank.ANONYMOUS.toString());
     }
 
     public void setJspvar(String jv) {
@@ -201,7 +201,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     protected String getAuthenticate() throws JspTagException {
         String a = authenticate.getString(this);
-        if (a.equals("")) {
+        if (a.length() == 0) {
             return cloudContext.getAuthentication().getTypes(getMethod())[0];
         }
         return a;
@@ -248,7 +248,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public void setSessionname(String s) throws JspTagException {
-        if (!s.equals("")) {
+        if (s.length() != 0) {
             sessionName = getAttribute(s);
         }
     }
@@ -291,7 +291,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             c.setValue(r);
         }
         String path = request.getContextPath();
-        if (path.equals("")) path = "/";
+        if (path.length() == 0) path = "/";
         c.setPath(path);
         c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // one year
 
@@ -340,7 +340,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (cookies != null) {
                 for (Cookie element : cookies) {
                     String path = request.getContextPath();
-                    if (path.equals("")) path = "/";
+                    if (path.length() == 0) path = "/";
                     if (element.getName().equals(cookie)) {
                         if (log.isDebugEnabled()) {
                             log.debug("removing cookie with value " + element);
@@ -484,7 +484,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     public String getSessionName() throws JspTagException {
         String sn = sessionName.getString(this);
-        if (sn.equals("")) {
+        if (sn.length() == 0) {
             return "cloud_" + getName();
         } else {
             return sn;
@@ -1281,7 +1281,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         {
             String s = logonatt.getString(this);
-            logon = s.equals("") ? null : StringSplitter.split(s);
+            logon = s.length() == 0 ? null : StringSplitter.split(s);
         }
 
         getDefaultCloudContext();

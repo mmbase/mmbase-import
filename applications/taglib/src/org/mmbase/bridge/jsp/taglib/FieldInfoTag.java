@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.101 2007-06-27 13:18:20 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.102 2007-07-18 07:50:47 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -168,7 +168,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     public DataType getDataType() throws JspTagException {
         String dataTypeName = dataType.getString(this);
-        if (dataTypeName.equals("")) {
+        if (dataTypeName.length() == 0) {
             return null;
         }
         DataType dt =  DataTypes.getDataType(dataTypeName);
@@ -358,7 +358,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             fillStandardParameters(args);
 
             show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
-            if (show.trim().equals("")) {
+            if (show.trim().length() == 0) {
                 show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
             }
             break;

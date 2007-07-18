@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.13 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: YAMMEditor.java,v 1.14 2007-07-18 07:50:47 michiel Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -114,7 +114,7 @@ public class YAMMEditor extends Editor {
 
         // fill paths
         String path = getPathFromQuery(query);
-        if (!path.equals("") && !pathList.contains(path)) {
+        if (path.length() != 0 && !pathList.contains(path)) {
             pathList.add(path);
             log.debug("Added path : " + path);
         }
@@ -208,7 +208,7 @@ public class YAMMEditor extends Editor {
         while (i.hasNext()) {
             Query q = i.next();
             String path = getPathFromQuery(q);
-            if (!path.equals("") && !pl.contains(path)) {
+            if (path.length() != 0 && !pl.contains(path)) {
                 pl.add(path);
                 log.debug("Added path '" + path + "' to pl");
             }
@@ -239,7 +239,7 @@ public class YAMMEditor extends Editor {
                 String nodenrs = "";
                 SortedSet<Integer> nodeSet = step.getNodes();    // Get the (start?)nodes from this step
                 for (Integer number : nodeSet) {
-                    if (nodenrs.equals("")) {
+                    if (nodenrs.length() == 0) {
                         nodenrs = String.valueOf(number);
                     } else {
                         nodenrs = nodenrs + "," + String.valueOf(number);
@@ -302,7 +302,7 @@ public class YAMMEditor extends Editor {
         html.append("&amp;nodes=").append(makeList4Url(nList)); // nodes:       676_345 (startnode_nodenr)
         html.append("\" onclick=\"window.open(this.href); return false;\">");
 
-        if (!icon.equals("")) {
+        if (icon.length() != 0) {
             html.append("<img src=\"").append(icon).append("\" alt=\"edit\">");
         } else {
             html.append("edit");

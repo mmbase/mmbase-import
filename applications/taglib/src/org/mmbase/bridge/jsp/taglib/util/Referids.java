@@ -22,14 +22,14 @@ import org.mmbase.util.logging.*;
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.7 2006-10-25 20:37:50 michiel Exp $
+ * @version $Id: Referids.java,v 1.8 2007-07-18 07:50:48 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class  Referids  {
     private static final Logger log = Logging.getLoggerInstance(Referids.class);
 
     protected static Map.Entry<String, Object> get(String key, ContextReferrerTag tag) throws JspTagException {
-        if (key.equals("")) return null;
+        if (key.length() == 0) return null;
         int at = key.indexOf('@');
         String urlKey;
         if (at > -1) {

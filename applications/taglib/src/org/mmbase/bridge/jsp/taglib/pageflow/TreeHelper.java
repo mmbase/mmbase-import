@@ -32,7 +32,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.20 2007-06-07 13:51:53 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.21 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class TreeHelper {
@@ -92,7 +92,7 @@ public class TreeHelper {
      * @param prefix The path that was already established by previous calls to getLeafFile, deeper in the recursion tree.
      */
     protected String getLeafFile(String prefix, String objectlist, String includePage, boolean maySmartpath, HttpSession session) throws JspTagException, IOException {
-        if (objectlist.equals("")) {
+        if (objectlist.length() == 0) {
             String nudePage = includePage;
             if (nudePage.indexOf('?') != -1) {
                 nudePage = nudePage.substring(0, nudePage.indexOf('?'));
@@ -151,7 +151,7 @@ public class TreeHelper {
             if (log.isDebugEnabled()) {
                 log.debug("getSmartPath(" + firstObject + "," + newprefix + "," + session + ") = " + smartpath);
             }
-            if (!(smartpath == null || smartpath.equals(""))) {
+            if (!(smartpath == null || smartpath.length() == 0)) {
                 newprefix = smartpath;
                 finalfile = getLeafFile(newprefix, otherObjects, includePage, true, session);
             }
@@ -221,7 +221,7 @@ public class TreeHelper {
             int objectNo = objectNumbers[i];
             String field = getSmartPath("" + objectNo, pathNow, session);
             
-            if (field == null || field.equals("")) {
+            if (field == null || field.length() == 0) {
                 break;
             }
             
@@ -304,7 +304,7 @@ public class TreeHelper {
         Parameters params = f.createParameters();
         params.set("root", MMBaseContext.getHtmlRoot());
         params.set("path", middle);
-        if (! version.equals("")) {
+        if (version.length() != 0) {
             params.set("version", version);
         }
         params.set("nodeNumber", objectNumber);

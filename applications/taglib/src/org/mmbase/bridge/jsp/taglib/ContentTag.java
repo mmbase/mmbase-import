@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.62 2007-07-12 13:49:51 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.63 2007-07-18 07:50:47 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -119,7 +119,7 @@ public class ContentTag extends LocaleTag  {
         for (Element param: reader.getChildElements(parentElement, "param")) {
             String name = param.getAttribute("name");
             String value = param.getAttribute("value");
-            if (! value.equals("")) {
+            if (value.length() != 0) {
                  configuredParams.put(name, value);
             }
         }
@@ -245,12 +245,12 @@ public class ContentTag extends LocaleTag  {
         for (Element element: reader.getChildElements(root, "content")) {
             String type           = element.getAttribute("type");
             String id             = element.getAttribute("id");
-            if (id.equals("")) {
+            if (id.length() == 0) {
                 id = type;
             }
             contentTypes.put(id, type);
             String defaultEscaper = element.getAttribute("defaultescaper");
-            if (! defaultEscaper.equals("")) {
+            if (defaultEscaper.length() != 0) {
                 if (charTransformers.containsKey(defaultEscaper)) {
                     defaultEscapers.put(id, defaultEscaper);
                 } else {
@@ -258,7 +258,7 @@ public class ContentTag extends LocaleTag  {
                 }
             }
             String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
-            if (! defaultPostprocessor.equals("")) {
+            if (defaultPostprocessor.length() != 0) {
                 if (charTransformers.containsKey(defaultPostprocessor)) {
                     defaultPostProcessors.put(id, defaultPostprocessor);
                 } else {
@@ -333,7 +333,7 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException can occur if taglibcontent.xml is misconfigured
      */
     protected CharTransformer getPostProcessor() throws JspTagException {
-        if (! postprocessor.getString(this).equals("")) {
+        if (postprocessor.getString(this).length() != 0) {
             return getCharTransformer(postprocessor.getString(this), this);
         } else {
             if (type != Attribute.NULL) {
@@ -454,7 +454,7 @@ public class ContentTag extends LocaleTag  {
     protected void setWriteEscaper() throws JspTagException {
         prevEscaper = getWriteEscaper();
         CharTransformer esc;
-        if (! escaper.getString(this).equals("")) {
+        if (escaper.getString(this).length() != 0) {
             esc =  getCharTransformer(escaper.getString(this), this);
         }  else {
             String defaultEscaper = defaultEscapers.get(getType());
@@ -491,7 +491,7 @@ public class ContentTag extends LocaleTag  {
         String type = getType();
 
         addedCacheHeaders = false;
-        if (! type.equals("")) {
+        if (type.length() != 0) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             
@@ -531,7 +531,7 @@ public class ContentTag extends LocaleTag  {
             }
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
-            if (enc.equals("")) {
+            if (enc.length() == 0) {
                 response.setContentType(type); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
                 response.setContentType(type + ";charset=" + enc);

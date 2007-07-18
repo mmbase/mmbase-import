@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.52 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: DateHandler.java,v 1.53 2007-07-18 07:50:47 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -173,7 +173,7 @@ public class DateHandler extends AbstractTypeHandler {
             String fieldid = prefixID(field.getName() + "_" + element.getName());
             String searchValue =  (String) container.find(tag.getPageContext(), name);
             int check;
-            if (searchValue == null || searchValue.equals("")) {
+            if (searchValue == null || searchValue.length() == 0) {
                 if (cal != null) {
                     check = cal.get(element.getField()) + element.getOffset();
                 } else {

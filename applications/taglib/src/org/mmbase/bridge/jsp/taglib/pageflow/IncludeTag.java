@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.77 2007-06-28 18:22:45 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.78 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -163,7 +163,7 @@ public class IncludeTag extends UrlTag {
                 if (responseCode < 300) {
 
                     String encoding = encodingAttribute.getString(this);
-                    if (encoding.equals("")) {
+                    if (encoding.length() == 0) {
                         encoding = connection.getContentEncoding();
                     }
                     log.debug("Found content encoding " + encoding);
@@ -175,7 +175,7 @@ public class IncludeTag extends UrlTag {
                         c = inputStream.read();
                     }
                     byte[] allBytes = bytes.toByteArray();
-                    if (encoding == null || encoding.equals("")) {
+                    if (encoding == null || encoding.length() == 0) {
                         String contentType = connection.getContentType();
                         if (contentType != null) {
                             // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
@@ -302,7 +302,7 @@ public class IncludeTag extends UrlTag {
 
             IncludeWrapper responseWrapper;
             String encoding = encodingAttribute.getString(this);
-            if (encoding.equals("")) {
+            if (encoding.length() == 0) {
                 responseWrapper = new IncludeWrapper(resp);
             } else {
                 responseWrapper = new IncludeWrapper(resp, encoding);
@@ -518,7 +518,7 @@ public class IncludeTag extends UrlTag {
         if (debugType == Attribute.NULL) return DEBUG_NONE;
 
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none") || dtype.equals("")) {
+        if (dtype.equals("none") || dtype.length() == 0) {
             return  DEBUG_NONE; // also implement the default, then people can use a variable
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
