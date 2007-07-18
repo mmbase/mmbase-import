@@ -8,7 +8,7 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.9 2007-06-05 07:30:06 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.10 2007-07-18 07:11:34 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
@@ -16,7 +16,7 @@ public class SMTPModule extends org.mmbase.module.Module {
     Map<String, String> properties;
 
     private String[] mandatoryProperties = {"hostname", "port", "domains",
-            "emailbuilder", "emailbuilder.bodyfield", 
+            "emailbuilder", "emailbuilder.bodyfield",
             "usersbuilder", "usersbuilder.accountfield"
     };
     private String[] optionalProperties = {
@@ -26,7 +26,7 @@ public class SMTPModule extends org.mmbase.module.Module {
             "emailbuilder.bccfield",
             "emailbuilder.typefield"
     };
-    
+
     public void init() {
         init(getInitParameters());
     }
@@ -38,7 +38,7 @@ public class SMTPModule extends org.mmbase.module.Module {
     private void init(Map<String, String> properties) {
         log.info("Initializing SMTP module");
         this.properties = properties;
-        
+
         if (checkProperties()) {
             listener = new SMTPListener(properties);
             listener.start();
@@ -105,7 +105,7 @@ public class SMTPModule extends org.mmbase.module.Module {
         h.put("emailbuilder.bodyfield", "body");
         h.put("usersbuilder", "people");
         h.put("usersbuilder.accountfield", "account");
-        
+
         SMTPModule mod = new SMTPModule();
         mod.init(h);
         while (true) {
