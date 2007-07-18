@@ -33,7 +33,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.55 2007-07-14 17:20:39 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.56 2007-07-18 07:49:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -152,7 +152,7 @@ public class BasicFramework implements Framework {
         State state = State.getState(request);
         try {
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
-            if (state.render(renderer)) {
+            if (state.render(renderer, frameworkParameters)) {
                 Processor processor = renderer.getBlock().getProcessor();
                 log.service("Processing " + renderer.getBlock() + " " + processor);
                 request.setAttribute(Processor.KEY, processor);

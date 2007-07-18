@@ -27,21 +27,21 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Requestfilter that filters out all URL's looking for virtual 'userfriendly' links that have a 
+ * Requestfilter that filters out all URL's looking for virtual 'userfriendly' links that have a
  * corresponding page (technical URL) within the website. When the recieved URL is not
- * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original 
+ * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original
  * form.
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
- * The filtering and conversion to an URL pointing to an existing JSP template is 
+ * The filtering and conversion to an URL pointing to an existing JSP template is
  * done by implementations of UrlConverter.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.12 2007-07-14 17:20:51 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.13 2007-07-18 07:49:18 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
-    
+
     private static final Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
 
     /**
@@ -49,12 +49,12 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      */
     private static MMBase mmbase;
     private Thread initThread;
-    
+
     /**
      * The pattern being used to determine to exlude an URL
      */
     private static Pattern excludePattern;
-        
+
     /*
      * Methods that need to be overriden form MMBaseStarter
      */
@@ -83,23 +83,23 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         if (excludes != null && excludes.length() > 0) {
             excludePattern = Pattern.compile(excludes);
         }
-        
+
         /* initialize MMBase if its not started yet */
         MMBaseContext.init(ctx);
         MMBaseContext.initHtmlRoot();
         initThread = new MMBaseStartThread(this);
         initThread.start();
-        
+
         log.info("UrlFilter initialized");
     }
-    
+
     /**
      * Destroy method
      */
     public void destroy() {
         // nothing needed here
     }
-    
+
 
     public static String getPath(HttpServletRequest request) {
         String path = (String) request.getAttribute("javax.servlet.forward.servlet");
@@ -116,7 +116,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
         return path;
     }
-    
+
 
     /**
      * Filters a request and delegates it to UrlConverter if needed.
@@ -130,16 +130,16 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * @throws IOException thrown when an exception occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        
+
         if (mmbase == null) {
             if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
             chain.doFilter(request, response);
             return;
         }
-        
+
         if (request instanceof HttpServletRequest) {
 
-        
+
             HttpServletRequest req = (HttpServletRequest) request;
             if (log.isTraceEnabled()) {
                 log.trace("Request URI: " + req.getRequestURI());
@@ -164,7 +164,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                     log.fatal("Could not process exclude pattern: " + e);
                 }
             }
-            
+
             // URL is not excluded, pass it to UrlConverter to process and forward the request
             Framework fw =  MMBase.getMMBase().getFramework();
             Parameters params = fw.createParameters();
@@ -175,14 +175,14 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 params.set(Parameter.RESPONSE, res);
             }
             String forwardUrl = fw.getInternalUrl(path, req.getParameterMap().entrySet(), params).toString();
-            
+
             if (log.isDebugEnabled()) {
                 log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
             }
 
             State state = State.getState(request);
             if (forwardUrl != null && !forwardUrl.equals("")) {
-                /* 
+                /*
                  * RequestDispatcher: If the path begins with a "/" it is interpreted
                  * as relative to the current context root.
                  */
@@ -198,6 +198,6 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             chain.doFilter(request, response);
         }
     }
-    
+
 }
 

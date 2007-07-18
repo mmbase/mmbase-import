@@ -17,11 +17,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Currently this generates a link to an editwizard list page, but I think it should render the list
- * (or wizard) itself (and frame it in a div, as requested by the contract of a HEAD block).
+ * Currently this generates a link to an editwizard list page.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.10 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.11 2007-07-18 07:49:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
