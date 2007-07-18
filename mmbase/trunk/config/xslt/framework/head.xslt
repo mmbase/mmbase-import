@@ -9,7 +9,7 @@
       
       See http://cvs.mmbase.org/viewcvs/html/mmbase/admin/index.jsp?revision=1.14&view=markup for a usage example.
       
-      @version $Id: head.xslt,v 1.3 2007-07-14 15:54:35 michiel Exp $
+      @version $Id: head.xslt,v 1.4 2007-07-18 07:53:37 michiel Exp $
       @author Michiel Meeuwissen
       @since MMBase-1.9
   -->
@@ -36,7 +36,7 @@
       <!--
           As you may understand, i'm pretty much starting to hate XSLT.
       -->
-      <!-- links -->
+      <!-- link -->
       <xsl:variable name="unique-links"
                     select="$descendants/link[not(. = ./following-sibling::link and
                             string(./@rel)  = string(./following-sibling::link/@rel) and 
@@ -55,7 +55,7 @@
         </link>
       </xsl:for-each>
 
-      <!-- links -->
+      <!-- style -->
       <xsl:variable name="unique-style"
                     select="$descendants/style[not(. = ./following-sibling::style and
                             string(./@media)   = string(./following-sibling::style/@media) and
@@ -71,6 +71,7 @@
         </style>
       </xsl:for-each>
 
+      <!-- script -->
       <xsl:variable name="unique-script"
                     select="$descendants/script[not(. = ./following-sibling::script and
                             string(./@charset)   = string(./following-sibling::script/@charset) and
@@ -101,14 +102,18 @@
       </xsl:for-each>
 
       <!-- 
+           meta
+
            support for some of the more common, sensible,  meta-headers 
            For most of them, the content can be merged.
+           No support for http-equiv meta headers.
+           Framework should issue real http headers.
       -->
       <xsl:if test="$descendants/meta[@name = 'author']">
         <meta name="author">
           <xsl:attribute name="content">
             <xsl:for-each select="$descendants/meta[@name='author']">
-              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
               <xsl:value-of select="@content" />
             </xsl:for-each>
           </xsl:attribute>
@@ -118,7 +123,7 @@
         <meta name="keywords">
           <xsl:attribute name="content">
             <xsl:for-each select="$descendants/meta[@name='keywords']">
-              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
               <xsl:value-of select="@content" />
             </xsl:for-each>
           </xsl:attribute>
@@ -128,17 +133,17 @@
         <meta name="description">
           <xsl:attribute name="content">
             <xsl:for-each select="$descendants/meta[@name='description']">
-              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
               <xsl:value-of select="@content" />
             </xsl:for-each>
           </xsl:attribute>
         </meta>
       </xsl:if>
       <xsl:if test="$descendants/meta[@name = 'revised']">
-        <meta name="description">
+        <meta name="revised">
           <xsl:attribute name="content">
             <xsl:for-each select="$descendants/meta[@name='revised']">
-              <xsl:if test="position() &gt; 1">, </xsl:if>
+              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
               <xsl:value-of select="@content" />
             </xsl:for-each>
           </xsl:attribute>
@@ -146,10 +151,6 @@
       </xsl:if>
 
       <meta name="generator" content="MMBase" />
-      <!--
-          No support for http-equiv tags.
-          Framework could issue real headers.
-      -->
     
     </head>
   </xsl:template>
