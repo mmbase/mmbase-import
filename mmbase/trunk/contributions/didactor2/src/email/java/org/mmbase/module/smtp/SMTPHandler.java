@@ -32,7 +32,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.23 2007-07-18 07:11:34 michiel Exp $
+ * @version $Id: SMTPHandler.java,v 1.24 2007-07-18 07:36:31 michiel Exp $
  */
 public class SMTPHandler extends MailHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -82,8 +82,16 @@ public class SMTPHandler extends MailHandler implements Runnable {
         try {
             InputStream is = socket.getInputStream();
             OutputStream os = socket.getOutputStream();
-            reader = new BufferedReader(new InputStreamReader(is));  // which encoding?
-            writer = new BufferedWriter(new OutputStreamWriter(os)); // which encoding?
+            reader = new BufferedReader(new InputStreamReader(is, "ISO-8859-1"));
+            // acctualy, we should parse it as a stream, because e.g. also the constructor of MimeMessage want an inputstream.
+            // but, we simply encode and uncode ISO-8859-1, trusting that that doesn't matter for the SMTP-protocol and that
+            // the content is invariant in this process.
+
+            writer = new BufferedWriter(new OutputStreamWriter(os, "US-ASCII"));
+        } catch (UnsupportedEncodingException uee) {
+            // should not happen. iso-8859-1 and us-ascii _are_ supported.
+            log.fatal(uee);
+            return;
         } catch (IOException e) {
             log.error("Exception while initializing inputstream to incoming SMTP connection: " + e.getMessage(), e);
             return;
@@ -278,12 +286,13 @@ public class SMTPHandler extends MailHandler implements Runnable {
      * Interrupt method, is called only during shutdown
      */
     public void interrupt() {
-        log.info("Interrupt() called");
+        log.info("Interrupt called");
     }
 
     /**
      * Parse a string of addresses, which are given in an RCPT TO: or MAIL FROM:
      * line by the client. This is a strict RFC implementation.
+     * @todo Is this really ok? Why not {@link javax.mail.InternetAddress#parse}?
      * @return an array of strings, the first element contains the username, the second element is the domain
      */
     private String[] parseAddress(String address) {
@@ -315,8 +324,9 @@ public class SMTPHandler extends MailHandler implements Runnable {
         // Trim off any whitespace that may be left
         String finaladdress = address.substring(leftbracket + 1, rightbracket).trim();
         int atsign = finaladdress.indexOf("@");
-        if (atsign < 0)
+        if (atsign < 0) {
             return new String[0];
+        }
 
         String[] retval = new String[2];
         retval[0] = finaladdress.substring(0, atsign);
@@ -335,8 +345,12 @@ public class SMTPHandler extends MailHandler implements Runnable {
         }
         MimeMessage message = null;
         try {
-            message = new MimeMessage(null, new ByteArrayInputStream(data.getBytes())); 
+            message = new MimeMessage(null, new ByteArrayInputStream(data.getBytes("ISO-8859-1")));
             /// which encoding?!
+        } catch (UnsupportedEncodingException uee) {
+            // should not happen. iso-8859-1  _is_ supported.
+            log.fatal(uee);
+            return false;
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
             return false;
