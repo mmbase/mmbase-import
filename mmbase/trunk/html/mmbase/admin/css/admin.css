@@ -132,8 +132,9 @@ img {
   border: none;
 }
 
-#navigation li { 
+#navigation li li { 
   margin: 0; 
+
 }
 
 #navigation li a {
@@ -161,6 +162,7 @@ img {
 #navigation li li:hover .component {  
   visibility: visible;
 }
+
 #navigation li li a {
   display: block;
   padding: 5px 0 5px 1em;
@@ -174,13 +176,16 @@ img {
   text-transform: lowercase;
   text-decoration: none;
 }
+#navigation li li.current a {
+  border-right: 5px solid #002828;
+}
 
 html>body #navigation li a { 
   width: auto; 
 }
 
 #navigation li a:hover {
-  background-color: #708A23;
+  background-color: #708A23 !important;
   color: #D6E44B;
 }
 
