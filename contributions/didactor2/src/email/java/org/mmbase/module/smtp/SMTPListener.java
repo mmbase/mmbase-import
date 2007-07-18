@@ -1,7 +1,6 @@
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.LocalContext;
 import java.util.Map;
 import java.net.*;
@@ -11,7 +10,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.9 2007-06-05 07:30:06 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.10 2007-07-18 07:11:34 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -53,12 +52,6 @@ public class SMTPListener extends Thread {
      * new threads for incoming connections.
      */
     public void run() {
-        Cloud cloud = null;
-        try {
-            cloud = LocalContext.getCloudContext().getCloud("mmbase");
-        } catch (java.lang.ExceptionInInitializerError e) {
-            // fail silently?
-        }
         String portnr = properties.get("port");
         int port = Integer.parseInt(portnr);
 
@@ -90,20 +83,27 @@ public class SMTPListener extends Thread {
                 if (log.isDebugEnabled()) {
                     log.debug("Accepted connection: " + socket);
                 }
-                final SMTPHandler handler = new SMTPHandler(socket, properties, cloud);
+                final SMTPHandler handler = new SMTPHandler(socket, properties);
                 socketThreads.execute(handler);
             } catch (Exception e) {
-                log.error("Exception while accepting connections: " + e.getMessage(), e);
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception ie) {return;}
+                if (ssocket != null && ! ssocket.isClosed()) {
+                    log.error("Exception while accepting connections: " + e.getMessage(), e);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception ie) {return;}
+                } else {
+                    log.service(e.getMessage());
+                }
             }
         }
+        log.service("Stopped SMTP listening on " + host + ":" + port);
+
     }
 
     public void interrupt() {
         // Interrupted; this only happens when we are shutting down
-        log.info("Interrupt() called");
+        log.info("Interrupt called");
+        running = false;
         if (ssocket != null) {
             try {
                 ssocket.close();
@@ -111,6 +111,5 @@ public class SMTPListener extends Thread {
             }
             ssocket = null;
         }
-        running = false;
     }
 }
