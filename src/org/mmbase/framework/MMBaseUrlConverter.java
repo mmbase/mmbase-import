@@ -27,7 +27,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.5 2007-07-14 14:14:30 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.6 2007-07-18 07:49:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -52,122 +52,123 @@ public class MMBaseUrlConverter implements UrlConverter {
             log.debug(" framework parameters " + frameworkParameters);
         }
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        State state = State.getState(request, false);
-        // BasicFramework always shows only one component
+        State state = State.getState(request);
+        // MMBase urls always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
+        String category = frameworkParameters.get(BasicFramework.CATEGORY);
+        if ("".equals(category)) category = null;
+        if (category == null && state.isRendering()) {
+            category = (String) state.getFrameworkParameters().get(BasicFramework.CATEGORY);
+            if ("".equals(category)) category = null;
+        }
 
         boolean explicitComponent = component != null;
 
         if (component == null) {
             // if no explicit component specified, suppose current component, if there is one:
-            if (state != null && state.isRendering()) {
+            if (state.isRendering()) {
                 component = state.getBlock().getComponent();
             } else {
-                log.debug("No state object found");
+                log.debug("No rendering state object found, so no current component.");
+                if (category != null) {
+                    log.debug("Found category " + category);
+                    return new StringBuilder(dir + category);
+                } else {
+                    return null;
+                }
             }
         }
 
-        if (component == null) {
-            log.debug("Not currently rendering a component, nor a component was specified generating url to " + path);
-            return null;
+        assert component != null;
+
+        // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
+        
+        boolean filteredMode = (explicitComponent || request.getServletPath().startsWith(dir));
+        
+        
+        Map<String, Object> map = new TreeMap<String, Object>();
+        
+        Block block;
+        String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
+        if (blockParam != null) {
+            log.debug("found block " + blockParam + " trying it on " + component);
+            if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");            
+            block = component.getBlock(blockParam);
+            if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");           
         } else {
-
-            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
-
-            boolean filteredMode =
-                (state == null && explicitComponent) ||
-                request.getServletPath().startsWith(dir);
-
-
-            Map<String, Object> map = new TreeMap<String, Object>();
-
-            Block block;
-            String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
-            if (blockParam != null) {
-                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
-                block = component.getBlock(blockParam);
+            block = component.getBlock(path);
+            if (block != null) {
                 if (! filteredMode) {
-                    map.put(BasicFramework.BLOCK.getName(), block.getName());
-                    map.put(BasicFramework.COMPONENT.getName(), component.getName());
-                 }
+                    path = null; // used, determin path with block name
+                }
             } else {
-                block = component.getBlock(path);
-                if (block != null) {
-                    if (! filteredMode) {
-                        path = null; // used, determin path with block name
-                        map.put(BasicFramework.BLOCK.getName(), block.getName());
-                        map.put(BasicFramework.COMPONENT.getName(), component.getName());
-                    }
-                } else {
-                    // no such block
-                    if (path != null && ! "".equals(path)) {
-                        log.debug("No block '" + path + "' found");
-                        return null;
-                    }
-
-                }
-                if (block == null && state != null) {
-                    block = state.getRenderer().getBlock();
-                }
-            }
-
-
-            if (block == null) {
-                log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
-                if (filteredMode) {
+                // no such block
+                if (path != null && ! "".equals(path)) {
+                    log.debug("No block '" + path + "' found");
                     return null;
+                }
+                
+            }
+            if (block == null) {
+                if(state.isRendering()) { 
+                    // current block
+                    block = state.getRenderer().getBlock();
                 } else {
-                    throw new IllegalArgumentException("not such block '" + path + " for component " + block);
+                    // default block
+                    block = component.getDefaultBlock();
                 }
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state);
-            }
-            boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
-            if (processUrl) {
-                // get current compoennts ids
-                if (state != null) {
-                    map.put("action", state.getId());
-                } else {
-                    log.warn("Needing state, but no state found ");
-                }
-            }
-
-            Processor processor = (Processor) request.getAttribute(Processor.KEY);
-
-            if (processor == null) {
-                for (Object e : request.getParameterMap().entrySet()) {
-                    Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                    String k = entry.getKey();
-                    if (k.equals(BasicFramework.CATEGORY.getName())) continue; // already in  servletpath, or not relevant
-                    if (filteredMode && k.equals(BasicFramework.BLOCK.getName())) continue; // already in servletpath
-                    if (filteredMode && k.equals(BasicFramework.COMPONENT.getName())) continue; // already in servletpath
-                    map.put(k, entry.getValue()[0]);
-                }
+        }
+        
+        
+        if (log.isDebugEnabled()) {
+            log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
+        }
+        boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
+        if (processUrl) {
+            // get current compoennts ids
+            if (state.isRendering()) {
+                map.put("action", state.getId());
             } else {
-                log.debug("Now processing " + processor);
+                log.warn("Needing state, but no state found ");
             }
+        }
+    
+        
+        if (! processUrl && state.isRendering()) {
+            // copy all current parameters on the request.
+            for (Object e : request.getParameterMap().entrySet()) {
+                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                String k = entry.getKey();
+                if (k.equals(BasicFramework.BLOCK.getName())) continue;
+                if (k.equals(BasicFramework.COMPONENT.getName())) continue;
+                if (k.equals(BasicFramework.CATEGORY.getName())) continue;
+                map.put(k, entry.getValue()[0]);
+            }
+        } else {
+            //log.debug("Now processing " + processor);
+        }
 
+        if (! processUrl) {
             Parameters blockParameters = block.createParameters();
             for (Map.Entry<String, Object> entry : parameters) {
                 blockParameters.set(entry.getKey(), entry.getValue());
-            }
-            if (state != null) {
-                map.putAll(framework.prefix(state, blockParameters.toMap()));
-            }
-
-            String category = request.getParameter(BasicFramework.CATEGORY.getName());
-            if (category == null) {
-                Block.Type[] classification = block.getClassification();
-            }
-            boolean subComponent = state != null && state.getDepth() > 0;
-            String page = filteredMode && ! subComponent ?
-                dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() :
-                path == null || subComponent ? FrameworkFilter.getPath(request) : path;
-            StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
-            return sb;
-
+            }            
+            map.putAll(framework.prefix(state, blockParameters.toMap()));
         }
+
+        if (category == null) {
+            Block.Type[] classification = block.getClassification();
+        }
+        boolean subComponent = state.getDepth() > 0;
+
+        String page = dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
+
+        //path == null || subComponent ? FrameworkFilter.getPath(request) : path;
+
+        StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
+        return sb;
+
     }
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
