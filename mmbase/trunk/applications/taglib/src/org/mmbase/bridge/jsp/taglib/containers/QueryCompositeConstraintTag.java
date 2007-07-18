@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.9 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -49,7 +49,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         String op = operator.getString(this).toUpperCase();
         if (op.equals("OR")) {
             return CompositeConstraint.LOGICAL_OR;
-        } else if (op.equals("AND") || op.equals("")) {
+        } else if (op.equals("AND") || op.length() == 0) {
             return CompositeConstraint.LOGICAL_AND;
         } else {
             throw new JspTagException("Unknown Field Compare Operator '" + op + "'");

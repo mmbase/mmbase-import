@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.11 2007-06-27 13:21:57 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.12 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -156,7 +156,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             log.debug("Filename : " + fileName);
             NodeManager nm = node.getNodeManager();
             // follwing stuff should probably be moved to commit-processors of the fields themselves.
-            if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals("")) &&
+            if (nm.hasField("mimetype") && (fileType != null) && (fileType.length() != 0) &&
                 cc.find(tag.getPageContext(), prefix("mimetype")) == null
                 ) {
                 node.setValueWithoutProcess("mimetype", fileType);
@@ -164,7 +164,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             Object specFileName = cc.find(tag.getPageContext(), prefix("filename"));
             if (nm.hasField("filename") && 
                 fileName != null && 
-                (! fileName.equals("")) &&
+                (fileName.length() != 0) &&
                 (specFileName == null || specFileName.equals("") || specFileName.equals(node.getStringValue("filename")))
                 ) {
                 node.setValueWithoutProcess("filename", fileName);

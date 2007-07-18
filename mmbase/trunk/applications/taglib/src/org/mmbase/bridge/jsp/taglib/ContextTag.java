@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.89 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ContextTag.java,v 1.90 2007-07-18 07:50:47 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -143,7 +143,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 o = getObject(referid.getString(this));
             } else {
                 String id = referid.getString(this);
-                if (id.equals("")) {
+                if (id.length() == 0) {
                     id = getId();
                     if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
                 }

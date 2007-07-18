@@ -26,13 +26,13 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.32 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: RelatedTag.java,v 1.33 2007-07-18 07:50:47 michiel Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
 
     protected Node getBaseNode() throws JspTagException {
-        if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
+        if (nodes.getString(this).length() != 0) {
             // return getCloudVar().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
             String[] ns = nodes.getString(this).trim().split("\\s*,\\s*");
             return super.getCloudVar().getNode(ns[0]);
@@ -49,7 +49,7 @@ public class RelatedTag extends ListTag {
     }
 
     protected String getSearchNodes() throws JspTagException {
-        return (nodes == Attribute.NULL || nodes.getString(this).equals("")) ? "" + getNode().getNumber() : nodes.getString(this);
+        return (nodes == Attribute.NULL || nodes.getString(this).length() == 0) ? "" + getNode().getNumber() : nodes.getString(this);
     }
 
     /**

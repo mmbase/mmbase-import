@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.19 2007-07-14 17:21:23 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.20 2007-07-18 07:50:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -74,7 +74,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
                 throw new TaglibException("There is no component '" + name.getString(this) + "'. Known components are " + rep.getComponents());
             }
             String bn = blockName.getString(this);
-            Block block = bn.equals("") ? component.getDefaultBlock() : component.getBlock(bn);
+            Block block = bn.length() == 0 ? component.getDefaultBlock() : component.getBlock(bn);
             if (block == null) {
                 throw new TaglibException("There is no block '" + blockName.getString(this) + "' in component " + component + ". Known blocks are " + component.getBlocks());
             }

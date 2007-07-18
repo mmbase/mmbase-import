@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.32 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: Attribute.java,v 1.33 2007-07-18 07:50:48 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -46,7 +46,7 @@ public class Attribute {
      * a new one if it is not in the Attribute cache.
      */
     public static final Attribute getAttribute(final String at) throws JspTagException {
-        if (at == null) return NULL;
+        if (at == null || "".equals(at)) return NULL;
         return cache.getAttribute(at);
     }
 
@@ -62,7 +62,7 @@ public class Attribute {
     /**
      * The unparsed attribute.
      */
-    private Object attribute;
+    private final String attribute;
 
     /**
      * List of AttributeParts (the parsed attribute). This can be null
@@ -74,12 +74,14 @@ public class Attribute {
     /**
      * The constructor is protected, construction is done by the cache.
      */
-    protected Attribute(Object at) throws JspTagException {
+    protected Attribute(String at) throws JspTagException {
         attribute = at;
         parse();
     }
 
-    protected Attribute() {}
+    protected Attribute() {
+        attribute = null;
+    }
 
     /**
      * Appends the evaluated Attribute to StringBuilder
@@ -127,11 +129,11 @@ public class Attribute {
      */
 
     public int getInt(ContextReferrerTag tag, int def) throws JspTagException {
-        return org.mmbase.util.Casting.toInt(getValue(tag), def);
+        return Casting.toInt(getValue(tag), def);
     }
 
     public long getLong(ContextReferrerTag tag, long def) throws JspTagException {
-        return org.mmbase.util.Casting.toLong(getValue(tag), def);
+        return Casting.toLong(getValue(tag), def);
     }
 
     /**
@@ -178,9 +180,8 @@ public class Attribute {
      */
 
     protected void parse() throws JspTagException {
-        String attr = (String) attribute;
         // search all occurences of $
-        int foundPos     = attr.indexOf('$');
+        int foundPos     = attribute.indexOf('$');
         if (foundPos == -1) {
             containsVars = false;
             return; // if none, return imediately.
@@ -191,29 +192,29 @@ public class Attribute {
 
         int pos          = 0;
         while (foundPos >= 0) { // we found a variable!
-            String npart = attr.substring(pos, foundPos);
+            String npart = attribute.substring(pos, foundPos);
             if (npart.length() > 0) {
                 attributeParts.add(new StringPart(npart));
             }
             // piece of string until now is ready.
             foundPos ++;
-            if (foundPos >= attr.length()) { // end of string
+            if (foundPos >= attribute.length()) { // end of string
                 // could not happen :-)
                 break;
             }
-            char c = attr.charAt(foundPos);
+            char c = attribute.charAt(foundPos);
             if (c == '{' || c == '[') { // using parentheses
                 char close = (c == '{' ? '}' : ']');
                 // find matching closing parenthes
                 pos = ++foundPos;
                 int opened = 1;
                 while (opened > 0) {
-                    int posClose = attr.indexOf(close, pos);
+                    int posClose = attribute.indexOf(close, pos);
                     if (posClose == -1) {
                         log.error("Unbalanced parentheses in '" + this + "'");
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
                     }
-                    int posOpen  = attr.indexOf(c, pos);
+                    int posOpen  = attribute.indexOf(c, pos);
 
                     if (posOpen > -1 && posOpen < posClose) { // another one was opened!
                         opened++;
@@ -223,11 +224,11 @@ public class Attribute {
                         pos = posClose + 1;
                     }
                 }
-                if (attr.charAt(foundPos) != '+') {
-                    Attribute var = getAttribute(attr.substring(foundPos, pos - 1));
+                if (attribute.charAt(foundPos) != '+') {
+                    Attribute var = getAttribute(attribute.substring(foundPos, pos - 1));
                     attributeParts.add(new VariablePart(var));
                 } else {
-                    Attribute var = getAttribute(attr.substring(foundPos + 1, pos - 1));
+                    Attribute var = getAttribute(attribute.substring(foundPos + 1, pos - 1));
                     attributeParts.add(new ExpressionPart(var));
                 }
             } else { // not using parentheses.
@@ -240,18 +241,18 @@ public class Attribute {
                     while (ContextContainer.isContextIdentifierChar(c)) {
                         varName.append(c);
                         pos++;
-                        if (pos >= attr.length()) break; // end of string
-                        c = attr.charAt(pos);
+                        if (pos >= attribute.length()) break; // end of string
+                        c = attribute.charAt(pos);
                     }
                    Attribute var = getAttribute(varName.toString());
                    attributeParts.add(new VariablePart(var));
                 }
             }
             // ready with this $, search next occasion;
-            foundPos = attr.indexOf('$', pos);
+            foundPos = attribute.indexOf('$', pos);
         }
         // no more $'es, add rest of string
-        String rest = attr.substring(pos);
+        String rest = attribute.substring(pos);
         if (rest.length() > 0) {
             attributeParts.add(new StringPart(rest));
         }
@@ -326,7 +327,7 @@ public class Attribute {
      */
 
     static class ExpressionPart extends Part {
-        protected boolean evaluated;
+        protected final boolean evaluated;
         protected String getEvaluated() {
             return evaluated ? "evaluated" : "not evaluated";
         }

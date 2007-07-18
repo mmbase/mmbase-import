@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.31 2007-07-05 15:03:42 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.32 2007-07-18 07:50:47 michiel Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -78,7 +78,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      */
 
     protected Node getNode() throws JspTagException {
-        Node node =  (Node) pageContext.findAttribute(NodeProviderHelper._NODE);        
+        Node node =  parentNodeId == Attribute.NULL ? (Node) pageContext.findAttribute(NodeProviderHelper._NODE) : null;
         // get the node from a parent element.
         if (node == null) {
             node = findNodeProvider().getNodeVar();

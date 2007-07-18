@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.52 2006-09-29 10:03:43 michiel Exp $
+ * @version $Id: ListTag.java,v 1.53 2007-07-18 07:50:47 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -135,7 +135,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
 
 
             String searchString = search.getString(this).toUpperCase();
-            if (searchString.equals("")) {
+            if (searchString.length() == 0) {
                 searchString = "BOTH";
             } else if (
                 !searchString.equals("BOTH")
