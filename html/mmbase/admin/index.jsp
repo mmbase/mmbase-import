@@ -54,7 +54,7 @@
             <mm:frameworkparam name="category">${category}</mm:frameworkparam>
             <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
             <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
-            <li>
+            <li class="${subcat.name eq block and subcat.component.name eq component ? 'current' : ''}">
               <a title="${subcat.description}" href="${_}">${subcat.name}            
               <span class="component">(${subcat.component.name})</span>
               </a>
