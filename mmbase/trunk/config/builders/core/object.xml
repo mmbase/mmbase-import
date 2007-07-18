@@ -155,6 +155,20 @@
       </datatype>
     </field>
 
+    <field name="security_context" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Security context</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="security_context"  xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+    </field>
+
   </fieldlist>
 
   <functionlist>
