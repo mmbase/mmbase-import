@@ -47,6 +47,7 @@ public class PaginaHelper {
    public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
    final static String RUBRIEK_NODE_NAARDERMEER = "naardermeer";
+   final static String RUBRIEK_NODE_DEWIEDEN = "dewieden";
    
    Cloud cloud;
 	 ApplicationHelper ap;
@@ -1250,11 +1251,14 @@ public class PaginaHelper {
       ids.put("rubriek", rubriekID);
       ids.put("pagina", paginaID);
       
-      // Checking if page belongs to the Neerdermeer subsite (rubriek)
+      // Checking if page belongs tot he Neerdermeer subsite (rubriek)
       String isNaardermeer = "false";
       String subRubriek = getSubsiteRubriek(cloud, paginaID); //node number of our sub rubriek
+      // Naardermeer huisstijl is applied based on isNaardermeer id
+      // naardermeer and dewieden top rubrieks have this huisstijl applied
       try{
-    	  if (cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek)) {
+    	  if ((cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek))
+              || (cloud.getNodeByAlias(RUBRIEK_NODE_DEWIEDEN).getStringValue("number").equals(subRubriek))) {
     		  // the node numbers match - we are at naardermeer site
     		  isNaardermeer = "true";
     	  }
