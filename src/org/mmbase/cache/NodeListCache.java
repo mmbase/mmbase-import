@@ -13,10 +13,13 @@ import org.mmbase.core.event.RelationEvent;
 
 /**
  * Query result cache used for getNodes from MMObjectBuilder. So it contains only simple nodes (no
- * clusternodes)
+ * clusternodes).
+ * 
+ * The query <em>can</em> contain more than one <code>Step</step>, the queried fields are, however, excactly all
+ * fields of one of the steps (the 'node step').
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.6 2007-07-19 15:19:59 michiel Exp $
+ * @version $Id: NodeListCache.java,v 1.7 2007-07-19 15:36:51 michiel Exp $
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */
