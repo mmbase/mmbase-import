@@ -16,7 +16,7 @@ import org.mmbase.core.event.RelationEvent;
  * clusternodes)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.5 2007-01-03 09:16:21 nklasens Exp $
+ * @version $Id: NodeListCache.java,v 1.6 2007-07-19 15:19:59 michiel Exp $
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */
@@ -48,12 +48,4 @@ public class NodeListCache extends QueryResultCache {
         super(size);
     }
 
-    /**
-     * @see org.mmbase.cache.QueryResultCache#notify(org.mmbase.core.event.RelationEvent)
-     */
-    public void notify(RelationEvent event) {
-        // only queries with a single step are in this cache. Cache will only invalidate when a node
-        // changes and notwhen a relation to a node changes.
-        // A list on a relation type will invalidate by a NodeEvent, because a relation is a node. 
-    }        
 }
