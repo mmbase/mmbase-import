@@ -110,11 +110,17 @@ function requestContent(href) {
                    throw exception;
                    //alert(exception);
                }
-               usedFrames[href] = document.createElement("div");
+               var array = new Array();
                // in case it is more than one element (e.g. comments or so), store all childnodes.
-               for (var i=0; i < contentEl.childNodes; i++) {
-                   usedFrame[href].appendChild(contentEl.childNodes[i]);
+
+               try {
+                   for (var i = 0; i < contentEl.childNodes.length; i++) {
+                       array.push(contentEl.childNodes[i]);
+                   }
+               } catch (ex) {
+                   alert(ex);
                }
+               usedFrames[href] = array;
            }
        };
        xmlhttp.send(null);
