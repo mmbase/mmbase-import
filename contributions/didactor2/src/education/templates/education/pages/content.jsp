@@ -1,18 +1,14 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
-<mm:content postprocessor="reducespace">
-
-<mm:cloud method="delegate" jspvar="cloud">
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:content postprocessor="reducespace">
+<mm:cloud rank="didactor user" >
 
   <mm:import externid="learnobject" required="true"/>
-  <jsp:directive.include file="/shared/setImports.jsp" />
-  <%-- remember this page --%>
+  
   <mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids,learnobject">
     <mm:param name="learnobjecttype">pages</mm:param>
   </mm:treeinclude>
-
-
+  
   <mm:import externid="fb_madetest"/>
   <mm:present referid="fb_madetest">
     <mm:node number="$fb_madetest" notfound="skip">
@@ -51,22 +47,28 @@
        </mm:field>
      </mm:notpresent>
 
-     <mm:import jspvar="text" reset="true"><mm:hasfield name="text"><mm:field name="text"
-     escape="none"/></mm:hasfield><mm:hasfield name="intro"><mm:field name="intro" escape="none"/></mm:hasfield></mm:import>
+     <mm:import jspvar="text" reset="true"><mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield> <mm:hasfield name="intro"><mm:field name="intro" escape="none"/></mm:hasfield></mm:import>
 
      <table width="100%" border="0" class="Font">
        <mm:compare referid="layout" value="0">
-         <tr><td width="50%"><%@include file="/shared/cleanText.jsp"%></td></tr>
+         <tr><td width="50%">
+           <mm:write referid="text" escape="tagstripper(XSS)" />
+         </td></tr>
          <tr><td><%@include file="images.jsp"%></td></tr>
        </mm:compare>
 
        <mm:compare referid="layout" value="1">
          <tr><td  width="50%"><%@include file="images.jsp"%></td></tr>
-         <tr><td><%@include file="/shared/cleanText.jsp"%></td></tr>
+         <tr><td>
+             <mm:write referid="text" escape="tagstripper(XSS)" />
+         </td></tr>
        </mm:compare>
 
        <mm:compare referid="layout" value="2">
-         <tr><td><%@include file="/shared/cleanText.jsp"%></td>
+         <tr>
+           <td>
+             <mm:write referid="text" escape="tagstripper(XSS)" />
+           </td>
          <td><%@include file="images.jsp"%></td></tr>
        </mm:compare>
 

@@ -32,12 +32,4 @@
     }
 %>
 </mm:cloud>
-<script>
-if (top == self) {
-    var loc = document.location.href;
-    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*\?/,"$1index.jsp?");
-    document.location.href = loc;
-}
-</script>
-
 </mm:content>

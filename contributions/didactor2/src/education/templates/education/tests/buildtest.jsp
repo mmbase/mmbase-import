@@ -53,16 +53,16 @@
    </mm:node>
  </mm:node>
 </mm:present>
-
-<html>
-<head>
-   <title>Content</title>
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath"/>"/>
-</head>
-<body>
 <div class="learnenvironment">
+
+
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
-<form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" />" method="POST">
+<mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" write="false"/>
+<form name="questionform" 
+      onsubmit="postContent('${post}', this); return false;"
+      action="${post}" method="POST">
+
+  <div  onclick="postContent('${post}', document.forms.questionform); return false;">POST</div>
 
 <mm:node number="$learnobject">
    <mm:field name="showtitle">
@@ -72,7 +72,9 @@
    </mm:field>
 
    <p/>
-   <mm:field name="text" escape="none"/>
+   <mm:hasfield name="text">
+     <mm:field name="text" escape="none"/>
+   </mm:hasfield>
 
 
    <mm:compare referid="questionamount" value="0">
@@ -230,8 +232,8 @@
   </mm:listcontainer>
   </mm:isnotempty>
 </mm:present>
-   <br/>
-   <br/>
+<br/>
+<br/>
 
    <%-- Arguments for rating --%>
    <input type="hidden" name="learnobject" value="<mm:write referid="learnobject"/>"/>
@@ -252,7 +254,8 @@
    <mm:hasnode number="$copybookNo">
    <%-- Determine if all questions are showed --%>
    <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount" inverse="true">
-      <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
+      <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" 
+      onClick="questionform.command.value='done';questionform.submit()"/>
    </mm:isgreaterthan>
    <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount">
       <% if ( currentpos > 0 ) { %>
@@ -275,7 +278,5 @@
   <di:translate key="education.nocopybookfound" />
 </mm:hasnode>
 </div>
-</body>
-</html>
 </mm:cloud>
 </mm:content>

@@ -9,9 +9,6 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 --%><mm:content postprocessor="reducespace" expires="0" language="${requestScope.language}">
 
 <mm:cloud rank="didactor user">
-
-
-
   <mm:include page="/cockpit/cockpit_header.jsp">
     <mm:param name="reset" />
     <mm:param name="extraheader">
@@ -22,71 +19,35 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
   <mm:hasnode number="component.drm">
     <mm:treeinclude page="/drm/testlicense.jsp" objectlist="$includePath" referids="$referids "/>
   </mm:hasnode>
-  
-  <mm:import externid="learnobject" jspvar="learnObject"/>
-  <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
-  <mm:import jspvar="educationNumber" externid="education" from="this" vartype="integer" />
-  <mm:import externid="fb_madetest"/>
+
+  <mm:import externid="reset" />  
+  <mm:present referid="reset">
+    <mm:write session="learnobject_${education}" value="" />
+    <mm:write session="learnobjecttype_${education}" value="" />
+  </mm:present>
+
+  <mm:import externid="learnobject_${education}" from="session" id="bookmarked_learnobject" />
+  <mm:import externid="learnobject">${bookmarked_learnobject}</mm:import>
+  <mm:write session="learnobject_${education}" referid="learnobject" />
+
+  <mm:import externid="learnobject_type_${education}" from="session" id="bookmarked_learnobjecttype" />
+  <mm:import externid="learnobjecttype">${bookmarked_learnobjecttype}</mm:import>
+  <mm:write session="learnobjecttype_${education}" referid="learnobjecttype" />
+
   
   <!--
   We are using it to show only one node in the tree
   For cross-education references  
   -->
-
   <mm:import externid="the_only_node_to_show"/>
-  <mm:import externid="return_to"/>
-  <mm:import externid="return_to_type"/>
 
+  <mm:import externid="frame"/>
+  
+  <mm:node number="$user">
+    <mm:nodelistfunction referids="education" name="blockedLearnBlocks" id="blocked" />
+  </mm:node>
+  
 
-   <%
-   // It is a sad thing, but the left education menu can't be used as an include right now.
-   // So if we want to use it we have to send here an exteranl URL as a parameter.
-   // Probably the menu engine should be changed so that it become more readable and reusable.
-   %>
-   <mm:import externid="frame"/>
-
-   <mm:node number="$user">
-     <mm:nodelistfunction referids="education" name="blockedLearnBlocks" id="blocked" />
-   </mm:node>
-
-   <mm:import externid="reset" />
-   <mm:present referid="reset">
-     <jsp:scriptlet>session.setAttribute("educationBookmarks", null);</jsp:scriptlet>
-   </mm:present>
-
-<%
-    if (educationNumber != null) {
-        session.setAttribute("lasteducation", educationNumber);
-    } else {
-        educationNumber = (Integer) session.getAttribute("lasteducation");
-    }
-    if (educationNumber != null) {
-        HashMap bookmarks = (HashMap) session.getAttribute("educationBookmarks");
-        if (bookmarks== null) {
-            bookmarks = new HashMap();
-            session.setAttribute("educationBookmarks",bookmarks);
-        }
-        if (learnObject != null && learnObject.length() > 0) {
-            bookmarks.put(educationNumber + ",learnobject", learnObject);
-        } else {
-            learnObject = (String) bookmarks.get(educationNumber+",learnobject");
-            //System.err.println("read "+educationNumber+",learnobject="+learnObject+" from session");
-            if (learnObject != null) {
-                %><mm:import id="learnobject" reset="true"><%= learnObject %></mm:import><%
-            }
-        }
-        if (learnObjectType != null && learnObjectType.length() > 0) {
-            bookmarks.put(educationNumber+",learnobjecttype",learnObjectType);
-        } else  {
-            learnObjectType = (String) bookmarks.get(educationNumber+",learnobjecttype");
-            if (learnObjectType != null) {
-                %><mm:import id="learnobjecttype" reset="true"><%= learnObjectType %></mm:import><%
-            }
-        }
-        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import>
-<%
-    }
-%>
 
 <!-- TODO some learnblocks/learnobjects may not be visible because the are not ready for elearning (start en stop mmevents) -->
 <!-- TODO when refreshing the page (F5) the old iframe content is shown -->
@@ -102,26 +63,20 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
   </script>
 </mm:link>
 
-<%--
-Something seems wrong. I think that currently, the 'lastpage' field is never filled.
---%>
 <mm:listnodescontainer type="classrel">
   <mm:constraint field="snumber" value="${user}" />
   <mm:composite operator="or">
     <mm:constraint field="dnumber" value="${class}" />
     <mm:constraint field="dnumber" value="${education}" />
   </mm:composite>
-  <mm:listnodes>
-    <mm:field id="lastpage" name="lastpage" write="false" />
+  <mm:listnodes >
+    <%-- is lastpage field ever filled ? --%>
+    <script type="text/javascript">
+      openContent("learnblocks", ${_node.lastpage});
+    </script>
   </mm:listnodes>
 </mm:listnodescontainer>
-<mm:present referid="lastpage">
-  <mm:hasnode number="${lastpage}">
-  <script type="text/javascript">
-    openContent("learnblocks", ${lastpage});
-  </script>
-  </mm:hasnode>
-</mm:present>
+
 
 
 <div class="rows">
@@ -130,17 +85,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
       <mm:node number="$education">
         <mm:field name="name"/>
       </mm:node>
-    </div>
-    
+    </div>    
     <mm:import id="stepNavigator">
-      <a href="javascript:previousContent();"><img src="${mm:treefile('/gfx/icon_arrow_last.gif', pageContext, includePath)}" width="14" height="14" border="0" 
-                                                   title="${di:translate(pageContext, 'education.previous')}" 
-                                                   alt="${di:translate(pageContext, 'education.previous')}" 
-                                                   />
-      </a>
-      <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a>
-      <a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
-      <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
+      <jsp:directive.include file="prev_next.jsp" />
     </mm:import>
     <div class="stepNavigator">
       <mm:write referid="stepNavigator" escape="none" />
@@ -156,49 +103,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
             >
          <mm:include page="tree.jspx" />
       </div>
+
    </div>
 
-
-
-   <script type="text/javascript">
-
-      rightframesrc = "---";
-      function resize() {
-/*
-         var frameElem = document.getElementById("content");
-         alert(frameElem.contentWindow.document.body.clientHeight + " " + frameElem.contentWindow.document.body.scrollHeight);
-//         alert(divleftMenu.innerHTML());
-         iframedoc.onupdate = resize;
-         var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
-//         contentBodywit.style.height = frameContentHeight + 80;
-         if(frameElem.contentWindow.document.body.clientHeight + 20 < frameElem.contentWindow.document.body.scrollHeight)
-         {
-            frameElem.height = frameContentHeight + 0;
-         }
-*/
-         if(rightframesrc != frames['content'].location.href)
-         {
-            if(browserVersion()[0] == "IE")
-            {
-               var oBody = content.document.body;
-               var oFrame = document.all("content");
-
-               oFrame.style.height = oBody.scrollHeight + 280;
-            }
-            else
-            {
-               var frameElem = document.getElementById("content");
-               frameElem.style.overflow = "";
-               var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
-               frameElem.style.height = frameContentHeight + 80;
-               frameElem.height = frameContentHeight + 80;
-               frameElem.style.overflow = "hidden";
-            }
-//            alert(rightframesrc);
-         }
-         rightframesrc = frames['content'].location.href;
-      }
-   </script>
 
    <div class="mainContent">
       <div class="contentHeader">
@@ -206,6 +113,10 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
       </div>
       <div class="contentBodywit" id="contentBodywit">
          <mm:present referid="the_only_node_to_show">
+           <mm:import externid="fb_madetest" required="true" />
+           <mm:import externid="return_to" required="true" />
+           <mm:import externid="return_to_type" required="true" />
+
            <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />"
            onClick="parent.document.location.href='<mm:url referids="$referids,learnobjecttype,class,fb_madetest" page="index.jsp">
            <mm:param name="learnobject"><mm:write referid="return_to"/></mm:param>
@@ -213,8 +124,9 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
            </mm:url>'"
            /></div>
          </mm:present>
-         <iframe width="100%" height="100%" onload="resize()" name="content" 
-                 id="content" frameborder="0" style="overflow:hidden"></iframe>
+         <div id="contentFrame">
+           CONTENT
+         </div>
       </div>
    </div>
 </div>
@@ -226,10 +138,6 @@ Something seems wrong. I think that currently, the 'lastpage' field is never fil
       openContent('${learnobjectype}','${education}');
       openOnly('div${learnobject}','img${education}');
 
-
-      <mm:write referid="frame" jspvar="sFrameURL" vartype="String">
-         content.location.href='<%= sFrameURL.replaceAll("&amp;","&") %>'; // wtf
-      </mm:write>
    </script>
 </mm:present>
 
