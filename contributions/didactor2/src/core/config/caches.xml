@@ -2,11 +2,7 @@
 <!DOCTYPE caches PUBLIC "-//MMBase//DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
 <caches>
   <releaseStrategies>
-    <!--
-        SEE: http://www.mmbase.org/jira/browse/MMB-1404
     <strategy>org.mmbase.cache.BetterStrategy</strategy>   
-    -->
-    <strategy>org.mmbase.cache.BasicReleaseStrategy</strategy>
   </releaseStrategies>
 
   <!-- ================================================================================
