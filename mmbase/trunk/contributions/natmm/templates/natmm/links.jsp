@@ -20,6 +20,7 @@
    	<div style="position:absolute; left:681px; width:70px; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
   <% } %>
 
+<br/>
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
 	<td style="vertical-align:top;padding:10px;padding-top:0px;width:185px;">
