@@ -25,9 +25,29 @@ var may_open_future =
 
 
 var currentnumber = -1;
-var contenttype = new Array();
+var contenttype   = new Array();
 var contentnumber = new Array();
-var open          = new Object();
+var openDivs      = new Object();
+var frames        = new Object();
+
+
+// legacy
+function resize() {
+    if(browserVersion()[0] == "IE") {
+        var oBody = content.document.body;
+        var oFrame = document.all("content");        
+        oFrame.style.height = oBody.scrollHeight + 280;
+    } else {
+        var frameElem = document.getElementById("content");
+        frameElem.style.overflow = "";
+        var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
+        frameElem.style.height = frameContentHeight + 80;
+        frameElem.height = frameContentHeight + 80;
+        frameElem.style.overflow = "hidden";
+        alert("set height to " + (frameContentHeight + 80));
+    }
+}
+
 
 function addContent( type, number ) {
     contenttype[contenttype.length] = type;
@@ -51,7 +71,7 @@ function nextContent() {
         }
     }
     openContent( opentype, opennumber );
-    openOnly('div'+opennumber,'img'+opennumber);
+    openOnly('div' + opennumber, 'img' + opennumber);
 }
 
 function previousContent() {
@@ -68,9 +88,55 @@ function previousContent() {
         }
     }
     openContent( opentype, opennumber );
-    openOnly('div'+opennumber,'img'+opennumber);
+    openOnly('div' + opennumber, 'img' + opennumber);
 }
 
+
+function requestContent(href) {
+   var content = frames[href];
+   if (content == null) {
+       var xmlhttp = new XMLHttpRequest();
+       xmlhttp.open("GET", href, true);
+       xmlhttp.onreadystatechange =   function()  {
+           if (xmlhttp.readyState == 4) {
+               try {
+                    var contentEl = document.getElementById('contentFrame');
+                    Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+                    document.href_frame = href;
+               } catch (exception) {
+                   // backwards compatibility
+                   contentEl.innerHTML = "<iframe width='100%' height='100%' id='content' name='content' frameborder='0'  src='" + href + "' />";
+                   resize();
+                   throw exception;
+                   //alert(exception);
+               }
+               frames[href] = contentEl.childNodes[0];
+               
+           }
+       };
+       xmlhttp.send(null);
+   } else {
+       var contentEl = document.getElementById('contentFrame');
+       Sarissa.clearChildNodes(contentEl);
+       contentEl.appendChild(content);
+       document.href_frame = href;
+   }   
+}
+
+function postContent(href, form) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", href, true);
+    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xmlhttp.onreadystatechange =   function()  {
+        if (xmlhttp.readyState == 4) {
+            var contentEl = document.getElementById('contentFrame');
+            Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+            document.href_frame = href;
+        }
+        frames[href] = contentEl.childNodes[0];
+    };
+    xmlhttp.send(null);
+}
 
 function openContent( type, number ) {
     
@@ -89,31 +155,28 @@ function openContent( type, number ) {
         currentnumber = number;
     }
     
-    
+    var href;
     switch ( type ) {
     case "educations":
-        
-        //    note that document.content is not supported by mozilla!
-        //    so use frames['content'] instead
-        
-        frames['content'].location.href = addParameter('<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>', 'edu='+number);
+        href = addParameter('<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>', 'edu='+number);
         break;
     case "learnblocks":
     case "htmlpages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
+        href= addParameter('<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
     case "tests":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>', 'learnobject='+number);
+        href= addParameter('<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>', 'learnobject='+number);
         break;
     case "pages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
+        href= addParameter('<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
     case "flashpages":
-        frames['content'].location.href= addParameter('<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
+        href= addParameter('<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
         break;
     }
-    frames['content'].scrollTop = '0px';
-    document.body.scrollTop = '0px';
+    requestContent(href);
+
+
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);
         var orig = el.className;
@@ -131,9 +194,9 @@ function openClose(div, img) {
     var realimg = document.getElementById(img);
     
     if (realdiv != null) {
-        var o = open[div];
+        var o = openDivs[div];
         if (o != null) {
-            open[div] = null;
+            openDivs[div] = null;
             realdiv.style.display = "none";
             realimg.src = ITEM_CLOSED;
         } else {
@@ -147,7 +210,7 @@ function openClose(div, img) {
                 alert('<di:translate key="education.future" escape="js-single-quotes" />');
                 return false;
             }
-            open[div] = img;
+            openDivs[div] = img;
             realdiv.style.display = "block";
             realimg.src = ITEM_OPENED;
         }
@@ -170,7 +233,7 @@ function openOnly(div, img) {
             alert('<di:translate key="education.future" escape="js-single-quotes" />');
             return false;
         }
-        open[div] = img;
+        openDivs[div] = img;
         realdiv.style.display = "block";
         realimg.src = ITEM_OPENED;
 
@@ -183,7 +246,6 @@ function openOnly(div, img) {
             var findparentClass = className;
 
 
-            //There is a JS error here
             if (level > 1) {
                 // also open parents
                 do {
@@ -193,7 +255,7 @@ function openOnly(div, img) {
 
                 if (findparent) {
                     var divid = findparent.id;
-                    var imgid = "img"+divid.substring(3,divid.length);
+                    var imgid = "img" + divid.substring(3,divid.length);
                     openOnly(divid, imgid);
                 }
             }
@@ -232,7 +294,7 @@ function closeAppropriate() {
         var div = divs[i];
         var cl = "" + div.className;
         if (cl.match("lbLevel")) {
-            if (open[div.id] == null) {
+            if (openDivs[div.id] == null) {
                 divs[i].style.display = "none";
             }
         }
