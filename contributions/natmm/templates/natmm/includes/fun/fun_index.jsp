@@ -51,7 +51,7 @@ if (isNaardermeer.equals("true")) {
 				<% if(imgCnt % imagesInARow == 0){ %></tr><tr><% } %>
 			</mm:field>
 			<mm:last>
-				<% if(imgCnt % imagesInARow != 0){  if(imgCnt % 2 == 0){%><td>&nbsp;</td><td>&nbsp;</td><%} else if(imgCnt % 1 == 0){%><td>&nbsp;</td><% } %></tr><% } %>
+				<% if(imgCnt % imagesInARow != 0){  if(imgCnt % (imagesInARow-1) == 0){%><td>&nbsp;</td><td>&nbsp;</td><%} else if(imgCnt % 1 == 0){%><td>&nbsp;</td><% } %></tr><% } %>
 			</mm:last>
 		</mm:list>
 	<% } %>
