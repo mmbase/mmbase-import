@@ -110,7 +110,7 @@ function requestContent(href) {
                    throw exception;
                    //alert(exception);
                }
-               usedFrames[href] = document.createElement();
+               usedFrames[href] = document.createElement("div");
                // in case it is more than one element (e.g. comments or so), store all childnodes.
                for (var i=0; i < contentEl.childNodes; i++) {
                    usedFrame[href].appendChild(contentEl.childNodes[i]);
@@ -121,7 +121,6 @@ function requestContent(href) {
    } else {
        var contentEl = document.getElementById('contentFrame');
        Sarissa.clearChildNodes(contentEl);
-       alert(content + content.length);
        for (var i=0; i < content.length; i++) {
            contentEl.appendChild(content[i]);
        }
