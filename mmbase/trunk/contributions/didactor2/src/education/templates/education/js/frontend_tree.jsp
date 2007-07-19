@@ -28,7 +28,7 @@ var currentnumber = -1;
 var contenttype   = new Array();
 var contentnumber = new Array();
 var openDivs      = new Object();
-var frames        = new Object();
+var usedFrames    = new Object();
 
 
 // legacy
@@ -93,7 +93,7 @@ function previousContent() {
 
 
 function requestContent(href) {
-   var content = frames[href];
+   var content = usedFrames[href];
    if (content == null) {
        var xmlhttp = new XMLHttpRequest();
        xmlhttp.open("GET", href, true);
@@ -110,15 +110,21 @@ function requestContent(href) {
                    throw exception;
                    //alert(exception);
                }
-               frames[href] = contentEl.childNodes[0];
-               
+               usedFrames[href] = document.createElement();
+               // in case it is more than one element (e.g. comments or so), store all childnodes.
+               for (var i=0; i < contentEl.childNodes; i++) {
+                   usedFrame[href].appendChild(contentEl.childNodes[i]);
+               }
            }
        };
        xmlhttp.send(null);
    } else {
        var contentEl = document.getElementById('contentFrame');
        Sarissa.clearChildNodes(contentEl);
-       contentEl.appendChild(content);
+       alert(content + content.length);
+       for (var i=0; i < content.length; i++) {
+           contentEl.appendChild(content[i]);
+       }
        document.href_frame = href;
    }   
 }
@@ -127,15 +133,30 @@ function postContent(href, form) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", href, true);
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlhttp.onreadystatechange =   function()  {
+    xmlhttp.onreadystatechange =  function()  {
         if (xmlhttp.readyState == 4) {
             var contentEl = document.getElementById('contentFrame');
             Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+            usedFrames[document.href_frame] = null;
             document.href_frame = href;
+            usedFrames[href] = contentEl.childNodes;            
         }
-        frames[href] = contentEl.childNodes[0];
     };
-    xmlhttp.send(null);
+    var content = '';
+    var sep = '';
+    var textareas = form.getElementsByTagName("textarea");
+    for (i=0; i<textareas.length; i++) {
+        var ta = textareas[i];
+        content += sep + ta.name + '=' + ta.value;
+        sep = '&';
+    }
+    var textareas = form.getElementsByTagName("input");
+    for (i=0; i<textareas.length; i++) {
+        var ta = textareas[i];
+        content += sep + ta.name + '=' + ta.value;
+        sep = '&';
+    }
+    xmlhttp.send(content);
 }
 
 function openContent( type, number ) {
@@ -194,12 +215,40 @@ function openClose(div, img) {
     var realimg = document.getElementById(img);
     
     if (realdiv != null) {
-        var o = openDivs[div];
-        if (o != null) {
-            openDivs[div] = null;
-            realdiv.style.display = "none";
-            realimg.src = ITEM_CLOSED;
-        } else {
+        try {
+            var o = openDivs[div];
+            if (o != null) {
+                openDivs[div] = null;
+                realdiv.style.display = "none";
+                realimg.src = ITEM_CLOSED;
+            } else {
+                if (! may_open_future) {
+                    if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
+                        alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                        return false;
+                    }
+                }
+                if (/\bblocked\b/.test(realimg.parentNode.className)) {
+                    alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                    return false;
+                }
+                openDivs[div] = img;
+                realdiv.style.display = "block";
+                realimg.src = ITEM_OPENED;
+            }
+        } catch (ex) {
+            alert(ex);
+        }
+    }
+    return true;
+}
+
+function openOnly(div, img) {
+    var realdiv = document.getElementById(div);
+    var realimg = document.getElementById(img);
+    // alert("openOnly("+div+","+img+"); - "+realdiv);
+    if (realdiv != null) {
+        try {
             if (! may_open_future) {
                 if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
                     alert('<di:translate key="education.future" escape="js-single-quotes" />');
@@ -213,67 +262,52 @@ function openClose(div, img) {
             openDivs[div] = img;
             realdiv.style.display = "block";
             realimg.src = ITEM_OPENED;
-        }
-    }
-    return true;
-}
-
-function openOnly(div, img) {
-    var realdiv = document.getElementById(div);
-    var realimg = document.getElementById(img);
-    // alert("openOnly("+div+","+img+"); - "+realdiv);
-    if (realdiv != null) {
-        if (! may_open_future) {
-            if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
-                alert('<di:translate key="education.future" escape="js-single-quotes" />');
-                return false;
-            }
-        }
-        if (/\bblocked\b/.test(realimg.parentNode.className)) {
-            alert('<di:translate key="education.future" escape="js-single-quotes" />');
-            return false;
-        }
-        openDivs[div] = img;
-        realdiv.style.display = "block";
-        realimg.src = ITEM_OPENED;
-
-        var className = realdiv.className;
-        if (className) {
-            // ignore "lbLevel" in classname to get the level depth
-            var level = className.substring(7, className.length);
-            // alert("level = "+level);
-            var findparent = realdiv;
-            var findparentClass = className;
-
-
-            if (level > 1) {
-                // also open parents
-                do {
-                    findparent = findparent.parentNode;
-                    findparentClass = findparent.className || "";
-                } while (findparent && findparentClass.indexOf("lbLevel") != 0);
-
-                if (findparent) {
-                    var divid = findparent.id;
-                    var imgid = "img" + divid.substring(3,divid.length);
-                    openOnly(divid, imgid);
+            
+            var className = realdiv.className;
+            if (className) {
+                // ignore "lbLevel" in classname to get the level depth
+                var level = className.substring(7, className.length);
+                // alert("level = "+level);
+                var findparent = realdiv;
+                var findparentClass = className;
+                
+                
+                if (level > 1) {
+                    // also open parents
+                    do {
+                        findparent = findparent.parentNode;
+                        findparentClass = findparent.className || "";
+                    } while (findparent && findparentClass.indexOf("lbLevel") != 0);
+                    
+                    if (findparent) {
+                        var divid = findparent.id;
+                        var imgid = "img" + divid.substring(3,divid.length);
+                        openOnly(divid, imgid);
+                    }
                 }
-            }
                 
 
+            }
+        } catch (ex) {
+            alert(ex);
         }
     } else { // find enclosing div
-        var finddiv = realimg;
-        while (finddiv != null && (! finddiv.className || finddiv.className.substring(0,7) != "lbLevel")) {
-            finddiv = finddiv.parentNode;
-            // if (finddiv.className) alert(finddiv.className.substring(0,7));
+        try {
+            var finddiv = realimg;
+            while (finddiv != null && (! finddiv.className || finddiv.className.substring(0,7) != "lbLevel")) {
+                finddiv = finddiv.parentNode;
+                // if (finddiv.className) alert(finddiv.className.substring(0,7));
+            }
+            if (finddiv != null) {
+                var divid = finddiv.id;
+                var imgid = "img" + divid.substring(3,divid.length);
+                openOnly(divid,imgid);
+            }
+        } catch (ex) {
+            alert(ex);
         }
-        if (finddiv != null) {
-            var divid = finddiv.id;
-            var imgid = "img" + divid.substring(3,divid.length);
-            openOnly(divid,imgid);
-        }
-    }
+    } 
+
     return true;
 }
 
@@ -323,6 +357,15 @@ function removeButtons() {
         Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'));
     }
 </mm:treefile>
+
+function scrollToTop() {
+    if (window.parent.document.documentElement && window.parent.document.documentElement.scrollTop) {
+        window.parent.document.documentElement.scrollTop = 0;
+    }
+    if (window.parent.document.body && window.parent.document.body.scrollTop) {
+        window.parent.document.body.scrollTop = 0;
+    }
+}
 
 </mm:cloud>
 </mm:content>
