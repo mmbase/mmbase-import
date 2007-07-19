@@ -1,7 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+<%@page contentType="application/xml;charset=utf8"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><%@page import="java.util.Iterator"
-%><mm:content postprocessor="reducespace" expires="0">
+%><mm:content 
+type="application/xml"
+postprocessor="reducespace" expires="0">
   <mm:cloud method="delegate">
 
     <mm:import externid="tests" required="true"/>
@@ -163,33 +166,29 @@
   <% } %>
   <%-- If "done" pressed then show the feedback else show next question set --%>
   <% if ( sCommand.equals("done") ) { %>
-  <mm:hasnode number="component.progress">
-    <script language="javascript">
-      window.parent.reloadProgress();
-      window.parent.reloadEducationTree();
-      if (window.parent.document.documentElement && window.parent.document.documentElement.scrollTop) {
-          window.parent.document.documentElement.scrollTop = 0;
-      }
-      if (window.parent.document.body && window.parent.document.body.scrollTop) {
-          window.parent.document.body.scrollTop = 0;
-      }
-
-    </script>
-  </mm:hasnode>
-      <mm:field name="feedbackpage">
-        <mm:compare value="0">
-          <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" 
-                          referids="$referids,madetest,tests" />          
-          <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" 
-                          referids="$referids,madetest,my_tests,_node@tests" />
-
+  <div>
+    <mm:hasnode number="component.progress">
+      <script language="javascript">
+        window.parent.reloadProgress();
+        window.parent.reloadEducationTree();
+        window.parent.scrollToTop();
+      </script>
+    </mm:hasnode>
+    <mm:field name="feedbackpage">
+      <mm:compare value="0">
+        <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" 
+                        referids="$referids,madetest,tests" />          
+        <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" 
+                        referids="$referids,madetest,my_tests,_node@tests" />
+        
       </mm:compare>
-
+      
       <mm:compare value="0" inverse="true">
         <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids,tests@testNo,madetest@madetestNo,user@userNo" />
       </mm:compare>
-
+      
       </mm:field>
+  </div>
   <% } else { %>
      <mm:treeinclude page="/education/tests/buildtest.jsp"  objectlist="$includePath" referids="$referids">
        <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>

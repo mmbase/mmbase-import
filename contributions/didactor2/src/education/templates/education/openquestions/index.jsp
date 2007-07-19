@@ -1,10 +1,9 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:content>
-<mm:cloud method="delegate">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><mm:content>
+<mm:cloud rank="didactor user">
   <mm:import externid="question" required="true"/>
   <mm:import externid="madetest">-1</mm:import>
-  <jsp:directive.include file="/shared/setImports.jsp" />
 
   <mm:node number="$question">
     <mm:isnotempty referid="madetest">
@@ -32,7 +31,7 @@
 
   <%-- Generate large input field --%>
   <mm:compare referid="layout" value="0">
-    <textarea name="<mm:write referid="question"/>" cols="80" rows="5"><mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present></textarea>
+    <textarea name="<mm:write referid="question"/>" cols="80" rows="5"><mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present><jsp:text> </jsp:text></textarea>
     <br/>
   </mm:compare>
 

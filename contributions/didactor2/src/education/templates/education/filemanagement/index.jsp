@@ -121,14 +121,15 @@ String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.get
             <tr>
                <td>
                   <form action="index.jsp" method="POST" enctype="multipart/form-data">
-                     <input type="file" name="filename"  style="width:200px; height:20px">
+                     <input type="file" name="filename"  
+                            style="width:200px; height:20px; ">
                      <select name="manager">
                         <option value="url">Algemeen URL</option>
                         <option value="audio">Audio</option>
                         <option value="video">Video</option>
                      </select>
                      <input type="submit" value="Upload" 
-                            onclick="if (document.forms[0].filename.value == '') return false;"
+                            onclick="if (document.forms[0].filename.value == '') return false; "
                             style="width:60px; text-align:center">
                   </form>
                   <% if (uploadOK) { %><b><di:translate key="education.fileuploadok" /></b><% } %><b><%= msg %></b>
