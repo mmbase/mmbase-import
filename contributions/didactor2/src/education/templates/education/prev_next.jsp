@@ -13,7 +13,11 @@
      href="#" 
      onmouseover="this.href='${_}?block=' + document.href_frame;"
      onclick="var el = document.getElementById('contentBodywit'); 
-              window.open(this.href, '_blank', 'menubar=no,toolbar=no,height=' + el.clientHeight + ',width=' + el.clientWidth); return false;">pop</a>
+              var w = window.open(this.href, '_blank', 'menubar=no,toolbar=no,scrollbars=yes,height=' + el.clientHeight + ',width=' + el.clientWidth);
+              return false;
+              ">
+    <di:translate key="education.pop" />
+  </a>
 </mm:link>
 <a href="javascript:parent.nextContent();" class="path"><di:translate key="education.next" /></a>
 <a href="javascript:parent.nextContent();">
