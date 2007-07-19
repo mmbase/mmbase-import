@@ -187,7 +187,7 @@
                     </di:ifsetting>
                   </tr>
                   
-                  <%@include file="find_copybook.jsp"%>
+                  <mm:import id="copybookNo"><di:copybook /></mm:import>
                   
                   <mm:node number="$education">
                     <%List blockName = new ArrayList(); %>
@@ -238,7 +238,7 @@
                                   <mm:field name="name" />
                                 </mm:compare> 
                                 <mm:compare referid="teststatus" value="incomplete" inverse="true">
-                                  <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="$referids" ><mm:param name="madetest"><mm:write referid="madetestNo"/></mm:param><mm:param name="tests"><mm:write referid="testNo"/></mm:param><mm:param name="showfeedback">true</mm:param></mm:treefile>" />
+                                  <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="$referids,madetestNo?@madetest,testNo?@tests" ><mm:param name="showfeedback">true</mm:param></mm:treefile>" />
                                   <mm:field name="name" />
                                 </a>
                               </mm:compare>
