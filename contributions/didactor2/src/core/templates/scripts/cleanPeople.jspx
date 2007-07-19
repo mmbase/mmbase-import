@@ -5,6 +5,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.page buffer="none" />
   <mm:content 
       type="application/xhtml+xml"
       unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
@@ -17,7 +18,9 @@
         <a href=".">back</a>
         <hr />
         <mm:listnodes type="people">
-          <mm:countrelations type="educations" searchdir="source">
+          <mm:countrelations id="nreducations" type="educations" searchdir="source" />
+          <mm:countrelations id="nrworkgroups" type="workgroups" />
+          <mm:write value="${nreducations + nrworkgroups}">
             <mm:compare value="0">
               <p><di:person /></p>
               <mm:relatednodes type="workspaces">
@@ -50,11 +53,13 @@
                   <p>Deleted ${_node}</p>
                 </mm:deletenode>
               </mm:relatednodes>
-              <mm:deletenode deleterelations="true">
-                <p>Deleted ${_node}</p>
-              </mm:deletenode>
+              <mm:maydelete>
+                <mm:deletenode deleterelations="true">
+                  <p>Deleted ${_node}</p>
+                </mm:deletenode>
+              </mm:maydelete>
             </mm:compare>
-          </mm:countrelations>          
+          </mm:write>
         </mm:listnodes>
       </body>
     </html>
