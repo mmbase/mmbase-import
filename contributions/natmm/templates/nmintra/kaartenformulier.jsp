@@ -848,7 +848,7 @@ if(twoColumns) {
 		</tr> 
 	</table>	
 
-	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">
+	<table width="500" class="vastgoed_light" border="0" cellspacing="0">
 		<tr height="5">
 			<td width="5"></td>
 			<td width="440"></td>
@@ -864,20 +864,28 @@ if(twoColumns) {
 			<td></td>
 
  		</tr>
+</table>	
+
+	<table width="500" border="0" cellspacing="0">
+		<tr>
+			<td width="100%">&nbsp;</td>
+		</tr> 
+	</table>	
+	
+	<table width="500" class="vastgoed_medium" border="0" cellspacing="0">
  		<tr height="5">
+			<td width="1"></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
+			<td width="1"></td>
 		</tr>
-		<tr height="40">
+		<tr height="20">
 	  		<td></td>
-			<td>Toevoegen aan mijn bestelling:&nbsp;</td>
-			<td align="right">
-			<br/>
-			<html:submit property="send" value="Bewaar mijn bestelling" />
+			<td>&nbsp;</td>
+			<td align="right" style="text-align:right">
+			<html:submit property="send" value="Toevoegen aan mijn bestelling" />
 			</td>
-			<td></td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr height="5">
 			<td></td>
@@ -885,12 +893,11 @@ if(twoColumns) {
 		<%String gotoKartLink = "/nmintra/KaartenAction.eb" + rubriekParams + "&shopping_cart"; %>
 		<html:link 
         page="<%=gotoKartLink%>">
-        Terug naar mijn bestelling...
+        Bekijk mijn bestelling...
 </html:link>
 
 		</td>
 			<td></td>
-
 			<td></td>
 		</tr>
 	</table>
