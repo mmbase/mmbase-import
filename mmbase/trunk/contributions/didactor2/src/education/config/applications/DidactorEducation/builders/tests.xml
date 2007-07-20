@@ -191,9 +191,8 @@
         <guiname xml:lang="nl">Altijd online</guiname>
         <guiname xml:lang="en">Always online</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
-        <!-- boolean ? -->
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="false" />
       </datatype>
     </field>
 
@@ -232,4 +231,15 @@
     </field>
 
   </fieldlist>
+
+  <functionlist>
+    <function key="questions">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+    <function key="online">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+  </functionlist>
+
+
 </builder>
