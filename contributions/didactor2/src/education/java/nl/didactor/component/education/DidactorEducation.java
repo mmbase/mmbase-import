@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.7 2007-07-20 10:15:24 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.8 2007-07-20 10:18:43 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -42,9 +42,7 @@ public class DidactorEducation extends Component {
         return new Component[0];
     }
 
-    public int castIdentifier( Object object)
-        throws JspTagException
-    {
+    public int castIdentifier( Object object) throws JspTagException {
         int value= 0;
 //      obtain education via context
          if (object != null) {
@@ -60,45 +58,37 @@ public class DidactorEducation extends Component {
     }
 
     // javadoc inherited
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments)
-    {
+    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
         boolean mayvalue[]= new boolean[] {false, false};
-        try
-        {
-            if (operation.equals( "isSelfOrTeacherOf") || operation.equals( "isTeacherOf"))
-            {
+        try {
+            if (operation.equals( "isSelfOrTeacherOf") || operation.equals( "isTeacherOf")) {
 
                 Object user = context.get( "user");
                 Object educationobj= context.get( "education");
                 Object classobj= context.get( "class");
 
                 MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(  ((Integer)user).intValue());
-                if (usernode == null)
-                {
+                if (usernode == null) {
                     throw new JspTagException("User with number '" + user + "' not found");
                 }
                 int educationno = castIdentifier( educationobj);
 
 
                 int classno;
-                if((classobj != null) && ( (classobj instanceof String) && (!classobj.equals("null"))) )
-                {//the class is a number
-                   classno = castIdentifier(classobj);
-                }
-                else
-                {//the class is null
-                   classno = -1;
+                if((classobj != null) && ( (classobj instanceof String) && (!classobj.equals("null"))) ) {
+                    //the class is a number
+                    classno = castIdentifier(classobj);
+                } else {
+                    //the class is null
+                    classno = -1;
                 }
 
 
                 int subjectno = 0;
 
-                if ((arguments.length > 0) && (arguments[0] != null))
-                {
+                if ((arguments.length > 0) && (arguments[0] != null)) {
                     subjectno= castIdentifier( context.get( arguments[0]));
-                }
-                else
-                {
+                } else {
                     throw new JspTagException("1 argument required: subject person ID");
                 }
                 //System.out.println( subjectno);
@@ -107,20 +97,15 @@ public class DidactorEducation extends Component {
                 boolean isTeacherOf= ClassRoom.isClassMember(usernode, subjectno, classno, educationno, "teacher", cloud)
                 || ClassRoom.isWorkgroupMember(usernode, subjectno, classno, educationno, "teacher", cloud);
 
-                if (operation.equals( "isTeacherOf"))
-                {
+                if (operation.equals( "isTeacherOf")) {
                     mayvalue[0]= isTeacherOf;
-                }
-                else
-                {
+                } else {
                     mayvalue[0]= (subjectno == usernode.getNumber()) || isTeacherOf;
                 }
             }
             return mayvalue;
-        }
-        catch (JspTagException e) {
-            //             throw new JspTagException(e.getMessage());
-            System.err.println( "may: education: " + operation + " "  +e.getMessage());
+        } catch (JspTagException e) {
+            log.warn( "may: education: " + operation + " "  +e.getMessage());
             return new boolean[] {false, false};
         }
     }
@@ -173,14 +158,13 @@ public class DidactorEducation extends Component {
         long classStart = classRuntime.getLongValue("start");
         long currenttime = System.currentTimeMillis() / 1000;
 
-        for (int i=0; i<events.size(); i++) {
+        for (int i = 0; i < events.size(); i++) {
             long start = events.getNode(i).getLongValue("start");
             long stop = events.getNode(i).getLongValue("stop");
             if (currenttime > (classStart + start) && currenttime < (classStart + stop)) {
                 return 2;
             }
         }
-
         return 0;
     }
 }
