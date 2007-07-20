@@ -49,7 +49,7 @@ if (printView) { %>
       </div>
      <div style="float:right;">
         	<mm:relatednodes type="persoon" max="1">
-          Medewerker:
+          Deskundige:
           <a href="smoelenboek.jsp?employee=<mm:field name="number"/>"><mm:field name="titel"/></a>
           </mm:relatednodes>
       </div>
@@ -71,7 +71,7 @@ if (printView) { %>
   
   
   <% if (!printView && callingNode != null) { %>
-  	<br/>&nbsp;<p><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">naar boven</a></p><br/>
+  	<p>&nbsp;<br/><a href="<%= ph.createPaginaUrl(callingNode,request.getContextPath()) %>#top">naar boven</a></p><br/>
   <% } %>	
 
   </p>
