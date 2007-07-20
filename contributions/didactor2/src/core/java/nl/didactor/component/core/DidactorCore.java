@@ -49,17 +49,17 @@ public class DidactorCore extends Component {
             MMObjectNode destination = classrel.getDestination(node);
             // adding a copybook to the relation between people and classes
             if (source.getBuilder().getTableName().equals("classes") && destination.getBuilder().getTableName().equals("people")) {
-                return insertCopybook(node);
+                return insertCopybook(node, destination);
             }
             if (source.getBuilder().getTableName().equals("people") && destination.getBuilder().getTableName().equals("classes")) {
-                return insertCopybook(node);
+                return insertCopybook(node, source);
             }
             // if people are directly connected to educations they should also have a copybook
             if (source.getBuilder().getTableName().equals("educations") && destination.getBuilder().getTableName().equals("people")) {
-                return insertCopybook(node);
+                return insertCopybook(node, destination);
             }
             if (source.getBuilder().getTableName().equals("people") && destination.getBuilder().getTableName().equals("educations")) {
-                return insertCopybook(node);
+                return insertCopybook(node, source);
             }
         }
 
@@ -70,16 +70,20 @@ public class DidactorCore extends Component {
      * When inserting a new classrel, we need to add a copybook.
      * @param classrel The new object
      */
-    public boolean insertCopybook(MMObjectNode classrel) {
+    private boolean insertCopybook(MMObjectNode classrel, MMObjectNode person) {
         String owner = classrel.getStringValue("owner");
+
         MMObjectNode copybook = MMBase.getMMBase().getBuilder("copybooks").getNewNode(owner);
+        copybook.setValue("name", "copybook for " + person.getGUIIndicator());
         copybook.insert(owner);
+
         MMObjectNode relnode = MMBase.getMMBase().getInsRel().getNewNode(owner);
         int rnumber = MMBase.getMMBase().getRelDef().getNumberByName("related");
         relnode.setValue("snumber", classrel.getNumber());
         relnode.setValue("dnumber", copybook.getNumber());
         relnode.setValue("rnumber", rnumber);
         relnode.insert(owner);
+
         return true;
     }
 }
