@@ -13,9 +13,12 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * @javadoc
+ * @version $Id: DidactorEducation.java,v 1.7 2007-07-20 10:15:24 michiel Exp $
+ */
 public class DidactorEducation extends Component {
-    private Vector interestedComponents = new Vector();
-    private static Logger log = Logging.getLoggerInstance(DidactorEducation.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
 
     /**
      * Returns the version of the component
@@ -127,19 +130,6 @@ public class DidactorEducation extends Component {
         if ("showlo".equals(setting)) {
             String lo = arguments[0];
             int res = showLo(cloud, context, lo);
-            if (res > 0) {
-                for (int i=0; i<interestedComponents.size(); i++) {
-                    Component comp = (Component)interestedComponents.get(i);
-                    // delegate the call to the component. We give the current 'max' level as an extra
-                    // argument, so that no useless checking needs to be done
-                    String value = comp.getValue("showlo", cloud, context, new String[]{lo, ""+res});
-                    if (!"".equals(value)) {
-                        res = Math.min(Integer.parseInt(value), res);
-                    }
-                    if (res == 0)
-                        break;
-                }
-            }
             return "" + res;
         }
         return "";
