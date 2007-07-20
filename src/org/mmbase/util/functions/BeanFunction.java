@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.3 2007-06-08 08:02:54 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.4 2007-07-20 13:19:47 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -251,6 +251,13 @@ public class BeanFunction extends AbstractFunction {
             while(i.hasNext() && j.hasNext()) {
                 Object value = i.next();
                 Method method = (Method) j.next();
+                if (value == null) {
+                    if (method.getParameterTypes()[0].isPrimitive()) {
+                        log.debug("Tried to sed null in in primitive setter method");
+                        //primitive types cannot be null, never mind.
+                        continue;
+                    }
+                }
                 method.invoke(bean, new Object[] {value});
             }
             Object ret =  method.invoke(bean, new Object[] {});
