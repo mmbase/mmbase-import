@@ -372,6 +372,7 @@ public class HtmlCleaner {
            }
        }
        text = replace(text, "\'","&rsquo;"); // problem with '\u0027' ;-)
+       text = replace(text, "\"","&quot;");
        return text;
    }
 
