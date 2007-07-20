@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.19 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: BeanFunction.java,v 1.20 2007-07-20 13:21:06 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -200,6 +200,14 @@ public class BeanFunction extends AbstractFunction<Object> {
             Class[] parameterTypes = m.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
+                boolean required = false;
+                try {
+                    Method setter = claz.getMethod(methodName);
+                    Required requiredAnnotation = setter.getAnnotation(Required.class);
+                    if (requiredAnnotation != null) required = requiredAnnotation.value();
+                } catch (NoSuchMethodException nsme) {
+                    log.error(nsme);
+                }
                 // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
@@ -220,7 +228,14 @@ public class BeanFunction extends AbstractFunction<Object> {
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
                     parameters.add(Parameter.NODE);
                 } else {
-                    parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
+                    if(defaultValue != null) {
+                        if (required) {
+                            log.warn("Required annotation ignored, because a default value is present");
+                        }
+                        parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
+                    } else {
+                        parameters.add(new Parameter(parameterName, parameterTypes[0], required));
+                    }
                 }
                 setMethods.add(m);
             }
@@ -259,6 +274,13 @@ public class BeanFunction extends AbstractFunction<Object> {
             while(i.hasNext() && j.hasNext()) {
                 Object value  = i.next();
                 Method setter = j.next();
+                if (value == null) {
+                    if (setter.getParameterTypes()[0].isPrimitive()) {
+                        log.debug("Tried to sed null in in primitive setter method");
+                        //primitive types cannot be null, never mind.
+                        continue;
+                    }
+                }
                 setter.invoke(b, value);
             }
             Object ret =  method.invoke(b);
