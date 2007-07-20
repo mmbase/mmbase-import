@@ -24,18 +24,18 @@
   </command>
 
   <command name="search" nodepath="learnobjects,learnblocks" fields="learnobjects.name,learnblocks.intro" age="-1" orderby="learnobjects.number,learnblocks.number" directions="down,down" >
-        <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
-        <prompt xml:lang="en">Search for learnobjects</prompt>
-        <search-filter>
-          <name xml:lang="nl">Titel bevat</name>
-          <name xml:lang="en">Name contains</name>
-          <search-fields>learnobjects.name</search-fields>
-        </search-filter>
-        <search-filter>
-          <name xml:lang="nl">Tekst bevat</name>
-          <name xml:lang="en">Text contains</name>
-          <search-fields>learnblocks.intro</search-fields>
-        </search-filter>
-      </command>
+    <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
+    <prompt xml:lang="en">Search for learnobjects</prompt>
+    <search-filter>
+      <name xml:lang="nl">Titel bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>learnobjects.name</search-fields>
+    </search-filter>
+    <search-filter>
+      <name xml:lang="nl">Tekst bevat</name>
+      <name xml:lang="en">Text contains</name>
+      <search-fields>learnblocks.intro</search-fields>
+    </search-filter>
+  </command>
 </list>
 
