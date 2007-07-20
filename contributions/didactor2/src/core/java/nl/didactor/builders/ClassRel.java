@@ -4,13 +4,13 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import java.util.Date;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class ClassRel extends DidactorRel {
-    private static Logger log = Logging.getLoggerInstance(ClassRel.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ClassRel.class);
 
     /**
      * Initialize the builder
@@ -35,13 +35,13 @@ public class ClassRel extends DidactorRel {
      * has to be removed too. 
      */
     public void removeNode(MMObjectNode node) {
-        Vector copybooks = node.getRelatedNodes("copybooks");
+        List copybooks = node.getRelatedNodes("copybooks");
         for (int i=0; i<copybooks.size(); i++) {
             MMObjectNode copybook = (MMObjectNode)copybooks.get(i);
-            Vector madetests = copybook.getRelatedNodes("madetests");
+            List madetests = copybook.getRelatedNodes("madetests");
             for (int j=0; j<madetests.size(); j++) {
                 MMObjectNode madetest = (MMObjectNode)madetests.get(j);
-                Vector givenanswers = madetest.getRelatedNodes("givenanswers");
+                List givenanswers = madetest.getRelatedNodes("givenanswers");
                 for (int k=0; k<givenanswers.size(); k++) {
                     MMObjectNode givenanswer = (MMObjectNode)givenanswers.get(k);
                     givenanswer.removeRelations();
