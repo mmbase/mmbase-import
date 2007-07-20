@@ -34,10 +34,7 @@ public abstract class Component {
     /** Save the settings for this component */
     private Map<String, Setting> settings = new HashMap<String, Setting>();
 
-    /** A list of all possible setting scopes */
-    private List<String> scopes = new ArrayList<String>();
-
-    private Map<String, String> scopesReferid = new HashMap<String, String>();
+    private Map<String, String> scopes = new HashMap<String, String>();
 
     /** The string indicating the path for templates of this component */
     private String templatepath = null;
@@ -90,10 +87,10 @@ public abstract class Component {
      */
     public void init() {
         String configFile = "components/" + getName() + ".xml";
-        log.debug("Reading component configuration from file '" + configFile + "'");
         try {                
             if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
                 Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, true, Component.class);
+                log.service("Reading component configuration from '" + doc.getDocumentURI() + "'");
                 Element componentNode = (Element) doc.getDocumentElement();
                 this.templatepath = getAttribute(componentNode, "templatepath");
                 this.templatebar = getAttribute(componentNode, "templatebar");
@@ -111,8 +108,7 @@ public abstract class Component {
                         String scopeName = getAttribute(scope, "name");
                         String scopeReferid = getAttribute(scope, "referid");
                         log.debug("Scope name: " + scopeName);
-                        scopes.add(scopeName);
-                        scopesReferid.put(scopeName, scopeReferid);
+                        scopes.put(scopeName, scopeReferid);
                         NodeList childNodes2  = scope.getChildNodes();
                         for (int j = 0; j < childNodes2.getLength(); j++) {
                             if ("setting".equals(childNodes2.item(j).getNodeName())) {
@@ -298,7 +294,7 @@ public abstract class Component {
         Object retval = null;
         
         for (String scopeName : scope) {
-            String scopeReferId = scopesReferid.get(scopeName);
+            String scopeReferId = scopes.get(scopeName);
             if (log.isDebugEnabled()) {
                 log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
             }
@@ -541,8 +537,8 @@ public abstract class Component {
     /**
      * @javadoc
      */
-    public List<String> getScopes() {
-        return scopes;
+    public Collection<String> getScopes() {
+        return scopes.keySet();
     }
 
     /**
