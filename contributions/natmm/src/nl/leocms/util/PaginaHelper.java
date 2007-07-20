@@ -46,8 +46,7 @@ public class PaginaHelper {
 
    public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
    public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
-   final static String RUBRIEK_NODE_NAARDERMEER = "naardermeer";
-   final static String RUBRIEK_NODE_DEWIEDEN = "dewieden";
+   final static int NAARDERMEER_LAYOUT_INDEX = 1; // index to Naardermeer layout entry, as defined in NatMMConfig.java
    
    Cloud cloud;
 	 ApplicationHelper ap;
@@ -1256,21 +1255,21 @@ public class PaginaHelper {
       ids.put("rubriek", rubriekID);
       ids.put("pagina", paginaID);
       
-      // Checking if page belongs tot he Neerdermeer subsite (rubriek)
+      // Checking if page belongs to the Neerdermeer rubriek layout
       String isNaardermeer = "false";
       String subRubriek = getSubsiteRubriek(cloud, paginaID); //node number of our sub rubriek
-      // Naardermeer huisstijl is applied based on isNaardermeer id
-      // naardermeer and dewieden top rubrieks have this huisstijl applied
-      try{
-    	  if ((cloud.getNodeByAlias(RUBRIEK_NODE_NAARDERMEER).getStringValue("number").equals(subRubriek))
-              || (cloud.getNodeByAlias(RUBRIEK_NODE_DEWIEDEN).getStringValue("number").equals(subRubriek))) {
-    		  // the node numbers match - we are at naardermeer site
-    		  isNaardermeer = "true";
-    	  }
-      } catch (NotFoundException nodeNotFound) {
-    	  log.debug("Node with alias 'naardermeer' not found. Setting isNaardermeer = false.");
+      // Naardermeer huisstijl is applied based on layout that can be selected in editors for top rubrieks
+      // this is for some reason stored in variable naam_fra, as an index to an array defined in NatMMConfig.java
+      int siteLayout = 0;
+      Node subRubriekNode = cloud.getNode(subRubriek);
+      if(subRubriekNode!=null) {
+         siteLayout = Integer.parseInt(subRubriekNode.getStringValue("naam_fra"));
+      }
+      if (siteLayout == NAARDERMEER_LAYOUT_INDEX) {
+         isNaardermeer = "true";
       }
       ids.put("isNaardermeer", isNaardermeer);
+
       return ids;
    }
 
