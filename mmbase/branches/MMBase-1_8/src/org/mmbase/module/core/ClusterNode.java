@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.27 2006-04-10 15:10:36 daniel Exp $
+ * @version $Id: ClusterNode.java,v 1.27.2.1 2007-07-23 13:49:44 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -183,8 +183,8 @@ public class ClusterNode extends VirtualNode {
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
-        String builder = getBuilderName(fieldName);
-        if (builder == null) {
+        String builderName = getBuilderName(fieldName);
+        if (builderName == null) {
             // there is no 'builder' specified,
             // so the fieldname itself is a builder name
             // -> so return the MMObjectNode for that buidler
@@ -197,9 +197,8 @@ public class ClusterNode extends VirtualNode {
         if (o == null) {
             // the normal approach does not yield results.
             // get the value from the original builder
-            String builderName = getBuilderName(fieldName);
             MMObjectNode n = getRealNode(builderName);
-            if (n!=null) {
+            if (n != null) {
                 o = n.getValue(ClusterBuilder.getFieldNameFromField(fieldName));
             } else {
                 // fall back to builder if this node doesn't contain a number to fetch te original
@@ -212,6 +211,20 @@ public class ClusterNode extends VirtualNode {
             }
         }
         return o;
+    }
+
+    public long getSize(String fieldName) {
+        String builder = getBuilderName(fieldName);
+        if (builder == null) {
+            return super.getSize(fieldName);
+        } else {
+            MMObjectNode n = getRealNode(builder);
+            if (n != null) {
+                return n.getSize(ClusterBuilder.getFieldNameFromField(fieldName));
+            } else {
+                return super.getSize(fieldName);
+            }
+        }
     }
 
 
