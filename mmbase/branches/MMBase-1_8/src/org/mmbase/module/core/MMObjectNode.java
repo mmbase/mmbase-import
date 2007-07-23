@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.6 2007-07-23 10:19:43 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.7 2007-07-23 13:56:38 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -633,9 +633,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         Object value = values.get(fieldName);
         // Value is null so it does not occupy any space.
         if (value == null) {
-            if (!checkFieldExistance(fieldName)) {
-                return 0;
-            }
+            checkFieldExistance(fieldName);
+            return 0;
         }
         // Value is not yet loaded from the database?
         if (VALUE_SHORTED.equals(value)) return -1;
@@ -910,7 +909,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (b.length < blobs.getMaxEntrySize()) {
             blobs.put(key, b);
         }
-
+        setSize(fieldName, b.length);
         values.put(fieldName, b);
         return b;
     }
@@ -947,11 +946,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     public InputStream getInputStreamValue(String fieldName) {
-        Object value = values.get(fieldName);
+        Object value = getValue(fieldName);
         if (value == null) {
-            if (!checkFieldExistance(fieldName)) {
-                log.debug("NULL on " + fieldName + " " + this, new Exception());
-                return new ByteArrayInputStream(new byte[0]);
+            checkFieldExistance(fieldName);
+            log.debug("NULL on " + fieldName + " " + this, new Exception());
+            return new ByteArrayInputStream(new byte[0]);
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace("Found " + value);
             }
         }
 
