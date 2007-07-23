@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.28 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: ClusterNode.java,v 1.29 2007-07-23 13:51:02 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -182,9 +182,9 @@ public class ClusterNode extends VirtualNode {
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
-    public Object getValue(String fieldName) {
-        String builder = getBuilderName(fieldName);
-        if (builder == null) {
+    public Object getValue(final String fieldName) {
+        String builderName = getBuilderName(fieldName);
+        if (builderName == null) {
             // there is no 'builder' specified,
             // so the fieldname itself is a builder name
             // -> so return the MMObjectNode for that buidler
@@ -197,9 +197,8 @@ public class ClusterNode extends VirtualNode {
         if (o == null) {
             // the normal approach does not yield results.
             // get the value from the original builder
-            String builderName = getBuilderName(fieldName);
             MMObjectNode n = getRealNode(builderName);
-            if (n!=null) {
+            if (n != null) {
                 o = n.getValue(ClusterBuilder.getFieldNameFromField(fieldName));
             } else {
                 // fall back to builder if this node doesn't contain a number to fetch te original
@@ -214,6 +213,19 @@ public class ClusterNode extends VirtualNode {
         return o;
     }
 
+    public long getSize(String fieldName) {
+        String builder = getBuilderName(fieldName);
+        if (builder == null) {
+            return super.getSize(fieldName);
+        } else {
+            MMObjectNode n = getRealNode(builder);
+            if (n != null) {
+                return n.getSize(ClusterBuilder.getFieldNameFromField(fieldName));
+            } else {
+                return super.getSize(fieldName);
+            }
+        }
+    }
 
     /**
      * Get a value of a certain field.
