@@ -13,6 +13,10 @@ if (request.getParameter("rbid") != null) {
 if (request.getParameter("pgid") != null) {
 	paginaID = request.getParameter("pgid");
 }
+if (request.getParameter("ssid") != null) {
+   subsiteID = request.getParameter("ssid");
+}
+
 breadcrumbs.set(0, rubriekId);
  rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID;
 %>
