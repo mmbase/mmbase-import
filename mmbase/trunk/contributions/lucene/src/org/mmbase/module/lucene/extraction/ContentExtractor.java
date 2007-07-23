@@ -14,6 +14,7 @@
 package org.mmbase.module.lucene.extraction;
 
 import java.util.*;
+import java.util.regex.*;
 import org.xml.sax.Attributes;
 
 import org.mmbase.util.logging.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Handles content extraction
  *
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ContentExtractor {
 
@@ -29,7 +30,8 @@ public class ContentExtractor {
 
     private static ContentExtractor instance = null;
 
-    private Map<String, Extractor> extractors = new HashMap<String, Extractor>();
+    private final List<Map.Entry<Pattern, Extractor>> extractors = new ArrayList<Map.Entry<Pattern, Extractor>>();
+    private final Map<String, Extractor> cache = new HashMap<String, Extractor>();
 
     public ContentExtractor() {
     }
@@ -41,38 +43,60 @@ public class ContentExtractor {
         return instance;
     }
 
-    public Extractor findExtractor(String mimetype) {
-        log.debug("Find extractor: '" + mimetype + "'");
-        if (extractors.containsKey(mimetype)) {
-            Extractor ext = extractors.get(mimetype);
+    public void clear() {
+        extractors.clear();
+        cache.clear();
+    }
+
+    public Extractor findExtractor(String mimeType) {
+        log.debug("Find extractor: '" + mimeType + "'");
+        Extractor ext = cache.get(mimeType);
+        if (ext != null) {
             return ext;
         } else {
+            if (cache.containsKey(mimeType)) {
+                return null;
+            }
+            for (Map.Entry<Pattern, Extractor> entry : extractors) {
+                if (entry.getKey().matcher(mimeType).matches()) {
+                    ext = entry.getValue();
+                    cache.put(mimeType, ext);
+                    return ext;
+                }
+            }
             // keep track on not found extractors
-            extractors.put(mimetype, null);
-            log.warn("Can't find extractor for mimetype: '" + mimetype + "'");
+            cache.put(mimeType, null);
+            log.warn("Can't find extractor for mimetype: '" + mimeType + "'");
+            return null;
         }
-        return null;
+
     }
 
-    public void addExtractor(Extractor extractor, String mimetype) {
-        if (mimetype == null) {
-            mimetype = extractor.getMimeType();
+    public void addExtractor(Extractor extractor, String mimeType) {
+        if (mimeType == null) {
+            mimeType = extractor.getMimeType();
         }
-        if (extractors.containsKey(mimetype)) {
-            log.service("Replacing Extractor for mimetype: '" + mimetype + "'");
-            extractors.remove(mimetype);
-        } else {
-            log.service("Adding Extractor for mimetype: '" + mimetype + "'");
+        cache.clear();
+        Map.Entry<Pattern, Extractor> entry = new org.mmbase.util.Entry(Pattern.compile(mimeType), extractor);
+        ListIterator <Map.Entry<Pattern, Extractor>> i = extractors.listIterator();
+        while (i.hasNext()) {
+            Map.Entry<Pattern, Extractor> e = i.next();
+            if (e.getKey().equals(entry.getKey())) {
+                log.service("Replacing Extractor for mimetype: '" + e + "'");
+                i.remove();
+                break;
+            }
         }
-        extractors.put(mimetype, extractor);
+        extractors.add(entry);
+        log.service("Addded Extractor " + entry.getValue().getClass().getName() + " for mimetype: '" + mimeType + "'");
     }
 
-    public void addExtractor(Class clazz, String mimetype) throws InstantiationException, IllegalAccessException {
-        addExtractor((Extractor) clazz.newInstance(), mimetype);
+    public void addExtractor(Class clazz, String mimeType) throws InstantiationException, IllegalAccessException {
+        addExtractor((Extractor) clazz.newInstance(), mimeType);
     }
 
-    public void addExtractor(String className, String mimetype) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        addExtractor(Class.forName(className), mimetype);
+    public void addExtractor(String className, String mimeType) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        addExtractor(Class.forName(className), mimeType);
     }
 
     public void addExtractor(String className) {
@@ -92,8 +116,8 @@ public class ContentExtractor {
     public Object createObject(Attributes attributes) throws Exception {
         String className = attributes.getValue("extractorClass");
         if (className != null) {
-            String mimetype = attributes.getValue("mimetype");
-            addExtractor(className, mimetype);
+            String mimeType = attributes.getValue("mimetype");
+            addExtractor(className, mimeType);
         }
         return null;
     }
