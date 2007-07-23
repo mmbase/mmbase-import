@@ -38,16 +38,13 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.211 2007-06-21 13:46:27 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.212 2007-07-23 14:00:11 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
-    /**
-     * @deprecated Simply use <code>null</code>
-     */
-    public final static Object VALUE_NULL = null;
+
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
      * It can be set back into the field with {@link #storeValue}, to unload the field again.
@@ -614,10 +611,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public long getSize(String fieldName) {
         Long l = sizes.get(fieldName);
-        if (l != null)  return l.intValue();
+        if (l != null)  return l;
         Object value = values.get(fieldName);
         // Value is null so it does not occupy any space.
-        if (value == null) return 0;
+        if (value == null) {
+            checkFieldExistance(fieldName);
+            return 0;
+        }
         // Value is not yet loaded from the database?
         if (VALUE_SHORTED.equals(value)) return -1;
         return SizeOf.getByteSize(value);
@@ -834,7 +834,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (b.length < blobs.getMaxEntrySize()) {
             blobs.put(key, b);
         }
-
+        setSize(fieldName, b.length);
         values.put(fieldName, b);
         return b;
     }
@@ -870,10 +870,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     public InputStream getInputStreamValue(String fieldName) {
-        Object value = values.get(fieldName);
+        Object value = getValue(fieldName);
         if (value == null) {
-            log.debug("NUL on " + fieldName + " " + this, new Exception());
+            checkFieldExistance(fieldName);
+            log.debug("NULL on " + fieldName + " " + this, new Exception());
             return new ByteArrayInputStream(new byte[0]);
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace("Found " + value);
+            }
         }
 
         if (value instanceof InputStream) {
