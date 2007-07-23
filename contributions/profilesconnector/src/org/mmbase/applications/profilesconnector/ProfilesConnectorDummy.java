@@ -33,12 +33,12 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 					String veldid = tok.nextToken();
 					log.info("GET DienstId="+dienstid+" entreeid="+entreeid+" type="+type+" veldid="+veldid);
 					try {
-					int d = Integer.parseInt(dienstid);
-					int i = Integer.parseInt(veldid);
+					int dienstidint = Integer.parseInt(dienstid);
+					int veldidint = Integer.parseInt(veldid);
 					if (type.equals("GS")) {
-						return getGSField(d,entreeid,i); 
+						return getGSField(dienstidint,entreeid,veldidint); 
 					} else {
-						return getBSField(d,entreeid,i); 
+						return getBSField(dienstidint,entreeid,veldid); 
 					}
 					} catch (Exception e) {}
 				}
@@ -58,12 +58,12 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 					String veldid = tok.nextToken();
 					log.info("SET DienstId="+dienstid+" entreeid="+entreeid+" type="+type+" veldid="+veldid);
 					try {
-					int d = Integer.parseInt(dienstid);
-					int i = Integer.parseInt(veldid);
+					int dienstidInt = Integer.parseInt(dienstid);
+					int veldidint = Integer.parseInt(veldid);
 					if (type.equals("GS")) {
-						return setGSField(d,entreeid,i,value); 
+						return setGSField(dienstidInt,entreeid,veldidint,value); 
 					} else {
-						return setBSField(d,entreeid,i,value); 
+						return setBSField(dienstidInt,entreeid,veldid,value); 
 					}
 					} catch (Exception e) {}
 				}
@@ -137,11 +137,16 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 		return true;
 	}
 
-	private String getBSField(int dienstID, String entreeID, int veldID) {
+	private String getBSField(int dienstID, String entreeID, String veldID) {
 		return null;
 	}
 
-	private boolean setBSField(int dienstID, String entreeID, int veldID,String value) {
-		return false;
+	private boolean setBSField(int dienstID, String entreeID, String veldID,String value) {
+        if(veldID.equals("nickname")){
+            if(value.equals("inuse")){
+                return false;
+            }
+        }
+		return true;
 	}
 }
