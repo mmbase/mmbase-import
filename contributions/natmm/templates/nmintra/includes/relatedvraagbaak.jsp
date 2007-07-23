@@ -4,6 +4,12 @@
 <% 
 String vraagId=request.getParameter("v");
 String callingNode=request.getParameter("c");
+
+String rb = request.getParameter("rb");
+String rbid = request.getParameter("rbid");
+String pgid = request.getParameter("pgid");
+String ssid = request.getParameter("ssid");
+
 String printAction=request.getParameter("pst");
 boolean printView = ((printAction != null) && (printAction.indexOf("print") != -1));
 // needed to support images in paragraph include
@@ -50,7 +56,7 @@ if (printView) { %>
      <div style="float:right;">
         	<mm:relatednodes type="persoon" max="1">
           Deskundige:
-          <a href="smoelenboek.jsp?employee=<mm:field name="number"/>"><mm:field name="titel"/></a>
+          <a href="smoelenboek_vraagbaak.jsp?employee=<mm:field name="number"/>&rb=<%=rb%>&rbid=<%=rbid%>&pgid=<%=pgid%>&ssid=<%=ssid%>"><mm:field name="titel"/></a>
           </mm:relatednodes>
       </div>
 

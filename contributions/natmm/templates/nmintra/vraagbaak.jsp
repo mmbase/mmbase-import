@@ -111,6 +111,10 @@ if(twoColumns) {
          <jsp:include page="includes/relatedvraagbaak.jsp">
          	<jsp:param name="v" value="<%=currentVraag%>"/>
          	<jsp:param name="c" value="<%=startnodeId%>"/>
+            <jsp:param name="rb" value="<%=iRubriekStyle%>"/>
+            <jsp:param name="rbid" value="<%=rubriekId%>"/>
+            <jsp:param name="pgid" value="<%=paginaID%>"/>     
+            <jsp:param name="ssid" value="<%=subsiteID%>"/>       
          </jsp:include>
          </mm:node>
      </mm:list>
