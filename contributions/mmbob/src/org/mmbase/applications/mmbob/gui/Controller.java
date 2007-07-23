@@ -1343,10 +1343,17 @@ public class Controller {
             if (forum != null) {
                 Poster poster = forum.getPoster(account);
                 Poster n = forum.getPosterNick(nick);
+                if(n != null){
+                    log.info("poster with nick "+nick+" is already in cloud");
+                }
                 if (poster == null) {
                     
                     //now check if the nick is valid.
-                    boolean nickRequired = ("entree".equals(forum.getLoginSystemType()) || "entree-ng".equals(forum.getLoginSystemType()));
+                    //boolean nickRequired = ("entree".equals(forum.getLoginSystemType()) || "entree-ng".equals(forum.getLoginSystemType()));
+                    boolean nickRequired = false;
+                    if(forum.getProfileDef("nick") != null && forum.getProfileDef("nick").isRequired()){
+                        nickRequired = true;
+                    }
                     boolean nickInUse = (n != null);
                     boolean nickEmpty = (nick == null || "".equals(nick)); 
                     if(nickRequired && nickEmpty){
@@ -1354,8 +1361,8 @@ public class Controller {
                         return "nickempty";
                     }
                     
-                    if(! nickEmpty && nickInUse){
-                        //when we get here the nick should not be empty when it is required.
+                    //a required nick was given or a nick is not required but it is given anyway.
+                    if((nickRequired || ! nickEmpty) && (nickInUse || nickInUseExternally(forum, account, nick))){
                         return "nickinuse";
                     }
                     
@@ -1385,6 +1392,59 @@ public class Controller {
         } else {
             return ("passwordnotequal");
         }
+    }
+    
+    /**
+     * This method checks if a given nick name is in use in the external profile.
+     * This depends on twoo things.<br> 
+     * the first test is if the nick is still
+     * available remotely. This is done by trying to set it.<br>
+     * the second test is getting the current value for the nick field in the 
+     * external profile. if this matches the value you just tried to set, twoo
+     * things can have happened:
+     * <ul>
+     * <li>the value was set successfully
+     * <li>the value was already set like this in the past.
+     * </ul>
+     * either way, nickinuseexternally should return false, becouse the nick
+     * is acceptable 
+     * 
+     * Don't say. It's horrible. But there is no other way. :( 
+     * @return true if a given nick name is in use by an other profile in the external profile manager.
+     */
+    private boolean nickInUseExternally(Forum forum, String account, String nickname){
+        if(nickname == null){
+            log.error("nickname is null. This is not permitted");
+            return true;
+        }
+        ProfileEntryDef pdef =  forum.getProfileDef("nick");
+        try{
+            String externalProfilesConnector = pdef.getExternal();
+            
+            //if the external field is empty we don't have to check an external profile.
+            if(externalProfilesConnector == null || "".equals(externalProfilesConnector)){
+                return false;
+            }
+            Class clazz = Class.forName(externalProfilesConnector);
+            ExternalProfileInterface epi = (ExternalProfileInterface) clazz.newInstance();
+            String externalName = pdef.getExternalName();
+            
+            //first try to set the nick 
+            boolean canSetNick = epi.setValue(account, externalName, nickname);
+            
+            //now get the current value
+            String externalNick = epi.getValue(account, externalName);
+            
+            if(canSetNick || (!"".equals(nickname) && !"null".equals(nickname) &&  nickname.equals(externalNick))){
+                return false;
+            }
+            return true;
+            
+        }catch(Exception e){
+            log.error("something went wrong trying to set the 'new' nickname in the remote profile: "+e.toString());
+        }
+        //when something goes wrong we return true to block the operation.
+        return true;
     }
 
     /**
@@ -2806,6 +2866,8 @@ public class Controller {
                             map.put("guipos", new Integer(pd.getGuiPos()));
                             map.put("edit", "" + pd.getEdit());
                             map.put("type", pd.getType());
+                            map.put("required", ""+pd.isRequired());
+                            map.put("changeable", ""+pd.isChangeable());
                             ProfileEntry pe = poster.getProfileValue(pd.getName());
                             if (pe != null) {
                                 map.put("value", pe.getValue());
@@ -2846,19 +2908,44 @@ public class Controller {
         return list;
     }
 
-    public Map setProfileValue(String forumid, int activeid, String name, String value) {
-        Map map = new HashMap();
-
+    /**
+     * @param forumid
+     * @param activeid
+     * @param name
+     * @param value
+     * @return feedback can be: (profilechanged|requiredbutempty|cannotedit|unchangeable|error)
+     */
+    public String setProfileValue(String forumid, int activeid, String name, String value) {
+        String feedback = "error";
         value = filterHTML(value);
 
         Forum forum = ForumManager.getForum(forumid);
         if (forum != null) {
-            Poster activePoster = forum.getPoster(activeid);
-            if (activePoster != null) {
-                String feedback = activePoster.setProfileValue(name, value);
+            ProfileEntryDef ped = forum.getProfileDef(name);
+            if (ped != null) {
+                if(! ped.getEdit()){
+                    return "cannotedit";
+                }
+                if(empty(value) && ped.isRequired() ){
+                    return "requiredbutempty";
+                }
+
+                Poster activePoster = forum.getPoster(activeid);
+                if (activePoster != null) {
+                    feedback = activePoster.setProfileValue(name, value);
+                }
             }
         }
-        return map;
+        return feedback;
+    }
+    
+    /**
+     * utility to check if a string is null or equals ""
+     * @param value
+     * @return
+     */
+    private boolean empty(String value){
+        return value == null || "".equals(value);
     }
 
     public String getBirthDateString(String name, String value) {

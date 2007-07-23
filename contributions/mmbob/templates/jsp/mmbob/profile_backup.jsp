@@ -250,95 +250,21 @@
                                                                     </span>
                                                                 </div>
 
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.NewPassword"/></span>
-                                                                    <span class="formw">
-                                                                        <input name="newpassword" type="password" size="25"/>
-                                                                    </span>
-                                                                </div>
-
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.NewConfirmPassword"/></span>
-                                                                    <span class="formw">
-                                                                        <input name="newconfirmpassword" type="password" size="25" />
-                                                                    </span>
-                                                                </div>
-                                                            </mm:compare>
-                                                            <%--  end login system http--%>
-
-
-
-
-
-                                                            <%--  login system entree--%>
-                                                            <mm:compare referid="loginsystemtype" value="entree">
-                                                                <%--  now show the default fields, but you can't edit them here.--%>
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Firstname"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="firstname" />
-                                                                    </span>
-                                                                </div>
-
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Lastname"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="lastname" />
-                                                                    </span>
-                                                                </div>
-
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Email"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="email" />
-                                                                </span>
-                                                                </div>
-
-                                                                <mm:write referid="entree" >
-                                                                    <input name="newpassword" type="hidden" value="${_}" />
-                                                                    <input name="newconfirmpassword" type="hidden" value="${_}" />
-                                                                </mm:write>
-                                                            </mm:compare>
-                                                            <%--  end login system entree--%>
-
-
-
-                                                            <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Location"/></span>
-                                                                    <span class="formw">
-                                                                        <input name="newlocation" type="text" size="25" value="${pinfo.location}"/>
-                                                                    </span>
-                                                                </div>
-
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Gender"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="gender">
-                                                                            <select name="newgender">
-                                                                                <mm:compare value="male">
-                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
-                                                                                </mm:compare>
-                                                                                <mm:compare value="male" inverse="true">
-                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
-                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                                                </mm:compare>
-                                                                            </select>
-                                                                        </mm:field>
-                                                                    </span>
-                                                                </div>
-
-
-
-                                                            <%--  now show the profileEntryDef fields--%>
+                                                                <%--  now show the profileEntryDef fields--%>
+                                                                <%--
+                                                                    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
+                                                                    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
+                                                                    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
+                                                                --%>
                                                                 <mm:import id="guipos" reset="true">0</mm:import>
                                                                 <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
                                                                     <div class="row">
                                                                         <span class="label"><mm:field name="guiname" /><c:if test="${field.required}">*</c:if></span>
                                                                         <span class="formw">
-                                                                        <%--
-                                                                            <p>test: changeable=${field.changeable} :: edit=${field.edit} :: required=${field.required}</p>
-                                                                        --%>
+                                                                            <%--
+                                                                                a hack: the nickname field can only be edited when it is still empyt. once inserted it can not change.
+                                                                                better option: create a mode for profile entry def that represents this behavour.
+                                                                            --%>
                                                                             <c:choose>
                                                                                 <c:when test="${field.edit && (empty field.value || field.changeable == 'true')}">
                                                                                     <c:choose>
@@ -376,7 +302,127 @@
                                                                     </div>
                                                                 </mm:nodelistfunction>
 
+                                                                <%--  now show gender, new password, confirm new passwod--%>
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Gender"/></span>
+                                                                    <span class="formw">
+                                                                        <mm:field name="gender">
+                                                                            <select name="newgender">
+                                                                                <mm:compare value="male">
+                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
+                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
+                                                                                </mm:compare>
+                                                                                <mm:compare value="male" inverse="true">
+                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
+                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
+                                                                                </mm:compare>
+                                                                            </select>
+                                                                        </mm:field>
+                                                                  </span>
+                                                                </div>
 
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.NewPassword"/></span>
+                                                                    <span class="formw">
+                                                                        <input name="newpassword" type="password" size="25"/>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.NewConfirmPassword"/></span>
+                                                                    <span class="formw">
+                                                                        <input name="newconfirmpassword" type="password" size="25" />
+                                                                    </span>
+                                                                </div>
+                                                            </mm:compare>
+                                                            <%--  end login system http--%>
+
+
+
+                                                            <%--  login system entree--%>
+                                                            <mm:compare referid="loginsystemtype" value="entree">
+
+                                                                <%--  start with the profile values--%>
+                                                                <mm:import id="guipos" reset="true">0</mm:import>
+                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="pvalues">
+                                                                    <div class="row">
+                                                                        <span class="label"><mm:field name="guiname" /><c:if test="${field.required}">*</c:if></span>
+                                                                        <span class="formw">
+                                                                            <c:choose>
+                                                                                <c:when test="${pvalues.edit && (empty pvalues.value || pvalues.changeable)}">
+                                                                                    <c:choose>
+                                                                                        <c:when test="${pvalues.type == 'string'}"> <input name="${pvalues.name}" type="text" size="25" value="${pvalues.value}"/></c:when>
+                                                                                        <c:when test="${pvalues.type == 'field'}"><textarea rows="7" cols="25" name="${pvalues.name}">${pvalues.value}</textarea></c:when>
+                                                                                        <c:when test="${pvalues.type == 'date'}">
+                                                                                            <mm:include page="bdate.jsp">
+                                                                                                <mm:param name="bname" value="${pvalues.name}"  />
+                                                                                                <mm:param name="bvalue" value="${pvalues.value}" />
+                                                                                            </mm:include>
+                                                                                        </c:when>
+                                                                                    </c:choose>
+                                                                                </c:when>
+                                                                                <c:otherwise> ${pvalues.value}</c:otherwise>
+                                                                            </c:choose>
+                                                                        </span>
+                                                                    </div>
+                                                                </mm:nodelistfunction>
+
+                                                                <%--  now show the default fields, but you can't edit them here.--%>
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Firstname"/></span>
+                                                                    <span class="formw">
+                                                                        <mm:field name="firstname" />
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Lastname"/></span>
+                                                                    <span class="formw">
+                                                                        <mm:field name="lastname" />
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Email"/></span>
+                                                                    <span class="formw">
+                                                                        <mm:field name="email" />
+                                                                </span>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Location"/></span>
+                                                                    <span class="formw">
+                                                                        <%--
+                                                                        <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
+                                                                        --%>
+                                                                        <input name="newlocation" type="text" size="25" value="${pinfo.location}"/>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Gender"/></span>
+                                                                    <span class="formw">
+                                                                        <mm:field name="gender">
+                                                                            <select name="newgender">
+                                                                                <mm:compare value="male">
+                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
+                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
+                                                                                </mm:compare>
+                                                                                <mm:compare value="male" inverse="true">
+                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
+                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
+                                                                                </mm:compare>
+                                                                            </select>
+                                                                        </mm:field>
+                                                                    </span>
+                                                                </div>
+
+                                                                <mm:write referid="entree" >
+                                                                    <input name="newpassword" type="hidden" value="${_}" />
+                                                                    <input name="newconfirmpassword" type="hidden" value="${_}" />
+                                                                </mm:write>
+                                                            </mm:compare>
+                                                            <%--  end login system entree--%>
 
                                                             <%-- TODO: not yet implemented
                                                               <div class="row">

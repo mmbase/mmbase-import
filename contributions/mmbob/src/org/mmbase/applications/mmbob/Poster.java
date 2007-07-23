@@ -830,10 +830,30 @@ public class Poster {
         profileinfo = pi;
     }
 
+    /**
+     * @param name
+     * @param value
+     * @return feedback can be: (profilechanged|unchangeable)
+     */
     public String setProfileValue(String name, String value) {
-        if (profileinfo == null) profileinfo = new ProfileInfo(this);
+        if (profileinfo == null){
+            profileinfo = new ProfileInfo(this);
+        }
+        ProfileEntry profileEntry = profileinfo.getValue(name);
+        if(! profileinfo.getProfileDef(name).isChangeable() &&  (profileEntry != null && ! empty(profileEntry.getValue())) ){
+            return "unchangeable";
+        }
         profileinfo.setValue(name, value);
-        return "none";
+        return "profilechanged";
+    }
+    
+    /**
+     * utility to check if a string is null or equals ""
+     * @param value
+     * @return
+     */
+    private boolean empty(String value){
+        return value == null || "".equals(value);
     }
 
     public ProfileInfo getProfileInfo() {

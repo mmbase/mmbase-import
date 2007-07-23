@@ -173,7 +173,12 @@
 <!ATTLIST profileentry guipos CDATA #IMPLIED>
 <!ATTLIST profileentry guiname CDATA #IMPLIED>
 <!ATTLIST profileentry edit (true|false) #IMPLIED>
+<!--this field should contian the fully qualified name of a class that impelemts org.mmbase.applications.mmbob.ExternalProfileInterface and has a no-args constructor-->
 <!ATTLIST profileentry external CDATA #IMPLIED>
+<!--this field should contian the identifier of the field as used by your implementation of the ExternalProfileInterface-->
 <!ATTLIST profileentry externalname CDATA #IMPLIED>
 <!ATTLIST profileentry type CDATA #IMPLIED>
 <!ATTLIST profileentry size CDATA #IMPLIED>
+<!ATTLIST profileentry required (true|false) #IMPLIED>
+<!--can you change te value once it is set?-->
+<!ATTLIST profileentry changeable (true|false) #IMPLIED>

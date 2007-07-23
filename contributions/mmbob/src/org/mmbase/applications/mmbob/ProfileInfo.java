@@ -135,14 +135,14 @@ public class ProfileInfo {
                         if (nm != null) {
                             String name = null;
                             boolean synced = false;
-                            boolean edit = false;
+                            
 
                             // decode name
                             org.w3c.dom.Node n2 = nm.getNamedItem("name");
                             if (n2 != null) {
                                 name = n2.getNodeValue();
                             }
-
+                            
                             // decode synced
                             n2 = nm.getNamedItem("synced");
                             if (n2 != null) {
@@ -157,6 +157,7 @@ public class ProfileInfo {
                                 } else {
                                     profileEntry.setValue("");
                                 }
+                                
                                 profileEntry.setSynced(synced);
                                 entries.put(name, profileEntry);
                             }
