@@ -47,65 +47,65 @@
             <th>full index</th>
           </tr>
           <mm:listfunction id="index" module="lucene" name="list">
-	    <c:catch var="exception1">
-	      <tr>
-		<td>
-		  <mm:write />
-		  <mm:function module="lucene" name="default" write="false">
-		    <c:if test="${index eq _.name }">
-		      <jsp:text>*</jsp:text>
-		      <mm:write id="default" referid="index" write="false" />
-		    </c:if>
-		  </mm:function>
-		</td>
-		<td>
-		  <mm:function module="lucene" referids="index" name="description" />
-		</td>
-		<td class="numeric">
-		  <mm:function module="lucene" referids="index" name="searchsize" />
-		</td>
-		<td>
-		  <mm:function module="lucene" referids="index" name="last">
-		    <mm:time format="yyyy-MM-dd HH:mm" />
-		  </mm:function>
-		</td>
-		<td>
-		  <mm:functioncontainer>
-                <mm:param name="max" value="5" />
-		<mm:listfunction referids="index" module="lucene" name="errors">
-		  <p><mm:write /></p>
-		</mm:listfunction>
-		  </mm:functioncontainer>
-		</td>
-		<td class="numeric" >
-		  <mm:function module="lucene" referids="index" name="nodes" />
-		</td>
-		<td>
-		  <mm:link referids="index" page="search.jspx">
-		    <a href="${_}" class="navigate">
-		      <img src="${img.next}" alt="next"  />
-		    </a>
-		  </mm:link>
-		</td>
-		<td>
-		  <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
-		    <mm:link>
-		      <mm:param name="fullindex" value="$index" />
-		      <a href="${_}" class="navigate" 
-			 onclick="return confirm('Are you sure? This will fully delete the index \'${index}\', and may take some time.')"
-                     >
-                    <img src="${img.next}" alt="next"  />
-		      </a>
-		    </mm:link>
-		  </mm:booleanfunction>
-		</td>
-	      </tr>
-	    </c:catch>
-	    <c:if test="${! empty exception1}">
-	      <tr><td cols="1000">${exception1}</td></tr>
-	    </c:if>
-	  </mm:listfunction>
-	</table>
+            <c:catch var="exception1">
+              <tr>
+                <td>
+                  <mm:write />
+                  <mm:function module="lucene" name="default" write="false">
+                    <c:if test="${index eq _.name }">
+                      <jsp:text>*</jsp:text>
+                      <mm:write id="default" referid="index" write="false" />
+                    </c:if>
+                  </mm:function>
+                </td>
+                <td>
+                  <mm:function module="lucene" referids="index" name="description" />
+                </td>
+                <td class="numeric">
+                  <mm:function module="lucene" referids="index" name="searchsize" />
+                </td>
+                <td>
+                  <mm:function module="lucene" referids="index" name="last">
+                    <mm:time format="yyyy-MM-dd HH:mm" />
+                  </mm:function>
+                </td>
+                <td>
+                  <mm:functioncontainer>
+                    <mm:param name="max" value="5" />
+                    <mm:listfunction referids="index" module="lucene" name="errors">
+                      <p><mm:write /></p>
+                    </mm:listfunction>
+                  </mm:functioncontainer>
+                </td>
+                <td class="numeric" >
+                  <mm:function module="lucene" referids="index" name="nodes" />
+                </td>
+                <td>
+                  <mm:link referids="index" page="search.jspx">
+                    <a href="${_}" class="navigate">
+                      <img src="${img.next}" alt="next"  />
+                    </a>
+                  </mm:link>
+                </td>
+                <td>
+                  <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+                    <mm:link>
+                      <mm:param name="fullindex" value="$index" />
+                      <a href="${_}" class="navigate" 
+                         onclick="return confirm('Are you sure? This will fully delete the index \'${index}\', and may take some time.')"
+                         >
+                        <img src="${img.next}" alt="next"  />
+                      </a>
+                    </mm:link>
+                  </mm:booleanfunction>
+                </td>
+              </tr>
+            </c:catch>
+            <c:if test="${! empty exception1}">
+              <tr><td cols="1000">${exception1}</td></tr>
+            </c:if>
+          </mm:listfunction>
+        </table>
         <hr />
         <mm:import externid="fullindex" />
         <mm:present referid="fullindex">
@@ -139,26 +139,25 @@
           <tr>
             <th>Queue</th>
             <td>
-              <mm:listfunction module="lucene" name="queue" jspvar="assignment" 
-                               vartype="org.mmbase.module.lucene.Lucene.Scheduler.Assignment">
-		<c:catch var="exception2">
-		  <mm:first><mm:import id="notempty" /></mm:first>
-		  <mm:link>
-		    <mm:param name="delete" value="${assignment.id}" />
-		    <a onclick="return confirm('Do you want to unschedule ${assignment}?');" href="${_}">
-		      <jsp:text>${assignment}</jsp:text>
-		    </a>
-		  </mm:link>
-		  <mm:last inverse="true">, </mm:last>
-		</c:catch>
-		<c:if test="${! empty exception2}">
-		  <jsp:text>EXCEPTIONL ${exception1}</jsp:text>
-		</c:if>
-	      </mm:listfunction>
-	      <mm:notpresent referid="notempty">
-		<jsp:text>Queue is empty</jsp:text>
-	      </mm:notpresent>
-	    </td>
+              <mm:listfunction module="lucene" name="queue" jspvar="assignment" >
+                <c:catch var="exception2">
+                  <mm:first><mm:import id="notempty" /></mm:first>
+                  <mm:link>
+                    <mm:param name="delete" value="${assignment.id}" />
+                    <a onclick="return confirm('Do you want to unschedule ${assignment}?');" href="${_}">
+                      <jsp:text>${assignment}</jsp:text>
+                    </a>
+                  </mm:link>
+                  <mm:last inverse="true">, </mm:last>
+                </c:catch>
+                <c:if test="${! empty exception2}">
+                  <jsp:text>EXCEPTIONL ${exception1}</jsp:text>
+                </c:if>
+              </mm:listfunction>
+              <mm:notpresent referid="notempty">
+                <jsp:text>Queue is empty</jsp:text>
+              </mm:notpresent>
+            </td>
           </tr>
           <tr>
             <th>Search on default index (${default})</th>
