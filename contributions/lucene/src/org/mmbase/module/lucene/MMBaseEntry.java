@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.18 2007-07-05 11:20:51 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.19 2007-07-23 10:49:40 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -203,7 +203,9 @@ public class MMBaseEntry implements IndexEntry {
                 // some hackery
                 int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
                 Node n = node;
+
                 if (fieldDefinition.stepField != null) {
+                    log.debug("found stepfield " + fieldDefinition.stepField);
                     org.mmbase.storage.search.StepField sf = fieldDefinition.stepField;
                     org.mmbase.bridge.Field field = cloud.getNodeManager(sf.getStep().getTableName()).getField(sf.getFieldName());
                     type = field.getDataType().getBaseType();
@@ -211,7 +213,6 @@ public class MMBaseEntry implements IndexEntry {
                     // changed especially because of datetimes...
                 } else {
                     log.debug("found optional, or virtual, field " + fieldName + " in node " + n.getNumber());
-                    n = getNode(fieldDefinition);
                     fieldName = getRealField(fieldDefinition);
                     type = n.getNodeManager().getField(fieldName).getDataType().getBaseType();
                 }
@@ -241,23 +242,27 @@ public class MMBaseEntry implements IndexEntry {
                         break;
                     }
                     case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
+                        log.debug("field type for " + fieldName + " was unknonw");
                     case org.mmbase.bridge.Field.TYPE_BINARY : {
                         String mimeType = "unknown";                        
                         try {
-                            mimeType = "" + n.getFunctionValue("mimetype", null);
+                            mimeType = "" + getNode(fieldDefinition).getFunctionValue("mimetype", null);
                         } catch (NotFoundException nfe) {
-                            log.warn("No mimetype-function found for node with binary field '" + fieldName + "'");
+                            log.warn("No mimetype-function found for node '" + n + "' with binary field '" + fieldName + "'");
                             //
                         }
                         Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
                         
+                        
                         if (extractor != null) {
+                            InputStream input = n.getInputStreamValue(fieldName);
+                            
                             if (log.isServiceEnabled()) {
-                                byte[] help = n.getByteValue(fieldName);                            
-                                log.service("Analyzing document of " + n.getNumber() + " with " + extractor + " " + help.length);
+                                //byte[] help = n.getByteValue(fieldName);                            
+                                log.service("Analyzing document of " + getNode(fieldDefinition).getNumber() + " with " + extractor + " " + n.getSize(fieldName) + " " + input.getClass());
+                                
                             }
                             
-                            InputStream input = n.getInputStreamValue(fieldName);
                             try {
                                 documentText = extractor.extract(input);
                             } catch (Exception e) {
@@ -280,8 +285,8 @@ public class MMBaseEntry implements IndexEntry {
                         documentText = n.getStringValue(fieldName);
                     }
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug("Storing  " + documentText);
+                if (log.isTraceEnabled()) {
+                    log.trace("Storing  " + documentText);
                 }
                 if (documentText != null) {
                     if (fieldDefinition.keyWord) {
