@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.69 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.70 2007-07-23 08:53:08 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -160,14 +160,15 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }
             } else {
                 // get the node from a parent element.
-                NodeProvider nodeProvider = findNodeProvider(false);
-                if (nodeProvider == null) {
-                    node = (Node) pageContext.findAttribute(NodeProviderHelper._NODE);
-                    if (node == null) {
-                        throw new JspTagException("Could not find parent of type " + NodeProvider.class +  ", and no 'number' or 'referid' attribute specified.");
-                    }
-                } else {
+                NodeProvider nodeProvider = null;
+
+                node = parentNodeId == Attribute.NULL ? (Node) pageContext.findAttribute(NodeProviderHelper._NODE) : null;
+                // get the node from a parent element.
+                if (node == null) {
+                    nodeProvider = findNodeProvider();
                     node = nodeProvider.getNodeVar();
+                } else {
+                    node = (Node) org.mmbase.util.Casting.unWrap(node);
                 }
 
                 String elString = element.getString(this);
