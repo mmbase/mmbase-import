@@ -32,6 +32,7 @@
     </target>
 
     <target name="check.download">
+        <echo message="look for extra jars in ${pc.extrajars.dest}"/>
         <available file="${pc.extrajars.dest}" property="download.done"/>
     </target>
 
