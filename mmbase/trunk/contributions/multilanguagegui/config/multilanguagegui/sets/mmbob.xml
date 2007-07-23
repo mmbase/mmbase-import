@@ -193,6 +193,10 @@
         <translation language="nl" value="Uw profiel is gewijzigd" />
         <translation language="df" value="Your profile has been updated" />
     </keyword>
+    <keyword name="Required">
+        <translation language="nl" value="Dit veld is verplicht" />
+        <translation language="df" value="This field is required" />
+    </keyword>
     <keyword name="open_topic_popular_unread">
         <translation language="nl" value="Open populair onderwerp met ongelezen reacties" />
         <translation language="df" value="Open pupular topic with unread replies" />
