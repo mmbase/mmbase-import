@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.20 2007-07-23 15:48:50 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.21 2007-07-23 17:35:53 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -262,7 +262,7 @@ public class MMBaseEntry implements IndexEntry {
                             
                             if (log.isServiceEnabled()) {
                                 //byte[] help = n.getByteValue(fieldName);                            
-                                log.service("Analyzing document of " + getNode(fieldDefinition).getNumber() + " with " + extractor.getClass().getName() + " " + mimeType + ":" + n.getSize(fieldName) + " " + input.getClass());
+                                log.service("Analyzing document of " + getNode(fieldDefinition).getNumber() + " with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1) + " " + mimeType + ":" + n.getSize(fieldName) + " " + input.getClass());
                                 
                             }
                             
@@ -270,13 +270,13 @@ public class MMBaseEntry implements IndexEntry {
                                 documentText = extractor.extract(input);
                             } catch (Exception e) {
                                 if (log.isDebugEnabled()) {
-                                    log.error(e.getMessage(), e);
+                                    log.warn(e.getMessage(), e);
                                 } else {
-                                    log.error(e.getClass() + ": " + e.getMessage());
+                                    log.warn(e.getClass() + ": " + e.getMessage());
                                 }
                                 extractor = ContentExtractor.getInstance().findExtractor("application/octet-stream");
                                 if (extractor != null) {
-                                    log.service("Retrying with " + extractor.getClass().getName());
+                                    log.service("Retrying with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1));
                                     try {
                                         input = n.getInputStreamValue(fieldName);
                                         documentText = extractor.extract(input);
