@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.86 2007-07-23 15:48:16 michiel Exp $
+ * @version $Id: Lucene.java,v 1.87 2007-07-23 21:02:51 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -243,15 +243,20 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(statusFunction);
     }
     //protected Function<String> statusDescriptionFunction = new AbstractFunction<String>("statusdescription", Parameter.LOCALE) {
-    protected Function/*<String>*/ statusDescriptionFunction = new AbstractFunction/*<String>*/("statusdescription", new Parameter[] { Parameter.LOCALE}, ReturnType.UNKNOWN) {
+    protected Function/*<String>*/ statusDescriptionFunction = new AbstractFunction/*<String>*/("statusdescription", new Parameter[] {Parameter.LOCALE, new Parameter("assignment",  Boolean.class, Boolean.TRUE)}, ReturnType.UNKNOWN) {
         public String getFunctionValue(Parameters arguments) {
             Locale locale = (Locale) arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
                                                      SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
             String desc = "" + map.get(new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus()));
-            Object ass = (scheduler == null ? null : scheduler.getAssignment());
-            return desc + (ass == null ? "" : " " + ass);
+            boolean appendAssignment = (Boolean) arguments.get("assignment");
+            if (appendAssignment) {
+                Object ass = (scheduler == null ? null : scheduler.getAssignment());
+                return desc + (ass == null ? "" : " " + ass);
+            } else {
+                return desc;
+            }
         }
     };
     {
