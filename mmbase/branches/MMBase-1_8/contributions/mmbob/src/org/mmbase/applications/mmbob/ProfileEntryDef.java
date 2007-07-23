@@ -45,6 +45,11 @@ public class ProfileEntryDef {
     private String external;
     private String externalname;
     private String type;
+    /**
+     * TODO: implement!
+     */
+    private boolean changeable;
+    private boolean required;
 
     public ProfileEntryDef() {}
 
@@ -138,6 +143,22 @@ public class ProfileEntryDef {
      */
     public String getExternalName() {
         return externalname;
+    }
+
+    public boolean isChangeable() {
+        return changeable;
+    }
+
+    public void setChangeable(boolean changeable) {
+        this.changeable = changeable;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
     /**

@@ -284,10 +284,10 @@ public class ForumManager {
 
         forums.put(new Integer(newForum.getId()), newForum);
 
-        Poster p = newForum.createPoster(account, password);
+        Poster administratorPoster = newForum.createPoster(account, password);
 
-        p.setEmail(email);
-        p.savePoster();
+        administratorPoster.setEmail(email);
+        administratorPoster.savePoster();
 
         // check if we have a clone master
         Forum forumClone = getForumCloneMaster();
@@ -315,13 +315,13 @@ public class ForumManager {
                     newForum.addProfileDef(pd);
                     if (pd.getName().equals("nick")) {
                         // kinda trick, we need a way to make forums.jsp optional for this *sigh*
-                        if (nick != null && !nick.equals("")) p.setProfileValue("nick", nick);
+                        if (nick != null && !nick.equals("")) administratorPoster.setProfileValue("nick", nick);
                     }
                 }
             }
             newForum.saveConfig();
         }
-        newForum.addAdministrator(p);
+        newForum.addAdministrator(administratorPoster);
         return node.getNumber();
     }
 

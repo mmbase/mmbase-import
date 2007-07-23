@@ -1,4 +1,5 @@
 <%@ include file="../jspbase.jsp" %>
+<%@ page import='org.mmbase.applications.profilesconnector.*' %>
 <%--
     This template is called by entree-ng-jsp to handle the form that this page shows.
     it dous the following:
@@ -39,6 +40,8 @@
 <%@ include file="../thememanager/loadvars.jsp" %>
 <%-- end login part --%>
 
+
+
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
     <mm:import id="hasnick"><mm:field name="hasnick" /></mm:import>
 </mm:nodefunction>
@@ -61,6 +64,7 @@
             <mm:import id="gender" externid="newgender" />
 
             <%-- this function can return:  [createerror|inuse|ok|passwordnotequal|firstnameerror|lastnameerror|emailerror]--%>
+            <%-- this should never happen anymore. there is always a nick--%>
             <mm:compare referid="hasnick" value="false">
                 <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,confirmpassword,firstname,lastname,email,gender,location" /></mm:import>
             </mm:compare>

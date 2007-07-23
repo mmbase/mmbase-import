@@ -40,7 +40,6 @@ public class ProfileEntry {
     private String name;
     private String guiname;
     private int guipos;
-    private boolean edit;
     private String value;
     private String external;
     private String externalname;

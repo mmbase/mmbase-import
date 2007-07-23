@@ -78,6 +78,9 @@ public class ForumConfig {
             log.debug("no nick profile entry def found for forum " + getId()+". it will be added");
             ProfileEntryDef nickProfileEntryDef = new ProfileEntryDef();
             nickProfileEntryDef.setEdit(false);
+            nickProfileEntryDef.setRequired(true);
+            //TOD: changeable is not implemented yet
+            nickProfileEntryDef.setChangeable(false);
             nickProfileEntryDef.setName("nick");
             nickProfileEntryDef.setGuiName("Nick");
             nickProfileEntryDef.setType("string");
@@ -235,7 +238,9 @@ public class ForumConfig {
                     String external = null;
                     String externalname = null;
                     String type = null;
-                    boolean edit = false;
+                    boolean edit = true;
+                    boolean required = false;
+                    boolean changeable = true;
 
                     // decode name
                     n3 = nm.getNamedItem("name");
@@ -268,7 +273,19 @@ public class ForumConfig {
                     // decode edit
                     n3 = nm.getNamedItem("edit");
                     if (n3 != null) {
-                        if (n3.getNodeValue().equals("true")) edit = true;
+                        if (n3.getNodeValue().equals("false")) edit = false;
+                    }
+                    
+                    //decode required
+                    n3 = nm.getNamedItem("required");
+                    if (n3 != null) {
+                        if (n3.getNodeValue().equals("true")) required = true;
+                    }
+                    
+                    //decode changeable
+                    n3 = nm.getNamedItem("changeable");
+                    if (n3 != null) {
+                        if (n3.getNodeValue().equals("false")) changeable = false;
                     }
 
                     // decode external
@@ -295,6 +312,8 @@ public class ForumConfig {
                         pe.setGuiPos(guipos);
                         pe.setSize(size);
                         pe.setEdit(edit);
+                        pe.setRequired(required);
+                        pe.setChangeable(changeable);
                         if (external != null && !external.equals("")) pe.setExternal(external);
                         if (externalname != null) pe.setExternalName(externalname);
                         if (type != null) pe.setType(type);

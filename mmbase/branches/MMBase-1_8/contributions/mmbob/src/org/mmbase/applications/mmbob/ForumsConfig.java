@@ -807,7 +807,8 @@ public class ForumsConfig {
                     ProfileEntryDef pd = (ProfileEntryDef) pi.next();
                     body += "\t\t\t<profileentry name=\"" + pd.getName() + "\" guiname=\"" + pd.getGuiName() + "\" guipos=\""
                             + pd.getGuiPos() + "\" edit=\"" + pd.getEdit() + "\" type=\"" + pd.getType() + "\" size=\"" + pd.getSize()
-                            + "\" external=\"" + pd.getExternalString() + "\" externalname=\"" + pd.getExternalNameString() + "\" />\n";
+                            + "\" external=\"" + pd.getExternalString() + "\" externalname=\"" + pd.getExternalNameString()
+                            + "\" required=\"" + pd.isRequired() + "\"  changable=\"" + pd.isChangeable() + " \" />\n";
                 }
             }
             body += "\t\t\t<avatars>\n\n";
