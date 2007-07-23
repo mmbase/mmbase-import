@@ -1358,7 +1358,7 @@
         <param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" >-1</param>
         <param name="pname" type="String" description="Name of profile value" />
         <param name="pvalue" type="String" description="Value of profile value" />
-        <return type="java.util.Map"></return>
+        <return type="java.lang.String"/>
     </function>
 
     <function name="getForumProperties">
