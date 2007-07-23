@@ -69,9 +69,7 @@ if(showProgramSelect) {
 }
 %><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
-<td><% String rightBarTitle = "Zoek een collega"; 
-%><%@include file="includes/rightbartitle.jsp" 
-%></td>
+<td></td>
 </tr>
 <tr>
 <td class="transperant" valign="top">
@@ -118,7 +116,7 @@ if(showProgramSelect) {
           %><%@include file="includes/peoplefinder/update.jsp" %><%
       } else { // *** just show the info on the employee ***
         %>
-        <jsp:include page="includes/peoplefinder/table.jsp">
+        <jsp:include page="includes/peoplefinder/table_vraagbaak.jsp">
           <jsp:param name="e" value="<%= employeeId %>" />
           <jsp:param name="tp" value="<%= thisPrograms %>" />
           <jsp:param name="it" value="<%= imageTemplate %>" />
@@ -154,12 +152,7 @@ if(showProgramSelect) {
 </table>
 </div>
 </td>
-<td valign="top"><%
-    if(action.equals("")) {
-        %><%@include file="includes/peoplefinder/form.jsp" 
-        %><%@include file="includes/whiteline.jsp" 
-        %><%@include file="includes/peoplefinder/result.jsp" %><%
-    } %></td>
+<td valign="top"></td>
 <%@include file="includes/footer.jsp" %>
 </mm:log>
 </mm:cloud>
