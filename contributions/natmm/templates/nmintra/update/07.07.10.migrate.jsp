@@ -37,7 +37,8 @@
    21. new menu: ThemaPlotKaarten. create relations for this node, from user(admin) and to editwizard(themaplotkaart)<br/>    
    22. new typedef for bestelling_vastgoed <br/>
    23. new typedef and new reldef for kaart_bestel_regel <br/>
-   24. new typerel source: bestellingvastgoed, destination: themaplotkaart, relation: kaartbestelregel<br/>     
+   24. new typerel source: bestellingvastgoed, destination: themaplotkaart, relation: kaartbestelregel<br/>
+   25. create new editwizards: vraagbaak artikel <br/>     
  
 <br/><br/>
 
@@ -318,9 +319,27 @@
       <mm:setfield name="max">-1</mm:setfield>
 </mm:createnode>
 
+25. <br/>
+<mm:createnode type="editwizards" id="editwizard_vraagbaak">
+     <mm:setfield name="name">vraagbaak</mm:setfield>
+     <mm:setfield name="description">Editwizard voor vraagbaak artikelen</mm:setfield>
+     <mm:setfield name="type">list</mm:setfield>
+     <mm:setfield name="wizard">config/vraagbaak/vraagbaak</mm:setfield>
+     <mm:setfield name="nodepath">vraagbaak</mm:setfield>
+     <mm:setfield name="fields">titel,embargo,verloopdatum</mm:setfield>
+     <mm:setfield name="age">-1</mm:setfield>
+     <mm:setfield name="m_distinct">1</mm:setfield>     
+     <mm:setfield name="orderby">titel</mm:setfield>
+     <mm:setfield name="directions">up</mm:setfield>
+     <mm:setfield name="pagelength">-1</mm:setfield>
+     <mm:setfield name="maxpagecount">-1</mm:setfield>
+     <mm:setfield name="maxupload">-1</mm:setfield>
 
+</mm:createnode>
 
-
+<mm:listnodes type="users" constraints="account='admin'" max="1" id="user_admin_4" >
+   <mm:createrelation role="gebruikt" source="user_admin_4" destination="editwizard_vraagbaak" />
+</mm:listnodes>
 
 
 
