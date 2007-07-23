@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.85 2007-03-26 13:56:53 michiel Exp $
+ * @version $Id: Lucene.java,v 1.86 2007-07-23 15:48:16 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -727,6 +727,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         searcherMap.clear();
         disableIndexes.clear();
         defaultIndex = null;
+        factory.clear();
         List<URL> configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
         log.service("Reading " + configList);
         for(URL url : configList) {
@@ -741,7 +742,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 for (int i = 0; i < extractorElements.getLength(); i++) {
                     Element extractorElement = (Element) extractorElements.item(i);
                     String className = extractorElement.getAttribute("class");
-                    factory.addExtractor(className);
+                    String mimeType = extractorElement.getAttribute("mimetype");
+                    if ("".equals(mimeType)) mimeType = null;
+                    factory.addExtractor(className, mimeType);
                 }
 
                 NodeList indexElements = root.getElementsByTagName("index");
