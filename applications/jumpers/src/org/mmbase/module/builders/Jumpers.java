@@ -21,6 +21,7 @@ import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.jumpers.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -44,7 +45,8 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.3 2007-07-24 11:18:38 michiel Exp $
+ * @author Marcel Maatkamp, VPRO Digitaal
+ * @version $Id: Jumpers.java,v 1.4 2007-07-24 13:23:38 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -73,6 +75,11 @@ public class Jumpers extends MMObjectBuilder {
      */
     protected static String jumperNotFoundURL;
 
+    private MMObjectBuilder jumpercachebuilder = null;
+
+    // jumper calculators
+    private ChainedJumperStrategy strategy = new ChainedJumperStrategy();
+
     /**
      * Initializes the builder. Determines the jumper cache size, and
      * initializes it. Also determines the default jumper url.
@@ -81,9 +88,68 @@ public class Jumpers extends MMObjectBuilder {
      */
     public boolean init() {
         super.init();
+        // cache
+        jumpercachebuilder = mmb.getMMObject("jumpercache");
+        if(jumpercachebuilder == null) { 
+            log.service("Jumpercache is not found, make sure the builder 'jumpercache' is enabled!");
+        }
+
+        setStrategies();
+
         jumperNotFoundURL = getInitParameter("JumperNotFoundURL");
         return true;
     }
+
+    /**
+    * Specify the calculators for jumpers.
+    *
+    * Calculators define the behaviour of how numbers are being translated into urls.
+    * They provide the logic, whereas this builder contains the caching.
+    * 
+    * There are 2 calculators: override and default. 
+    * 
+    * default: this is the default jumper, containing the logic as it always was. This file
+    * can be copied and enhanced to fit your own need. That will then become the override
+    * calculator.
+    * 
+    * Flow: if override.calculate(number) returns an url, that one is used; if it returns
+    * a null or just isnt defined in jumpers.xml, the default calculator.calculate(number)
+    * is used. The default.calculate(number) will map number into a node and call 
+    * the method getDefaultUrl(number) of the builder of that node.
+    *
+    * The override class is defined in jumpers.xml as a property:
+    *
+    *  WEB-INF/config/builders/core/jumpers.xml
+    *
+    *       <properties>
+    *           <property name="calculator">nl.vpro.mmbase.util.jumpers.JumperCalculator</property>
+    *       </properties>
+    *
+    * @see {org.mmbase.util.jumpers.JumperCalculator}
+    */
+    private void setStrategies() {
+        String strategies = 
+            getInitParameter("calculator.override.strategies") + "," +  // vpro compatibility
+            getInitParameter("calculator.default.strategies") + ","  +  // vpro compatibility
+            getInitParameter("strategies");
+        // default calculator
+        strategy.clear();
+        for (String strat : strategies.split(",")) {
+            try {                 
+                JumperStrategy js = (JumperStrategy) Class.forName(strat).newInstance();
+                strategy.add(js);                
+            } catch(java.lang.ClassNotFoundException e) { 
+                log.error(e.getClass() + " " + strat + ": " + e.getMessage());
+            } catch(java.lang.InstantiationException e) { 
+                log.error(e.getClass() + " " + strat + ": " + e.getMessage());
+            } catch(java.lang.IllegalAccessException e) { 
+                log.error(e.getClass() + " " + strat + ": " + e.getMessage());
+            } catch(Exception e) { 
+                log.error(e.getClass() + " " + strat + ": " + e.getMessage());
+            }
+        }
+    }
+
 
     /**
      * @since MMBase-1.7.1
@@ -128,13 +194,36 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * Retrieves a jumper for a specified key.
      *
-     * @param tok teh tokenizer, in which the first token is the key to search
+     * @param tok the tokenizer, in which the first token is the key to search
      * for.
      * @return the found alternate url.
      */
     public String getJump(StringTokenizer tok) {
+        return getJump(tok,false);
+    }
+    public String getJump(StringTokenizer tok, boolean reload) {
         String key = tok.nextToken();
-        return getJump(key);
+        return getJump(key,reload);
+    }
+
+    public String getJump(String key){
+        return getJump(key, false);
+    }
+
+    // jumper.id
+    // ---------
+    public String getIDJumper(String key) { 
+        String url = null;
+        int ikey = -1;
+        try {
+            ikey = Integer.parseInt(key);
+            if(ikey >= 0) 
+                url = getJumpByField("id", key);
+        } catch (NumberFormatException e) { 
+            log.debug("this key("+key+") is not a number!");
+        }
+
+        return url;
     }
 
     /**
@@ -143,9 +232,13 @@ public class Jumpers extends MMObjectBuilder {
      * @param key the key to remove
      */
     public void delJumpCache(String key) {
-        if (key != null) {
-            log.debug("Jumper builder - Removing " + key + " from jumper cache");
-            jumpCache.remove(key);
+        delJumpCache(key, false);
+    }
+    // remove from memorycache and database (local change)
+    public void delJumpCache(String number, boolean nodeLocalChanged) {
+        jumpCache.remove(number);
+        if(nodeLocalChanged) {
+            jumperDatabaseCache_remove(number);   
         }
     }
 
@@ -180,24 +273,65 @@ public class Jumpers extends MMObjectBuilder {
         return null;
     }
 
+    /*
+    public String getJump(String key, boolean reload) {
+        String url = null;
+        try { 
+            // invalid key
+            if(key.equals("")) 
+                return jumperNotFoundURL;
+
+            // cache
+            if(!reload) { 
+                url = (String) jumpCache.get(key);
+                if(url!=null) return url;
+            }
+
+            // jumper.name
+            url = getNameJumper(key);
+            if(url!=null) return url;
+
+            // jumper.id
+            url = getIDJumper(key);
+            if(url!=null) return url;
+
+            // jumper.number
+            try { url = getNumberJumper(Integer.parseInt(key), reload); } catch(NumberFormatException e) { } 
+            if(url!=null) return url;
+
+            // no jumper found
+            if(url==null) { 
+                log.debug("this url("+key+") is not a jumper");
+                url = jumperNotFoundURL;
+            }
+        } catch(Exception e) { 
+            log.fatal("Exception: jumper("+key+"): "+e.toString());
+            url = jumperNotFoundURL;
+        }
+
+        return url;
+    }
+    */
     /**
      * Retrieves a jumper for a specified key.
      *
      * @param key the key to search for.
      * @return the found alternate url.
      */
-    public String getJump(String key) {
+    public String getJump(String key, boolean reload) {
         String url = null;
 
         if (key.equals("")) {
             url = jumperNotFoundURL;
         } else {
-            url = (String) jumpCache.get(key);
-            if (log.isDebugEnabled()) {
-                if (url != null) {
-                    log.debug("Jumper - Cache hit on " + key);
-                } else {
-                    log.debug("Jumper - Cache miss on " + key);
+            if (! reload) {
+                url = (String) jumpCache.get(key);
+                if (log.isDebugEnabled()) {
+                    if (url != null) {
+                        log.debug("Jumper - Cache hit on " + key);
+                    } else {
+                        log.debug("Jumper - Cache miss on " + key);
+                    }
                 }
             }
             if (url == null) {
@@ -217,15 +351,21 @@ public class Jumpers extends MMObjectBuilder {
             if (url == null) {
                 // no direct url call its builder
                 if (ikey >= 0) {
-                    MMObjectNode node = getNode(ikey);
-                    if (node != null) {
-                        String buln = mmb.getTypeDef().getValue(node.getIntValue("otype"));
-                        MMObjectBuilder bul = mmb.getMMObject(buln);
-                        if (log.isDebugEnabled()) {
-                            log.debug("getUrl through builder with name=" + buln + " and id " + ikey);
-                        }
-                        if (bul != null) {
-                            url = bul.getDefaultUrl(ikey);
+                    url = jumperDatabaseCache_get(key);
+                    if (url == null) {
+                        MMObjectNode node = getNode(ikey);
+                        if (node != null) {
+                            synchronized(this) {                   
+                                url = (String) jumpCache.get(key);
+                                if (url != null) {
+                                    url = strategy.calculate(node);
+                                    if (url != null) {
+                                        jumperDatabaseCache_put(key, url);
+                                        jumpCache.put(key, url);
+                                        return url;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -247,15 +387,143 @@ public class Jumpers extends MMObjectBuilder {
         return url;
     }
 
+
+
+
+    // database caches
+    // ---------------
+
+    // database.get
+    private String jumperDatabaseCache_get(String number) { 
+        if (jumpercachebuilder == null) return null;
+        List nodes;
+        try {
+            NodeSearchQuery query = new NodeSearchQuery(jumpercachebuilder);
+            StepField keyField = query.getField(jumpercachebuilder.getField("key"));
+            query.setConstraint(new BasicFieldValueConstraint(keyField,number));
+            nodes = jumpercachebuilder.getNodes(query);
+        } catch (SearchQueryException e) {
+            log.error(e.toString());
+            return null;
+        }
+
+        String url = null;        
+        Iterator i = nodes.iterator();
+        while(i.hasNext()) { 
+            MMObjectNode node = (MMObjectNode)i.next();
+            if(url == null) {
+                url = node.getStringValue("url");
+                // remove double
+            } else { 
+                log.warn("dbcache: get: multiple entries detected for number("+number+"): node("+node.getNumber()+"): key("+node.getStringValue("key")+") url("+node.getStringValue("url")+")");
+                node.getBuilder().removeNode(node);
+            }
+        }
+        if(log.isDebugEnabled()) {
+            log.debug("dbcache: get("+number+"): url("+url+")");
+        }
+        return url;
+    }
+
+    // database.put
+    private void jumperDatabaseCache_put(String number, String url) { 
+
+        String oldurl = null;
+        List nodes = null;
+        // if contains
+        try {
+            NodeSearchQuery query = new NodeSearchQuery(jumpercachebuilder);
+            StepField keyField = query.getField(jumpercachebuilder.getField("key"));
+            query.setConstraint(new BasicFieldValueConstraint(keyField,number));
+            nodes = jumpercachebuilder.getNodes(query);
+        } catch (SearchQueryException e) {
+            log.error(e.toString());
+        }
+
+        Iterator i = nodes.iterator();
+        // then update 
+        if(i.hasNext()) { 
+            while(i.hasNext()) {
+                MMObjectNode node = (MMObjectNode)i.next();
+                if(oldurl==null) { 
+                    oldurl = node.getStringValue("url");
+                    node.setValue("url",url);
+                    node.commit();
+                    log.info("dbcache: put: update detected for number("+number+"): old("+oldurl+") -> new("+url+")");
+
+                 // and remove double
+                 } else { 
+                    log.warn("dbcache: put: multiple entries detected for number("+number+"): node("+node.getNumber()+"): key("+node.getStringValue("key")+") url("+node.getStringValue("url")+")");
+                    node.getBuilder().removeNode(node);
+                }
+            }
+        // else insert
+        } else { 
+            if(log.isDebugEnabled()) log.debug("dbcache: put("+number+","+url+")");
+            MMObjectNode jumpercachenode = jumpercachebuilder.getNewNode("jumper");
+            jumpercachenode.setValue("key", "" + number);
+            jumpercachenode.setValue("url", url);
+            jumpercachenode.insert(MMBase.getMMBase().getMachineName());
+        }
+    }
+
+    // database.remove
+    private void jumperDatabaseCache_remove(String number) {
+       List nodes = null;
+        try {
+            NodeSearchQuery query = new NodeSearchQuery(jumpercachebuilder);
+            StepField keyField = query.getField(jumpercachebuilder.getField("key"));
+            query.setConstraint(new BasicFieldValueConstraint(keyField,number));
+            nodes = jumpercachebuilder.getNodes(query);
+        } catch (SearchQueryException e) {
+            log.error(e.toString());
+        }
+        if(nodes!=null && nodes.size()>0) {
+            Iterator i = nodes.iterator();
+            while(i.hasNext()) {
+                MMObjectNode node = (MMObjectNode)i.next();
+                if(log.isDebugEnabled()) log.debug("dbcache: removed("+node.getNumber()+")");
+                node.getBuilder().removeNode(node);
+            }
+        }
+
+    }
+
     /*
      * (non-Javadoc)
      *
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
-        log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
-            + event.getNodeNumber()+ " " + NodeEvent.newTypeToOldType(event.getType()));
-        jumpCache.clear();
+        if (log.isDebugEnabled()) {
+            log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
+                      + event.getNodeNumber()+ " " + NodeEvent.newTypeToOldType(event.getType()));
+        }        
+        // delete
+        if(event.getType() == NodeEvent.TYPE_DELETE) { 
+            if(log.isDebugEnabled()) {
+            	log.debug("delete detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+            }
+            // remove cache
+            jumpCache.remove("" + event.getNodeNumber());
+            // locally changed: remove persistent cache
+            if(mmb.getMachineName().equals(event.getMachine()))
+                jumperDatabaseCache_remove("" + event.getNodeNumber());
+            
+        // field change or relation change    
+        } else if(	(event.getType() == NodeEvent.TYPE_CHANGE) || 
+        			(event.getType() == NodeEvent.TYPE_RELATION_CHANGE)) { 
+            if(event.getBuilderName().equals("jumpers")) { 
+                jumpCache.remove(getNode(event.getNodeNumber()).getStringValue("name"));
+            } else { 
+                if(log.isDebugEnabled()) log.debug("change detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+                // remove cache
+                jumpCache.remove("" + event.getNodeNumber());
+                // locally changed: remove persistent cache
+                if(mmb.getMachineName().equals(event.getMachine()))
+                    jumperDatabaseCache_remove("" + event.getNodeNumber());
+            }
+        }    
         super.notify(event);
     }
 
@@ -271,6 +539,8 @@ public class Jumpers extends MMObjectBuilder {
         }
         return super.executeFunction(node, function, arguments);
     }
+
+
 
 }
 
