@@ -1,27 +1,27 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
-<%@include file="includes/templateheader.jsp" %>
-<%@include file="includes/cacheparams.jsp" %>
-
-<%@include file="includes/vastgoed/override_templateparams.jsp" %>
-
-<% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
-<%@include file="includes/getresponse.jsp" %>
-<html>
-  <head>
-		<link rel="stylesheet" type="text/css" href="css/main.css">
-		<link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
-	 	<link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
-		<title><% 
-    if(isPreview) { %>PREVIEW: <% } 
-    %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
-			 > <mm:node number="<%= paginaID %>" notfound="skipbody">
-			 <%--<mm:field name="titel" />--%>
-			 </mm:node></title>
-		<meta http-equiv="imagetoolbar" content="no">
-		<script language="javascript" src="scripts/launchcenter.js"></script>
-		<script language="javascript" src="scripts/cookies.js"></script>
-		<script language="javaScript" src="scripts/screensize.js"></script>
+   <%@include file="includes/templateheader.jsp" %>
+   <%@include file="includes/cacheparams.jsp" %>
+   
+   <%@include file="includes/vastgoed/override_templateparams.jsp" %>
+   
+   <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
+   <%@include file="includes/getresponse.jsp" %>
+   <html>
+   <head>
+      <link rel="stylesheet" type="text/css" href="css/main.css">
+      <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
+      <link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
+      <title><% 
+         if(isPreview) { %>PREVIEW: <% } 
+         %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+         > <mm:node number="<%= paginaID %>" notfound="skipbody">
+            <%--<mm:field name="titel" />--%>
+      </mm:node></title>
+      <meta http-equiv="imagetoolbar" content="no">
+      <script language="javascript" src="scripts/launchcenter.js"></script>
+      <script language="javascript" src="scripts/cookies.js"></script>
+      <script language="javaScript" src="scripts/screensize.js"></script>
       <script language="javaScript">
       function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
@@ -72,27 +72,27 @@
       </script>
       <% 
       if(printPage) { 
-         %>
-         <style>
-            body {
-               overflow: auto;
-               background-color: #FFFFFF
-            }
-         </style>
-         <%
+      %>
+      <style>
+         body {
+         overflow: auto;
+         background-color: #FFFFFF
+         }
+      </style>
+      <%
       } %>      
       
-	<title>kaartenformulier plotopdrachten</title>
-   
-   
-   
-   <%@page import="nl.leocms.vastgoed.NelisReader" %>
-   <% 
-   NelisReader nelis = NelisReader.getInstance();
-   request.setAttribute("nelis", nelis);
-   %>
-   
-   <SCRIPT LANGUAGE="JavaScript">
+      <title>kaartenformulier plotopdrachten</title>
+      
+      
+      
+      <%@page import="nl.leocms.vastgoed.NelisReader" %>
+      <% 
+      NelisReader nelis = NelisReader.getInstance();
+      request.setAttribute("nelis", nelis);
+      %>
+      
+      <SCRIPT LANGUAGE="JavaScript">
 <!--
 function validationMessage() {
 	if((document.BestelForm.naam.value == "") || (document.BestelForm.email.value == "")) {
@@ -106,62 +106,62 @@ function validationMessage() {
 	return true;
 }
 -->
-   </script>
-   
+      </script>
+      
    </head>
-
-  <body <% 
-        if(!printPage) { 
-          %>onLoad="javascript:resizeBlocks();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
-          >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
-        } else {
-          %>onLoad="self.print();"<% 
-        }
-        %>>
-  	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
-	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
-	<% 
-	if(!printPage) { 
-	   %>
-	   <%@include file="includes/searchbar.jsp" %>
-   	<tr>
-   		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
-   		<td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
-   		<td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
-   	</tr>
-   	<% 
-	} 
-	%>
-	<tr>
-		<% 
-	   if(!printPage) { 
-	      %><td rowspan="2"><%@include file="includes/nav.jsp" %></td><% 
-	   } 
-	   %>
-	<%@include file="includes/calendar.jsp" %>   
-
-<% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
-<% 
-if(twoColumns) { 
-   String rightBarTitle = "";
-   %><td><%@include file="includes/rightbartitle.jsp" %></td><%
-} %>
-</tr>
-<tr>
-<td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
-<div class="<%= infopageClass %>" id="infopage">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr><td style="padding:10px;padding-top:18px;">
-    <a name="top">
-    <%--%@include file="includes/back_print.jsp" %>--%>
+   
+   <body <% 
+         if(!printPage) { 
+         %>onLoad="javascript:resizeBlocks();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
+   >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
+         } else {
+   %>onLoad="self.print();"<% 
+         }
+   %>>
+   <%@include file="/editors/paginamanagement/flushlink.jsp" %>
+   <table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
+   <% 
+   if(!printPage) { 
+   %>
+   <%@include file="includes/searchbar.jsp" %>
+   <tr>
+      <td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
+      <td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
+      <td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
+   </tr>
+   <% 
+   } 
+   %>
+   <tr>
+      <% 
+      if(!printPage) { 
+      %><td rowspan="2"><%@include file="includes/nav.jsp" %></td><% 
+      } 
+      %>
+      <%@include file="includes/calendar.jsp" %>   
+      
+      <% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
+      <td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+      <% 
+      if(twoColumns) {
+         String rightBarTitle = "";
+      %><td><%@include file="includes/rightbartitle.jsp" %></td><%
+      } %>
+   </tr>
+   <tr>
+   <td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
+   <div class="<%= infopageClass %>" id="infopage">
+   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+   <tr><td style="padding:10px;padding-top:18px;">
+   <a name="top">
+   <%--%@include file="includes/back_print.jsp" %>--%>
    
    <html:form action="/nmintra/BestelAction" method="POST"  onsubmit="return validationMessage()" >
       <b><html:errors bundle="LEOCMS"/></b>
       <table border="0" cellpadding="4" cellspacing="4">
-      	<tr>
-			<td><h3>Mijn bestelling</h3></td>
-		</tr>
+         <tr>
+            <td><h3>Mijn bestelling</h3></td>
+         </tr>
          <tr>
             <td class="vastgoed_medium">Naam:</td>
             <td class="vastgoed_light"><html:text property="naam" size="44"/>
@@ -215,15 +215,19 @@ if(twoColumns) {
                   String[] kartNodes = item.getSel_Kaart();
                   if (kartNodes != null) {
                      for (int iNodes = 0; iNodes < kartNodes.length; iNodes++) {
-                        String nodeNumber = kartNodes[iNodes];	
-                  %>
-                  <mm:node number="<%=nodeNumber%>">
-                     <mm:field name="naam"/>
-                  </mm:node>
-                  <% 			
-                  if (iNodes != (kartNodes.length - 1)) {
-                           out.print(", ");
-                  }
+                        String nodeNumber = kartNodes[iNodes];
+                        Node kaartNode = cloud.getNode(nodeNumber);
+                        String kaartNaam = "";
+                        if (kaartNode != null) {
+                           kaartNaam = kaartNode.getStringValue("naam");
+                        }
+                        
+                        if (iNodes != (kartNodes.length - 1)) {
+                           out.print(kaartNaam + ", ");
+                        }
+                        else {
+                           out.print(kaartNaam);
+                        }
                      }
                   }
                   %>
@@ -272,7 +276,7 @@ if(twoColumns) {
    
    <%
    if ((request.getParameter("send") != null) && (request.getParameter("send").equals("Verzenden"))
-   && (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email"))) 
+   && (!"".equals(request.getParameter("naam"))) && (!"".equals(request.getParameter("email")))
    && (request.getAttribute("empty") == null) ) {
    %>
    <div style="color:red;"><b><bean:message bundle="LEOCMS" key="shoppingcart.processed" /></b></div>
@@ -282,9 +286,9 @@ if(twoColumns) {
    
    <%
    if(twoColumns) {
-      // *********************************** right bar *******************************
-      String styleClass = "white";
-      String styleClassDark = "white";
+                     // *********************************** right bar *******************************
+                     String styleClass = "white";
+                     String styleClassDark = "white";
    %>
    <td style="padding-left:10px;">
       <div class="rightcolumn" id="rightcolumn">
