@@ -27,44 +27,7 @@
      <field name="reageer"/>
      <field name="status"/>
      <relation destination="contentblocks" role="readmore"/>
-     <relation destination="vraagbaak" role="contentrel">
-      <object>
-         <relation destination="paragraaf" role="posrel">
-            <object>
-                 <relation destination="images" role="posrel">
-                     <object />
-                 </relation>
-                 <relation destination="link" role="posrel">
-                     <object />
-                 </relation>
-                 <relation destination="attachments" role="posrel">
-                     <object />
-                 </relation>
-                 <relation destination="pagina" role="readmore">
-                     <object />
-                 </relation>
-             </object>
-         </relation>      
-         <relation destination="shorty" role="rolerel">
-            <object />
-         </relation>
-         <relation destination="pools" role="posrel">
-            <object />
-         </relation>
-         <relation destination="persoon" role="related">
-            <object />
-         </relation>
-         <relation destination="terms" role="related">
-            <object />
-         </relation>         
-         <relation destination="vraagbaak_keywords" role="related">
-            <object />
-         </relation>   
-         <relation destination="images" role="posrel">
-            <object />
-         </relation>
-      </object>
-    </relation>
+     <relation destination="vraagbaak" role="contentrel"/>
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
