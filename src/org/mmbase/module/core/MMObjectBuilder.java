@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.10 2007-06-21 08:47:17 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.11 2007-07-24 20:53:25 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1610,10 +1610,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
      * Used for creating search-forms.
      * @deprecated use getFields() with sortorder ORDER_SEARCH
-     * @return a vector with CoreField objects
+     * @return a list with CoreField objects
      */
-    public Vector getEditFields() {
-        return (Vector)getFields(NodeManager.ORDER_SEARCH);
+    public List getEditFields() {
+        return getFields(NodeManager.ORDER_SEARCH);
     }
 
     /**
@@ -1622,8 +1622,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @deprecated use getFields() with sortorder ORDER_LIST
      * @return a vector with CoreField objects
      */
-    public Vector getSortedListFields() {
-        return (Vector)getFields(NodeManager.ORDER_LIST);
+    public List getSortedListFields() {
+        return getFields(NodeManager.ORDER_LIST);
     }
 
     /**
@@ -1632,8 +1632,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @deprecated use getFields() with sortorder ORDER_EDIT
      * @return a vector with CoreField objects
      */
-    public Vector getSortedFields() {
-        return (Vector)getFields(NodeManager.ORDER_EDIT);
+    public List getSortedFields() {
+        return getFields(NodeManager.ORDER_EDIT);
     }
 
     /**
@@ -1717,6 +1717,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // end old
         return rtn;
     }
+
+
     /**
      * Like getValue, but without the 'old' code (short_ html_ etc). This is for
      * protected use, when you are sure this is not used, and you can
