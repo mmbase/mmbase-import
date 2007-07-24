@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.76 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.77 2007-07-24 10:03:54 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -83,6 +83,7 @@ public class ImageTag extends FieldTag {
     private Attribute vspace = Attribute.NULL;
 
 
+    private Attribute altAttribute = Attribute.NULL;
     private Object prevDimension;
 
     /**
@@ -137,6 +138,9 @@ public class ImageTag extends FieldTag {
 
     public void setWidth(String width) throws JspTagException {
         this.width = getAttribute(width);
+    }
+    public void setAlt(String a) throws JspTagException {
+        altAttribute = getAttribute(a);
     }
 
     private int getMode() throws JspTagException {
@@ -251,12 +255,7 @@ public class ImageTag extends FieldTag {
             // the node/image itself
             servletArgument = node.getStringValue("number");
         } else {
-            try {
-                servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException uee) {
-                // cannot happen 'UTF-8' is supported.
-                servletArgument = "" + node.getNumber() + "+" + t;
-            }
+            servletArgument = "" + node.getNumber() + "+" + URLESCAPER.transform(t);
         }
         return servletArgument;
     }
@@ -320,7 +319,10 @@ public class ImageTag extends FieldTag {
 
     public String getAltAttribute(Node node) throws JspTagException {
         String alt = null;
-        if (node.getNodeManager().hasField("alt")) {
+        if (altAttribute != Attribute.NULL) {
+            alt = altAttribute.getString(this);
+        }
+        if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("alt")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("alt"), '\"');
         }
         if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("title")) {
