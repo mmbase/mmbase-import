@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- version $Id: jumpers.xml,v 1.1 2007-06-18 15:55:59 michiel Exp $ -->
+<!-- version $Id: jumpers.xml,v 1.2 2007-07-24 13:28:51 michiel Exp $ -->
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -25,13 +25,12 @@
   </descriptions>
 
   <!-- The jumpers builder can be configured using two properties:
-      - JumperCacheSize : determines the size of the jumper cache (in nr of items).
-          The default size is 1000
+      - JumperCacheSize : see caches.xml
       - JumperNotFoundURL : Determines the default url (such as a home page or error page) when no jumper is found.
           If not specified nothing will be done if no jumper is found.
   -->
   <properties>
-    <property name="JumperCacheSize">1000</property>
+    <property name="strategies">org.mmbase.util.jumpers.DefaultUrlStrategy</property>
     <!-- property name="JumperNotFoundURL">/index.html</property-->
   </properties>
 
