@@ -13,13 +13,10 @@ package org.mmbase.util.jumpers;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
- * UrlStrategy.
- * This will return the url-field when the type of the object is 'urls'.
- *
- * @see org.mmbase.module.builders.Urls#getDefaultUrl(int) 
+ * This strategory completely depends on {@link org.mmbase.module.core.MMObjectBuilder#getDefaultUrl(int)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DefaultUrlStrategy.java,v 1.1 2007-07-24 12:53:18 michiel Exp $
+ * @version $Id: DefaultUrlStrategy.java,v 1.2 2007-07-24 13:25:27 michiel Exp $
  */
 public class DefaultUrlStrategy extends JumperStrategy { 
 
