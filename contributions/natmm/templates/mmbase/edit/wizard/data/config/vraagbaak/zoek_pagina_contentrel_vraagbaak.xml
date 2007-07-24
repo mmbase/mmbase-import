@@ -3,18 +3,10 @@
 <list role="contentrel" destination="vraagbaak" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
    <title>vraagbaak artikel</title>
    <item>
-    <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
-		<field name="titel" ftype="line"><prompt>titel</prompt></field>
-		<field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
-		<field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-		<field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
-		<field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-		<field name="intro" ftype="html" rows="14"><prompt>tekst</prompt></field>
-		<list include="config/images/zoek_contentelement_posrel_images.xml" />
-		<list include="config/paragraaf/zoek_vraagbaak_posrel_paragraaf.xml" />
-      <list include="config/pools/zoek_vraagbaak_posrel_pools.xml" />
-      <list include="config/persoon/zoek_vraagbaak_related_persoon.xml" />    
-      <list include="config/vraagbaak_keywords/zoek_vraagbaak_related_vraagbaak_keywords.xml" />       
+      <title></title>
+      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="data"><prompt>positie</prompt></field>
+      <field name="titel" ftype="data"><prompt>titel</prompt></field>
+      <field ftype="startwizard" wizardname="config/vraagbaak/vraagbaak"><prompt></prompt></field>
    </item>
    <command name="search" nodepath="vraagbaak" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek artikel</prompt>
