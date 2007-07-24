@@ -9,11 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
+
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.core.ClusterBuilder;
@@ -22,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.HttpAuth;
 import org.mmbase.util.StringTagger;
-import org.mmbase.util.scanpage;
+import org.mmbase.util.PageInfo;
 
 /**
  * The ObjectSelector class offers the functionality to search for objects
@@ -32,7 +29,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.22 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.22.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -49,7 +46,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * General List pages coming from MMEdit.
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
+    public Vector getList(PageInfo sp, StringTagger args, StringTokenizer commands) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
 
@@ -329,7 +326,7 @@ public class ObjectSelector implements CommandHandlerInterface {
         String HTMLString = "";
 
         if (builder != null) {
-            Vector vals = builder.getSortedListFields();
+            List vals = builder.getSortedListFields();
             //searchResult = builder.search(conditions);
             //searchResult = builder.search(conditions,"number");
             searchResult = HtmlBase.search(builder,conditions,"number",false);
@@ -339,7 +336,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                 result.addElement(node.getValue("number").toString());
                 HTMLString = "";
 
-                for (Enumeration enumeration = vals.elements(); enumeration.hasMoreElements();) {
+                for (Enumeration enumeration = Collections.enumeration(vals); enumeration.hasMoreElements();) {
                     key = ((FieldDefs)enumeration.nextElement()).getDBName();
                     guival=builder.getGUIIndicator(key,node);
                     if (guival!=null) {
@@ -372,11 +369,11 @@ public class ObjectSelector implements CommandHandlerInterface {
         Vector result = new Vector();
         String language=state.getLanguage();
         MMObjectBuilder builder = state.getBuilder();
-        Vector fieldDefs;
+        List fieldDefs;
 
         if (builder != null) {
             fieldDefs = builder.getSortedListFields();
-            for (Enumeration enumeration = fieldDefs.elements(); enumeration.hasMoreElements();) {
+            for (Enumeration enumeration = Collections.enumeration(fieldDefs); enumeration.hasMoreElements();) {
                 result.addElement(((FieldDefs)enumeration.nextElement()).getGUIName(language));
             }
         }
@@ -387,7 +384,7 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * General proces pages coming from MMEdit.
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
@@ -407,7 +404,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * Handle a $MOD command.
      * ObjectSelector does not offer any commands.
      */
-    public String replace(scanpage sp, StringTokenizer cmds) {
+    public String replace(PageInfo sp, StringTokenizer cmds) {
         return "Command not defined (ObjectSelector)";
         // bedoeld voor het clearen van de serachvalues
     }

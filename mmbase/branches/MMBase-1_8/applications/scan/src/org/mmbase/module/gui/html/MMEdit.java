@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.12 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MMEdit.java,v 1.12.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class MMEdit extends ProcessorModule {
 
@@ -118,7 +118,7 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all list related pages to the correct handler
      */
-    public Vector getList(scanpage sp,StringTagger tagger, String command) throws ParseException {
+    public Vector getList(PageInfo sp,StringTagger tagger, String command)  {
         Vector result = new Vector();
         CommandHandlerInterface handler;
 
@@ -170,7 +170,7 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
 
         CommandHandlerInterface handler;
         String token, cmdline;
@@ -208,7 +208,7 @@ public class MMEdit extends ProcessorModule {
      * The hook that passes all replace and trigger related pages to the
      * correct handler
      */
-    public String replace(scanpage sp, String command) {
+    public String replace(PageInfo sp, String command) {
         CommandHandlerInterface handler;
         String token;
 
