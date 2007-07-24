@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- version $Id: jumpers.xml,v 1.2 2007-07-24 13:28:51 michiel Exp $ -->
+<!-- version $Id: jumpers.xml,v 1.3 2007-07-24 15:09:21 michiel Exp $ -->
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -7,7 +7,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     extends="object" maintainer="www.mmbase.org" name="jumpers" version="0">
 
-  <class>org.mmbase.module.builders.Jumpers</class>
+  <class>org.mmbase.jumpers.Jumpers</class>
   <searchage>14</searchage>
 
   <names>
