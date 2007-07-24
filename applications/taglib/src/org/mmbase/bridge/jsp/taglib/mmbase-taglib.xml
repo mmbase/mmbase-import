@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.403 2007-07-14 09:26:49 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.404 2007-07-24 10:03:54 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4488,7 +4488,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                This width is used for a re-size of the image when no `transformation' template is provided.
+          This width is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4499,7 +4499,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                This height is used for a re-size of the image when no `transformation' template is provided.
+          This height is used for a re-size of the image when no `transformation' template is provided.
         </p>
       </info>
     </attribute>
@@ -4535,8 +4535,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Class attribute of html img-tag.
-                Only applied when mode=img.
+          Class attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4547,8 +4547,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Style attribute of html img-tag.
-                Only applied when mode=img.
+          Style attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4559,8 +4559,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Align attribute of html img-tag.
-                Only applied when mode=img.
+          Align attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4571,8 +4571,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Border attribute of html img-tag.
-                Only applied when mode=img.
+          Border attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4583,8 +4583,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Hspace attribute of html img-tag.
-                Only applied when mode=img.
+          Hspace attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
     </attribute>
@@ -4595,10 +4595,23 @@ like the parameter list or the session (where ever it is available) --&gt;
       <refercontext>true</refercontext>
       <info>
         <p>
-                Vspace attribute of html img-tag.
-                Only applied when mode=img.
+          Vspace attribute of html img-tag.
+          Only applied when mode=img.
         </p>
       </info>
+    </attribute>
+    <attribute>
+      <name>alt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          Alt attribute of html img-tag.
+          Only applied when mode=img.
+        </p>
+      </info>
+      <since>MMBase-1.8.5</since>
     </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
