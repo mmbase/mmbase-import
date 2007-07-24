@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.2 2007-07-24 11:17:01 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.3 2007-07-24 11:18:38 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -259,7 +259,7 @@ public class Jumpers extends MMObjectBuilder {
         super.notify(event);
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List<?> arguments) {
+    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (function.equals("gui")) {
             String rtn;
             if (arguments == null || arguments.size() == 0) {
