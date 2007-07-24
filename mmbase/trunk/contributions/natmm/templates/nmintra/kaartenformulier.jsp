@@ -565,7 +565,7 @@ if(twoColumns) {
 			<td rowspan="2" height="110">&nbsp;</td>
 			<td></td>
 			<td rowspan="2" width="249" valign="top">
-				<select NAME="sel_NatGeb" style="width:100%;" size="6">
+				<select NAME="sel_NatGeb" style="width:100%;" size="6" multiple="true">
             	</select>
 			</td>
 
@@ -699,7 +699,7 @@ if(twoColumns) {
 			</td>
 			<td width="249">
 			<%-- ** If multiple karts need to be selected add multiple="multiple" to the html:select below ** --%>
-				<html:select style="width:100%;" property="sel_Kaart" size="6" onchange="jsc_setPicture(this.selectedIndex);">
+				<html:select style="width:100%;" property="sel_Kaart" size="6" onchange="jsc_setPicture(this.selectedIndex);" multiple="true">
 				</html:select>
 			</td>
 		</tr>
