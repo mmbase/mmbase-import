@@ -16,7 +16,7 @@ import com.sun.xml.bind.RIElement;
 
 /**
  * @author
- * @version $Id: KaartenForm.java,v 1.10 2007-07-09 08:14:14 ieozden Exp $
+ * @version $Id: KaartenForm.java,v 1.11 2007-07-24 11:26:09 evdberg Exp $
  *
  * @struts:form name="KaartenForm"
  */
@@ -175,7 +175,7 @@ public class KaartenForm extends ActionForm{
     public String getKaartTypeDetail() {
       String kartTypeDetail  = "";
       if (rad_Gebied.equals(natuurgebiedKey)) {
-          kartTypeDetail += sel_Beheereenheden + "(";
+          kartTypeDetail += sel_Beheereenheden + " (";
           for(int i=0; (sel_NatGeb!= null) && (i<sel_NatGeb.length) ; i++) {
               kartTypeDetail += sel_NatGeb[i];
               if (i != sel_NatGeb.length -1) {
