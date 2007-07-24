@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.16 2007-07-17 14:04:45 ieozden Exp $
+ * @version $Id: BestelAction.java,v 1.17 2007-07-24 11:25:48 evdberg Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -95,7 +95,7 @@ public class BestelAction  extends Action {
          addLineToMessage(messagePlain, messageHtml, "Datum: " + DateFormat.getInstance().format(new Date()));
          addLineToMessage(messagePlain, messageHtml, "Naam: " + bestelForm.getNaam());
          addLineToMessage(messagePlain, messageHtml, "Email: " + bestelForm.getEmail());
-         addLineToMessage(messagePlain, messageHtml, "Eendheid: " + bestelForm.getEendheid());
+         addLineToMessage(messagePlain, messageHtml, "Eenheid: " + bestelForm.getEendheid());
          addLineToMessage(messagePlain, messageHtml, "Bezorgadres: " + bestelForm.getBezorgadres());
          addLineToMessage(messagePlain, messageHtml, "");
          addLineToMessage(messagePlain, messageHtml, "Kaart");
@@ -103,46 +103,46 @@ public class BestelAction  extends Action {
          ArrayList items = (ArrayList) basket.getItems();
          // kart items
          for(int i = 0; (items != null) && (i < items.size()); i++) {
-            RelationManager remoteRelationManager = cloud.getRelationManager(
-                  "bestelling_vastgoed", "thema_plot_kaart", "kaart_bestel_regel");
-
             KaartenForm item = (KaartenForm) items.get(i);
-
-            addLineToMessage(messagePlain, messageHtml, "Item:");
-            addLineToMessage(messagePlain, messageHtml, "-----");
-
+            
             // kaartsoort string from nodenumbers in sel_Kaart
             String kaartsoort = "";
             Node currentNode = null;
             String[] kartNodes = item.getSel_Kaart();
-            if ((kartNodes != null) && (kartNodes.length > 0)) {
-               String nodeNumber = kartNodes[0];
+            
+            for (int j = 0; (kartNodes != null) && (j < kartNodes.length); j++) {
+               String nodeNumber = kartNodes[j];
                currentNode = cloud.getNode(nodeNumber);
                kaartsoort = currentNode.getStringValue("naam");
-            }
-
-            addLineToMessage(messagePlain, messageHtml, "kaartsoort: " + kaartsoort);
-            //other item elements
-            addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
-            addLineToMessage(messagePlain, messageHtml, "aantal: " + item.getAantal());
-            addLineToMessage(messagePlain, messageHtml, "gerold of gevouwen: " + item.getGevouwenOfOpgerold());
-            addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
-            //kart type details for natuurgebied and eenheid
-            addLineToMessage(messagePlain, messageHtml, "detail: " + item.getKaartTypeDetail());
             
-            addLineToMessage(messagePlain, messageHtml, "opmerkingen: " + item.getOpmerkingen());
-            addLineToMessage(messagePlain, messageHtml, "");
+               RelationManager remoteRelationManager = cloud.getRelationManager("bestelling_vastgoed", "thema_plot_kaart", "kaart_bestel_regel");
 
-            Relation bestelRegel = remoteRelationManager.createRelation(bestelNode, currentNode);
-            bestelRegel.setValue("schaal_formaat",item.getSchaalOfFormaat());
-            bestelRegel.setValue("aantal",item.getAantal());
-            bestelRegel.setValue("gevouwd_gerold",item.getGevouwenOfOpgerold());
-            bestelRegel.setValue("opmerkingen",item.getOpmerkingen());
-            bestelRegel.setValue("details",item.getKaartTypeDetail());
-            bestelRegel.setValue("timestamp",new Integer((int)System.currentTimeMillis()/1000));
-            bestelRegel.commit();
+               addLineToMessage(messagePlain, messageHtml, "Item:");
+               addLineToMessage(messagePlain, messageHtml, "-----");
 
-            log.debug("saved bestelling to database: " + bestelNode.getStringValue("number"));
+               addLineToMessage(messagePlain, messageHtml, "kaartsoort: " + kaartsoort);
+               //other item elements
+               addLineToMessage(messagePlain, messageHtml, "schaal of formaat: " + item.getSchaalOfFormaat());
+               addLineToMessage(messagePlain, messageHtml, "aantal: " + item.getAantal());
+               addLineToMessage(messagePlain, messageHtml, "gerold of gevouwen: " + item.getGevouwenOfOpgerold());
+               addLineToMessage(messagePlain, messageHtml, "natuurgebied,eenheid,regio,coordinaten etc.: " + item.getKaartType());
+               //kart type details for natuurgebied and eenheid
+               addLineToMessage(messagePlain, messageHtml, "detail: " + item.getKaartTypeDetail());
+            
+               addLineToMessage(messagePlain, messageHtml, "opmerkingen: " + item.getOpmerkingen());
+               addLineToMessage(messagePlain, messageHtml, "");
+
+               Relation bestelRegel = remoteRelationManager.createRelation(bestelNode, currentNode);
+               bestelRegel.setValue("schaal_formaat",item.getSchaalOfFormaat());
+               bestelRegel.setValue("aantal",item.getAantal());
+               bestelRegel.setValue("gevouwd_gerold",item.getGevouwenOfOpgerold());
+               bestelRegel.setValue("opmerkingen",item.getOpmerkingen());
+               bestelRegel.setValue("details",item.getKaartTypeDetail());
+               bestelRegel.setValue("timestamp",new Integer((int)(System.currentTimeMillis()/1000)));
+               bestelRegel.commit();
+
+               log.debug("saved bestelling to database: " + bestelNode.getStringValue("number"));
+            }
          }
 
          // send mail
