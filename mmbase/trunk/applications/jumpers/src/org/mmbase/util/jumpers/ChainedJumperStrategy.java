@@ -22,7 +22,7 @@ import org.mmbase.bridge.*;
 /**
 
 * @author Michiel Meeuwissen
-* @version $Id: ChainedJumperStrategy.java,v 1.1 2007-07-24 12:53:18 michiel Exp $
+* @version $Id: ChainedJumperStrategy.java,v 1.2 2007-07-24 15:09:21 michiel Exp $
 */
 public class ChainedJumperStrategy extends JumperStrategy { 
 
@@ -50,6 +50,10 @@ public class ChainedJumperStrategy extends JumperStrategy {
         }
         return null;
         
+    }
+
+    public String toString() {
+        return chain.toString();
     }
 
 }
