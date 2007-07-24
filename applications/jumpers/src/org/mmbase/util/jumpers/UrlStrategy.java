@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.util.jumpers.strategies;
+package org.mmbase.util.jumpers;
 
 import org.mmbase.module.core.MMObjectNode;
 
@@ -19,11 +19,13 @@ import org.mmbase.module.core.MMObjectNode;
  * @see org.mmbase.module.builders.Urls#getDefaultUrl(int) 
  *
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: UrlStrategy.java,v 1.3 2007-07-24 11:17:01 michiel Exp $
+ * @version $Id: UrlStrategy.java,v 1.1 2007-07-24 12:53:18 michiel Exp $
  */
 public class UrlStrategy extends JumperStrategy { 
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc} 
+     */
     public boolean contains(MMObjectNode node) {
         if(node == null) {
             throw new IllegalArgumentException("node is null!");
@@ -34,7 +36,9 @@ public class UrlStrategy extends JumperStrategy {
             return false;
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc} 
+     */
     public String calculate(MMObjectNode node) { 
         if(node == null) {
             throw new IllegalArgumentException("node is null!");
