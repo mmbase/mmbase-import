@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.7 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.8 2007-07-24 16:27:58 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -302,7 +302,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         ParseResult result = new ParseResult();
         List<String> cmds = result.args;
         result.cwd = null;
-        result.format = Factory.getDefaultImageFormat();
 
         for (String key : params) {
             if (log.isDebugEnabled()) log.debug("parsing '" + key + "'");
@@ -488,6 +487,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
             }
         }
+        if (result.format == null)  result.format = Factory.getDefaultImageFormat();
         return result;
     }
 

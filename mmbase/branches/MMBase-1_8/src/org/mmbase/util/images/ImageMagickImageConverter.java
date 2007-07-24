@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4.2.2 2006-12-20 14:52:55 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4.2.3 2007-07-24 16:26:39 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -38,6 +38,7 @@ public class ImageMagickImageConverter implements ImageConverter {
     private int imVersionMinor = 5;
     private int imVersionPatch = 0;
 
+
     // Currently only ImageMagick works, this are the default value's
     private static String converterPath = "convert"; // in the path.
 
@@ -45,6 +46,7 @@ public class ImageMagickImageConverter implements ImageConverter {
     // The modulate scale base holds the builder property to specify the scalebase.
     // If ModulateScaleBase property is not defined, then value stays max int.
     private static int modulateScaleBase = Integer.MAX_VALUE;
+
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
 
@@ -180,9 +182,15 @@ public class ImageMagickImageConverter implements ImageConverter {
         byte[] pict = null;
         if (commands != null && input != null) {
             ParseResult parsedCommands = getConvertCommands(commands);
-            if (parsedCommands.format.equals("asis") && sourceFormat != null) {
-                parsedCommands.format = sourceFormat;
+            if (parsedCommands.format.equals("asis")) {
+                if (sourceFormat != null) {
+                    log.debug("Format 'asis' specified. Using sourceformat '" + sourceFormat + "'");
+                    parsedCommands.format = sourceFormat;
+                } else {
+                    log.debug("Format 'asis' specified. But no sourceformat provided.");
+                }
             }
+
             pict = convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
@@ -218,7 +226,6 @@ public class ImageMagickImageConverter implements ImageConverter {
         List cmds = new ArrayList();
         result.args = cmds;
         result.cwd = null;
-        result.format = Factory.getDefaultImageFormat();
 
         String key, type;
         String cmd;
@@ -406,6 +413,8 @@ public class ImageMagickImageConverter implements ImageConverter {
                 }
             }
         }
+        if (result.format == null)  result.format = Factory.getDefaultImageFormat();
+            
         return result;
     }
 
