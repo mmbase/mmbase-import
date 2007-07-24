@@ -25,8 +25,10 @@ import java.util.Map;
 public class Javascript extends ConfigurableReaderTransformer implements CharTransformer {
     private final static String SINGLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
     private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_DOUBLE_QUOTES";
+    private final static String BOTH_QUOTES     = "JAVASCRIPT_ESCAPE_BOTH_QUOTES";
     public final static int ESCAPE_SINGLE_QUOTES    = 1;     
     public final static int ESCAPE_DOUBLE_QUOTES    = 2;     
+    public final static int ESCAPE_BOTH_QUOTES      = 3;     
 
     public Javascript() {
         super(ESCAPE_SINGLE_QUOTES);
@@ -47,6 +49,20 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 int c = r.read();
                 if (c == -1) break;
                 if(c == escapeChar) w.write('\\');
+                if(c == '\\') w.write('\\');
+                w.write(c);
+            }
+        } catch (java.io.IOException e) {
+        }
+        return w;
+    }
+
+    public static Writer escapeChar(Reader r, Writer w) {
+        try {
+            while (true) {
+                int c = r.read();
+                if (c == -1) break;
+                if(c == '\'' || c == '"') w.write('\\'); 
                 if(c == '\\') w.write('\\');
                 w.write(c);
             }
@@ -89,6 +105,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(SINGLE_QUOTES, new Config(Sql.class, ESCAPE_SINGLE_QUOTES, "Escape single quotes for Javascript statements"));
         h.put(DOUBLE_QUOTES, new Config(Sql.class, ESCAPE_DOUBLE_QUOTES, "Escape single quotes for Javascript statements"));
+        h.put(BOTH_QUOTES, new Config(Sql.class, ESCAPE_BOTH_QUOTES, "Escape single and double quotes for Javascript statements"));
         return h;
     }
 
@@ -96,6 +113,8 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         switch(to){
         case ESCAPE_SINGLE_QUOTES:           return escapeChar(r, w, '\'');
         case ESCAPE_DOUBLE_QUOTES:           return escapeChar(r, w, '\"');
+        case ESCAPE_BOTH_QUOTES:           return escapeChar(r, w);
+
         default: throw new UnsupportedOperationException("Cannot transform");
         }    
     }
@@ -103,7 +122,9 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
     public Writer transformBack(Reader r, Writer w) {
         switch(to){
         case ESCAPE_SINGLE_QUOTES:
-        case ESCAPE_DOUBLE_QUOTES:           return escapeCharBack(r, w);
+        case ESCAPE_DOUBLE_QUOTES:           
+        case ESCAPE_BOTH_QUOTES:
+            return escapeCharBack(r, w);
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
@@ -112,6 +133,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         switch(to){
         case ESCAPE_SINGLE_QUOTES: return SINGLE_QUOTES;            
         case ESCAPE_DOUBLE_QUOTES: return DOUBLE_QUOTES;
+        case ESCAPE_BOTH_QUOTES: return BOTH_QUOTES;
         default: return "UNKNOWN";            
         }
     }
