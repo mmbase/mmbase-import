@@ -233,10 +233,12 @@ function validationMessage() {
                   %>
                </td>
                
-               <td class="vastgoed_light"><%= item.getKaartType()%>
-                  <% if (!item.getKaartTypeDetail().equals("")) {
-                     out.print(" - " + item.getKaartTypeDetail());
-                  }  
+               <td class="vastgoed_light">
+                  <%= item.getKaartType()%>
+                  <%
+                     if (!"".equals(item.getKaartTypeDetail())) {
+                        out.print(" - " + item.getKaartTypeDetail());
+                     }
                   %>
                </td>
                <td class="vastgoed_light"><%= item.getSchaalOfFormaat()%></td>
