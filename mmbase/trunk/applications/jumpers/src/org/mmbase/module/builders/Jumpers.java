@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.1 2007-06-18 15:55:59 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.2 2007-07-24 11:17:01 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -92,8 +92,8 @@ public class Jumpers extends MMObjectBuilder {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
             String url = node.getStringValue("url");
-            HttpServletRequest req = args.get(Parameter.REQUEST);
-            HttpServletResponse res = args.get(Parameter.RESPONSE);
+            HttpServletRequest req  = (HttpServletRequest) args.get(Parameter.REQUEST);
+            HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
             String link;
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
@@ -192,7 +192,7 @@ public class Jumpers extends MMObjectBuilder {
         if (key.equals("")) {
             url = jumperNotFoundURL;
         } else {
-            url = jumpCache.get(key);
+            url = (String) jumpCache.get(key);
             if (log.isDebugEnabled()) {
                 if (url != null) {
                     log.debug("Jumper - Cache hit on " + key);
@@ -274,7 +274,7 @@ public class Jumpers extends MMObjectBuilder {
 
 }
 
-class JumpersCache extends Cache<String,String> {
+class JumpersCache extends Cache/*<String,String>*/ {
     public String getName() {
         return "JumpersCache";
     }
