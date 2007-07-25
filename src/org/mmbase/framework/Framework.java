@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.32 2007-07-14 14:14:30 michiel Exp $
+ * @version $Id: Framework.java,v 1.33 2007-07-25 05:08:40 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
@@ -141,7 +141,33 @@ public interface Framework extends UrlConverter {
     /** 
      * Prepares a map of parameters to add to URL
      */
-
     public Map<String, Object> prefix(State state, Map<String, Object> params);
+
+
+    /**
+     * @see #getSettingValue(Setting, Parameters)
+     * @see #setSettingValue(Setting, Parameters, Object)
+     */
+    public Parameters createSettingValueParameters(); 
+
+    /**
+     * Retrieves the value as configured by this framework for a certain {@link Setting} (which is
+     * always associated with a certain {@link Component}.
+     *
+     * The framework can (and should) return the default values of the Setting if it does not know
+     * what to do. It can also adminstrate overridden values, e.g. in its own configuration file.
+
+     * Using the 'parameters' (created with {@link #createSettingValueParameters}, the Framework can also
+     * implement context specific values for a setting. It can e.g. use a request object, and store
+     * user specific value as cookies.
+     */
+    public <C> C getSettingValue(Setting<C> setting, Parameters parameters);
+
+    /**
+     * See {@link #getSettingValue}. Depending on the framework, the set value may not necessarily be persistant.
+     *
+     * @throws SecurityException If you are not allowed to change the setting.
+     */
+    public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) throws SecurityException;
 
 }

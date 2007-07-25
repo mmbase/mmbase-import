@@ -12,6 +12,7 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.datatypes.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.functions.*;
@@ -33,7 +34,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.56 2007-07-18 07:49:18 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.57 2007-07-25 05:08:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -60,6 +61,9 @@ public class BasicFramework implements Framework {
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
 
     protected final LocalizedString description      = new LocalizedString("description");
+
+
+    protected final Map<Setting<?>, Object> settingValues = new HashMap<Setting<?>, Object>();
 
     public BasicFramework(Element el) {
         configure(el);
@@ -163,10 +167,9 @@ public class BasicFramework implements Framework {
 
             request.setAttribute(COMPONENT_ID_KEY, "mm" + getPrefix(state));
             setBlockParameters(state, blockParameters);
-            request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                                 new LocalizationContext(renderer.getBlock().getComponent().getBundle(), Locale.getDefault()));
-            // should _not_ use default locale!
+
             renderer.render(blockParameters, frameworkParameters, w, windowState);
+            
         } finally {
             state.endBlock();
         }
@@ -224,4 +227,47 @@ public class BasicFramework implements Framework {
         return getName() + ": " + description + ": " + urlConverter.toString();
     }
 
+    private static final Parameter<Boolean> USE_REQ = new Parameter<Boolean>("usesession", Boolean.class, Boolean.TRUE);
+    public Parameters createSettingValueParameters() {
+        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, USE_REQ);
+    }
+
+    protected String getKey(Setting<?> setting) {
+        return "org.mmbase.framework." + setting.getComponent().getName() + "." + setting.getName();
+    }
+
+    public <C> C getSettingValue(Setting<C> setting, Parameters parameters) {
+        boolean useSession = parameters != null && parameters.get(USE_REQ);
+        if (useSession) {
+            HttpServletRequest req = parameters.get(Parameter.REQUEST);
+            Object v = req.getSession(true).getAttribute(getKey(setting));
+            if (v != null) {
+                return setting.getDataType().cast(v, null, null);
+            }
+        }
+        if (settingValues.containsKey(setting)) {
+            return (C) settingValues.get(setting);
+        } else {
+            return setting.getDataType().getDefaultValue();
+        }
+    }
+
+    public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) {
+        if (parameters == null) throw new SecurityException("You should provide Cloud and request parameters");
+        boolean useSession = parameters.get(USE_REQ);
+        if (useSession) {
+            C ret = getSettingValue(setting, parameters);
+            HttpServletRequest req = parameters.get(Parameter.REQUEST);
+            req.getSession(true).setAttribute(getKey(setting), value);
+            return ret;
+        } else {
+            
+            Cloud cloud = parameters.get(Parameter.CLOUD);
+            if (cloud.getUser().getRank() == org.mmbase.security.Rank.ADMIN) {
+                return (C) settingValues.put(setting, value);
+            } else {
+                throw new SecurityException("Permission denied");
+            }
+        }
+    }
 }
