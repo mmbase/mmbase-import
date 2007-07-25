@@ -3,21 +3,23 @@
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
-  <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
+  <mm:content type="application/xml" expires="0" postprocessor="none">
     <mm:cloud rank="administrator">
       <mm:import externid="component" from="request" />
       <mm:import externid="view"      from="request" />
+        
       <mm:notpresent referid="component">
-        <h1>Components admin page</h1>
+        <h1><fmt:message key="components.title" /></h1>
         <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
         <mm:function set="utils" name="mmbase">
           <p>Framework: ${_.framework}</p>
         </mm:function>
 
-        <p>Available components:</p>
+        <p><fmt:message key="components.available" /></p>
         <ul>
           <mm:listfunction id="comp" set="components" name="list" >
             <li>
@@ -38,7 +40,22 @@
         <mm:function set="components" name="get" referids="component@name" id="c">
           <p>Version: ${c.version}</p>
           <p>Defined in ${c.uri}</p>
-          <p>Blocks in this component</p>
+          <p>Translations: ${c.bundle}</p>
+          <h2>Settings for this component</h2>
+          <ul>
+            <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
+              <li>
+                <em>${s.name} ${s.dataType}</em>
+                <p>${mm:string(s.description, pageContext)}</p>
+                <p>Current value: <strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></p>
+              </li>
+              
+              <!--
+              <mm:fieldinfo type="input" datatype="s.dataType" />
+              -->
+            </mm:stringlist>
+          </ul>
+          <h2><fmt:message  key="components.blocks" /></h2>
           <ul>
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
               <li>
