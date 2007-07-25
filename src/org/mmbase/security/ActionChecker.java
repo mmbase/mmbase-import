@@ -10,8 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
+ * A piece of 'action check' functionality. Provided by actions themselves, but security
+ * implementations can perhaps also use this interface to administer their implementation of {@link
+ * Authorization#check(UserContext, Action)}.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: ActionChecker.java,v 1.1 2007-07-25 06:47:11 michiel Exp $
+ * @version $Id: ActionChecker.java,v 1.2 2007-07-25 07:17:40 michiel Exp $
  * @since MMBase-1.9
  */
 public interface ActionChecker extends java.io.Serializable {
