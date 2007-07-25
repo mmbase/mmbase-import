@@ -103,7 +103,7 @@
          </editor>
          <db>
             <name xml:lang="nl">hidden</name>
-            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+            <type key="false" notnull="true" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
    </fieldlist>
