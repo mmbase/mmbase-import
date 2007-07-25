@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.27 2007-07-25 06:47:11 michiel Exp $
+ * @version $Id: Authorization.java,v 1.28 2007-07-25 07:17:40 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
@@ -131,7 +131,9 @@ public abstract class Authorization extends Configurable {
     /**
      * Checks whether user may do a certain action.
      * Default implemetation simply uses default ActionChecker of the Action itself. Extensions may
-     * provide configuration, e.g. make links between groups and/or user object with Action objects
+     * provide configuration, e.g. make links between groups and/or user object with Action objects,
+     * to provide more fine grained control over which users may execute what 'actions'.
+     *
      * in the MMBase cloud.
      * @since MMBase-1.9
      */
