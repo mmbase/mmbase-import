@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.3 2007-07-18 07:49:18 michiel Exp $
+  @version $Id: framework.xsd,v 1.4 2007-07-25 05:08:40 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -16,6 +16,7 @@
       schemaLocation="http://www.w3.org/2001/03/xml.xsd"
       />
 
+
   <xsd:element name="framework">
     <xsd:complexType>
       <xsd:sequence>
@@ -25,6 +26,23 @@
       </xsd:sequence>
       <xsd:attribute name="class" type="xsd:string" />
     </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="settings">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="setting" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="setting">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="component" type="xsd:string" />
+        <xsd:attribute name="name" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
   </xsd:element>
 
   <xsd:element name="urlconverters">
