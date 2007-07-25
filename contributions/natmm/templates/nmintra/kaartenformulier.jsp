@@ -264,7 +264,7 @@ jsc_ClearUnselectedOptions();
 <% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Natuurgebied'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Natuurgebied' AND hidden = '0'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -288,7 +288,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Eenheid"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Eenheid'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Eenheid' AND hidden = '0'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -310,7 +310,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Nederland'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Nederland' AND hidden = '0'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -332,7 +332,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied == 'Coordinaten'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Coordinaten' AND hidden = '0'">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 		<mm:index jspvar="topIndex" write="false" vartype="Integer">
