@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.28 2006-02-10 16:12:43 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.29 2007-07-25 06:47:11 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -36,6 +36,8 @@ public class MMBaseCopConfig {
 
     /** our current authorization class */
     private Authorization authorization;
+
+    private ActionRepository actions;
 
     /** if the securitymanager is configured to functionate */
     private boolean active = false;
@@ -161,6 +163,18 @@ public class MMBaseCopConfig {
             }
             authorization.load(cop, watcher,  authorizationUrl);
 
+            entry = reader.getElementByPath("security.actions");
+            if (entry != null) {
+                String actionsClass = reader.getElementAttributeValue(entry,"class");
+                String actionsUrl = reader.getElementAttributeValue(entry,"url");
+                actions = getActions(actionsClass);
+                actions.load(cop, watcher,  actionsUrl);
+            } else {
+                actions = new MemoryActionRepository();                
+                actions.load(cop, watcher,  null);
+            }
+
+
 
         } else {
             // we dont use security...
@@ -168,6 +182,8 @@ public class MMBaseCopConfig {
             authentication.load(cop, watcher, null);
             authorization = new NoAuthorization();
             authorization.load(cop, watcher, null);
+            actions = new MemoryActionRepository();
+            actions.load(cop, watcher, null);
             log.debug("Retrieved dummy security classes");
         }
     }
@@ -186,6 +202,9 @@ public class MMBaseCopConfig {
      */
     public Authorization getAuthorization() {
         return authorization;
+    }
+    public ActionRepository getActionRepository() {
+        return actions;
     }
 
     /**
@@ -249,6 +268,30 @@ public class MMBaseCopConfig {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             result = (Authorization) o;
+            log.debug("Setting manager of " + result + " to " + cop);
+            result.manager = cop;
+        }
+        catch(java.lang.ClassNotFoundException cnfe) {
+            log.debug("", cnfe);
+            throw new SecurityException(cnfe.toString());
+        }
+        catch(java.lang.IllegalAccessException iae) {
+            log.debug("", iae);
+            throw new SecurityException(iae.toString());
+        }
+        catch(java.lang.InstantiationException ie) {
+            log.debug("", ie);
+            throw new SecurityException(ie.toString());
+        }
+        return result;
+    }
+    private ActionRepository getActions(String className) throws SecurityException {
+
+        ActionRepository result;
+        try {
+            Class classType = Class.forName(className);
+            Object o = classType.newInstance();
+            result = (ActionRepository) o;
             log.debug("Setting manager of " + result + " to " + cop);
             result.manager = cop;
         }
