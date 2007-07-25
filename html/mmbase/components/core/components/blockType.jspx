@@ -7,13 +7,19 @@
   <ul>
     <mm:stringlist referid="blockType.subTypes">
       <mm:write request="blockType" />
-      <li><mm:include page="blockType.jspx" /></li>
+      <li>
+        ${requestScope.blockType.name}        
+        <mm:include debug="html" page="blockType.jspx" />
+      </li>
     </mm:stringlist>
   </ul>
   <ul>
-    <mm:stringlist referid="blockType.blocks">
+    <mm:stringlist referid="blockType.blocks" id="block">
       <li>
-        ${_.component} : ${_}
+        <mm:link page="components">
+          <mm:param name="component">${block.component.name}</mm:param>
+          <a href="${_}">${block.component.name}</a> : ${block.name}
+        </mm:link>
       </li>
     </mm:stringlist>
   </ul>
