@@ -23,7 +23,10 @@
         </li>
       </mm:haspage>
       <mm:haspage page="admin">
-        <li><a href="about">Admin pages</a></li>
+        <mm:link>
+          <mm:param framework="true" name="category">about</mm:param>
+          <li><a href="${_}">Admin pages</a></li>
+        </mm:link>
       </mm:haspage>
       <mm:haspage page="security">
         <li><a href="security">Security administration</a></li>
