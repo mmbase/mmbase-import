@@ -1,9 +1,12 @@
-<%@ page language="java" contentType="text/html" session="false" 
+<%@ page  contentType="application/xhtml+xml; charset=UTF-8" 
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<mm:content expires="0" postprocessor="none">
+<mm:content expires="0"
+            type="application/xhtml+xml"
+            unacceptable="CRIPPLE"
+            postprocessor="none" language="client">
 <mm:cloud rank="administrator" >
 <mm:import externid="category">about</mm:import>
 <mm:import externid="subcategory"></mm:import>
@@ -75,9 +78,17 @@
   <div class="padder">
   <mm:present referid="component">
     <h2 class="top"><mm:write referid="block" /></h2>
-    <mm:component name="$component" block="$block">
-      <mm:frameworkparam name="category">${category}</mm:frameworkparam>
-    </mm:component>
+    <c:catch var="exception">
+      <mm:component name="$component" block="$block">
+        <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+      </mm:component>
+    </c:catch>
+    <c:if test="${! empty exception}">
+      
+      <pre>
+        ${exception}
+      </pre>
+    </c:if>
   </mm:present>
   </div>
 </div>
