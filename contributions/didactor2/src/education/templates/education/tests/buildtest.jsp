@@ -1,282 +1,141 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%>
-<mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate">
+%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
+%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><mm:content postprocessor="reducespace" expires="0">
+<mm:cloud rank="didactor user" jspvar="cloud">
+  
+  <mm:import externid="learnobject" required="true"/>
+  <mm:import externid="madetest" />
+  
+  <mm:import externid="page" vartype="integer">0</mm:import>
+  
+  <mm:node id="learnobject" referid="learnobject" />
+  <mm:node number="$user"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
 
-<mm:import externid="learnobject" required="true"/>
-<mm:import id="madetest" externid="madetest"/>
-
-<%-- Set default values --%>
-<mm:import externid="questionsshowed" jspvar="questionsShowed" vartype="String"> </mm:import>
-<mm:import externid="testpath" jspvar="testPath" vartype="String"></mm:import>
-<mm:import externid="command" jspvar="sCommand" vartype="String">next</mm:import>
-<mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer">0</mm:import>
-<mm:import externid="questionperpageamount">0</mm:import>
-<mm:import externid="clearmadetest">false</mm:import>
-
-<jsp:directive.include file="/shared/setImports.jsp" />
-<jsp:directive.include file="/education/tests/definitions.jsp" />
-
-<%-- find user's copybook --%>
-<mm:node number="$user">
-   <jsp:directive.include file="find_copybook.jsp" />
-</mm:node>
-
-<%-- remove old results (or use it) --%>
-<mm:present referid="madetest" inverse="true">
-
- <mm:node number="$copybookNo" notfound="skip">
-   <mm:node referid="learnobject">
-      <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-         <mm:constraint field="copybooks.number" referid="copybookNo"/>
-         <mm:relatednodes>
-            <mm:compare referid="clearmadetest" value="false">
-               <mm:import id="madetest" reset="true"><mm:field name="number"/></mm:import>
-            </mm:compare>
-            <mm:compare referid="clearmadetest" value="true">
-               <mm:relatednodescontainer type="givenanswers">
-                  <%--Remove Made test with  <mm:size/> answers<br/> --%>
-                  <mm:relatednodes>
-                     <mm:maydelete>
-                        <mm:deletenode deleterelations="true"/>
-                     </mm:maydelete>
-                  </mm:relatednodes>
-               </mm:relatednodescontainer>
-               <mm:maydelete>
-                  <mm:deletenode deleterelations="true"/>
-               </mm:maydelete>
-            </mm:compare>
-         </mm:relatednodes>
-
-      </mm:relatednodescontainer>
-   </mm:node>
- </mm:node>
-</mm:present>
-<div class="learnenvironment">
-
-
-<%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
-<mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" write="false"/>
-<form name="questionform" 
-      onsubmit="postContent('${post}', this); return false;"
-      action="${post}" method="POST">
-
-  <div  onclick="postContent('${post}', document.forms.questionform); return false;">POST</div>
-
-<mm:node number="$learnobject">
-   <mm:field name="showtitle">
-      <mm:compare value="1">
-         <h1><mm:field name="name"/></h1>
-      </mm:compare>
-   </mm:field>
-
-   <p/>
-   <mm:hasfield name="text">
-     <mm:field name="text" escape="none"/>
-   </mm:hasfield>
-
-
-   <mm:compare referid="questionamount" value="0">
-      <mm:remove referid="questionamount"/>
-      <mm:import id="command" reset="true">next</mm:import>
-      <mm:import id="questiontype"><mm:field name="questionamount"/></mm:import>
-      <%-- Questiontype < 1 means undefined. Show all questions in the given order. --%>
-      <mm:islessthan referid="questiontype" value="1">
-         <mm:relatednodes type="questions" role="posrel" orderby="posrel.pos,title" id="my_questions">
-            <mm:first>
-               <mm:import id="questionamount"><mm:size/></mm:import>
-            </mm:first>
-         </mm:relatednodes>
-      </mm:islessthan>
-      <%-- Questionamount >= 1. Show the given amount of questions at random. --%>
-      <mm:isgreaterthan referid="questiontype" value="0">
-         <mm:relatednodes type="questions" max="$questiontype" comparator="SHUFFLE" id="my_questions">
-            <mm:first>
-               <mm:import id="questionamount"><mm:size/></mm:import>
-            </mm:first>
-         </mm:relatednodes>
-      </mm:isgreaterthan>
-      <%-- Check if questionamount is present --%>
-      <mm:notpresent referid="questionamount">
-         <mm:import id="questionamount">0</mm:import>
-      </mm:notpresent>
-
-      <mm:import id="questionperpageamount" reset="true"><mm:field name="questionsperpage"/></mm:import>
-      <mm:islessthan referid="questionperpageamount" value="1">
-         <mm:import id="questionperpageamount" reset="true"><mm:write referid="questionamount"/></mm:import>
-      </mm:islessthan>
-      <mm:isgreaterthan referid="questionamount" value="0">
-         <mm:islessthan referid="questionamount" referid2="questionperpageamount">
-            <mm:import id="questionperpageamount" reset="true"><mm:write referid="questionamount"/></mm:import>
-         </mm:islessthan>
-      </mm:isgreaterthan>
-      <mm:islessthan referid="questionperpageamount" value="1">
-            <mm:import id="questionperpageamount" reset="true">1</mm:import>
-      </mm:islessthan>
-   </mm:compare>
-
-   <mm:compare referid="testpath" value="">
-      <mm:node number="$madetest" notfound="skip">
-         <mm:import id="testpath" reset="true"><mm:field name="testpath"/></mm:import>
+  <mm:present referid="copybookNo">
+    
+    <mm:notpresent referid="madetest" >
+      <mm:remove referid="madetest" />     
+      <mm:import externid="clearmadetest">false</mm:import>
+      <mm:node referid="copybookNo">
+        <mm:nodefunction id="madetest" name="madetest" referids="learnobject@test,clearmadetest@clear" />
       </mm:node>
-   </mm:compare>
-   <mm:compare referid="testpath" value="">
-      <mm:relatednodes referid="my_questions">
-         <mm:first>
-            <mm:field name="number" jspvar="questionNo" vartype="String">
-               <% testPath = questionNo; %>
+    </mm:notpresent>
+  </mm:present>
+
+
+  <div class="learnenvironment">
+    <!-- Take care: form name is used in JavaScript of the specific question jsp pages! -->
+    <mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" write="false"/>
+    <form name="questionform" 
+          onsubmit="postContent('${post}', this); return false;"
+          action="${post}"
+          method="POST">
+
+      
+      <mm:node number="$learnobject" id="test">
+
+        <mm:field name="showtitle">
+          <mm:compare value="1">
+            <h1><mm:field name="name"/></h1>
+          </mm:compare>
+        </mm:field>
+
+        <mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield>
+
+        <mm:present referid="copybookNo">
+          <mm:node referid="madetest">
+            <mm:compare referid="page" value="0">
+              <mm:setfield name="testpath" />
+            </mm:compare>
+            <mm:field name="testpath" write="false" vartype="list">
+              <mm:log>testing ${_}</mm:log>
+              <c:choose>
+                <c:when test="${empty _}">
+                  <mm:nodelistfunction node="test" name="questions" id="questions" referids="copybookNo@seed" />
+                  <mm:setfield name="testpath">${questions}</mm:setfield>
+                </c:when>
+                <c:otherwise>
+                  <mm:listnodes referid="_" id="questions" />
+                </c:otherwise>
+              </c:choose>
             </mm:field>
-         </mm:first>
-         <mm:first inverse="true">
-            <mm:field name="number" jspvar="questionNo" vartype="String">
-               <% testPath += "," + questionNo; %>
-            </mm:field>
-         </mm:first>
-      </mm:relatednodes>
-      <mm:remove referid="testpath"/>
-      <mm:import id="testpath"><%=testPath%></mm:import>
-   </mm:compare>
+            <mm:relatednodes role="related"  type="givenanswers" id="givenanswers" />
+          </mm:node>
+        </mm:present>
 
-   <mm:node number="$madetest" notfound="skip">
-      <mm:setfield name="testpath"><mm:write referid="testpath"/></mm:setfield>
-   </mm:node>
+        <mm:nodelistfunction name="questions" id="my_questions" referids="copybookNo?@seed,page" />
 
-   <%-- Determine questions to show --%>
-   <mm:import id="listtestpath" jspvar="listTestPath" vartype="List"><mm:write referid="testpath"/> </mm:import>
-   <mm:import id="listqshowed" jspvar="listQShowed" vartype="List"><mm:write referid="questionsshowed"/> </mm:import>
+        <mm:write session="my_questions" referid="my_questions" />
+                
+        <mm:listnodes referid="my_questions">
 
-   <mm:import id="dummy" jspvar="questionPerPageAmount" vartype="String"><mm:write referid="questionperpageamount"/></mm:import>
-<% 
-   int qCounter = 0;
-   int i = 0;
-   int flag = 1;
-   int currentpos = 0;
-   questionsShowed = " ";
+          <mm:nodeinfo type="type">
+            <mm:treeinclude page="/education/${_}/index.jsp" 
+                            objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
+          </mm:nodeinfo>
 
-   int iQPerPageAmount = new Integer (questionPerPageAmount).intValue();
-   if (listQShowed.size() == 0) {
-      currentpos = 0;
-   } else {
-      if (!sCommand.equals("back")) {
-         currentpos = listTestPath.indexOf(listQShowed.get(listQShowed.size()-1)) + 1;
-      } else {
-         currentpos = listTestPath.indexOf(listQShowed.get(0)) - iQPerPageAmount;
-      }
-   }
-   if (currentpos >= listTestPath.size()) {
-      currentpos = listTestPath.size() - iQPerPageAmount;
-   }
-   if (currentpos < 0) {
-      currentpos = 0;
-   }
+          <mm:hasnode number="${copybookNo}" inverse="true">
+            <mm:nodeinfo type="type">
+              <div class="${_}">
+                <h1 ><mm:field name="title" /></h1>
+                <mm:field name="text" escape="none"/>
+              </div>
+            </mm:nodeinfo>
+          </mm:hasnode>
+          <input type="hidden" name="shown${_node}" value="${_node}" />
+        </mm:listnodes>
+          
 
-   i = currentpos;
-   flag = 1; // first pass
-   while (flag != 0) {
-      String questionNo = (String) listTestPath.get(i);
-%>
-   <mm:node number="<%= questionNo %>" notfound="skip">
-      <mm:hasnode number="${copybookNo}">
+        <!-- Arguments for rating -->
+        <input type="hidden" name="learnobject" value="${learnobject}" />
+        <input type="hidden" name="thismadetest" value="${madetest}" />
+        <input type="hidden" name="page" value="${page}" />
+        <input type="hidden" name="command" value="next" />
         <mm:nodeinfo type="type">
-          <mm:treeinclude page="/education/${_}/index.jsp" 
-                          objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
+          <input type="hidden" name="${_}" value="${_node}" />
         </mm:nodeinfo>
-      </mm:hasnode>
-      <mm:hasnode number="${copybookNo}" inverse="true">
-        <mm:nodeinfo type="type">
-          <div class="${_}">
-            <h1 ><mm:field name="title" /></h1>
-            <mm:field name="text" escape="none"/>
-          </div>
-        </mm:nodeinfo>
-      </mm:hasnode>
-         <%-- Make field for rating this question --%>
-         <input type="hidden" name="shown<mm:field name="number"/>" value="<mm:field name="number"/>"/>
-<%
-         if ( questionsShowed.equals(" ") ) {
-            questionsShowed = questionNo;
-         } else {
-            questionsShowed = questionsShowed + "," + questionNo;
-         }
-         qCounter++;
-         if (iQPerPageAmount == qCounter) {
-            flag = 0;
-         }
-%>
+        <input type="hidden" name="testpath" value="${questions}"/>
+
+        <c:if test="${fn:length(my_questions) lt 1}">
+          <di:translate key="education.testwithoutquestions" />
+        </c:if>
+        
+        <mm:present referid="copybookNo">
+          <!-- Determine if all questions are showed -->
+          <c:choose>
+            <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
+              <input type="submit" value="${di:translate(pageContext, 'education.buttontextdone')}" class="formbutton" 
+                     onClick="questionform.command.value='done'; postContent('${post}', questionform);"/>
+            </c:when>
+            <c:otherwise>
+              <c:if test="${page gt 0}">
+                <input type="button" 
+                       value="${di:translate(pageContext, 'education.buttontextprev')}" 
+                       class="formbutton" 
+                       onClick="questionform.command.value='back'; postContent('${post}', questionform);" />
+              </c:if>
+              <c:if test="${learnobject.questionsperpage gt 0 or page * learnobject.questionsperpage lt fn:length(questions)}">
+                <input type="button" 
+                       value="${di:translate(pageContext, 'education.buttontextnext')}" 
+                       class="formbutton"
+                       onClick="postContent('${post}', questionform);" />
+              </c:if>
+              <c:if test="${learnobject.questionsperpage lt 1 or page * learnobject.questionsperpage ge fn:length(questions)}">
+                <input type="button"
+                       value="${di:translate(pageContext, 'education.buttontextdone')}" 
+                       class="formbutton" 
+                       onClick="questionform.command.value='done'; postContent('${post}', questionform);" />
+              </c:if>
+            </c:otherwise>
+          </c:choose>
+        </mm:present>
       </mm:node>
-<%
-      // if end of list, check qCounter: if we show nothing, try one more time from begin of list
-      i++;
-      if (i == listTestPath.size()) {
-         if (qCounter == 0 && flag == 1) {
-            i = 0;
-            flag = 2; // second pass
-         } else {
-            flag = 0;
-         }
-      }
-   }
-
-%>
-<mm:present referid="madetest">
-  <mm:isnotempty referid="madetest">
-  <mm:listcontainer nodes="$learnobject" path="tests,questions,givenanswers,madetests" >
-    <mm:constraint field="madetests.number" value="${madetest}" />
-    <mm:size>
-      <mm:compare referid2="questionamount">
-        <mm:remove referid="testdone"/>
-        <mm:import id="testdone">true</mm:import>
-      </mm:compare>
-    </mm:size>
-  </mm:listcontainer>
-  </mm:isnotempty>
-</mm:present>
-<br/>
-<br/>
-
-   <%-- Arguments for rating --%>
-   <input type="hidden" name="learnobject" value="<mm:write referid="learnobject"/>"/>
-   <input type="hidden" name="thismadetest" value="<mm:write referid="madetest"/>"/>
-   <input type="hidden" name="<mm:nodeinfo type="type"/>" value="<mm:field name="number"/>"/>
-   <input type="hidden" name="questionsshowed" value="<%= questionsShowed %>"/>
-   <input type="hidden" name="testpath" value="<mm:write referid="testpath"/>"/>
-   <input type="hidden" name="questionamount" value="<mm:write referid="questionamount"/>"/>
-   <input type="hidden" name="questionperpageamount" value="<mm:write referid="questionperpageamount"/>"/>
-   <input type="hidden" name="command" value="next"/>
-
-   <%-- Check if there are any questions --%>
-   <% if (listTestPath.size() < 1) { %>
-         <di:translate key="education.testwithoutquestions" />
-         <p/>
-   <% } %>
-
-   <mm:hasnode number="$copybookNo">
-   <%-- Determine if all questions are showed --%>
-   <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount" inverse="true">
-      <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" 
-      onClick="questionform.command.value='done';questionform.submit()"/>
-   </mm:isgreaterthan>
-   <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount">
-      <% if ( currentpos > 0 ) { %>
-         <input type="button" value="<di:translate key="education.buttontextprev" />" class="formbutton" onClick="questionform.command.value='back';questionform.submit()"/>
-      <% } %>
-      <% if ( currentpos < listTestPath.size()-1 ) { %>
-         <input type="submit" value="<di:translate key="education.buttontextnext" />" class="formbutton"/>
-      <% } else { %>
-         <mm:import id="testdone" reset="true">true</mm:import>
-      <% } %>
-      <mm:present referid="testdone">
-         <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
-      </mm:present>
-   </mm:isgreaterthan>
-   </mm:hasnode>
-</mm:node>
-</form>
-
-<mm:hasnode number="$copybookNo" inverse="true">
-  <di:translate key="education.nocopybookfound" />
-</mm:hasnode>
-</div>
+    </form>
+    <mm:notpresent referid="copybookNo">
+      <di:translate key="education.nocopybookfound" />
+    </mm:notpresent>
+  </div>
 </mm:cloud>
 </mm:content>

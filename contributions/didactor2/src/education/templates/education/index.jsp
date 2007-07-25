@@ -36,8 +36,8 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
 
   
   <!--
-  We are using it to show only one node in the tree
-  For cross-education references  
+      We are using it to show only one node in the tree
+      For cross-education references  
   -->
   <mm:import externid="the_only_node_to_show"/>
 
@@ -48,129 +48,118 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
   </mm:node>
   
 
+  <!-- TODO when refreshing the page (F5) the old iframe content is shown -->
 
-<!-- TODO some learnblocks/learnobjects may not be visible because the are not ready for elearning (start en stop mmevents) -->
-<!-- TODO when refreshing the page (F5) the old iframe content is shown -->
-<!-- TODO pre and postassessment are showed in the tree -->
-<!-- TODO split index and tree code in two seperate jsp templates -->
+  <mm:import externid="justposted" />
 
+  <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
+    <script type="text/javascript" src="${_}"><!-- help IE --></script>      
+  </mm:link>
 
-<mm:import externid="justposted" />
-
-<mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
-  <script type="text/javascript" src="${_}">
-    
-  </script>
-</mm:link>
-
-<mm:listnodescontainer type="classrel">
-  <mm:constraint field="snumber" value="${user}" />
-  <mm:composite operator="or">
-    <mm:constraint field="dnumber" value="${class}" />
-    <mm:constraint field="dnumber" value="${education}" />
-  </mm:composite>
-  <mm:listnodes >
-    <%-- is lastpage field ever filled ? --%>
-    <script type="text/javascript">
-      openContent("learnblocks", ${_node.lastpage});
-    </script>
-  </mm:listnodes>
-</mm:listnodescontainer>
+  <mm:listnodescontainer type="classrel">
+    <mm:constraint field="snumber" value="${user}" />
+    <mm:composite operator="or">
+      <mm:constraint field="dnumber" value="${class}" />
+      <mm:constraint field="dnumber" value="${education}" />
+    </mm:composite>
+    <mm:listnodes >
+      <%-- is lastpage field ever filled ? --%>
+      <script type="text/javascript">
+        openContent("learnblocks", ${_node.lastpage});
+      </script>
+    </mm:listnodes>
+  </mm:listnodescontainer>
+  
 
 
-
-<div class="rows">
-  <div class="navigationbar">
-    <div class="pathbar">
-      <mm:node number="$education">
-        <mm:field name="name"/>
-      </mm:node>
-    </div>    
-    <mm:import id="stepNavigator">
-      <jsp:directive.include file="prev_next.jsp" />
-    </mm:import>
-    <div class="stepNavigator">
-      <mm:write referid="stepNavigator" escape="none" />
-    </div>
-     </div>
-     <div class="folders">
-       <div class="folderHeader">
-         <di:translate key="education.education" />
-       </div>
-       
-       <div class="folderLesBody"
-            id="education-tree"
-            >
-         <mm:include page="tree.jspx" />
+  <div class="rows" id="rows">
+    <div class="navigationbar">
+      <div class="pathbar">
+        <mm:node number="$education">
+          <mm:field name="name"/>
+        </mm:node>
+      </div>    
+      <mm:import id="stepNavigator">
+        <jsp:directive.include file="prev_next.jsp" />
+      </mm:import>
+      <div class="stepNavigator">
+        <mm:write referid="stepNavigator" escape="none" />
       </div>
-
+    </div>
+    <div class="folders">
+      <div class="folderHeader">
+        <di:translate key="education.education" />
+      </div>
+      
+      <div class="folderLesBody"
+           id="education-tree">
+        <mm:include page="tree.jspx" />
+      </div>
+      
    </div>
 
 
    <div class="mainContent">
-      <div class="contentHeader">
-         &nbsp;
-      </div>
-      <div class="contentBodywit" id="contentBodywit">
-         <mm:present referid="the_only_node_to_show">
-           <mm:import externid="fb_madetest" required="true" />
-           <mm:import externid="return_to" required="true" />
-           <mm:import externid="return_to_type" required="true" />
-
-           <div align="right"><input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lession_button" />"
-           onClick="parent.document.location.href='<mm:url referids="$referids,learnobjecttype,class,fb_madetest" page="index.jsp">
-           <mm:param name="learnobject"><mm:write referid="return_to"/></mm:param>
-           <mm:param name="learnobjecttype"><mm:write referid="return_to_type"/></mm:param>
-           </mm:url>'"
-           /></div>
-         </mm:present>
-         <div id="contentFrame">
-           CONTENT
+     <div class="contentHeader">
+       &nbsp;
+     </div>
+     <div class="contentBodywit" id="contentBodywit">
+       <mm:present referid="the_only_node_to_show">
+         <mm:import externid="fb_madetest" required="true" />
+         <mm:import externid="return_to" required="true" />
+         <mm:import externid="return_to_type" required="true" />
+         
+         <div align="right">
+           <mm:link referids="$referids,learnobjecttype,class,fb_madetest,learnobject@return_to,learnobjecttype@return_to_type" page="index.jsp">
+             <input type="submit" class="formbutton" 
+                    value="${di:translate(pageContext, 'assessment.back_to_lession_button')}"
+                    onClick="parent.document.location.href='${_}'" />
+             <%-- WTF is a 'lession' ? --%>
+           </mm:link>
          </div>
-      </div>
+       </mm:present>
+
+       <div id="contentFrame">...</div>
+
+     </div>
    </div>
-</div>
-
-
-<mm:present referid="frame">
-   <script>
+  </div>
+  
+  
+  <mm:present referid="frame">
+    <script type="text/javascript">
       closeAll();
       openContent('${learnobjectype}','${education}');
-      openOnly('div${learnobject}','img${education}');
-
-   </script>
-</mm:present>
-
-<mm:notpresent referid="frame">
-<script type="text/javascript">
-   closeAll();
-
-   <%-- we open need menu item in case it is a reference from another education --%>
-   <mm:present referid="the_only_node_to_show">
-      openContent('${learnobjectype}','${the_only_node_to_show}');
-      openOnly('div${the_only_node_to_show}','img${the_only_node_to_show}');
-   </mm:present>
-
-
-   <mm:notpresent referid="the_only_node_to_show">
-      <mm:present referid="learnobject">
-         openContent('${learnobjecttype}','${learnobject}');
-         openOnly('div${learnobject}','img${learnobject}');
+      openOnly('div${learnobject}','img${education}');      
+    </script>
+  </mm:present>
+  
+  <mm:notpresent referid="frame">
+    <script type="text/javascript">
+      closeAll();
+      
+      <%-- we open need menu item in case it is a reference from another education --%>
+      <mm:present referid="the_only_node_to_show">
+        openContent('${learnobjectype}','${the_only_node_to_show}');
+        openOnly('div${the_only_node_to_show}','img${the_only_node_to_show}');
       </mm:present>
-
-      <mm:notpresent referid="learnobject">
-        if (contentnumber.length >= 1) {
-           openContent(contenttype[0],contentnumber[0]);
-           openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
-        }
+      
+      
+      <mm:notpresent referid="the_only_node_to_show">
+        <mm:present referid="learnobject">
+          openContent('${learnobjecttype}','${learnobject}');
+          openOnly('div${learnobject}','img${learnobject}');
+        </mm:present>
+        
+        <mm:notpresent referid="learnobject">
+          if (contentnumber.length >= 1) {
+             openContent(contenttype[0],contentnumber[0]);
+             openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
+          }
+        </mm:notpresent>
       </mm:notpresent>
-   </mm:notpresent>
-
-</script>
-</mm:notpresent>
-
-<br />
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
+    </script>
+  </mm:notpresent>
+  <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
 </mm:cloud>
-
 </mm:content>

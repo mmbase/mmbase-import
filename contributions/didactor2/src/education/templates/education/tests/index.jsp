@@ -13,10 +13,10 @@
       <mm:param name="learnobjecttype">tests</mm:param>
     </mm:treeinclude>
     
-    <mm:import id="copybookNo"><mm:node number="$user"><di:copybook /></mm:node></mm:import>
+    <mm:node number="$user"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
     
     <mm:node number="$testNo">
-      <mm:isnotempty referid="copybookNo">
+      <mm:present referid="copybookNo">
         <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
           <mm:constraint field="score"  referid="TESTSCORE_INCOMPLETE" inverse="true"/>
           <mm:constraint field="copybooks.number"  value="$copybookNo" />
@@ -25,68 +25,15 @@
             <mm:field id="madetestscore" name="score" write="false"/>
           </mm:relatednodes>
         </mm:relatednodescontainer>
-      </mm:isnotempty>
-      <%-- alternative implementation of mm:node ? --%>
-      <mm:listnodescontainer type="tests">
-        <mm:constraint operator="equal" field="number" referid="testNo" />
-        <mm:listnodes>
-          <mm:first>
-            <mm:node>
-              <mm:field id="testIsAlwaysOnline" name="always_online" write="false" />
-              <mm:field id="testStartDate" name="online_date" write="false" />
-              <mm:field id="testEndDate" name="offline_date" write="false" />
-            </mm:node>
-          </mm:first>
-        </mm:listnodes>
-      </mm:listnodescontainer>
-
-
-      <mm:present referid="testStartDate">
-        <mm:import jspvar="testIsAlwaysOnline"><mm:write referid="testIsAlwaysOnline" /></mm:import>
-        <mm:import jspvar="testStartDate"><mm:write referid="testStartDate" /></mm:import>
-        <mm:import jspvar="testEndDate"><mm:write referid="testEndDate" /></mm:import>
-        <%
-        long startDateTimestamp = 0;
-        try {
-        startDateTimestamp = Long.parseLong(testStartDate) * 1000;
-        }
-        catch(Exception e) {
-        e.printStackTrace();
-        }
-        long endDateTimestamp = 0;
-        try {
-        endDateTimestamp = Long.parseLong(testEndDate) * 1000;
-        }
-        catch(Exception e) {
-        e.printStackTrace();
-        }
-        long alwaysShow = 1;
-        try {
-        alwaysShow = Long.parseLong(testIsAlwaysOnline);
-        }
-        catch(Exception e) {
-        e.printStackTrace();
-        }
-
-        if ((startDateTimestamp == 0 || startDateTimestamp < System.currentTimeMillis()) &&
-        (endDateTimestamp == 0 || endDateTimestamp > System.currentTimeMillis())){
-        %>
-        <!-- Test can be showed -->
-        <%
-        } else if (alwaysShow != 1) {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        cal.setTime(new Date(startDateTimestamp));
-        String myStartDate = sdf.format(cal.getTime());
-        cal.setTime(new Date(endDateTimestamp));
-        String myStopDate = sdf.format(cal.getTime());
-        %>
-        <mm:import id="testCantBeShowed"></mm:import>
-        <div class="learnenvironment">
-          <di:translate key="education.testnotyetavailable" /> <%= myStartDate %> - <%= myStopDate %>.
-        </div>
-        <% } %>
       </mm:present>
+      
+      <mm:booleanfunction name="online" inverse="true">
+        <div class="learnenvironment">
+          <di:translate key="education.testnotyetavailable" /> 
+          <mm:field name="online_date"><mm:time format=":FULL" /></mm:field> - <mm:field name="offline_date"><mm:time format=":FULL" /></mm:field>
+          <mm:import id="testCantBeShowed" />
+        </div>
+      </mm:booleanfunction>
 
       <mm:notpresent referid="testCantBeShowed">
         <mm:present referid="madetestNo">
@@ -96,7 +43,6 @@
                 <h1><mm:field name="name"/></h1>
               </mm:compare>
             </mm:field>
-            <mm:url absolute="server" />
             <mm:field id="maychange" name="maychange"    write="false"/>
             <mm:field id="mayview"   name="mayview"      write="false"/>
             <mm:field id="feedback"  name="feedbackpage" write="false"/>
@@ -104,7 +50,7 @@
             <mm:field name="number">
               <mm:compare referid2="justposted" inverse="true">
                 <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
-                  <di:translate key="education.alreadymade_tobescored" /><p/><%-- empty paragraphs, come on, that is stupid! --%>
+                  <p><di:translate key="education.alreadymade_tobescored" /></p>
                 </mm:compare>
                 
                 <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
@@ -132,7 +78,7 @@
                             <mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"  write="false"
                                          referids="$referids,testNo,madetestNo,user@userNo" 
                                          >
-                              <a href="${_}"><di:translate key="education.view" /></a>
+                              <a href="${_}" onclick="requestContent('${_}'); return false;"><di:translate key="education.view" /></a>
                             </mm:treefile>
                           </div>
                         </td>
@@ -172,7 +118,9 @@
 
     <mm:notpresent referid="testCantBeShowed">
       <mm:present referid="madetestNo" inverse="true">
-        <mm:treeinclude page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
+        <mm:treeinclude 
+            debug="html"
+            page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
           <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
         </mm:treeinclude>
       </mm:present>
