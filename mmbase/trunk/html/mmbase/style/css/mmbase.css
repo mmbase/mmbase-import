@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.12 2007-06-20 14:44:50 michiel Exp $;
+ @version $Id: mmbase.css,v 1.13 2007-07-25 05:15:55 michiel Exp $;
 */
 
 html { 
@@ -181,4 +181,29 @@ a:hover {
 
 #tabnav a:hover {
   background: #f3f3f3;
+}
+
+.filelisting h1 { 
+  border-bottom: #666688 solid 2px;
+}
+
+.filelisting table { 
+  background-color: #f3f3f3;
+  border-left: #666688 solid 15px;
+  border-right: #666688 solid 15px;
+  margin-bottom: 20px;
+
+}
+.filelisting td { 
+  border-bottom: solid 1px white;
+}
+
+.filelisting .lastmodified { 
+  border-right: solid 1px black;
+  width: 20ex;
+}
+
+.filelisting h3 { 
+  text-align: right;
+  border-top: #666688 solid 2px;
 }
