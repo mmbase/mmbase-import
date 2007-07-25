@@ -11,6 +11,7 @@ package org.mmbase.framework;
 
 import java.util.*;
 import org.w3c.dom.*;
+import org.mmbase.security.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.*;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.30 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.31 2007-07-25 07:09:41 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -64,37 +65,66 @@ public class BasicComponent implements Component {
 
         version = Integer.parseInt(el.getAttribute("version"));
 
-        NodeList bundleElements = el.getElementsByTagName("bundle");
-        if(bundleElements.getLength() > 0) {
-            bundle = ((Element) bundleElements.item(0)).getAttribute("name");
+        {
+            NodeList bundleElements = el.getElementsByTagName("bundle");
+            if(bundleElements.getLength() > 0) {
+                bundle = ((Element) bundleElements.item(0)).getAttribute("name");
+            }
         }
 
-        NodeList settingElements = el.getElementsByTagName("setting");
-        for (int i = 0; i < settingElements.getLength(); i++) {
-            Element element = (Element) settingElements.item(i);
-            Setting s = new Setting(this, element);
-            settings.put(s.getName(), s);
+        {
+            NodeList settingElements = el.getElementsByTagName("setting");
+            for (int i = 0; i < settingElements.getLength(); i++) {
+                Element element = (Element) settingElements.item(i);
+                Setting s = new Setting(this, element);
+                settings.put(s.getName(), s);
+            }
+        }
+        {
+            NodeList actionElements = el.getElementsByTagName("action");
+            for (int i = 0; i < actionElements.getLength(); i++) {
+                try {
+                    Element element = (Element) actionElements.item(i);
+                    String name = element.getAttribute("name");
+                    String rank = element.getAttribute("rank");
+                    Object c = ComponentRepository.getInstanceWithSubElement(element);
+                    if (c != null) {
+                        if (! "".equals(rank)) {
+                            log.warn("Rank attribute ignored");
+                        }
+                        org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(new Action(name, (ActionChecker) c));
+                    } else {
+                        if ("".equals(rank)) { rank = "basic user"; }
+                        org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(new Action(name, new ActionChecker.Rank(Rank.getRank(rank))));
+                    }
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            }
         }
 
-        NodeList blockElements = el.getElementsByTagName("block");
-        if (log.isDebugEnabled()) {
-            log.debug("Found description: " + description);
-            log.debug("Found number of blocks: " + blockElements.getLength());
+        {
+            NodeList blockElements = el.getElementsByTagName("block");
+            if (log.isDebugEnabled()) {
+                log.debug("Found description: " + description);
+                log.debug("Found number of blocks: " + blockElements.getLength());
+            }
+            for (int i = 0 ; i < blockElements.getLength(); i++) {
+                Element element = (Element) blockElements.item(i);
+                String name = element.getAttribute("name");
+                String mimetype = element.getAttribute("mimetype");
+                Block.Type[] classification = Block.Type.getClassification(element.getAttribute("classification"), true);
+                Block b = new Block(name, mimetype, this, classification);
+                b.getDescription().fillFromXml("description", element);
+                log.trace("Found block: " + name);
+                b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
+                b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
+                b.processor = getProcessor("process", element, b);
+                if (defaultBlock == null) defaultBlock = b;
+                blocks.put(name, b);
+            }
         }
-        for (int i = 0 ; i < blockElements.getLength(); i++) {
-            Element element = (Element) blockElements.item(i);
-            String name = element.getAttribute("name");
-            String mimetype = element.getAttribute("mimetype");
-            Block.Type[] classification = Block.Type.getClassification(element.getAttribute("classification"), true);
-            Block b = new Block(name, mimetype, this, classification);
-            b.getDescription().fillFromXml("description", element);
-            log.trace("Found block: " + name);
-            b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
-            b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
-            b.processor = getProcessor("process", element, b);
-            if (defaultBlock == null) defaultBlock = b;
-            blocks.put(name, b);
-        }
+
         String defaultBlockName = el.getAttribute("defaultblock");
         if (defaultBlockName != null && ! defaultBlockName.equals("")) {
             Block b = blocks.get(defaultBlockName);
