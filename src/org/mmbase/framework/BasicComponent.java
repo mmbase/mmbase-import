@@ -20,16 +20,18 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.29 2007-07-14 17:19:42 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.30 2007-07-25 05:08:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
     private static final Logger log = Logging.getLoggerInstance(BasicComponent.class);
 
+
     private final String name;
-    private ResourceBundle bundle;
+    private String bundle;
     private final LocalizedString description;
     private final Map<String, Block> blocks = new HashMap<String, Block>();
+    private final Map<String, Setting<?>> settings = new HashMap<String, Setting<?>>();
     private Block defaultBlock = null;
     private String uri;
     private int version = -1;
@@ -63,21 +65,15 @@ public class BasicComponent implements Component {
         version = Integer.parseInt(el.getAttribute("version"));
 
         NodeList bundleElements = el.getElementsByTagName("bundle");
-        for (int i = 0; i < bundleElements.getLength(); i++) {
-            Element element = (Element) bundleElements.item(i);
-            bundle = ResourceBundle.getBundle(element.getAttribute("name"));
+        if(bundleElements.getLength() > 0) {
+            bundle = ((Element) bundleElements.item(0)).getAttribute("name");
         }
-        if (bundle == null) {
-            log.service("No resource bundle defined for block " + name + ". Using empty one.");
-            bundle = new ResourceBundle() {
-                    public Object handleGetObject(String key) {
-                        return null;
-                    }
-                    public Enumeration<String> getKeys() {
-                        Set<String> empty = Collections.emptySet();
-                        return Collections.enumeration(empty);
-                    }
-                };
+
+        NodeList settingElements = el.getElementsByTagName("setting");
+        for (int i = 0; i < settingElements.getLength(); i++) {
+            Element element = (Element) settingElements.item(i);
+            Setting s = new Setting(this, element);
+            settings.put(s.getName(), s);
         }
 
         NodeList blockElements = el.getElementsByTagName("block");
@@ -178,7 +174,15 @@ public class BasicComponent implements Component {
         return getName();
     }
 
-    public ResourceBundle getBundle() {
+    public String getBundle() {
         return bundle;
+    }
+
+    public Collection<Setting<?>> getSettings() {
+        return settings.values();
+    }
+
+    public Setting<?> getSetting(String name) {
+        return settings.get(name);
     }
 }

@@ -10,6 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 import java.util.*;
 import javax.servlet.ServletRequest;
+
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.8 2007-07-18 07:49:18 michiel Exp $
+ * @version $Id: State.java,v 1.9 2007-07-25 05:08:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -48,6 +52,7 @@ public class State {
     private Parameters frameworkParameters = null;
     private final ServletRequest request;
     private final State previousState;
+    private Object originalLocalizationContext = null;
     
     public State(ServletRequest r) {
         request = r;
@@ -92,6 +97,7 @@ public class State {
         renderer = null;
         processor = null;
         frameworkParameters = null;
+        request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", originalLocalizationContext);
     }
 
     /**
@@ -116,11 +122,23 @@ public class State {
         return renderer != null ? renderer.getBlock() :
             (processor != null ? processor.getBlock() : null);
     }
+    protected void localizeContext() {
+        String b = getBlock().getComponent().getBundle();
+        if (b != null) {
+            Locale locale = (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request");
+            if (locale == null) org.mmbase.module.core.MMBase.getMMBase().getLocale();
+            originalLocalizationContext = request.getAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request");
+            request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request",
+                                 new LocalizationContext(ResourceBundle.getBundle(b, locale), Locale.getDefault()));
+        }
+    }
+
     protected int start(Parameters frameworkParameters) {
         if (count == 0) {
             throw new IllegalStateException("State " + this + " was already marked for end.");
         }
         this.frameworkParameters = frameworkParameters;
+        log.info("Start rendering for " + frameworkParameters);
         if (processor == null) {
             id = previousState == null ? "" + count : previousState.getId() + '.' + count;
             return count++;
@@ -148,6 +166,8 @@ public class State {
 
         int i = start(frameworkParameters);
         renderer = rend;
+        
+        localizeContext();
 
         String a = request.getParameter(Framework.PARAMETER_ACTION.getName());
         log.debug("Action " + a);
@@ -163,6 +183,7 @@ public class State {
         if (renderer != null) throw new IllegalStateException();
         start(frameworkParameters);
         this.processor = processor;
+        localizeContext();
     }
     
     public Renderer getRenderer() {

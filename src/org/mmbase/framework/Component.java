@@ -16,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.11 2007-06-18 21:34:14 michiel Exp $
+ * @version $Id: Component.java,v 1.12 2007-07-25 05:08:40 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -26,10 +26,6 @@ public interface Component {
      */
     String getName();
 
-    /**
-     * The name of the bundle to use for messages
-     */
-    ResourceBundle getBundle();
 
     /**
      * A component can have a version number.
@@ -67,5 +63,18 @@ public interface Component {
      * Gets the one block that is the 'default' block of this component
      */
     Block getDefaultBlock();
+
+
+    /**
+     * A resource bundle associated with i18n messages for this component.
+     */
+    String getBundle();
+
+    /**
+     * An unmodifiable collection of all blocks associated with the component
+     */
+    Collection<Setting<?>> getSettings();
+
+    Setting<?> getSetting(String name);
 
 }
