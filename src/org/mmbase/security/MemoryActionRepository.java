@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.1 2007-07-25 06:47:11 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.2 2007-07-25 07:09:41 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
@@ -25,11 +25,11 @@ public class MemoryActionRepository extends ActionRepository {
     public void load() {
     }
 
-    public void addAction(Action a) {
+    public void add(Action a) {
         store.put(a.getName(), a);
     }
 
-    public Action getAction(String name) {
+    public Action get(String name) {
         return store.get(name);
     }
 }
