@@ -263,6 +263,7 @@
      <mm:setfield name="wizard">config/thema_plot_kaart/wizard</mm:setfield>
      <mm:setfield name="nodepath">thema_plot_kaart</mm:setfield>
      <mm:setfield name="fields">naam,type_gebied</mm:setfield>
+     <mm:setfield name="constraints">[hidden]=0</mm:field>
      <mm:setfield name="m_distinct">1</mm:setfield>
      <mm:setfield name="orderby">naam</mm:setfield>
      <mm:setfield name="directions">up</mm:setfield>
