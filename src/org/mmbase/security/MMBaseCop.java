@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.23 2007-07-25 06:47:11 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.24 2007-07-25 07:32:01 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -58,6 +58,9 @@ public class MMBaseCop extends SecurityManager  {
         newConfig.load();
         // if no exception happed, the configuration can be replaced
         config.watcher.clear();
+        for (Action a : config.getActionRepository().get()) {
+            newConfig.getActionRepository().add(a);
+        }
         config = newConfig;
         log.info("Done changing security configuration");
     }

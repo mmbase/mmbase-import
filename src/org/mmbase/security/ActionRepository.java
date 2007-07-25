@@ -8,10 +8,11 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.security;
+import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.2 2007-07-25 07:09:41 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.3 2007-07-25 07:32:01 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
@@ -19,4 +20,6 @@ public abstract class ActionRepository extends Configurable {
     public abstract void add(Action a);
 
     public abstract Action get(String name);
+
+    public abstract Collection<Action> get();
 }
