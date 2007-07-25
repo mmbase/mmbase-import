@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.26 2007-01-17 20:30:12 michiel Exp $
+ * @version $Id: Authorization.java,v 1.27 2007-07-25 06:47:11 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
@@ -129,6 +129,26 @@ public abstract class Authorization extends Configurable {
     }
 
     /**
+     * Checks whether user may do a certain action.
+     * Default implemetation simply uses default ActionChecker of the Action itself. Extensions may
+     * provide configuration, e.g. make links between groups and/or user object with Action objects
+     * in the MMBase cloud.
+     * @since MMBase-1.9
+     */
+    public boolean check(UserContext user, Action ac) {
+        return ac.getDefault().check(user, ac);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public final void verify(UserContext user, Action ac) {
+        if (!check(user, ac)) {
+            throw new SecurityException("Action '" + ac + " was NOT permitted to " + user.getIdentifier());
+        }
+    }
+
+
+    /**
      *	This method could be overrided by an extending class.
      *	This method returns the context of a specific node.
      *	@param  user 	The UserContext, containing the information about the user.
@@ -204,6 +224,7 @@ public abstract class Authorization extends Configurable {
     }
 
 
+
     /**
      * Constant which can be used as a result for the check query function. It means: 'No extra
      * contraints to be added, and the query's result will have to be postprocessed for security.
@@ -222,6 +243,7 @@ public abstract class Authorization extends Configurable {
      */
     public static final QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
 
+   
 
     /**
      * Defines the result of a security check on a query. Such a result has two members: A

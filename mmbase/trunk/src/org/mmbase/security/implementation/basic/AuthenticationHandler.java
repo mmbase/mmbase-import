@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.12 2006-11-24 15:15:47 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.13 2007-07-25 06:47:11 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
@@ -50,20 +50,26 @@ public class AuthenticationHandler extends Authentication {
     private Map<String, Rank> moduleRanks    = new HashMap<String, Rank>();
 
     protected void load() {
-        log.debug("using: '" + configFile + "' as config file for authentication");
-        XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath(), getClass());
+        XMLBasicReader reader;
+        try {
+            org.xml.sax.InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
+            log.debug("using: '" + configResource + "' as config file for authentication");
+            reader = new XMLBasicReader(in, getClass());
+        } catch (Exception e) {
+            throw new SecurityException(e);
+        }
+
+
 
         log.debug("Trying to load all loginmodules:");
         for (Element modTag: reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule")) {
             String modName = reader.getElementAttributeValue(modTag, "name");
             if (modName.equals("")) {
-                log.error("module attribute name was not defined in :" + configFile);
-                throw new SecurityException("module attribute name was not defined in :" + configFile);
+                throw new SecurityException("module attribute name was not defined in :" + configResource);
             }
             String modClass = reader.getElementAttributeValue(modTag, "class");
             if (modClass.equals("")) {
-                log.error("module attribute class was not defined in :" + configFile + " for module: " + modName);
-                throw new SecurityException("module attribute class was not defined in :" + configFile + " for module: " + modName);
+                throw new SecurityException("module attribute class was not defined in :" + configResource + " for module: " + modName);
             }
             String modRankString = reader.getElementAttributeValue(modTag, "rank");
             Rank modRank;
@@ -93,7 +99,7 @@ public class AuthenticationHandler extends Authentication {
                 properties.put(propName, propValue);
                 log.debug("\tadding key : " + propName + " with value : " + propValue);
             }
-            properties.put("_parentFile", configFile);
+            properties.put("_parentFile", configResource);
             // if module's configuration uses filenames, they probably want to be relative to this one.
             module.load(properties);
             modules.put(modName, module);

@@ -16,9 +16,11 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class is the main class of the security system. It loads the authentication
  * and authorization classes if needed, and they can be requested from this manager.
+ *
+ *
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.22 2005-09-16 13:14:48 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.23 2007-07-25 06:47:11 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -79,6 +81,13 @@ public class MMBaseCop extends SecurityManager  {
      */
     public Authorization getAuthorization() {
         return getConfig().getAuthorization();
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public ActionRepository getActionRepository() {
+        return getConfig().getActionRepository();
     }
 
     /**
