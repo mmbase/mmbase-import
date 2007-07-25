@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.12 2006-09-07 13:05:05 michiel Exp $
+ * @version $Id: Configurable.java,v 1.13 2007-07-25 06:47:11 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -38,11 +38,6 @@ public abstract class Configurable {
      */
     protected String configResource; // relative to securityLoader
 
-
-    /**
-     * @deprecated
-     */
-    protected java.io.File configFile;
 
 
     /**
@@ -76,13 +71,6 @@ public abstract class Configurable {
                 configResource = configPath;
             }
 
-
-            java.util.List<java.io.File> files = configWatcher.getResourceLoader().getFiles(configResource);
-
-            if (files.size() > 0) {
-                configFile = files.get(0);
-            }
-
             configWatcher.add(configResource);
         }
 
@@ -93,7 +81,7 @@ public abstract class Configurable {
     /**
      * This method should be overrided by an extending class.  It should further initialize the
      * class. It can optionally retrieve settings from the general security configuration file
-     * (available as the 'configFile' member). Security implementations with complicated
+     * (available as the 'configResource' member). Security implementations with complicated
      * configuration would typically retrieve a path to their own configuration file only.
      */
     protected abstract void load();
