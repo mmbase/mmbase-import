@@ -6,7 +6,12 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="yes" />
-  <di:copybook><mm:relatednodes path="madetests,tests" id="madetests" element="tests"/></di:copybook>
+  <di:copybook>
+    <mm:relatednodescontainer path="madetests,tests"  element="tests">
+      <mm:constraint field="madetests.score" operator="ge" value="0" />
+      <mm:relatednodes id="madetests" />
+    </mm:relatednodescontainer>
+  </di:copybook>
 
   <mm:import externid="the_only_node_to_show"/>
   <mm:present referid="the_only_node_to_show">
@@ -20,6 +25,8 @@
 
   <mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" /></mm:import>
   <mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" /></mm:import>
+  <!-- TODO some learnblocks/learnobjects may not be visible because the are not ready for elearning (start en stop mmevents) -->
+  <!-- TODO pre and postassessment are showed in the tree -->
 
   <div>
     <mm:node number="$education" notfound="skip">
