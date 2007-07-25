@@ -40,11 +40,11 @@ function resize() {
     } else {
         var frameElem = document.getElementById("content");
         frameElem.style.overflow = "";
-        var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
+        var frameContentHeight = frameElem.contentWindow.parent.document.body.scrollHeight;
         frameElem.style.height = frameContentHeight + 80;
         frameElem.height = frameContentHeight + 80;
         frameElem.style.overflow = "hidden";
-        alert("set height to " + (frameContentHeight + 80));
+        //alert("set height to " + (frameContentHeight + 80));
     }
 }
 
@@ -62,7 +62,7 @@ function nextContent() {
         if ( contentnumber[count] == currentnumber ) {
             if ( count < contentnumber.length ) {
                 if ("tests" == contenttype[count]) {
-                    alert('<di:translate key="education.testalert" escape="js-single-quotes" />');
+                    alert('<di:translate key="education.testalert" escape="js-single-quotes,java" />');
                     return;
                 }
                 var opentype = contenttype[count+1];
@@ -79,7 +79,7 @@ function previousContent() {
         if ( contentnumber[count] == currentnumber ) {
             if ( count > 0 ) {
                 if ("tests" == contenttype[count]) {
-                    alert('<di:translate key="education.testalert" escape="js-single-quotes" />');
+                    alert('<di:translate key="education.testalert" escape="js-single-quotes,java" />');
                     return;
                 }
                 var opentype = contenttype[count-1];
@@ -91,13 +91,16 @@ function previousContent() {
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
+function invalidateCurrentFrame() {
+    usedFrames[document.href_frame] = null;
+}
 
 function requestContent(href) {
    var content = usedFrames[href];
    if (content == null) {
        var xmlhttp = new XMLHttpRequest();
        xmlhttp.open("GET", href, true);
-       xmlhttp.onreadystatechange =   function()  {
+       xmlhttp.onreadystatechange = function()  {
            if (xmlhttp.readyState == 4) {
                try {
                     var contentEl = document.getElementById('contentFrame');
@@ -132,6 +135,7 @@ function requestContent(href) {
        }
        document.href_frame = href;
    }   
+   scrollToTop();
 }
 
 function postContent(href, form) {
@@ -140,11 +144,15 @@ function postContent(href, form) {
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xmlhttp.onreadystatechange =  function()  {
         if (xmlhttp.readyState == 4) {
-            var contentEl = document.getElementById('contentFrame');
-            Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
-            usedFrames[document.href_frame] = null;
-            document.href_frame = href;
-            usedFrames[href] = contentEl.childNodes;            
+            if (xmlhttp.status == 200) {
+                var contentEl = document.getElementById('contentFrame');
+                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+                usedFrames[document.href_frame] = null;
+                document.href_frame = href;
+                usedFrames[href] = contentEl.childNodes;            
+            } else {
+                alert(xmlhttp.status);
+            }
         }
     };
     var content = '';
@@ -162,6 +170,7 @@ function postContent(href, form) {
         sep = '&';
     }
     xmlhttp.send(content);
+    scrollToTop();
 }
 
 function openContent( type, number ) {
@@ -229,12 +238,12 @@ function openClose(div, img) {
             } else {
                 if (! may_open_future) {
                     if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
-                        alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                        alert('<di:translate key="education.future" escape="js-single-quotes,java" />');
                         return false;
                     }
                 }
                 if (/\bblocked\b/.test(realimg.parentNode.className)) {
-                    alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                    alert('<di:translate key="education.future" escape="js-single-quotes,java" />');
                     return false;
                 }
                 openDivs[div] = img;
@@ -256,12 +265,12 @@ function openOnly(div, img) {
         try {
             if (! may_open_future) {
                 if (/\bnon_completed\b/.test(realimg.parentNode.className)) {
-                    alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                    alert('<di:translate key="education.future" escape="js-single-quotes,java" />');
                     return false;
                 }
             }
             if (/\bblocked\b/.test(realimg.parentNode.className)) {
-                alert('<di:translate key="education.future" escape="js-single-quotes" />');
+                alert('<di:translate key="education.future" escape="js-single-quotes,java" />');
                 return false;
             }
             openDivs[div] = img;
@@ -364,11 +373,13 @@ function removeButtons() {
 </mm:treefile>
 
 function scrollToTop() {
-    if (window.parent.document.documentElement && window.parent.document.documentElement.scrollTop) {
-        window.parent.document.documentElement.scrollTop = 0;
+    var fromElement =  document.getElementById("rows");
+    var scroll = fromElement.offsetTop;
+    if (document.documentElement && document.documentElement.scrollTop) {
+        document.documentElement.scrollTop = scroll;
     }
-    if (window.parent.document.body && window.parent.document.body.scrollTop) {
-        window.parent.document.body.scrollTop = 0;
+    if (document.body && document.body.scrollTop) {
+        document.body.scrollTop = scroll;
     }
 }
 

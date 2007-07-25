@@ -4,6 +4,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
+  <jsp:output omit-xml-declaration="yes" />
   <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text"/>
   <br/>
   <mm:relatednodescontainer type="feedback">
