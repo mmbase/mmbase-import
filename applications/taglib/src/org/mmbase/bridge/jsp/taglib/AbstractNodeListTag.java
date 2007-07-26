@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.79 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.80 2007-07-26 20:54:32 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -220,7 +220,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (o instanceof Collection) {
                 o  = new CollectionNodeList((Collection) o, getCloudVar());
             } else {
-                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList (or some other Collection of Nodes), but" + (o == null ? "NULL" : "a " + o.getClass()));
+                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList (or some other Collection of Nodes), but " + (o == null ? "NULL" : "a " + o.getClass()));
             }
             if (orderby != Attribute.NULL) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
