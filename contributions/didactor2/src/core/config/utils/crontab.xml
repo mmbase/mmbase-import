@@ -21,5 +21,7 @@
     -->
     <property name="CompetenceUpdater">*/30 0-24 * * *|nl.didactor.component.competence.cron.CompetenceUpdater||</property>
     <property name="Email Notifications">*/1 0-24 * * *|nl.didactor.component.assessment.email_notification.cron.Sender|| </property>
+
+    <property name="Classonline">*/10 * * * *|nl.didactor.core.a|| </property>
   </properties>
 </util>
