@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.29 2006-10-24 13:00:11 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.30 2007-07-26 20:39:47 michiel Exp $
  */
 public interface CloudContext {
 
@@ -191,5 +191,5 @@ public interface CloudContext {
     /**
      * @since MMBase-1.9
      */
-    //public org.mmbase.framework.Framework getFramework();
+    public org.mmbase.framework.Framework getFramework();
  }
