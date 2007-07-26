@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.2 2007-07-20 09:52:21 michiel Exp $
+ * @version $Id: Functions.java,v 1.3 2007-07-26 14:41:57 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -34,26 +34,6 @@ public class Functions {
         return result;
     }
 
-    /**
-     * Used on nodes of type 'tests'
-     */
-    public List<Node> questions() {
-        int questionType = node.getIntValue("questionamount");
-        NodeManager questionsManager = node.getCloud().getNodeManager("questions");
-        NodeQuery query = Queries.createRelatedNodesQuery(node, questionsManager, "posrel", "destination");        
-        if (questionType < 1) {
-            Step posrel = (Step) query.getSteps().get(1);
-            Step questions = (Step) query.getSteps().get(2);            
-            query.addSortOrder(query.createStepField(posrel, "pos"), SortOrder.ORDER_ASCENDING, false);
-            query.addSortOrder(query.createStepField(questions, "title"), SortOrder.ORDER_ASCENDING, false);
-            return questionsManager.getList(query);
-        } else {
-            List<Node> result = new ArrayList<Node>();
-            result.addAll(questionsManager.getList(query));
-            Collections.shuffle(result);
-            return result;
-        }
-    }
 
     /**
      * Used on nodes of type 'tests'
