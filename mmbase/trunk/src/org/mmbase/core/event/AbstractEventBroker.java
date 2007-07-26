@@ -24,7 +24,7 @@ public abstract class AbstractEventBroker extends EventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    protected Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
+    private Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
 
     protected Collection<EventListener> getListeners() {
         return listeners;

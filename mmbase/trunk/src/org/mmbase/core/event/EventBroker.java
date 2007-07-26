@@ -77,11 +77,15 @@ public abstract class EventBroker {
     /**
      * @since MMBase-1.9
      */
-    protected abstract Collection<EventListener> getListeners();
+    protected abstract Collection<EventListener> backing();
+
+    public Collection<EventListener> getListeners() {
+        return Collections.unmodifiableCollection(backing());
+    }
 
 
     public void notifyForEvent(Event event) {
-        for (EventListener listener : getListeners()) {
+        for (EventListener listener : backing()) {
             assert canBrokerForListener(listener);
             notifyEventListener(event, listener);
         }
