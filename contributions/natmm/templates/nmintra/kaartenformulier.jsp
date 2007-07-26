@@ -417,7 +417,7 @@ function validationMessage() {
 		return false;		
 		}
 		// range checks
-		if ((linksX <0) || (linksX >300000) || (rechtsX <0) || (rechtsX >300000) || (linksY <0) || (linksY >650000) || (rechtsY <0) || (rechtsY >650000) ) {
+		if ((linksX <0) || (linksX >300000) || (rechtsX <0) || (rechtsX >300000) || (linksY <300000) || (linksY >650000) || (rechtsY <300000) || (rechtsY >650000) ) {
 		alert("De coördinaten moeten aan de volgende voorwaarden voldoen: 0 <= X <= 300.000 en 300.000 <= Y <= 650.000.");
 		return false;	
 		}
