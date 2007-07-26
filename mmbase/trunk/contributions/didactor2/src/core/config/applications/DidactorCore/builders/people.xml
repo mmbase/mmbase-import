@@ -303,11 +303,26 @@
         <guiname xml:lang="ro">Parola</guiname>
         <guiname xml:lang="eo">Pasvorto</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
+        <minLength value="5" enforce="onchange" />
         <maxLength value="255" />
         <password value="true" />
       </datatype>
+    </field>
+    <field name="confirmpassword" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Bevestig wachtwoord</guiname>
+        <guiname xml:lang="eo">Konfirmu pasvorton</guiname>
+        <guiname xml:lang="en">Confirm Password</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="confirmpassword" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="description">
