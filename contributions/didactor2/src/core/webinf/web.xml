@@ -98,10 +98,18 @@
   <!-- mapping for image-requests -->
   <servlet-mapping>
     <servlet-name>images</servlet-name>
+    <url-pattern>/images/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>images</servlet-name>
     <url-pattern>/img.db</url-pattern>
   </servlet-mapping>
 
   <!-- mapping for attachment requests -->
+  <servlet-mapping>
+    <servlet-name>attachments</servlet-name>
+    <url-pattern>/attachments/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>attachments</servlet-name>
     <url-pattern>/attachment.db/*</url-pattern>
