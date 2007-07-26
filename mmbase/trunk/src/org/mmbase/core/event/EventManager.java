@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: EventManager.java,v 1.19 2007-07-26 07:33:45 michiel Exp $
  */
 public class EventManager {
 
@@ -96,9 +96,7 @@ public class EventManager {
     protected void configure(String resource) {
         log.service("Configuring the event manager");
         eventBrokers.clear();
-        Iterator<URL> i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
-        while (i.hasNext()) {
-            URL url = i.next();
+        for (URL url : ResourceLoader.getConfigurationRoot().getResourceList(resource)) {
             try {
                 if (url.openConnection().getDoInput()) {
 
