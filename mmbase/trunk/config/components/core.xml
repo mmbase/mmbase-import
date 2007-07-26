@@ -9,6 +9,18 @@
                         http://www.mmbase.org/xmlns/component.xsd">
 
   <description xml:lang="en">MMBase core components</description>
+  <description xml:lang="nl">MMBase core componenten</description>
+
+  <bundle name="org.mmbase.framework.resources.core" />
+
+  <setting name="testsetting">
+    <description xml:lang="en">Just to test settings</description>
+    <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="2" />
+      <minInclusive value="1" />
+      <maxInclusive value="5" />
+    </datatype>
+  </setting>
 
   <!-- about etc. -->
   <block name="welcome" 
@@ -22,6 +34,7 @@
          classification="mmbase.about"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase licence</description>
+    <description xml:lang="nl">Laat de licentie van MMBase zien</description>
     <body jsp="mpl-1.0.jspx" />
   </block>
   
@@ -205,7 +218,9 @@
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
-    <body jsp="/mmbase/events/index.jspx">
+    <body jsp="events.jspx">
+      <param name="id" type="String" />      
+      <param name="type" type="Integer" />
     </body>
   </block>
 
@@ -262,7 +277,9 @@
          classification="mmbase.examples"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase example pages</description>
-    <body jsp="/mmbase/admin/mmexamples.div.jsp" />
+    <body jsp="/mmbase/admin/mmexamples.div.jsp">
+    </body>
   </block>
+
 
 </component>
