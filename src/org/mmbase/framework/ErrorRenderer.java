@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * present the error.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.1 2007-06-06 08:51:08 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.2 2007-07-26 23:35:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class ErrorRenderer extends AbstractRenderer {
@@ -48,7 +48,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
                 Locale  locale = blockParameters.get(Parameter.LOCALE);
                 w.write("<div id=\"" + request.getAttribute("componentId") + "\"");
-                w.write(" class=\"error mm_c_" + getBlock().getComponent().getName() + " mm_c_b_" + getBlock().getName() + " " + request.getAttribute("className") + "\">");            
+                w.write(" class=\"error mm_c_" + getBlock().getComponent().getName() + " mm_c_b_" + getBlock().getName() + " " + request.getAttribute("className") + "\">");
                 w.write("<h1>" + statusCode + ": " + url + "</h1>");
                 w.write("<p>" + message + "</p>");
                 w.write("</div>");
@@ -60,6 +60,13 @@ public class ErrorRenderer extends AbstractRenderer {
     }
     public String toString() {
         return "ERROR " + statusCode + " " + message;
+    }
+    public java.net.URI getUri() {
+        try {
+            return new java.net.URL(url).toURI();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

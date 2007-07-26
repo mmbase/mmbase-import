@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * request and response.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.7 2007-06-06 08:51:08 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.8 2007-07-26 23:35:50 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -47,5 +47,9 @@ abstract public class AbstractRenderer implements Renderer {
 
     protected Framework getFramework() {
         return MMBase.getMMBase().getFramework();
+    }
+
+    public java.net.URI getUri() {
+        return null;
     }
 }
