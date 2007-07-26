@@ -10,11 +10,19 @@ application record from version control table in the mmeditors and restart Tomca
 the application with component record.
 E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
 and restart Tomcat.
+
+
 ----
 
 2007
   -   emailsenderdomain setting was removed from web.xml
       Is now a setting in sendmail-module (can be overridden in server.xml like so).
+
+  - filemanager settings were removed from web.xml
+    Files (files and scorm) are now served via FileServlet (which can also server from outside the
+    webapp, namely the mmbase datadir).
+    Map the fileservlet to the old setting for backwards compatibility.
+    FileServlet _cannot_ execute JSPs.
 	
 
    To upgrade mmbob:
