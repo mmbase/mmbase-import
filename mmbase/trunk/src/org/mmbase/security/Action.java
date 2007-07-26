@@ -9,21 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.util.LocalizedString;
+
 /**
  * An action is something which an authenticated user may want to do, but which is not directly
  * associated with MMBase nodes. Actions are e.g. provided by components (and can be added to
  * component XML's).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.2 2007-07-25 07:17:40 michiel Exp $
+ * @version $Id: Action.java,v 1.3 2007-07-26 21:02:46 michiel Exp $
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
     protected final String name;
+    protected final LocalizedString description;
     protected final ActionChecker defaultChecker;
     public Action(String n, ActionChecker c) {
         name = n;
         defaultChecker = c;
+        description = new LocalizedString(name);
     }
     /**
      * Every action needs to do a proposal on how to check it. The security implementation may
@@ -37,5 +41,7 @@ public class Action implements java.io.Serializable {
     public String getName() {
         return name;
     }
-    
+    public LocalizedString getDescription() {
+        return description;
+    }
 }
