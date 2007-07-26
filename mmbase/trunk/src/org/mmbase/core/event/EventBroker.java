@@ -33,6 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
+ * @version $Id: EventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
  */
 public abstract class EventBroker {
 
@@ -75,10 +76,13 @@ public abstract class EventBroker {
     public abstract void removeListener(EventListener listener);
 
     /**
-     * @since MMBase-1.9
+     * @since MMBase-1.8.5
      */
     protected abstract Collection<EventListener> backing();
 
+    /**
+     * @since MMBase-1.8.5
+     */
     public Collection<EventListener> getListeners() {
         return Collections.unmodifiableCollection(backing());
     }
