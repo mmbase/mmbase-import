@@ -96,9 +96,7 @@ public abstract class AbstractEventBroker {
     }
 
     public void notifyForEvent(Event event) {
-        if(log.isDebugEnabled())log.debug("will notify " + listeners.size() + " listeners");
-        for (Object element : listeners) {
-            EventListener listener = (EventListener) element;
+        for (EventListener listener : listeners) {
             try {
                 notifyEventListener(event, listener);
             } catch (ClassCastException e) {
@@ -114,13 +112,10 @@ public abstract class AbstractEventBroker {
 
     public boolean equals(Object o) {
         //  we can only have one instance so this will do to prevent adding more instances of an envent broker
-        return this.getClass().getName().equals(o.getClass().getName());
+        return o != null && this.getClass().equals(o.getClass());
     }
 
     public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, toString());
-        result = HashCodeUtil.hashCode(result, this.getClass().getName());
-        return result;
+        return this.getClass().hashCode();
     }
 }
