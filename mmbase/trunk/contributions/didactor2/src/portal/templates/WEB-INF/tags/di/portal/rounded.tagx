@@ -8,7 +8,7 @@
   <div class="${styleclass}">
     <table class="rounded" cellspacing="0">
       <tr class="top">
-        <td class="left"  style="background-color: yellow;">
+        <td class="left">
           <img src="${mm:url('style/top-left.gif', pageContext)}" alt="" 
                width="15" height="15" class="corner" 
                />
