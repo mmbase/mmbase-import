@@ -347,6 +347,10 @@
     <name>copybook</name>
     <path>/META-INF/tags/di/core/copybook.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>email</name>
+    <path>/META-INF/tags/di/core/email.tagx</path>
+  </tag-file>
 
   <function>
     <description>
