@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.55 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicCloudContext.java,v 1.56 2007-07-26 21:28:42 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -216,6 +216,17 @@ public class BasicCloudContext implements CloudContext {
             throw new NotFoundException("MMBase not yet initialized");
         } else {
             return cop.getAuthentication();
+        }
+    }
+
+    public ActionRepository getActionRepository() throws NotFoundException {
+        if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
+        // checkExists(cloudName);
+        MMBaseCop cop = mmb.getMMBaseCop();
+        if (cop == null) {
+            throw new NotFoundException("MMBase not yet initialized");
+        } else {
+            return cop.getActionRepository();
         }
     }
 
