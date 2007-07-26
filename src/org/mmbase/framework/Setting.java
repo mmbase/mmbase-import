@@ -17,9 +17,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Representation of component related settings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.1 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: Setting.java,v 1.2 2007-07-26 21:03:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {

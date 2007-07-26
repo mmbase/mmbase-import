@@ -51,6 +51,7 @@
   <xsd:element name="action">
     <xsd:complexType>
       <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:Name" />

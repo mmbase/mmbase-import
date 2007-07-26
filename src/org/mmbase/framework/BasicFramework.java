@@ -34,7 +34,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * conflicting block parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.57 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.58 2007-07-26 21:03:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -261,7 +261,6 @@ public class BasicFramework implements Framework {
             req.getSession(true).setAttribute(getKey(setting), value);
             return ret;
         } else {
-            
             Cloud cloud = parameters.get(Parameter.CLOUD);
             if (cloud.getUser().getRank() == org.mmbase.security.Rank.ADMIN) {
                 return (C) settingValues.put(setting, value);
