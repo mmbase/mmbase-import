@@ -19,14 +19,15 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
+ * @version $Id: AbstractEventBroker.java,v 1.19 2007-07-26 11:45:54 michiel Exp $
  */
 public abstract class AbstractEventBroker extends EventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    private Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
+    private final Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
 
-    protected Collection<EventListener> getListeners() {
+    protected Collection<EventListener> backing() {
         return listeners;
     }
 
