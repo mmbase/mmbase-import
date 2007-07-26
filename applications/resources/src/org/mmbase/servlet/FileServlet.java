@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * Straight-forward filter which can serve files from one directory (the directory 'files' in the
  * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.5 2007-07-14 14:03:40 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.6 2007-07-26 14:38:26 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -53,8 +53,7 @@ public class FileServlet extends BridgeServlet {
             if (log == null) {
                 log = Logging.getLoggerInstance(FileServlet.class);
             }
-            if (mmbase == null) throw new RuntimeException("MMBase is null");
-            String dataDir = mmbase.getInitParameter("datadir");
+            String dataDir = MMBase.getMMBase().getInitParameter("datadir");
             if (dataDir != null && ! "".equals(dataDir)) {
                 File data;
                 if (dataDir.startsWith(".")) {
@@ -185,7 +184,7 @@ public class FileServlet extends BridgeServlet {
             result.append("<body class='filelisting'>");
             result.append("<h1>Directory Listing For " + pathInfo + "</h1>");
             result.append("<table>");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:m");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filename'><a href='.'>./</a></td></tr>");
             if (! pathInfo.equals("/")) {
                 result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filename'><a href='..'>../</a></td></tr>");
