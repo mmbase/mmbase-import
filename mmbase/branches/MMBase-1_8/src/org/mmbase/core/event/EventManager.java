@@ -1,6 +1,4 @@
 /*
- * Created on 30-sep-2005
- *
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -29,7 +27,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.12 2006-06-20 21:23:15 michiel Exp $
+ * @version $Id: EventManager.java,v 1.12.2.1 2007-07-26 12:41:37 michiel Exp $
  */
 public class EventManager {
 
@@ -63,11 +61,11 @@ public class EventManager {
         return eventManager;
     }
 
-    private static AbstractEventBroker findInstance(String className) {
+    private static EventBroker findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
             Class aClass = Class.forName(className);
-            return (AbstractEventBroker)  aClass.newInstance();
+            return (EventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
             log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
@@ -75,7 +73,7 @@ public class EventManager {
         } catch (IllegalAccessException e) {
             log.error("the constructor of " + className + " is not accessible", e);
         } catch (ClassCastException e) {
-            log.error("" + className + " is not a AbstratEventBroker");
+            log.error("" + className + " is not a EventBroker");
         }
         return null;
     }
@@ -110,7 +108,7 @@ public class EventManager {
                     while (e.hasNext()) {
                         Element element = (Element) e.next();
                         String className = element.getAttribute("class");
-                        AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
+                        EventBroker broker = (EventBroker) findInstance(className);
                         if (broker != null) {
                             if (log.isDebugEnabled()) {
                                 log.debug("adding event broker: " + broker);
@@ -131,11 +129,20 @@ public class EventManager {
             return;
         }
     }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+     
+    public Collection getBrokers() {
+        return Collections.unmodifiableSet(eventBrokers);
+    }
+
     /**
      * add an event broker for a specific type of event
      * @param broker
      */
-    public void addEventBroker(AbstractEventBroker broker) {
+    public void addEventBroker(EventBroker broker) {
         //we want only one instance of each broker
         if(! eventBrokers.contains(broker)){
             if (log.isDebugEnabled()) {
@@ -153,7 +160,7 @@ public class EventManager {
      * remove a broker for a specific type of event
      * @param broker
      */
-    public void removeEventBroker(AbstractEventBroker broker) {
+    public void removeEventBroker(EventBroker broker) {
         eventBrokers.remove(broker);
     }
 
@@ -163,7 +170,7 @@ public class EventManager {
     public void addEventListener(EventListener listener) {
         BrokerIterator i =  findBrokers(listener);
         while (i.hasNext()) {
-            AbstractEventBroker broker = i.nextBroker();
+            EventBroker broker = i.nextBroker();
             if (broker.addListener(listener)) {
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
@@ -190,7 +197,7 @@ public class EventManager {
      * This method will propagate the given event to all the aproprate listeners. what makes a
      * listener apropriate is determined by it's type (class) and by possible constraint properties
      * (if the handling broker supports those
-     * @see AbstractEventBroker
+     * @see EventBroker
      * @param event
      */
     public void propagateEvent(Event event) {
@@ -199,7 +206,7 @@ public class EventManager {
         }
         long startTime = System.currentTimeMillis();
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
-            AbstractEventBroker broker = (AbstractEventBroker) i.next();
+            EventBroker broker = (EventBroker) i.next();
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
@@ -248,7 +255,7 @@ public class EventManager {
     }
 
     private static class BrokerIterator implements Iterator {
-        AbstractEventBroker next;
+        EventBroker next;
         final Iterator i;
         final EventListener listener;
 
@@ -266,15 +273,15 @@ public class EventManager {
         public boolean hasNext() {
             return next != null;
         }
-        public AbstractEventBroker nextBroker() {
+        public EventBroker nextBroker() {
             if (next == null) throw new NoSuchElementException();
-            AbstractEventBroker n = next;
+            EventBroker n = next;
             findNext();
             return n;
         }
         protected void findNext() {
             while(i.hasNext()) {
-                AbstractEventBroker broker = (AbstractEventBroker) i.next();
+                EventBroker broker = (EventBroker) i.next();
                 if (broker.canBrokerForListener(listener)) {
                     if (log.isDebugEnabled()) {
                         log.debug("broker " + broker + " can broker for eventlistener " + listener.getClass().getName());
