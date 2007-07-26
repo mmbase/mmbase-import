@@ -35,10 +35,10 @@
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="65535" key="false" notnull="true">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="65535" />
+      </datatype>
     </field>
 
     <field name="requiredscore">
@@ -117,6 +117,7 @@
         <guiname xml:lang="en">Questions per page</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="-1" />
         <required value="true" />
         <enumeration>
           <entry value="-1" xml:lang="nl" display="alles op 1 pagina" />
@@ -183,58 +184,16 @@
     </field>
 
     <field name="always_online">
-      <descriptions>
-        <description xml:lang="nl">Altijd online</description>
-        <description xml:lang="en">Always online</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="nl">Altijd online</guiname>
-        <guiname xml:lang="en">Always online</guiname>
-      </gui>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="false" />
       </datatype>
-    </field>
-
-    <field name="online_date">
-      <descriptions>
-        <description xml:lang="en">Online Date</description>
-        <description xml:lang="nl">Online Tijden</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Online Date</guiname>
-        <guiname xml:lang="nl">Online Tijden</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <list>10</list>
-        </positions>
-      </editor>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-    </field>
-
-    <field name="offline_date">
-      <descriptions>
-        <description xml:lang="en">Offline Date</description>
-        <description xml:lang="nl">Offline Tijden</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Offline Date</guiname>
-        <guiname xml:lang="nl">Offline Tijden</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <list>11</list>
-        </positions>
-      </editor>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
 
   <functionlist>
     <function key="questions">
-      <class>nl.didactor.education.Functions</class>
+      <class>nl.didactor.education.functions.Questions</class>
     </function>
     <function key="online">
       <class>nl.didactor.education.Functions</class>
