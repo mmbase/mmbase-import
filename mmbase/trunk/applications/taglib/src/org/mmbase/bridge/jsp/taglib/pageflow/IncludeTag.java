@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
+import org.mmbase.bridge.jsp.taglib.util.Debug;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.78 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.79 2007-07-26 23:15:37 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -42,10 +43,6 @@ public class IncludeTag extends UrlTag {
     private static  final Logger log     = Logging.getLoggerInstance(IncludeTag.class);
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
-    private static final int DEBUG_NONE = 0;
-    private static final int DEBUG_HTML = 1;
-    private static final int DEBUG_CSS  = 2;
-    private static final int DEBUG_XML  = 3;
 
     public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
     public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
@@ -191,7 +188,7 @@ public class IncludeTag extends UrlTag {
 
                     }
                     log.debug("Using " + encoding);
-                    result = new String(allBytes, encoding) + debugEnd(absoluteUrl);
+                    result = new String(allBytes, encoding) + getDebug().end(getThisName(), absoluteUrl);
 
                 } else {
                     if (responseCode >= 500) {
@@ -251,7 +248,8 @@ public class IncludeTag extends UrlTag {
             }
             break;
         }
-        helper.setValue(debugStart(url) + output + debugEnd(url));
+        Debug debug = getDebug();
+        helper.setValue(debug.start(getThisName(), url) + output + debug.end(getThisName(), url));
     }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
@@ -513,23 +511,12 @@ public class IncludeTag extends UrlTag {
         debugType = getAttribute(p);
     }
 
-    protected int getDebug() throws JspTagException {
+    protected Debug getDebug() throws JspTagException {
 
-        if (debugType == Attribute.NULL) return DEBUG_NONE;
-
+        if (debugType == Attribute.NULL) return Debug.NONE;
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none") || dtype.length() == 0) {
-            return  DEBUG_NONE; // also implement the default, then people can use a variable
-                               // to select this property in their jsp pages.
-        } else if (dtype.equals("html")) {
-            return DEBUG_HTML;
-        } else if (dtype.equals("xml")) {
-            return DEBUG_XML;
-        } else if (dtype.equals("css")) {
-            return DEBUG_CSS;
-        } else {
-            throw new JspTagException("Unknow value for debug attribute " + dtype);
-        }
+        if (dtype.length() == 0) return Debug.NONE;
+        return Debug.valueOf(dtype);
     }
 
     /**
@@ -540,35 +527,7 @@ public class IncludeTag extends UrlTag {
         return clazz.substring(clazz.lastIndexOf(".") + 1);
     }
 
-    /**
-     * Write the comment that is just above the include page.
-     */
-    private String debugStart(String url) throws JspTagException {
-        switch(getDebug()) {
-        case DEBUG_NONE: return "";
-        case DEBUG_HTML:
-            return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
-        case DEBUG_XML:
-            return "<!-- " + getThisName() + " page = '" + url + "' -->";
-        case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
-        default: return "";
-        }
-    }
 
-    /**
-     * Write the comment that is just below the include page.
-     */
-    private String debugEnd(String url) throws JspTagException {
-        switch(getDebug()) {
-        case DEBUG_NONE: return "";
-        case DEBUG_HTML:
-            return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
-        case DEBUG_XML:
-            return "<!-- END " + getThisName() + " page = '" + url + "' -->";
-        case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
-        default: return "";
-        }
-    }
     private static class IncludeWrapper extends GenericResponseWrapper {
         int includeStatus = 200;
         public IncludeWrapper(HttpServletResponse resp) {
