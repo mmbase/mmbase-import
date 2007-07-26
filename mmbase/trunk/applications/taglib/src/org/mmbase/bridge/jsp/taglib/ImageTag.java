@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.77 2007-07-24 10:03:54 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.78 2007-07-26 20:54:10 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -249,6 +249,7 @@ public class ImageTag extends FieldTag {
         return super.doEndTag();
     }
 
+    public static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
     public String getServletArgument(Node node, String t) {
         String servletArgument; // can be the node-number or a template (if that is configured to be allowed).
         if ("".equals(t) || ! urlConvert()) {
