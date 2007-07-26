@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.22 2007-06-18 17:35:41 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.23 2007-07-26 23:14:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -93,5 +93,14 @@ public class JspRenderer extends AbstractRenderer {
     public String toString() {
         Parameter.Wrapper wrapper = getBlock().specific;
         return getPath() + (wrapper == null ? "" : "?" + wrapper);
+    }
+
+    public java.net.URI getUri() {
+        try {
+            return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();
+        } catch (Exception e) {
+            log.error(e);
+            return null;
+        }
     }
 }
