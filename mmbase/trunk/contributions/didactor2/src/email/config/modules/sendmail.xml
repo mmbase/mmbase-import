@@ -15,6 +15,11 @@
         <property name="datasource">mail/MMBase</property>
     -->
     <property name="emailsenderdomain">${sendmail.emailsenderdomain}</property>
+    <!--
+        Especially in testing-environments (with production-data), you may want to disable email-forwarding
+        globally, to avoid unnecessary spamming of real users.
+    -->
+    <property name="noforwarding">false</property>
   </properties>
   
 
