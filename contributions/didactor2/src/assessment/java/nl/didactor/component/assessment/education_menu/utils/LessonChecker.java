@@ -8,13 +8,13 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @version $Id: LessonChecker.java,v 1.1 2007-07-11 12:41:21 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.2 2007-07-26 09:09:36 michiel Exp $
  */
 
 public class LessonChecker {
 
 
-   private static final Logger log = Logging.getLoggerInstance(LessionChecker.class);
+   private static final Logger log = Logging.getLoggerInstance(LessonChecker.class);
     
    /**
     * Checks that learnblocks are blocked for this particular user.
