@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.404 2007-07-24 10:03:54 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.405 2007-07-26 20:55:45 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8339,17 +8339,29 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>component</name>
+    <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ComponentTag</tagclass>
     <bodycontent>JSP</bodycontent>
+    <info>
+      Renders a component block.
+    </info>
+    <since>MMBase-1.9</since>
     <attribute>
       <name>name</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The name of the component of which a block must be rendered.
+      </info>
     </attribute>
     <attribute>
       <name>block</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The name of the block which must be rendered. If this is empty, the default block of the
+        component will be rendered.
+      </info>
     </attribute>
     <attribute>
       <name>windowstate</name>
@@ -8359,6 +8371,53 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>render</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <possiblevalue>
+        <value>head</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>body</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>processor</value>
+      </possiblevalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>setting</name>
+    <extends>contextreferrer</extends>
+    <extends>writer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.SettingTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+    </info>
+    <since>MMBase-1.9</since>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>component</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>may</name>
+    <extends>contextreferrer</extends>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+    </info>
+    <since>MMBase-1.9</since>
+    <attribute>
+      <name>action</name>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
