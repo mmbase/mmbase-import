@@ -233,7 +233,7 @@
         <guiname xml:lang="hi">इ-मेल</guiname>
         <guiname xml:lang="eo">Retadreso</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
         <maxLength value="1024" />
       </datatype>
     </field>
@@ -305,9 +305,18 @@
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
-        <minLength value="5" enforce="onchange" />
+        <minLength value="5" enforce="change" />
         <maxLength value="255" />
         <password value="true" />
+        <setprocessor>
+          <class name="org.mmbase.util.transformers.MD5" />
+          <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+            <param name="mode">entire</param>
+            <param name="patterns">
+              <param name="(.*)">{md5}$1</param>
+            </param>
+          </class>
+        </setprocessor>
       </datatype>
     </field>
     <field name="confirmpassword" state="virtual">
