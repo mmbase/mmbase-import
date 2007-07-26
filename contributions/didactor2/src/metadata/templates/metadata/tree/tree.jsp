@@ -4,10 +4,10 @@
    <%@include file="/shared/setImports.jsp"%>
    <mm:import externid="wizardjsp" jspvar="wizardjsp" />
    <mm:import externid="listjsp" jspvar="listjsp" />
-   <mm:import externid="locale" jspvar="locale" />
+   <mm:import externid="locale" jspvar="locale" vartype="object" />
    <% MetadataTreeModel model = new MetadataTreeModel(cloud);
       HTMLTree t = new HTMLTree(model,"metadata");
-      t.setCellRenderer(new MetadataRenderer(cloud, wizardjsp, listjsp, locale));
+      t.setCellRenderer(new MetadataRenderer(cloud, wizardjsp, listjsp, locale.toString()));
       t.setExpandAll(false);
       t.setImgBaseUrl("gfx/");
       t.render(out);
