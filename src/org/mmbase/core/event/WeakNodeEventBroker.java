@@ -1,4 +1,5 @@
 /*
+ * Created on 7-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -11,9 +12,8 @@ package org.mmbase.core.event;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.5
- * @version $Id: WeakNodeEventBroker.java,v 1.1 2007-07-26 12:38:44 michiel Exp $
  */
-public class WeakNodeEventBroker extends AbstractEventBroker {
+public class WeakNodeEventBroker extends WeakEventBroker {
 
     /*
      * (non-Javadoc)
