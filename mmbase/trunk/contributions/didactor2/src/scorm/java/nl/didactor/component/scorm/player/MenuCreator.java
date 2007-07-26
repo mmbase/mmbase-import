@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: MenuCreator.java,v 1.10 2007-05-01 12:34:41 michiel Exp $
+ * @version $Id: MenuCreator.java,v 1.11 2007-07-26 14:50:57 michiel Exp $
  */
 
 public class MenuCreator extends XMLDocument  {
@@ -58,7 +58,7 @@ public class MenuCreator extends XMLDocument  {
     }
 
 
-    public String[] parse(boolean useRelativePaths, Integer[] sSubPath) {
+    public String[] parse(boolean useRelativePaths, Integer... sSubPath) {
 
         if(log.isDebugEnabled()) {
             //log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);

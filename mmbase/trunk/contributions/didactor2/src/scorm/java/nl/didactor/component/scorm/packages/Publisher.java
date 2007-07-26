@@ -17,8 +17,6 @@ public class Publisher {
     }
     
     
-    
-
     public void savePackage(Node nodeEducation) throws Exception {
         NodeList nlRelatedLearnBlocks = nodeEducation.getRelatedNodes("learnblocks", "posrel", "destination");
         for(Iterator it = nlRelatedLearnBlocks.iterator(); it.hasNext();) {

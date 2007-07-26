@@ -17,21 +17,18 @@
 package nl.didactor.reports.data;
 
 /**
+ * @javadoc
  * @author p.becic
+ * @version $Id: EventType.java,v 1.3 2007-07-26 14:52:27 michiel Exp $
  */
 public class EventType {
+
     public static final int ACCOUNT_CREATED = 0;
-
     public static final int LOGIN = 1;
-
     public static final int LOGOUT = 2;
-
     public static final int READING_EDUCATION = 3;
-
     public static final int VISIT_PAGE = 4;
-
     public static final int ADD_DOCUMENT = 5;
-
     public static final int UNKNOWN = -1;
 
     public static int getEvent(String eventName) {
