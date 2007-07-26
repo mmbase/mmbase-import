@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMBase;
  * @author Michiel Meeuwissen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: ExtendedJMSendMail.java,v 1.23 2007-06-14 15:13:55 michiel Exp $
+ * @version $Id: ExtendedJMSendMail.java,v 1.24 2007-07-26 14:39:03 michiel Exp $
  */
 
 public class ExtendedJMSendMail extends SendMail {
@@ -38,8 +38,8 @@ public class ExtendedJMSendMail extends SendMail {
     }
 
 
-    protected Set getDomains() {
-        Set domains = new HashSet();
+    protected Set<String> getDomains() {
+        Set<String> domains = new HashSet<String>();
         SMTPModule smtpModule = (SMTPModule)Module.getModule("smtpmodule");
         if (smtpModule != null) {
             String sdomains = smtpModule.getLocalEmailDomains();
@@ -66,20 +66,19 @@ public class ExtendedJMSendMail extends SendMail {
         }
         Set domains = getDomains();
 
-        List remoteRecipients = new ArrayList();
-        List localRecipients = new ArrayList();
+        List<InternetAddress> remoteRecipients = new ArrayList<InternetAddress>();
+        List<InternetAddress> localRecipients = new ArrayList<InternetAddress>();
         if (onlyto != null) {
             try {
-                InternetAddress[] recipients = InternetAddress.parse(onlyto);
-                for (int i = 0; i < recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
+                for (InternetAddress recipient : InternetAddress.parse(onlyto)) {
+                    String domain = recipient.getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                     if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
-                        localRecipients.add(recipients[i]);
+                        localRecipients.add(recipient);
                     } else {
                         log.debug("Unknown domain [" + domain + "], processing externally");
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -88,16 +87,15 @@ public class ExtendedJMSendMail extends SendMail {
         } else {
             String to = n.getStringValue("to");
             try {
-                InternetAddress[] recipients = InternetAddress.parse(to);
-                for (int i=0; i<recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
+                for (InternetAddress recipient : InternetAddress.parse(to)) {
+                    String domain = recipient.getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                     if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
-                        localRecipients.add(recipients[i]);
+                        localRecipients.add(recipient);
                     } else {
                         log.debug("Unknown domain [" + domain + "], processing externally");
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -107,16 +105,15 @@ public class ExtendedJMSendMail extends SendMail {
 
             String cc = n.getStringValue("cc");
             try {
-                InternetAddress[] recipients = InternetAddress.parse(cc);
-                for (int i = 0; i < recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
+                for (InternetAddress recipient : InternetAddress.parse(cc)) {
+                    String domain = recipient.getAddress();
                     domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                     if (domains.contains(domain.toLowerCase())) {
                         log.debug("Known domain [" + domain + "], processing internally");
-                        localRecipients.add(recipients[i]);
+                        localRecipients.add(recipient);
                     } else {
                         log.debug("Unknown domain [" + domain + "], processing externally");
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -125,16 +122,15 @@ public class ExtendedJMSendMail extends SendMail {
             String bcc     = n.getNodeManager().hasField("bcc") ? n.getStringValue("bcc") : null;
             if (bcc != null) {
                 try {
-                    InternetAddress[] recipients = InternetAddress.parse(bcc);
-                    for (int i = 0; i < recipients.length; i++) {
-                        String domain = recipients[i].getAddress();
+                    for (InternetAddress recipient : InternetAddress.parse(bcc)) {
+                        String domain = recipient.getAddress();
                         domain = domain.substring(domain.indexOf("@") + 1, domain.length());
                         if (domains.contains(domain.toLowerCase())) {
                             log.debug("Known domain [" + domain + "], processing internally");
-                            localRecipients.add(recipients[i]);
+                            localRecipients.add(recipient);
                         } else {
                             log.debug("Unknown domain [" + domain + "], processing externally");
-                            remoteRecipients.add(recipients[i]);
+                            remoteRecipients.add(recipient);
                         }
                     }
                 } catch (Exception e) {
@@ -147,20 +143,12 @@ public class ExtendedJMSendMail extends SendMail {
         }
 
         if (localRecipients.size() > 0) {
-            InternetAddress[] ia = new InternetAddress[localRecipients.size()];
-            for (int i=0; i<localRecipients.size(); i++) {
-                ia[i] = (InternetAddress)localRecipients.get(i);
-            }
-            sendLocalMail(ia, n);
+            sendLocalMail(localRecipients.toArray(new InternetAddress[]{}), n);
         }
 
         if (remoteRecipients.size() > 0) {
             log.service("Sending remote to " + remoteRecipients);
-            InternetAddress[] ia = new InternetAddress[remoteRecipients.size()];
-            for (int i=0; i < remoteRecipients.size(); i++) {
-                ia[i] = (InternetAddress)remoteRecipients.get(i);
-            }
-            sendRemoteMail(ia, n);
+            sendRemoteMail(remoteRecipients.toArray(new InternetAddress[]{}), n);
         }
 
         return true;
@@ -176,9 +164,9 @@ public class ExtendedJMSendMail extends SendMail {
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         RelationManager relatedManager = cloud.getRelationManager("related");
         Set failedUsers = new HashSet();
-        for (int i = 0; i < to.length; i++) {
-            log.debug("address " + to[i]);
-            String domain = to[i].getAddress();
+        for (InternetAddress recipient : to) {
+            log.debug("address " + recipient);
+            String domain = recipient.getAddress();
             String username = domain.substring(0, domain.indexOf("@"));
             domain = domain.substring(domain.indexOf("@") + 1, domain.length());
 
@@ -243,15 +231,19 @@ public class ExtendedJMSendMail extends SendMail {
                     if (log.isDebugEnabled()) {
                         log.debug("This user has email forwarding enabled. forwarding email to [" + mailadres + "]");
                     }
-                    try {
-                        /// should use Sender header here (in case of boucnes).
-                        // and perhaps als Resent-From header.
-                        Address localAddress = to[i];
-                        sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
-                    } catch (Exception e) {
-                        // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
-                        // doubt it'll ever come here.
-                        log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
+                    if (! "true".equals(getInitParameter("noforwarding"))) {
+                        try {
+                            /// should use Sender header here (in case of boucnes).
+                            // and perhaps als Resent-From header.
+                            Address localAddress = recipient;
+                            sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
+                        } catch (Exception e) {
+                            // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
+                            // doubt it'll ever come here.
+                            log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
+                        }
+                    } else {
+                        log.service("Forwarding disabled, not sending mail to " + mailadres);
                     }
                 } else {
                     log.debug("This user has email-forwaring enabled, but did not set an external email-adress");
@@ -300,7 +292,7 @@ public class ExtendedJMSendMail extends SendMail {
             log.debug("Sending node {" + n + "} to addresses {" + Arrays.asList(onlyto) + "}");
             log.trace("Because ", new Exception());
         }
-        StringBuffer errors = new StringBuffer();
+        StringBuilder errors = new StringBuilder();
         String from    = n.getStringValue("from");
         String to      = n.getStringValue("to");
         String cc      = n.getStringValue("cc");
