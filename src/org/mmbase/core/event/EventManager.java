@@ -1,6 +1,4 @@
 /*
- * Created on 30-sep-2005
- *
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -29,7 +27,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.20 2007-07-26 08:11:04 michiel Exp $
+ * @version $Id: EventManager.java,v 1.21 2007-07-26 11:45:54 michiel Exp $
  */
 public class EventManager {
 

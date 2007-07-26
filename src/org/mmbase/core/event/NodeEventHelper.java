@@ -1,6 +1,4 @@
 /*
- * Created on 2-nov-2005
- *
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -16,10 +14,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 
 /**
+ * This is a utility class to create node event and relation event instances. the reason for it is
+ * that we want to references to core classes in the NodeEvent and RelationEvent classes, to keep them bridge-friendly,
+ * but we need a little help for easy instantiation.
  * @author Ernst Bunders
- *this is a utility class to create node event and relation event instances. the reason for it is
- *that we want to references to core classes in the NodeEvent and RelationEvent classes, to keep them bridge-friendly,
- *but we need a little help for easy instantiation.
+ * @since MMBase-1.8
+ * @version $Id: NodeEventHelper.java,v 1.8 2007-07-26 11:45:54 michiel Exp $
+
  */
 public class NodeEventHelper {
 
@@ -86,14 +87,17 @@ public class NodeEventHelper {
         if (!(node.getBuilder() instanceof InsRel)) {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
-        if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
+        MMBase mmbase = MMBase.getMMBase();
+        if(machineName == null) machineName = mmbase.getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
         
         int relationSourceNumber = node.getIntValue("snumber");
         int relationDestinationNumber = node.getIntValue("dnumber");
 
-        String relationSourceType = MMBase.getMMBase().getBuilderNameForNode(relationSourceNumber);
-        String relationDestinationType =MMBase.getMMBase().getBuilderNameForNode(relationDestinationNumber);
+        String relationSourceType = mmbase.getBuilderNameForNode(relationSourceNumber);
+        if (relationSourceType == null) relationSourceType = "object";
+        String relationDestinationType = mmbase.getBuilderNameForNode(relationDestinationNumber);
+        if (relationDestinationType == null) relationDestinationType = "object";
         NodeEvent nodeEvent = createNodeEventInstance(node, eventType, machineName);
         int role = reldef.getNumber();
         return new RelationEvent(nodeEvent, relationSourceNumber, relationDestinationNumber, relationSourceType, relationDestinationType, role);
