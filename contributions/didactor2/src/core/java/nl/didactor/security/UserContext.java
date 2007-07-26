@@ -5,6 +5,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.RelationStep;
+import org.mmbase.core.event.*;
 
 import org.mmbase.module.core.MMObjectNode;
 import java.util.*;
@@ -15,16 +16,20 @@ import java.util.*;
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @author Michiel Meeuwissen
- * @version $Id: UserContext.java,v 1.9 2007-07-04 15:52:29 michiel Exp $
+ * @version $Id: UserContext.java,v 1.10 2007-07-26 12:58:35 michiel Exp $
  */
-public class UserContext extends org.mmbase.security.BasicUser {
+public class UserContext extends org.mmbase.security.BasicUser implements WeakNodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
 
+    private static long counter = 0;
+    private static final long serialVersionUID = 1L;
+
     private final int wrappedNode;
-    private final String identifier ;
+    private String identifier ;
     private final String owner;
     private final Rank rank;
     private final Set<String> roles;
+    private final long count = ++counter;
 
     /**
      * Copy constructor which only resets the application. This is needed because 'asis' is
@@ -37,6 +42,7 @@ public class UserContext extends org.mmbase.security.BasicUser {
         owner = uc.owner;
         rank = uc.rank;
         roles = uc.roles;
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(this);
     }
 
     /**
@@ -84,7 +90,14 @@ public class UserContext extends org.mmbase.security.BasicUser {
             throw new org.mmbase.security.SecurityException("No role");
         }
         rank = proposedRank;
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(this);
 
+    }
+
+    protected void finalize() throws Throwable {
+        identifier = "FINALIZED " + identifier;
+        log.debug("Finalizing " + this);
+        super.finalize();
     }
 
     public static Set<String> getRoles(MMObjectNode node) {
@@ -96,6 +109,14 @@ public class UserContext extends org.mmbase.security.BasicUser {
             }
         }
         return result;
+    }
+    public void notify(NodeEvent ne) {
+        if (ne.getNodeNumber() == wrappedNode) {
+            Object newUserName = ne.getNewValue("username");
+            if (newUserName != null) {
+                identifier = (String) newUserName;
+            }
+        }
     }
 
     public Set<String> getRoles() {
@@ -126,4 +147,9 @@ public class UserContext extends org.mmbase.security.BasicUser {
     public Integer getUserNumber() {
         return Integer.valueOf(wrappedNode);
     }
+
+    public String toString() {
+        return count + ":" + super.toString();
+    }
+
 }
