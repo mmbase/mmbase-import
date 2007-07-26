@@ -16,13 +16,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
-import org.mmbase.module.core.MMBase;
 
 /**
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.21 2007-07-18 10:33:39 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.22 2007-07-26 20:55:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -90,7 +89,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             for (Map.Entry<String, Object> entry : extraParameters) {
                 params.set(entry.getKey(), entry.getValue());
             }
-            Framework fw = MMBase.getMMBase().getFramework();
+            Framework fw = getCloudContext().getFramework();
             if (fw == null) throw new JspTagException("No MMBase Framework found");
             Parameters frameworkParams = fw.createParameters();
             fillStandardParameters(frameworkParams);
