@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.33 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: Framework.java,v 1.34 2007-07-26 21:03:11 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter { 
@@ -169,5 +169,6 @@ public interface Framework extends UrlConverter {
      * @throws SecurityException If you are not allowed to change the setting.
      */
     public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) throws SecurityException;
+
 
 }

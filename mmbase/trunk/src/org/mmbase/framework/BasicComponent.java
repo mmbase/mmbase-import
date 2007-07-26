@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.31 2007-07-25 07:09:41 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.32 2007-07-26 21:03:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -88,15 +88,18 @@ public class BasicComponent implements Component {
                     String name = element.getAttribute("name");
                     String rank = element.getAttribute("rank");
                     Object c = ComponentRepository.getInstanceWithSubElement(element);
+                    Action a;
                     if (c != null) {
                         if (! "".equals(rank)) {
                             log.warn("Rank attribute ignored");
                         }
-                        org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(new Action(name, (ActionChecker) c));
+                        a = new Action(name, (ActionChecker) c);
                     } else {
                         if ("".equals(rank)) { rank = "basic user"; }
-                        org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(new Action(name, new ActionChecker.Rank(Rank.getRank(rank))));
+                        a = new Action(name, new ActionChecker.Rank(Rank.getRank(rank)));
                     }
+                    a.getDescription().fillFromXml("description", element);
+                    org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(a);
                 } catch (Exception e) {
                     log.error(e);
                 }
