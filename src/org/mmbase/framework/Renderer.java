@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.io.*;
+import java.net.URI;
 import org.mmbase.util.functions.*;
 
 /**
@@ -17,7 +18,7 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.14 2007-07-06 21:49:49 michiel Exp $
+ * @version $Id: Renderer.java,v 1.15 2007-07-26 23:14:48 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -54,6 +55,7 @@ public interface Renderer {
                 public Parameter[] getParameters() { return Parameter.emptyArray(); };
                 public Block getBlock() { return block ; };
                 public String toString() { return "EMPTY Renderer"; }
+                public URI getUri() { try {return new URI("mmbase:/renderer/empty");} catch (Exception e) { return null;} }
             };
         }
     }
@@ -79,4 +81,11 @@ public interface Renderer {
      * the Http Servlet response and request, besided specific parameters for this component.
      */
     void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException;
+
+
+    /**
+     * An URI which may identify the implementation of this Renderer. 
+     */
+
+    URI getUri();
 }

@@ -11,6 +11,7 @@ package org.mmbase.framework;
 
 import java.util.*;
 import org.w3c.dom.*;
+import java.net.URI;
 import org.mmbase.security.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.functions.Parameter;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.33 2007-07-26 22:04:23 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.34 2007-07-26 23:14:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -34,7 +35,7 @@ public class BasicComponent implements Component {
     private final Map<String, Block> blocks = new HashMap<String, Block>();
     private final Map<String, Setting<?>> settings = new HashMap<String, Setting<?>>();
     private Block defaultBlock = null;
-    private String uri;
+    private URI uri;
     private int version = -1;
 
 
@@ -46,20 +47,24 @@ public class BasicComponent implements Component {
     public String getName() {
         return name;
     }
-    public String getUri() {
+    public URI getUri() {
         return uri;
     }
     public int getVersion() {
         return version;
     }
-    
+
 
     public LocalizedString getDescription() {
         return description;
     }
 
     public void configure(Element el) {
-        uri = el.getOwnerDocument().getDocumentURI();
+        try {
+            uri = new URI(el.getOwnerDocument().getDocumentURI());
+        } catch (Exception e) {
+            log.error(e);
+        }
         log.debug("Configuring " + this);
         description.fillFromXml("description", el);
 
