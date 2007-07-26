@@ -12,14 +12,14 @@ import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.3 2007-07-25 07:32:01 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.4 2007-07-26 21:33:43 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
-    
+
     public abstract void add(Action a);
 
     public abstract Action get(String name);
 
-    public abstract Collection<Action> get();
+    public abstract Collection<Action> getActions();
 }
