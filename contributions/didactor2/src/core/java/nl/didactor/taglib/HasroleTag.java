@@ -21,7 +21,7 @@ import nl.didactor.util.ClassRoom;
 /**
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: HasroleTag.java,v 1.6 2007-04-11 14:56:57 michiel Exp $
+ * @version $Id: HasroleTag.java,v 1.7 2007-07-26 14:32:01 michiel Exp $
  */
 public class HasroleTag extends CloudReferrerTag {
     private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
@@ -73,12 +73,15 @@ public class HasroleTag extends CloudReferrerTag {
         // default: logged in user
         String userid= referid;
         if (userid == null) {
-            userid= "user";
+            userid = "user";
         }
         Object user = getContextProvider().getContextContainer().get(userid);
         if (user == null) {
             throw new JspTagException("Context variable with id '" + userid + "' not found");
         }
+
+        log.debug("Using id " + userid);
+
 
 
         boolean inv = false;
@@ -94,7 +97,7 @@ public class HasroleTag extends CloudReferrerTag {
         }
         // Get Education no
        int educationno= 0;
-       String educationStr= education;
+       String educationStr = education;
        if ((educationStr == null) || "".equals( educationStr) ) {
            // if education in tag
            educationStr= "education";

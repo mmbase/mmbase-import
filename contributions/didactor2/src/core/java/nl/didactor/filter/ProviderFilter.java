@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.11 2007-07-17 14:34:49 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.12 2007-07-26 14:35:52 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -254,6 +254,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         Cloud cloud = getCloud(req);
         Map<String, Object> userAttributes;
         if (session == null) {
+            log.debug("no session");
             userAttributes = new HashMap<String, Object>();
             userAttributes.put("user", 0);
         } else {
