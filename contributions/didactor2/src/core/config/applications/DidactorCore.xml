@@ -49,13 +49,13 @@
         <relation from="providers" to="educations" type="related" />
 
         <relation from="educations" to="people" type="classrel" />
-        
+
         <!-- People and their fields -->
         <relation from="people" to="fields" type="authrel" />
 
         <!-- Roles -->
-        <relation from="people" to="educations" type="rolerel" />
-        <relation from="people" to="roles" type="related" />
+        <relation from="people"  to="educations" type="rolerel" />
+        <relation from="people"  to="roles" type="related" />
         <relation from="rolerel" to="roles" type="related" />
 
         <!-- News, images, and such related to educations and classes -->
