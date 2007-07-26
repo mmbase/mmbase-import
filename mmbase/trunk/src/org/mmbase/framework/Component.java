@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 import java.util.*;
+import java.net.URI;
 import org.mmbase.util.LocalizedString;
 
 /**
@@ -16,7 +17,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.12 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: Component.java,v 1.13 2007-07-26 23:14:48 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -41,7 +42,7 @@ public interface Component {
     /**
      * An URI which may identify the configuration of this Component
      */
-    String getUri();
+    URI getUri();
 
     /**
      * Configures the component, by XML.
