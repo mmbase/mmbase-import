@@ -12,10 +12,19 @@ import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.4 2007-07-26 21:33:43 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.5 2007-07-26 22:04:23 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
+
+    protected static ActionRepository bootstrap = new MemoryActionRepository();
+    public static final ActionRepository getInstance() {
+        if (bootstrap != null) {
+            return bootstrap;
+        } else {
+            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository();
+        }
+    }
 
     public abstract void add(Action a);
 
