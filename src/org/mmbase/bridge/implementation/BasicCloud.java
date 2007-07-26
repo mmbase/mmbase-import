@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.175 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.176 2007-07-26 22:13:51 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -455,11 +455,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {
         NodeManager n1 = null;
-        if (sourceManagerName != null)
+        if (sourceManagerName != null) {
             n1 = getNodeManager(sourceManagerName);
+        }
         NodeManager n2 = null;
-        if (destinationManagerName != null)
+        if (destinationManagerName != null) {
             n2 = getNodeManager(destinationManagerName);
+        }
         return getRelationManagers(n1, n2, roleName);
     }
 
@@ -886,6 +888,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                 return check(Operation.READ, node.getNumber()); // check read access
             }
         }
+    }
+
+    public boolean may(org.mmbase.security.Action action) {
+        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action);
     }
 
     // javadoc inherited
