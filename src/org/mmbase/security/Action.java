@@ -17,7 +17,7 @@ import org.mmbase.util.LocalizedString;
  * component XML's).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.3 2007-07-26 21:02:46 michiel Exp $
+ * @version $Id: Action.java,v 1.4 2007-07-26 22:04:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
@@ -43,5 +43,9 @@ public class Action implements java.io.Serializable {
     }
     public LocalizedString getDescription() {
         return description;
+    }
+
+    public String toString() {
+        return name + ":" + defaultChecker;
     }
 }

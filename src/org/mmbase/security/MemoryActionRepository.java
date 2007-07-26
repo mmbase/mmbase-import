@@ -10,12 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 import java.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.4 2007-07-26 21:33:43 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.5 2007-07-26 22:04:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
+    private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
     private final Map<String, Action> store = new HashMap<String, Action>();
 
@@ -26,6 +30,7 @@ public class MemoryActionRepository extends ActionRepository {
     }
 
     public void add(Action a) {
+        log.info("Adding " + a + " to " + this);
         store.put(a.getName(), a);
     }
 

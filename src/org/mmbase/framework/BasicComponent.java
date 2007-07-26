@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.32 2007-07-26 21:03:11 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.33 2007-07-26 22:04:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -99,7 +99,8 @@ public class BasicComponent implements Component {
                         a = new Action(name, new ActionChecker.Rank(Rank.getRank(rank)));
                     }
                     a.getDescription().fillFromXml("description", element);
-                    org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository().add(a);
+                    log.service("Registering action " + a);
+                    ActionRepository.getInstance().add(a);
                 } catch (Exception e) {
                     log.error(e);
                 }

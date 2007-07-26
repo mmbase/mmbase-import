@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.24 2007-07-25 07:32:01 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.25 2007-07-26 22:04:23 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -41,9 +41,20 @@ public class MMBaseCop extends SecurityManager  {
         super();
         config = new MMBaseCopConfig(this);
         config.load();
+        copyActions(ActionRepository.bootstrap, config.getActionRepository());
+        ActionRepository.bootstrap = null;
         log.service("Done loading security configuration");
     }
 
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected void copyActions(ActionRepository source, ActionRepository destination) {
+        for (Action a : source.getActions()) {
+            destination.add(a);
+        }
+    }
 
     /**
      *	reload, will load the classes for authorization and authentication
@@ -58,9 +69,7 @@ public class MMBaseCop extends SecurityManager  {
         newConfig.load();
         // if no exception happed, the configuration can be replaced
         config.watcher.clear();
-        for (Action a : config.getActionRepository().get()) {
-            newConfig.getActionRepository().add(a);
-        }
+        copyActions(config.getActionRepository(), newConfig.getActionRepository());
         config = newConfig;
         log.info("Done changing security configuration");
     }
