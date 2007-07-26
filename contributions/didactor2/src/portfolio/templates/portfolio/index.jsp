@@ -558,53 +558,7 @@
           
           <mm:compare referid="edit" value="true">
             
-            
-            <form name="edituser" method="post" enctype="multipart/form-data" action="<mm:treefile page="/portfolio/changeuser.jsp" objectlist="$includePath"/>">
-              <%-- parameter to indicate theres info to be uploaded>
-              <input type="hidden" name="processupload" value="true"/>
-              <input type="hidden" name="detectclicks" value="<%= System.currentTimeMillis() %>" --%>
-            
-            
-              <table class="Font">
-                <tr>
-                  <td>
-                    <table class="Font">
-                      <mm:node number="$user">
-                        <mm:fieldlist fields="initials,firstname,lastname,email,address,zipcode,city,telephone,remarks">
-                          <tr>
-                            <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
-                            <td><mm:fieldinfo type="input"/></td>
-                          </tr>
-                        </mm:fieldlist>
-                        <tr>
-                          <td>
-                            <mm:relatednodes type="images">
-                              <mm:import id="image_present" reset="true"/>
-                              <di:translate key="portfolio.newphoto" />
-                            </mm:relatednodes>
-                            <mm:present referid="image_present" inverse="true">
-                              <di:translate key="portfolio.photo" />
-                            </mm:present>
-                          </td>
-                          <td><input type="file" name="_handle"/></td>
-                        </tr>
-                        <mm:treeinclude page="/admin/render_settings.jsp" objectlist="$includePath" referids="$referids" />
-                      </mm:node>
-                    </table>
-                  </td>
-                  <td>
-                    <mm:node number="$user">
-                      <mm:relatednodes type="images">
-                        <img src="<mm:image template="s(200x180)"/>"/>
-                      </mm:relatednodes>
-                    </mm:node>
-                  </td>
-                </tr>
-              </table>
-              
-              <input class="formbutton" type="submit" name="change" value="<di:translate key="portfolio.save"/>" />
-              
-            </form>
+            <mm:include page="/portfolio/edit.user.jspx" />
 
             <form name="cancel" method="POST" action="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath"/>">
               <input class="formbutton" type="submit" name="cancel" value="<di:translate key="portfolio.back"/>" />
