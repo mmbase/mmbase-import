@@ -12,16 +12,16 @@ import java.util.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.3 2007-07-25 07:32:01 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.4 2007-07-26 21:33:43 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
-    
+
     private final Map<String, Action> store = new HashMap<String, Action>();
 
     public MemoryActionRepository() {
     }
-    
+
     public void load() {
     }
 
@@ -32,7 +32,7 @@ public class MemoryActionRepository extends ActionRepository {
     public Action get(String name) {
         return store.get(name);
     }
-    public Collection<Action> get() {
+    public Collection<Action> getActions() {
         return store.values();
     }
 
