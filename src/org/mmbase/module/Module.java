@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77.2.4 2007-06-22 14:57:52 michiel Exp $
+ * @version $Id: Module.java,v 1.77.2.5 2007-07-26 14:51:52 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -248,7 +248,7 @@ public abstract class Module extends FunctionProvider {
             }
                
         } catch (javax.naming.NamingException ne) {
-            log.service("Can't obtain properties from application context: " + ne.getMessage());
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
     }
 
@@ -303,7 +303,7 @@ public abstract class Module extends FunctionProvider {
      * @since MMBase-1.6.2
      */
     public static synchronized final void shutdownModules() {
-        log.info("Shutting down modules by ", new Exception());
+        //log.debug("Shutting down modules by ", new Exception());
         Iterator i = getModules();
         while (i != null && i.hasNext()) {
             Module m = (Module) i.next();
