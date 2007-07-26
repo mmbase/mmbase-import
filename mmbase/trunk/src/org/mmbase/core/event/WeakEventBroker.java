@@ -7,19 +7,17 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.lang.ref.SoftReference;
 
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * An EventBroker which administrates the listeners in a {@link java.util.WeakHashMap}.
+ * An EventBroker which administrates the listeners in a {@link java.util.WeakHashMap}. This means
+ * that such listeners can be garbage collected, even if they are still brokered.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.5
- * @version $Id: WeakEventBroker.java,v 1.1 2007-07-26 12:38:44 michiel Exp $
+ * @version $Id: WeakEventBroker.java,v 1.2 2007-07-26 14:08:53 michiel Exp $
  */
 public abstract class WeakEventBroker extends EventBroker {
 
