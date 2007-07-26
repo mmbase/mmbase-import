@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * Currently this generates a link to an editwizard list page.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.11 2007-07-18 07:49:18 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.12 2007-07-26 23:35:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -60,5 +60,7 @@ public class EditwizardRenderer extends AbstractRenderer {
     public String toString() {
         return "EW " + list + " &nodepath= " + path;
     }
+
+
 
 }

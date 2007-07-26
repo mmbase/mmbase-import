@@ -8,14 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
-
+import java.net.URI;
 import org.mmbase.util.functions.*;
 
 /**
  * Abstract view implementation which implements getType and the specific parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractProcessor.java,v 1.5 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: AbstractProcessor.java,v 1.6 2007-07-26 23:35:50 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractProcessor implements Processor {
@@ -26,6 +26,7 @@ abstract public class AbstractProcessor implements Processor {
             public Parameter[] getParameters() { return Parameter.emptyArray(); }
             public void process(Parameters blockParameters, Parameters frameworkParameters) { }
             public String toString() { return "EMPTY Processor"; }
+            public URI getUri() { try {return new URI("mmbase:/processor/empty");} catch (Exception e) { return null;} }
         };
     }
     protected final Block parent;
@@ -36,6 +37,10 @@ abstract public class AbstractProcessor implements Processor {
 
     public Block getBlock() {
         return parent;
+    }
+
+    public URI getUri() {
+        return null;
     }
 
 }

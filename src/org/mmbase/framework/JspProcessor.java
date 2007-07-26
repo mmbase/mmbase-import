@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.12 2007-06-18 17:35:41 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.13 2007-07-26 23:35:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
@@ -72,4 +72,14 @@ public class JspProcessor extends AbstractProcessor {
     public String toString() {
         return getPath() + '?' + Arrays.asList(getParameters());
     }
+
+    public java.net.URI getUri() {
+        try {
+            return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();
+        } catch (Exception e) {
+            log.error(e);
+            return null;
+        }
+    }
+
 }
