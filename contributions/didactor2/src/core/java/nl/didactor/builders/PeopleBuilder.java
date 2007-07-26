@@ -132,14 +132,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 }
             }
         }
-        if (fieldname.equals("password")) {
-            Object newValue = node.getValues().get(fieldname);
-            if (((String)newValue).startsWith("{md5}")) {
-                node.storeValue(fieldname, (String)newValue);
-            } else if (originalValue != null && !originalValue.equals(newValue)) {
-                node.storeValue(fieldname, "{md5}" + encoder.encode((String)newValue));
-            }
-        }
+
         return true;
     }
 
