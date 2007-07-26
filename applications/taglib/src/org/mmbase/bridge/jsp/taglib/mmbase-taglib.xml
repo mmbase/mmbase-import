@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.405 2007-07-26 20:55:45 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.406 2007-07-26 23:15:37 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8381,6 +8381,13 @@ The 0 is just counter, which starts at 0 on every page.
       <possiblevalue>
         <value>processor</value>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>debug</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <see tag="include" attribute="debug" />
     </attribute>
   </tag>
 

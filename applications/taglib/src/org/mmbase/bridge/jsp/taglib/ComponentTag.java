@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.22 2007-07-26 20:55:45 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.23 2007-07-26 23:15:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -31,6 +31,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
     private Attribute blockName  = Attribute.NULL;
     private Attribute referids  = Attribute.NULL;
     private Attribute windowState  = Attribute.NULL;
+    private Attribute debug  = Attribute.NULL;
 
     protected final List<Map.Entry<String, Object>> extraParameters = new ArrayList<Map.Entry<String, Object>>();
     protected final List<Map.Entry<String, Object>> extraFrameworkParameters = new ArrayList<Map.Entry<String, Object>>();
@@ -52,6 +53,10 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
     }
     public void setBlock(String b) throws JspTagException {
         blockName = getAttribute(b);
+    }
+
+    public void setDebug(String d) throws JspTagException {
+        debug = getAttribute(d);
     }
 
     public void addParameter(String key, Object value) throws JspTagException {
@@ -101,10 +106,15 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
                 state = new State(pageContext.getRequest());
             }
+            Debug d = Debug.valueOfOrEmpty(debug.getString(this));
+            w.write(d.start(component.getName(), renderer.getUri().toString()));
             fw.render(renderer, params, frameworkParams, w, windowStateValue);
+            w.write(d.end(component.getName(), renderer.getUri().toString()));
             used = true;
         } catch (FrameworkException fe) {
             throw new TaglibException(fe);
+        } catch (IOException ioe) {
+            throw new TaglibException(ioe);
         }
     }
 
