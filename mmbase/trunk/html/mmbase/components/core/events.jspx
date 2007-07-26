@@ -7,7 +7,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <jsp:directive.page import="org.mmbase.core.event.*,org.mmbase.module.core.*" />
+  <jsp:directive.page import="org.mmbase.core.event.*,org.mmbase.module.core.*,java.util.Iterator" />
   <div
       class="mm_c mm_c_core mm_c_b_events ${requestScope.className}"
       id="${requestScope.componentId}">
@@ -16,7 +16,34 @@
       EventManager manager = EventManager.getInstance();
     </jsp:scriptlet>
     <mm:cloud rank="administrator">
-      <p>Send an event.</p>
+      <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
+      <h2>Brokers</h2>
+      <ul>
+        <jsp:scriptlet>
+          Runtime.getRuntime().gc();
+          Iterator bi = manager.getBrokers().iterator();
+          while (bi.hasNext()) {
+             EventBroker eb = (EventBroker) bi.next();
+        </jsp:scriptlet>
+        <li onclick="this.className = this.className == 'wrapped' ? 'unwrapped' : 'wrapped';" class="wrapped">
+          <strong><jsp:expression>eb</jsp:expression></strong>
+          <ul>
+            <jsp:scriptlet>
+              Iterator eli = eb.getListeners().iterator();
+              while (eli.hasNext()) {
+                 EventListener el = (EventListener) eli.next();
+            </jsp:scriptlet>
+            <li><jsp:expression>el.getClass()</jsp:expression><jsp:text> </jsp:text><jsp:expression>el</jsp:expression></li>
+            <jsp:scriptlet>
+              }
+            </jsp:scriptlet>
+          </ul>
+        </li>
+        <jsp:scriptlet>
+          }
+        </jsp:scriptlet>
+      </ul>
+      <h2>Send an event.</h2>
       <mm:import from="request" externid="id" jspvar="id" vartype="string"/>
       <mm:import from="request"  externid="type" jspvar="type" vartype="integer" />
       <mm:present referid="id">
