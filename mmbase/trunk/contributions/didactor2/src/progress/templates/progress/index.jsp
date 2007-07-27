@@ -1,12 +1,13 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
-%><%@page import="java.util.*" 
+%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
+%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@page import="java.util.*" buffer="1000kb"
 %><mm:content postprocessor="none">
 
 <mm:cloud rank="didactor user">
 
-  <jsp:directive.include file="/shared/setImports.jsp" />
   <jsp:directive.include file="/education/tests/definitions.jsp" />
   <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
   <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
@@ -44,7 +45,7 @@
           <%--    Some buttons working on this folder--%>
         </div>
         
-        <div class="contentBodywit"><%-- wit is neither english, nor symbolical. It means 'white', which it probably isn't. --%>
+        <div class="contentBodywit"><%-- wit is neither english, nor symbolical. It means 'white', which it may not be --%>
         <mm:node number="$education">
           <b><mm:field name="name" write="true"/></b>
           <table class="font" border="1" cellspacing="0" style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
@@ -67,20 +68,28 @@
               <th style="border-color:#000000; border-left:0px">&nbsp;</th>
               <mm:node number="progresstextbackground">
                 <th style="border-color:#000000; border-left:0px">
-                  <mm:import id="tr_progresstitle" vartype="String"><di:translate key="progress.progresstitle" /></mm:import>
-                  <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_progresstitle')+rotate(90)"/>">
+                  <mm:import id="tr_progresstitle"><di:translate key="progress.progresstitle" /></mm:import>
+                  <mm:image mode="img" 
+                            alt="${tr_progresstitle}"
+                            template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_progresstitle')+rotate(90)"/>
                 </th>
                 <th style="border-color:#000000; border-left:0px">
-                  <mm:import id="tr_logins" vartype="String"><di:translate key="progress.logins" /></mm:import>
-                  <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_logins')+rotate(90)"/>">
+                  <mm:import id="tr_logins"><di:translate key="progress.logins" /></mm:import>
+                  <mm:image mode="img"
+                            alt="${tr_logins}"
+                            template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_logins')+rotate(90)"/>
                 </th>
                 <th style="border-color:#000000; border-left:0px">
-                  <mm:import id="tr_online" vartype="String"><di:translate key="progress.online"/></mm:import>
-                  <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_online')+rotate(90)"/>">
+                  <mm:import id="tr_online"><di:translate key="progress.online"/></mm:import>
+                  <mm:image mode="img" 
+                            alt="${tr_online}"
+                            template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_online')+rotate(90)"/>
                 </th>
                 <th style="border-color:#000000; border-left:0px">
-                  <mm:import id="tr_lastlogin" vartype="String"><di:translate key="progress.lastlogin"/></mm:import>
-                  <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_lastlogin')+rotate(90)"/>">
+                  <mm:import id="tr_lastlogin"><di:translate key="progress.lastlogin"/></mm:import>
+                  <mm:image mode="img" 
+                            alt="${tr_lastlogin}"
+                            template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_lastlogin')+rotate(90)"/>
                 </th>
               </mm:node>
 <%
@@ -114,37 +123,41 @@
 
         %>
 
-              <mm:node number="<%= testNum %>">
-                <mm:field name="name" jspvar="name" vartype="String">
-                  <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
-                  <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
-                </mm:field>
-                <mm:node number="progresstextbackground">
-                  <th style="border-color:#000000; border-left:0px">
-                    <mm:image template="$template" mode="img" />
-                  </th>
-                </mm:node>
-              </mm:node>
+        <mm:context>
+          <mm:node id="test" number="<%= testNum %>">
+          <mm:field name="name" jspvar="name" vartype="String">
+            <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
+            <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
+          </mm:field>
+          <mm:node number="progresstextbackground">
+            <th style="border-color:#000000; border-left:0px">
+              <mm:image 
+                  alt="${test.name}"
+                  template="$template" mode="img" />
+            </th>
+          </mm:node>
+        </mm:node>
+      </mm:context>
 
 <% } %>
 
 
             <% //If the man is connected directly to education this man is a mega techer for this education %>
 
-              <mm:compare referid="class" valueset=",null"> <%-- This regexp trick is  a bit silly, but I don't know where the 'null' comes from --%>
-                <mm:node referid="education" jspvar="nodeEducation">
-                  <% //We have to count number of tests for colspan in rows
-                    int iNumberOfColumns = 4;
-                  %>
-                  <mm:relatednodescontainer type="learnobjects" role="posrel">
-                    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
-                      <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
-                      <mm:compare referid="nodetype" value="tests">
-                         <% iNumberOfColumns++; %>
-                      </mm:compare>
-                    </mm:tree>
-                  </mm:relatednodescontainer>
-
+            <mm:compare referid="class" valueset=",null">
+              <mm:node referid="education" jspvar="nodeEducation">
+                <% //We have to count number of tests for colspan in rows
+                int iNumberOfColumns = 4;
+                %>
+                <mm:relatednodescontainer type="learnobjects" role="posrel">
+                  <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
+                    <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+                    <mm:compare referid="nodetype" value="tests">
+                      <% iNumberOfColumns++; %>
+                    </mm:compare>
+                  </mm:tree>
+                </mm:relatednodescontainer>
+                
                   <tr>
                     <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
                   </tr>
@@ -196,7 +209,7 @@
            --%>
               <di:hasrole role="teacher">
                 <mm:compare referid="class" regexp="|null" inverse="true">
-                  <mm:node referid="class">
+                  <mm:node referid="class">                    
                     <mm:timer name="teacher_people">
                       <mm:relatednodes type="people" role="classrel" orderby="$sort" id="student">
                         <di:hasrole role="student" referid="student">
@@ -214,30 +227,31 @@
              If the user has role 'coach' he may see all students in his workgroup.
            --%>
            <di:hasrole role="teacher" inverse="true">
-              <di:hasrole role="coach">
-                <mm:compare referid="class" valueset=",null" inverse="true">
-                  <mm:node referid="class">
-                    <mm:timer name="work">
-                      <mm:related path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
-                        <mm:node element="workgroups">
-                          <!-- oddddd -->
-                          <mm:relatednodes type="people" role="related" orderby="$sort">
-                            <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
-                            <di:hasrole role="student" referid="studentnumber">
-                              <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,studentnumber@student">
-                                <mm:param name="direct_connection">false</mm:param>
-                              </mm:treeinclude>
-                            </di:hasrole>
-                          </mm:relatednodes>
-                        </mm:node>
-                    </mm:related>
-                    </mm:timer>
-                  </mm:node>  
-                </mm:compare>
-              </di:hasrole>
+             <di:hasrole role="coach">
+               <mm:compare referid="class" valueset=",null" inverse="true">
+                 <mm:node referid="class">
+                   <p><mm:field name="name" /></p>
+                   <mm:timer name="work">
+                     <mm:relatednodes element="workgroups" path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
+                       <p><mm:field name="name" /></p>
+                       <mm:relatednodes id="studentnumber" type="people" role="related" orderby="$sort">
+                         <di:hasrole role="student" referid="studentnumber">                            
+                           <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,studentnumber@student">
+                             <mm:param name="direct_connection">false</mm:param>
+                           </mm:treeinclude>
+                         </di:hasrole>
+                       </mm:relatednodes>
+                       <c:if test="${fn:length(studentnumber) le 1}">
+                         <p>No students</p>
+                       </c:if>
+                     </mm:relatednodes>
+                   </mm:timer>
+                 </mm:node>  
+               </mm:compare>
+             </di:hasrole>
            </di:hasrole>
-            </tr>
-          </table>
+         </tr>
+       </table>
 
           <% if (showNextLink) { %>
             <span style="float: right">

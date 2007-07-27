@@ -4,8 +4,8 @@
 <mm:import externid="scope">none</mm:import>
 <%-- 'progress' is only valid in the 'education' scope --%>
 <mm:compare referid="scope" value="education">
-  <mm:cloud method="delegate" jspvar="cloud">
-  <jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:cloud method="didactor user">
+
   <mm:compare referid="type" value="div">
     <div class="menuSeperator"> </div>
     <div class="menuItem" id="menuProgress">

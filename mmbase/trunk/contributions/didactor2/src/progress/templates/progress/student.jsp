@@ -3,9 +3,8 @@
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" 
 %><%@page import="java.util.*"
 %><mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud method="delegate">
+  <mm:cloud rank="didactor user">
 
-    <jsp:directive.include file="/shared/setImports.jsp"/>
     <jsp:directive.include file="/education/tests/definitions.jsp" />
     <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
     <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
@@ -24,8 +23,9 @@
         <div class="folderHeader">&nbsp;</div>
         <div class="folderBody">&nbsp;</div>
       </div>
-      
-      <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import> 
+
+      <!-- WTF is happening here?: -->
+      <mm:import id="student"><mm:write referid="user" /></mm:import> 
 
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <mm:import id="student" externid="student" reset="true" />
@@ -34,6 +34,12 @@
       <mm:isempty referid="student">
         <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import>
       </mm:isempty>
+      <!-- /WTF -->
+
+      <di:copybook student="${student}">
+        <mm:node id="copybookNo" />
+      </di:copybook>
+
       
       <div class="mainContent">
         <div class="contentHeader">
@@ -92,7 +98,7 @@
                 <tr>
                   <td><di:translate key="progress.perccompleted" /></td>
                   <td>
-                    <mm:import jspvar="progress" id="progress" ><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids,student" /></mm:import>
+                    <mm:import id="progress" ><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids,student" /></mm:import>
                     <fmt:formatNumber value="${progress}" type="percent" />
                   </td>
                 </tr>
@@ -187,8 +193,8 @@
                     </di:ifsetting>
                   </tr>
                   
-                  <mm:import id="copybookNo"><di:copybook /></mm:import>
-                  
+                  <di:copybook><mm:node id="copybookNo" /></di:copybook>
+
                   <mm:node number="$education">
                     <%List blockName = new ArrayList(); %>
                     
