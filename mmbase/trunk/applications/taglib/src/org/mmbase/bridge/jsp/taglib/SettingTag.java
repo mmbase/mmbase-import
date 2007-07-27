@@ -21,10 +21,10 @@ import javax.servlet.jsp.JspException;
 
 
 /**
- * A very simple tag to check if node may be changed.
+ * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.1 2007-07-26 20:55:45 michiel Exp $
+ * @version $Id: SettingTag.java,v 1.2 2007-07-27 08:14:31 michiel Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {
@@ -42,12 +42,11 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     protected Component getComponent() throws JspTagException {
         String c = component.getString(this);
         if (c.length() == 0) {
-            State state = (State) pageContext.getRequest().getAttribute(State.KEY);
-            Component component = state == null ? null : state.getBlock().getComponent();
-            if (component == null) {
-                throw new JspTagException("No current exception found");
+            State state = State.getState(pageContext.getRequest());
+            if (! state.isRendering()) {
+                throw new JspTagException("No current component found");
             }
-            return component;
+            return state.getBlock().getComponent();
         } else {
             return ComponentRepository.getInstance().getComponent(c);
         }
