@@ -48,10 +48,10 @@
 
       <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
 
-      <mm:isnotempty referid="copybookNo">
+      <mm:present referid="copybookNo">
         <!-- if this does not happen, performance drops very much (coaches?) -->
         <mm:constraint field="copybooks.number" referid="copybookNo"/>
-      </mm:isnotempty>
+      </mm:present>
       
       <mm:relatednodes>
         <mm:remove referid="done"/>
