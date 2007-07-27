@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.19 2007-04-25 12:59:23 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.20 2007-07-27 14:07:17 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
-class SetFunction extends AbstractFunction<Object> {
+public class SetFunction extends AbstractFunction<Object> {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
     public static enum Type {
@@ -45,20 +45,16 @@ class SetFunction extends AbstractFunction<Object> {
     private final Method functionMethod;
     private final Object functionInstance ;
     private final Type type;
+    private final int defLength;
 
-    SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, String className, String methodName, Type type) {
+    SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, Class functionClass, String methodName, Type type) {
         super(name, def, returnType);
         this.type = type;
-        Class functionClass;
-        try {
-            functionClass = Class.forName(className);
-        } catch(Exception e) {
-            throw new RuntimeException("Can't create an application function class : " + className + " " + e.getMessage(), e);
-        }
+
         try {
             functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
         } catch(NoSuchMethodException e) {
-            throw new RuntimeException("Function method not found : " + className + "." + methodName + "(" +  Arrays.asList(getParameterDefinition()) +")", e);
+            throw new RuntimeException("Function method not found : " + functionClass + "." + methodName + "(" +  Arrays.asList(getParameterDefinition()) +")", e);
         }
 
         if (Modifier.isStatic(functionMethod.getModifiers())) {
@@ -119,8 +115,16 @@ class SetFunction extends AbstractFunction<Object> {
 	Class xmlReturnType    = returnType.getDataType().getTypeAsClass();
 
         if (! xmlReturnType.isAssignableFrom(methodReturnType)) {
-            log.warn("Return value of function " + className + "." + methodName + "(" + methodReturnType + ") does not match method return type as specified in XML: (" + xmlReturnType + ")");
+            log.warn("Return value of function " + functionClass + "." + methodName + "(" + methodReturnType + ") does not match method return type as specified in XML: (" + xmlReturnType + ")");
         }
+        defLength = def.length;
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public SetFunction(String name, Parameter[] def, Class clazz) {
+        this(name, def, null, clazz, name, Type.CLASS);
     }
 
     /**
@@ -128,7 +132,12 @@ class SetFunction extends AbstractFunction<Object> {
     public Object getFunctionValue(Parameters parameters) {
         parameters.checkRequiredParameters();
         try {
-            return functionMethod.invoke(getInstance(), parameters.toArray());
+            if (defLength < parameters.size()) {
+                // when wrapping this fucntion, it can happen that the number of parameters increases.
+                return functionMethod.invoke(getInstance(), parameters.subList(0, defLength).toArray());
+            } else {
+                return functionMethod.invoke(getInstance(), parameters.toArray());
+            }
         } catch (IllegalAccessException iae) {
             log.error("Function call failed (method not available) : " + name +", method: " + functionMethod +
                        ", instance: " + getInstance() +", parameters: " + parameters);

@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.29 2007-04-25 12:59:23 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.30 2007-07-27 14:07:17 michiel Exp $
  */
 public class FunctionSets {
 
@@ -225,7 +225,13 @@ public class FunctionSets {
                 }
 
                 try {
-                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
+                    Class functionClass;
+                    try {
+                        functionClass = Class.forName(className);
+                    } catch(Exception e) {
+                        throw new RuntimeException("Can't create an application function class : " + className + " " + e.getMessage(), e);
+                    }
+                    SetFunction fun = new SetFunction(functionName, parameters, returnType, functionClass, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
                     fun.setDescription(description);
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
