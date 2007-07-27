@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.2 2007-07-07 07:22:34 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.3 2007-07-27 10:15:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -38,7 +38,7 @@ public class MyNewsUrlConverter implements UrlConverter {
             log.debug(" framework parameters " + frameworkParameters);
         }
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        State state = State.getState(request, false);
+        State state = State.getState(request);
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
         boolean explicitComponent = component != null;

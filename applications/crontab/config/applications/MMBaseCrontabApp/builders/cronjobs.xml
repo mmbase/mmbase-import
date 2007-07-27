@@ -40,7 +40,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">When the cronjob must be executed, using the 'crontab' syntax (see crontab(5))</description>
-        <description xml:lang="nl">Op welke tijdstippen deze cron-taak moetn worden uitgevoerd volgens de 'crontab' syntax (zie crontab(5))</description>
+        <description xml:lang="nl">Op welke tijdstippen deze cron-taak moet worden uitgevoerd volgens de 'crontab' syntax (zie crontab(5))</description>
       </descriptions>
 
       <gui>

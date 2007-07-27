@@ -39,7 +39,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.7 2007-06-11 12:30:53 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.8 2007-07-27 10:15:30 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -87,7 +87,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
                     public void run() {
                         if (cache == null) cache = getCache();
                         if (cache != null) {
-                            int h = cache.getHits();
+                            long h = cache.getHits();
                             statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
                         }
                     }
