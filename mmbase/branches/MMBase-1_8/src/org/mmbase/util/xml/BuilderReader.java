@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.6 2007-06-07 16:07:07 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.7 2007-07-27 14:35:23 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -462,6 +462,10 @@ public class BuilderReader extends DocumentReader {
                     }
                     FunctionProvider provider = (FunctionProvider) claz.newInstance();
                     function = provider.getFunction(providerKey);
+                    if (function == null) {
+                        log.error("Function provider " + provider + "has no function '" + providerKey + "'");
+                        continue;
+                    }
                 } else {
                     if ("".equals(providerKey)) providerKey = functionName;
                     if ("".equals(providerKey)) {
