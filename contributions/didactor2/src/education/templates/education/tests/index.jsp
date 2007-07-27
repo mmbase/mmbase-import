@@ -13,7 +13,7 @@
       <mm:param name="learnobjecttype">tests</mm:param>
     </mm:treeinclude>
     
-    <mm:node number="$user"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
+    <di:copybook><mm:node id="copybookNo" /></di:copybook>
     
     <mm:node number="$testNo">
       <mm:present referid="copybookNo">
