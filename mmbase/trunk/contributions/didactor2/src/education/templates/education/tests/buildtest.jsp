@@ -50,7 +50,6 @@
               <mm:setfield name="testpath" />
             </mm:compare>
             <mm:field name="testpath" write="false" vartype="list">
-              <mm:log>testing ${_}</mm:log>
               <c:choose>
                 <c:when test="${empty _}">
                   <mm:nodelistfunction node="test" name="questions" id="questions" referids="copybookNo@seed" />
@@ -71,19 +70,23 @@
                 
         <mm:listnodes referid="my_questions">
 
-          <mm:nodeinfo type="type">
-            <mm:treeinclude page="/education/${_}/index.jsp" 
-                            objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
-          </mm:nodeinfo>
+          <mm:present referid="copybookNo">
+            <mm:nodeinfo type="type">
+              <mm:treeinclude 
+                  debug="xml"
+                  page="/education/${_}/index.jsp" 
+                  objectlist="$includePath" referids="$referids,_node@question,learnobject@testnumber,madetest" />
+            </mm:nodeinfo>
+          </mm:present>
 
-          <mm:hasnode number="${copybookNo}" inverse="true">
+          <mm:notpresent referid="copybookNo">
             <mm:nodeinfo type="type">
               <div class="${_}">
                 <h1 ><mm:field name="title" /></h1>
                 <mm:field name="text" escape="none"/>
               </div>
             </mm:nodeinfo>
-          </mm:hasnode>
+          </mm:notpresent>
           <input type="hidden" name="shown${_node}" value="${_node}" />
         </mm:listnodes>
           
