@@ -19,10 +19,11 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
- * A very simple tag to check if node may be changed.
+ * A very simple tag to check if a certain action may be performed by the current user..
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayTag.java,v 1.1 2007-07-26 22:22:22 michiel Exp $
+ * @since MMBase-1.9
+ * @version $Id: MayTag.java,v 1.2 2007-07-27 08:14:32 michiel Exp $
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {
