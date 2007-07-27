@@ -432,6 +432,9 @@
     <function key="blockedLearnBlocks" name="blockedLearnBlocks">
       <class>nl.didactor.functions.PeopleClassFunction</class>
     </function>
+    <function key="hasrole">
+      <class>nl.didactor.util.ClassRoom</class>
+    </function>
 
   </functionlist>
 
