@@ -12,7 +12,12 @@ package org.mmbase.bridge.jsp.taglib.util;
 
 
 /**
+ * Representation of the values of 'debug' attributes, as used in tags like mm:include and
+ * mm:component.
+ *
+ * @author Michiel Meeuwissen
  * @since MMBase-1.9
+ * @version $Id: Debug.java,v 1.2 2007-07-27 08:14:32 michiel Exp $
  */
 public enum Debug {
 
