@@ -6,8 +6,9 @@
   <jsp:directive.tag 
       description="Find copybook, for current student"
       />
+  <jsp:directive.attribute name="student"    /> 
 
-  <mm:node number="${user}">
+  <mm:node number="${empty student ? user : student}">
 
     <!-- Direct relation people->classrel->education -->
     <c:choose>
