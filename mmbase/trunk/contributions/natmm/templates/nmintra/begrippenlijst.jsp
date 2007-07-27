@@ -3,8 +3,12 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 
-<%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
+
+<%@include file="includes/vastgoed/override_templateparams.jsp" %>
+
+<%@include file="includes/header.jsp" %>
+
 <%
 String indexLetter = "A";
 String passedLetter = (String) request.getParameter("k");
@@ -28,13 +32,15 @@ function ShowHideLayer(divID) {
 	}
 }
 </script>
-<% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+
+<% boolean bibliotheekStyle = !printPage && NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
+<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+
 <% 
-if(twoColumns) { 
    String rightBarTitle = "";
-   %><td><%@include file="includes/rightbartitle.jsp" %></td><%
-} %>
+%>
+   
+<td><%@include file="includes/rightbartitle.jsp" %></td>
 </tr>
 <tr>
 <td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
@@ -92,7 +98,8 @@ if(twoColumns) {
 
 
 <% 
-if(twoColumns) { 
+
+if(!printPage) { 
    // *********************************** right bar *******************************
    String styleClass = "white";
    String styleClassDark = "white";
