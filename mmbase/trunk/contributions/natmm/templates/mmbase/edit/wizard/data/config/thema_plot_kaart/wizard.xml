@@ -6,6 +6,8 @@
    <action include="config/thema_plot_kaart/load.xml"/>
    <lists>
       <optionlist include="config/option_lists/typen_gebied.xml" />
+      <optionlist include="config/option_lists/boolean_numerical.xml" />
+      
    </lists>
    <steps>
       <step form-schema="edit_thema_plot_kaart"/>
