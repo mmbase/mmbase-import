@@ -50,14 +50,15 @@ for the MMBase node --%>
   </mm:relatednodes>
   </table>
 
-<hr />
-
-<mm:import externid="magid">default.mags</mm:import>
-<div class="link">
- <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
-</div>
-<a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
- </body>
+  <hr />
+  <p>Belongs to <mm:node number="${_node}" jspvar="node"><jsp:expression>node.getNodeManager().getField("magazine").getDataType().getBaseType()</jsp:expression></mm:node></p>
+  
+  <mm:import externid="magid">default.mags</mm:import>
+  <div class="link">
+    <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
+  </div>
+  <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+</body>
 </html>
 </mm:node>
 </mm:cloud>

@@ -13,6 +13,9 @@
   <block name="magazine" 
          classification="mynews entrance mmbase.examples"
          mimetype="text/html">
+    <description xml:lang="en">
+      The famous 'mynews' example, but as a component.
+    </description>
     <head jsp="head.jspx" />
     <body jsp="magazine.jspx">
       <param name="mag" />
