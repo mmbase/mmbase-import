@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.15 2007-07-27 14:07:07 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -79,6 +79,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         }
     }
     /**
+     * @param sb StringBuffer (not a StringBuilder, because there is no appendTail(StringBuilder)...)
      * @since MMBase-1.9
      */
     public static void handleRequest(StringBuffer sb, Parameters parameters, Map<String, Method> requestMethods) {
