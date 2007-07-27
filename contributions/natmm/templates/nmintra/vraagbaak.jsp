@@ -5,13 +5,15 @@
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
-<% boolean twoColumns = !printPage && ! NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(!twoColumns) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+
+<% boolean bibliotheekStyle = !printPage && NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
+<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+
 <% 
-if(twoColumns) { 
    String rightBarTitle = "";
-   %><td><%@include file="includes/rightbartitle.jsp" %></td><%
-} %>
+%>
+<td><%@include file="includes/rightbartitle.jsp" %></td>
+   
 </tr>
 <tr>
 <td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
@@ -130,12 +132,14 @@ if(twoColumns) {
 </td>
 
 <% 
-if(twoColumns) { 
+
+if(!printPage) { 
    // *********************************** right bar *******************************
    String styleClass = "white";
    String styleClassDark = "white";
          
-   %><td style="padding-left:10px;">
+%>
+   <td style="padding-left:10px;">
    <div class="rightcolumn" id="rightcolumn">
    
    <p>
