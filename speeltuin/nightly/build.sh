@@ -19,10 +19,10 @@ export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
 export FILTER="/home/nightly/filterlog"
 
 
-export CCMAILADDRESS="Michiel.Meeuwissen@omroep.nl"
+export CCMAILADDRESS="Michiel.Meeuwissen@gmail.com"
 #export MAILADDRESS="-c ${CCMAILADDRESS} developers@lists.mmbase.org"
-#export MAILADDRESS=${CCMAILADDRESS}
-export MAILADDRESS="developers@lists.mmbase.org"
+export MAILADDRESS=${CCMAILADDRESS}
+#export MAILADDRESS="developers@lists.mmbase.org"
 
 downloaddir="/home/nightly/download"
 optdir="/home/nightly/optional-libs"
@@ -43,12 +43,17 @@ mkdir -p ${builddir}
 
 cd ${BUILD_HOME}/nightly-build/cvs/mmbase
 
-echo Cleaning
-${MAVEN} multiproject:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
-${MAVEN} clean:clean >  ${builddir}/messages.log 2> ${builddir}/errors.log
+echo cwd: `pwd`, build dir: ${builddir}
 
-echo ${CVS} update -d -P -D "'"${cvsversion}"'"
-${CVS} update -d -P -D "'"${cvsversion}"'"  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+echo Cleaning
+echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
+#tail -f ${builddir}/messages.log ${builddir}/errors.log &
+${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+${MAVEN} clean:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+
+echo ${CVS} -q update -d -P -D "'"${cvsversion}"'"
+${CVS} -q update -d -P -D "${cvsversion}"  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+
 
 echo Starting nightly build
 echo jar:install-snapshot
@@ -77,11 +82,14 @@ if [ 1 == 0 ] ; then
     if [ -f latest/tests-results.log ] ; then 
 	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then  
 	    echo Failures, sending mail to ${MAILADDRESS}
-	    cat latest/tests-results.log  | grep -E -A 1 '(FAILURES|^run\.)' | mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
+	    cat latest/tests-results.log  | grep -E -A 1 '(FAILURES|^run\.)' | \
+		mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
 	fi
     else
 	echo Build failed, sending mail to ${MAILADDRESS}
-	echo -e "No test-cases available on build ${version}\n\nPerhaps the build failed:\n\n" | tail -q -n 20 - latest/messages.log last/errors.log | mutt -s "Build failed ${version}" ${MAILADDRESS}
+	echo -e "No test-cases available on build ${version}\n\nPerhaps the build failed:\n\n" | \
+	    tail -q -n 20 - latest/messages.log last/errors.log | \
+	    mutt -s "Build failed ${version}" ${MAILADDRESS}
     fi
 fi
 
