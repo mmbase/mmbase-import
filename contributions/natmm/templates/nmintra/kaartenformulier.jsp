@@ -889,16 +889,15 @@ if(twoColumns) {
 		</tr>
 		<tr height="5">
 			<td></td>
-			<td>
+			<td colspan="3">
+                           <br/>
 		<%String gotoKartLink = "/nmintra/KaartenAction.eb" + rubriekParams + "&shopping_cart"; %>
 		<html:link 
         page="<%=gotoKartLink%>">
-        Bekijk mijn bestelling...
+           <p align="right">Bekijk mijn bestelling...&nbsp;&nbsp</p>
 </html:link>
 
 		</td>
-			<td></td>
-			<td></td>
 		</tr>
 	</table>
  
