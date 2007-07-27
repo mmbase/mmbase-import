@@ -68,8 +68,8 @@
 
     <% int testCounter = 0; %>
 
-    <%-- find copybook --%>
-    <%@include file="find_copybook.jsp"%>
+    <mm:node number="$student"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
+    <mm:log>${student} -> ${copybookNo}</mm:log>
 
     <mm:node number="$education">
       <mm:relatednodescontainer type="learnobjects" role="posrel">
@@ -134,7 +134,6 @@
         </mm:tree>
       </mm:relatednodescontainer> <%-- learnobjects --%>
     </mm:node> <%-- education --%>
-    <mm:remove referid="copybookNo"/>
   </tr>
 </mm:node> <%-- student --%>
 </mm:cloud>
