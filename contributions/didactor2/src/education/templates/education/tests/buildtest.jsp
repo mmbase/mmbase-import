@@ -11,7 +11,7 @@
   <mm:import externid="page" vartype="integer">0</mm:import>
   
   <mm:node id="learnobject" referid="learnobject" />
-  <mm:node number="$user"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
+  <di:copybook><mm:node id="copybookNo" /></di:copybook>
 
   <mm:present referid="copybookNo">
     
