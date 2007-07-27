@@ -128,6 +128,11 @@
     </field>
 
     <field name="magazine" state="virtual">
+      <editor>
+        <positions>
+          <input>-1</input>
+        </positions>
+      </editor>
       <descriptions>
         <description xml:lang="en">A virtual field, backreferring to the magazine</description>
       </descriptions>
