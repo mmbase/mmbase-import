@@ -8,5 +8,8 @@
    </field>
    <list include="config/images/zoek_thema_plot_kaart_related_images.xml" />
    <field name="opmerking"><prompt>Opmerking</prompt></field>
-   <field name="hidden" ftype="checkbox"><prompt>ThemaPlotKaart verbergen?</prompt></field>
+   <field name="hidden" ftype="enum">
+      <prompt>ThemaPlotKaart verbergen?</prompt>
+      <optionlist select="boolean_numerical"/>
+   </field>
 </form-schema>
