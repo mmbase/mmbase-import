@@ -411,7 +411,7 @@ function validationMessage() {
 		var rechtsX = parseInt(document.KaartenForm.rechtsX.value.replace(".", ""));
 		var rechtsY = parseInt(document.KaartenForm.rechtsY.value.replace(".", ""));
 		
-		if ((linksX =="") || (linksY =="") || (rechtsX =="") || (rechtsY =="")
+		if ((linksX ==="") || (linksY ==="") || (rechtsX ==="") || (rechtsY ==="")
 			|| (isNaN(linksX)) || (isNaN(linksY)) || (isNaN(rechtsX)) || (isNaN(rechtsY)) ) {
 		alert("Geen coördinaten opgegeven.");
 		return false;		
