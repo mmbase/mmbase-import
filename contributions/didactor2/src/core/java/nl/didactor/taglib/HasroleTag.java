@@ -21,7 +21,7 @@ import nl.didactor.util.ClassRoom;
 /**
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: HasroleTag.java,v 1.7 2007-07-26 14:32:01 michiel Exp $
+ * @version $Id: HasroleTag.java,v 1.8 2007-07-27 14:34:15 michiel Exp $
  */
 public class HasroleTag extends CloudReferrerTag {
     private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
@@ -89,6 +89,7 @@ public class HasroleTag extends CloudReferrerTag {
             inv = "true".equalsIgnoreCase(inverse);
         }
         String number = "" + org.mmbase.util.Casting.toInt(user);
+        log.debug("Casted " + user + " to " + number);
         if ("0".equals(number)) return inv ? EVAL_BODY : SKIP_BODY;
 
         MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(number);
@@ -103,7 +104,7 @@ public class HasroleTag extends CloudReferrerTag {
            educationStr= "education";
        }
        // obtain education via context
-       Object in_education= getContextProvider().getContextContainer().get( educationStr);
+       Object in_education= getContextProvider().getContextContainer().get(educationStr);
        if (in_education != null) {
            if (in_education instanceof Integer) {
                educationno= ((Integer) in_education).intValue();
@@ -117,13 +118,11 @@ public class HasroleTag extends CloudReferrerTag {
             throw new JspTagException( "No role defined");
         }
 
-        Iterator roles = StringSplitter.split(role).iterator();
         Cloud cloud = getCloudVar();
         boolean hasRole = false;
-        while (roles.hasNext()) {
-            String r = (String) roles.next();
+        for (String r : role.split(",")) {
             try {
-                if (ClassRoom.hasRole( usernode, r, educationno, getCloudVar())) {
+                if (ClassRoom.hasRole(usernode, r.trim(), educationno, getCloudVar())) {
                     hasRole = true; 
                     break;
                 } 
