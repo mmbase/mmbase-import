@@ -35,7 +35,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.59 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.60 2007-07-30 23:01:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -161,7 +161,6 @@ public class BasicFramework implements Framework {
      * Basic Framework implicitely also processes, i'm not sure if we should require any framework
      * to do that (perhaps we could say, that the render method must process, if that is necessary,
      * and not yet done).
-     *
      */
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);

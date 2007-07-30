@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.35 2007-07-30 17:23:58 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.36 2007-07-30 23:01:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -37,6 +37,9 @@ public class BasicComponent implements Component {
     private Block defaultBlock = null;
     private URI uri;
     private int version = -1;
+
+    protected final Collection<Component> dependencies = new HashSet<Component>();
+    protected final Collection<VirtualComponent> unsatisfied  = new HashSet<VirtualComponent>();
 
 
     public BasicComponent(String name) {
@@ -70,6 +73,21 @@ public class BasicComponent implements Component {
 
         version = Integer.parseInt(el.getAttribute("version"));
 
+        {
+            NodeList depElements = el.getElementsByTagName("dependency");
+            for (int i = 0; i < depElements.getLength(); i++) {
+                Element element = (Element) depElements.item(i);
+                String name = element.getAttribute("component");
+                int version = Integer.parseInt(element.getAttribute("version"));
+                Component comp = ComponentRepository.getInstance().getComponent(name);
+                if (comp != null && comp.getVersion() >= version) {
+                    dependencies.add(comp);
+                } else {
+                    unsatisfied.add(new VirtualComponent(name, version));
+
+                }
+            }
+        }
         {
             NodeList bundleElements = el.getElementsByTagName("bundle");
             if(bundleElements.getLength() > 0) {
@@ -146,7 +164,7 @@ public class BasicComponent implements Component {
         if (defaultBlock == null) {
             log.warn("No blocks found.");
         } else {
-            log.service("Default block: " + defaultBlock);
+            log.debug("Default block: " + defaultBlock);
         }
     }
 
@@ -223,5 +241,18 @@ public class BasicComponent implements Component {
 
     public Setting<?> getSetting(String name) {
         return settings.get(name);
+    }
+
+    public Collection<Component> getDependencies() {
+        return Collections.unmodifiableCollection(dependencies);
+    }
+
+    public Collection<VirtualComponent> getUnsatisfiedDependencies() {
+        return Collections.unmodifiableCollection(unsatisfied);
+    }
+
+    public void resolve(VirtualComponent unsat, Component comp) {
+        unsatisfied.remove(unsat);
+        dependencies.add(comp);
     }
 }

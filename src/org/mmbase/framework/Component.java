@@ -17,7 +17,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.13 2007-07-26 23:14:48 michiel Exp $
+ * @version $Id: Component.java,v 1.14 2007-07-30 23:01:42 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -32,6 +32,18 @@ public interface Component {
      * A component can have a version number.
      */
     int getVersion();
+
+    /**
+     * 
+     */
+    Collection<Component> getDependencies();
+
+    /**
+     *
+     */
+    Collection<VirtualComponent> getUnsatisfiedDependencies();
+
+    void resolve(VirtualComponent unsatified, Component satisfied);
 
     /**
      * The description can contain further information about the component, mainly to be displayed

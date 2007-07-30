@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.20 2007-07-30 17:23:58 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.21 2007-07-30 23:01:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -76,6 +76,32 @@ public class ComponentRepository {
         return rep.get(name);
     }
 
+    protected boolean resolve() {
+        int resolved = 0;
+        int unsatisfied = 0;
+        for (Component comp : getComponents()) {
+            Collection<VirtualComponent> us = comp.getUnsatisfiedDependencies();
+            for (VirtualComponent virtual :  us) {
+                Component proposed = getComponent(virtual.getName());
+                if (proposed != null) {
+                    resolved++;
+                    if (proposed.getVersion() >= virtual.getVersion()) {
+                        comp.resolve(virtual, proposed);
+                    } else {
+                        unsatisfied++;
+                        comp.resolve(virtual, virtual);
+                        log.warn("" + comp + " depends on " + virtual + " but the version of " + proposed + " is only " + proposed.getVersion());
+                    }
+                } else {
+                    log.warn("" + comp + " depends on " + virtual + " but no such component.");
+                }
+            }
+        }
+
+        return unsatisfied == 0;
+    }
+
+
     public void shutdown() {
         clear();
     }
@@ -109,6 +135,9 @@ public class ComponentRepository {
             } catch (Exception e) {
                 log.error("For " + loader.getResource(file) + ": " + e.getMessage(), e);
             }
+        }
+        if (! resolve()) {
+            log.error("Not all components satisfied their dependencies");
         }
         log.info("Found the following components " + getComponents());
 
