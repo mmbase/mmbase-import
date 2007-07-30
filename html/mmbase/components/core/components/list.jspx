@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
@@ -41,6 +42,10 @@
           <p>Version: ${c.version}</p>
           <p>Defined in ${c.uri}</p>
           <p>Translations: ${c.bundle}</p>
+          <p>Dependencies: ${c.dependencies}</p>
+          <c:if test="${! empty c.unsatisfiedDependencies}">
+            <p><strong style="color: red;"><em>Unsatisified</em> dependencies: ${c.unsatisfiedDependencies}</strong></p>
+          </c:if>
           <h2>Settings for this component</h2>
           <ul>
             <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
