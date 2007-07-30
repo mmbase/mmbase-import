@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.22 2007-07-30 23:13:58 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.23 2007-07-30 23:51:41 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -44,13 +44,10 @@ public class ComponentRepository {
     public static ComponentRepository getInstance() {
         return repository;
     }
-
-    private Map<String, Component> rep = new HashMap<String, Component>();
-
-    private ComponentRepository() {
+    static {
         ResourceWatcher rw = new ResourceWatcher() {
                 public void onChange(String r) {
-                    readConfiguration(r);
+                    getInstance().readConfiguration(r);
                 }
             };
         rw.add("components");
@@ -60,16 +57,28 @@ public class ComponentRepository {
 
     }
 
+    private Map<String, Component> rep = new HashMap<String, Component>();
+    private List<Component> failed = new ArrayList<Component>();
+
+    private ComponentRepository() { }
+
     public Block.Type[] getBlockClassification(String id) {
         if (id == null) {
             return new Block.Type[] {Block.Type.ROOT};
         } else {
             return Block.Type.getClassification(id, false);
         }
+
+
     }
 
     public Collection<Component> getComponents() {
         return Collections.unmodifiableCollection(rep.values());
+    }
+
+    
+    public Collection<Component> getFailedComponents() {
+        return Collections.unmodifiableCollection(failed);
     }
 
     public Component getComponent(String name) {
@@ -130,7 +139,13 @@ public class ComponentRepository {
                 } else {
                     log.service("Instantatiating component '" + name + "'");
                 }
-                rep.put(name, getComponent(name, doc));
+                if (rep.containsKey(name)) {
+                    failed.add(getComponent(name, doc));
+                    Component org = rep.get(name);
+                    log.error("There is already a component with name '" + name + "' (" + org.getUri() + "), " + doc.getDocumentURI() + " defines another one, which is now ignored");
+                } else {
+                    rep.put(name, getComponent(name, doc));
+                }
             } catch (Exception e) {
                 log.error("For " + loader.getResource(file) + ": " + e.getMessage(), e);
             }
