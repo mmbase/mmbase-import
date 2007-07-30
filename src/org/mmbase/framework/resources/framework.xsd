@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.4 2007-07-25 05:08:40 michiel Exp $
+  @version $Id: framework.xsd,v 1.5 2007-07-30 23:01:42 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -28,6 +28,7 @@
     </xsd:complexType>
   </xsd:element>
 
+  <!--
   <xsd:element name="settings">
     <xsd:complexType>
       <xsd:sequence>
@@ -44,6 +45,7 @@
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:element>
+  -->
 
   <xsd:element name="urlconverters">
     <xsd:complexType>
