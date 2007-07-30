@@ -21,22 +21,31 @@ import org.mmbase.util.logging.Logging;
 /**
  * State is a wrapper arround HttpServletRequest which maintains the current state of framework
  * component rendering.
- * 
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.9 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: State.java,v 1.10 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
-    
+
+    /**
+     * A framework parameter which is required for frameworks which base them selves around this class.
+     */
+    public static final Parameter<String> ACTION   = new Parameter<String>("action", String.class, "");
+
+
     private static final Logger log = Logging.getLoggerInstance(State.class);
 
     public final static String KEY = "org.mmbase.framework.state";
 
-
+    /**
+     * Returns the framework 'State' object for the given request.
+     * @return a State. Never <code>null</code>
+     */
     public static State getState(ServletRequest request) {
         State state = (State) request.getAttribute(KEY);
-        if (state == null) {            
+        if (state == null) {
             state = new State(request);
         }
         return state;
@@ -53,14 +62,14 @@ public class State {
     private final ServletRequest request;
     private final State previousState;
     private Object originalLocalizationContext = null;
-    
+
     public State(ServletRequest r) {
         request = r;
         previousState = (State) r.getAttribute(KEY);
         depth = previousState != null  ? previousState.getDepth() + 1 : 0;
         request.setAttribute(KEY, this);
     }
-    
+
     /**
      * The current window state of rendering. As yet unimplemented.
      * @todo
@@ -70,13 +79,13 @@ public class State {
     }
 
     /**
-     * With recursive includes of blocks, it may occur that the state is only for components inside 
+     * With recursive includes of blocks, it may occur that the state is only for components inside
      * a certain other component's block. In that case the depth &gt; 0.
      */
     public int getDepth() {
         return depth;
     }
-    
+
     public ServletRequest getRequest() {
         return request;
     }
@@ -89,7 +98,7 @@ public class State {
         request.setAttribute(KEY, previousState);
         count = 0;
     }
-    
+
     /**
      * After rendering (a certain renderer of) a block, the state must be informed about that.
      */
@@ -101,7 +110,7 @@ public class State {
     }
 
     /**
-     * Whether something is rendered right now. 
+     * Whether something is rendered right now.
      */
     public boolean isRendering() {
         return renderer != null || processor != null;
@@ -114,9 +123,9 @@ public class State {
     public Parameters getFrameworkParameters() {
         return frameworkParameters;
     }
-   
+
     /**
-     * The currently rendered block, or <code>null</code>
+     * The currently rendered block, or <code>null</code> if not rendering.
      */
     public Block getBlock() {
         return renderer != null ? renderer.getBlock() :
@@ -133,59 +142,67 @@ public class State {
         }
     }
 
-    protected int start(Parameters frameworkParameters) {
-        if (count == 0) {
-            throw new IllegalStateException("State " + this + " was already marked for end.");
-        }
-        this.frameworkParameters = frameworkParameters;
-        log.info("Start rendering for " + frameworkParameters);
-        if (processor == null) {
-            id = previousState == null ? "" + count : previousState.getId() + '.' + count;
-            return count++;
-        } else {
-            log.debug("Just processed " + processor);
-            processor = null;
-            return count; // processor already increaded count.
-        }
-    }
-    /**
-     * Puts this state in 'render' mode.
-     * @return whether action must be performed
-     * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
-     * or when the belonging request was already 'ended'.
-     */
-    public boolean render(Renderer rend, Parameters frameworkParameters) {
-        if (rend.getType().ordinal() < type.ordinal()) {
+    protected void setType(Renderer.Type t) {
+        if (t.ordinal() < type.ordinal()) {
             throw new IllegalStateException();
         }
-        if (rend.getType().ordinal() > type.ordinal()) {
+        if (t.ordinal() > type.ordinal()) {
             // restart keeping the track.
             count = 1;
         }
-        type = rend.getType();
+        type = t;
+    }
 
-        int i = start(frameworkParameters);
-        renderer = rend;
-        
-        localizeContext();
-
-        String a = request.getParameter(Framework.PARAMETER_ACTION.getName());
+    protected boolean needsProcess() {
+        String a = frameworkParameters.get(ACTION);
         log.debug("Action " + a);
-        int action = a == null ? -1 : Integer.parseInt(a);
-        return action == i;
+        return id.equals(a);
+    }
+
+    /**
+     * @return Whether action must be performed.
+     * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
+     * or when the belonging request was already 'ended'.
+
+     */
+    public void startBlock(Parameters frameworkParameters, Renderer.Type t) {
+        if (count == 0) {
+            throw new IllegalStateException("State " + this + " was already marked for end.");
+        }
+        count++;
+
+        setType(t);
+
+        this.frameworkParameters = frameworkParameters;
+        log.info("Start rendering for " + frameworkParameters);
+
+        id = previousState == null ? "" + count : previousState.getId() + '.' + count;
+        request.setAttribute(Framework.COMPONENT_ID_KEY, "mm_" + getId());
+
+    }
+
+
+    /**
+     * Puts this state in 'render' mode.
+     */
+    public void render(Renderer rend) {
+        renderer = rend;
+        localizeContext();
     }
     /**
      * Puts this state in 'process' mode
      * @throws IllegalStateException If the renderer for block block was already rendered.
      * or when the belonging request was already 'ended'.
      */
-    public void process(Processor processor, Parameters frameworkParameters) {
-        if (renderer != null) throw new IllegalStateException();
-        start(frameworkParameters);
-        this.processor = processor;
+    public void process(Processor proc) {
+        if (renderer != null) throw new IllegalStateException(); // works for basic-framework, which
+                                                                 // processes in render method.
+
+        processor = proc;
         localizeContext();
+
     }
-    
+
     public Renderer getRenderer() {
         return renderer;
     }
@@ -203,6 +220,6 @@ public class State {
     public String toString() {
         return "state:" + getId() + (isRendering() ? (":" + (renderer != null ? renderer : processor)) : "");
     }
-    
+
 }
 

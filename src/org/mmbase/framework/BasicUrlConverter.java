@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.14 2007-07-07 07:24:09 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.15 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -86,7 +86,14 @@ public final class BasicUrlConverter implements UrlConverter {
         }
         return show;
     }
-    
+
+    /**
+     * @todo Actually these paremters are only added here, because this urlconverter is always in
+     * BasicFramework. Actually BasicFramework should add them itself.
+     */
+    public Parameter[] getParameterDefinition() {
+        return new Parameter[] {Parameter.REQUEST, State.ACTION, Framework.PROCESS};
+    }
     public StringBuilder getUrl(String path, 
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {

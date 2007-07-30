@@ -16,13 +16,10 @@ import org.mmbase.util.functions.Parameters;
  * nothing, it only can change the state of the block, and hence influence the renderers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.8 2007-07-26 23:35:50 michiel Exp $
+ * @version $Id: Processor.java,v 1.9 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
-
-    public final static String KEY = "org.mmbase.framework.processor";
-
 
     /**
      * Every processor processes for a certain block.

@@ -9,8 +9,8 @@
   <mm:import externid="b" >B</mm:import>
 
   <c:choose>
-    <c:when test="${! empty requestScope['org.mmbase.framework.processor']}">
-      <mm:log>RENDERER:  ${requestScope['org.mmbase.framework.processor']}</mm:log>
+    <c:when test="${! empty requestScope['org.mmbase.framework.state'].processor}">
+      <mm:log>RENDERER:  ${requestScope['org.mmbase.framework.state'].processor}</mm:log>
   
       <mm:write request="a" value="${param.a}" />
       <mm:write request="b" value="${param.b}" />
@@ -23,9 +23,9 @@
         <h1>a = ${a}</h1>
         <h1>b = ${b}</h1>
         <p>Render state: ${requestScope['org.mmbase.framework.state']}</p>
-        <p>Used renderer: ${requestScope['org.mmbase.framework.renderer'].type}</p>
-        <p>Block: ${requestScope['org.mmbase.framework.renderer'].block}</p>
-        <p>Component: ${requestScope['org.mmbase.framework.renderer'].block.component}</p>
+        <p>Used renderer: ${requestScope['org.mmbase.framework.state'].renderer.type}</p>
+        <p>Block: ${requestScope['org.mmbase.framework.state'].renderer.block}</p>
+        <p>Component: ${requestScope['org.mmbase.framework.state'].renderer.block.component}</p>
         <div class="technical" style="display: none;">
           <p>URI: ${request.requestURI}</p>
           <p>ServletPath: ${request.servletPath}</p>
@@ -33,7 +33,10 @@
           <jsp:scriptlet>
             for (Object a : java.util.Collections.list(request.getAttributeNames())) {
           </jsp:scriptlet>
-          <p><jsp:expression>a</jsp:expression>: <jsp:expression>request.getAttribute((String) a)</jsp:expression></p>
+          <p>
+            <jsp:expression>a</jsp:expression>: 
+            <mm:escape><jsp:expression>pageContext.getRequest().getAttribute((String) a)</jsp:expression></mm:escape>
+          </p>
           <jsp:scriptlet>
             }
           </jsp:scriptlet>
@@ -46,7 +49,7 @@
           </mm:link>
         </p>
         <mm:link>
-          <mm:param framework="true" name="process">true</mm:param>
+          <mm:frameworkparam name="process">true</mm:frameworkparam>
           <form method="post" action="${_}">
             <p>Form with ${_}</p>
 
