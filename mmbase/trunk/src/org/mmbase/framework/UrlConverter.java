@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.io.*;
 import java.util.*;
-import org.mmbase.bridge.Node;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 
 /**
  * Responsible for the proper handling of urls within the framework. 
@@ -21,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * userfriendly links within your framework.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.3 2007-07-14 14:14:30 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.4 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  * @todo Parameters are passed as Collections of Map.Entry. Not sure that is handy/correct. The main
  * reason is that you can create such objects easily from both Parameters as from Maps, and that you
@@ -30,6 +28,8 @@ import org.mmbase.util.functions.Parameters;
  */
 public interface UrlConverter {
 
+
+    Parameter[] getParameterDefinition();
 
     /** 
      * Return a (possibly modified) URL for a given path. 
@@ -46,11 +46,15 @@ public interface UrlConverter {
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;). 
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is 
      *                   for some reason called directly. 
-     * @return An URL relative to the root of this web application (i.e. withouth a context path)
+     * @param process    If following the URL must lead to a process rendering. IOW, this URL is
+     *                   for form actions.
+     * @return An URL relative to the root of this web application (i.e. withouth a context path),
+     * or <code>null</code> if this UrlConvert does not know how produce an url for given parameteters.
      */
-    public StringBuilder getUrl(String path, 
+    StringBuilder getUrl(String path, 
                                 Collection<Map.Entry<String, Object>> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps);
+                                Parameters frameworkParameters, 
+                                boolean escapeAmps);
 
 
     /**
@@ -66,8 +70,9 @@ public interface UrlConverter {
      *                            'request' and 'cloud' objects
      * @return A valid interal URL, or <code>null</code> if nothing framework specific could be
      *         determined (this would make it possible to 'chain' frameworks).
+     * or <code>null</code> if this UrlConvert does not know how produce an url for given parameteters.
      */
-    public StringBuilder getInternalUrl(String path, 
+    StringBuilder getInternalUrl(String path, 
                                         Collection<Map.Entry<String, Object>> params, 
                                         Parameters frameworkParameters);
 

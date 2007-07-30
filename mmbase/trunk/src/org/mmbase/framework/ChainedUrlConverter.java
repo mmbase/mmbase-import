@@ -13,44 +13,54 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Keeps track of several UrlConverters and chains them one after another. 
- * If the outcome of an UrlConverter is not null its result is returned. The 
- * question is whether we want UrlConverters to be realy chained so that the 
+ * Keeps track of several UrlConverters and chains them one after another.
+ * If the outcome of an UrlConverter is not null its result is returned. The
+ * question is whether we want UrlConverters to be realy chained so that the
  * outcome of a converter can be added to the outcome of its preceder.
- * 
+ *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.4 2007-07-06 20:28:30 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.5 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
 
     private static final Logger log = Logging.getLoggerInstance(ChainedUrlConverter.class);
-    
-    /** 
+
+    /**
      * List containing the UrlConverters found in the framework configuration.
      */
     private final List<UrlConverter> uclist = new ArrayList<UrlConverter>();
-    
-    
-    /** 
+    private final List<Parameter>   parameterDefinition = new ArrayList<Parameter>();
+
+    /**
      * Adds the UrlConverters to the list.
      */
     public void add(UrlConverter u) {
         uclist.add(u);
+        for (Parameter p : u.getParameterDefinition()) {
+            if (! parameterDefinition.contains(p)) {
+                parameterDefinition.add(p);
+            }
+        }
     }
     public boolean contains(UrlConverter u) {
         return uclist.contains(u);
     }
-    
-    /** 
+
+    public Parameter[] getParameterDefinition() {
+        return parameterDefinition.toArray(Parameter.EMPTY);
+    }
+
+    /**
      * The URL to be printed in a page
      */
-    public StringBuilder getUrl(String path, 
+    public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> params,
                                 Parameters frameworkParameters, boolean escapeAmps) {
 
@@ -65,11 +75,11 @@ public class ChainedUrlConverter implements UrlConverter {
     }
 
 
-    /** 
+    /**
      * The 'technical' url
      */
-    public StringBuilder getInternalUrl(String path, 
-                                        Collection<Map.Entry<String, Object>> params, 
+    public StringBuilder getInternalUrl(String path,
+                                        Collection<Map.Entry<String, Object>> params,
                                         Parameters frameworkParameters) {
         StringBuilder p = new StringBuilder(path);
         for (UrlConverter uc : uclist) {

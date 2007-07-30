@@ -27,11 +27,27 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.6 2007-07-18 07:49:18 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.7 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(MMBaseUrlConverter.class);
+
+    /**
+     * MMBaseUrlConverter points to a jsp which renders 1 block. This parameter indicates of which component.
+     */
+    public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
+
+    /**
+     * MMBaseUrlConverter points to a jsp which renders 1 block. This parameter indicates its name.
+     */
+    public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
+
+    /**
+     * MMBaseUrlConverter wants a 'category'.
+     */
+    public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
+
 
     private final Framework framework;
 
@@ -45,6 +61,10 @@ public class MMBaseUrlConverter implements UrlConverter {
         dir = d;
     }
 
+    public Parameter[] getParameterDefinition() {
+        return new Parameter[] {CATEGORY, COMPONENT, BLOCK};
+    }
+
     public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
@@ -53,17 +73,14 @@ public class MMBaseUrlConverter implements UrlConverter {
         }
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
-        // MMBase urls always shows only one component
-        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
-        String category = frameworkParameters.get(BasicFramework.CATEGORY);
-        if ("".equals(category)) category = null;
+
+        String category = frameworkParameters.get(CATEGORY);
         if (category == null && state.isRendering()) {
-            category = (String) state.getFrameworkParameters().get(BasicFramework.CATEGORY);
-            if ("".equals(category)) category = null;
+            category = state.getFrameworkParameters().get(CATEGORY);
         }
 
-        boolean explicitComponent = component != null;
-
+        // MMBase urls always shows only one block
+        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
         if (component == null) {
             // if no explicit component specified, suppose current component, if there is one:
             if (state.isRendering()) {
@@ -81,20 +98,22 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         assert component != null;
 
-        // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
-        
-        boolean filteredMode = (explicitComponent || request.getServletPath().startsWith(dir));
-        
-        
+        boolean filteredMode = request.getServletPath().startsWith(dir);
+
+
         Map<String, Object> map = new TreeMap<String, Object>();
-        
+
+        // now determin the block:
         Block block;
-        String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
+        String blockParam = frameworkParameters.get(BLOCK);
         if (blockParam != null) {
-            log.debug("found block " + blockParam + " trying it on " + component);
-            if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");            
+            if (log.isDebugEnabled()) {
+                log.debug("found block " + blockParam + " trying it on " + component);
+            }
+
+            if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
             block = component.getBlock(blockParam);
-            if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");           
+            if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");
         } else {
             block = component.getBlock(path);
             if (block != null) {
@@ -107,10 +126,10 @@ public class MMBaseUrlConverter implements UrlConverter {
                     log.debug("No block '" + path + "' found");
                     return null;
                 }
-                
+
             }
             if (block == null) {
-                if(state.isRendering()) { 
+                if(state.isRendering()) {
                     // current block
                     block = state.getRenderer().getBlock();
                 } else {
@@ -119,8 +138,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 }
             }
         }
-        
-        
+
         if (log.isDebugEnabled()) {
             log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
         }
@@ -133,16 +151,16 @@ public class MMBaseUrlConverter implements UrlConverter {
                 log.warn("Needing state, but no state found ");
             }
         }
-    
-        
+
+
         if (! processUrl && state.isRendering()) {
-            // copy all current parameters on the request.
+            // copy all current parameters of the request.
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
-                if (k.equals(BasicFramework.BLOCK.getName())) continue;
-                if (k.equals(BasicFramework.COMPONENT.getName())) continue;
-                if (k.equals(BasicFramework.CATEGORY.getName())) continue;
+                if (k.equals(BLOCK.getName())) continue;
+                if (k.equals(COMPONENT.getName())) continue;
+                if (k.equals(CATEGORY.getName())) continue;
                 map.put(k, entry.getValue()[0]);
             }
         } else {
@@ -153,18 +171,24 @@ public class MMBaseUrlConverter implements UrlConverter {
             Parameters blockParameters = block.createParameters();
             for (Map.Entry<String, Object> entry : parameters) {
                 blockParameters.set(entry.getKey(), entry.getValue());
-            }            
+            }
             map.putAll(framework.prefix(state, blockParameters.toMap()));
         }
 
         if (category == null) {
             Block.Type[] classification = block.getClassification();
         }
-        boolean subComponent = state.getDepth() > 0;
+        //boolean subComponent = state.getDepth() > 0;
 
-        String page = dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
+       
+        String page;
+        if (state.isRendering() && state.getBlock().equals(block)) {
+            page = FrameworkFilter.getPath(request);
+        } else {
+            page = dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
+        }
 
-        //path == null || subComponent ? FrameworkFilter.getPath(request) : path;
+        //path == null || subComponent ? 
 
         StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
         return sb;
@@ -195,7 +219,9 @@ public class MMBaseUrlConverter implements UrlConverter {
                     }
                 }
 
-                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=" + category);
+                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=");
+                url.append(category);
+
                 if (path.length == 3) return url;
 
                 Component comp = ComponentRepository.getInstance().getComponent(path[3]);
@@ -203,7 +229,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                     log.debug("No such component, ignoring this too");
                     return null;
                 }
-                url.append("&component=" + comp.getName());
+                url.append("&component=").append(comp.getName());
 
                 if (path.length == 4) return url;
 
@@ -216,8 +242,10 @@ public class MMBaseUrlConverter implements UrlConverter {
                     return null;
 
                 }
-                url.append("&block=" + block.getName());
-                log.debug("internal URL " + url);
+                url.append("&block=").append(block.getName());
+                if (log.isDebugEnabled()) {
+                    log.debug("internal URL " + url);
+                }
                 return url;
             } else {
                 log.debug("path length " + path.length);
