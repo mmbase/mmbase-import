@@ -9,16 +9,12 @@
 
   <description xml:lang="nl">Security implementatie middels MMBase objecten</description>
   <description xml:lang="en">Security implementation based on MMBase objects</description>
-  <!--
-      No dependencies.
-      Views by taglib.
-  -->
+
+  <dependency component="core" version="9" />
+
 
   <block name="edit_users" mimetype="text/html">
     <description xml:lang="en">Generic security editor</description>
-    <body jsp="/mmbase/security/index_users.jsp">
-    </body>
-
     <head>
       <class name="org.mmbase.framework.StringRenderer">
         <param name="string">
@@ -26,6 +22,9 @@
         </param>
       </class>
     </head>
+    <body jsp="/mmbase/security/index_users.jsp">
+    </body>
+
   </block>
 
   <block name="edit_groups" mimetype="text/html">
