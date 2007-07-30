@@ -10,6 +10,8 @@
   <description xml:lang="nl">Resources</description>
   <description xml:lang="en">Resources</description>
 
+  <dependency component="core" version="9" />
+
   <block name="recent" 
          classification="mmbase.examples resources"
          mimetype="text/html">
@@ -34,8 +36,8 @@
       installed for this to work.
     </description>
     <body jsp="mail.jspx">
-      <param name="to" type="string" />
-      <param name="title" type="string" />
+      <param name="to" type="String" />
+      <param name="title" type="String" />
     </body>
   </block>
 
