@@ -60,8 +60,8 @@
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
               <li>
                 <p><em>${b.name}. </em> ${mm:string(b.description, pageContext)}</p>
-                <p>HEAD: <jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></p>
-                <p>BODY: <mm:import id="body"><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:import><mm:write referid="body" /></p>
+                <p>HEAD: <mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></p>
+                <p>BODY: <mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></p>
                 <p>Processor: <jsp:expression>b.getProcessor()</jsp:expression></p>
               </li>
             </mm:stringlist>
