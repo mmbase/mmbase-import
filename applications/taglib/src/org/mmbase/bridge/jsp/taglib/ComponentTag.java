@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.23 2007-07-26 23:15:37 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.24 2007-07-30 17:22:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -107,9 +107,9 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
                 state = new State(pageContext.getRequest());
             }
             Debug d = Debug.valueOfOrEmpty(debug.getString(this));
-            w.write(d.start(component.getName(), renderer.getUri().toString()));
+            w.write(d.start(component.getName(), renderer.getUri()));
             fw.render(renderer, params, frameworkParams, w, windowStateValue);
-            w.write(d.end(component.getName(), renderer.getUri().toString()));
+            w.write(d.end(component.getName(), renderer.getUri()));
             used = true;
         } catch (FrameworkException fe) {
             throw new TaglibException(fe);

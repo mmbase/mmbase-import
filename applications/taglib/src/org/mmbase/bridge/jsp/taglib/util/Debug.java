@@ -17,33 +17,33 @@ package org.mmbase.bridge.jsp.taglib.util;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: Debug.java,v 1.2 2007-07-27 08:14:32 michiel Exp $
+ * @version $Id: Debug.java,v 1.3 2007-07-30 17:22:59 michiel Exp $
  */
 public enum Debug {
 
     NONE,
 
     HTML {
-        public String start(String name, String url) {
+        public String start(String name, Object url) {
             return "\n<!-- " + name + " page = '" + url + "' -->\n";
         }
-        public String end(String name, String url) {
+        public String end(String name, Object url) {
             return "\n<!-- END " + name + " page = '" + url + "' -->\n";
         }
     },
 
 
     CSS {
-        public String start(String name, String url) {
+        public String start(String name, Object url) {
             return "\n/* " + name +  " page  = '" + url + "' */\n";
         }
-        public String end(String name, String url) {
+        public String end(String name, Object url) {
             return "\n/* END " + name + " page = '" + url + "' */\n";
         }
     },
 
     XML {
-        public String start(String name, String url) {
+        public String start(String name, Object url) {
             return "<!-- " + name + " page = '" + url + "' -->";
         }
         public String end(String name, String url) {
@@ -52,10 +52,10 @@ public enum Debug {
     },
 
     PLAIN {
-        public String start(String name, String url) {
+        public String start(String name, Object url) {
             return "[start:" + name + ":'" + url + "']";
         }
-        public String end(String name, String url) {
+        public String end(String name, Object url) {
             return "[end:" + name + ":'" + url + "']";
         }
     };
@@ -66,11 +66,11 @@ public enum Debug {
     }
 
 
-    public String start(String name, String url) {
+    public String start(String name, Object url) {
         return "";
     }
 
-    public String end(String name, String url) {
+    public String end(String name, Object url) {
         return "";
     }
 

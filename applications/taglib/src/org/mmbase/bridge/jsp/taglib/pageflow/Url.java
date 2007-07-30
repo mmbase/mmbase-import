@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.30 2007-07-18 07:50:47 michiel Exp $;
+ * @version $Id: Url.java,v 1.31 2007-07-30 17:22:59 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -99,9 +99,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     public static Component getComponent(ContextReferrerTag tag) {
         HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
-        Renderer renderer = (Renderer) req.getAttribute(Renderer.KEY);
-        if (renderer != null) {
-            return renderer.getBlock().getComponent();
+        State state =  State.getState(req);
+        if (state.isRendering()) {
+            return state.getBlock().getComponent();
         } else {
             return null;
         }
