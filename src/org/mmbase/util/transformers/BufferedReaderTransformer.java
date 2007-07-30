@@ -17,6 +17,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
+ * @version $Id: BufferedReaderTransformer.java,v 1.3 2007-07-30 16:48:09 michiel Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -31,9 +32,11 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
             BufferedReader br = new BufferedReader(r);
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
-            String line;
-            while ((line = br.readLine()) != null) {
+            String line = br.readLine();
+            while (line != null) {
                 transform(bw, line);
+                line = br.readLine();
+                if (line != null) bw.write('\n');
             }
             br.close();
             bw.flush();
