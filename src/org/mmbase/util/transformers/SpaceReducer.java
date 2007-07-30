@@ -34,7 +34,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
 
     protected void transform(PrintWriter bw, String line) {
         if (!line.trim().equals("")) {
-            bw.println(line);
+            bw.write(line);
         }
     }
 
