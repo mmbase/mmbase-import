@@ -28,7 +28,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.44 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: Parameter.java,v 1.45 2007-07-30 17:33:33 michiel Exp $
  * @see Parameters
  */
 
@@ -76,10 +76,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     public static Parameter[] readArrayFromXml(Element element) {
         List<Parameter> list = new ArrayList();
-        org.w3c.dom.NodeList params = element.getElementsByTagName("param");
+        org.w3c.dom.NodeList params = element.getChildNodes();
         for (int i = 0 ; i < params.getLength(); i++) {
-            Parameter parameter = readFromXml((Element)params.item(i));
-            list.add(parameter);
+            Node n = params.item(i);
+            if (n instanceof Element && "param".equals(n.getNodeName())) {
+                Parameter parameter = readFromXml((Element) n);
+                list.add(parameter);
+            }
         }
         return  list.toArray(Parameter.emptyArray());
     }
