@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.34 2007-07-26 23:14:48 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.35 2007-07-30 17:23:58 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -163,7 +163,7 @@ public class BasicComponent implements Component {
             try {
                 renderer = (Renderer) ComponentRepository.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
                 return null;
             }
         }

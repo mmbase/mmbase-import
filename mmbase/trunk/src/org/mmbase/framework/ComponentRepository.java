@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.19 2007-07-25 07:09:41 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.20 2007-07-30 17:23:58 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -166,7 +166,7 @@ public class ComponentRepository {
         for (int i = 0; i < childs.getLength(); i++) {
             Node node = childs.item(i);
             if (node instanceof Element && node.getNodeName().equals("class")) {
-                instance = (Component) getInstance((Element) node, args);
+                instance =  getInstance((Element) node, args);
             }
         }
         return instance;
