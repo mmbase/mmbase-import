@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.21 2007-07-30 23:01:42 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.22 2007-07-30 23:13:58 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -89,7 +89,6 @@ public class ComponentRepository {
                         comp.resolve(virtual, proposed);
                     } else {
                         unsatisfied++;
-                        comp.resolve(virtual, virtual);
                         log.warn("" + comp + " depends on " + virtual + " but the version of " + proposed + " is only " + proposed.getVersion());
                     }
                 } else {
