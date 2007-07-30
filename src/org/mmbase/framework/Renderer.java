@@ -18,12 +18,10 @@ import org.mmbase.util.functions.*;
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.16 2007-07-26 23:35:50 michiel Exp $
+ * @version $Id: Renderer.java,v 1.17 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
-
-    public final static String KEY = "org.mmbase.framework.renderer";
 
 
     enum WindowState {

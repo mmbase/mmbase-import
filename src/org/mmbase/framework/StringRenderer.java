@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * The overly simple renderer which is simply based on a String present in the configuration file
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.7 2007-07-25 05:08:40 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.8 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -48,11 +48,9 @@ public class StringRenderer extends AbstractRenderer {
         try {
             HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
             if (request == null) throw new RuntimeException("No request parameter in " + blockParameters);
-            Object previousRenderer = request.getAttribute(Renderer.KEY);
             StringBuffer sb = new StringBuffer(string);
             PatternNodeFunctionProvider.handleRequest(sb, blockParameters, requestMethods);
             w.write(sb.toString());
-            request.setAttribute(Renderer.KEY, previousRenderer);
         } catch (IOException ioe) {
             throw new FrameworkException(ioe.getMessage(), ioe);
         }

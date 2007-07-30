@@ -33,7 +33,7 @@
               while (eli.hasNext()) {
                  EventListener el = (EventListener) eli.next();
             </jsp:scriptlet>
-            <li><jsp:expression>el.getClass()</jsp:expression><jsp:text> </jsp:text><jsp:expression>el</jsp:expression></li>
+            <li><jsp:expression>el</jsp:expression></li>
             <jsp:scriptlet>
               }
             </jsp:scriptlet>

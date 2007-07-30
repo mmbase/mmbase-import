@@ -11,6 +11,7 @@ package org.mmbase.framework;
 import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.Node;
@@ -30,11 +31,11 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
- * The framework that does nothing, besides adding the block-parameters to the URL. No support for
- * conflicting block parameters.
+ * The Basic framework is based on a list of {@link UrlConverter}s. It is
+ * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.58 2007-07-26 21:03:11 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.59 2007-07-30 16:36:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -42,21 +43,20 @@ public class BasicFramework implements Framework {
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
-    public final static String RENDER_ID = "org.mmbase.framework.render_id";
-
     public static final String XSD_FRAMEWORK = "framework.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_FRAMEWORK, BasicFramework.class);
     }
 
-
+    /**
+     * A framewok must be able to provide a node to the rendered blocks. This parameter could
+     * indicate _which_ node.
+     * @todo Not yet suported, so basic framework cannot yet support block which require a framework
+     * provided node.
+     */
     public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
-    public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
-    public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
-    public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
 
-    public static final Parameter<Boolean> PROCESS  = new Parameter<Boolean>("process", Boolean.class);
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
 
@@ -71,12 +71,13 @@ public class BasicFramework implements Framework {
     public BasicFramework() {
         urlConverter.add(new BasicUrlConverter());
     }
-    
+
 
     public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
+
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         log.debug("we're calling urlConverter");
         return urlConverter.getInternalUrl(page, params, frameworkParameters);
@@ -86,7 +87,7 @@ public class BasicFramework implements Framework {
         return "BASIC";
     }
 
-    
+
 
     /**
      * Configures the framework by reading its config file 'config/framework.xml'
@@ -120,19 +121,20 @@ public class BasicFramework implements Framework {
     }
 
     public Block getBlock(Parameters frameworkParameters) {
-        Component comp  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
-        if (comp == null) return null;
-        Block block = comp.getBlock(frameworkParameters.get(BLOCK));
-        return block;
+        ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        State state = State.getState(request);
+        return state.getBlock();
     }
 
 
-    public Block getBlock(Component component, String blockName) {
-        return component.getBlock(blockName);
+    /**
+     */
+    public Parameter[] getParameterDefinition() {
+        return urlConverter.getParameterDefinition();
     }
 
     public Parameters createParameters() {
-        return new Parameters(Parameter.REQUEST, Parameter.CLOUD, N, COMPONENT, BLOCK, PARAMETER_ACTION, CATEGORY, PROCESS);
+        return new Parameters(getParameterDefinition());
     }
 
     public boolean makeRelativeUrl() {
@@ -140,7 +142,7 @@ public class BasicFramework implements Framework {
     }
 
 
-    protected void setBlockParameters(State state, Parameters blockParameters) {
+    protected void setBlockParametersForRender(State state, Parameters blockParameters) {
         for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
             if (entry.getValue() == null) {
                 blockParameters.set(entry.getKey(), state.getRequest().getParameter(getPrefix(state) + entry.getKey()));
@@ -148,38 +150,54 @@ public class BasicFramework implements Framework {
         }
     }
 
-    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        if (log.isDebugEnabled()) {
-            log.info("Rendering " + renderer);
+    protected void setBlockParametersForProcess(State state, Parameters blockParameters) {
+        ServletRequest request = state.getRequest();
+        for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * Basic Framework implicitely also processes, i'm not sure if we should require any framework
+     * to do that (perhaps we could say, that the render method must process, if that is necessary,
+     * and not yet done).
+     *
+     */
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
+        ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
         try {
+
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
-            if (state.render(renderer, frameworkParameters)) {
+
+            state.startBlock(frameworkParameters, renderer.getType());
+
+            if (state.needsProcess()) {
                 Processor processor = renderer.getBlock().getProcessor();
+                state.process(processor);
                 log.service("Processing " + renderer.getBlock() + " " + processor);
-                request.setAttribute(Processor.KEY, processor);
-                renderer.getBlock().getProcessor().process(blockParameters, frameworkParameters);
-                request.setAttribute(Processor.KEY, null);
+                setBlockParametersForProcess(state, blockParameters);
+                processor.process(blockParameters, frameworkParameters);
             }
-            request.setAttribute(Renderer.KEY, renderer);
 
-            request.setAttribute(COMPONENT_ID_KEY, "mm" + getPrefix(state));
-            setBlockParameters(state, blockParameters);
-
+            state.render(renderer);
+            setBlockParametersForRender(state, blockParameters);
             renderer.render(blockParameters, frameworkParameters, w, windowState);
-            
+
         } finally {
             state.endBlock();
         }
     }
 
+    /**
+     * Think in the basic framework this method is never called explicitely, because processing is
+     * done implicitely by the render
+     */
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
-            request.setAttribute(entry.getKey(), entry.getValue());
-        }
+        State state = State.getState(request);
+        state.startBlock(frameworkParameters, Renderer.Type.NOT);
+        setBlockParametersForProcess(state, blockParameters);
         processor.process(blockParameters, frameworkParameters);
     }
 
