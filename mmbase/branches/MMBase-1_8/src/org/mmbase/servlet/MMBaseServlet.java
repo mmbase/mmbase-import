@@ -39,7 +39,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.53.2.6 2007-07-24 16:19:50 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.53.2.7 2007-07-30 09:00:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -177,7 +177,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 m.invoke(null, new Object[] { getServletContext(), p});
                 log.service("Using " + p + " for oscache");                
             } catch (Exception e) {
-                log.service(e.getMessage(), e);
+                log.service(e.getMessage());
             }
         }
 
