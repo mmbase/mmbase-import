@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.11 2006-01-17 22:44:58 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.12 2007-07-30 08:50:17 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -67,6 +67,15 @@ public class ASelectAuthentication extends Authentication {
      * the (default) application id as registered in the A-Select Server
      */
     private static final String defaultApplication = "mmbase";
+
+    public static final String XSD = "aselectauthentication.xsd";
+    public static final String XSD_LOC = "http://www.mmbase.org/xmlns/aselectauthentication.xsd";
+    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/aselect";
+
+    static {
+        XMLEntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
+    }
+
 
     /**
      * Whether to use the A-Select agent or communicate with ASelectServer directly.
@@ -104,7 +113,7 @@ public class ASelectAuthentication extends Authentication {
     /**
      * List of possible ASelect applications id's.
      */
-    private List applications = new ArrayList();
+    private List<String> applications = new ArrayList<String>();
 
 
     /**
@@ -129,8 +138,6 @@ public class ASelectAuthentication extends Authentication {
      * file 'ranks.properties', stored in this object.
      */
     private Properties registeredRanks = null;
-
-
 
     /**
      * I hate XML
@@ -431,7 +438,7 @@ public class ASelectAuthentication extends Authentication {
                     if (applications.size() < 1) {
                         throw new RuntimeException ("No 'authenticate' given and no default defined. Don't know how to log in. (Perhaps the A-Select configuration file was not found?)");
                     }
-                    app = (String) applications.get(0);
+                    app = applications.get(0);
 
                     // throw new RuntimeException("No authenticate given");
                 }
