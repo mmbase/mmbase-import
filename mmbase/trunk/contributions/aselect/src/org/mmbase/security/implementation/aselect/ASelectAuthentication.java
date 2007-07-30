@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.12 2007-07-30 08:50:17 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.13 2007-07-30 08:55:14 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -289,9 +289,6 @@ public class ASelectAuthentication extends Authentication {
             }
 
             useCloudContext = manager.getAuthorization() instanceof org.mmbase.security.implementation.cloudcontext.Verify;
-            if (useCloudContext) {
-
-            }
 
             if (useAgent) {
                 log.info("Using aselect agent on port " + agentPort);
