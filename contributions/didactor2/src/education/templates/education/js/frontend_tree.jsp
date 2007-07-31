@@ -96,6 +96,7 @@ function invalidateCurrentFrame() {
 }
 
 function loadIconOn() {
+    Sarissa.clearChildNodes(document.getElementById('contentFrame'));
     document.getElementById("ajax_loader").style.display = "inline";
 }
 function loadIconOff() {
