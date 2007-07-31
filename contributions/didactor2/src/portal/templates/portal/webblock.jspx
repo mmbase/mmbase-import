@@ -40,7 +40,7 @@
         <mm:link referids="_node@article">
           <mm:param name="col2" value="article" />
           <mm:param name="col3" value="ignore" />
-          <a href="${_}" class="navigate">&gt;&gt;</a>
+          <a href="${_}" class="navigate">&amp;gt;&amp;gt;</a>
         </mm:link>
         <mm:relatednodes type="images" max="1">
           <hr />                                  
