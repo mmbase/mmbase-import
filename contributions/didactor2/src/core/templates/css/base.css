@@ -971,9 +971,11 @@ img.pos2rel.image-inline {
 }
 img.pos2rel.image-left { 
   float: left  !important; 
+  clear: left;
 }
 img.pos2rel.image-right { 
   float: right !important;
+  clear: right;
 }
 span.addressbook { 
   display: block;
@@ -984,3 +986,11 @@ div.non_completed a,
 div.blocked a { 
   color: #cccccc;
 }
+
+.prev_next a { 
+  text-decoration: none;
+}
+.prev_next a.popup { 
+  font-weight: bold;
+}
+
