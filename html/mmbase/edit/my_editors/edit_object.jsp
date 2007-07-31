@@ -2,7 +2,7 @@
 <mm:content type="text/html" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="nr" escape="text/html,trimmer" />  <%-- the node we're going to edit --%>
-<mm:import id="nr" reset="true"><mm:node number="$nr"><mm:field name="number" /></mm:node></mm:import>
+<mm:import id="nr" reset="true"><mm:node number="$nr" notfound="skipbody"><mm:field name="number" /><mm:import id="nodefound">y</mm:import></mm:node></mm:import>
 <mm:import externid="pagetitle">Edit <mm:node number="$nr" notfound="skipbody"><mm:nodeinfo type="type" id="ntype" /></mm:node> node</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
@@ -11,7 +11,6 @@
 <body>
 <div id="frame">
 <%@ include file="inc/pageheader.jsp" %>
-<mm:import id="nodefound" />
 <div id="sidebar">
   <div class="padsidebar">
   <mm:node number="$nr" jspvar="node" notfound="skipbody">
@@ -104,11 +103,17 @@
 </form>
 </div><!-- / #node -->
 </mm:node>
-
+    <mm:notpresent referid="nodefound">
+      <div class="lastrow">
+		<div class="message">
+		  <h2>Node not found</h2>
+		  <p>The node you were looking for could not be found or there was no node number specified.</p>
+		</div>
+      </div>
+    </mm:notpresent>
   </div><!-- / .padcontent -->
   <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->
-<mm:notpresent referid="nodefound">Node not found.</mm:notpresent>
 <%@ include file="inc/footer.jsp" %>
 </div><!-- / #frame -->
 </body>

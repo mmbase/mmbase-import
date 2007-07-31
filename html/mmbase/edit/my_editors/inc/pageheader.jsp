@@ -7,7 +7,7 @@
     </fieldset>
   </form>
   <div>
-    <h1>Home</h1>
+    <h1>my_editors</h1>
     <ul>
       <li><a class="top-links" href="index.jsp">home</a> -</li>
       <li><a class="top-links" href="tools.jsp">tools</a> -</li>
