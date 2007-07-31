@@ -87,8 +87,14 @@ public class ExtraStats {
 
    private int getCounts(Cloud cloud, String sEvenementenNumbers, String evenementTimeConstraint, String statstype, String boekingenTypeName){
 
-      String sRealNodepath = "evenement,posrel,inschrijvingen";
-      String sRealConstraints = evenementTimeConstraint;
+      String sRealNodepath = "evenement,posrel,inschrijvingen,posrel2,deelnemers,related,deelnemers_categorie";
+      String sRealConstraints = null;
+      
+      if (boekingenTypeName.equals(BOEKINGEN_TYPE_INDIVIDUELE_BOEKINGEN)) {
+         sRealConstraints = evenementTimeConstraint + " AND deelnemers_categorie.groepsactiviteit != '1'";
+      } else if(boekingenTypeName.equals(BOEKINGEN_TYPE_GROEPSBOEKINGEN)) {
+         sRealConstraints = evenementTimeConstraint + " AND deelnemers_categorie.groepsactiviteit = '1'";         
+      }
 
       NodeList nl = null;
       int iResult = 0;
@@ -99,24 +105,21 @@ public class ExtraStats {
       }
 
       else if (statstype.equals("deelnemers")){
-    	 if(boekingenTypeName.equals(BOEKINGEN_TYPE_INDIVIDUELE_BOEKINGEN)){
-    		 sRealNodepath += ",posrel2,deelnemers";
+    	 if (boekingenTypeName.equals(BOEKINGEN_TYPE_INDIVIDUELE_BOEKINGEN)) {
              nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number,deelnemers.bron",sRealConstraints,null,null,null,false);
              for(int i = 0; i < nl.size(); i++) {
                 iResult += nl.getNode(i).getIntValue("deelnemers.bron");
              }
-    	 }else if(boekingenTypeName.equals(BOEKINGEN_TYPE_GROEPSBOEKINGEN)){
+    	 } else if(boekingenTypeName.equals(BOEKINGEN_TYPE_GROEPSBOEKINGEN)) {
     		 // In the case of a groepsboeking the deelnemers.bron field is empty and the deelnemers_categorie.aantal_per_deelnemer should be used. 
-    		 sRealNodepath += ",posrel2,deelnemers,related,deelnemers_categorie";
              nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"deelnemers_categorie.aantal_per_deelnemer",sRealConstraints,null,null,null,false);
              for(int i = 0; i < nl.size(); i++) {
                 iResult += nl.getNode(i).getIntValue("deelnemers_categorie.aantal_per_deelnemer");
              }
-    	 }
+    	    }
       }
 
       else if (statstype.equals("leden")){
-         sRealNodepath += ",posrel2,deelnemers,related,deelnemers_categorie";
          if(!sRealConstraints.equals("")) { sRealConstraints += " AND "; }
          sRealConstraints += " ( UPPER(deelnemers_categorie.naam) NOT like '%NIET%' )";
          nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number,deelnemers.bron",sRealConstraints,null,null,null,false);
@@ -126,7 +129,6 @@ public class ExtraStats {
       }
 
       else if (statstype.equals("opbrengst")){
-         sRealNodepath += ",posrel2,deelnemers";
          nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number,posrel2.pos",sRealConstraints,null,null,null,false);
          for(int i = 0; i < nl.size(); i++) {
             iResult += nl.getNode(i).getIntValue("posrel2.pos");
@@ -142,7 +144,7 @@ public class ExtraStats {
                tsEvenementNumbers.add(eventNumber);
                iResult++;
             }
-         }
+         }        
       }
 
       return iResult;
@@ -288,6 +290,9 @@ public class ExtraStats {
       // *** count total for tmNames ***
       String evenementenNumbers = null;
       String key = null;
+      
+      // collection = EVENEMENT_TYPES ("evenement_type" objects or "inschrijvings_categorie")
+      
       Set set = collection.entrySet();
       Iterator iterator = set.iterator();
       while (iterator.hasNext()) {
