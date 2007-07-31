@@ -16,6 +16,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.storage.search.*;
 
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
 
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.12 2007-07-26 14:35:52 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.13 2007-07-31 15:57:28 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -203,6 +204,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
     }
     
 
+    private static CharTransformer escaper = new Xml(Xml.ESCAPE);
     /**
      * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the 
      * request will be handled somewhere else in the filterchain.
@@ -359,7 +361,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             } else {
                 attributes.put("includePath", "" + provider.getNumber());
             }
-            attributes.put("referids", "class?,workgroup?");
+            attributes.put("referids", "class?,workgroup?,student?,c?");
 
             providerCache.put(key, attributes);
 
@@ -377,7 +379,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         String c = useParameters ? request.getParameter("class") : null;
         if (c != null) {
             if (cloud.hasNode(c)) {
-                userAttributes.put("class", cloud.getNode(c));
+                userAttributes.put("class", Casting.wrap(cloud.getNode(c), escaper));
             }
         } else {
             Object education = attributes.get("education");
@@ -388,7 +390,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                     Parameters params = fun.createParameters();
                     params.set("education", education);
                     Node claz = (Node) fun.getFunctionValue(params);
-                    userAttributes.put("class", claz);
+                    userAttributes.put("class", Casting.wrap(claz, escaper));
                 } catch (NotFoundException nfe) {
                     // never mind
                     userAttributes.put("class", null);
