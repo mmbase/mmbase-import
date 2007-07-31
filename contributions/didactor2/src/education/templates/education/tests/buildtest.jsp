@@ -28,21 +28,18 @@
   <div class="learnenvironment">
     <!-- Take care: form name is used in JavaScript of the specific question jsp pages! -->
     <mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,madetest@thismadetest" write="false"/>
-    <form name="questionform" 
-          onsubmit="postContent('${post}', this); return false;"
+    <form name="questionform"           
           action="${post}"
           method="POST">
-
       
       <mm:node number="$learnobject" id="test">
-
         <mm:field name="showtitle">
           <mm:compare value="1">
             <h1><mm:field name="name"/></h1>
           </mm:compare>
         </mm:field>
 
-        <mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield>
+        <mm:hasfield name="text"><mm:field name="text" escape="toxml"/></mm:hasfield>
 
         <mm:present referid="copybookNo">
           <mm:node referid="madetest">
@@ -53,7 +50,6 @@
               <c:choose>
                 <c:when test="${empty _}">
                   <mm:nodelistfunction node="test" name="questions" id="questions" referids="copybookNo@seed" />
-                  <mm:setfield name="testpath">${questions}</mm:setfield>
                 </c:when>
                 <c:otherwise>
                   <mm:listnodes referid="_" id="questions" />
@@ -83,7 +79,7 @@
             <mm:nodeinfo type="type">
               <div class="${_}">
                 <h1 ><mm:field name="title" /></h1>
-                <mm:field name="text" escape="none"/>
+                <mm:field name="text" escape="toxml"/>
               </div>
             </mm:nodeinfo>
           </mm:notpresent>

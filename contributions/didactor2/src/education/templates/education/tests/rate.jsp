@@ -40,13 +40,6 @@
       <mm:compare referid="command" value="done">
         <!-- If "done" pressed then show the feedback else show next question set -->
         <div>
-          <mm:hasnode number="component.progress">
-            <script language="javascript">
-              reloadProgress();
-              reloadEducationTree();
-              scrollToTop();
-            </script>
-          </mm:hasnode>
           <mm:field name="feedbackpage">
             <mm:compare value="0">
               <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" 
