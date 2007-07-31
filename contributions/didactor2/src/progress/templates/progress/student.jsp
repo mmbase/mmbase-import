@@ -26,7 +26,7 @@
 
       <!-- WTF is happening here?: -->
       <mm:import id="student"><mm:write referid="user" /></mm:import> 
-
+      
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <mm:import id="student" externid="student" reset="true" />
       </mm:islessthan>
@@ -104,6 +104,8 @@
                 </tr>
                 <mm:import externid="c">${class}</mm:import>
 
+                <mm:log>Using class: ${c}</mm:log>
+
                 <mm:node referid="student">
                   <%-- direct relation people-classrel-educations --%>
                   <mm:notpresent referid="c">
@@ -117,7 +119,8 @@
                   <%-- people-classrel-class-related-educations --%>
                   <mm:present referid="c">
                     <mm:relatednodescontainer path="classrel,classes" element="classrel">
-                      <mm:constraint field="classes.number" value="$c" />
+                      <mm:log>${c}</mm:log>
+                      <mm:constraint field="classes.number" value="${c}" />
                       <mm:relatednodes>
                         <mm:node id="classrel" />
                       </mm:relatednodes>
