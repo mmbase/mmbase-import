@@ -62,6 +62,7 @@
 
   <!-- MySQL disallowed fields (copied from the old configurations)   -->
   <disallowed-fields>
+    <disallowed-field name="case" replacement="m_case"/> <!-- standard SQL keyword -->
     <disallowed-field name="column" replacement="m_column"/> <!-- standard SQL keyword -->
     <disallowed-field name="columns" replacement="m_columns"/>
     <disallowed-field name="comment" replacement="m_comment"/>
