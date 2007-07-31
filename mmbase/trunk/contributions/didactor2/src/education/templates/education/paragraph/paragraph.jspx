@@ -25,7 +25,7 @@
      </mm:field>     
      <di:pos2relatedimage />
      <div class="paragraphs">
-       <mm:field name="body" escape="none" />
+       <mm:field name="body" escape="toxml" />
      </div>
      
      <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos" id="urls" />
