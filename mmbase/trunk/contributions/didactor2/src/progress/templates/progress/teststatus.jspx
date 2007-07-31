@@ -20,7 +20,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     number="$testNo">
-
+  
     <!-- Determine #questions to be answered -->
     <mm:field name="questionamount">
       <mm:compare value="-1">
@@ -52,7 +52,6 @@
         <!-- if this does not happen, performance drops very much (coaches?) -->
         <mm:constraint field="copybooks.number" referid="copybookNo"/>
       </mm:present>
-      
       <mm:relatednodes>
         <mm:remove referid="done"/>
         <mm:import id="done">true</mm:import>
