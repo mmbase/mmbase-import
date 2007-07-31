@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.4.2.3 2007-06-28 09:39:54 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.4.2.4 2007-07-31 11:59:26 michiel Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
@@ -30,8 +30,12 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     private static final String NL_TOKEN = "XXXX_NL_XXXX";
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter("tags", String.class, ""),  // allowed tags, default no tags are permitted.
-        new Parameter("addbrs", Boolean.class, Boolean.FALSE)
+        new Parameter("addbrs", Boolean.class, Boolean.FALSE),
+        new Parameter("escapeamps", Boolean.class, Boolean.FALSE)
     };
+
+
+
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -58,9 +62,10 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         } else if (tags.equals("NONE")) {
             tagList = NONE;
         } else {
-            throw new RuntimeException("Unknonw value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
+            throw new RuntimeException("Unknown value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
         }
         final Boolean addbrs = (Boolean) parameters.get("addbrs");
+        final Boolean escapeamps = (Boolean) parameters.get("escapeamps");
 
         ParserGetter kit = new ParserGetter();
         final HTMLEditorKit.Parser parser = kit.getParser();
@@ -68,6 +73,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 public Writer transform(Reader r, Writer w) {
                     final TagStripper callback = new TagStripper(w, tagList);
                     callback.addBrs = addbrs.booleanValue();
+                    callback.escapeAmps = escapeamps.booleanValue();
                     if (addbrs.booleanValue()) {
                         r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
                                 protected boolean replace(String string, Writer w, Status status) throws IOException {
@@ -226,6 +232,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         private final List tags;
         boolean addImplied = false;
         boolean addBrs     = false;
+        boolean escapeAmps = true;
         List impliedTags = new ArrayList();
         List  stack       = new ArrayList();
 
@@ -260,10 +267,15 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     }
                     
                     if (((HTML.Tag) stack.get(0)).isPreformatted()) {
-                        out.write(t.replaceAll(NL_TOKEN, "\n"));
+                        t = t.replaceAll(NL_TOKEN, "\n");
                     } else {
-                        out.write(t.replaceAll(NL_TOKEN, "<br class='auto' />"));
+                        t = t.replaceAll(NL_TOKEN, "<br class='auto' />");
                     }
+                    if (escapeAmps) {
+                        // see comment in handleAttributes
+                        t = t.replaceAll("&", "&amp;");
+                    }
+                    out.write(t);
                 } else {
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
                         out.write(text, 1, text.length - 1);
@@ -289,6 +301,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             return t;
             
         }
+       
+
         protected void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
             Enumeration en = attributes.getAttributeNames();
             while (en.hasMoreElements()) {
@@ -305,7 +319,14 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     out.write("" + attName);
                     out.write('=');
                     out.write('"');
-                    out.write(("" + value).replaceAll("\"", "&quot;"));
+                    String s = "" + value;
+                    if (escapeAmps) {
+                        // HTMLEditorKit translates all Iso1 entities to unicode.
+                        // Escape remaining amps, to produce valid Xml.
+                        s = s.replaceAll("&", "&amp;");
+                    }
+                    s = s.replaceAll("\"", "&quot;");
+                    out.write(s);
                     out.write('"');
                 }
             }
@@ -434,17 +455,18 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         Parameters params = factory.createParameters();
         params.set("tags", "XSS");
         params.set("addbrs", Boolean.TRUE);
+        params.set("escapeamps", Boolean.TRUE);
         CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
         
         //        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";
-//        String source = "<p style=nanana/>";
-//        String source = "<p style=\"nanana\">text</p>";
-        String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
+        //        String source = "<p style=nanana/>";
+        //        String source = "<p style=\"nanana\">text</p>";
+        String source = "<P sTyle=\"nan&eacute;ana\">hoi <a href=\"ugly?a=b&c=d\">hoi></a>\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
         //System.out.println("Source      = "+source);
         transformer.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
         //System.out.println("Destination = "+dest);
 
-        //org.mmbase.util.ThreadPools.filterExecutor.shutdown();
+        org.mmbase.util.ThreadPools.shutdown();
 
         
     }
