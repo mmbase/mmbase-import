@@ -44,14 +44,14 @@
 	  <mm:present referid="nr"> <%-- if there is a nr, there is a node and thus we are trying to find another to relate to --%>
 	    <mm:field name="number"><mm:compare value="$nr" inverse="true"><%-- don't relate to self --%>
 		<mm:compare referid="dir" value="destination"><mm:maycreaterelation role="$rkind" source="nr" destination="foundnode">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir">
-		    <mm:param name="rnr"><mm:field name="number" /></mm:param>
-		  </mm:url>"><img src="img/mmbase-relright.png" alt="-&gt;" width="21" height="20" border="0" /></a>
+          <a title="relate object (child)" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir">
+            <mm:param name="rnr"><mm:field name="number" /></mm:param>
+          </mm:url>"><img src="img/mmbase-relright.png" alt="relate &rarr;" width="21" height="20" border="0" /></a>
 		</mm:maycreaterelation></mm:compare>
 		<mm:compare referid="dir" value="source"><mm:maycreaterelation role="$rkind" source="foundnode" destination="nr">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir">
-		    <mm:param name="rnr"><mm:field name="number" /></mm:param>
-		  </mm:url>"><img src="img/mmbase-relleft.png" alt="-&lt;" width="21" height="20" /></a>
+          <a title="relate object (parent)" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir">
+            <mm:param name="rnr"><mm:field name="number" /></mm:param>
+          </mm:url>"><img src="img/mmbase-relleft.png" alt="&larr; relate" width="21" height="20" /></a>
 		</mm:maycreaterelation></mm:compare>
 		</mm:compare></mm:field>
 	  </mm:present>
@@ -66,7 +66,7 @@
   </tr>
   </mm:listnodes>
   <tr>
-    <td colspan="${colspan + 3}" class="batches">
+    <td colspan="${colspan + 3}"<mm:compare referid="size" value="0" inverse="true"> class="batches"</mm:compare>>
       <mm:compare referid="size" value="0">
         <div class="message">
 		  <h3>No nodes found</h3>

@@ -23,11 +23,11 @@
 	<dt>edit object</dt>
 	<dd><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></dd>
   </dl><dl>
-	<dt>relate object as a child</dt>
-	<dd><img src="img/mmbase-relleft.png" alt="relate child" width="21" height="20" /></dd>
+    <dt>relate object (child)</dt>
+    <dd><img src="img/mmbase-relleft.png" alt="&larr; relate" width="21" height="20" /></dd>
   </dl><dl>
-	<dt>relate object as a parent</dt>
-	<dd><img src="img/mmbase-relright.png" alt="relate parent" width="21" height="20" /></dd>
+    <dt>relate object (parent)</dt>
+    <dd><img src="img/mmbase-relright.png" alt="relate &rarr;" width="21" height="20" /></dd>
   </dl><dl>
 	<dt>up</dt>
 	<dd><img src="img/mmbase-up.png" alt="up" width="21" height="20" /></dd>

@@ -138,10 +138,12 @@ p.message { margin: 2em auto 2em auto; }
 
 strong.message
 {
-    margin: 2px auto 0 auto;
-    padding: 2px 0 0 0;
+    width: auto;
     display: block;
-    width: 98%;
+    padding: 2px;
+    border-width: 2px 2px 0 2px;
+    border-color: #FC0;
+    border-style: solid;
 }
 
 caption
@@ -412,6 +414,7 @@ textarea
 #results .relicon { text-align: center; }
 #results p { text-align: center; }
 #results h3 { text-align: center; }
+.batches { border-top: 1px solid #c8cfd9; }
 .even { background: #E6E9DD; }
 .odd { background: #fff; }
 tr.odd:hover { background-color: #e0f0e0; }
@@ -494,18 +497,19 @@ tr.even:hover { background-color: #d8e8d8; }
 	white-space: nowrap;
 }
 
+/*
 .editrelation
 {
     margin: 0;
     padding: 0 0 6px 0;
 }
+*/
 
 .editrelation fieldset
 {
-    border: 0;
-    /*background-color: #efefef;*/
-    margin: -2px;
-    padding: 2px;
+    border: 2px solid #FC0;
+    background-color: #FFC;
+    padding: 4px;
 }
 
 /* label for relation fields */
