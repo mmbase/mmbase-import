@@ -18,7 +18,8 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.7 2007-06-28 09:40:46 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.8 2007-07-31 12:02:43 michiel Exp $
+ * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
@@ -28,7 +29,8 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
     private static final String NL_TOKEN = "XXXX_NL_XXXX";
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter<String>("tags", String.class, ""),  // allowed tags, default no tags are permitted.
-        new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE)
+        new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE),
+        new Parameter<Boolean>("escapeamps", Boolean.class, Boolean.FALSE)
     };
 
     public Parameters createParameters() {
@@ -59,6 +61,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
             throw new RuntimeException("Unknonw value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
         }
         final Boolean addbrs = (Boolean) parameters.get("addbrs");
+        final Boolean escapeamps = (Boolean) parameters.get("escapeamps");
 
         ParserGetter kit = new ParserGetter();
         final HTMLEditorKit.Parser parser = kit.getParser();
@@ -66,6 +69,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                 public Writer transform(Reader r, Writer w) {
                     final TagStripper callback = new TagStripper(w, tagList);
                     callback.addBrs = addbrs;
+                    callback.escapeAmps = escapeamps;
                     if (addbrs) {
                         r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
                                 protected boolean replace(String string, Writer w, Status status) throws IOException {
@@ -221,6 +225,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         private final List<Tag> tags;
         boolean addImplied = false;
         boolean addBrs     = false;
+        boolean escapeAmps = false;
         List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
 
@@ -256,10 +261,16 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     }
                     
                     if (stack.get(0).isPreformatted()) {
-                        out.write(t.replaceAll(NL_TOKEN, "\n"));
+                        t = t.replaceAll(NL_TOKEN, "\n");
                     } else {
-                        out.write(t.replaceAll(NL_TOKEN, "<br class='auto' />"));
+                        t = t.replaceAll(NL_TOKEN, "<br class='auto' />");
                     }
+                    if (escapeAmps) {
+                        // see comment in handleAttributes
+                        t = t.replaceAll("&", "&amp;");
+                    }
+                    out.write(t);
+
                 } else {
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
                         out.write(text, 1, text.length - 1);
@@ -302,7 +313,14 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     out.write("" + attName);
                     out.write('=');
                     out.write('"');
-                    out.write(("" + value).replaceAll("\"", "&quot;"));
+                    String s = "" + value;
+                    if (escapeAmps) {
+                        // HTMLEditorKit translates all Iso1 entities to unicode.
+                        // Escape remaining amps, to produce valid Xml.
+                        s = s.replaceAll("&", "&amp;");
+                    }
+                    s = s.replaceAll("\"", "&quot;");
+                    out.write(s);
                     out.write('"');
                 }
             }
