@@ -118,7 +118,9 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
            </mm:link>
          </div>
        </mm:present>
-
+       <mm:treefile page="/gfx/ajax-loader.gif" objectlist="$includePath" write="false">
+         <img id="ajax_loader" src="${_}" style="display: none;"/>
+       </mm:treefile>
        <div id="contentFrame">...</div>
 
      </div>

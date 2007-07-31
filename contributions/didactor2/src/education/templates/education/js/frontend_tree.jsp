@@ -95,16 +95,24 @@ function invalidateCurrentFrame() {
     usedFrames[document.href_frame] = null;
 }
 
+function loadIconOn() {
+    document.getElementById("ajax_loader").style.display = "inline";
+}
+function loadIconOff() {
+    document.getElementById("ajax_loader").style.display = "none";
+}
+
 function requestContent(href) {
    var content = usedFrames[href];
    if (content == null) {
+       loadIconOn();
        var xmlhttp = new XMLHttpRequest();
        xmlhttp.open("GET", href, true);
        xmlhttp.onreadystatechange = function()  {
            if (xmlhttp.readyState == 4) {
                try {
                     var contentEl = document.getElementById('contentFrame');
-                    Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+                    Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
                     document.href_frame = href;
                } catch (exception) {
                    // backwards compatibility
@@ -139,6 +147,7 @@ function requestContent(href) {
 }
 
 function postContent(href, form) {
+    loadIconOn();
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", href, true);
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -146,7 +155,7 @@ function postContent(href, form) {
         if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
                 var contentEl = document.getElementById('contentFrame');
-                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl);
+                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
                 usedFrames[document.href_frame] = null;
                 document.href_frame = href;
                 usedFrames[href] = contentEl.childNodes;            
