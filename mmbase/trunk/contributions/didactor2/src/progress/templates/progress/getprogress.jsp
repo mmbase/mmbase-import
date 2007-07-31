@@ -12,48 +12,54 @@
 
 
 <mm:node number="$student" notfound="skip">
+  <mm:context>
+    <di:copybook student="${student}">
+      <mm:present referid="copybookNumber">
+        <mm:remove referid="copybookNumber" />
+      </mm:present>
+      <mm:node id="copybookNumber" />
+    </di:copybook>
 
-  <di:copybook><mm:node id="copybookNo" /></di:copybook>
+    <mm:present referid="copybookNumber">
+      <os:cache time="${empty copybookNumber ? 600 : 0}" key="progress-${education}-${student}-${copybookNumber}">
+        <%-- performance of this is very bad if no copybook DIDACTOR-50 
+        So caching it some time, to increase responsiveness.
+        --%>
+        <%
+        int nof_tests= 0;
+        int nof_tests_passed= 0;
+        %>
+        
+        <mm:node number="$education" notfound="skip">
+          <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+          
+          <mm:relatednodescontainer type="learnobjects" role="posrel">
+            <mm:sortorder field="posrel.pos" direction="up"/>
+            
+            <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
+              <mm:nodeinfo type="type">
+                <mm:compare value="tests">
+                  <% nof_tests++; %>
+                  <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+                  
+                  <jsp:directive.include file="teststatus.jspx" />
+                  
+                  <mm:compare referid="teststatus" value="passed">
+                    <% nof_tests_passed++; %>
+                  </mm:compare>
+                </mm:compare>
+              </mm:nodeinfo>
+            </mm:tree>
+          </mm:relatednodescontainer>
+          
+          <%= nof_tests > 0 ? (double)nof_tests_passed / (double)nof_tests : 0%>
+          
+        </mm:node>
+      </os:cache>
+    </mm:present>
+    <mm:notpresent referid="copybookNumber">0</mm:notpresent>
 
-   <mm:present referid="copybookNo">
-   <os:cache time="${empty copybookNo ? 600 : 0}" key="progress-${education}-${student}-${copybookNo}">
-     <%-- performance of this is very bad if no copybook DIDACTOR-50 
-          So caching it some time, to increase responsiveness.
-     --%>
-     <%
-     int nof_tests= 0;
-     int nof_tests_passed= 0;
-     %>
-     
-     <mm:node number="$education" notfound="skip">
-       <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
-       
-       <mm:relatednodescontainer type="learnobjects" role="posrel">
-         <mm:sortorder field="posrel.pos" direction="up"/>
-         
-         <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
-           <mm:nodeinfo type="type">
-             <mm:compare value="tests">
-               <% nof_tests++; %>
-               <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
-               
-               <jsp:directive.include file="teststatus.jspx" />
-
-               <mm:compare referid="teststatus" value="passed">
-                  <% nof_tests_passed++; %>
-               </mm:compare>
-            </mm:compare>
-           </mm:nodeinfo>
-         </mm:tree>
-      </mm:relatednodescontainer>
-      
-      <%= nof_tests > 0 ? (double)nof_tests_passed / (double)nof_tests : 0%>
-
-     </mm:node>
-   </os:cache>
-   </mm:present>
-   <mm:notpresent referid="copybookNo">-1</mm:notpresent>
-
+  </mm:context>
 </mm:node>
 
 </mm:cloud>

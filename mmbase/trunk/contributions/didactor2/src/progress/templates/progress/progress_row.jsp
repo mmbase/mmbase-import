@@ -1,8 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
- %>
-<mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud method="delegate">
+ %><mm:content postprocessor="reducespace" expires="0">
+  <mm:cloud rank="didactor user">
     
     <jsp:directive.include file="/shared/setImports.jsp" />
     <jsp:directive.include file="/education/tests/definitions.jsp" />
@@ -13,12 +12,13 @@
     <mm:import externid="student"           required="true"/>
     <mm:import externid="startAt"           jspvar="startAt" vartype="Integer" required="true"/>
     <mm:import externid="direct_connection" required="true"/>
+    <mm:import externid="class" reset="true">${requestScope.class}</mm:import>
 
 
     <mm:node number="$student">
       <tr>
         <td style="border-color:#000000; border-top:0px; border-left:0px">
-          <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="provider,education,student,class"></mm:treefile>">
+          <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="class,student,class@c"></mm:treefile>">
           <di:person />
         </a>
       </td>
@@ -27,49 +27,61 @@
         ${progress * 100}
       </td>
       
-      <% //direct relation people-classrel-educations %>
+      <%-- direct relation people-classrel-educations --%>
       <mm:compare referid="direct_connection" value="true">
         <mm:list fields="classrel.number" path="people,classrel,educations" constraints="people.number=$student and educations.number=$education">
           <mm:node element="classrel" id="classrel" />
       </mm:list>
     </mm:compare>
-    <% //people-classrel-class-related-educations %>
-    <mm:compare referid="direct_connection" value="true" inverse="true">
-      <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
-        <mm:node element="classrel" id="classrel" />
-      </mm:list>
-    </mm:compare>
+    <mm:present referid="class">
+      <%-- people-classrel-class-related-educations --%>
+      <mm:compare referid="direct_connection" value="true" inverse="true">
+        <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
+          <mm:node element="classrel" id="classrel" />
+        </mm:list>
+      </mm:compare>
+    </mm:present>
 
 
-    <mm:node referid="classrel">
-      <td style="border-color:#000000; border-top:0px; border-left:0px">
-         <mm:field name="logincount"/>
-      </td>
-      <td style="border-color:#000000; border-top:0px; border-left:0px">
-        <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
-          <%
-             int hour = onlinetime.intValue() / 3600;
-             int min = (onlinetime.intValue() % 3600) / 60;
-          %>
-          <%=hour%>:<%
-             if (min < 10)
-             {
-                %>0<%
-             }
-          %><%=min%>
-        </mm:field>
-      </td>
-      <td style="border-color:#000000; border-top:0px; border-left:0px">
-        <mm:node number="$student">
-          <mm:field name="gui(lastactivity)" />
-        </mm:node>
-      </td>
-    </mm:node>
+    <mm:present referid="classrel">
+      <mm:node referid="classrel">
+        <td style="border-color:#000000; border-top:0px; border-left:0px">
+          <mm:field name="logincount"/>
+        </td>
+        <%-- wtf is happening here, and why is it in a JSP? --%>
+        <td style="border-color:#000000; border-top:0px; border-left:0px">
+          <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
+            <%
+            int hour = onlinetime.intValue() / 3600;
+            int min = (onlinetime.intValue() % 3600) / 60;
+            %>
+            <%=hour%>:<%
+            if (min < 10)
+            {
+            %>0<%
+            }
+            %><%=min%>
+          </mm:field>
+        </td>
+        <td style="border-color:#000000; border-top:0px; border-left:0px">
+          <mm:node number="$student">
+            <mm:field name="gui(lastactivity)" />
+          </mm:node>
+        </td>
+      </mm:node>
+    </mm:present>
+    <mm:notpresent referid="classrel">
+      <td /><td />
+    </mm:notpresent>
 
     <% int testCounter = 0; %>
 
-    <mm:node number="$student"><di:copybook><mm:node id="copybookNo" /></di:copybook></mm:node>
-    <mm:log>${student} -> ${copybookNo}</mm:log>
+    <di:copybook student="${student}">
+      <mm:present referid="copybookNo">
+        <mm:remove referid="copybookNo" />
+      </mm:present>
+      <mm:node id="copybookNo" />
+    </di:copybook>
 
     <mm:node number="$education">
       <mm:relatednodescontainer type="learnobjects" role="posrel">
