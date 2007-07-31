@@ -14,14 +14,15 @@
 <mm:node number="$student" notfound="skip">
   <mm:context>
     <di:copybook student="${student}">
-      <mm:present referid="copybookNumber">
-        <mm:remove referid="copybookNumber" />
+      <%-- wtf --%>
+      <mm:present referid="copybookNo">
+        <mm:remove referid="copybookNo" />
       </mm:present>
-      <mm:node id="copybookNumber" />
+      <mm:node id="copybookNo" />
     </di:copybook>
 
-    <mm:present referid="copybookNumber">
-      <os:cache time="${empty copybookNumber ? 600 : 0}" key="progress-${education}-${student}-${copybookNumber}">
+    <mm:present referid="copybookNo">
+      <os:cache time="${empty copybookNo ? 600 : 0}" key="progress-${education}-${student}-${copybookNo}">
         <%-- performance of this is very bad if no copybook DIDACTOR-50 
         So caching it some time, to increase responsiveness.
         --%>
@@ -57,7 +58,7 @@
         </mm:node>
       </os:cache>
     </mm:present>
-    <mm:notpresent referid="copybookNumber">0</mm:notpresent>
+    <mm:notpresent referid="copybookNo">0</mm:notpresent>
 
   </mm:context>
 </mm:node>
