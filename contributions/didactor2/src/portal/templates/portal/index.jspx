@@ -19,7 +19,6 @@
       unacceptable="CRIPPLE"
       postprocessor="none" expires="0">
 
-    <jsp:directive.include file="/shared/findProvider.jspx" />
 
     <html  xmlns="http://www.w3.org/1999/xhtml">
       <head>
@@ -41,14 +40,6 @@
         </mm:haspage>
       </head>
       <body class="portal">
-
-        <jsp:scriptlet>
-          for (Object o : java.util.Collections.list(pageContext.getSession().getAttributeNames())) {
-        </jsp:scriptlet>
-        <jsp:expression>0</jsp:expression>=<jsp:expression>pageContext.getSession().getAttribute((String) o)</jsp:expression>
-        <jsp:scriptlet>
-          }
-        </jsp:scriptlet>
         <mm:treeinclude debug="html" page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
         
         <mm:treeinclude debug="html" page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">
