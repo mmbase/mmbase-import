@@ -47,27 +47,30 @@
        </mm:field>
      </mm:notpresent>
 
+     
      <mm:import jspvar="text" reset="true"><mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield> <mm:hasfield name="intro"><mm:field name="intro" escape="none"/></mm:hasfield></mm:import>
 
-     <table width="100%" border="0" class="Font">
+     <table width="100%" border="0" class="Font layout${layout}">
        <mm:compare referid="layout" value="0">
-         <tr><td width="50%">
-           <mm:write referid="text" escape="tagstripper(XSS)" />
-         </td></tr>
+         <tr>
+           <td width="50%">
+             <mm:write referid="text" escape="toxml" />
+           </td>
+         </tr>
          <tr><td><%@include file="images.jsp"%></td></tr>
        </mm:compare>
 
        <mm:compare referid="layout" value="1">
          <tr><td  width="50%"><%@include file="images.jsp"%></td></tr>
          <tr><td>
-             <mm:write referid="text" escape="tagstripper(XSS)" />
+             <mm:write referid="text" escape="toxml" />
          </td></tr>
        </mm:compare>
 
        <mm:compare referid="layout" value="2">
          <tr>
            <td>
-             <mm:write referid="text" escape="tagstripper(XSS)" />
+             <mm:write referid="text" escape="toxml" />
            </td>
          <td><%@include file="images.jsp"%></td></tr>
        </mm:compare>
