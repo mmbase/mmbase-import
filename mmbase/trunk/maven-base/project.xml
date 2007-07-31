@@ -262,7 +262,6 @@ See http://www.MMBase.org/license
           </properties>
         </dependency>
 
-
         <!-- mmbase module plugin -->
         <dependency>
             <groupId>mmapps</groupId>
@@ -270,21 +269,6 @@ See http://www.MMBase.org/license
             <version>1.1.1</version>
             <type>plugin</type>
             <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
-        </dependency>
-
-        <!-- tomcat deploy plugin -->
-        <dependency>
-            <groupId>codeczar-tomcat</groupId>
-            <artifactId>maven-tomcat-plugin</artifactId>
-            <version>1.1</version>
-            <type>plugin</type>
-            <url>http://www.codeczar.com/products/maven-tomcat-plugin/</url>
-        </dependency>
-        <dependency>
-            <groupId>maven-plugins</groupId>
-            <artifactId>maven-findbugs-plugin</artifactId>
-            <version>0.8.4</version>
-            <type>plugin</type>
         </dependency>
     </dependencies>
     <build>
@@ -336,7 +320,6 @@ See http://www.MMBase.org/license
     <reports>
       <report>maven-changelog-plugin</report>
       <!--
-        <report>maven-changelog-plugin</report>
         <report>maven-changes-plugin</report>
         <report>maven-developer-activity-plugin</report>
         <report>maven-file-activity-plugin</report>
@@ -350,9 +333,7 @@ See http://www.MMBase.org/license
         <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
-        <report>maven-clover-plugin</report>
         <report>maven-simian-plugin</report>
-        <report>maven-findbugs-plugin</report>
         -->
     </reports>
 </project>
