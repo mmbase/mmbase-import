@@ -52,7 +52,7 @@
       </mm:relatednodes>
     </mm:node>
     <mm:link>
-      <a class="navigate" href="${_}">&lt;&lt;</a>
+      <a class="navigate" href="${_}">&amp;lt;&amp;lt;</a>
     </mm:link>
     <hr />
   </div>
