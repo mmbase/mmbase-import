@@ -10,11 +10,12 @@
     <%-- count score of questions --%>
     <% int points= 0; %>
     <mm:import id="totalscore"><mm:write referid="TESTSCORE_INCOMPLETE"/></mm:import>
+
     <mm:node referid="madetest">
       <mm:relatednodes type="givenanswers">
         <mm:field name="score" id="score" write="false"/> 
         <mm:compare referid="score" value="1">
-          <% points= points+1; %>
+          <% points++; %>
         </mm:compare>
         <mm:compare referid="score" referid2="TESTSCORE_TBS">
           <mm:remove referid="totalscore"/>
@@ -29,5 +30,6 @@
         <mm:setfield name="score"><%=points%></mm:setfield>
       </mm:compare>
     </mm:node>    
+
   </mm:cloud>
 </mm:content>

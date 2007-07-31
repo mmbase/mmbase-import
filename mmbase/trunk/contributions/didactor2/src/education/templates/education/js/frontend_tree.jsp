@@ -91,6 +91,7 @@ function previousContent() {
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
+
 function invalidateCurrentFrame() {
     usedFrames[document.href_frame] = null;
 }
@@ -102,6 +103,7 @@ function loadIconOn() {
 function loadIconOff() {
     document.getElementById("ajax_loader").style.display = "none";
 }
+
 
 function requestContent(href) {
    var content = usedFrames[href];
@@ -156,7 +158,7 @@ function postContent(href, form) {
         if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
                 var contentEl = document.getElementById('contentFrame');
-                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
+                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, afterPost);
                 usedFrames[document.href_frame] = null;
                 document.href_frame = href;
                 usedFrames[href] = contentEl.childNodes;            
@@ -376,9 +378,20 @@ function removeButtons() {
     }
 }
 
+function afterPost() {
+    <mm:hasnode number="component.progress">
+        reloadProgress();
+    </mm:hasnode>
+    reloadEducationTree();
+    scrollToTop();
+    loadIconOff();
+}
+
 <mm:treefile page="/education/tree.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
     function reloadEducationTree() {
-        Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'));
+        usedFrames    = new Object();
+        Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'), null, closeAppropriate);
+        
     }
 </mm:treefile>
 
