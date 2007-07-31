@@ -1,6 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="oos"
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
 %><%@page import="java.util.*" buffer="1000kb"
@@ -142,138 +142,131 @@
 <% } %>
 
 
-            <% //If the man is connected directly to education this man is a mega techer for this education %>
+<%-- If the man is connected directly to education this man is a mega techer for this education --%>
 
-            <mm:compare referid="class" valueset=",null">
-              <mm:node referid="education" jspvar="nodeEducation">
-                <% //We have to count number of tests for colspan in rows
-                int iNumberOfColumns = 4;
-                %>
-                <mm:relatednodescontainer type="learnobjects" role="posrel">
-                  <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
-                    <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
-                    <mm:compare referid="nodetype" value="tests">
-                      <% iNumberOfColumns++; %>
-                    </mm:compare>
-                  </mm:tree>
-                </mm:relatednodescontainer>
-                
-                  <tr>
-                    <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
-                  </tr>
-                  <mm:time id="now" time="now" write="false" precision="hours" />
-                  <mm:time id="lastweek" time="now - 1 week" write="false" precision="hours" />
-                  <os:cache time="600" key="progress-${education}-people">
-                    <mm:timer name="people">
-                      <mm:relatednodes role="classrel" type="people" orderby="$sort" >
-                        <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
-                        <mm:field name="lastactivity" id="lastactivity" write="false" />
-                        <os:cache time="${lastactivity lt lastweek ? 15000 : 300}" key="student-${education}-people-${list_student_number}">
-                          <di:hasrole role="student" referid="list_student_number">
-                            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
-                              <mm:param name="student"><mm:field name="number"/></mm:param>
-                              <mm:param name="direct_connection">true</mm:param>
-                            </mm:treeinclude>
-                          </di:hasrole>
-                        </os:cache>
-                      </mm:relatednodes>
-                    </mm:timer>
-                  </os:cache>
+<mm:notpresent referid="class">
+  <mm:node referid="education">
+    <tr>
+      <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="100">
+        <b><di:translate key="progress.directconnection" />:</b>
+      </td>
+    </tr>
+    <mm:time id="now" time="now" write="false" precision="hours" />
+    <mm:time id="lastweek" time="now - 1 week" write="false" precision="hours" />
+    <os:cache time="600" key="progress-${education}-people">
+      <mm:timer name="people">
+        <mm:relatednodes role="classrel" type="people" orderby="$sort" >
+          <mm:import id="list_student_number" reset="true"><mm:field name="number"/></mm:import>
+          <mm:field name="lastactivity" id="lastactivity" write="false" />
+          <os:cache time="${lastactivity lt lastweek ? 15000 : 300}" key="student-${education}-people-${list_student_number}">
+            <di:hasrole role="student" referid="list_student_number">
+              <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
+                <mm:param name="student"><mm:field name="number"/></mm:param>
+                <mm:param name="direct_connection">true</mm:param>
+              </mm:treeinclude>
+            </di:hasrole>
+          </os:cache>
+        </mm:relatednodes>
+      </mm:timer>
+    </os:cache>
+    
+    <mm:relatednodes role="classrel" type="classes" orderby="name" id="classNode">
+      <mm:relatednodescontainer type="mmevents">
+        <mm:constraint field="stop" operator="greater" value="$now" />
+        <mm:constraint field="start" operator="greater" value="today - 1 year" />
+        <mm:size id="current" write="false" />
+      </mm:relatednodescontainer>
+      <%-- if this is an 'old' class, then cache very long, otherwise, not so long --%>
+      <os:cache time="${current gt 0 ? 300 : 15000}" key="progress-${education}-class-${classNode}">
+        
+        <tr>
+          <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="100">
+            <b><di:translate key="progress.class" />: <mm:field name="name"/></b><
+          /td>
+        </tr>
+        <mm:relatednodes role="classrel" type="people" id="student" orderby="$sort" >
+          <di:hasrole role="student" referid="student">
+            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,student,classNode@class">
+              <mm:param name="direct_connection">false</mm:param>
+            </mm:treeinclude>
+          </di:hasrole>
+        </mm:relatednodes>
+      </os:cache>
+      
+    </mm:relatednodes>
+  </mm:node>
+</mm:notpresent>
 
-                  <mm:relatednodes role="classrel" type="classes" orderby="name" id="classNode">
-                    <mm:relatednodescontainer type="mmevents">
-                      <mm:constraint field="stop" operator="greater" value="$now" />
-                      <mm:size id="current" write="false" />
-                    </mm:relatednodescontainer>
-                    <%-- if this is an 'old' class, then cache very long, otherwise, not so long --%>
-                    <os:cache time="${current gt 0 ? 300 : 15000}" key="progress-${education}-class-${classNode}">
-                      
-                    <tr>
-                      <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
-                    </tr>
-                    <mm:relatednodes role="classrel" type="people" id="student" orderby="$sort" >
-                      <di:hasrole role="student" referid="student">
-                        <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,student,classNode@class">
-                          <mm:param name="direct_connection">false</mm:param>
-                        </mm:treeinclude>
-                      </di:hasrole>
-                    </mm:relatednodes>
-                  </os:cache>
+<%--
+If the user has role 'teacher' he may see all students in the current class. 
+--%>
+<di:hasrole role="teacher">
+  <mm:present referid="class">
+    <mm:node referid="class">                    
+      <mm:timer name="teacher_people">
+        <mm:relatednodes type="people" role="classrel" orderby="$sort" id="student">
+          <di:hasrole role="student" referid="student">
+            <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,student">
+              <mm:param name="direct_connection">false</mm:param>
+            </mm:treeinclude>
+          </di:hasrole>
+        </mm:relatednodes>
+      </mm:timer>
+    </mm:node>
+  </mm:present>
+</di:hasrole>
 
-                  </mm:relatednodes>
-                </mm:node>
-              </mm:compare>
-
-           <%--
-             If the user has role 'teacher' he may see all students in the current class. 
-           --%>
-              <di:hasrole role="teacher">
-                <mm:compare referid="class" regexp="|null" inverse="true">
-                  <mm:node referid="class">                    
-                    <mm:timer name="teacher_people">
-                      <mm:relatednodes type="people" role="classrel" orderby="$sort" id="student">
-                        <di:hasrole role="student" referid="student">
-                          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,student">
-                            <mm:param name="direct_connection">false</mm:param>
-                          </mm:treeinclude>
-                        </di:hasrole>
-                      </mm:relatednodes>
-                    </mm:timer>
-                 </mm:node>
-                </mm:compare>
+<%--
+If the user has role 'coach' he may see all students in his workgroup.
+--%>
+<di:hasrole role="teacher" inverse="true">
+  <di:hasrole role="coach">
+    <mm:present referid="class">
+      <mm:node referid="class">
+        <p><mm:field name="name" /></p>
+        <mm:timer name="work">
+          <mm:relatednodes element="workgroups" path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
+            <p><mm:field name="name" /></p>
+            <mm:relatednodes id="studentnumber" type="people" role="related" orderby="$sort">
+              <di:hasrole role="student" referid="studentnumber">                            
+                <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,studentnumber@student">
+                  <mm:param name="direct_connection">false</mm:param>
+                </mm:treeinclude>
               </di:hasrole>
-              
-           <%--
-             If the user has role 'coach' he may see all students in his workgroup.
-           --%>
-           <di:hasrole role="teacher" inverse="true">
-             <di:hasrole role="coach">
-               <mm:compare referid="class" valueset=",null" inverse="true">
-                 <mm:node referid="class">
-                   <p><mm:field name="name" /></p>
-                   <mm:timer name="work">
-                     <mm:relatednodes element="workgroups" path="workgroups,people" orderby="people.$sort" constraints="people.number='$user'">
-                       <p><mm:field name="name" /></p>
-                       <mm:relatednodes id="studentnumber" type="people" role="related" orderby="$sort">
-                         <di:hasrole role="student" referid="studentnumber">                            
-                           <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class,studentnumber@student">
-                             <mm:param name="direct_connection">false</mm:param>
-                           </mm:treeinclude>
-                         </di:hasrole>
-                       </mm:relatednodes>
-                       <c:if test="${fn:length(studentnumber) le 1}">
-                         <p>No students</p>
-                       </c:if>
-                     </mm:relatednodes>
-                   </mm:timer>
-                 </mm:node>  
-               </mm:compare>
-             </di:hasrole>
-           </di:hasrole>
-         </tr>
-       </table>
+            </mm:relatednodes>
+            <c:if test="${fn:length(studentnumber) le 1}">
+              <p>No students</p>
+            </c:if>
+          </mm:relatednodes>
+        </mm:timer>
+      </mm:node>  
+    </mm:present>
+  </di:hasrole>
+</di:hasrole>
+</tr>
+</table>
 
-          <% if (showNextLink) { %>
-            <span style="float: right">
-              <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
-                <di:translate key="progress.next15" />
-              </a>
-            </span>
-          <%
-          }
-          if (showPrevLink)
-          {
-          %>
-            <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt - 15 %></mm:param></mm:treefile>">
-              <di:translate key="progress.previous15" />
-            </a>
-          <%
-          }
-          %>
-        </mm:node>
-      </div><%-- class="contentBodywit" --%>
-    </div><%-- class="mainContent" --%>
-  </div><%-- class="rows" --%>
+<% if (showNextLink) { %>
+<span style="float: right">
+  <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
+  <di:translate key="progress.next15" />
+</a>
+</span>
+<%
+}
+if (showPrevLink)
+{
+%>
+<a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt - 15 %></mm:param></mm:treefile>">
+<di:translate key="progress.previous15" /><%-- previous15?? wtf --%>
+</a>
+<%
+}
+%>
+</mm:node>
+</div><%-- class="contentBodywit" --%>
+</div><%-- class="mainContent" --%>
+</div><%-- class="rows" --%>
 </mm:islessthan>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />

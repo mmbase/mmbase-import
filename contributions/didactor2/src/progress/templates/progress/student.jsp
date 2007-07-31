@@ -102,21 +102,28 @@
                     <fmt:formatNumber value="${progress}" type="percent" />
                   </td>
                 </tr>
-                
-                <%-- direct relation people-classrel-educations --%>
-                <mm:compare referid="class" valueset=",null">
-                  <mm:list fields="classrel.number" path="people,classrel,educations"
-                           constraints="people.number=$student and educations.number=$education">
-                    <mm:field name="classrel.number" id="classrel" write="false" />
-                  </mm:list>
-                </mm:compare>
-                <%-- people-classrel-class-related-educations --%>
-                <mm:compare referid="class" valueset=",null" inverse="true">
-                  <mm:list fields="classrel.number" path="people,classrel,classes"
-                           constraints="people.number=$student and classes.number=$class">
-                    <mm:field name="classrel.number" id="classrel" write="false" />
-                  </mm:list>
-                </mm:compare>
+                <mm:import externid="c">${class}</mm:import>
+
+                <mm:node referid="student">
+                  <%-- direct relation people-classrel-educations --%>
+                  <mm:notpresent referid="c">
+                    <mm:relatednodescontainer path="classrel,educations" element="classrel">
+                      <mm:constraint field="educations.number" value="$education" />
+                      <mm:relatednodes>
+                        <mm:node id="classrel" />
+                      </mm:relatednodes>
+                    </mm:relatednodescontainer>
+                  </mm:notpresent>
+                  <%-- people-classrel-class-related-educations --%>
+                  <mm:present referid="c">
+                    <mm:relatednodescontainer path="classrel,classes" element="classrel">
+                      <mm:constraint field="classes.number" value="$c" />
+                      <mm:relatednodes>
+                        <mm:node id="classrel" />
+                      </mm:relatednodes>
+                    </mm:relatednodescontainer>
+                  </mm:present>
+                </mm:node>
                 
                 <mm:node referid="classrel">
                   <tr>
@@ -193,7 +200,6 @@
                     </di:ifsetting>
                   </tr>
                   
-                  <di:copybook><mm:node id="copybookNo" /></di:copybook>
 
                   <mm:node number="$education">
                     <%List blockName = new ArrayList(); %>
@@ -223,12 +229,14 @@
                             <mm:field id="feedback" name="feedbackpage" write="false" />
                             
                             <tr>
-                              <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-                                <mm:constraint field="copybooks.number" referid="copybookNo" />
-                                <mm:relatednodes>
-                                  <mm:node id="madetestNo" />
-                                </mm:relatednodes>
-                              </mm:relatednodescontainer>
+                              <mm:present referid="copybookNo">
+                                <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+                                  <mm:constraint field="copybooks.number" referid="copybookNo" />
+                                  <mm:relatednodes>
+                                    <mm:node id="madetestNo" />
+                                  </mm:relatednodes>
+                                </mm:relatednodescontainer>
+                              </mm:present>
     
                               <td class="listItem">
                                 <%for (int i = 0; i < blockName.size(); i++) {
