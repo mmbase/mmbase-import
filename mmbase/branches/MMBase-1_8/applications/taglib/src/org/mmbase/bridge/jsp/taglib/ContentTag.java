@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.57.2.2 2007-07-12 12:58:48 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.57.2.3 2007-07-31 12:03:59 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -141,6 +141,7 @@ public class ContentTag extends LocaleTag  {
                     }
                     public Parameters createParameters() {
                         Parameters params = wrapped.createParameters();
+                        params.setAutoCasting(true);
                         params.setAll(configuredParams);
                         return params;
                     }
