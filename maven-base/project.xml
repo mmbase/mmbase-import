@@ -36,6 +36,9 @@ See http://www.MMBase.org/license
         <branch>
             <tag>MMBase-1_7</tag>
         </branch>
+        <branch>
+            <tag>MMBase-1_8</tag>
+        </branch>
     </branches>
     <licenses>
         <license>
@@ -52,7 +55,7 @@ See http://www.MMBase.org/license
     <repository>
         <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
         <developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
-        <url>http://www.mmbase.org/viewcvs/</url>
+        <url>http://cvs.mmbase.org/viewcvs/</url>
     </repository>
     <mailingLists>
         <mailingList>
@@ -104,9 +107,10 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Ernst Bunders</name>
-            <id>3</id>
-            <email>Ernst.Bunders@vara.nl</email>
-            <organization>Vara</organization>
+            <id>ernst</id>
+            <email>ernst@dynasol.nl</email>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
             <timezone>1</timezone>
         </developer>
         <developer>
@@ -123,7 +127,7 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Johannes Verelst</name>
-            <id>6</id>
+            <id>johannes</id>
             <email>jverelst@gmail.com</email>
             <timezone>1</timezone>
         </developer>
@@ -150,9 +154,10 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Michiel Meeuwissen</name>
-            <id>9</id>
-            <email>Michiel.Meeuwissen@omroep.nl</email>
-            <organization>Publieke Omroep</organization>
+            <id>michiel</id>
+            <email>Michiel.Meeuwissen@dynasol.nl</email>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
             <timezone>1</timezone>
             <roles>
             	<role>Release Manager</role>
@@ -296,21 +301,6 @@ See http://www.MMBase.org/license
             <type>plugin</type>
             <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
         </dependency>
-
-        <!-- tomcat deploy plugin -->
-        <dependency>
-            <groupId>codeczar-tomcat</groupId>
-            <artifactId>maven-tomcat-plugin</artifactId>
-            <version>1.1</version>
-            <type>plugin</type>
-            <url>http://www.codeczar.com/products/maven-tomcat-plugin/</url>
-        </dependency>
-        <dependency>
-            <groupId>maven-plugins</groupId>
-            <artifactId>maven-findbugs-plugin</artifactId>
-            <version>0.8.4</version>
-            <type>plugin</type>
-        </dependency>
     </dependencies>
     <build>
         <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
@@ -327,6 +317,13 @@ See http://www.MMBase.org/license
                     <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>META-INF</targetPath>
+                <directory>META-INF</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                </excludes>
             </resource>
 <!-- This does not work the same way as the ant build does.
 	We have to change more in the build to get it working -->
@@ -354,6 +351,7 @@ See http://www.MMBase.org/license
     </build>
     <reports>
         <report>maven-changelog-plugin</report>
+      <!--
         <report>maven-changes-plugin</report>
         <report>maven-developer-activity-plugin</report>
         <report>maven-file-activity-plugin</report>
@@ -363,15 +361,12 @@ See http://www.MMBase.org/license
         <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
         <report>maven-linkcheck-plugin</report>
-        <!--
-    <report>maven-jdiff-plugin</report>
-    -->
+        <report>maven-jdiff-plugin</report>
         <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
-        <!-- report>maven-clover-plugin</report -->
         <report>maven-simian-plugin</report>
-        <report>maven-findbugs-plugin</report>
+        -->
     </reports>
 </project>
 
