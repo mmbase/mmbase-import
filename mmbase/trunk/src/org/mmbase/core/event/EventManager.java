@@ -23,11 +23,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This class manages all event related stuff. it is the place to register event brokers, and it
- * will propagate all events. The class is set up as a singleton, with lazy instantiation. When the
- * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
+ * will propagate all events. The class is set up as a singleton. When the manager is instantiated,
+ * event brokers are added for Event, NodeEvent and RelationEvent
+ *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.22 2007-07-26 14:08:36 michiel Exp $
+ * @version $Id: EventManager.java,v 1.23 2007-08-01 08:42:26 michiel Exp $
  */
 public class EventManager {
 
@@ -130,7 +131,7 @@ public class EventManager {
      * @since MMBase-1.8.5
      */
      
-    public Collection getBrokers() {
+    public Collection<EventBroker> getBrokers() {
         return Collections.unmodifiableSet(eventBrokers);
     }
 
@@ -200,7 +201,7 @@ public class EventManager {
         if (log.isTraceEnabled()) {
             log.trace("Propagating events to " + eventBrokers);
         }
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         for (EventBroker broker :  eventBrokers) {
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
@@ -222,7 +223,7 @@ public class EventManager {
             }
         }
         numberOfPropagatedEvents++;
-        duration += (System.currentTimeMillis() - startTime);
+        duration += (System.nanoTime() - startTime);
     }
 
     /**
@@ -235,6 +236,12 @@ public class EventManager {
      * @since MMBase-1.8.1
      */
     public long getPropagationCost() {
+        return duration / 1000000;
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public long getPropagationCostNs() {
         return duration;
     }
 
