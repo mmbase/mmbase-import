@@ -41,6 +41,7 @@ public class WizardWorkflowController extends WizardController {
      * @param config - wizard config
      * @param cloud - cloud
      */
+    @Override
     public void openWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig config,
                            Cloud cloud, Map<String, String> params, UserRole userrole, String contenttype) {
 
@@ -105,6 +106,7 @@ public class WizardWorkflowController extends WizardController {
         }
     }
 
+    @Override
     public void closeWizard(HttpServletRequest request, Config ewconfig,
                             Config.WizardConfig wizardConfig, Cloud cloud, Node editNode, String contenttype) {
 

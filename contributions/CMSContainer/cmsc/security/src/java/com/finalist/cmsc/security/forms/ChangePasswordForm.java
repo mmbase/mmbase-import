@@ -22,7 +22,8 @@ public class ChangePasswordForm extends ActionForm {
    private String newpassword;
    private String confirmnewpassword;
 
-   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+   @Override
+public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
       ActionErrors errors = new ActionErrors();
 
       if (getPassword() == null || getPassword().trim().length() == 0) {

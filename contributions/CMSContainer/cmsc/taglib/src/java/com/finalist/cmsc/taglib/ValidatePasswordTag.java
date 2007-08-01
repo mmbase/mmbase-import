@@ -20,7 +20,8 @@ public class ValidatePasswordTag extends CmscTag {
 	protected String givenPassword;
 	protected String result;
 	
-	public void doTag() {
+	@Override
+    public void doTag() {
 		PageContext ctx = (PageContext) getJspContext();
 		Encode encoder = new org.mmbase.util.Encode("MD5");
 		String encodedPassword = encoder.encode(getGivenPassword());		

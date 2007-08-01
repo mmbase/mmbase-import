@@ -20,7 +20,8 @@ public class RemoveHtmlTag extends SimpleTagSupport {
 		this.maxlength = maxlength;
 	}
 	
-	public void doTag() {
+	@Override
+    public void doTag() {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		

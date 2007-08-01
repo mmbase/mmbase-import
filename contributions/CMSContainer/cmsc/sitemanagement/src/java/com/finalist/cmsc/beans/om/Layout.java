@@ -24,8 +24,8 @@ public class Layout extends NodeBean implements Comparable<Layout> {
 
     private String description;
     
-	private String resource;
 
+    private String resource;
     private Map<String,List<Integer>> allowedDefinitions = new HashMap<String,List<Integer>>();
 
 	public String getTitle() {

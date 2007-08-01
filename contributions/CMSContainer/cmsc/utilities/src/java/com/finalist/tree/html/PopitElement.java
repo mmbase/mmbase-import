@@ -23,7 +23,8 @@ public class PopitElement extends HTMLTreeElement {
       super(icon, id, name, fragment, style, link, target);
    }
 
-   protected String renderOptions(String imageBase) {
+   @Override
+protected String renderOptions(String imageBase) {
       StringBuffer buffer = new StringBuffer();
       buffer.append("<div id=\"popmenu_" + id + "\" class=\"treeskin\">");
       for (int count = 0; count < options.size(); count++) {

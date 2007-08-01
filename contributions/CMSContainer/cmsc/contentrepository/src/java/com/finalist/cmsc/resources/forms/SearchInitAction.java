@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SearchInitAction extends Action{
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws Exception {

@@ -36,6 +36,7 @@ public abstract class MMBaseAction extends Action {
     public static final String BASIC_USER = "basic user";
     public static final String ANONYMOUS = "anonymous";
     
+    @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
        HttpServletRequest request, HttpServletResponse response) throws Exception {      
 

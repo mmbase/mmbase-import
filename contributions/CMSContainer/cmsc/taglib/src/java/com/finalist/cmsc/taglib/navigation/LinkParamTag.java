@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
  * A tag to make a param for the surrounding link tag.
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class LinkParamTag extends SimpleTagSupport {
     private static Log log = LogFactory.getLog(LinkParamTag.class);
@@ -47,6 +47,7 @@ public class LinkParamTag extends SimpleTagSupport {
     /**
      * Create and write a param for the parent link tag.
      */
+    @Override
     public void doTag() throws JspException, IOException {
 		log.debug("LinkParamTag");
         LinkTag container = (LinkTag) findAncestorWithClass(this, LinkTag.class);

@@ -117,6 +117,7 @@ public class LinkedImagesTag  extends NodeReferrerTag {
      * @throws javax.servlet.jsp.JspException When something goes wrong.
      * @return SKIP_BODY
      */
+    @Override
     public int doStartTag() throws JspException {
        try {
            Node parentNode = getNode();
@@ -251,6 +252,7 @@ public class LinkedImagesTag  extends NodeReferrerTag {
         return attributes.toString();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

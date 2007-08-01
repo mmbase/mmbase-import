@@ -151,7 +151,8 @@ public abstract class NameValuePairs {
 		iParent = aParent;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return (iEntries.toString());
 	}
 
@@ -269,7 +270,8 @@ public abstract class NameValuePairs {
 			iValues = aValues;
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			StringBuffer result = new StringBuffer();
 
 			result.append(iName);

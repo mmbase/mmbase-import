@@ -20,6 +20,7 @@ import net.sf.mmapps.commons.util.StringUtil;
  */
 public class ContentPortlet extends AbstractContentPortlet {
 	
+    @Override
     protected void saveParameters(ActionRequest request, String portletId) {
         setPortletNodeParameter(portletId, CONTENTELEMENT, request.getParameter(CONTENTELEMENT));
         setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
@@ -43,6 +44,7 @@ public class ContentPortlet extends AbstractContentPortlet {
     }
     
     
+    @Override
     protected void doEdit(RenderRequest req, RenderResponse res) throws IOException, PortletException {
         String elementId = req.getParameter(ELEMENT_ID);
         if (StringUtil.isEmpty(elementId)) {

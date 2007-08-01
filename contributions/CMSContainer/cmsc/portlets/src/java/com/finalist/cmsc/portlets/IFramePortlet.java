@@ -83,6 +83,7 @@ public class IFramePortlet extends CmscPortlet {
     /**
      * Generate IFRAME with view source.
      */
+    @Override
     public void doView(RenderRequest request, RenderResponse response)
         throws PortletException, IOException
     {

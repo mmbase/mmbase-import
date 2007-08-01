@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#syntax">XML: Character Data and Markup</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TextToken implements Token {
     /** processed text */
@@ -79,6 +79,7 @@ public class TextToken implements Token {
     /**
      * @return processed text data
      */
+    @Override
     public String toString() {
         return txt;
     }

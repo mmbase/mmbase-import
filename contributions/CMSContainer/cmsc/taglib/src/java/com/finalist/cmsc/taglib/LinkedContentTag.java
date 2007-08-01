@@ -59,7 +59,8 @@ public class LinkedContentTag extends NodeReferrerTag {
     * @throws javax.servlet.jsp.JspException When something goes wrong.
     * @return SKIP_BODY
     */
-   public int doStartTag() throws JspException {
+   @Override
+public int doStartTag() throws JspException {
       try {
          // retrieve the content node
          Node contentNode = getNode();

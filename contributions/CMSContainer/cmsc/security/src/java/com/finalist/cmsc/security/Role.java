@@ -49,6 +49,7 @@ public class Role {
         return name;
     }
     
+    @Override
     public boolean equals(Object other) {
         if (other == null) return false;
         if (other == this) return true;
@@ -58,6 +59,7 @@ public class Role {
         return false;
     }
     
+    @Override
     public int hashCode() {
         return id;
     }
@@ -85,6 +87,7 @@ public class Role {
         throw new IllegalArgumentException("Role with name " +name+ " does not exist");
     }
     
+    @Override
     public String toString() {
         return name;
     }

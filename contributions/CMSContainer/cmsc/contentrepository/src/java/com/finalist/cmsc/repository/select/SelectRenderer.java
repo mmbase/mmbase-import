@@ -23,14 +23,17 @@ public class SelectRenderer extends SelectAjaxRenderer {
        super(response, linkPattern, target);
     }
     
+    @Override
     protected String getName(Node parentNode) {
         return parentNode.getStringValue(RepositoryUtil.NAME_FIELD);
     }
 
+    @Override
     protected String getFragment(Node parentNode) {
         return parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
     }
     
+    @Override
     public String getIcon(Object node) {
         Node n = (Node) node;
         if(RepositoryUtil.isContentChannel(n)) {

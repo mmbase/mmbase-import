@@ -31,7 +31,8 @@ public class IsAllowedEditTag extends TagSupport {
       this.inverse = inverse;
    }
 
-   public int doStartTag() {
+   @Override
+public int doStartTag() {
         UserRole role = null;
 
         Cloud cloud = CloudUtil.getCloudFromSession((HttpServletRequest) pageContext.getRequest());

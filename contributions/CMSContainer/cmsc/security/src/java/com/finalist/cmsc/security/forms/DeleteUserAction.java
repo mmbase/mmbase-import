@@ -16,7 +16,8 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
  */
 public class DeleteUserAction extends MMBaseFormlessAction {
 
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud)
+   @Override
+public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud)
             throws Exception {
       String id = request.getParameter("id");
       if (id!=null) {

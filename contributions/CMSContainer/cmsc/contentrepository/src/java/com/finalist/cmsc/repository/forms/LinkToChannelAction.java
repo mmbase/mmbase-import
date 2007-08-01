@@ -27,6 +27,7 @@ import java.util.*;
 
 public class LinkToChannelAction extends MMBaseFormlessAction {
 
+    @Override
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 

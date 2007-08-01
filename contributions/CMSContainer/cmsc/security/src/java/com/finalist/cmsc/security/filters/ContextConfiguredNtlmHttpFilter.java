@@ -96,15 +96,18 @@ public class ContextConfiguredNtlmHttpFilter implements Filter {
       ntlm = (NtlmPasswordAuthentication) req.getSession().getAttribute("NtlmHttpAuth");
       chain.doFilter(new HttpServletRequestWrapper(req) {
 
-         public String getRemoteUser() {
+         @Override
+        public String getRemoteUser() {
             return (ntlm == null) ? null : ntlm.getName();
          }
 
-         public Principal getUserPrincipal() {
+         @Override
+        public Principal getUserPrincipal() {
             return ntlm;
          }
 
-         public String getAuthType() {
+         @Override
+        public String getAuthType() {
             return ntlm == null ? req.getAuthType() : "NTLM";
          }
       }, resp);

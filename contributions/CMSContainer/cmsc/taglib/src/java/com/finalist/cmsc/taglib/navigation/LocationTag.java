@@ -45,7 +45,8 @@ public class LocationTag extends CmscTag {
 	/**
 	 * Find and put location in variable.
 	 */
-	public void doTag() {
+	@Override
+    public void doTag() {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 

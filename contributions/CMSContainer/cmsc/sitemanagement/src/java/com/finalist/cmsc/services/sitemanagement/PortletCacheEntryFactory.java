@@ -34,6 +34,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
         registerListener(PortletUtil.NODEPARAMETER);
     }
 
+    @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
         return loadPortlet((Integer) key);
     }

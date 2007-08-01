@@ -18,6 +18,7 @@ public class EditorMessageTag extends
 
     static Log log = LogFactory.getLog(EditorMessageTag.class);
 	
+    @Override
     public int doEndTag() throws JspException {
     	
 		RenderRequest renderRequest = (RenderRequest) pageContext.getRequest().getAttribute("javax.portlet.request");

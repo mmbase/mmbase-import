@@ -24,6 +24,7 @@ public class StyleSheetCacheEntryFactory extends MMBaseCacheEntryFactory {
         super(PagesUtil.STYLESHEET);
     }
 
+    @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node stylesheetNode = getNode(key);
         if (stylesheetNode == null || !PagesUtil.isStylesheet(stylesheetNode)) {

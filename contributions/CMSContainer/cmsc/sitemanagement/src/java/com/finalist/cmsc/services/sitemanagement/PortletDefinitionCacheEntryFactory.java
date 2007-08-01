@@ -25,6 +25,7 @@ public class PortletDefinitionCacheEntryFactory extends MMBaseCacheEntryFactory 
         super(PortletUtil.PORTLETDEFINITION);
     }
 
+    @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node definitionNode = getNode(key);
         if (definitionNode == null || !PortletUtil.isDefinition(definitionNode)) {

@@ -24,14 +24,17 @@ public class SelectRenderer extends SelectAjaxRenderer {
        super(response, linkPattern, target);
     }
     
+    @Override
     protected String getName(Node parentNode) {
         return parentNode.getStringValue(PagesUtil.TITLE_FIELD);
     }
 
+    @Override
     protected String getFragment(Node parentNode) {
         return parentNode.getStringValue( NavigationUtil.getFragmentFieldname(parentNode) );
     }
     
+    @Override
     public String getIcon(Object node) {
         Node n = (Node) node;
         UserRole role = NavigationUtil.getRole(n.getCloud(), n, false);

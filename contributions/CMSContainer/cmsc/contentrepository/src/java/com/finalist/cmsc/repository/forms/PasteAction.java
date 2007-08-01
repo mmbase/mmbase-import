@@ -18,10 +18,12 @@ import com.finalist.cmsc.struts.TreePasteAction;
 
 public class PasteAction extends TreePasteAction {
 
+    @Override
     protected void copy(Node sourceChannel, Node destChannel) {
         RepositoryUtil.copyChannel(sourceChannel, destChannel);
     }
 
+    @Override
     protected void move(Node sourceChannel, Node destChannel) {
         RepositoryUtil.moveChannel(sourceChannel, destChannel);
         SecurityUtil.clearUserRoles(sourceChannel.getCloud());

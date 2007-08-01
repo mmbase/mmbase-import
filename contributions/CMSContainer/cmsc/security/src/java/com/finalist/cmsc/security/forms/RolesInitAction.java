@@ -14,7 +14,8 @@ import com.finalist.cmsc.struts.MMBaseAction;
  */
 public abstract class RolesInitAction extends MMBaseAction {
 
-   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   @Override
+public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
       RolesForm userForm = (RolesForm) form;
 
       String id = request.getParameter("nodeNumber");

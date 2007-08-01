@@ -123,7 +123,8 @@ public class InheritedPropertyResourceBundle extends ResourceBundle {
     * This will return all keys - including keys actually defined
     * in parent bundles.
     */
-   public Enumeration<String> getKeys() {
+   @Override
+public Enumeration<String> getKeys() {
       Vector<String> temp = new Vector<String>();
 
       // get all keys for the backed PropertyResourceBundle
@@ -161,7 +162,8 @@ public class InheritedPropertyResourceBundle extends ResourceBundle {
     * @return the resource corresponding to the key, or null if
     * the resource could not be found.
     */
-   protected Object handleGetObject(String key) {
+   @Override
+protected Object handleGetObject(String key) {
       Object retVal = null;
 
       try {

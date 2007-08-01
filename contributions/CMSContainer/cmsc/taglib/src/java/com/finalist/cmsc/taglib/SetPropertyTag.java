@@ -18,7 +18,8 @@ public class SetPropertyTag extends SimpleTagSupport {
       this.value = value;
    }
 
-   public void doTag() {
+   @Override
+public void doTag() {
        PropertiesUtil.setProperty(key, value);
    }
 

@@ -26,7 +26,8 @@ public class ServerHTMLTree extends HTMLTree {
    }
 
    
-   protected void getScript(PrintWriter pw) {
+   @Override
+protected void getScript(PrintWriter pw) {
       pw.println("<script type=\"text/javascript\">");
       pw.println("function clickNode(channel, expand) {");
       pw.println("   document.getElementById('savetree').value = 'false';");
@@ -37,7 +38,8 @@ public class ServerHTMLTree extends HTMLTree {
       pw.println("</script>");
    }
 
-   protected String getExpandLink(Object node, String nodeName) {
+   @Override
+protected String getExpandLink(Object node, String nodeName) {
       Node n = (Node) node;
       boolean openChannel = info.isOpen(n);
       if ("javascript".equals(jsppage)) {
@@ -48,19 +50,23 @@ public class ServerHTMLTree extends HTMLTree {
       return jsppage +  sep+ "channel=" + n.getNumber() + "&amp;expand="+!openChannel+"#" + nodeName;
    }
 
-   protected String getChildStyle() {
+   @Override
+protected String getChildStyle() {
       return "display: block";
    }
 
-   protected boolean showChildren(Object node) {
+   @Override
+protected boolean showChildren(Object node) {
       return info.isOpen(node) && !getModel().isLeaf(node);
    }
 
-   protected boolean isActive(Object node) {
+   @Override
+protected boolean isActive(Object node) {
       return info.isOpen(node);
    }
 
-   protected void renderChild(int level, PrintWriter out, String base, String preHtml, int count, int i, Object child) {
+   @Override
+protected void renderChild(int level, PrintWriter out, String base, String preHtml, int count, int i, Object child) {
       String img = getImage(getModel().isLeaf(child), (i == count - 1), info.isOpen(child));
       renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
    }

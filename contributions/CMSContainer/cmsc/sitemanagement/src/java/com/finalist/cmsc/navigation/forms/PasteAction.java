@@ -21,6 +21,7 @@ import com.finalist.cmsc.struts.TreePasteAction;
 
 public class PasteAction extends TreePasteAction {
 
+    @Override
     protected void copy(Node sourcePage, Node destPage) {
         Node newPage = NavigationUtil.copyPage(sourcePage, destPage);
         addWorkflow(newPage);
@@ -38,6 +39,7 @@ public class PasteAction extends TreePasteAction {
         }
     }
 
+    @Override
     protected void move(Node sourcePage, Node destPage) {
         NavigationUtil.movePage(sourcePage, destPage);
         if (!Workflow.hasWorkflow(sourcePage)) {

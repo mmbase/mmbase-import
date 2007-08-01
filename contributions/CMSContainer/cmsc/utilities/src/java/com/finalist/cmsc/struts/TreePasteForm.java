@@ -54,6 +54,7 @@ public abstract class TreePasteForm extends ActionForm {
      * @param request http request
      * @return all errors
      */
+    @Override
     public ActionErrors validate(ActionMapping mappings, HttpServletRequest request) {
        ActionErrors errors = new ActionErrors();
 

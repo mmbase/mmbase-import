@@ -10,6 +10,7 @@ public class UrlAction extends SearchAction {
     public static final String URL_FIELD = "url";
     public static final String VALID_FIELD = "valid";
     
+    @Override
     protected void addConstraints(SearchForm searchForm, NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query) {
         UrlForm form = (UrlForm) searchForm;
         addField(nodeManager, queryStringComposer, query, NAME_FIELD, form.getName());

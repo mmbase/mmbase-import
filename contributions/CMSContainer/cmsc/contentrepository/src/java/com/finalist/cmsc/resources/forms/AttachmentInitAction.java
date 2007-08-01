@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AttachmentInitAction extends SearchInitAction{
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws Exception {

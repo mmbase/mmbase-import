@@ -142,7 +142,8 @@ class InheritedBundleKey {
       this.loader = loader;
    }
 
-   public boolean equals(Object o) {
+   @Override
+public boolean equals(Object o) {
       if (o instanceof InheritedBundleKey) {
          InheritedBundleKey other = (InheritedBundleKey)o;
 
@@ -180,7 +181,8 @@ class InheritedBundleKey {
       return false;
    }
 
-   public int hashCode() {
+   @Override
+public int hashCode() {
       int retVal = 0;
 
       //XOR all hashCodes for the three instance variables.

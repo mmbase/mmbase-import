@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UserInitAction extends MMBaseAction {
 
-   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   @Override
+public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
       String id = request.getParameter("id");
       UserForm userForm = (UserForm) form;
       if (id != null) {

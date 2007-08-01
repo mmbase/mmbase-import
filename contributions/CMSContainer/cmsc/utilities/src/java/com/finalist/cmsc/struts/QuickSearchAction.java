@@ -20,6 +20,7 @@ import com.finalist.cmsc.mmbase.TreeUtil;
 
 public abstract class QuickSearchAction extends MMBaseAction {
 
+    @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 
