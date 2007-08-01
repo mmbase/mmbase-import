@@ -21,7 +21,8 @@ public class RightsTag extends SimpleTagSupport {
 
 	
 	
-	public void doTag() {
+	@Override
+    public void doTag() {
 		Cloud cloud = CloudUtil.getCloudFromThread();
         
 		Node node = cloud.getNode(nodeNumber);

@@ -20,7 +20,8 @@ public class LogConstraint {
       this.printStrackTrace = printStrackTrace;
    }
 
-   public boolean equals(Object o) {
+   @Override
+public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof LogConstraint)) return false;
 
@@ -39,7 +40,8 @@ public class LogConstraint {
       return true;
    }
 
-   public int hashCode() {
+   @Override
+public int hashCode() {
       int result;
       String builder = getBuilder();
       String ctype = getCtype();

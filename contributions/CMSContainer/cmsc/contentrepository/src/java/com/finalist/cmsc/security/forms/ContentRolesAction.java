@@ -10,10 +10,12 @@ import com.finalist.cmsc.repository.RepositoryUtil;
  */
 public class ContentRolesAction extends RolesAction {
 
+    @Override
     protected void setGroupRights(Cloud cloud, RolesForm groupForm, Node groupNode) {
         RepositoryUtil.setGroupRights(cloud, groupNode, groupForm.getRoles());
     }
 
+    @Override
     protected RolesInfo getRolesInfo(Cloud cloud, Node group) {
         return RepositoryUtil.getRolesInfo(cloud, group);
     }

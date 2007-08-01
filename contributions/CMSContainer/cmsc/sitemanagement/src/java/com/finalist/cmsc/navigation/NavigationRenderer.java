@@ -19,8 +19,8 @@ import com.finalist.util.module.ModuleUtil;
  */
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
-   private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
-   private static final String FEATURE_RSSFEED = "rssfeed";
+    private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+    private static final String FEATURE_RSSFEED = "rssfeed";
     private static final String FEATURE_WORKFLOW = "workflowitem";
     
 	private String target = null;
@@ -77,88 +77,107 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
         TreeElement element = createElement(getIcon(node, role), id, name, fragment, action, target);
         
         if (role != null && SecurityUtil.isWriter(role)) {
-            if (isPage) {
-                if (SecurityUtil.isEditor(role)) {
+
+            if (SecurityUtil.isEditor(role)) {
+                if (isPage) {
                     String labelPageEdit = JstlUtil.getMessage(request, "site.page.edit");
                     element.addOption(createOption("edit_defaults.png", labelPageEdit,
                         getUrl("PageEdit.do?number=" + parentNode.getNumber()), target));
-                    
-                    if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
-                        String labelPageRemove = JstlUtil.getMessage(request, "site.page.remove");
-                        element.addOption(createOption("delete.png", labelPageRemove,
-                                getUrl("PageDelete.do?number=" + parentNode.getNumber()), target));
+                }
+                else {
+                    if (SecurityUtil.isChiefEditor(role)) {
+                        String labelSiteEdit = JstlUtil.getMessage(request, "site.site.edit");
+                        element.addOption(createOption("edit_defaults.png", labelSiteEdit,
+                                getUrl("SiteEdit.do?number=" + parentNode.getNumber()), target));
                     }
                 }
-            }
-            else {
+                addEditorOptions(parentNode, element);
                 if (SecurityUtil.isChiefEditor(role)) {
-                    String labelSiteEdit = JstlUtil.getMessage(request, "site.site.edit");
-                    element.addOption(createOption("edit_defaults.png", labelSiteEdit,
-                            getUrl("SiteEdit.do?number=" + parentNode.getNumber()), target));
-
-                    if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
-                        String labelSiteRemove = JstlUtil.getMessage(request, "site.site.remove");
-                        element.addOption(createOption("delete.png", labelSiteRemove,
-                            getUrl("SiteDelete.do?number=" + parentNode.getNumber()), target));
-                    }
+                    addChiefEditorOptions(parentNode, isPage, element);
                 }
-            }
-            if (SecurityUtil.isEditor(role)) {
-                String labelPageNew = JstlUtil.getMessage(request, "site.page.new");
-                element.addOption(createOption("new.png", labelPageNew,
-                        getUrl("PageCreate.do?parentpage=" + parentNode.getNumber()), target));
-
-                if(ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
-                   String labelRssNew = JstlUtil.getMessage(request, "site.rss.new");
-                   element.addOption(createOption("rss_new.png", labelRssNew,
-                         getUrl("../rssfeed/RssFeedCreate.do?parentpage=" + parentNode.getNumber()), target));
-                }
-                
-                if (NavigationUtil.getChildCount(parentNode) >= 2) {
-                    String labelPageReorder = JstlUtil.getMessage(request, "site.page.reorder");
-                    element.addOption(createOption("reorder.png", labelPageReorder, 
-                            getUrl("reorder.jsp?parent=" + parentNode.getNumber()), target));
-                }
-                
-                if (SecurityUtil.isChiefEditor(role)) {
-                    if (isPage) {
-                        String labelPageCut = JstlUtil.getMessage(request, "site.page.cut");
-                        element.addOption(createOption("cut.png", labelPageCut, "javascript:cut('"
-                                + parentNode.getNumber() + "');", null));
-                        String labelPageCopy = JstlUtil.getMessage(request, "site.page.copy");
-                        element.addOption(createOption("copy.png", labelPageCopy, "javascript:copy('"
-                                + parentNode.getNumber() + "');", null));
-                    }
-                    String labelPagePaste = JstlUtil.getMessage(request, "site.page.paste");
-                    element.addOption(createOption("paste.png", labelPagePaste, "javascript:paste('"
-                            + parentNode.getNumber() + "');", null));
-                }
-                
-                
 		        if(ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
 			        String labelPageWizard = JstlUtil.getMessage(request, "site.page.wizard");
 			        element.addOption(createOption("wizard.png", labelPageWizard,
 			            getUrl("../pagewizard/StartPageWizardAction.do?number=" + parentNode.getNumber()), target));
 		        }
+                if (isPage) {
+                    if (SecurityUtil.isEditor(role)) {
+                        if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
+                            String labelPageRemove = JstlUtil.getMessage(request, "site.page.remove");
+                            element.addOption(createOption("delete.png", labelPageRemove,
+                                    getUrl("PageDelete.do?number=" + parentNode.getNumber()), target));
+                        }
+                    }
+                }
+                else {
+                    if (SecurityUtil.isChiefEditor(role)) {
+                        if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
+                            String labelSiteRemove = JstlUtil.getMessage(request, "site.site.remove");
+                            element.addOption(createOption("delete.png", labelSiteRemove,
+                                getUrl("SiteDelete.do?number=" + parentNode.getNumber()), target));
+                        }
+                    }
+                }
+                if (SecurityUtil.isWebmaster(role)) {
+                    addWebmasterOptions(parentNode, element);
+                }
             }
-
-            if (SecurityUtil.isWebmaster(role)) {
-		        if(ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-                   String labelPublish = JstlUtil.getMessage(request, "site.page.publish");
-                   element.addOption(createOption("publish.png", labelPublish,
-                       getUrl("../workflow/publish.jsp?number=" + parentNode.getNumber()), target));
-                   String labelMassPublish = JstlUtil.getMessage(request, "site.page.masspublish");
-                   element.addOption(createOption("masspublish.png", labelMassPublish,
-                       getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
-		        }
-            }
-            
-            String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
-            element.addOption(createOption("rights.png", labelPageRights,
-                getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
+            addGlobalOptions(parentNode, element);
         }
 
         return element;
+    }
+
+    private void addGlobalOptions(Node parentNode, TreeElement element) {
+        String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
+        element.addOption(createOption("rights.png", labelPageRights,
+            getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
+    }
+
+    private void addEditorOptions(Node parentNode, TreeElement element) {
+        String labelPageNew = JstlUtil.getMessage(request, "site.page.new");
+        element.addOption(createOption("new.png", labelPageNew,
+                getUrl("PageCreate.do?parentpage=" + parentNode.getNumber()), target));
+        
+        if(ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
+            String labelRssNew = JstlUtil.getMessage(request, "site.rss.new");
+            element.addOption(createOption("rss_new.png", labelRssNew,
+                  getUrl("../rssfeed/RssFeedCreate.do?parentpage=" + parentNode.getNumber()), target));
+        }
+        
+        if (NavigationUtil.getChildCount(parentNode) >= 2) {
+            String labelPageReorder = JstlUtil.getMessage(request, "site.page.reorder");
+            element.addOption(createOption("reorder.png", labelPageReorder, 
+                    getUrl("reorder.jsp?parent=" + parentNode.getNumber()), target));
+        }
+    }
+
+    private void addChiefEditorOptions(Node parentNode, boolean isPage, TreeElement element) {
+        if (isPage) {
+            String labelPageCut = JstlUtil.getMessage(request, "site.page.cut");
+            element.addOption(createOption("cut.png", labelPageCut, "javascript:cut('"
+                    + parentNode.getNumber() + "');", null));
+            String labelPageCopy = JstlUtil.getMessage(request, "site.page.copy");
+            element.addOption(createOption("copy.png", labelPageCopy, "javascript:copy('"
+                    + parentNode.getNumber() + "');", null));
+        }
+        String labelPagePaste = JstlUtil.getMessage(request, "site.page.paste");
+        element.addOption(createOption("paste.png", labelPagePaste, "javascript:paste('"
+                + parentNode.getNumber() + "');", null));
+    }
+
+    private void addWebmasterOptions(Node parentNode, TreeElement element) {
+        if(ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+           String labelPublish = JstlUtil.getMessage(request, "site.page.publish");
+           element.addOption(createOption("publish.png", labelPublish,
+               getUrl("../workflow/publish.jsp?number=" + parentNode.getNumber()), target));
+           String labelMassPublish = JstlUtil.getMessage(request, "site.page.masspublish");
+           element.addOption(createOption("masspublish.png", labelMassPublish,
+               getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
+        }
+        String labelMassModify = JstlUtil.getMessage(request, "site.page.massmodify");
+        element.addOption(createOption("massmodify.png", labelMassModify,
+            getUrl("MassModify.do?number=" + parentNode.getNumber()), target));
     }
 
     private String getUrl(String url) {

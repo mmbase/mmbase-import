@@ -20,10 +20,12 @@ public abstract class SelectAjaxRenderer extends SelectRenderer implements AjaxT
         super(response, linkPattern, target);
     }
 
+    @Override
     public AjaxTreeElement getElement(TreeModel model, Object node, String id) {
         return (AjaxTreeElement) super.getElement(model, node, id);
     }
     
+    @Override
     protected AjaxTreeElement createElement(String icon, String id, String name, String fragment) {
         return new AjaxTreeElement(icon, id, name, fragment);
     }

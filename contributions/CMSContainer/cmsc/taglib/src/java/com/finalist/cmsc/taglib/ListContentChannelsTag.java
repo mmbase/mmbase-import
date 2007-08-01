@@ -21,6 +21,7 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  */
 public class ListContentChannelsTag extends AbstractListTag<ContentChannel> {
 
+    @Override
     protected List<ContentChannel> getList() {
         if (origin != null) {
             if (origin instanceof ContentChannel) {

@@ -28,6 +28,7 @@ public class DeleteAction extends MMBaseFormlessAction {
 
    private static Log log = LogFactory.getLog(DeleteAction.class);
    
+    @Override
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 

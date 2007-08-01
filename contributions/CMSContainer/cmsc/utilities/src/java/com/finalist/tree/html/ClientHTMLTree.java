@@ -19,7 +19,8 @@ public class ClientHTMLTree extends HTMLTree {
    /**
     * @param pw
     */
-   protected void getScript(PrintWriter pw) {
+   @Override
+protected void getScript(PrintWriter pw) {
       pw.println("<script type=\"text/javascript\">");
       pw.println("function clickNode(node) {");
       pw.println("el=document.getElementById(node);");
@@ -41,23 +42,28 @@ public class ClientHTMLTree extends HTMLTree {
       pw.println("</script>");
    }
 
-   protected String getExpandLink(Object node, String nodeName) {
+   @Override
+protected String getExpandLink(Object node, String nodeName) {
       return "javascript:clickNode(\"" + nodeName + "\")" ;
    }
 
-   protected String getChildStyle() {
+   @Override
+protected String getChildStyle() {
       return "display: " + (expandAll ? "block" : "none");
    }
 
-   protected boolean showChildren(Object node) {
+   @Override
+protected boolean showChildren(Object node) {
       return !getModel().isLeaf(node);
    }
 
-   protected boolean isActive(Object node) {
+   @Override
+protected boolean isActive(Object node) {
       return false;
    }
 
-   protected void renderChild(int level, PrintWriter out, String base, String preHtml, int count, int i, Object child) {
+   @Override
+protected void renderChild(int level, PrintWriter out, String base, String preHtml, int count, int i, Object child) {
       String img = getImage(getModel().isLeaf(child), (i == count - 1), expandAll);
       renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
    }

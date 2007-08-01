@@ -32,7 +32,8 @@ public class UnlinkRemotenodes extends SqlAction {
    /**
     * @see com.finalist.cmsc.sql.SqlAction#getSql()
     */
-   public String getSql() {
+   @Override
+public String getSql() {
      int liveNumber = CloudManager.getCloudNumber(getCloud(), liveServer);
 
      return "SELECT " + getTableField("remotenodes","*") +
@@ -46,7 +47,8 @@ public class UnlinkRemotenodes extends SqlAction {
    /**
     * @see com.finalist.cmsc.sql.SqlAction#process(java.sql.ResultSet)
     */
-   public String process(ResultSet rs) throws BridgeException, SQLException {
+   @Override
+public String process(ResultSet rs) throws BridgeException, SQLException {
       StringBuffer result = new StringBuffer();
       if (ServerUtil.isLive()) {
           CloudInfo remoteCloudInfo = CloudInfo.getCloudInfoByName(stagingServer);

@@ -10,6 +10,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
  */
 public class SiteRolesAction extends RolesAction {
 
+    @Override
     protected void setGroupRights(Cloud cloud, RolesForm groupForm, Node groupNode) {
         NavigationUtil.setGroupRights(cloud, groupNode, groupForm.getRoles());
     }

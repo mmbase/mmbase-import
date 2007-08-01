@@ -41,6 +41,7 @@ public class PortletModeTag  extends TagSupport {
         this.inverse = inverse;
     }
     
+    @Override
     public int doStartTag() {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         PortletFragment portletFragment = (PortletFragment) request.getAttribute(PortalConstants.FRAGMENT);

@@ -17,6 +17,7 @@ public class SiteRolesRenderer extends RolesRenderer {
         super(request, cloud, form);
     }
 
+    @Override
     protected UserRole getRole(Node page) {
         return NavigationUtil.getRole(user, page);
     }

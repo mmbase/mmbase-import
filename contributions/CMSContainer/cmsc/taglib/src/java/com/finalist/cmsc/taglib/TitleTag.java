@@ -38,7 +38,8 @@ public class TitleTag extends CmscTag {
      */
     public boolean site = true;
     
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 

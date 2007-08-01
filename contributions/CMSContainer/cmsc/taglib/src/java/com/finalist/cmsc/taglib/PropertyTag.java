@@ -32,7 +32,8 @@ public class PropertyTag extends SimpleTagSupport {
     } 
 
 
-	public void doTag() throws IOException {
+	@Override
+    public void doTag() throws IOException {
         String property = PropertiesUtil.getProperty(key);
 
 		PageContext ctx = (PageContext) getJspContext();

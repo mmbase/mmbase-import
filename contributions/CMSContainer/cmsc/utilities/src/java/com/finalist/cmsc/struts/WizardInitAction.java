@@ -24,7 +24,8 @@ public class WizardInitAction extends MMBaseFormlessAction {
 
    private static String DEFAULT_SESSION_KEY = "editwizard";
 
-   public ActionForward execute(ActionMapping mapping,
+   @Override
+public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 
       String objectNumber = null;

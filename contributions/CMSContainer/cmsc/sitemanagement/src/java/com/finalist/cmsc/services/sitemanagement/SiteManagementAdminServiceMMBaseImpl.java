@@ -39,14 +39,16 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 	private CloudProvider cloudProvider;
     private SiteModelManager siteModelManager;
 
-	public void init(ServletConfig config, Properties aProperties) throws Exception {
+	@Override
+    public void init(ServletConfig config, Properties aProperties) throws Exception {
 		this.cloudProvider = CloudProviderFactory.getCloudProvider();
 		log.info("SiteManagementService STARTED");
         
         siteModelManager = new SiteModelManager();
 	}
 
-	public boolean setPortletParameter(String portletId, PortletParameter param) {
+	@Override
+    public boolean setPortletParameter(String portletId, PortletParameter param) {
 		boolean result = false;
 
 		if (param != null) {
@@ -64,6 +66,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 		return result;
 	}
 
+    @Override
     public boolean setPortletNodeParameter(String portletId, PortletParameter param) {
         boolean result = false;
 
@@ -86,7 +89,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
     }
 
     
-	public boolean setPortletView(String portletId, String viewId) {
+	@Override
+    public boolean setPortletView(String portletId, String viewId) {
 		boolean result = true;
 		log.debug("setPortletView portlet='" + portletId + "' view='" + viewId + "'");
 		try {
@@ -106,6 +110,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 		return result;
 	}
 
+    @Override
     public boolean setPagePortlet(String pageId, String portletId, String id) {
         boolean result = true;
         log.debug("page:'" + pageId + "' portlet:'" + portletId + "'");
@@ -122,7 +127,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         return result;
     }
     
-	public boolean createPagePortlet(String pageId, String portletName, String definitionName, String layoutId,
+	@Override
+    public boolean createPagePortlet(String pageId, String portletName, String definitionName, String layoutId,
 			String viewId) {
         boolean result = true;
         log.debug("page:'" + pageId + "' portlet:'" + portletName +
@@ -142,7 +148,8 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         return result;
 	}
 
-	public void deletePagePortlet(Page page, Portlet portlet, String layoutId) {
+	@Override
+    public void deletePagePortlet(Page page, Portlet portlet, String layoutId) {
 		if (page != null && portlet != null) {
 			PortletUtil.deletePagePortlet(getUserCloud(), page.getId(), portlet.getId(), layoutId);
             updatePage(page.getId());
@@ -151,6 +158,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 		}
 	}
 
+    @Override
     public boolean mayEdit(Page page) {
         boolean result = false;
         try {
@@ -166,6 +174,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         return result;
     }
 
+    @Override
     public boolean mayEdit(Portlet portlet) {
         boolean result = false;
         try {

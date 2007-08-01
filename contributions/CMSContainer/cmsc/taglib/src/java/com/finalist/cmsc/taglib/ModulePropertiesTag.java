@@ -27,7 +27,8 @@ public class ModulePropertiesTag extends SimpleTagSupport {
     }
 
 
-   public void doTag() {
+   @Override
+public void doTag() {
       Map<String,String> properties = PropertiesUtil.getModuleProperties(module);
 
       PageContext ctx = (PageContext) getJspContext();

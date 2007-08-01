@@ -17,7 +17,8 @@ public class ImageTextTag extends SimpleTagSupport {
    private String color;
 
    
-   public void doTag()  {
+   @Override
+public void doTag()  {
       ArrayList<ImageTextTag> textTags = (ArrayList<ImageTextTag>)getJspContext().getAttribute(TEXT_TAGS);
       if(textTags == null) {
          textTags = new ArrayList<ImageTextTag>();

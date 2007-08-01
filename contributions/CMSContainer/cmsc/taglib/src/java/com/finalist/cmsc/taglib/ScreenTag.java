@@ -39,7 +39,8 @@ public class ScreenTag extends CmscTag {
 
 	private Layout layout;
 
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
         screenFragment = getScreenFragment();
 		if (screenFragment != null) {
 			page = screenFragment.getPage();

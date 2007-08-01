@@ -16,6 +16,7 @@ public class SelectorLinkActionMapping extends SelectorActionMapping {
 
     private String resource;
     
+    @Override
     protected String getLinkPattern() {
         return resource + "?parentchannel={0}"; 
     }

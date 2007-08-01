@@ -12,7 +12,7 @@ import com.finalist.util.module.ModuleUtil;
  * Check if a named CMSC feature is active or installed
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class FeatureTag extends SimpleTagSupport {
 
@@ -21,7 +21,8 @@ public class FeatureTag extends SimpleTagSupport {
 	 */
 	private String name;
 
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
 		boolean hasFeature = ModuleUtil.checkFeature(name);
 		if (hasFeature) {
 			JspFragment frag = getJspBody();

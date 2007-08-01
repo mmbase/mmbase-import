@@ -18,11 +18,13 @@ public class FontImageTag extends ImageTag {
 	private int width;
 	private int height;	
 			
-	public int doStartTag() {		
+	@Override
+    public int doStartTag() {		
         return EVAL_BODY;
     }
 
-   public int doEndTag() throws JspTagException {
+   @Override
+public int doEndTag() throws JspTagException {
       
       Node node = getNode();
       StringBuffer template = new StringBuffer();

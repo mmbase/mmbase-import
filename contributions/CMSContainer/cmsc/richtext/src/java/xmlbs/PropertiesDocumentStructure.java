@@ -321,6 +321,7 @@ public class PropertiesDocumentStructure implements DocumentStructure {
     /**
      * @return debug info
      */
+    @Override
     public String toString () {
     	return "names=" + tagNames + "\n"
     		+ "attributes=" + tagAttributes + "\n"

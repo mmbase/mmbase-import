@@ -22,7 +22,8 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  */
 public class ListContentElementsTag extends AbstractListTag<ContentElement> {
 
-	protected List<ContentElement> getList() {
+	@Override
+    protected List<ContentElement> getList() {
 		if (origin != null) {
 			if (origin instanceof ContentChannel) {
 				return ContentRepository.getContentElements((ContentChannel)origin);

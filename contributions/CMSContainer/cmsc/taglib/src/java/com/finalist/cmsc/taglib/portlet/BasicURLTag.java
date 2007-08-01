@@ -29,6 +29,7 @@ public abstract class BasicURLTag extends TagSupport
 
     public static class TEI extends TagExtraInfo
     {
+        @Override
         public VariableInfo[] getVariableInfo(TagData tagData)
         {
             VariableInfo vi[] = null;
@@ -58,6 +59,7 @@ public abstract class BasicURLTag extends TagSupport
     /* (non-Javadoc)
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
         if (var != null)
         {
@@ -126,6 +128,7 @@ public abstract class BasicURLTag extends TagSupport
      *
      * @return int
      */
+    @Override
     public int doEndTag() throws JspException {
         if (var == null)
         {

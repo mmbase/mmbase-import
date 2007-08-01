@@ -20,6 +20,7 @@ import com.finalist.cmsc.struts.TreePasteForm;
 @SuppressWarnings("serial")
 public class PasteForm extends TreePasteForm {
 
+    @Override
     protected boolean isAllowed(Cloud cloud, Node channel) {
         UserRole role = RepositoryUtil.getRole(cloud, channel, false);
         return SecurityUtil.isChiefEditor(role); 

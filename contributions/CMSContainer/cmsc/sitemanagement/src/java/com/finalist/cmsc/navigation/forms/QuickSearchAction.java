@@ -17,6 +17,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 public class QuickSearchAction 
     extends com.finalist.cmsc.struts.QuickSearchAction {
 
+    @Override
     protected Node getChannelFromPath(Cloud cloud, String quicksearch) {
         return NavigationUtil.getPageFromPath(cloud, quicksearch);
     }

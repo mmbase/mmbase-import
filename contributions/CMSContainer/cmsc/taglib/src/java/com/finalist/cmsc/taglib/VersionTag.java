@@ -19,7 +19,8 @@ public class VersionTag extends SimpleTagSupport {
    private String var;
       
       
-	public void doTag() throws IOException {
+	@Override
+    public void doTag() throws IOException {
 		PageContext ctx = (PageContext) getJspContext();
         Object version = null;
         

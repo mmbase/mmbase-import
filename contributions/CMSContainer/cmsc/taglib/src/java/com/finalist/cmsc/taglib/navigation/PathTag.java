@@ -83,7 +83,8 @@ public class PathTag extends AbstractListTag<Page> {
 		this.page = page;
 	}
 
-	protected List<Page> getList() {
+	@Override
+    protected List<Page> getList() {
 		String path;
 		
 		if (page > 0) {

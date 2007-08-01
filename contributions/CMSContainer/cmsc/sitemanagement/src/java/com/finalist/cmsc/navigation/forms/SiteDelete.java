@@ -28,6 +28,7 @@ public class SiteDelete extends MMBaseFormlessAction {
     /** name of submit button in jsp to cancel removal */
     private static final String ACTION_CANCEL = "cancel";
     
+    @Override
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
         
@@ -47,6 +48,7 @@ public class SiteDelete extends MMBaseFormlessAction {
         return mapping.findForward("sitedelete");
     }
     
+    @Override
     public String getRequiredRankStr() {
         return ADMINISTRATOR;
     }

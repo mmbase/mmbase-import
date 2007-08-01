@@ -128,7 +128,8 @@ public class DummyWorkflowService extends WorkflowService {
         return true;
     }
 
-   protected Log getLogger() {
+   @Override
+protected Log getLogger() {
       return LogFactory.getLog(DummyWorkflowService.class);
    }
 

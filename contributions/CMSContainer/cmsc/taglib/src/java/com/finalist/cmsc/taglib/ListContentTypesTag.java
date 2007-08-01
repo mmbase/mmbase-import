@@ -22,7 +22,8 @@ import com.finalist.cmsc.services.contentrepository.ContentRepository;
  */
 public class ListContentTypesTag extends AbstractListTag<NodetypeBean> {
 
-	protected List<NodetypeBean> getList() {
+	@Override
+    protected List<NodetypeBean> getList() {
 		return ContentRepository.getContentTypes();
 	}
 }

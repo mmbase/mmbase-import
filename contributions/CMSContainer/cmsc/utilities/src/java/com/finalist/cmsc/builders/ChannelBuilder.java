@@ -29,7 +29,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     private String relationName;
     private int relationNumber;
     
-   public boolean init() {
+   @Override
+public boolean init() {
       log.debug("ChannelBuilder init");
       checkAddTmpField(TMP_OLDPATHNAME);
       checkAddTmpField(TreeUtil.OLDPATH_FIELD);
@@ -70,7 +71,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
 
    
    
-   public int insert(String owner, MMObjectNode node) {
+   @Override
+public int insert(String owner, MMObjectNode node) {
 //      don't use this method to add stuff to the channelCache in the ChannelUtil.
 //      The node is inserted before the relation to other nodes is made.
        
@@ -80,7 +82,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
 
 
 
-   public boolean commit(MMObjectNode objectNode) {
+   @Override
+public boolean commit(MMObjectNode objectNode) {
       log.debug(objectNode.getChanged());
       String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (objectNode.getChanged().contains(fragmentFieldname)) {
@@ -121,7 +124,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     *  called when a value is set. used to store the old value for compare
     *  in the commit() 
     */
-   public boolean setValue(MMObjectNode objectNode, String fieldName, Object originalValue) {
+   @Override
+public boolean setValue(MMObjectNode objectNode, String fieldName, Object originalValue) {
       String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (fragmentFieldname.equals(fieldName)) {
          log.debug("setValue() "+TMP_OLDPATHNAME+" to:"+originalValue);
@@ -131,7 +135,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
    }
    
    
-   public void removeNode(MMObjectNode objectNode) {
+   @Override
+public void removeNode(MMObjectNode objectNode) {
       TreePathCache.removeFromCache(getTableName(), objectNode.getNumber());
       super.removeNode(objectNode);
    }
@@ -142,7 +147,8 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     * @param field The function to execute
     * @return the result of the 'function', or null if no valid functions could be determined
     */
-   public Object getValue(MMObjectNode node, String field) {
+   @Override
+public Object getValue(MMObjectNode node, String field) {
       if (!"number".endsWith(field) && node.getNumber() > 0) {
          if (TreeUtil.PATH_FIELD.equals(field)) {
             String p = getPath(node);

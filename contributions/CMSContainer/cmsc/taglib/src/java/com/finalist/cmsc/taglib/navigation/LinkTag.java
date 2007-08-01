@@ -52,7 +52,8 @@ public class LinkTag extends SimpleTagSupport {
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private Page page;
 
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 

@@ -60,7 +60,8 @@ public class PortletTag extends SimpleTagSupport {
         this.infovar = infovar;
     }
 
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
         HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
         HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
@@ -302,6 +303,7 @@ public class PortletTag extends SimpleTagSupport {
             url = string;
         }
 
+        @Override
         public String toString() {
             return getLabel();
         }
@@ -357,6 +359,7 @@ public class PortletTag extends SimpleTagSupport {
             return this.getName().compareTo(compare.getName());
         }
 
+        @Override
         public String toString() {
             return getName();
         }

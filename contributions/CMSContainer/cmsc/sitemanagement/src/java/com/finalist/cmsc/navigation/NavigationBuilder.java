@@ -13,18 +13,22 @@ import com.finalist.cmsc.builders.ChannelBuilder;
 
 public class NavigationBuilder extends ChannelBuilder {
 
+    @Override
     protected String getNameFieldname() {
         return PagesUtil.TITLE_FIELD;
     }
 
+    @Override
     protected String[] getFragmentFieldname() {
         return NavigationUtil.fragmentFieldnames;
     }
     
+    @Override
     protected String getRelationName() {
         return NavigationUtil.NAVREL;
     }
 
+    @Override
     protected String[] getPathManagers() {
         return NavigationUtil.treeManagers;
     }

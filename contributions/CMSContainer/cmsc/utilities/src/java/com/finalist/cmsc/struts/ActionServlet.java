@@ -22,6 +22,7 @@ public class ActionServlet extends org.apache.struts.action.ActionServlet {
      * @exception ServletException if initialization cannot be performed
      * @since Struts 1.1
      */
+    @Override
     protected ModuleConfig initModuleConfig(String prefix, String paths)
         throws ServletException {
 

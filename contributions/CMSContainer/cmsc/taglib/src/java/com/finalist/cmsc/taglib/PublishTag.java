@@ -36,6 +36,7 @@ public class PublishTag extends NodeReferrerTag {
     private String var;
     private boolean execute = true;
     
+    @Override
     public int doStartTag() throws JspException {
 
         List<Node> toPublishNodes = new ArrayList<Node>();
@@ -163,6 +164,7 @@ public class PublishTag extends NodeReferrerTag {
             this.toPublishNodes = toPublishNodes;
         }
 
+        @Override
         public void run() {
             List<Integer> publishNumbers = new ArrayList<Integer>();
             for (Node toPublishNode : toPublishNodes) {

@@ -47,6 +47,7 @@ public class ServerSideIncludePortlet extends CmscPortlet {
     /**
      * Generate serverside view source.
      */
+    @Override
     public void doView(RenderRequest request, RenderResponse response)
         throws PortletException, IOException
     {
@@ -113,7 +114,8 @@ public class ServerSideIncludePortlet extends CmscPortlet {
     /**
      * Set all the request parameters as the render parameters. 
      */
-	public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+	@Override
+    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
         // set method to post so doView knows that is must use doPost
         request.getPortletSession().setAttribute("method", "post");
 		Map parameterMap = request.getParameterMap();

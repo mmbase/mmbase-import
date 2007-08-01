@@ -21,7 +21,8 @@ public class InlineRel extends InsRel {
    static Logger log = Logging.getLoggerInstance(InlineRel.class.getName());
    MMBase mmbaseroot = null;
 
-   public void setDefaults(MMObjectNode node) {
+   @Override
+public void setDefaults(MMObjectNode node) {
       if (mmbaseroot == null) {
          mmbaseroot = (MMBase) Module.getModule("mmbaseroot");
       }

@@ -31,6 +31,7 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(PageCacheEntryFactory.class.getName());
 
+    @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
         return loadPage((Integer) key);
     }
@@ -99,14 +100,17 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
     	 }
      }
      
+    @Override
     protected boolean isRelationEvent(RelationEvent event, String nodeType) {
         return super.isRelationEvent(event, nodeType) || super.isRelationEvent(event, SiteUtil.SITE);
     }
 
+    @Override
     protected boolean isNodeEvent(NodeEvent event, String nodeType) {
         return super.isNodeEvent(event, nodeType) || super.isNodeEvent(event, SiteUtil.SITE);
     }
     
+    @Override
     public void notify(RelationEvent event) {
         if (isRelationEvent(event)) {
             Integer key = getKey(event);

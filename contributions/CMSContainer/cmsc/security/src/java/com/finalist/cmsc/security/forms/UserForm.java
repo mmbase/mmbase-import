@@ -45,7 +45,8 @@ public class UserForm extends MMBaseForm {
    private List<Option> contexts = new ArrayList<Option>();
 
 
-   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+   @Override
+public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
       ActionErrors errors = new ActionErrors();
 
       if (getId() == -1) {

@@ -36,15 +36,18 @@ public class NavigatorAction extends TreeAction {
         return super.execute(mapping, form, request, response, cloud);
     }
 
+    @Override
     protected Node getRootNode(Cloud cloud) {
         return RepositoryUtil.getRootNode(cloud);
     }
 
+    @Override
     protected TreeInfo getTreeInfo(Cloud cloud) {
         TreeInfo info = RepositoryUtil.getRepositoryInfo(cloud);
         return info;
     }
 
+    @Override
     protected List<Node> getOpenChannels(Node channelNode) {
         if (RepositoryUtil.isContentChannel(channelNode)) {
             return RepositoryUtil.getPathToRoot(channelNode);
@@ -52,6 +55,7 @@ public class NavigatorAction extends TreeAction {
         return null;
     }
 
+    @Override
     protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         RepositoryTreeModel model = new RepositoryTreeModel(cloud);
         RepositoryAjaxRenderer chr = new RepositoryAjaxRenderer(request, response, "content");
