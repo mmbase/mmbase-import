@@ -45,12 +45,14 @@ var ajaxTreeConfig = {
 	tPlusIcon           : function () { return this.resources + 'Tplus.png'; },
 	blankIcon           : function () { return this.resources + 'blank.png'; },
 	optionIcon          : function () { return this.resources + 'option.png'; },
+	loadingIcon         : function () { return this.resources + 'blank.png'; },
 	defaultText         : 'Tree Item',
 	defaultAction       : 'javascript:void(0);',
 	defaultBehavior     : 'classic',
 	usePersistence	    : true,
 	defaultPersistentId : '-1',
-	role				: '' 
+	role                : '',
+	loadingText         : '.....'
 };
 
 function markNode(firstnode,cssName) {
@@ -194,9 +196,10 @@ ajaxTreeLoader = {
 		treeAction.execute('inittree', persistentId);
 	},
 	loadChildren : function (node) {
+	var persistentId = node.persistentId;
 		var treeAction = new AjaxTreeAction();
 		treeAction.node = node;
-		treeAction.execute('loadchildren', node.persistentId);
+		treeAction.execute('loadchildren', persistentId);
 	},
 	collapse : function (node) {
 		var treeAction = new AjaxTreeAction();
@@ -257,6 +260,12 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 				this.node.add(item, false);
 			}
 		}
+		
+		// remove dummy
+		if (this.node._loadingItem != null) {
+			this.node._loadingItem.remove();
+		}
+		
 		this.node.indent()
 		this.node.loaded = true;
 		this.node.doExpand();
@@ -359,6 +368,7 @@ function AjaxTreeAbstractNode(sText, sAction, sTarget, sLoaded, sPersistentId, s
 	this.text   = sText || ajaxTreeConfig.defaultText;
 	this.action = sAction || ajaxTreeConfig.defaultAction;
 	if (sTarget) this.target = sTarget;
+	this.loading = false;
 	this.loaded = sLoaded == 'true' || false;
 	this.persistentId = sPersistentId || ajaxTreeConfig.defaultPersistentId;
 	if (sFragment) this.fragment = sFragment;
@@ -459,18 +469,30 @@ AjaxTreeAbstractNode.prototype.blur = function() {
 
 AjaxTreeAbstractNode.prototype.doExpand = function() {
 	if (ajaxTreeConfig.usePersistence && !this.loaded) {
-		ajaxTreeLoader.loadChildren(this);
+		if (!this.loading) {
+			this.loading = true;
+			// and create loading item if not
+			this._loadingItem = new AjaxTreeItem(ajaxTreeConfig.loadingText, null, null, ajaxTreeConfig.loadingIcon, null, null, 'true', 'true');
+			this.add(this._loadingItem);
+			this.openTreeItem();
+
+			ajaxTreeLoader.loadChildren(this);
+		}
 	}
 	else{
-		if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
-		if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
-		this.open = true;
+		this.openTreeItem();
 		if (ajaxTreeConfig.usePersistence) {
 			ajaxTreeLoader.expand(this);
 		}
 		ajaxTreeHandler.updateAddressBar(this);
 		
 	}
+}
+
+AjaxTreeAbstractNode.prototype.openTreeItem = function() {
+		if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
+		if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
+		this.open = true;
 }
 
 AjaxTreeAbstractNode.prototype.doCollapse = function() {
@@ -638,8 +660,10 @@ AjaxTree.prototype.toString = function() {
 
 function copyTreetoString(oItem) {
 	var sbOption = [];
-	for (var i = 0; i < oItem.options.length; i++) {
-		sbOption[i] = oItem.options[i].toString(i,oItem.options.length);
+	if (oItem.options) {
+		for (var i = 0; i < oItem.options.length; i++) {
+			sbOption[i] = oItem.options[i].toString(i,oItem.options.length);
+		}
 	}
 	var str = "<div id=\"" + oItem.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
 				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
@@ -940,7 +964,7 @@ function methodpaste(actionstr){
 }
 function methodcut(actionstr){
 	if (actionstr.indexOf('cut') == 0) {
-		//alert("cut")
+		alert("cut" + actionstr);
 		eval(actionstr);
 	}
 }
