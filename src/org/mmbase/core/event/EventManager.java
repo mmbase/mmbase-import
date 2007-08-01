@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.23 2007-08-01 08:42:26 michiel Exp $
+ * @version $Id: EventManager.java,v 1.24 2007-08-01 09:18:47 michiel Exp $
  */
 public class EventManager {
 
@@ -254,6 +254,15 @@ public class EventManager {
             log.debug("try to find broker for " + listener.getClass().getName());
         }
         return new BrokerIterator(eventBrokers.iterator(), listener);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public void shutdown() {
+        log.service("Shutting down event manager");
+        eventBrokers.clear();
+        watcher.exit();
     }
 
     private static class BrokerIterator implements Iterator<EventBroker> {
