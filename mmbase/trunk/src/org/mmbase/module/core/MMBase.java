@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.228 2007-07-09 12:18:46 michiel Exp $
+ * @version $Id: MMBase.java,v 1.229 2007-08-01 09:18:47 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -506,6 +506,7 @@ public class MMBase extends ProcessorModule {
         clusterBuilder = null;
         mmbaseroot = null;
         org.mmbase.util.ThreadPools.shutdown();
+        org.mmbase.core.event.EventManager.getInstance().shutdown();
     }
 
     /**
