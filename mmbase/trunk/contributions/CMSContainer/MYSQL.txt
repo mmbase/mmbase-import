@@ -32,7 +32,9 @@ RENAME TABLE <table_name> TO <new_table_name>;
 // Alter columns
 ALTER TABLE <table_name> MODIFY <field_name> varchar(<size>);
 
-alter table <table_name> change column <old_field_name> <new_field_name> varchar(<size>);
+ALTER TABLE <table_name> CHANGE column <old_field_name> <new_field_name> varchar(<size>);
+
+ALTER TABLE <table_name> DROP column <field_name>;
 
 // Convert table to InnoDB
 alter table <table_name> ENGINE = INNODB;
