@@ -16,13 +16,16 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 
 public class ReorderAction extends MMBaseFormlessAction {
 
+    @Override
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 
@@ -32,7 +35,14 @@ public class ReorderAction extends MMBaseFormlessAction {
             String parent = request.getParameter("parent");
             if (!isCancelled(request)) {
                 String ids = request.getParameter("ids");
-                NavigationUtil.reorder(cloud, parent, ids);
+                Node parentNode = cloud.getNode(parent);
+                NavigationUtil.reorder(parentNode, ids);
+                // the commit will change the lastmodifieddate
+                // this is required for the publish process
+                parentNode.commit();
+                if (!Workflow.hasWorkflow(parentNode)) {
+                   Workflow.create(parentNode, "");
+                }
             }
             String returnurl = request.getParameter("returnurl");
             if(returnurl != null) {

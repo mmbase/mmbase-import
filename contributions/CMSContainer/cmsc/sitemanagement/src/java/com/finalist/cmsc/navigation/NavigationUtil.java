@@ -22,7 +22,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.security.forms.RolesInfo;
-import com.finalist.cmsc.services.workflow.Workflow;
 
 public class NavigationUtil {
 
@@ -251,19 +250,11 @@ public class NavigationUtil {
     }
 
     
-    public static void reorder(Cloud cloud, String parentNode, String children) {
-        Node parent = cloud.getNode(parentNode);
-       if (!Workflow.hasWorkflow(parent)) {
-          Workflow.create(parent, "");
-       }
+    public static void reorder(Node parent, String children) {
         RelationUtil.reorder(parent, children, NAVREL, PagesUtil.PAGE);
     }
 
-    public static void reorder(Cloud cloud, String parentNode, String[] children) {
-        Node parent = cloud.getNode(parentNode);
-       if (!Workflow.hasWorkflow(parent)) {
-          Workflow.create(parent, "");
-       }
+    public static void reorder(Node parent, String[] children) {
         RelationUtil.reorder(parent, children, NAVREL, PagesUtil.PAGE);
     }
 
