@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-app_2_4.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
     
 	<display-name>CMS Container implementation</display-name>
@@ -80,6 +79,13 @@
 
    <filter>
       <description>Filter catch all requests.</description>
+      <display-name>DisableUrlSession Filter</display-name>
+      <filter-name>DisableUrlSessionFilter</filter-name>
+      <filter-class>com.finalist.cmsc.filters.DisableUrlSessionFilter</filter-class>
+   </filter>
+
+   <filter>
+      <description>Filter catch all requests.</description>
       <display-name>CloudThread Filter</display-name>
       <filter-name>CloudThreadFilter</filter-name>
       <filter-class>net.sf.mmapps.commons.web.CloudThreadFilter</filter-class>
@@ -107,6 +113,11 @@
          <param-value>([.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$|[.]jsp$|[.]html$|[.]do$|[.]ico$)|robots.txt|/mmbase|/editors</param-value>
       </init-param>
    </filter>
+   
+   <filter-mapping>
+      <filter-name>DisableUrlSessionFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
    
    <filter-mapping>
       <filter-name>CloudThreadFilter</filter-name>
@@ -303,10 +314,12 @@
 		<mime-type>application/msword</mime-type>
 	</mime-mapping>
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
+  <welcome-file-list>
+    <welcome-file>index.jspx</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
 
 	<error-page>
 		<error-code>400</error-code>
