@@ -45,12 +45,14 @@ var ajaxTreeConfig = {
 	tPlusIcon           : function () { return this.resources + 'Tplus.png'; },
 	blankIcon           : function () { return this.resources + 'blank.png'; },
 	optionIcon          : function () { return this.resources + 'option.png'; },
+	loadingIcon         : function () { return this.resources + 'blank.png'; },
 	defaultText         : 'Tree Item',
 	defaultAction       : 'javascript:void(0);',
 	defaultBehavior     : 'classic',
 	usePersistence	    : true,
 	defaultPersistentId : '-1',
-	role				: '' 
+	role                : '',
+	loadingText         : '.....'
 };
 
 function markNode(firstnode,cssName) {
@@ -79,7 +81,7 @@ var ajaxTreeHandler = {
 	blur      : function (oItem) { this.all[oItem.id.replace('-anchor','')].blur(); },
 	isclick   : function () { alldragObject.isover = false;},
 	imouseover: function (oItem) { 
-		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')]
+		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')];
 		return alldragObject.insertitem;
 		},
 	initcopy  : function(oItem) {
@@ -257,6 +259,12 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 				this.node.add(item, false);
 			}
 		}
+		
+		// remove dummy
+		if (this.node._loadingItem != null) {
+			this.node._loadingItem.remove();
+		}
+		
 		this.node.indent()
 		this.node.loaded = true;
 		this.node.doExpand();
@@ -359,6 +367,7 @@ function AjaxTreeAbstractNode(sText, sAction, sTarget, sLoaded, sPersistentId, s
 	this.text   = sText || ajaxTreeConfig.defaultText;
 	this.action = sAction || ajaxTreeConfig.defaultAction;
 	if (sTarget) this.target = sTarget;
+	this.loading = false;
 	this.loaded = sLoaded == 'true' || false;
 	this.persistentId = sPersistentId || ajaxTreeConfig.defaultPersistentId;
 	if (sFragment) this.fragment = sFragment;
@@ -459,18 +468,30 @@ AjaxTreeAbstractNode.prototype.blur = function() {
 
 AjaxTreeAbstractNode.prototype.doExpand = function() {
 	if (ajaxTreeConfig.usePersistence && !this.loaded) {
-		ajaxTreeLoader.loadChildren(this);
+		if (!this.loading) {
+			this.loading = true;
+			// and create loading item if not
+			this._loadingItem = new AjaxTreeItem(ajaxTreeConfig.loadingText, null, null, ajaxTreeConfig.loadingIcon, null, null, 'true', 'true');
+			this.add(this._loadingItem);
+			this.openTreeItem();
+
+			ajaxTreeLoader.loadChildren(this);
+		}
 	}
 	else{
-		if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
-		if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
-		this.open = true;
+		this.openTreeItem();
 		if (ajaxTreeConfig.usePersistence) {
 			ajaxTreeLoader.expand(this);
 		}
 		ajaxTreeHandler.updateAddressBar(this);
 		
 	}
+}
+
+AjaxTreeAbstractNode.prototype.openTreeItem = function() {
+		if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
+		if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
+		this.open = true;
 }
 
 AjaxTreeAbstractNode.prototype.doCollapse = function() {
@@ -617,7 +638,7 @@ AjaxTree.prototype.toString = function() {
 			+ "\" onclick=\"ajaxTreeHandler.select(this);\" />";
 
 	if(hasRights(this.icon)) {			
-		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
 			 ">" + this.text + "</a>"
 	}
@@ -638,8 +659,10 @@ AjaxTree.prototype.toString = function() {
 
 function copyTreetoString(oItem) {
 	var sbOption = [];
-	for (var i = 0; i < oItem.options.length; i++) {
-		sbOption[i] = oItem.options[i].toString(i,oItem.options.length);
+	if (oItem.options) {
+		for (var i = 0; i < oItem.options.length; i++) {
+			sbOption[i] = oItem.options[i].toString(i,oItem.options.length);
+		}
 	}
 	var str = "<div id=\"" + oItem.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
 				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
@@ -835,7 +858,7 @@ AjaxTreeItem.prototype.copyItemtoString = function (nItem, nItemCount) {
 	}
 
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\" >" + 
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\" >" + 
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
 			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
@@ -892,7 +915,7 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 	}
 	
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\">" +
 		indent +
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
@@ -900,7 +923,7 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />";
 			
 	if(hasRights(this.icon)) {			
-		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " + 
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " + 
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") + 
 			">" + this.text + "</a>"
 	}
@@ -1043,12 +1066,23 @@ mouseAction.prototype.mouseMove = function (ev){
 	if(alldragObject.copyObject){
 		alldragObject.copyObject.style.position = 'absolute';
 		alldragObject.copyObject.style.top      = mousePos.y;
-		alldragObject.copyObject.style.left     = mousePos.x;
+		alldragObject.copyObject.style.left     = mousePos.x + 5;
 		return false;
 	}
 }
 
 mouseAction.prototype.mouseUp = function (ev){
+	/* Fix for Internet Explorer
+	   When dragging a node, mousemove and mouseover events of individual nodes do not occur.
+	   Therefore, it is not known on which element the node is dropped.
+	*/
+	if (!ev) {
+		var dropTarget = event.srcElement.id;
+		if (dropTarget.indexOf(ajaxTreeHandler.idPrefix) >= 0 && dropTarget.indexOf('-anchor') > 0) {
+			alldragObject.insertitem = ajaxTreeHandler.all[dropTarget.replace('-anchor','')];	
+		}
+	} 
+
 	alldragObject.dragObject = null;
 	alldragObject.iMouseDown = false;
 	document.onmousemove = null;
@@ -1056,6 +1090,7 @@ mouseAction.prototype.mouseUp = function (ev){
 	alldragObject.pastenode();
 	alldragObject.insertitem = null;
 	alldragObject.cutoption = null;
+	return true;
 }
 
 mouseAction.prototype.pastenode = function (){

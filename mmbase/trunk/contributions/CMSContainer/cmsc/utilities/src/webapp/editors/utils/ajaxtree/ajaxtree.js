@@ -81,7 +81,7 @@ var ajaxTreeHandler = {
 	blur      : function (oItem) { this.all[oItem.id.replace('-anchor','')].blur(); },
 	isclick   : function () { alldragObject.isover = false;},
 	imouseover: function (oItem) { 
-		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')]
+		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')];
 		return alldragObject.insertitem;
 		},
 	initcopy  : function(oItem) {
@@ -196,10 +196,9 @@ ajaxTreeLoader = {
 		treeAction.execute('inittree', persistentId);
 	},
 	loadChildren : function (node) {
-	var persistentId = node.persistentId;
 		var treeAction = new AjaxTreeAction();
 		treeAction.node = node;
-		treeAction.execute('loadchildren', persistentId);
+		treeAction.execute('loadchildren', node.persistentId);
 	},
 	collapse : function (node) {
 		var treeAction = new AjaxTreeAction();
@@ -639,7 +638,7 @@ AjaxTree.prototype.toString = function() {
 			+ "\" onclick=\"ajaxTreeHandler.select(this);\" />";
 
 	if(hasRights(this.icon)) {			
-		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
 			 ">" + this.text + "</a>"
 	}
@@ -859,7 +858,7 @@ AjaxTreeItem.prototype.copyItemtoString = function (nItem, nItemCount) {
 	}
 
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\" >" + 
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\" >" + 
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
 			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
@@ -916,7 +915,7 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 	}
 	
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" +
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\">" +
 		indent +
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
 		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
@@ -924,7 +923,7 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />";
 			
 	if(hasRights(this.icon)) {			
-		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " + 
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " + 
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") + 
 			">" + this.text + "</a>"
 	}
@@ -964,7 +963,7 @@ function methodpaste(actionstr){
 }
 function methodcut(actionstr){
 	if (actionstr.indexOf('cut') == 0) {
-		alert("cut" + actionstr);
+		//alert("cut")
 		eval(actionstr);
 	}
 }
@@ -1067,12 +1066,23 @@ mouseAction.prototype.mouseMove = function (ev){
 	if(alldragObject.copyObject){
 		alldragObject.copyObject.style.position = 'absolute';
 		alldragObject.copyObject.style.top      = mousePos.y;
-		alldragObject.copyObject.style.left     = mousePos.x;
+		alldragObject.copyObject.style.left     = mousePos.x + 5;
 		return false;
 	}
 }
 
 mouseAction.prototype.mouseUp = function (ev){
+	/* Fix for Internet Explorer
+	   When dragging a node, mousemove and mouseover events of individual nodes do not occur.
+	   Therefore, it is not known on which element the node is dropped.
+	*/
+	if (!ev) {
+		var dropTarget = event.srcElement.id;
+		if (dropTarget.indexOf(ajaxTreeHandler.idPrefix) >= 0 && dropTarget.indexOf('-anchor') > 0) {
+			alldragObject.insertitem = ajaxTreeHandler.all[dropTarget.replace('-anchor','')];	
+		}
+	} 
+
 	alldragObject.dragObject = null;
 	alldragObject.iMouseDown = false;
 	document.onmousemove = null;
@@ -1080,6 +1090,7 @@ mouseAction.prototype.mouseUp = function (ev){
 	alldragObject.pastenode();
 	alldragObject.insertitem = null;
 	alldragObject.cutoption = null;
+	return true;
 }
 
 mouseAction.prototype.pastenode = function (){
