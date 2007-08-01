@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.47 2007-07-17 08:32:00 michiel Exp $
+ * @version $Id: Cache.java,v 1.48 2007-08-01 06:48:20 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -49,7 +50,10 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     private long puts = 0;
 
     public Cache(int size) {
-        implementation = new LRUHashtable<K, V>(size);
+        // See: http://www.mmbase.org/jira/browse/MMB-1486
+        implementation = new LRUCache<K, V>(size);
+        //implementation = new LRUHashtable<K, V>(size);
+
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
