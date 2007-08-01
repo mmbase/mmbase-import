@@ -80,6 +80,15 @@ public class RepositoryUtil {
         return TreeUtil.getRelationManager(cloud, CONTENTCHANNEL, CHILDREL);
     }
 
+    public static boolean isChannel(Node node) {
+        return isContentChannel(node) || isCollectionChannel(node);
+    }
+
+    public static boolean isChannel(String node) {
+        Node channel = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNode(node);
+        return isChannel(channel);
+    }
+    
     public static boolean isContentChannel(Node node) {
         return CONTENTCHANNEL.equals(node.getNodeManager().getName());
     }
@@ -563,9 +572,6 @@ public class RepositoryUtil {
 
 
     public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
-        if (orderby == null && isContentChannel(channel)) {
-            orderby = CONTENTREL + ".pos";
-        }
         String destinationManager = CONTENTELEMENT;
 
         if (contenttypes != null && contenttypes.size() == 1) {
@@ -574,10 +580,17 @@ public class RepositoryUtil {
 
         NodeQuery query;
         if (isContentChannel(channel)) {
+            if (orderby == null) {
+                orderby = CONTENTREL + ".pos";
+            }
             query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager,
                 CONTENTREL, null, null, orderby, direction);
         }
         else {
+            if (orderby == null) {
+                orderby = CONTENTREL + ".pos";
+            }
+
             NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
             if (contentchannels.isEmpty()) {
                 throw new IllegalArgumentException("contentchannels of collectionchannel is empty. should be at leat one");
