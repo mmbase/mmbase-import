@@ -56,15 +56,18 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return super.getChannelId(request, cloud);
     }
     
+    @Override
     protected Node getRootNode(Cloud cloud) {
         return null;
     }
 
+    @Override
     protected TreeInfo getTreeInfo(Cloud cloud) {
         TreeInfo info = (TreeInfo) cloud.getProperty("Selector" + NavigationInfo.class.getName());
         return info;
     }
 
+    @Override
     protected List<Node> getOpenChannels(Node channelNode) {
         if (PagesUtil.isPageType(channelNode)) {
             return NavigationUtil.getPathToRoot(channelNode);
@@ -72,6 +75,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return null;
     }
 
+    @Override
     protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         Node node = cloud.getNode(persistentid);
         if (!SiteUtil.isSite(node)) {
@@ -85,6 +89,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
         return t;
     }
     
+    @Override
     protected List<String> getChildren(Cloud cloud, String path) {
         List<String> strings = new ArrayList<String>();
         if (StringUtil.isEmpty(path)) {

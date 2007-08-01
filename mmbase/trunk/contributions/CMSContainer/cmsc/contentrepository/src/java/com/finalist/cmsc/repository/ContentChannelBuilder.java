@@ -13,18 +13,22 @@ import com.finalist.cmsc.builders.ChannelBuilder;
 
 public class ContentChannelBuilder extends ChannelBuilder {
 
+    @Override
     protected String getNameFieldname() {
         return RepositoryUtil.TITLE_FIELD;
     }
     
+    @Override
     protected String[] getFragmentFieldname() {
         return RepositoryUtil.fragmentFieldnames;
     }
 
+    @Override
     protected String getRelationName() {
         return RepositoryUtil.CHILDREL;
     }
 
+    @Override
     protected String[] getPathManagers() {
         return RepositoryUtil.treeManagers;
     }

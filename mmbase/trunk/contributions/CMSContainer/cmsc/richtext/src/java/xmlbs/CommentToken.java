@@ -30,7 +30,7 @@ package xmlbs;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#sec-comments">XML: Comments</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CommentToken implements Token {
     /** comment data */
@@ -53,6 +53,7 @@ public class CommentToken implements Token {
     /**
      * @return wellformed comment
      */
+    @Override
     public String toString () {
         return "<!--" + getData() + "-->";
     }

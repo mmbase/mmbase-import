@@ -38,6 +38,7 @@ public class UserRole {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
        return role + " " + inherited;
     }

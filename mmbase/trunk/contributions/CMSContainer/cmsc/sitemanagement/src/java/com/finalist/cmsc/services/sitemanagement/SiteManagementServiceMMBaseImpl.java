@@ -42,7 +42,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	private CloudProvider cloudProvider;
     private SiteModelManager siteModelManager;
 
-	public void init(ServletConfig config, Properties aProperties) throws Exception {
+	@Override
+    public void init(ServletConfig config, Properties aProperties) throws Exception {
 		this.cloudProvider = CloudProviderFactory.getCloudProvider();
 		log.info("SiteManagementService STARTED");
         

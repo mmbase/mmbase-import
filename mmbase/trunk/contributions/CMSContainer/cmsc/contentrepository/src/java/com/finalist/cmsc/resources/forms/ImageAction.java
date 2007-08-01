@@ -8,6 +8,7 @@ public class ImageAction extends SearchAction {
     public static final String TITLE_FIELD = "title";
     public static final String DESCRIPTION_FIELD = "description";
     
+    @Override
     protected void addConstraints(SearchForm searchForm, NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query) {
         ImageForm form = (ImageForm) searchForm;
         addField(nodeManager, queryStringComposer, query, TITLE_FIELD, form.getTitle());

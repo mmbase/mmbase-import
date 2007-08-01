@@ -41,6 +41,7 @@ public class SearchAction extends PagerAction {
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
+    @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 

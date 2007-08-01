@@ -17,7 +17,8 @@ public class DeleteSecondaryContentAction extends MMBaseAction {
 
     private static transient Logger log = Logging.getLoggerInstance(DeleteSecondaryContentAction.class.getName());
 
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+	@Override
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 		DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 		
 		String number = deleteForm.getObjectnumber();

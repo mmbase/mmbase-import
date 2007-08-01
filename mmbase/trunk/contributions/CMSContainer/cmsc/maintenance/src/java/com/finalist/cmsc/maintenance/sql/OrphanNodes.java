@@ -23,7 +23,8 @@ public class OrphanNodes extends SqlAction {
       this.action = action;
    }
    
-   public String getSql() {
+   @Override
+public String getSql() {
       return "SELECT * FROM " + getTable("object") + " WHERE " + getFieldname("number") + " in ("
                   + " SELECT " + getTableField(managerName, "number") 
                   + " FROM " + getTable(managerName)
@@ -33,7 +34,8 @@ public class OrphanNodes extends SqlAction {
             + " ) ";
    }
 
-   public String process(ResultSet rs) throws BridgeException, SQLException {
+   @Override
+public String process(ResultSet rs) throws BridgeException, SQLException {
       StringBuffer result = new StringBuffer();
       int records = 0;
       while (rs.next()) {

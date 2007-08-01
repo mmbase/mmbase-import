@@ -26,7 +26,7 @@ package xmlbs;
  *
  * @see <A href="http://www.w3.org/TR/REC-xml#sec-cdata-sect">XML: CDATA Sections</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CDATAToken implements Token {
     /** character data */
@@ -49,6 +49,7 @@ public class CDATAToken implements Token {
     /**
      * @return wellformed CDATA block
      */
+    @Override
     public String toString () {
         return "<![CDATA[" + getData() + "]]>";
     }

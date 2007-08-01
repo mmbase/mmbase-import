@@ -41,6 +41,7 @@ public abstract class SearchAction extends PagerAction {
      */
     private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
+    @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 

@@ -50,6 +50,7 @@ public class RichTextBuilder extends MMObjectBuilder {
     /**
      * @see org.mmbase.module.core.MMObjectBuilder#init()
      */
+    @Override
     public boolean init() {
         if (!super.init()) { return false; }
 
@@ -125,6 +126,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         return number;
     }
     
+    @Override
     public boolean commit(MMObjectNode node) {
         initInlineBuilders();
 

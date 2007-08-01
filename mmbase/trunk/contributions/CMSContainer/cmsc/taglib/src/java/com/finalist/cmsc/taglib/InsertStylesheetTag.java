@@ -21,7 +21,8 @@ public class InsertStylesheetTag extends AbstractListTag<Stylesheet> {
         
    private boolean override = false;
    
-   protected List<Stylesheet> getList() {   
+   @Override
+protected List<Stylesheet> getList() {   
       return SiteManagement.getStylesheetForPageByPath(getPath(), override);
    }
 	

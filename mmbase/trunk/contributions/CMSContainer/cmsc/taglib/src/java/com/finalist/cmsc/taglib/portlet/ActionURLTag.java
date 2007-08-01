@@ -15,6 +15,7 @@ import com.finalist.pluto.PortletURLImpl;
 public class ActionURLTag extends BasicURLTag
 {
 
+    @Override
     protected PortletURL getRenderUrl() {
         PortletURL renderUrl = null;
         if (page != null && window != null) {

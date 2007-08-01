@@ -47,7 +47,8 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 
 	private CloudProvider cloudProvider;
 
-	 protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {		
+	 @Override
+    protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {		
 		this.cloudProvider = CloudProviderFactory.getCloudProvider();
 		
 		log.info("ContentRepositoryService STARTED");
@@ -77,7 +78,8 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return getContentElements(channel, null, null, null, false, null, -1, -1, -1, -1, -1);
     }
     
-	public List<ContentElement> getContentElements(ContentChannel channel) {
+	@Override
+    public List<ContentElement> getContentElements(ContentChannel channel) {
 		Cloud cloud = getCloud();
 		if (channel != null) {
 			Node nc = cloud.getNode(channel.getId());
@@ -86,6 +88,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 		return null;
 	}
 
+    @Override
     public List<ContentElement> getContentElements(String channel) {
         Cloud cloud = getCloud();
         if (channel != null) {
@@ -95,6 +98,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return null;
     }
 
+    @Override
     public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
         Cloud cloud = getCloud();
         if (channel != null) {
@@ -104,7 +108,8 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return -1;
     }
     
-	public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+	@Override
+    public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
 		Cloud cloud = getCloud();
 		if (channel != null) {
 			Node chan = cloud.getNode(channel);
@@ -126,6 +131,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return result;
     }
     
+    @Override
     public List<ContentChannel> getContentChannels(ContentChannel channel) {
         Cloud cloud = getCloud();
         if (channel != null) {
@@ -135,6 +141,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return null;
     }
 
+    @Override
     public List<ContentChannel> getContentChannels(String channel) {
         Cloud cloud = getCloud();
         if (channel != null) {
@@ -149,7 +156,8 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 	 * 
 	 * @see net.sf.mmapps.commons.portalImpl.services.contentrepository.ContentRepositoryService#getContentElements()
 	 */
-	public List<NodetypeBean> getContentTypes() {
+	@Override
+    public List<NodetypeBean> getContentTypes() {
 		Cloud cloud = getCloud();
 		List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
         
@@ -162,6 +170,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 		return result;
 	}
 
+    @Override
     public boolean mayEdit(String number) {
         boolean result = false;
         try {
@@ -187,6 +196,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
     }
 
 
+    @Override
     public ContentElement getContentElement(String elementId) {
         Cloud cloud = getUserCloud();
         Node node = cloud.getNode(elementId);

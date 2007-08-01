@@ -25,7 +25,7 @@ import com.finalist.cmsc.taglib.CmscTag;
  * Checks if a Site or Page is on the path
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OnPathTag extends CmscTag {
     /**
@@ -35,7 +35,8 @@ public class OnPathTag extends CmscTag {
 
 	private Object origin;
 	
-	public void doTag() throws JspException, IOException {
+	@Override
+    public void doTag() throws JspException, IOException {
 	    boolean onpath = false;
         
         String path = getPath();

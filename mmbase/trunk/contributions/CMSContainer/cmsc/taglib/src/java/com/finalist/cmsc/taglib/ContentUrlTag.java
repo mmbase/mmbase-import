@@ -106,6 +106,7 @@ public class ContentUrlTag extends NodeReferrerTag {
                 node.getStringValue("number"), node.getStringValue("title"));
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

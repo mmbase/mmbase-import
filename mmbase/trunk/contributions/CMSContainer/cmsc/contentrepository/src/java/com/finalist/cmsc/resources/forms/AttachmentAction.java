@@ -9,6 +9,7 @@ public class AttachmentAction extends SearchAction {
     public static final String DESCRIPTION_FIELD = "description";
     public static final String FILENAME_FIELD = "filename";
     
+    @Override
     protected void addConstraints(SearchForm searchForm, NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query) {
         AttachmentForm form = (AttachmentForm) searchForm;
         addField(nodeManager, queryStringComposer, query, TITLE_FIELD, form.getTitle());

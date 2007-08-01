@@ -33,7 +33,8 @@ public class PagerForm extends ActionForm {
        this.order = order;
     }
 
-   public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
+   @Override
+public ActionErrors validate(ActionMapping actionMapping, javax.servlet.http.HttpServletRequest httpServletRequest) {
         // ensure valid direction
         if (direction != SortOrder.ORDER_DESCENDING) {
             direction = SortOrder.ORDER_ASCENDING;

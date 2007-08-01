@@ -48,6 +48,7 @@ public class HeaderContentTag  extends CmscTag {
         this.dublin = Boolean.valueOf(dublin);
     }
     
+    @Override
     public void doTag() throws IOException {
         PageContext ctx = (PageContext) getJspContext();
 

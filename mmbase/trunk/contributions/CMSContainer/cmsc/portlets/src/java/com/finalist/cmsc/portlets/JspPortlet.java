@@ -49,6 +49,7 @@ public class JspPortlet extends CmscPortlet {
         }
     }
 
+    @Override
     protected void doEditDefaults(RenderRequest req, RenderResponse res)
         throws IOException, PortletException {
         addViewInfo(req);

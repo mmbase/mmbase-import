@@ -26,7 +26,8 @@ public class RemoveDuplicateRemoteNodes extends SqlAction {
       this.cloudname = cloudname;
    }
    
-   public String getSql() {
+   @Override
+public String getSql() {
       return "    SELECT MIN(a." + getFieldname("destinationnumber") + ") AS number" +
              "      FROM " + getTable("remotenodes")+" a, " + getTable("remotenodes") + " b" +
              "     WHERE a." + getFieldname("sourcenumber") + " = b." + getFieldname("sourcenumber") +
@@ -34,7 +35,8 @@ public class RemoveDuplicateRemoteNodes extends SqlAction {
              "  GROUP BY a." + getFieldname("sourcenumber");
    }
 
-   public String process(ResultSet rs) throws BridgeException, SQLException {
+   @Override
+public String process(ResultSet rs) throws BridgeException, SQLException {
       Cloud liveCloud = CloudManager.getCloud(getCloud(), cloudname);
       
       StringBuffer result = new StringBuffer();

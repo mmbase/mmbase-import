@@ -28,6 +28,7 @@ public class Contexts extends org.mmbase.security.implementation.cloudcontext.bu
      * 
      * Disabled right check per group and user.
      */
+    @Override
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
 //        if (contextNode != null && "system".equalsIgnoreCase(contextNode.getStringValue("name"))) {
 //            return user.getRank() == Rank.ADMIN;
@@ -40,10 +41,12 @@ public class Contexts extends org.mmbase.security.implementation.cloudcontext.bu
      * 
      * Disabled right check per group and user.
      */
+    @Override
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
         return true;
     }
 
+    @Override
     public Authorization.QueryCheck check(User user, Query query, Operation operation) {
         if(user.getRank().getInt() >= Rank.ADMIN.getInt()) {
             return Authorization.COMPLETE_CHECK;

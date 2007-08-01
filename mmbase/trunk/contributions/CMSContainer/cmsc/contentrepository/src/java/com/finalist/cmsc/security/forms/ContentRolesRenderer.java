@@ -17,7 +17,8 @@ public class ContentRolesRenderer extends RolesRenderer {
         super(request, cloud, form);
     }
 
-   protected UserRole getRole(Node channel) {
+   @Override
+protected UserRole getRole(Node channel) {
        return RepositoryUtil.getRole(user, channel);
    }
 

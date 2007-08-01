@@ -39,6 +39,7 @@ public class DateFormatterTag extends ContextReferrerTag {
    /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
+    @Override
     public int doStartTag() {
         return SKIP_BODY;
     }
@@ -46,6 +47,7 @@ public class DateFormatterTag extends ContextReferrerTag {
     /**
      * @see org.mmbase.bridge.jsp.taglib.ContextReferrerTag#doEndTag()
      */
+    @Override
     public int doEndTag() throws javax.servlet.jsp.JspTagException {
         try {
             Locale locale = getLocale();

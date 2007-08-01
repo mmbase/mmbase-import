@@ -61,6 +61,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
     protected static final String ARCHIVE_PAGE = "archivepage";
     protected static final String START_INDEX = "startindex";
 
+    @Override
     protected void saveParameters(ActionRequest request, String portletId) {
         setPortletNodeParameter(portletId, CONTENTCHANNEL, request.getParameter(CONTENTCHANNEL));
 

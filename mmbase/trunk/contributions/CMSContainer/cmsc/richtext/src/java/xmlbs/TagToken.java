@@ -227,6 +227,7 @@ public class TagToken implements Token {
     /**
      * @return proper string representation of this tag
      */
+    @Override
     public String toString () {
         StringBuffer sb = new StringBuffer();
 

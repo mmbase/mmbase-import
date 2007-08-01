@@ -56,14 +56,20 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
         int level = parentNode.getIntValue("level");
 
         if (role != null && SecurityUtil.isWriter(role)) {
-            addWriterOptions(parentNode, element);
             if (SecurityUtil.isEditor(role)) {    
-                addEditorOptions(parentNode, element, model, level);
+                addEditorOptions(parentNode, element);
                 if (SecurityUtil.isChiefEditor(role)) {    
                     addChiefEditorOptions(parentNode, element, level);
-                    if (SecurityUtil.isWebmaster(role)) {    
-                        addWebmasterOptions(parentNode, element);
+                }
+                if (level > 1) {
+                    if ((model.getChildCount(parentNode) == 0)) {
+                        String label = JstlUtil.getMessage(request, "repository.channel.remove");
+                        element.addOption(createOption("delete.png", label,
+                                getUrl("ChannelDelete.do?number=" + parentNode.getNumber()), target));
                     }
+                }
+                if (SecurityUtil.isWebmaster(role)) {    
+                    addWebmasterOptions(parentNode, element);
                 }
             }
         }
@@ -78,13 +84,7 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
             getUrl("../usermanagement/contentrights.jsp?number=" + parentNode.getNumber()), target));
 	}
 
-	private void addWriterOptions(Node parentNode, TreeElement element) {
-//        String label = JstlUtil.getMessage(request, "repository.content.edit");
-//        element.addOption(createOption("new_content.png", label,
-//                getUrl("Content.do?parentchannel=" + parentNode.getNumber()), target));
-    }
-
-    private void addEditorOptions(Node parentNode, TreeElement element, TreeModel model, int level) {
+    private void addEditorOptions(Node parentNode, TreeElement element) {
         if (RepositoryUtil.isContentChannel(parentNode)) {
             String labelEdit = JstlUtil.getMessage(request, "repository.channel.edit");
             element.addOption(createOption("edit_defaults.png", labelEdit, 
@@ -96,14 +96,6 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
                     getUrl("ChannelEdit.do?number=" + parentNode.getNumber()), target));
         }
    
-        if (level > 1) {
-            if ((model.getChildCount(parentNode) == 0)) {
-                String label = JstlUtil.getMessage(request, "repository.channel.remove");
-                element.addOption(createOption("delete.png", label,
-                        getUrl("ChannelDelete.do?number=" + parentNode.getNumber()), target));
-            }
-        }
-
         if (RepositoryUtil.isContentChannel(parentNode)) {
             String labelNew = JstlUtil.getMessage(request, "repository.channel.new");
             element.addOption(createOption("new.png", labelNew,

@@ -25,7 +25,8 @@ public class RequestCountThread extends Thread {
       requestCount++;
    }
 
-   public void run() {
+   @Override
+public void run() {
       while (true) {
          long now = System.currentTimeMillis();
          if (requestCount > 0 && now - (lastCheck + 10000) > 0 ) {

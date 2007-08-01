@@ -36,15 +36,18 @@ public class NavigatorAction extends TreeAction {
         return super.execute(mapping, form, request, response, cloud);
     }
 
+    @Override
     protected Node getRootNode(Cloud cloud) {
         return null;
     }
 
+    @Override
     protected TreeInfo getTreeInfo(Cloud cloud) {
         TreeInfo info = NavigationUtil.getNavigationInfo(cloud);
         return info;
     }
 
+    @Override
     protected List<Node> getOpenChannels(Node channelNode) {
         if (PagesUtil.isPageType(channelNode)) {
             return NavigationUtil.getPathToRoot(channelNode);
@@ -52,6 +55,7 @@ public class NavigatorAction extends TreeAction {
         return null;
     }
 
+    @Override
     protected AjaxTree getTree(HttpServletRequest request, HttpServletResponse response, Cloud cloud, TreeInfo info, String persistentid) {
         Node node = cloud.getNode(persistentid);
         if (!SiteUtil.isSite(node)) {
@@ -65,6 +69,7 @@ public class NavigatorAction extends TreeAction {
         return t;
     }
     
+    @Override
     protected List<String> getChildren(Cloud cloud, String path) {
         List<String> strings = new ArrayList<String>();
         if (StringUtil.isEmpty(path)) {

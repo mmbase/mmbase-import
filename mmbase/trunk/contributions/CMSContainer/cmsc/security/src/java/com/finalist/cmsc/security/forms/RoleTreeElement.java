@@ -25,7 +25,8 @@ public class RoleTreeElement extends HTMLTreeElement {
    /**
     * @see com.finalist.tree.TreeElement#render(String)
     */
-   public String render(String imageBase) {
+   @Override
+public String render(String imageBase) {
       String str = super.render(imageBase);
       
       StringBuffer buffer = new StringBuffer();

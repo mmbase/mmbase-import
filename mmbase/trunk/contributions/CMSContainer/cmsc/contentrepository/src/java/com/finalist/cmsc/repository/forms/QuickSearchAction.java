@@ -17,6 +17,7 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 public class QuickSearchAction 
     extends com.finalist.cmsc.struts.QuickSearchAction {
 
+    @Override
     protected Node getChannelFromPath(Cloud cloud, String quicksearch) {
         return RepositoryUtil.getChannelFromPath(cloud, quicksearch);
     }

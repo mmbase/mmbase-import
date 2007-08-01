@@ -28,7 +28,8 @@ public class ListPagesTag extends AbstractListTag<Page> {
     
     private String mode = MODE_MENU;
     
-	protected List<Page> getList() {
+	@Override
+    protected List<Page> getList() {
         List<Page> pages = null;
 		if (origin != null) {
 			if (origin instanceof Site) {

@@ -92,8 +92,25 @@ public abstract class CmscPortlet extends GenericPortlet {
         //convenience method
     }
 
-    public void processEditDefaults(ActionRequest req, ActionResponse res) throws PortletException, IOException {
-        //convenience method
+    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+        PortletPreferences preferences = request.getPreferences();
+        String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
+        if (portletId != null) {
+            for (Enumeration<String> iterator = request.getParameterNames(); iterator.hasMoreElements();) {
+                String name = iterator.nextElement();
+                String value = request.getParameter(name);
+                if (value.startsWith("node.")) {
+                    setPortletNodeParameter(portletId, name, value.substring("node.".length()));
+                }
+                else {
+                    setPortletParameter(portletId, name, value);
+                }
+            }
+        } else {
+            getLogger().error("No portletId");
+        }
+        // switch to View mode
+        response.setPortletMode(PortletMode.VIEW);
     }
 
     public void processEdit(ActionRequest req, ActionResponse res) throws PortletException, IOException {
@@ -222,7 +239,7 @@ public abstract class CmscPortlet extends GenericPortlet {
      * @param req
      * @param baseName
      */
-    private void setResourceBundle(RenderRequest req, String template) {
+    protected void setResourceBundle(RenderRequest req, String template) {
         String baseName = null;
         if (!StringUtil.isEmpty(template)) {
             int extnsionIndex = template.lastIndexOf(".");
@@ -290,12 +307,14 @@ public abstract class CmscPortlet extends GenericPortlet {
         }
     }
 
+    @Override
     protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
         PortletPreferences preferences = req.getPreferences();
         String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
         doInclude("view", template, req, res);
     }
     
+    @Override
     protected void doEdit(RenderRequest req, RenderResponse res) 
     throws IOException, PortletException {
         PortletPreferences preferences = req.getPreferences();
@@ -303,6 +322,7 @@ public abstract class CmscPortlet extends GenericPortlet {
         doInclude("edit", template, req, res);
     }
 
+    @Override
     protected void doHelp(RenderRequest req, RenderResponse res) throws PortletException, IOException {
         doInclude("help", null, req, res);
     }

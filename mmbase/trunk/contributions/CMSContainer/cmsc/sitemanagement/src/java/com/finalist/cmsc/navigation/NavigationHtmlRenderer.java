@@ -38,10 +38,12 @@ public class NavigationHtmlRenderer extends NavigationRenderer implements HTMLTr
         super(request, response, target);
     }
     
+    @Override
     protected TreeOption createOption(String icon, String label, String action, String target) {
         return new HTMLTreeOption(icon, label, action, target, optionLabel);
     }
 
+    @Override
     protected HTMLTreeElement createElement(String icon, String id, String name, String fragment, String action, String target) {
         HTMLTreeElement element;
         if (hideIcons) {

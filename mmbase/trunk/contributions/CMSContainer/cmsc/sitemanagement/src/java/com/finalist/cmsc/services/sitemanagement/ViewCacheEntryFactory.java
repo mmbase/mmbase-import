@@ -26,6 +26,7 @@ public class ViewCacheEntryFactory extends MMBaseCacheEntryFactory {
         super(PortletUtil.VIEW);
     }
 
+    @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
         Node viewNode = getNode(key);
         if (viewNode == null || !PortletUtil.isView(viewNode)) {

@@ -58,6 +58,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     /**
      * @see org.mmbase.bridge.jsp.taglib.ImageTag#getOutputValue(int, org.mmbase.bridge.Node, java.lang.String, org.mmbase.util.images.Dimension)
      */
+    @Override
     public String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
         return getOutputValue(node, servletPath, dim, getLegendtype(), isPopup());
     }
@@ -91,6 +92,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
         return imgHtml;
     }
    
+    @Override
     protected String getOtherAttributes() throws JspTagException {
         if (externalAttributes == null) {
             return super.getOtherAttributes();
@@ -121,7 +123,8 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
       return legend.toString();
    }
 
-   public String getAltAttribute(Node node) {
+   @Override
+public String getAltAttribute(Node node) {
 	   // Issue NIJ-149: description cannot use multiple lines when used for alt tag
 	   String alt = findAltAttribute(node);
 	   if (alt == null || "".equals(alt)) {
@@ -243,6 +246,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     	return str.replaceAll("[\\r\\n]+", replacement);
     }
     
+    @Override
     public Node getServletNode(Node node, String template) {
         return super.getServletNode(node, template);
     }

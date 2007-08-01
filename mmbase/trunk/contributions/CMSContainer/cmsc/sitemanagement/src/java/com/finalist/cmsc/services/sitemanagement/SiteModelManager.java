@@ -47,6 +47,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         selectDefinition.setType("system");
     }
 
+    @Override
     protected void doSetupCaches() throws CacheException {
         PortletDefinitionCacheEntryFactory portletDefinitionFactory = new PortletDefinitionCacheEntryFactory();
         SelfPopulatingCache portletdefs = createSelfPopulatingCache(PORTLET_DEFINITION_CACHE, portletDefinitionFactory);

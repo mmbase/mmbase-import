@@ -109,7 +109,8 @@ public class XMLServlet extends HttpServlet {
     * @param request  The HttpServletRequest to this servlet.
     * @param response The HttpServletResponse this servlet will write to.
     */
-   protected void service(HttpServletRequest request, HttpServletResponse response) {
+   @Override
+protected void service(HttpServletRequest request, HttpServletResponse response) {
       Cloud cloud = getCloud();
       String xsl = getXslTemplate(request);
 

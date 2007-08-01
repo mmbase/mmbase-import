@@ -21,6 +21,7 @@ public abstract class FormlessAction extends Action {
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(FormlessAction.class.getName());
     
+    @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
