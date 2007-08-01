@@ -7,7 +7,7 @@
 <%@include file="includes/calendar.jsp" %>
 
 <% boolean bibliotheekStyle = !printPage && NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>><%@include file="includes/pagetitle_vraagbaak.jsp" %></td>
 
 <% 
    String rightBarTitle = "";

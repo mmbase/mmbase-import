@@ -24,45 +24,46 @@ if (printView) { %>
 
 <mm:node number="<%=vraagId%>">
 
-  
-  <table bgcolor="#d9e4f4" width="100%" >
-  <tr>
-  <td>
-     <div style="float:left;">
-      <mm:field name="titel_zichtbaar"
-         ><mm:compare value="0" inverse="true"
-            ><div class="pageheader"><mm:field name="titel" 
-         /></div></mm:compare
-      ></mm:field>
-      </div>
-     <div style="float:right;">
-        <% if (!printView) { %>
-        <a href="javascript:history.go(-1);">terug</a>
-        /
-        <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">print</a>
-      	<% } %>  
-      </div>
+   <mm:field name="titel_zichtbaar">
+   <mm:compare value="0" inverse="true">  
+   
+     <table bgcolor="#d9e4f4" width="100%" >
+     <tr>
+     <td>
+        <div style="float:left;">
+            <div class="pageheader"><mm:field name="titel" /></div>
+        </div>
+        <div style="float:right;">
+           <% if (!printView) { %>
+           <a href="javascript:history.go(-1);">terug</a>
+           /
+           <a target="_blank" href="includes/relatedvraagbaak.jsp?&pst=|action=print&v=<%=vraagId%>">print</a>
+         	<% } %>  
+         </div>
+   
+     </td>
+     </tr>
+     <tr>
+     <td>
+        <div style="float:left;">
+         	<mm:relatednodes type="pools" max="1">
+           Status:
+             <mm:field name="name"/>
+             </mm:relatednodes>
+         </div>
+        <div style="float:right;">
+           	<mm:relatednodes type="persoon" max="1">
+             Deskundige:
+             <a href="smoelenboek_vraagbaak.jsp?employee=<mm:field name="number"/>&rb=<%=rb%>&rbid=<%=rbid%>&pgid=<%=pgid%>&ssid=<%=ssid%>"><mm:field name="titel"/></a>
+             </mm:relatednodes>
+         </div>
+   
+     </td>
+     </tr>  
+     </table>
 
-  </td>
-  </tr>
-  <tr>
-  <td>
-     <div style="float:left;">
-      	<mm:relatednodes type="pools" max="1">
-        Status:
-          <mm:field name="name"/>
-          </mm:relatednodes>
-      </div>
-     <div style="float:right;">
-        	<mm:relatednodes type="persoon" max="1">
-          Deskundige:
-          <a href="smoelenboek_vraagbaak.jsp?employee=<mm:field name="number"/>&rb=<%=rb%>&rbid=<%=rbid%>&pgid=<%=pgid%>&ssid=<%=ssid%>"><mm:field name="titel"/></a>
-          </mm:relatednodes>
-      </div>
-
-  </td>
-  </tr>  
-  </table>
+   </mm:compare>
+   </mm:field>
   
   <p>
   <%@include file="../includes/relatedimage_no_description.jsp" %>
