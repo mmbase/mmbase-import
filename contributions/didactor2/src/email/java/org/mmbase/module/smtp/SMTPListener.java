@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.10 2007-07-18 07:11:34 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.11 2007-08-02 15:57:35 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -35,7 +35,7 @@ public class SMTPListener extends Thread {
                 return t;
             }
         };
-    final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue(), factory);
+    final ExecutorService socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue(), factory);
 
 
     private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
@@ -108,8 +108,10 @@ public class SMTPListener extends Thread {
             try {
                 ssocket.close();
             } catch (Exception e) {
+                log.info(e);
             }
             ssocket = null;
         }
+        socketThreads.shutdown();
     }
 }
