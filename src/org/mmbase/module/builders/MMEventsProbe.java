@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.7 2004-10-08 12:23:54 pierre Exp $
+ * @version $Id: MMEventsProbe.java,v 1.7.2.1 2007-08-02 13:14:31 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {
@@ -35,9 +35,7 @@ public class MMEventsProbe implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "mmevents");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = org.mmbase.module.core.MMBaseContext.startThread(this, "mmevents");
         }
     }
 
@@ -45,6 +43,7 @@ public class MMEventsProbe implements Runnable {
      * Stops the admin Thread.
      */
     public void stop() {
+        // how is this ever called?
         /* Stop thread */
         kicker.interrupt();
         kicker = null;
