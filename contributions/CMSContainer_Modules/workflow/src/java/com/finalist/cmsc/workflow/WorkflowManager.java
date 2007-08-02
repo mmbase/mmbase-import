@@ -253,7 +253,11 @@ public abstract class WorkflowManager {
        */
        if (!isStatusFinished(wfItem)) {
           changeWorkflow(wfItem, STATUS_FINISHED, remark);
-          List<Node> users = getUsersWithRights(rightsNode, Role.EDITOR);
+          Role role = Role.EDITOR;
+          if (!Workflow.isAcceptedStepEnabled()) {
+              role = Role.CHIEFEDITOR;
+          }
+          List<Node> users = getUsersWithRights(rightsNode, role);
           changeUserRelations(wfItem, users);
        }
    }
@@ -307,7 +311,12 @@ public abstract class WorkflowManager {
    
     protected void rejectWorkflow(Node wfItem, String remark) {
         if (isStatusPublished(wfItem)) {
-           changeWorkflow(wfItem, STATUS_APPROVED, remark);
+            if (Workflow.isAcceptedStepEnabled()) {
+                changeWorkflow(wfItem, STATUS_APPROVED, remark);
+            }
+            else {
+                changeWorkflow(wfItem, STATUS_FINISHED, remark);
+            }
         }
         else {
             changeWorkflow(wfItem, STATUS_DRAFT, remark);
