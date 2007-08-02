@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.11 2007-08-02 15:57:35 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.12 2007-08-02 16:36:23 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -52,28 +52,40 @@ public class SMTPListener extends Thread {
      * new threads for incoming connections.
      */
     public void run() {
-        String portnr = properties.get("port");
-        int port = Integer.parseInt(portnr);
+        String host = null;
+        int port = -1;
+        while (running) {
 
-        String host = properties.get("hostname");
-        if (host == null) host = "localhost";
-
-        try {
-            ssocket = new ServerSocket();
-            SocketAddress address = new InetSocketAddress(host, port);
-            ssocket.bind(address);
-            log.info("SMTP listening on " + host + ":" + port + " (" + ssocket + ")");
-        } catch (Exception e) {
-            running = false;
-            log.warn("Cannot listen on " + host + ":"  + port + " because " + e.getMessage());
+            String portnr = properties.get("port");
+            port = Integer.parseInt(portnr);
+            
+            host = properties.get("hostname");
+            if (host == null) host = "localhost";
+            
             try {
-                running = true;
-                SocketAddress address = new InetSocketAddress(port);
+                ssocket = new ServerSocket();
+                SocketAddress address = new InetSocketAddress(host, port);
                 ssocket.bind(address);
-                log.info("SMTP listening on port " + port + " (" + ssocket + ")");
-            } catch (Exception f) {
+                log.info("SMTP listening on " + host + ":" + port + " (" + ssocket + ")");
+                break;
+            } catch (Exception e) {
                 running = false;
-                log.error("Cannot listen on port "  + port + " because " + f.getMessage());
+                log.warn("Cannot listen on " + host + ":"  + port + " because " + e.getMessage());
+                try {
+                    running = true;
+                    SocketAddress address = new InetSocketAddress(port);
+                    ssocket.bind(address);
+                    log.info("SMTP listening on port " + port + " (" + ssocket + ")");
+                    break;
+                } catch (Exception f) {
+                    log.error("Cannot listen on port "  + port + " because " + f.getMessage());
+                    try {
+                        // may be someone frees the point, try again later.
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
+                }
             }
         }
 
@@ -88,9 +100,6 @@ public class SMTPListener extends Thread {
             } catch (Exception e) {
                 if (ssocket != null && ! ssocket.isClosed()) {
                     log.error("Exception while accepting connections: " + e.getMessage(), e);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception ie) {return;}
                 } else {
                     log.service(e.getMessage());
                 }
@@ -102,7 +111,7 @@ public class SMTPListener extends Thread {
 
     public void interrupt() {
         // Interrupted; this only happens when we are shutting down
-        log.info("Interrupt called");
+        log.debug("Interrupt called");
         running = false;
         if (ssocket != null) {
             try {
