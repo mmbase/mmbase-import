@@ -219,8 +219,20 @@ function jsc_GeefInfo(id_DIV)
 }
 
 function small_window(NaamPagina) {
-var newWindow;
-var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width=520,height=680, top='+(20)+',left='+(20);
+  var newWindow;
+  wwidth = 984;
+  wheight = 728;
+  wleft = (screen.width - wwidth) / 2;
+  wtop = (screen.height - wheight) / 2;
+
+  if (wleft < 0) {
+    wleft = 0;
+  }
+  if (wtop < 0) {
+    wtop = 0;
+  }
+  
+var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width='+wwidth+',height='+wheight+',top='+wtop+',left='+wleft;
 <%
    StringBuffer pageUrl = javax.servlet.http.HttpUtils.getRequestURL(request);
 %>
