@@ -6,6 +6,7 @@
     class="edituser">
   <jsp:output omit-xml-declaration="yes" />
   <mm:cloud rank="didactor user">
+
     <mm:form name="edituser">
       <mm:import externid="change" />
 
