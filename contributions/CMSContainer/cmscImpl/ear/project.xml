@@ -5,17 +5,30 @@
     <name>Custom CMS Container enterprise application</name>
     <shortDescription>CMS Container enterprise application</shortDescription>
 	<dependencies>
+<!-- 
 		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmsc-webapp</artifactId>
+			<artifactId>cmsc-staging</artifactId>
 			<version>${cmsc.version}</version>
 			<type>war</type>
             <properties>
                 <ear.bundle>true</ear.bundle>
-                <ear.bundle.name>cmsc.war</ear.bundle.name>
-				<ear.appxml.war.context-root>/cmsc</ear.appxml.war.context-root>
+                <ear.bundle.name>cmsc-staging.war</ear.bundle.name>
+				<ear.appxml.war.context-root>/cmsc-staging</ear.appxml.war.context-root>
             </properties>
 		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-live</artifactId>
+			<version>${cmsc.version}</version>
+			<type>war</type>
+            <properties>
+                <ear.bundle>true</ear.bundle>
+                <ear.bundle.name>cmsc-live.war</ear.bundle.name>
+				<ear.appxml.war.context-root>/cmsc-live</ear.appxml.war.context-root>
+            </properties>
+		</dependency>
+ -->
 	</dependencies>
 </project>
 
