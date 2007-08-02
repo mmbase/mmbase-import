@@ -52,9 +52,7 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="65535" enforce="never"/>
-      </datatype>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
   </fieldlist>
 </builder>
