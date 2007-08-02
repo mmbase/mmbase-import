@@ -1,9 +1,9 @@
-function giveInfo(infoIndex)
+function giveInfo(infoIndex, urlPopup)
 {
   var popupWindow;
   switch (infoIndex) {
     case 0: wwidth = 560; wheight = 136; break;
-    case 1: wwidth = 520; wheight = 136; break;
+    case 1: wwidth = 560; wheight = 136; break;
     case 2: wwidth = 560; wheight = 124; break;
     case 3: wwidth = 466; wheight = 38; break;
   }
@@ -18,7 +18,7 @@ function giveInfo(infoIndex)
   }
   
   var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width='+wwidth+',height='+wheight+',top='+wtop+',left='+wleft;
-  var urlPopup = 'http://localhost:8080/natmm-intranet/nmintra/includes/vastgoed/vastgoed_alert.jsp?messageNumber='+infoIndex;
+  urlPopup += '/nmintra/includes/vastgoed/vastgoed_alert.jsp?messageNumber='+infoIndex;
   popupWindow = window.open(urlPopup, 'Informatie', props);
   popupWindow.focus();
 }
