@@ -151,6 +151,10 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
             || (WorkflowManager.STATUS_APPROVED.equals(status) 
                 && (userrole.getRole() == Role.EDITOR || userrole.getRole() == Role.WRITER));
 
+        if (!deny && !Workflow.isAcceptedStepEnabled()) {
+            deny = userrole.getRole() == Role.EDITOR && WorkflowManager.STATUS_FINISHED.equals(status);
+        }
+
         return !deny;
     }
 
