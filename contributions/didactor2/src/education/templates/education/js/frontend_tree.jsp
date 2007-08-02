@@ -29,6 +29,7 @@ var contenttype   = new Array();
 var contentnumber = new Array();
 var openDivs      = new Object();
 var usedFrames    = new Object();
+var enabledPopups = false;
 
 
 // legacy
@@ -104,6 +105,35 @@ function loadIconOff() {
     document.getElementById("ajax_loader").style.display = "none";
 }
 
+function disablePopups() {
+    if (enabledPopups) {
+        enabledPopups = false;
+        var popups = document.getElementsByClass("popup");
+        for(var i = 0; i < popups.length; i++) {
+            popups[i].style.display = "none";
+        }
+    }
+    
+}
+
+function enablePopups() {
+    if (! enabledPopups) {
+        enabledPopups = true;
+        var popups = document.getElementsByClass("popup");
+        for(var i = 0; i < popups.length; i++) {
+            popups[i].style.display = "inline";
+        }
+    }
+
+}
+
+function check(className) {
+    if (/\btests\b/.test(className)) {
+        disablePopups();
+    } else {
+        enablePopups();
+    }
+}
 
 function requestContent(href) {
    var content = usedFrames[href];
@@ -116,6 +146,7 @@ function requestContent(href) {
                try {
                     var contentEl = document.getElementById('contentFrame');
                     Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
+                    check(xmlhttp.responseXML.documentElement.getAttribute('class'));
                     document.href_frame = href;
                } catch (exception) {
                    // backwards compatibility
