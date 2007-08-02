@@ -26,13 +26,17 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.27 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: BetterStrategy.java,v 1.28 2007-08-02 09:51:29 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
     //public BetterStrategy() {}
     private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private static final Logger log = Logging.getLoggerInstance(BetterStrategy.class);
+
+    
+    private static final Logger nodeEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".nodeevent");
+    private static final Logger relationEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".relationevent");
 
     // inheritdoc
     public String getName() {
@@ -372,8 +376,17 @@ public class BetterStrategy extends ReleaseStrategy {
     }
 
     private void logResult(String comment, SearchQuery query, Event event){
-        if(log.isDebugEnabled()){
-            String role="";
+        if(log.isDebugEnabled() || nodeEventLog.isDebugEnabled() || relationEventLog.isDebugEnabled()){
+            String role = "";
+             Logger logger;
+             if (event instanceof RelationEvent) {
+                 logger = relationEventLog;
+             } else if (event instanceof NodeEvent) {
+                 logger = nodeEventLog;
+             } else {
+                 logger = log;
+             }
+
             // a small hack to limit the output
             if (event instanceof RelationEvent) {
                 //get the role name
@@ -386,9 +399,9 @@ public class BetterStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**" + sqlHandler.toSql(query, sqlHandler) + "\n******");
+                logger.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**" + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
-                log.warn(e);
+                logger.warn(e);
             }
         }
     }
