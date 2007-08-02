@@ -253,7 +253,11 @@ public abstract class WorkflowManager {
        */
        if (!isStatusFinished(wfItem)) {
           changeWorkflow(wfItem, STATUS_FINISHED, remark);
-          List<Node> users = getUsersWithRights(rightsNode, Role.EDITOR);
+          Role role = Role.EDITOR;
+          if (!Workflow.isAcceptedStepEnabled()) {
+              role = Role.CHIEFEDITOR;
+          }
+          List<Node> users = getUsersWithRights(rightsNode, role);
           changeUserRelations(wfItem, users);
        }
    }
