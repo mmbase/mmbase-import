@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.31 2006-01-02 19:17:47 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.31.2.1 2007-08-02 10:05:25 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -63,7 +63,7 @@ public class ModuleHandler implements Module, Comparable, InvocationHandler {
         } else {
             useintf = new Class[] {Module.class};
         }
-        log.service("creating proxy for : " + mod.getName() + " = " + useintf);
+        log.debug("creating proxy for : " + mod.getName() + " = " + useintf);
 
         return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
                                               useintf, new ModuleHandler(mod, cloudcontext));
