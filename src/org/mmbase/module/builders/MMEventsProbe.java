@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.7.2.1 2007-08-02 13:14:31 michiel Exp $
+ * @version $Id: MMEventsProbe.java,v 1.7.2.2 2007-08-02 13:25:56 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {
@@ -55,6 +55,7 @@ public class MMEventsProbe implements Runnable {
     public void run() {
         while (kicker != null) {
             parent.probeCall();
+            if (Thread.currentThread().isInterrupted()) break;
         }
     }
 }
