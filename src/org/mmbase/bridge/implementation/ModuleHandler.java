@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.36 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: ModuleHandler.java,v 1.37 2007-08-02 10:06:12 michiel Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -45,8 +45,6 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
-        // turned off because it causes errors on compiling with JDK1.2
-
         Class[] objClasses = mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
@@ -63,7 +61,7 @@ public class ModuleHandler implements Module, InvocationHandler {
         } else {
             useintf = new Class[] {Module.class};
         }
-        log.service("creating proxy for : " + mod.getName() + " = " + useintf);
+        log.debug("creating proxy for : " + mod.getName() + " = " + useintf);
 
         return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
                                               useintf, new ModuleHandler(mod, cloudcontext));
