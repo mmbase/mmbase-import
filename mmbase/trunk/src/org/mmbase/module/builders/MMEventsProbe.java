@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.8 2007-08-02 13:16:01 michiel Exp $
+ * @version $Id: MMEventsProbe.java,v 1.9 2007-08-02 13:22:06 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {
@@ -45,8 +45,9 @@ public class MMEventsProbe implements Runnable {
         // how is this ever called?
 
         // iow, why is there no MMObjectBuilder#shutdown method (this thing is started in MMEvents,
-        // so it shoudl also be stopped from that, isn't it?)
+        // so it should also be stopped from that, isn't it?)
 
+        // http://www.mmbase.org/jira/browse/MMB-1491
         kicker.interrupt();
         kicker = null;
     }
