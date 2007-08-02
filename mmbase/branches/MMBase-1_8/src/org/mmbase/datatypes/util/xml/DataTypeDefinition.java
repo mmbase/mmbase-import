@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55 2006-04-10 15:15:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.1 2007-08-02 09:38:47 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -184,7 +184,7 @@ public class DataTypeDefinition {
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
-                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that");
+                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument().getDocumentURI() + ")");
                 }
             }
         }
