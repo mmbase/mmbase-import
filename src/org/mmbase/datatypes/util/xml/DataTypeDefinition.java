@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.59 2007-06-20 14:21:50 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.60 2007-08-02 09:39:25 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -180,7 +180,7 @@ public class DataTypeDefinition {
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
-                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that");
+                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument().getDocumentURI() + ")");
                 }
             }
         }
