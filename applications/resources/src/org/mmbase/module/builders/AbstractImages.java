@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.3 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: AbstractImages.java,v 1.4 2007-08-02 11:00:23 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -272,6 +272,15 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         return "jpg";
     }
 
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected boolean handleEmpty(MMObjectNode node) {
+        return node.isNull(Imaging.FIELD_HANDLE) ||
+            (node.getBuilder().getField(Imaging.FIELD_HANDLE).isNotNull() && node.getSize(Imaging.FIELD_HANDLE) == 0);
+    }
+
     /**
      * Determines the image type of an object and stores the content in the itype field.
      * @param node The object to use.
@@ -298,7 +307,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
 
         if ((itype == null || itype.equals("")) &&  // itype unset
-            ! node.isNull(Imaging.FIELD_HANDLE)        // handle present
+            ! handleEmpty(node)
             ) {
             log.debug("Determining itype for " + node.getNumber());
             itype = "";
