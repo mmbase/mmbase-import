@@ -5,6 +5,10 @@
 
 <%@include file="includes/vastgoed/override_templateparams.jsp" %>
 
+<%
+  String baseURL = request.getContextPath();
+%>
+
 <% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="includes/getresponse.jsp" %>
 <html>
@@ -544,7 +548,7 @@ if(twoColumns) {
     <tr><td style="padding:10px;padding-top:18px;">
     <a name="top">
     <%--%@include file="includes/back_print.jsp" %>--%>
-    
+
 <html:form action="/nmintra/KaartenAction" method="POST" onsubmit="return validationMessage()">
 	<table>
 		<tr>
@@ -555,7 +559,7 @@ if(twoColumns) {
 			Selecteer gebieden of geef co&ouml;rdinaten:
 			</td>
 			<td align="right">	
-				<a href="javascript:giveInfo(0);">
+				<a href="javascript:giveInfo(0, '<%=baseURL%>');">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Klik hier voor uitleg" title="Klik hier voor uitleg">
 				</a>
@@ -692,7 +696,7 @@ if(twoColumns) {
 				Selecteer gewenste kaarten:
 			</td>
 			<td align="right">	
-				<a href="javascript:giveInfo(1);">
+				<a href="javascript:giveInfo(1, '<%=baseURL%>');">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Klik hier voor uitleg" title="Klik hier voor uitleg">
 				</a>
@@ -726,7 +730,7 @@ if(twoColumns) {
 				Geef de schaal of het formaat  en het aantal:
 			</td>
 			<td align="right">	
-				<a href="javascript:giveInfo(2);">
+				<a href="javascript:giveInfo(2, '<%=baseURL%>');">
 					<img src="media/vastgoed/Info.png" width="29" height="24" border=0 
 						alt="Klik hier voor uitleg" title="Klik hier voor uitleg" >
 				</a>
@@ -851,7 +855,7 @@ if(twoColumns) {
 				Opmerkingen:
 			</td>
 			<td align="right">	
-				<a href="javascript:giveInfo(3);">
+				<a href="javascript:giveInfo(3, '<%=baseURL%>');">
 
 					<img src="media/vastgoed/Info.png" align="right" width="29" height="24" border=0 
 						alt="Klik hier voor uitleg" title="Klik hier voor uitleg" >
