@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.35 2007-08-02 10:00:54 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.36 2007-08-02 10:04:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -146,7 +146,9 @@ public class DocumentReader  {
             if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
             DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
-            if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
+            if (log != null && log.isDebugEnabled()) {
+                log.debug("Reading " + source.getSystemId());
+            }
             document = dbuilder.parse(source);
         } catch(org.xml.sax.SAXException se) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
