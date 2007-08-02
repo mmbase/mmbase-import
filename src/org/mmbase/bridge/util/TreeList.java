@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.21.2.1 2007-03-02 16:04:54 michiel Exp $
+ * @version $Id: TreeList.java,v 1.21.2.2 2007-08-02 10:10:16 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -279,12 +279,16 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     protected Node getRealNode(int queryIndex, int index) {
         NodeList nodeList  = getLeafList(queryIndex);
         NodeList realNodes = (NodeList)nodeList.getProperty(REAL_NODES);
-        if (realNodes == null) {
+        if (realNodes == null || realNodes.size() != nodeList.size()) {
             Branch branch = (Branch) branches.get(queryIndex);
             NodeQuery nq = branch.getLeafQuery();
             realNodes = nq.getNodeManager().getList(nq); // We trust the query cache! (the query is performed already, but on Cloud)
             nodeList.setProperty(REAL_NODES, realNodes);
         }
+        assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() + 
+            " at queryIndex; " + queryIndex + " query " + ((Branch) branches.get(queryIndex)).getLeafQuery().toSql();
+        assert realNodes.size() >= index : "The size of realNodes  (" +  realNodes.size() + ") is too small (index = " + index + ")";
+        
         return realNodes.getNode(index);
     }
 
@@ -449,7 +453,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         }
 
         /**
-         * Returns the 'real' node, us the just used 'next' node of index.
+         * Returns the 'real' node, thus the just used 'next' node of index.
          */
         protected final Node getRealNode(int index) {
             ListIterator iterator = (ListIterator)nodeIterators.get(index);
