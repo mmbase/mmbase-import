@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.6 2007-07-04 10:00:20 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.7 2007-08-02 09:55:41 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -442,6 +442,7 @@ public class MMBase extends ProcessorModule {
         clusterBuilder = null;
         mmbaseroot = null;
         org.mmbase.util.ThreadPools.shutdown();
+        org.mmbase.core.event.EventManager.getInstance().shutdown();
     }
 
     /**
@@ -584,7 +585,7 @@ public class MMBase extends ProcessorModule {
      */
     public static MMBase getMMBase() {
         if (mmbaseroot == null) {
-            synchronized(builderLoader) { // make sure only one mmbaseroot is instantiated (synchronized on random static member...)
+            synchronized(MMBase.class) { // make sure only one mmbaseroot is instantiated (synchronized on random static member...)
                 mmbaseroot = (MMBase) getModule("mmbaseroot");
                 if (mmbaseroot == null) {
                     log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
