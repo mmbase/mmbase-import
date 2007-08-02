@@ -992,3 +992,11 @@ div.blocked a {
   font-weight: bold;
 }
 
+#ajax_loader { 
+  position: absolute;
+  background-color: #eee;
+  z-index: 100;
+  border: solid 3px #ddd;
+  padding: 15px;
+  
+}
