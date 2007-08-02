@@ -34,7 +34,17 @@ function ShowHideLayer(divID) {
 </script>
 
 <% boolean bibliotheekStyle = !printPage && NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek"); %>
-<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+<td <% if(bibliotheekStyle) { %>colspan="2"<% } %>>
+
+<table border="0" cellpadding="0" cellspacing="0">
+   <tr>
+      <%-- <td><img src="media/rdcorner.gif" style="filter:alpha(opacity=75)"></td> --%>
+      <td class="transperant" style="width:100%;"><img src="media/spacer.gif" width="1" height="6"><br></td>
+      <td class="transperant"><img src="media/spacer.gif" width="10" height="28"></td>
+   </tr>
+</table>
+
+</td>
 
 <% 
    String rightBarTitle = "";
