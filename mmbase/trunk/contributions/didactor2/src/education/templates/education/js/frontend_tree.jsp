@@ -71,7 +71,7 @@ function nextContent() {
             }
         }
     }
-    openContent( opentype, opennumber );
+    openContent(opentype, opennumber);
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
@@ -88,7 +88,7 @@ function previousContent() {
             }
         }
     }
-    openContent( opentype, opennumber );
+    openContent(opentype, opennumber);
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
@@ -216,7 +216,7 @@ function postContent(href, form) {
     scrollToTop();
 }
 
-function openContent( type, number ) {
+function openContent(type, number) {
     
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);

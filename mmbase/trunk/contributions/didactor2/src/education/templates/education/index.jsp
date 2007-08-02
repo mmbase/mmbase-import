@@ -63,10 +63,12 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
       <mm:constraint field="dnumber" value="${education}" />
     </mm:composite>
     <mm:listnodes >
-      <%-- is lastpage field ever filled ? --%>
-      <script type="text/javascript">
-        openContent("learnblocks", ${_node.lastpage});
-      </script>
+      <c:if test="${ ! empty _node.lastpage}">
+        <%-- is lastpage field ever filled ? --%>
+        <script type="text/javascript">
+          openContent("learnblocks", ${_node.lastpage});
+        </script>
+      </c:if>
     </mm:listnodes>
   </mm:listnodescontainer>
   
