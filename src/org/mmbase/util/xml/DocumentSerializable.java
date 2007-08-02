@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.5 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DocumentSerializable.java,v 1.6 2007-08-02 10:00:54 michiel Exp $
  * @since MMBase-1.8
  */
 public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {
@@ -61,6 +61,9 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
     public DocumentSerializable(Document d) {
         document = d;
     }
+    public <T> T unwrap(Class<T> iface) {
+        return (T) document;
+    }
 
     public final Document getDocument() {
         return document;
@@ -77,7 +80,7 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
         return 
             o != null &&
             o instanceof DocumentSerializable &&
-            document.equals(((DocumentSerializable)o).document);            
+            document.isEqualNode(((DocumentSerializable) o).document);
     }
 
     public Object clone() {
