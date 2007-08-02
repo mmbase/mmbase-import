@@ -34,6 +34,7 @@
             <mm:relatednodes>
               <mm:relatednodes type="folders" role="posrel" orderby="posrel.pos">
                 <mm:first>
+                  <mm:remove referid="currentfolder" />
                   <mm:node id="currentfolder" />
                 </mm:first>
               </mm:relatednodes>
