@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.2 2007-05-08 15:12:29 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.3 2007-08-02 14:03:57 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -233,7 +233,7 @@ s     */
      * @throws IllegalArgumentException if the type is not compatible
      */
     protected boolean isCorrectType(Object value) {
-        return Casting.isType(classType, value);
+        return (value == null && ! isRequired()) || Casting.isType(classType, value);
     }
 
     /**
@@ -1026,11 +1026,14 @@ s     */
 
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
-            if (node != null && field != null && v != null && value != null ) {
+            if (field != null && v != null && value != null ) {
 
-                if (field.isVirtual()) return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+                if (field.isVirtual()) {
+                    log.warn("Cannot check uniqueness on field " + field + " because it is virtual");
+                    return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+                }
 
-                if (!node.isNew()) {
+                if (node != null && !node.isNew()) {
                     if (field.getName().equals("number")) {
                         // on 'number' there is a unique constraint, if it is checked for a non-new node
                         // we can simply avoid all quering because it will result in a query number == <number> and number <> <number>
@@ -1045,6 +1048,7 @@ s     */
 
                 NodeManager nodeManager = field.getNodeManager();
                 Cloud cloud = nodeManager.getCloud();
+                
                 if (cloud.getUser().getRank().getInt() < Rank.ADMIN_INT) {
                     // This will test for uniqueness using bridge, so you'll miss objects you can't
                     // see (and database doesn't know that!)
@@ -1059,7 +1063,7 @@ s     */
                 NodeQuery query = nodeManager.createQuery();
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query, constraint);
-                if (!node.isNew()) {
+                if (node != null && !node.isNew()) {
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
                     Queries.addConstraint(query, constraint);
                 }
@@ -1068,7 +1072,7 @@ s     */
                 }
                 return Queries.count(query) == 0;
             } else {
-                // TODO needs to work without Node too.
+                log.warn("Cannot yet check uniqueness  without field");
                 return true;
             }
         }
