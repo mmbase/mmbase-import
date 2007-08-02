@@ -25,7 +25,7 @@ String kartType = "";
 	</mm:relatednodes>
 
 <br/>
-<mm:field name="opmerking"/>
+<mm:field name="opmerking" escape="p" />
 
 </body>
 </html>
