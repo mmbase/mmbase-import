@@ -68,7 +68,7 @@ if (printView) { %>
   <p>
   <%@include file="../includes/relatedimage_no_description.jsp" %>
   
-  <mm:field name="intro" />
+  <mm:field name="intro"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field>
   
   <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <mm:first><br/></mm:first>
