@@ -66,7 +66,7 @@ public class IndexUpdateTask implements Runnable {
 				try {
 					switch (update.getMethod()) {
 					case QueuedUpdate.METHOD_UPDATE_CONTENT_INDEX:
-						executeUpdateContentIndex(update.getNodeNumber());
+						executeUpdateContentIndex(update.getNodeNumber(), true);
 						break;
 					case QueuedUpdate.METHOD_UPDATE_CONTENT_CHANNEL_INDEX:
 						executeUpdateContentChannelIndex(update.getNodeNumber());
@@ -168,7 +168,7 @@ public class IndexUpdateTask implements Runnable {
 		}
 	}
 
-	private void executeUpdateContentIndex(Node node) {
+	private void executeUpdateContentIndex(Node node, boolean triggeredByPrimary) {
 		log.debug(id + " Update content index: " + node.getNumber());
         List<PageInfo> pages = Search.findAllDetailPagesForContent(node);
 		if (pages.size() == 0) {
@@ -177,14 +177,14 @@ public class IndexUpdateTask implements Runnable {
 		}
         for (PageInfo info : pages) {
             int pageId = info.getPageNumber();
-			update(String.valueOf(pageId), node);
+			update(String.valueOf(pageId), node, triggeredByPrimary);
 		}
 	}
 
-	private void executeUpdateContentIndex(int nodeNumber) {
+	private void executeUpdateContentIndex(int nodeNumber, boolean triggeredByPrimary) {
 		Node node = fetchNode(nodeNumber);
 		if (node != null) {
-			executeUpdateContentIndex(node);
+			executeUpdateContentIndex(node, triggeredByPrimary);
 		} else {
 			delete(null, "" + nodeNumber);
 		}
@@ -199,11 +199,14 @@ public class IndexUpdateTask implements Runnable {
 		log.debug(id + " Update secondary content: " + nodeNumber);
 		Node node = fetchNode(nodeNumber);
 		if (node != null) {
+		    Envelope doc = EnvelopeFactory.updatingEnvelope();
+		    commitSecondary(doc, node);
+		    
 			NodeList ceList = node.getRelatedNodes(ContentElementUtil.CONTENTELEMENT, null, "SOURCE");
 			Iterator<Node> ceIter = ceList.iterator();
 			while (ceIter.hasNext()) {
 				Node ceNode = ceIter.next();
-				executeUpdateContentIndex(ceNode.getNumber());
+				executeUpdateContentIndex(ceNode.getNumber(), false);
 			}
 		} else {
 			delete(null, "" + nodeNumber);
@@ -218,7 +221,7 @@ public class IndexUpdateTask implements Runnable {
 			for (NodeIterator i = relatedNodes.nodeIterator(); i.hasNext();) {
 				Node relatedNode = i.nextNode();
 				if (relatedNode.getNumber() != nodeNumber) {
-					executeUpdateContentIndex(relatedNode.getNumber());
+					executeUpdateContentIndex(relatedNode.getNumber(), true);
 				}
 			}
 		} else {
@@ -236,7 +239,7 @@ public class IndexUpdateTask implements Runnable {
 				delete("" + pageNumber, null);
 			}
 			for (Node element : elementen) {
-				update(pageNode, element);
+				update(pageNode, element, true);
 			}
 		} else {
 			delete("" + pageNumber, null);
@@ -251,21 +254,21 @@ public class IndexUpdateTask implements Runnable {
 
 	private void create(Node pageNode, Node contentElement) {
 		Envelope doc = EnvelopeFactory.creatingEnvelope();
-		commit(doc, pageNode, contentElement);
+		commit(doc, pageNode, contentElement, true);
 	}
 
-	private void update(String pageId, Node contentElement) {
+	private void update(String pageId, Node contentElement, boolean triggeredByPrimary) {
 		Node pageNode = contentElement.getCloud().getNode(pageId);
-		update(pageNode, contentElement);
+		update(pageNode, contentElement, triggeredByPrimary);
 		pageNode = null;
 	}
 
-	private void update(Node pageNode, Node contentElement) {
+	private void update(Node pageNode, Node contentElement, boolean triggeredByPrimary) {
 		Envelope doc = EnvelopeFactory.updatingEnvelope();
-		commit(doc, pageNode, contentElement);
+		commit(doc, pageNode, contentElement, triggeredByPrimary);
 	}
 
-	private void commit(Envelope doc, Node pageNode, Node contentElement) {
+	private void commit(Envelope doc, Node pageNode, Node contentElement, boolean triggeredByPrimary) {
 
 		NodeManager nm = contentElement.getNodeManager();
 		String nmName = nm.getName();		
@@ -305,7 +308,9 @@ public class IndexUpdateTask implements Runnable {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(attachment, doc);
 				}
-				commit(doc.duplicate(), attachment);
+				if (triggeredByPrimary) {
+				    commitSecondary(doc.duplicate(), attachment);
+				}
 			}
 		}
 
@@ -315,7 +320,9 @@ public class IndexUpdateTask implements Runnable {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(url, doc);
 				}
-				commit(doc.duplicate(), url);
+                if (triggeredByPrimary) {
+                    commitSecondary(doc.duplicate(), url);
+                }
 			}
 		}
 
@@ -325,7 +332,9 @@ public class IndexUpdateTask implements Runnable {
 				if (module.isDoSecondaryWithPrimary()) {
 					LuceusUtil.nodeFields(image, doc);
 				}
-				commit(doc.duplicate(), image);
+                if (triggeredByPrimary) {
+                    commitSecondary(doc.duplicate(), image);
+                }
 			}
 		}
 
@@ -344,7 +353,7 @@ public class IndexUpdateTask implements Runnable {
 		}
 	}
 
-	private void commit(Envelope doc, Node secondaryContent) {
+	private void commitSecondary(Envelope doc, Node secondaryContent) {
         if (secondaryContent != null) {
             if (module.isDoSecondaryAsPrimary() 
                     && !module.excludeType(secondaryContent.getNodeManager().getName())) {
