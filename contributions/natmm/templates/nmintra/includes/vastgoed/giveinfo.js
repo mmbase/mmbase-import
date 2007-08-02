@@ -1,14 +1,24 @@
 function giveInfo(infoIndex)
 {
-var infoMessages = new Array();
+  var popupWindow;
+  switch (infoIndex) {
+    case 0: wwidth = 560; wheight = 136; break;
+    case 1: wwidth = 520; wheight = 136; break;
+    case 2: wwidth = 560; wheight = 124; break;
+    case 3: wwidth = 466; wheight = 38; break;
+  }
+  wleft = (screen.width - wwidth) / 2;
+  wtop = (screen.height - wheight) / 2;
 
-infoMessages[0] = "Kies hier de gebieden waarvan je kaarten wilt toevoegen aan je bestelling. Bij de keuzemogelijkheid 'natuurgebieden' kunnen meerdere natuurgebieden binnen één eenheid tegelijkertijd (gebruik de shift toets) worden geselecteerd en dus toegevoegd aan je bestelling. Bij de keuzemogelijkheden 'Eenheid/Regio/Provincie', 'Nederland' of 'coördinaten' kun je slechts één gebied per keer toevoegen aan je bestelling.";
-
-infoMessages[1] = "Er kunnen meerdere kaartsoorten tegelijkertijd worden geselecteerd en dus worden toegevoegd aan je bestelling.\nLet op, niet alle kaartsoorten zijn bij elke schaal en/of gebied leverbaar. Bij een niet leverbare keuze krijg je een bericht van de GIS-afdeling. Geef speciale wensen op bij opmerkingen.";
-
-infoMessages[2] = "Kies hier voor een schaal of een papierformaat. Maak hier ook de keuze of je de kaarten gerold of gevouwen wilt ontvangen en geef ook het aantal exemplaren op.\nLet op, niet elke schaal of papierformaat is bij elke kaartsoort en/of gebied leverbaar. Bij een niet-leverbare keuze krijg je een bericht van de GIS-afdeling. Geef speciale wensen op bij opmerkingen.";
-
-infoMessages[3] = "Vul hier eventueel je speciale wensen in en/of eventuele andere opmerkingen.";
-
-alert(infoMessages[infoIndex]);
+  if (wleft < 0) {
+    wleft = 0;
+  }
+  if (wtop < 0) {
+    wtop = 0;
+  }
+  
+  var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width='+wwidth+',height='+wheight+',top='+wtop+',left='+wleft;
+  var urlPopup = 'http://localhost:8080/natmm-intranet/nmintra/includes/vastgoed/vastgoed_alert.jsp?messageNumber='+infoIndex;
+  popupWindow = window.open(urlPopup, 'Informatie', props);
+  popupWindow.focus();
 }
