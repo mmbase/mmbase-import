@@ -540,7 +540,7 @@ if(twoColumns) {
 		</tr>
 		<tr>
 			<td width="450">
-			Selecteer één gebied of geef de coördinaten op:
+			Selecteer gebieden of geef co&ouml;rdinaten:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(0);">
@@ -677,7 +677,7 @@ if(twoColumns) {
 	<table>
 		<tr>
 			<td width="450">
-				Selecteer de gewenste kaart:
+				Selecteer gewenste kaarten:
 			</td>
 			<td align="right">	
 				<a href="javascript:giveInfo(1);">
