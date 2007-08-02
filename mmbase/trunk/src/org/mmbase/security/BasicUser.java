@@ -23,12 +23,12 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.3 2006-11-24 15:16:55 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.4 2007-08-02 09:57:55 michiel Exp $
  */
 public class BasicUser implements UserContext {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
-    protected String authenticationType;
+    protected final String authenticationType;
 
 
     public BasicUser(String authenticationType) {
