@@ -98,7 +98,6 @@ function invalidateCurrentFrame() {
 }
 
 function loadIconOn() {
-    Sarissa.clearChildNodes(document.getElementById('contentFrame'));
     document.getElementById("ajax_loader").style.display = "inline";
 }
 function loadIconOff() {
@@ -108,7 +107,7 @@ function loadIconOff() {
 function disablePopups() {
     if (enabledPopups) {
         enabledPopups = false;
-        var popups = document.getElementsByClass("popup");
+        var popups = getElementsByClass(document, "popup");
         for(var i = 0; i < popups.length; i++) {
             popups[i].style.display = "none";
         }
@@ -119,7 +118,7 @@ function disablePopups() {
 function enablePopups() {
     if (! enabledPopups) {
         enabledPopups = true;
-        var popups = document.getElementsByClass("popup");
+        var popups = getElementsByClass(document, "popup");
         for(var i = 0; i < popups.length; i++) {
             popups[i].style.display = "inline";
         }

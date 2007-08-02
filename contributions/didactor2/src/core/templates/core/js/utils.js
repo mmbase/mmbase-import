@@ -6,13 +6,10 @@ function addParameter(href, parameter) {
     }
 }
 
-Document = document.constructor; 
-HTMLElement = document.createElement("x").constructor;
-Document.prototype.getElementsByClass = HTMLElement.prototype.getElementsByClass =
-    function(searchClass, tag) {
+function getElementsByClass(node, searchClass, tag) {
     if (tag == null) tag ="*";
     var classElements = new Array();
-    var els = this.getElementsByTagName(tag);
+    var els = node.getElementsByTagName(tag);
     var elsLen = els.length;
     var pattern = new RegExp("(^|\\s)" + searchClass + "(\\s|$)");
     for (i = 0, j = 0; i < elsLen; i++) {
