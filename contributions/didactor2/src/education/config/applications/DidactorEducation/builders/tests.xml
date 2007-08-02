@@ -184,10 +184,54 @@
     </field>
 
     <field name="always_online">
-      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="false" />
-      </datatype>
+      <descriptions>
+        <description xml:lang="nl">Altijd online</description>
+         <description xml:lang="en">Always online</description>
+       </descriptions>
+       <gui>
+         <guiname xml:lang="nl">Altijd online</guiname>
+         <guiname xml:lang="en">Always online</guiname>
+       </gui>
+       
+       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <default value="false" />
+       </datatype>
     </field>
+   
+    <field name="online_date">
+      <descriptions>
+        <description xml:lang="en">Online Date</description>
+        <description xml:lang="nl">Online Tijden</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Online Date</guiname>
+        <guiname xml:lang="nl">Online Tijden</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>10</list>
+        </positions>
+       </editor>
+       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    
+    <field name="offline_date">
+      <descriptions>
+        <description xml:lang="en">Offline Date</description>
+         <description xml:lang="nl">Offline Tijden</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Offline Date</guiname>
+        <guiname xml:lang="nl">Offline Tijden</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>11</list>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    
 
   </fieldlist>
 
