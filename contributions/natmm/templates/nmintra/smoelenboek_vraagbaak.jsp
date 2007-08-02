@@ -68,15 +68,23 @@ if(showProgramSelect) {
   %><mm:import id="showprogramselect" /><% 
 }
 %><%@include file="includes/header.jsp" 
-%><td><%@include file="includes/pagetitle.jsp" %></td>
+%><td>
+
+<table border="0" cellpadding="0" cellspacing="0">
+   <tr>
+      <%-- <td><img src="media/rdcorner.gif" style="filter:alpha(opacity=75)"></td> --%>
+      <td class="transperant" style="width:100%;"><img src="media/spacer.gif" width="1" height="6"><br></td>
+      <td class="transperant"><img src="media/spacer.gif" width="10" height="28"></td>
+   </tr>
+</table>
+
+</td>
 <td></td>
 </tr>
 <tr>
 <td class="transperant" valign="top">
-<div class="<%= infopageClass %>" id="infopage"><%
-    if(postingStr.equals("|action=back")) {
-        %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp;</div><% 
-    } %>
+<div class="<%= infopageClass %>" id="infopage">
+<div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp;</div>
 <table border="0" cellpadding="0" cellspacing="0">
     <tr><td style="padding:10px;padding-top:18px;"><% 
 
@@ -152,7 +160,12 @@ if(showProgramSelect) {
 </table>
 </div>
 </td>
-<td valign="top"></td>
+   <td style="padding-left:10px;">
+   <div class="rightcolumn" id="rightcolumn">
+   <%@include file="includes/contentblock_letterindex.jsp" %>
+   </p><br/>
+   </div>
+   </td>
 <%@include file="includes/footer.jsp" %>
 </mm:log>
 </mm:cloud>
