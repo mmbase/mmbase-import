@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.16.2.1 2007-05-08 15:12:29 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.16.2.2 2007-08-03 09:32:35 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -151,7 +151,7 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (v == null && parent.isRequired()) return true; // depends on 'required'
+            if (v == null) return true; // depends on 'required'
             long min = Casting.toLong(getValue());
             return ((LengthDataType) parent).getLength(v) >= min;
         }
