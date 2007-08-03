@@ -15,13 +15,14 @@ import javax.servlet.jsp.*;
 
 /**
  * @javadoc
- * @version $Id: ClassRoom.java,v 1.5 2007-07-27 12:24:42 michiel Exp $
+ * @version $Id: ClassRoom.java,v 1.6 2007-08-03 18:31:28 michiel Exp $
  */
 public class ClassRoom extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassRoom.class);
 
 
     {
+        
         addFunction(new NodeFunction("hasrole", 
                                     new Parameter[] {
                                         Parameter.NODE,
@@ -30,10 +31,13 @@ public class ClassRoom extends FunctionProvider {
                                     },
                                      ReturnType.BOOLEAN) {
                 protected Object getFunctionValue(Node node, Parameters parameters) {
-                    MMObjectNode mmnode = MMBase.getMMBase().getBuilder("object").getNode(node.getNumber());
+                    MMObjectNode mmnode = MMBase.getMMBase().getBuilder("people").getNode(node.getNumber());
                     return hasRole(mmnode, parameters.getString("role"), (Integer) parameters.get("education"), node.getCloud());
                 }
             });
+        addFunction(new SetFunction("getTeachers", new Parameter[] { Parameter.NODE }, getClass()));
+        addFunction(new SetFunction("getStudents", new Parameter[] { Parameter.NODE }, getClass()));
+        addFunction(new SetFunction("getCoaches", new Parameter[] { Parameter.NODE }, getClass()));
     }
 
 
@@ -42,6 +46,9 @@ public class ClassRoom extends FunctionProvider {
     /**
      * Returns a List of people (Nodes) with a given role
      * related to the class, sorted by name
+     * 
+     * This does not included people related via work-groups?
+     *
      * @param klass the class's Node
      * @param role one role's name
      * @return the related People as a list of Nodes
@@ -62,6 +69,7 @@ public class ClassRoom extends FunctionProvider {
         while (people.hasNext()) {
             list.add(people.nextNode().getNodeValue("people.number"));
         }
+        log.info("Found " + list + " for " + klass.getNumber() + " " + role);
         return list;
     }
     
@@ -71,7 +79,7 @@ public class ClassRoom extends FunctionProvider {
      * @return List of teacher Nodes
      */
     public static List<Node> getTeachers(Node klass) {
-        return getPeople(klass,"teacher");
+        return getPeople(klass, "teacher");
     }
     
     /**
@@ -81,7 +89,10 @@ public class ClassRoom extends FunctionProvider {
      */
     
     public static List<Node> getStudents(Node klass) {
-        return getPeople(klass,"students");
+        return getPeople(klass, "student");
+    }
+    public static List<Node> getCoaches(Node klass) {
+        return getPeople(klass, "coach");
     }
     
     public static Date getStartDate(Node klass) {
@@ -120,14 +131,14 @@ public class ClassRoom extends FunctionProvider {
      * Return the roles of the user based on the given context
      */
     public static Collection<String> getRoles(MMObjectNode personnode, int educationno, Cloud cloud) {
-        HashSet<String> roles = new HashSet<String>();
+        Set<String> roles = new HashSet<String>();
         List<MMObjectNode> directRoles = personnode.getRelatedNodes("roles");
         
         for (MMObjectNode role : directRoles) {
             roles.add(role.getStringValue("name"));
         }
         
-//        Retrieve all the relations between the user and the education or all education
+        //        Retrieve all the relations between the user and the education or all education
         
         if (educationno != 0) {
             NodeList rolerel = nl.didactor.util.GetRelation.getRelations(
