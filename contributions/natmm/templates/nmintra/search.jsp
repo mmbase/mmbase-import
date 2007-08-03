@@ -54,6 +54,9 @@
   HashSet hsetRubrieken = new HashSet();
   
   HashSet hsetArticlesNodes = new HashSet();
+
+  HashSet hsetVraagbaakNodes = new HashSet();  
+  
   HashSet hsetTeaserNodes = new HashSet();
   HashSet hsetProducttypesNodes = new HashSet();
   HashSet hsetProductsNodes = new HashSet();
