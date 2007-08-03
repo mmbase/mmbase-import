@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.62 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: DataType.java,v 1.63 2007-08-03 14:49:19 michiel Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
@@ -188,10 +188,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     public Collection<LocalizedString> validate(C value, Node node, Field field);
 
     /**
-     * Returns whether this field is required (should have content).
-     * Note that the MMBase core does not generally enforce required fields to be filled -
-     * If not provided, a default value (generally an empty string or the integer value -1)
-     * is filled in by the system.
+     * Returns whether this field is required (may not be <code>null</code>, or otherwise empty). 
      *
      * @return  <code>true</code> if the field is required
      */

@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.74 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.75 2007-08-03 14:49:19 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -233,7 +233,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * @throws IllegalArgumentException if the type is not compatible
      */
     protected boolean isCorrectType(Object value) {
-        return Casting.isType(classType, value);
+        return (value == null && ! isRequired()) || Casting.isType(classType, value);
     }
 
     /**
@@ -364,6 +364,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return el;
     }
 
+    protected Element addErrorDescription(Element el, Restriction r)  {
+        r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
+        return el;
+    }
+
     protected String xmlValue(Object value) {
         return Casting.toString(value);
     }
@@ -373,8 +378,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         description.toXml("description", XMLNS, parent, "description");
         getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
         getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
-        getElement(parent, "unique",   "description,class,property,default,unique").setAttribute("value", "" + uniqueRestriction.isUnique());
-        getElement(parent, "required", "description,class,property,default,unique,required").setAttribute("value", "" + requiredRestriction.isRequired());
+
+        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
+            setAttribute("value", "" + uniqueRestriction.isUnique());
 
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
@@ -505,7 +511,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = new StringBuilder();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
-        buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor + "");
+        buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
@@ -522,7 +528,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (isUnique()) {
             buf.append("  unique");
         }
-        if (enumerationRestriction.getValue() != null) {
+        if (enumerationRestriction.getValue() != null && ! enumerationRestriction.getEnumerationFactory().isEmpty()) {
             buf.append(" " + enumerationRestriction);
         }
         return buf;
@@ -1032,11 +1038,14 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
-            if (node != null && field != null && v != null && value != null ) {
+            if (field != null && v != null && value != null ) {
 
-                if (field.isVirtual()) return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+                if (field.isVirtual()) {
+                    log.warn("Cannot check uniqueness on field " + field + " because it is virtual");
+                    return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+                }
 
-                if (!node.isNew()) {
+                if (node != null && !node.isNew()) {
                     if (field.getName().equals("number")) {
                         // on 'number' there is a unique constraint, if it is checked for a non-new node
                         // we can simply avoid all quering because it will result in a query number == <number> and number <> <number>
@@ -1065,7 +1074,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 NodeQuery query = nodeManager.createQuery();
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query, constraint);
-                if (!node.isNew()) {
+                if (node != null && !node.isNew()) {
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, node.getNumber());
                     Queries.addConstraint(query, constraint);
                 }
@@ -1074,7 +1083,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 }
                 return Queries.count(query) == 0;
             } else {
-                // TODO needs to work without Node too.
+                if (field == null) log.warn("Cannot check uniqueness  without field");
                 return true;
             }
         }
