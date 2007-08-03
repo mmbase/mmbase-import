@@ -11,9 +11,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import nl.didactor.events.*;
 
 /**
@@ -23,8 +21,9 @@ import nl.didactor.events.*;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class PeopleBuilder extends DidactorBuilder {
-    private org.mmbase.util.Encode encoder = null;
-    private static Logger log=Logging.getLoggerInstance(PeopleBuilder.class.getName());
+    private final org.mmbase.util.Encode MD5 = new org.mmbase.util.Encode("MD5");
+
+    private static final Logger log = Logging.getLoggerInstance(PeopleBuilder.class);
 
     /**
      * Return a user node (bridge) based on the given username and password.
@@ -56,7 +55,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 log.debug( "1 user found: " + username + " " + password);
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
                 String storedpassword = node.getStringValue("password");
-                if (storedpassword == null || !storedpassword.equals("{md5}" + encoder.encode(password))) {
+                if (storedpassword == null || !storedpassword.equals("{md5}" + MD5.encode(password))) {
                     log.debug("Invalid password");
                     return null;
                 }
@@ -101,7 +100,6 @@ public class PeopleBuilder extends DidactorBuilder {
      * Initialize this builder
      */
     public boolean init() {
-        encoder = new org.mmbase.util.Encode("MD5");
         return super.init();
     }
 
