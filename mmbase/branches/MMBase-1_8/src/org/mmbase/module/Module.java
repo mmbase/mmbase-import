@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77.2.5 2007-07-26 14:51:52 michiel Exp $
+ * @version $Id: Module.java,v 1.77.2.6 2007-08-03 08:15:52 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -192,7 +192,7 @@ public abstract class Module extends FunctionProvider {
             if (value == null) {
                 key = key.toLowerCase();
                 value = (String) properties.get(key);
-                if (value == null && MMBaseContext.isInitialized()) {
+                if (value == null && MMBaseContext.isInitialized() && MMBaseContext.getServletContext() != null) {
                     value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
                 }
                 // try the system property, set on the JVM commandline
