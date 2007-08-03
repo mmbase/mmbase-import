@@ -23,7 +23,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.8 2007-02-24 21:57:52 nklasens Exp $
+ * @version $Id: DataTypeXml.java,v 1.9 2007-08-03 14:49:19 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -151,7 +151,7 @@ public abstract class DataTypeXml {
     }
 
     /**
-     * @since MMBase-1.9
+     * @since MMBase-1.8.5
      */
     private static String fillBeanParameters(Element paramContainer, Object bean) {
         try {
@@ -228,9 +228,9 @@ public abstract class DataTypeXml {
                     } catch (ClassNotFoundException cnfe) {
                         log.error("Class '" + clazString + "' could not be found");
                     } catch (IllegalAccessException iae) {
-                        log.error("Class " + clazString + " may  not be instantiated");
+                        log.error("Class " + clazString + " may  not be instantiated. " + iae);
                     } catch (InstantiationException ie) {
-                        log.error("Class " + clazString + " can not be instantiated");
+                        log.error("Class " + clazString + " can not be instantiated. " + ie, ie);
                     }
 
                 }
@@ -255,6 +255,7 @@ public abstract class DataTypeXml {
                         CommitProcessor newProcessor;
                         if (CommitProcessor.class.isAssignableFrom(claz)) {
                             newProcessor = (CommitProcessor)claz.newInstance();
+                            fillBeanParameters(classElement, newProcessor);
                         } else if (ParameterizedCommitProcessorFactory.class.isAssignableFrom(claz)) {
                             ParameterizedCommitProcessorFactory factory = (ParameterizedCommitProcessorFactory) claz.newInstance();
                             Parameters params = factory.createParameters();

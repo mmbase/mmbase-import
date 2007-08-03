@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.4 2007-08-03 09:26:55 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.5 2007-08-03 14:46:51 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -358,7 +358,12 @@ s     */
         if (el == null) {
             el = parent.getOwnerDocument().createElementNS(XMLNS, name);
             DocumentReader.appendChild(parent, el, path);
-        }
+        }        
+        return el;
+    }
+
+    protected Element addErrorDescription(Element el, Restriction r)  {
+        r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
         return el;
     }
 
@@ -371,9 +376,10 @@ s     */
         description.toXml("description", XMLNS, parent, "description");
         getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
         getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
-        getElement(parent, "unique",   "description,class,property,default,unique").setAttribute("value", "" + uniqueRestriction.isUnique());
-        getElement(parent, "required", "description,class,property,default,unique,required").setAttribute("value", "" + requiredRestriction.isRequired());
-
+        
+        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
+            setAttribute("value", "" + uniqueRestriction.isUnique());
+        
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
 
@@ -494,7 +500,7 @@ s     */
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
-        buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor + "");
+        buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
@@ -511,7 +517,7 @@ s     */
         if (isUnique()) {
             buf.append("  unique");
         }
-        if (enumerationRestriction.getValue() != null) {
+        if (enumerationRestriction.getValue() != null && ! enumerationRestriction.getEnumerationFactory().isEmpty()) {
             buf.append(" " + enumerationRestriction);
         }
         return buf;
@@ -859,7 +865,7 @@ s     */
 
         public LocalizedString getErrorDescription() {
             if (errorDescription == null) {
-                // this is postponsed to first use, because otherwis 'getBaesTypeIdentifier' give correct value only after constructor of parent.
+                // this is postponsed to first use, because otherwise 'getBaseTypeIdentifier' give correct value only after constructor of parent.
                 String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
                 errorDescription = new LocalizedString(key);
                 errorDescription.setBundle(DATATYPE_BUNDLE);

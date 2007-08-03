@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.43 2007-07-07 12:50:28 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.44 2007-08-03 14:49:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -232,9 +232,12 @@ public class StringDataType extends ComparableDataType<String> implements Length
 
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
-        getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength").setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
-        getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength").setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
-        getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength,length,pattern").setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
+        addErrorDescription(getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength"), minLengthRestriction)
+            .setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
+        addErrorDescription(getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength"), maxLengthRestriction)
+            .setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
+        addErrorDescription(getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength,length,pattern"), patternRestriction)
+            .setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
     }
 
     public int getEnforceStrength() {
