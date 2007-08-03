@@ -56,8 +56,7 @@ public class ForumSwapManager implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "forumswapmanager");
-            kicker.start();
+            kicker = MMBaseContext.startThread(this, "forumswapmanager");
         }
     }
 
