@@ -274,6 +274,7 @@ function validationMessage() {
       <input type="hidden" name="rb" value="<%=iRubriekStyle%>"/>
       <input type="hidden" name="rbid" value="<%=rubriekId%>"/>
       <input type="hidden" name="pgid" value="<%=paginaID%>"/>
+      <input type="hidden" name="ssid" value="<%=subsiteID%>"/>
    </html:form>
    
    <%
