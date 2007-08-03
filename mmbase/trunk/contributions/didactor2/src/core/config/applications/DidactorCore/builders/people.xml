@@ -46,6 +46,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
         <minLength value="1" enforce="onchange" />
         <maxLength value="255" />
       </datatype>
@@ -105,7 +106,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minLength value="1" enforce="onchange" />
+        <required value="true" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -286,7 +287,14 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
         <unique value="true" />
+        <required value="false" />
+        <minLength value="5" />
         <maxLength value="32" />
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.FunctionValueIfEmptyCommitProcessor">
+            <param name="functionName">generateUserName</param>
+          </class>
+        </commitprocessor>
       </datatype>
     </field>
 
@@ -305,7 +313,7 @@
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="" />
-        <minLength value="5" enforce="change" />
+        <minLength value="5" enforce="onchange" />
         <maxLength value="255" />
         <password value="true" />
         <setprocessor>

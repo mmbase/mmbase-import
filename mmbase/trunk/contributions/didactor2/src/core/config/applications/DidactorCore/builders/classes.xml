@@ -72,6 +72,15 @@
     <function name="active">
       <class>nl.didactor.functions.Functions</class>
     </function>
+    <function key="getTeachers" name="teachers">
+      <class>nl.didactor.util.ClassRoom</class>
+    </function>
+    <function key="getStudents" name="students">
+      <class>nl.didactor.util.ClassRoom</class>
+    </function>
+    <function key="getCoaches" name="coaches">
+      <class>nl.didactor.util.ClassRoom</class>
+    </function>
   </functionlist>
 
 </builder>
