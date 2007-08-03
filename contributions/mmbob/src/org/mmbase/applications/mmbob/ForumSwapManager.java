@@ -28,7 +28,6 @@ import org.mmbase.util.logging.Logger;
  */
 public class ForumSwapManager implements Runnable {
 
-    // logger
     static private Logger log = Logging.getLoggerInstance(ForumSwapManager.class); 
 
     // thread
@@ -39,7 +38,7 @@ public class ForumSwapManager implements Runnable {
     /**
     */
     public ForumSwapManager(int sleeptime) {
-        this.sleeptime=sleeptime;
+        this.sleeptime = sleeptime;
 	init();
     }
 
@@ -56,9 +55,8 @@ public class ForumSwapManager implements Runnable {
      */
     public void start() {
         /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this,"forumswapmanager");
-            kicker.start();
+        if (kicker == null) {            
+            kicker = MMBaseContext.startThread(this,"forumswapmanager");
         }
     }
     
@@ -66,6 +64,7 @@ public class ForumSwapManager implements Runnable {
      * Stops the main Thread.
      */
     public void stop() {
+        // who is calling this?
         /* Stop thread */
         kicker = null;
     }
@@ -74,13 +73,13 @@ public class ForumSwapManager implements Runnable {
      * Main loop, exception protected
      */
     public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
-        while (kicker!=null) {
+        kicker.setPriority(Thread.MIN_PRIORITY + 1);  
+        while (kicker != null) {
             try {
                 doWork();
+                if (Thread.currentThread().isInterrupted()) return;
             } catch(Exception e) {
-                log.error("run(): ERROR: Exception in forummmbasesyncer thread!");
-                log.error(Logging.stackTrace(e));
+                log.error("run(): ERROR: Exception in forummmbasesyncer thread!", e);
             }
         }
     }
@@ -88,20 +87,19 @@ public class ForumSwapManager implements Runnable {
     /**
      * Main work loop
      */
-    public void doWork() {
+    private void doWork() {
         kicker.setPriority(Thread.MIN_PRIORITY+1);  
-
-        while (kicker!=null) {
-		try {
-			expirePosters();
-			maintainMemoryCaches();		
-	            	Thread.sleep(sleeptime);
-		} catch (InterruptedException f2){}
+        try {
+            expirePosters();
+            maintainMemoryCaches();		
+            Thread.sleep(sleeptime);
+        } catch (InterruptedException f2){
+            
         }
     }
 
     private void expirePosters() {
-	Enumeration e=ForumManager.getForums();
+	Enumeration e = ForumManager.getForums();
 	while (e.hasMoreElements()) {
 		Forum f=(Forum)e.nextElement();
 		int expiretime=((int)(System.currentTimeMillis()/1000))-(f.getPosterExpireTime());
