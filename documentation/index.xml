@@ -7,60 +7,50 @@
 
     <date>2006-11-07</date>
 
-    <edition>$Id: index.xml,v 1.63 2006-11-07 10:13:48 andre Exp $</edition>
-
+    <edition>$Id: index.xml,v 1.64 2007-08-03 17:27:13 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
-
         <surname>Meeuwissen</surname>
       </author>
 
       <author>
         <firstname>Pierre</firstname>
-
         <surname>van Rooden</surname>
       </author>
 
       <author>
         <firstname>Daniel</firstname>
-
         <surname>Ockeloen</surname>
       </author>
 
       <author>
         <firstname>Nico</firstname>
-
         <surname>Klasens</surname>
       </author>
 
       <author>
         <firstname>Henk</firstname>
-
         <surname>Hangyi</surname>
       </author>
 
       <author>
         <firstname>Ernst</firstname>
-
         <surname>Bunders</surname>
       </author>
 
       <author>
         <firstname>Johannes</firstname>
-
         <surname>Verelst</surname>
       </author>
 
       <author>
         <firstname>Kees</firstname>
-
         <surname>Jongenburger</surname>
       </author>
 
       <author>
         <firstname>Eduard</firstname>
-
         <surname>Witteveen</surname>
       </author>
 
@@ -464,7 +454,7 @@
 
       <listitem>
         <para><ulink url="informationanalysts/datatypes.html">Datatypes in
-        MMBase</ulink>, summary of datatypes and their specializations.</para>
+        MMBase</ulink>, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
       </listitem>
 
       <listitem>
