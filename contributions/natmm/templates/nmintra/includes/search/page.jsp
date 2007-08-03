@@ -42,6 +42,7 @@ boolean bHasAttachments = false;
     <%@include file="documents.jsp" %>
     <%@include file="vacature.jsp" %>
     <%@include file="contentblocks.jsp" %>
+    <%@include file="vraagbaak.jsp" %>    
     <% 
     if (bHasAttachments) {
       %>

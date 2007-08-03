@@ -234,4 +234,56 @@
       </table>
    </index>
 
+   <!-- 14 -->
+   <index name="natmmIndexVraagbaak">
+      <table name="vraagbaak">
+         <field name="titel">indexed.text</field>
+         <field name="intro">indexed.text</field>
+         <field name="tekst">indexed.text</field>
+         <related name="paragraaf">
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
+            <related name="link">
+               <field name="titel">indexed.text</field>
+               <field name="omschrijving">indexed.text</field>
+               <field name="url">indexed.text</field>
+               <field name="alt_tekst">indexed.text</field>
+            </related>
+            <related name="images">
+               <field name="titel">indexed.text</field>
+               <field name="omschrijving">indexed.text</field>
+               <field name="titel_fra">indexed.text</field>
+               <field name="alt_tekst">indexed.text</field>
+            </related>
+            <related name="attachments">
+               <field name="titel">indexed.text</field>
+               <field name="description">indexed.text</field>
+               <field name="filename">indexed.text</field>
+               <field name="handle" type="binary">indexed.text</field>
+            </related>
+         </related>
+         <related name="images">
+            <field name="titel">indexed.text</field>
+            <field name="omschrijving">indexed.text</field>
+            <field name="titel_fra">indexed.text</field>
+            <field name="alt_tekst">indexed.text</field>
+         </related>
+         <related name="pools">
+            <field name="name">indexed.text</field>
+            <field name="description">indexed.text</field>
+         </related>         
+         <related name="persoon">
+            <field name="titel">indexed.text</field>
+            <field name="omschrijving">indexed.text</field>
+            <field name="firstname">indexed.text</field>
+            <field name="lastname">indexed.text</field>
+         </related>
+         <related name="vraagbaak_keywords">
+            <field name="word">indexed.text</field>
+            <field name="description">indexed.text</field>
+         </related>
+         
+      </table>
+   </index>
+
 </luceneindexdefinition>
