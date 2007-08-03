@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.4 2007-08-03 17:43:13 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.5 2007-08-03 18:23:55 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -35,8 +35,10 @@
     <title>MMBase Data Types</title>
     <para>
       MMBase datatypes are defined in the resource <filename>&lt;MMBase
-      configuration&gt;/datatypes.xml</filename>. This resources can exist multiple times, but
-      there is at least one in mmbase.jar. The contents of that one are described in <xref
+      configuration&gt;/datatypes.xml</filename>. See <ulink
+      url="http://www.mmbase.org/xmlns/datatypes.xsd">the Xml Schema Definition</ulink>, for a
+      formal description of this XML format. This resources can exist multiple times, but there is
+      at least one in mmbase.jar. The contents of that one are described in <xref
       linkend="available" />
     </para>
     <para>
@@ -175,6 +177,31 @@
         <para>
           If the restriction is 'fixed', then that means that the restriction cannot be overridden at
           all. (TODO, check this).
+        </para>
+      </section>
+      <section id="errormessage">
+        <title>Error messages</title>
+        <para>
+          If a restriction is not satified, then a certain message can be provided to the user. On
+          default this message is looked up in the resource bundle
+          'org.mmbase.datatypes.resources.datatypes'. The used key is something like &lt;database type&gt;.&lt;name of restriction&gt;.error.
+        </para>
+        <para>
+          The error description can however, per language, be overridden, using 'description' sub
+          elements of the restriction element. For example<programlisting><![CDATA[
+<specialization id="emailaddress">
+  <description xml:lang="en">
+    The valid values of such a field must be a valid email address. The current implemenation is by a rather simple regular expression.
+   </description>
+   <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z">
+     <description xml:lang="nl">'${VALUE}' is geen geldig email adres</description>
+     <description xml:lang="en">'${VALUE}' is not a valid email-address</description>
+     <description xml:lang="fr">'${VALUE}' n'est pas un correct address courriel</description>
+     <description xml:lang="eo">'${VALUE}' ne estas korektforma retadreso</description>
+   </pattern>
+</specialization>]]></programlisting>
+          As you see, token replacement is done. Currently, NAME, VALUE, CONSTRAINT and
+          CONSTRAINTVALUE are recognized. No java.text.MessageFormat features are already supported.
         </para>
       </section>
       <section id="unique">
