@@ -985,6 +985,9 @@ div.blocked a {
   color: #cccccc;
 }
 
+#contentFrame .prev_next {
+  margin-top: 20px;
+}
 .prev_next a { 
   text-decoration: none;
 }
