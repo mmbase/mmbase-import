@@ -61,8 +61,11 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"a", "ab", "xyzab", "zzzzz", "zzzzaaaaa", null},
                               new Object[] {"", "zzzzza", "\na"}},
                 new Object[] {"stringlength",
-                              new Object[] {"a", "0123456789",  "123456789\n", "\n123456789", null},
-                              new Object[] {"",  "bbbbbbbbbbb", "123456789\n\n"}},
+                              new Object[] {"a", "0123456789",  "123456789\n", "\n123456789", null}, 
+                              new Object[] {"", "bbbbbbbbbbb", "123456789\n\n"}},
+                new Object[] {"required_stringlength",
+                              new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
+                              new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
                 new Object[] {"languages",
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
@@ -166,13 +169,13 @@ public class DataTypesTest extends BridgeTest {
                 field.getDataType().validate(validValues[j]); // should not give exception
                 Collection errors = field.getDataType().validate(validValues[j], null, field);
                 if(errors.size() != 0) {
-                    err.append("V Field " + field.getName() + " value '" + (validValues[j] == null ? "" : validValues[j].getClass().getName() + " ") +  Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
+                    err.append("V Field '" + field.getName() + "' value " + (validValues[j] == null ? "" : validValues[j].getClass().getName() + " ") +  "'" + Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
                 }
             }
             for (int j = 0; j < invalidValues.length; j++) {
                 field.getDataType().validate(invalidValues[j]); // should not give exception
                 if (field.getDataType().validate(invalidValues[j], null, field).size() == 0) {
-                    err.append("I Field " + field.getName() + " value '" + (invalidValues[j] == null ? "" : invalidValues[j].getClass().getName() + " ") +  Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
+                    err.append("I Field '" + field.getName() + "' value '" + (invalidValues[j] == null ? "" : invalidValues[j].getClass().getName() + " ") +  Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
 
 
@@ -320,14 +323,18 @@ public class DataTypesTest extends BridgeTest {
                         ) {
                         assertFalse("field " + field.getName() + " was null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
                     }
-                    // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
-                    newNode.setValue(field.getName(), null);
+                    if (! field.getDataType().isRequired()) {
+                        // so, it must be possible to set field back to null.
+                        newNode.setValue(field.getName(), null);
+                        assertNull(newNode.getValue(field.getName()));
+                        assertTrue(newNode.isNull(field.getName()));
+                    }
 
-                    assertNull(newNode.getValue(field.getName()));
-                    assertTrue(newNode.isNull(field.getName()));
                     newNode.commit();
-                    assertNull(newNode.getValue(field.getName()));
-                    assertTrue(newNode.isNull(field.getName()));
+                    if (! field.getDataType().isRequired()) {
+                        assertNull(newNode.getValue(field.getName()));
+                        assertTrue(newNode.isNull(field.getName()));
+                    }
                     if(field.getName().equals("handle")) {
                         assertTrue(newNode.isNull("checksum"));
                     }
