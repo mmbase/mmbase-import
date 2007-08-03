@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.20 2006-06-20 20:41:30 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.20.2.1 2007-08-03 18:11:22 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -49,7 +49,7 @@ public class MMEvents extends MMObjectBuilder {
         if (tmp!=null && (tmp.equals("false") || tmp.equals("no"))) {
             enableNotify=false;
         }
-        if (enableNotify) probe=new MMEventsProbe(this);
+        if (enableNotify) probe = new MMEventsProbe(this);
         return true;
     }
 
@@ -194,7 +194,7 @@ public class MMEvents extends MMObjectBuilder {
             try {
                 Thread.sleep(300*1000);
             } catch (InterruptedException f) {
-                log.error("interrupted while sleeping");
+                log.debug("interrupted while sleeping");
             }
         }
     }
