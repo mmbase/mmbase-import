@@ -17,7 +17,7 @@ postprocessor="reducespace">
                     referids="$referids,learnobject" />
     <mm:node number="$learnobject">
       <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids,learnobject@node_id">
-        <mm:param name="path_segment">../</mm:param>
+        <mm:param name="path_segment">${pageContext.request.contextPath}/education/</mm:param>
       </mm:treeinclude>
     </mm:node>
     <jsp:directive.include file="../includes/descriptionrel_link.jsp" />
