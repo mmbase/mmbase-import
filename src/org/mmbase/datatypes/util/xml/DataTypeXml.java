@@ -18,6 +18,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.BeanFunction;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.5 2005-12-29 23:02:22 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.5.2.1 2007-08-03 14:44:47 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -139,6 +140,7 @@ public abstract class DataTypeXml {
             return stringValue;
         }
     }
+
     private static void fillParameters(Element paramContainer, Parameters params) {
         NodeList childNodes = paramContainer.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -151,6 +153,39 @@ public abstract class DataTypeXml {
                 }
             }
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    private static String fillBeanParameters(Element paramContainer, Object bean) {
+        try {
+            Parameters params = null;
+            BeanFunction function = null;
+            NodeList childNodes = paramContainer.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                if (childNodes.item(i) instanceof Element) {
+                    Element paramElement = (Element) childNodes.item(i);
+                    if ("param".equals(paramElement.getLocalName())) {
+                        String name = paramElement.getAttribute("name");
+                        Object value = getParameterValue(paramElement);
+                        if (params == null) {
+                            function = new BeanFunction(bean, "toString"); // any object has 'toString'.
+                            params = function.createParameters();
+                            params.setAutoCasting(true);
+                        }
+                        params.set(name, value);
+                    }
+                }
+            }
+            if (params != null) {
+                Object res = function.getFunctionValue(params); // calling the function actually calls setters
+                return "" + res;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     public static Processor createProcessor(Element processorElement) {
@@ -172,11 +207,13 @@ public abstract class DataTypeXml {
                             CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
                             if (charTransformer != null) {
                                 newProcessor = new CharTransformerProcessor(charTransformer);
+                                fillBeanParameters(classElement, newProcessor);
                             } else {
                                 continue;
                             }
                         } else if (Processor.class.isAssignableFrom(claz)) {
                             newProcessor = (Processor)claz.newInstance();
+                            fillBeanParameters(classElement, newProcessor);
                         } else if (ParameterizedTransformerFactory.class.isAssignableFrom(claz)) {
                             ParameterizedTransformerFactory factory = (ParameterizedTransformerFactory) claz.newInstance();
                             Parameters params = factory.createParameters();
@@ -223,6 +260,7 @@ public abstract class DataTypeXml {
                         CommitProcessor newProcessor;
                         if (CommitProcessor.class.isAssignableFrom(claz)) {
                             newProcessor = (CommitProcessor)claz.newInstance();
+                            fillBeanParameters(classElement, newProcessor);
                         } else if (ParameterizedCommitProcessorFactory.class.isAssignableFrom(claz)) {
                             ParameterizedCommitProcessorFactory factory = (ParameterizedCommitProcessorFactory) claz.newInstance();
                             Parameters params = factory.createParameters();
