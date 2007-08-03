@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.8 2007-07-31 12:02:43 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.9 2007-08-03 19:30:23 michiel Exp $
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
@@ -272,11 +272,17 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     out.write(t);
 
                 } else {
+                    String t;
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
-                        out.write(text, 1, text.length - 1);
+                        t = new String(text).substring(1);
                     } else {
-                        out.write(text);
+                        t = new String(text);
                     }
+                    if (escapeAmps) {
+                        // see comment in handleAttributes
+                        t = t.replaceAll("&", "&amp;");
+                    }
+                    out.write(t);
                 }
                 out.flush();
             }
@@ -451,6 +457,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         Parameters params = factory.createParameters();
         params.set("tags", "XSS");
         params.set("addbrs", Boolean.TRUE);
+        params.set("escapeamps", Boolean.TRUE);
         CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
         
         //        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.4.2.4 2007-07-31 11:59:26 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.4.2.5 2007-08-03 19:29:20 michiel Exp $
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory  {
 
@@ -277,11 +277,17 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
                     }
                     out.write(t);
                 } else {
+                    String t;
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
-                        out.write(text, 1, text.length - 1);
+                        t = new String(text).substring(1);
                     } else {
-                        out.write(text);
+                        t = new String(text);
                     }
+                    if (escapeAmps) {
+                        // see comment in handleAttributes
+                        t = t.replaceAll("&", "&amp;");
+                    }
+                    out.write(t);
                 }
                 out.flush();
             }
@@ -454,7 +460,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory  {
         ParameterizedTransformerFactory factory = new TagStripperFactory();
         Parameters params = factory.createParameters();
         params.set("tags", "XSS");
-        params.set("addbrs", Boolean.TRUE);
+        params.set("addbrs", Boolean.FALSE);
         params.set("escapeamps", Boolean.TRUE);
         CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
         
