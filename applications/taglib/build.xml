@@ -58,14 +58,14 @@
     -->
   </target>
 
-  <!-- currently unused -->
   <target name="jar2" description="Create mmbase-taglib-2.jar"
-          depends="taglib.tld,jar.check,project.manifest,jar.config"
+          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
 
     <mkdir dir="${project.metainf.dir}" /><!-- make sure this exists -->
+    <echo message="METAINF ${project.metainf.dir}" />
 
     <!--
     <copy todir="${project.metainf.dir}/tags" includeEmptyDirs="false" >
@@ -74,7 +74,6 @@
     </copy>
     -->
     <mkdir dir="${project.build.dir}/classes/org/mmbase/taglib" /><!-- hate ant -->
-    <echo message="creating jar" />
 
     <echo message="creating taglib-2 jar" />
     <jar jarfile="${taglib2.jar}"
