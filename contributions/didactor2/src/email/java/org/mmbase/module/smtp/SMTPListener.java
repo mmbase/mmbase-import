@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and 
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.12 2007-08-02 16:36:23 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.13 2007-08-03 18:34:07 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -19,7 +19,8 @@ public class SMTPListener extends Thread {
     private static final ThreadFactory factory = new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "SMTPLISTENER-" + (number++)) {
+                Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), 
+                                      r, "SMTPLISTENER-" + (number++)) {
                         /**
                          * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
                          */
