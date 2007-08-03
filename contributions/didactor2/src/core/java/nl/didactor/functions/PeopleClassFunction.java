@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.3 2007-07-17 14:35:58 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.4 2007-08-03 18:31:47 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -33,11 +33,13 @@ public class PeopleClassFunction {
         Node education = cloud.getNode(e);
         NodeManager classes = cloud.getNodeManager("classes");
         NodeQuery query = Queries.createRelatedNodesQuery(node, classes, null, null);
+        query.addSortOrder(query.createStepField((Step) query.getSteps().get(2), "number"), SortOrder.ORDER_DESCENDING);
         RelationStep step = query.addRelationStep(cloud.getNodeManager("educations"), null, null);
         Queries.addConstraint(query, query.createConstraint(query.createStepField(step.getNext(),"number"), education.getNumber()));
         NodeList foundClasses = classes.getList(query);
         Node claz;
         if (foundClasses.size() > 1) {
+            // select the class which is online.
             log.warn("more classes related! for node " + node.getNumber());
             claz = foundClasses.getNode(0);
         } else if (foundClasses.size() == 1) {
