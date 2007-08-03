@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.55.2.2 2007-06-26 13:24:17 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.55.2.3 2007-08-03 18:11:22 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -143,13 +143,6 @@ public class ImageCaches extends AbstractImages {
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }
 
-    /**
-     * @since MMBase-1.8.5
-     */
-    protected boolean handleEmpty(MMObjectNode node) {
-        return node.isNull(Imaging.FIELD_HANDLE) ||
-            (node.getBuilder().getField(Imaging.FIELD_HANDLE).isNotNull() && node.getSize(Imaging.FIELD_HANDLE) == 0);
-    }
     /**
      * If a icache node is created with empty 'handle' field, then the handle field can be filled
      * automaticly. Sadly, getValue of MMObjectNode cannot be overriden, so it cannot be done
@@ -316,13 +309,30 @@ public class ImageCaches extends AbstractImages {
     }
 
     /**
+     * Handles 'asis' image-formats
+     */
+    protected String translateImageFormat(String r, MMObjectNode node) {
+        if (r.equals("asis")) {
+            MMObjectNode original = originalImage(node);
+            if (original != null) {
+                return ((AbstractImages) original.getBuilder()).getImageFormat(original);
+            } else {
+                log.warn("Could not find original image for " + node);
+                return r;
+            }
+        } else {
+            return r;
+        }
+    }
+
+    /**
      * Returns the image format.
      */
     protected String getImageFormat(MMObjectNode node) {
         if (storesImageType()) {
             String iType = node.getStringValue(FIELD_ITYPE);
             if(iType.equals("")) {
-                if (! node.isNull(Imaging.FIELD_HANDLE)) {        // handle present
+                if (! handleEmpty(node)) {        // handle present
                     // determin using the blob
                     return super.getImageFormat(node);
                 }
@@ -340,25 +350,15 @@ public class ImageCaches extends AbstractImages {
             int fi2 = ckey.indexOf(")", fi);
             // be resilient against corrupt ckeys
             if (fi2 > -1) {
-                return ckey.substring(fi + 2, fi2);
+                return translateImageFormat(ckey.substring(fi + 2, fi2), node);
             } else {
                 // best guess, might not work, but if we don't know
                 // it we have to return something.
-                return Factory.getDefaultImageFormat();
+                return translateImageFormat(Factory.getDefaultImageFormat(), node);
             }
         } else {
-            String r = Factory.getDefaultImageFormat();
-            if (r.equals("asis")) {
-                MMObjectNode original = originalImage(node);
-                if (original != null) {
-                    return ((AbstractImages) original.getBuilder()).getImageFormat(original);
-                } else {
-                    log.warn("Could not find original image for " + node);
-                    return r;
-                }
-            } else {
-                return r;
-            }
+            return translateImageFormat(Factory.getDefaultImageFormat(), node);
+            
         }
         // not storing the result of parsing on ckey, it is cheap, and determining by handle is more
         // correct.
