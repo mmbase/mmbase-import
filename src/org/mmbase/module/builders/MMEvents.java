@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.22 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: MMEvents.java,v 1.23 2007-08-03 18:13:42 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -178,7 +178,7 @@ public class MMEvents extends MMObjectBuilder {
             try {
                 Thread.sleep((sleeptime-now)*1000);
             } catch (InterruptedException f) {
-                log.error("interrupted while sleeping");
+                log.debug("interrupted while sleeping");
             }
             log.debug("Node local change "+wnode.getIntValue("number"));
             super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
@@ -194,7 +194,7 @@ public class MMEvents extends MMObjectBuilder {
             try {
                 Thread.sleep(300*1000);
             } catch (InterruptedException f) {
-                log.error("interrupted while sleeping");
+                log.debug("interrupted while sleeping");
             }
         }
     }
