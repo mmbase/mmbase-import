@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.5 2007-07-17 14:33:24 michiel Exp $
+ * @version $Id: Functions.java,v 1.6 2007-08-03 18:32:32 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -73,6 +73,9 @@ public class Functions {
         String uname = firstName + node.getStringValue("lastname");
         if (uname.length() > 8) {
             uname = uname.substring(0, 8);
+        }
+        if (uname.length() < 5) {
+            uname += "00000".substring(0, 5 - uname.length());
         }
         int seq = 0;
         String value = uname;
