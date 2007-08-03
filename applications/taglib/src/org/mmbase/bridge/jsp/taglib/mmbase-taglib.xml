@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.408 2007-07-30 16:38:24 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.409 2007-08-03 12:07:36 sdeboer Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2828,6 +2828,13 @@ access the value of title:
       Gets the function value of function `name' from surrounding nodeprovider.  The function value
       is supposed to be a Node.
     </info>
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>What to do if the function value is null or empty. The default is to provide null</info>
+      <see tag="node" attribute="notfound" />
+    </attribute>
     <since>MMBase-1.7</since>
     <see tag="node" />
     <see tag="booleanfunction" />
