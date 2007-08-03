@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.45.2.5 2007-07-18 05:40:44 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.45.2.6 2007-08-03 18:14:59 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -149,7 +149,12 @@
       <description xml:lang="en">
         The valid values of such a field must be a valid email address. The current implemenation is by a rather simple regular expression.
       </description>
-      <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z" />
+      <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z">
+        <description xml:lang="nl">'${VALUE}' is geen geldig email adres</description>
+        <description xml:lang="en">'${VALUE}' is not a valid email-address</description>
+        <description xml:lang="fr">'${VALUE}' n'est pas un address courriel correct</description>
+        <description xml:lang="eo">'${VALUE}' ne estas korektforma retadreso</description>
+      </pattern>
       <!-- arbitrary check for a valid e-mail address
         below the String equivalent for testing purposes
         "(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z" -->
