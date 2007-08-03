@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.91 2007-06-19 14:58:02 michiel Exp $
+ * @version $Id: Module.java,v 1.92 2007-08-03 08:41:53 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -237,7 +237,7 @@ public abstract class Module extends DescribedFunctionProvider {
                 key = key.toLowerCase();
                 value = properties.get(key);
                 // Can also set properties in web.xml/context.xml
-                if (value == null && MMBaseContext.isInitialized()) {
+                if (value == null && MMBaseContext.isInitialized() && MMBaseContext.getServletContext() != null) {
                     value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
                 }
                 // try the system property, set on the JVM commandline
@@ -523,7 +523,7 @@ public abstract class Module extends DescribedFunctionProvider {
                         } catch (NoSuchMethodException nsme) {
                             log.warn(nsme);
                             mod = (Module) newClass.newInstance();
-                            mod.setName(moduleName);
+                            mod.setName(moduleName); // I think a module has one name.
                         }
                     }
 
