@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.3 2007-08-02 14:03:57 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.4 2007-08-03 09:26:55 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -1072,7 +1072,7 @@ s     */
                 }
                 return Queries.count(query) == 0;
             } else {
-                log.warn("Cannot yet check uniqueness  without field");
+                if (field == null) log.warn("Cannot check uniqueness  without field");
                 return true;
             }
         }
