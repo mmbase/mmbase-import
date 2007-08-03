@@ -18,7 +18,7 @@ if (request.getParameter("ssid") != null) {
 }
 
 breadcrumbs.set(0, rubriekId);
- rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID;
+ rubriekParams = "?rb=" + iRubriekStyle + "&rbid=" + rubriekId + "&pgid=" + paginaID + "&ssid=" + subsiteID;
 %>
 
 <%-- we override stylesheet with the value we get using the passed rubriek --%>
