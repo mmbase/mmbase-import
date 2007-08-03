@@ -15,31 +15,31 @@ import org.mmbase.bridge.*;
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.1 2005-12-07 19:44:49 michiel Exp $
+ * @version $Id: FormatFileSize.java,v 1.2 2007-08-03 14:49:19 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FormatFileSize implements Processor {
 
     private static final long serialVersionUID = 1L;
-    private static int KILO     = 1000;
-    private static int MEGA     = 1000000;
-    private static int GIGA     = 1000000000;
-    private static int KBYTE    = 1024;
-    private static int MBYTE    = KBYTE * KBYTE;
-    private static int GBYTE    = KBYTE * KBYTE * KBYTE;
+    private static final int KILO     = 1000;
+    private static final int MEGA     = 1000000;
+    private static final int GIGA     = 1000000000;
+    private static final int KIBIBYTE    = 1024;
+    private static final int MEBIBYTE    = KIBIBYTE * KIBIBYTE;
+    private static final int GIBIBYTE    = KIBIBYTE * KIBIBYTE * KIBIBYTE;
 
 
     public final Object process(Node node, Field field, Object value) {
         int size = node.getIntValue(field.getName());
         if (size < 9 * KILO) {
-            return "" + size + " byte";
+            return "" + size + " B";
         } else if (size < 9 * MEGA) {
-            return "" + size / KBYTE + " kbyte";
+            return "" + size / KIBIBYTE + " KiB";
         } else if (size < 9 * GIGA) {
-            return "" + size / MBYTE + " Mbyte";
+            return "" + size / MEBIBYTE + " MiB";
         } else {
-            return "" + size / GBYTE + " Gbyte";
+            return "" + size / GIBIBYTE + " GiB";
         }
     }
 
