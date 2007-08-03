@@ -16,36 +16,32 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="string">
       <db>
-        <name>string</name>
-        <type size="255" state="persistent">STRING</type>
+        <type size="255">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="field">
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>field</name>
-        <type size="255" state="persistent">STRING</type>
+        <type size="255">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="line">
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>line</name>
-        <type size="255" state="persistent">STRING</type>
+        <type size="255">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="zipcode">
       <datatype  base="dutch-zipcode" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="1234 AA" />
       </datatype>
       <db>
-        <name>zipcode</name>
         <type size="255" state="persistent">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="pattern">
       <descriptions>
         <description>Example of String pattern.</description>
       </descriptions>
@@ -54,11 +50,10 @@
         <pattern value="(?i)[ab]{1,5}" />
       </datatype>
       <db>
-        <name>pattern</name>
-        <type size="255" notnull="false" state="persistent">STRING</type>
+        <type size="255" notnull="false">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="stringrange">
       <descriptions>
         <description>Example of String range</description>
       </descriptions>
@@ -68,54 +63,67 @@
         <maxInclusive value="zzzzz" />
       </datatype>
       <db>
-        <name>stringrange</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
-    <field>
+    <field name="stringlength">
       <descriptions>
         <description>Example of String length</description>
       </descriptions>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="aaa" />
+        <required value="false" />
         <minLength value="1" />
         <maxLength value="10" />
       </datatype>
       <db>
-        <name>stringlength</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="required_stringlength">
+      <descriptions>
+        <description>Example of String length</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="aaa" />
+        <required value="true" />
+        <minLength value="3" />
+        <maxLength value="10" />
+      </datatype>
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="languages">
       <descriptions>
         <description>Example of String enumeration</description>
       </descriptions>
       <datatype base="iso639" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>languages</name>
         <type  size="2" state="persistent">STRING</type>
       </db>
     </field>
 
-    <field>
+    <field name="integer">
       <db>
-        <name>integer</name>
         <type  state="persistent">INTEGER</type>
       </db>
     </field>
-    <field>
+
+    <field name="range">
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <minInclusive value="1" />
         <maxExclusive value="10" />
       </datatype>
       <db>
-        <name>range</name>
         <type  state="persistent">INTEGER</type>
       </db>
     </field>
-    <field>
+
+    <field name="enumeration">
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <enumeration>
@@ -126,7 +134,6 @@
         </enumeration>
       </datatype>
       <db>
-        <name>enumeration</name>
         <type  state="persistent">INTEGER</type>
       </db>
     </field>
