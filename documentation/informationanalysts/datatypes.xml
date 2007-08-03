@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-   <!ENTITY included  SYSTEM "../build/datatypes.docbook.xml">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [ 
+<!ENTITY included  SYSTEM "../build/datatypes.docbook.xml">
  ]
 >
 <article>
   <articleinfo>
-    <title>Datatypes in MMBase</title>
+    <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.3 2007-08-03 17:22:40 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.4 2007-08-03 17:43:13 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -33,15 +32,15 @@
   
 
   <section id="datatypes">
-    <title>MMBase DataTypes</title>
+    <title>MMBase Data Types</title>
     <para>
       MMBase datatypes are defined in the resource <filename>&lt;MMBase
-      configuration&gt;/datatypes.xml</filename>. This resources can exist multipible times, but
+      configuration&gt;/datatypes.xml</filename>. This resources can exist multiple times, but
       there is at least one in mmbase.jar. The contents of that one are described in <xref
       linkend="available" />
     </para>
     <para>
-      Other jars (e.g. of mmbase components) can also provide such a datatypes.xml, which will also
+      Other jars (e.g. of MMBase components) can also provide such a datatypes.xml, which will also
       be read in, and added to the repository of available datatypes. 
     </para>
     <para>
@@ -53,9 +52,9 @@
   </section>
   
   <section id="datatype.xml">
-    <title>Description of the Datatype XML</title>
+    <title>Description of the Data-type XML</title>
     <para>
-      A <filename>datatypes.xml</filename> basicly contains a list of 'datatype' entries. E.g.
+      A <filename>datatypes.xml</filename> basically contains a list of 'datatype' entries. E.g.
       <programlisting><![CDATA[
 <datatype id="integer">
   <description xml:lang="en">
@@ -86,7 +85,7 @@
 </datatype>]]></programlisting>
     </para>
     <para>
-      It is also possible to replace a datatype, by extending from the database with the same
+      It is also possible to replace a data type, by extending from the database with the same
       id. This is only feasible in <filename>WEB-INF/config/datatypes</filename> because that one
       is parsed last.<programlisting><![CDATA[
 <!-- In this site, email addresses are required -->
@@ -106,14 +105,14 @@
       <title>Description, class, default value, and properties</title>
       <para>
         You can start with descriptions (one for each language). These descriptions are used in
-        automated overview pages (as e.g. in /mmbase/validation). If you define a datatype for
-        inclusion in mmbase.jar or in some component, it is adviced to at least provide a
-        description in english.
+        automated overview pages (as e.g. in /mmbase/validation). If you define a data type for
+        inclusion in mmbase.jar or in some component, it is advised to at least provide a
+        description in English.
       </para>
       <para>
         There can be one or no 'class' element then, which defines the actual implementation of
         the <structname>org.mmbase.datatypes.DataType</structname> interface which backs the
-        datatype. The class can often be inherited from the base data type. If not, the class must
+        data type. The class can often be inherited from the base data type. If not, the class must
         at least extend from the class from the base data type.
       </para>
       <para>
@@ -128,11 +127,11 @@
         <entry basename="org.mmbase.datatypes.resources.string.colors" />
       </enumeration>
     </specialization>]]></programlisting>
-        The value is implicitely cast to the correct type. In this case 'white' can be converted to
+        The value is implicitly cast to the correct type. In this case 'white' can be converted to
         an integer, because there is a mapping present in the defined enumeration.
       </para>
       <para>
-        If the class of the datatype supports properties which are not recognized by the datatype
+        If the class of the data type supports properties which are not recognized by the data type
         XSD (as described in this document) then arbitrary properties can be set using 'property' sub elements.<programlisting><![CDATA[
 <specialization id="confirmpassword">
   <description xml:lang="en">
@@ -159,7 +158,7 @@
         </para>
         <para>
           With the 'enforce' attribute it is indicated how 'strong' the restriction on the values
-          is. The possible values are, in order of decreasing strenght
+          is. The possible values are, in order of decreasing strength
         </para>
         <itemizedlist>
           <listitem><para>absolute: This restriction is enforced by the MMBase, it probably cannot
@@ -181,7 +180,7 @@
       <section id="unique">
         <title>Unique</title>
         <para>
-          A value can be marked to be 'unique'. This can only be applied if the datatype is
+          A value can be marked to be 'unique'. This can only be applied if the data type is
           associated with a field (See also <xref linkend="builders" />) Of course it means that
           that values which are already present, are not valid any more.
         </para>          
@@ -189,13 +188,13 @@
       <section id="required">
         <title>Required</title>
         <para>
-          If a datatype is 'required' then that means that the values may not be <constant>null</constant>.
+          If a data type is 'required' then that means that the values may not be <constant>null</constant>.
         </para>          
       </section>
       <section id="minmax">
         <title>Minimal and maximal values</title>
         <para>
-          For datatypes which describle 'comparable' values (and so the class implements
+          For datatypes which describe 'comparable' values (and so the class implements
           <structname>org.mmbase.datatypes.ComparableDataType</structname>), a minimal and maximal
           value can be assigned.<programlisting><![CDATA[
 <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -215,7 +214,7 @@
         <para>
           The values of some data types have a length (implementations of
           <structname>org.mmbase.datatypes.LengthDataType</structname>). This length can also be
-          restricted. Noticable 'length data types' are strings and binaries. The 'maximal length'
+          restricted. Noticeable 'length data types' are strings and binaries. The 'maximal length'
           can also be used as an indication for the length of the field in the database (if the
           database is associated with a field).<programlisting><![CDATA[
 <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -228,8 +227,8 @@
       <section id="pattern">
         <title>Patterns</title>
         <para>
-          For strings, the pattern is interpreted as a regulare expression, which must match. For
-          datetimes, the pattern is interpreted as SimpleDataFormat pattern (but see also
+          For strings, the pattern is interpreted as a regular expression, which must match. For
+          date times, the pattern is interpreted as SimpleDataFormat pattern (but see also
           org.mmbase.datatypes.DateTimePattern).
         </para>          
       </section>
@@ -296,7 +295,7 @@
 />
 </enumeration>]]></programlisting>
           This indicates that the keys of the resource bundle are resolved to the actual values
-          using contants in the given java class. This results in that the resource bundle can look
+          using constants in the given java class. This results in that the resource bundle can look
           like this:<programlisting><![CDATA[
 SUNDAY=sunday
 MONDAY=monday
@@ -324,7 +323,7 @@ SATURDAY=saturday]]>
       <title>Processors</title>
       <para>
         The data type also provides hooks to plug in functionality on several events like 'getting a
-        value' 'setting a value' and 'commiting the object which contains this datatype'. This is at
+        value' 'setting a value' and 'committing the object which contains this data type'. This is at
         the moment only sensible for fields. MMBase provides several general purpose processors,
         which you can also use in your own datatypes. But of course you can also implement new ones
         (if you want to do that, we refer to the javadoc of the org.mmbase.datatype.processors package)
@@ -350,20 +349,20 @@ SATURDAY=saturday]]>
     <class name="org.mmbase.datatypes.processors.FormatDateTime" />
   </getprocessor>
 </specialization>]]></programlisting>
-          Using the 'type' attribute one of the mmbase database type can be associated with get- and
-          setprocessors. Those database types also corresponde to methods in the mmbase bridge
+          Using the 'type' attribute one of the MMBase database type can be associated with get- and
+          setprocessors. Those database types also correspond to methods in the MMBase bridge
           'Node' interface. In this case we see that getting a values as a string ('getStringValue'), something
           else happens then when it is gotten otherwise ('getDateValue'). In this case the creation
           time is nicely formatted if the value is requested as a string. 
         </para>
         <para>
           The CreationTimeGuesser processor arranges that if the value is empty, it guesses an
-          actual value using the mmbase 'day markers'. 
+          actual value using the MMBase 'day markers'. 
         </para>
         <para>
           In this example, there is also hooked in a class on the set-processor. Namely the
           processor which simply refuses the action, effectively leading to a read-only field. (The
-          CreationTimeGuesser itself can use 'setObjectValue' to bypass als set-processors, if it
+          CreationTimeGuesser itself can use 'setObjectValue' to bypass all set-processors, if it
           wants to store its guessed value for efficiency).
         </para>
       </section>
@@ -371,7 +370,7 @@ SATURDAY=saturday]]>
         <title>Commit-processors</title>
         <para>
           Commit-processors are effectively called on commit of the node which contains the field
-          with this datatype (for other datatypes the behaviour is as yet undefined). For example<programlisting><![CDATA[
+          with this data type (for other datatypes the behavior is as yet undefined). For example<programlisting><![CDATA[
 <specialization id="lastmodified">
   <description xml:lang="en">
     Read-only date-time field that contains the most recent time at which this node was changed .
@@ -384,8 +383,8 @@ SATURDAY=saturday]]>
   </commitprocessor>
   ..
   ]]></programlisting>
-          So, on commit, the 'LastModified' processor is called, which simply filles the current
-          time into the value of the field with this datatype.
+          So, on commit, the 'LastModified' processor is called, which simply fills the current
+          time into the value of the field with this data type.
         </para>
       </section>
     </section>
@@ -393,11 +392,11 @@ SATURDAY=saturday]]>
   </section>
 
   <section id="builders">
-    <title>How to associate a datatype with a field</title>
+    <title>How to associate a data type with a field</title>
     <para>
-      A datatype specialization needs to be added to a field in a builder configuration file just
-      before the 'db' section. Btw, since the datatypes can provide the necessary information,
-      the db section can  be omitted alltogether. The following example creates a lastmodified field for a node that is
+      A data type specialization needs to be added to a field in a builder configuration file just
+      before the 'db' section. By the way, since the datatypes can provide the necessary information,
+      the db section can  be omitted all together. The following example creates a lastmodified field for a node that is
       automatically adjusted every time a node is saved.
     </para>    
     <programlisting><![CDATA[
@@ -422,7 +421,7 @@ SATURDAY=saturday]]>
     <para>
       As you can see, this is simply a part of the same XML as also used in
       <filename>datatypes.xml</filename>'s. So, you can also 'anonymously' define or refine a
-      datatype just for one field.
+      data type just for one field.
     </para>
   </section>
 
@@ -438,8 +437,8 @@ SATURDAY=saturday]]>
   <section id="taglib">
     <title>Datatypes and the MMBase Taglib</title>
     <para>
-      If the mm:fieldinfo tag is used to create form-entries, then the datatype of the field is
-      explored to do that. If it e.g. detects that new-lines are permittable, then a textarea is created.
+      If the mm:fieldinfo tag is used to create form-entries, then the data type of the field is
+      explored to do that. If it e.g. detects that new-lines are permissible, then a textarea is created.
     </para>
     <section id="mmform">
       <title>Forms &amp; validation</title>
