@@ -41,7 +41,9 @@ public class DataTypesTest extends BridgeTest {
             commit(node3);
 
             cases = new Object[] {
-                /* {field    {valid values}   {invalid values}} */
+                /*            {field,    
+                              {valid values},
+                              {invalid values}} */
                 new Object[] {"string",
                               new Object[] {"abcdefg", "ijklm\nopqrstx", null},
                               new Object[] {}},
@@ -63,6 +65,9 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"stringlength",
                               new Object[] {"a", "0123456789",  "123456789\n", "\n123456789", null},
                               new Object[] {"",  "bbbbbbbbbbb", "123456789\n\n"}},
+                new Object[] {"required_stringlength",
+                              new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
+                              new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
                 new Object[] {"languages",
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
@@ -320,14 +325,18 @@ public class DataTypesTest extends BridgeTest {
                         ) {
                         assertFalse("field " + field.getName() + " was null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
                     }
-                    // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
-                    newNode.setValue(field.getName(), null);
-
-                    assertNull(newNode.getValue(field.getName()));
-                    assertTrue(newNode.isNull(field.getName()));
+                    if (! field.getDataType().isRequired()) {
+                        // so, it must be possible to set field back to null.
+                        newNode.setValue(field.getName(), null);
+                        assertNull(newNode.getValue(field.getName()));
+                        assertTrue(newNode.isNull(field.getName()));
+                    }
                     newNode.commit();
-                    assertNull(newNode.getValue(field.getName()));
-                    assertTrue(newNode.isNull(field.getName()));
+
+                    if (! field.getDataType().isRequired()) {
+                        assertNull(newNode.getValue(field.getName()));
+                        assertTrue(newNode.isNull(field.getName()));
+                    }
                     if(field.getName().equals("handle")) {
                         assertTrue(newNode.isNull("checksum"));
                     }
