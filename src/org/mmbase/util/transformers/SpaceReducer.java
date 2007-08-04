@@ -25,6 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
+ * @version $Id: SpaceReducer.java,v 1.16 2007-08-04 08:09:14 michiel Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
@@ -47,7 +48,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         int nl    = 1;  // 'open' newlines
         // we start at 1, rather then 0, because in that way, all leading space is deleted too
 
-        StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
+        StringBuilder indent = new StringBuilder();  // 'open' indentation of white-space
         int l = 0; // number of non-white-space (letter) on the current line
 
         int lines = 0; // for debug: the total number of lines read.
