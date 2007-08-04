@@ -25,7 +25,7 @@ General New Features:
 [1.9.0]
 
 - On a lot of places java 1.5 features were used in the implementation of core and applications.
-  (like generics, varargs).
+  (like generics, varargs, StringBuilder).
 
 - start on org.mmbase.framework
 
@@ -57,7 +57,10 @@ Known API incompatibilities of bridge, between 1.8 to 1.9.
 
 - Bridge. A RelationList is no NodeList any more (though a Relation is still a Node).
 
-- Taglib. <mm:url generates object of type org.mmbase.bridge.jsp.taglib.pageflow.Url (rather then String).
+- Taglib. <mm:url generates object of type org.mmbase.bridge.jsp.taglib.pageflow.Url (rather then
+  String).
+
+- org.mmbase.storage.search.implementation.*. StringBuilders are used in API.
 
 
 ========================
