@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.50 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: XmlField.java,v 1.51 2007-08-04 08:09:14 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -265,7 +265,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     break;
                 }
             }
-            StringBuffer add = new StringBuffer();
+            StringBuilder add = new StringBuilder();
             for (; requested_level <= level; level--) {
                 // same or higher level section
                 add.append("</section>");
@@ -813,7 +813,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
 
-        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP); 
+        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP);
         // no <section> tags, leave newlines if multipble br's requested
 
         handleNewlines(obj);
@@ -877,7 +877,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             documentBuilder.setEntityResolver(resolver);
 
             // in order to log our xml-errors
-            StringBuffer errorBuff = new StringBuffer();
+            StringBuilder errorBuff = new StringBuilder();
             ErrorHandler errorHandler = new ErrorHandler(errorBuff);
             documentBuilder.setErrorHandler(errorHandler);
             // documentBuilder.init();
@@ -909,9 +909,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     // Catch any errors or warnings,....
     static class ErrorHandler implements org.xml.sax.ErrorHandler {
         boolean errorOrWarning;
-        StringBuffer errorBuff;
+        StringBuilder errorBuff;
 
-        ErrorHandler(StringBuffer errorBuff) {
+        ErrorHandler(StringBuilder errorBuff) {
             super();
             this.errorBuff = errorBuff;
             errorOrWarning = false;
@@ -941,7 +941,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
          * Returns a string of the location.
          */
         private String getLocationString(org.xml.sax.SAXParseException ex) {
-            StringBuffer str = new StringBuffer();
+            StringBuilder str = new StringBuilder();
             String systemId = ex.getSystemId();
             if (systemId != null) {
                 int index = systemId.lastIndexOf('/');

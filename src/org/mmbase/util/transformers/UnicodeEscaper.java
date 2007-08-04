@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: UnicodeEscaper.java,v 1.3 2006-04-19 21:10:58 michiel Exp $
+ * @version $Id: UnicodeEscaper.java,v 1.4 2007-08-04 08:09:14 michiel Exp $
  */
 
 public class UnicodeEscaper extends ReaderTransformer implements CharTransformer {
@@ -58,7 +58,7 @@ public class UnicodeEscaper extends ReaderTransformer implements CharTransformer
                     if (c == -1) { w.write('\\'); break; }
                     if (c == 'u') {
                         // read 4 hexadecimal digits.
-                        StringBuffer hex = new StringBuffer(4);
+                        StringBuilder hex = new StringBuilder(4);
                         while (c != -1 && hex.length() < 4) {
                             c = r.read();
                             hex.append((char) c);

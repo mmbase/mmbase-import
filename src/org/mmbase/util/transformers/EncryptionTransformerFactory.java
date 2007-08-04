@@ -116,7 +116,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
         }
 
         public Writer transform(Reader r, Writer w) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
 
             try {
                 int i;
@@ -136,7 +136,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
 
                 w.write(output);
                 return w;
-                
+
             } catch (IllegalArgumentException h) {
                 throw new UnsupportedOperationException(h.getMessage());
             } catch (SecurityException g) {
@@ -166,7 +166,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
         }
 
         public Writer transform(Reader r, Writer w) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
 
             try {
                 int i;
