@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.33 2007-07-18 07:50:48 michiel Exp $
+ * @version $Id: Attribute.java,v 1.34 2007-08-04 10:38:03 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -46,7 +46,7 @@ public class Attribute {
      * a new one if it is not in the Attribute cache.
      */
     public static final Attribute getAttribute(final String at) throws JspTagException {
-        if (at == null || "".equals(at)) return NULL;
+        if (at == null) return NULL;
         return cache.getAttribute(at);
     }
 
