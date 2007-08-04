@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.43 2007-05-30 08:45:54 michiel Exp $
+  $Id: build.xml,v 1.44 2007-08-04 10:08:48 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -160,7 +160,7 @@
           depends="documentation.resources,applications.documentation.copy,xsltransformer,download.deps,datatypes.docbook"
           description="Create HTML documentation from the DocBook sources">
 
-    <echo message="${documentation.dest.dir}" />
+    <echo message="Building documentation to ${documentation.dest.dir} (${xalan.jar})" />
     <java classname="org.mmbase.util.XSLTransformer"
           fork="yes"
           failonerror="no">
