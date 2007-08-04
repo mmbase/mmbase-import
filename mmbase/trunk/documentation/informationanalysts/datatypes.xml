@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.6 2007-08-04 10:00:00 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.7 2007-08-04 10:08:22 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -550,9 +550,7 @@ SATURDAY=saturday]]>
     </section>
   </section>
 
-  <section id="available"
-           label="Default datatypes"
-           >
+  <section id="available" >
     <title>Summary of default datatypes</title>
     <para>
       This is a summary of all MMBase datatypes and their specializations found in the
