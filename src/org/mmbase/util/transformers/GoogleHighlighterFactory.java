@@ -33,16 +33,14 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class GoogleHighlighterFactory  implements ParameterizedTransformerFactory {
+public class GoogleHighlighterFactory  implements ParameterizedTransformerFactory<CharTransformer> {
     private static final Logger log = Logging.getLoggerInstance(GoogleHighlighterFactory.class);
 
-    private static final Parameter[] PARAM = new Parameter[] {
-        new Parameter("format", String.class, "<span class=\"google\">$1</span>"),
-        new Parameter("host",   String.class, "google"),
-        Parameter.REQUEST,
-    };
+    private static final Parameter<String> FORMAT = new Parameter<String>("format", String.class, "<span class=\"google\">$1</span>");
+    private static final Parameter<String> HOST   = new Parameter<String>("host",   String.class, "google");
+    private static final Parameter[] PARAM = new Parameter[] { FORMAT, HOST, Parameter.REQUEST };
 
-    public Transformer createTransformer(final Parameters parameters) {
+    public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
@@ -58,7 +56,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             return CopyCharTransformer.INSTANCE;
         }
         log.debug("Using referrer " + referrer);
-        if (referrer.getHost().indexOf((String) parameters.get("host")) == -1) { // did not refer
+        if (referrer.getHost().indexOf(parameters.get(HOST)) == -1) { // did not refer
                                                                                  // from google
             log.debug("Wrong host, returning COPY");
             return CopyCharTransformer.INSTANCE;
@@ -94,7 +92,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
                 private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
                 {
                     Pattern p        = Pattern.compile("(" + search.replace('+', '|') + ")");
-                    patterns.add(new Entry<Pattern,String>(p, (String) parameters.get("format")));
+                    patterns.add(new Entry<Pattern,String>(p, parameters.get(FORMAT)));
                 }
                 public Collection<Entry<Pattern,String>> getPatterns() {
                     return patterns;

@@ -25,15 +25,15 @@ import org.mmbase.util.functions.*;
  * @since MMBase-1.8
  */
 
-public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
+public class RegexpReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacerFactory.class);
 
+    protected static final Parameter<Collection> PATTERNS =
+        new Parameter<Collection>("patterns", Collection.class, Collections.emptyList());
+    protected static final Parameter<String> MODE = new Parameter<String>("mode", String.class, "WORDS");
+    protected static final Parameter<String> REPLACE_FIRST = new Parameter<String>("replacefirst", String.class);
 
-    protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("patterns", Collection.class, Collections.emptyList()),
-        new Parameter("mode", String.class),
-        new Parameter("replacefirst", String.class)
-    };
+    protected static final Parameter[] PARAMS = new Parameter[] { PATTERNS, MODE, REPLACE_FIRST };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -42,7 +42,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
     /**
      * Creates a parameterized transformer.
      */
-    public Transformer createTransformer(final Parameters parameters) {
+    public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
@@ -50,18 +50,17 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
         RegexpReplacer trans = new RegexpReplacer() {
                 private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
                 {
-                    addPatterns((Collection<?>) parameters.get("patterns"), patterns);
+                    addPatterns(parameters.get(PATTERNS), patterns);
                 }
                 public Collection<Entry<Pattern,String>> getPatterns() {
                     return patterns;
                 }
             };
-        String mode = (String) parameters.get("mode");
-        if (mode == null) mode = "WORDS";
+        String mode = parameters.get(MODE);
         Config c = trans.transformers().get("REGEXPS_" + mode.toUpperCase());
         if (c == null) c = trans.transformers().get(mode);
         if (c == null) throw new IllegalArgumentException("" + mode + " cannot be found in " + trans.transformers());
-        String firstParam = (String) parameters.get("replacefirst");
+        String firstParam = parameters.get(REPLACE_FIRST);
         boolean replaceFirst = "true".equals(firstParam);
         boolean replaceFirstAll = "all".equals(firstParam);
         trans.configure(c.config + 
@@ -70,9 +69,6 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
                         );
         return trans;
     }
-
-
-
 
 
 }

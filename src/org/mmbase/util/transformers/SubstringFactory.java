@@ -23,22 +23,17 @@ import java.io.Writer;
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.8 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: SubstringFactory.java,v 1.9 2007-08-04 07:45:52 michiel Exp $
  */
 
-public class SubstringFactory implements ParameterizedTransformerFactory {
+public class SubstringFactory implements ParameterizedTransformerFactory<CharTransformer> {
 
-
-    protected final static Parameter[] PARAMS = {
-        new Parameter("from", Integer.class, 0),
-        new Parameter("to"  , Integer.class, Integer.MAX_VALUE),
-        new Parameter("ellipsis"  , String.class, "")
-    };
-
-    public  Transformer createTransformer(Parameters parameters) {
-        return new Substring( (Integer) parameters.get("from"),
-                              (Integer) parameters.get("to"),
-                              (String) parameters.get("ellipsis") );
+    protected final static Parameter<Integer> FROM = new Parameter<Integer>("from", Integer.class, 0);
+    protected final static Parameter<Integer> TO   = new Parameter<Integer>("to", Integer.class, Integer.MAX_VALUE);
+    protected final static Parameter<String>  ELLIPSIS = new Parameter<String>("ellipsis"  , String.class, "");
+    protected final static Parameter[] PARAMS = { FROM, TO, ELLIPSIS };
+    public  CharTransformer createTransformer(Parameters parameters) {
+        return new Substring(parameters.get(FROM), parameters.get(TO), parameters.get(ELLIPSIS));
     }
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -49,8 +44,8 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
         private final int from;
         private final int to;
         private final String ellipsis;
-        Substring(Integer f, Integer t, String e) {
-            from = f.intValue(); to = t.intValue(); ellipsis = e;
+        Substring(int f, int t, String e) {
+            from = f; to = t; ellipsis = e;
         }
 
 
