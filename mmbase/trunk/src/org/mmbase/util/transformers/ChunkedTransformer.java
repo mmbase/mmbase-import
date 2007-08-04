@@ -97,20 +97,20 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     }
     protected Status newStatus() {
         return new Status();
-        
+
     }
     /**
      * Implement this. Return true if a replacement done.
      */
     protected abstract boolean replace(String string, Writer w, Status status) throws IOException;
 
-    protected boolean replaceWord(StringBuffer word, Writer writer, Status status) throws IOException {
+    protected boolean replaceWord(StringBuilder word, Writer writer, Status status) throws IOException {
         int l = word.length();
-        StringBuffer postFix = null;
+        StringBuilder postFix = null;
         String w;
         if (l > 0) {
 
-            postFix = new StringBuffer();
+            postFix = new StringBuilder();
 
             // surrounding quotes might look like &quot; because of earlier escaping, so we take those out of consideration.
             w = word.toString();
@@ -161,7 +161,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformXmlTextWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuffer word = new StringBuffer();  // current word
+        StringBuilder word = new StringBuilder();  // current word
         boolean translating = true;
         try {
             log.trace("Starting  replacing");
@@ -208,7 +208,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformXmlText(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuffer xmltext = new StringBuffer();  // current word
+        StringBuilder xmltext = new StringBuilder();  // current word
         boolean translating = true;
         try {
             log.trace("Starting replacing");
@@ -248,7 +248,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     }
     public Writer transformWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuffer word = new StringBuffer();  // current word
+        StringBuilder word = new StringBuilder();  // current word
         try {
             if (log.isDebugEnabled()) {
                 log.trace("Starting replacing words." + Logging.stackTrace());
@@ -389,8 +389,8 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         }
         long duration = System.currentTimeMillis() - startTime;
         System.err.println("Converstion took " + duration + " ms");
-        
-        
+
+
     }
 
 }

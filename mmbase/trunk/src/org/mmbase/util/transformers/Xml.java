@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.20 2007-05-23 14:21:11 michiel Exp $
+ * @version $Id: Xml.java,v 1.21 2007-08-04 08:09:14 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -179,7 +179,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      **/
     public static String XMLUnescape(String data){
         if (data == null) return "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int i;
         for (i =0; i < data.length();i++){
             char c = data.charAt(i);
