@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Sander de Boer
  */
 
-public class EncryptionTransformerFactory implements ParameterizedTransformerFactory {
+public class EncryptionTransformerFactory implements ParameterizedTransformerFactory<CharTransformer> {
     private static final Logger log = Logging.getLoggerInstance(EncryptionTransformerFactory.class);
 
     /**
@@ -89,7 +89,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
      *  <li>key, defaults to '1234567890abcdef' (NOTE: the length of this key must match the requirements set by the algorithm</li>
      * </ul>
      */
-    public Transformer createTransformer(Parameters parameters) {
+    public CharTransformer createTransformer(Parameters parameters) {
         String direction = (String) parameters.get("direction");
         if ("encrypt".equalsIgnoreCase(direction)) {
             return new Encryption((String) parameters.get("key"), (String) parameters.get("format"), (String) parameters.get("algorithm"));

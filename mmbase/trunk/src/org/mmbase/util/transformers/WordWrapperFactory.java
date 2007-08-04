@@ -20,14 +20,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id: WordWrapperFactory.java,v 1.5 2007-08-04 07:45:52 michiel Exp $
  */
 
-public class WordWrapperFactory implements ParameterizedTransformerFactory {
+public class WordWrapperFactory implements ParameterizedTransformerFactory<CharTransformer> {
     private static final Logger log = Logging.getLoggerInstance(WordWrapperFactory.class);
 
-    protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<Integer>("length", Integer.class, 80)
-    };
+    protected static final Parameter<Integer> LENGTH = new Parameter<Integer>("length", Integer.class, 80);
+    protected static final Parameter[] PARAMS = new Parameter[] { LENGTH };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -37,12 +37,11 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory {
     /**
      * Creates a parameterized transformer.
      */
-    public Transformer createTransformer(final Parameters parameters) {
-        parameters.checkRequiredParameters();
+    public CharTransformer createTransformer(final Parameters parameters) {
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
         }
-        final int length = ((Integer) parameters.get("length")).intValue();
+        final int length = parameters.get(LENGTH);
         return new ReaderTransformer() {
 
             public Writer transform(Reader r, Writer w) {
