@@ -5,8 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.22 2005/11/15 11:42:45 michiel Exp
-    $</edition>
+    <edition>$Id: glossary.xml,v 1.24 2007-08-04 10:07:12 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -22,13 +21,11 @@
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
-
         <surname>Hangyi</surname>
       </author>
 
       <author>
         <firstname>Michiel</firstname>
-
         <surname>Meeuwissen</surname>
       </author>
     </authorgroup>
@@ -1084,12 +1081,16 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An 'mmbase application' is a modular piece of
-              functionality, which can contain code (jars, classes), templates
-              and a piece of an object model, with possbily some data, and
-              other resources. A tool implemented with MMBase means.</para>
+              <para>
+                An 'mmbase application' is a modular piece of
+                functionality, which can contain code (jars, classes), templates
+                and a piece of an object model, with possbily some data, and
+                other resources. A tool implemented with MMBase means.
+              </para>
 
               <para>This thing is also called 'package' by some.</para>
+              <para>This functionality was never quite finished. In MBase 1.9 we talk about 'components'</para>
+
             </listitem>
 
             <listitem>
@@ -1118,17 +1119,15 @@
             </listitem>
           </orderedlist>
 
-          <glossseealso otherterm="package"></glossseealso>
-
-          <glossseealso otherterm="bundle"></glossseealso>
-
-          <glossseealso otherterm="contribution"></glossseealso>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
+          <glossseealso otherterm="component" />
+          <glossseealso otherterm="contribution" />
         </glossdef>
       </glossentry>
 
       <glossentry id="package">
         <glossterm>package</glossterm>
-
         <glossdef>
           <orderedlist>
             <listitem>
@@ -1136,9 +1135,11 @@
             </listitem>
 
             <listitem>
-              <para>A package is the concretization of an application (1). It
-              is the thing which you can download and install, or burn on a
-              CD.</para>
+              <para>
+                A package is the concretization of an application (1). It
+                is the thing which you can download and install, or burn on a
+                CD.
+              </para>
             </listitem>
 
             <listitem>
@@ -1149,7 +1150,8 @@
             </listitem>
           </orderedlist>
 
-          <glossseealso otherterm="application"></glossseealso>
+          <glossseealso otherterm="application" />
+          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
 
@@ -1159,18 +1161,19 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>A bundle is a special kind of package (1) containing other
-              packages, and distributed as a unit.</para>
+              <para>
+                A bundle is a special kind of package (1) containing other
+                packages, and distributed as a unit.
+              </para>
             </listitem>
-
             <listitem>
               <para>A resource bundle is generally a bunch of property files
               (or something functionally similar) , see
               java.util.ResourceBundle.</para>
             </listitem>
           </orderedlist>
-
-          <glossseealso otherterm="package"></glossseealso>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
 
@@ -1178,20 +1181,21 @@
         <glossterm>component</glossterm>
 
         <glossdef>
-          <para>Has no MMBase specific meanings. It means approximately 'one
-          part of a whole', 'something that can be installed in some program
-          to make it more powerful'. Since MMBase 1.9 and the MMBase Component
-          Framework (MMCF) a components has gathered meaning as a piece of
-          functionality that can be installed using the component framework. A
-          component in the MMCF sence can be a poll, an e-card application or
-          even some more hidden functionality like the e-mail application as
-          long it is 'plugable' within the framework. </para>
+          <para>
+            It means approximately 'one part of a whole', 'something that can be installed in
+            some program to make it more powerful'. Since MMBase 1.9 and the MMBase Component
+            Framework (MMCF) a component has gathered meaning as a piece of functionality that can be
+            installed using the component framework. A component in the MMCF sence can be a poll, an
+            e-card application or even some more hidden functionality like the e-mail application as
+            long it is 'plugable' within the framework. 
+          </para>
 
+          <!--
           <glossseealso otherterm="package"></glossseealso>
-
           <glossseealso otherterm="bundle"></glossseealso>
-
-          <glossseealso otherterm="application"></glossseealso>
+          -->
+          <glossseealso otherterm="application" />
+          <glossseealso otherterm="block" />
         </glossdef>
       </glossentry>
 
@@ -1203,11 +1207,12 @@
           classes, and extensions of classes are therefore specializations of
           some kind of functionality.</para>
 
+          <!--
           <glossseealso otherterm="package"></glossseealso>
-
           <glossseealso otherterm="bundle"></glossseealso>
-
-          <glossseealso otherterm="application"></glossseealso>
+          -->
+          <glossseealso otherterm="component" />
+          <glossseealso otherterm="application" />
         </glossdef>
       </glossentry>
 
@@ -1248,12 +1253,12 @@
           and other MMBase related code, which is contributed by third parties
           to MMBase, and are not maintained by the `community' but individual
           commitors are responsible.</para>
-
+          <!--
           <glossseealso otherterm="package"></glossseealso>
-
           <glossseealso otherterm="bundle"></glossseealso>
-
-          <glossseealso otherterm="application"></glossseealso>
+          -->
+          <glossseealso otherterm="application" />
+          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
 
@@ -1267,7 +1272,7 @@
           configuration file, but they can also be defined `on the fly' in
           builder xmls and editwizard xmls.</para>
 
-          <glossseealso otherterm="restriction"></glossseealso>
+          <glossseealso otherterm="restriction" />
         </glossdef>
       </glossentry>
 
@@ -1279,7 +1284,57 @@
           `restricted'. It can e.g. have a minimal or maximal value, or be one
           of the values of an 'enumeration'.</para>
 
-          <glossseealso otherterm="datatype"></glossseealso>
+          <glossseealso otherterm="datatype" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="function">
+        <glossterm>function</glossterm>
+        <glossdef>
+          <para>
+            A function is a piece of functionality, normally implemented in java, which can be
+            attached to objects on several places in MMBase. Functions can be assigned to 'sets',
+            'nodes', 'nodemanagers' and 'modules'
+          </para>
+          <glossseealso otherterm="functionsets" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="functionsets">
+        <glossterm>function set</glossterm>
+        <glossdef>
+          <para>
+            A function set is just a set of functions, which are declared in the 'functionsets.xml'
+            resource. These are a kind of public methods which can be called from everywhere, any
+            time.
+          </para>
+          <glossseealso otherterm="function" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="block">
+        <glossterm>Block</glossterm>
+        <glossdef>
+          <para>
+            A component can have 1 or more 'blocks', which are actual pieces of markup, which
+            represent a rendering of the component's functionality.
+          </para>
+          <glossseealso otherterm="component" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="resourceloader">
+        <glossterm>resourceloader</glossterm>
+        <glossdef>
+          <para>
+            MMBase has a 'resourceloader' which loads its configuration files. This uses several
+            strategies, and is like a java class loader.
+          </para>
+          <para>
+            The effect is that mmbase configuration files can be present in jars, in WEB-INF/config
+            or both. Or even in the database. The admin-pages provide an overview, to check how a
+            certain configuration was loaded.
+          </para>
         </glossdef>
       </glossentry>
     </glosslist>
