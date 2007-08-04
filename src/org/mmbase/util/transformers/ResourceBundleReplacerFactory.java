@@ -24,10 +24,10 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.5 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: ResourceBundleReplacerFactory.java,v 1.6 2007-08-04 07:45:52 michiel Exp $
  */
 
-public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory {
+public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {
     private static final Logger log = Logging.getLoggerInstance(ResourceBundleReplacerFactory.class);
 
 
@@ -44,7 +44,7 @@ public class ResourceBundleReplacerFactory implements ParameterizedTransformerFa
     /**
      * Creates a parameterized transformer.
      */
-    public Transformer createTransformer(final Parameters parameters) {
+    public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);

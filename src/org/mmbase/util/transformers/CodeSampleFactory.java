@@ -29,10 +29,10 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @since MMBase 1.8.0
- * @version $Id: CodeSampleFactory.java,v 1.3 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: CodeSampleFactory.java,v 1.4 2007-08-04 07:45:52 michiel Exp $
  */
 
-public class CodeSampleFactory implements ParameterizedTransformerFactory {
+public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTransformer> {
 
     private final static Logger log = Logging.getLoggerInstance(CodeSampleFactory.class);
     
@@ -48,7 +48,7 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory {
         return new Parameters(PARAMS);
     }
 
-    public Transformer createTransformer(Parameters parameters) {
+    public CharTransformer createTransformer(Parameters parameters) {
         parameters.checkRequiredParameters();
         
         return new CodeSample( (String) parameters.get("starttag"),
