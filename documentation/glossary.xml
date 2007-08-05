@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.24 2007-08-04 10:07:12 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.25 2007-08-05 09:18:43 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -110,48 +110,50 @@
           <example>
             <title>Example of a builder with only one field, named
             title.</title>
+            <para><programlisting><![CDATA[<
+<?xml version="1.0">
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="news" maintainer="mmbase.org" version="0" extends="object">
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">NewsItem</singular>
+    <singular xml:lang="nl">NieuwsItem</singular>
+    <plural xml:lang="en">NewsItems</plural>
+    <plural xml:lang="nl">NieuwsItems</plural>
+  </names>
 
-            <para><programlisting>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd"&gt;
-&lt;builder extends="object" maintainer="mmbase.org" name="news" version="0"&gt;
-  &lt;searchage&gt;14&lt;/searchage&gt;
-  &lt;names&gt;
-    &lt;singular xml:lang="en"&gt;NewsItem&lt;/singular&gt;
-    &lt;singular xml:lang="nl"&gt;NieuwsItem&lt;/singular&gt;
-    &lt;plural xml:lang="en"&gt;NewsItems&lt;/plural&gt;
-    &lt;plural xml:lang="nl"&gt;NieuwsItems&lt;/plural&gt;
-  &lt;/names&gt;
+  <descriptions>
+    <description xml:lang="en">News item</description>
+    <description xml:lang="nl">Nieuws item</description>
+  </descriptions>
 
-  &lt;descriptions&gt;
-    &lt;description xml:lang="en"&gt;News item&lt;/description&gt;
-    &lt;description xml:lang="nl"&gt;Nieuws item&lt;/description&gt;
-  &lt;/descriptions&gt;
-
-  &lt;fieldlist&gt;
-    &lt;field&gt;
-      &lt;descriptions&gt;
-        &lt;description xml:lang="en"&gt;Title of the news item&lt;/description&gt;
-        &lt;description xml:lang="nl"&gt;Titel (hoofd kop) van het nieuwsitem&lt;/description&gt;
-      &lt;/descriptions&gt;
-      &lt;gui&gt;
-        &lt;guiname xml:lang="en"&gt;Title&lt;/guiname&gt;
-        &lt;guiname xml:lang="nl"&gt;Titel&lt;/guiname&gt;
-      &lt;/gui&gt;
-      &lt;editor&gt;
-        &lt;positions&gt;
-          &lt;list&gt;1&lt;/list&gt;
-        &lt;/positions&gt;
-      &lt;/editor&gt;
-      &lt;db&gt;
-        &lt;name&gt;title&lt;/name&gt;
-        &lt;type key="false" notnull="true" size="255" state="persistent"&gt;STRING&lt;/type&gt;
-      &lt;/db&gt;
-    &lt;/field&gt;
-  &lt;/fieldlist&gt;
-&lt;/builder&gt;
-
-</programlisting></para>
+  <fieldlist>
+    <field name="title">
+      <descriptions>
+        <description xml:lang="en">Title of the news item</description>
+        <description xml:lang="nl">Titel (hoofdkop) van het nieuwsitem</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>
+]]></programlisting></para>
           </example>
 
           <remark>The term builder is used when one speaks about the object
@@ -173,16 +175,13 @@
               meta information (which fields are available and so on) about
               node types, and serves to create new nodes and so on.</para>
             </listitem>
-
             <listitem>
               <para>A synonym for `builder'.</para>
             </listitem>
-
             <listitem>
               <para>...</para>
             </listitem>
           </orderedlist>
-
           <example>
             <title>Example of use in spoken language</title>
 
@@ -1089,7 +1088,7 @@
               </para>
 
               <para>This thing is also called 'package' by some.</para>
-              <para>This functionality was never quite finished. In MBase 1.9 we talk about 'components'</para>
+              <para>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</para>
 
             </listitem>
 
@@ -1140,6 +1139,8 @@
                 is the thing which you can download and install, or burn on a
                 CD.
               </para>
+              <para>This functionality was never quite finished. In MMBase 1.9 we talk about
+              'components'</para>
             </listitem>
 
             <listitem>
@@ -1165,6 +1166,7 @@
                 A bundle is a special kind of package (1) containing other
                 packages, and distributed as a unit.
               </para>
+              <para>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</para>
             </listitem>
             <listitem>
               <para>A resource bundle is generally a bunch of property files
@@ -1313,7 +1315,7 @@
       </glossentry>
 
       <glossentry id="block">
-        <glossterm>Block</glossterm>
+        <glossterm>block</glossterm>
         <glossdef>
           <para>
             A component can have 1 or more 'blocks', which are actual pieces of markup, which
