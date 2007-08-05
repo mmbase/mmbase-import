@@ -5,9 +5,9 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2006-11-07</date>
+    <date>2007-08-05</date>
 
-    <edition>$Id: index.xml,v 1.64 2007-08-03 17:27:13 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.65 2007-08-05 15:08:49 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -246,9 +246,12 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/components.html">Component
-        Framework</ulink> document describing the MMBase component
-        framework</para>
+        <para>
+          <ulink url="backenddevelopers/components.html">Component Framework</ulink>
+          document describing the MMBase Component Framework, as of version 1.9. 
+          Applications developed with the component requirements will be compitable 
+          with all websites implementing this framework.
+        </para>
       </listitem>
 
       <listitem>
