@@ -19,10 +19,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The class maintains all compoments which are registered in the current MMBase.
+ * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.23 2007-07-30 23:51:41 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.24 2007-08-06 16:58:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -34,7 +34,7 @@ public class ComponentRepository {
     public static final String NAMESPACE_FRAMEWORK = "http://www.mmbase.org/xmlns/framework";
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_COMPONENT, ComponentRepository.class);
-        XMLEntityResolver.registerSystemID(NAMESPACE_FRAMEWORK + ".xsd", XSD_COMPONENT, ComponentRepository.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_FRAMEWORK + ".xsd", XSD_FRAMEWORK, ComponentRepository.class);
     }
 
     private static final Logger log = Logging.getLoggerInstance(ComponentRepository.class);
@@ -57,11 +57,14 @@ public class ComponentRepository {
 
     }
 
-    private Map<String, Component> rep = new HashMap<String, Component>();
-    private List<Component> failed = new ArrayList<Component>();
+    private final Map<String, Component> rep = new HashMap<String, Component>();
+    private final List<Component> failed = new ArrayList<Component>();
 
     private ComponentRepository() { }
 
+    /**
+     * @javadoc
+     */
     public Block.Type[] getBlockClassification(String id) {
         if (id == null) {
             return new Block.Type[] {Block.Type.ROOT};
@@ -72,28 +75,34 @@ public class ComponentRepository {
 
     }
 
+    /**
+     * The available components.
+     */
     public Collection<Component> getComponents() {
         return Collections.unmodifiableCollection(rep.values());
     }
 
-    
+    /**
+     * The components which could not be instantiated or configured, due to some
+     * misconfiguration.
+     */
     public Collection<Component> getFailedComponents() {
         return Collections.unmodifiableCollection(failed);
     }
 
+    /**
+     * Acquires the component with given name, or <code>null</code> if no such component.
+     */
     public Component getComponent(String name) {
         return rep.get(name);
     }
 
     protected boolean resolve() {
-        int resolved = 0;
         int unsatisfied = 0;
         for (Component comp : getComponents()) {
-            Collection<VirtualComponent> us = comp.getUnsatisfiedDependencies();
-            for (VirtualComponent virtual :  us) {
+            for (VirtualComponent virtual :  comp.getUnsatisfiedDependencies()) {
                 Component proposed = getComponent(virtual.getName());
                 if (proposed != null) {
-                    resolved++;
                     if (proposed.getVersion() >= virtual.getVersion()) {
                         comp.resolve(virtual, proposed);
                     } else {
@@ -101,6 +110,7 @@ public class ComponentRepository {
                         log.warn("" + comp + " depends on " + virtual + " but the version of " + proposed + " is only " + proposed.getVersion());
                     }
                 } else {
+                    unsatisfied++;
                     log.warn("" + comp + " depends on " + virtual + " but no such component.");
                 }
             }
@@ -119,6 +129,7 @@ public class ComponentRepository {
         Block.Type.NO.subs.clear();
         Block.Type.NO.blocks.clear();
         rep.clear();
+        failed.clear();
     }
 
     /**
@@ -137,7 +148,7 @@ public class ComponentRepository {
                 if (! fileName.equals(name)) {
                     log.warn("Component " + name + " is defined in resource with name " + file);
                 } else {
-                    log.service("Instantatiating component '" + name + "'");
+                    log.service("Instantiating component '" + name + "'");
                 }
                 if (rep.containsKey(name)) {
                     failed.add(getComponent(name, doc));
@@ -158,7 +169,7 @@ public class ComponentRepository {
     }
 
     /**
-     * Instantaties any object using an Dom Element and constructor arguments. Sub-param tags are
+     * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
      * used on set-methods on the newly created object. This is a pretty generic method, it should
      * perhaps be moved to org.mmbase.util.
      */
@@ -182,7 +193,7 @@ public class ComponentRepository {
             constructor = c;
             break;
         }
-        if (constructor == null) throw new NoSuchMethodError();
+        if (constructor == null) throw new NoSuchMethodError("No constructors found for " + args);
         Object o = constructor.newInstance(args);
 
         NodeList params = classElement.getChildNodes();
