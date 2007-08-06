@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8.2.1 2007-08-06 10:00:12 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.8.2.2 2007-08-06 10:02:15 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -76,7 +76,7 @@ public class QueryReader {
             // custom configuration of field
             fieldDefinition.configure(fieldElement);
             queryDefinition.fields.add(fieldDefinition);
-            if (queryDefinition.isMultiLevel) {
+            if (queryDefinition.isMultiLevel && fieldDefinition.optional == null) {
                 // have to add field for multilevel queries
                 if (! queryDefinition.query.getFields().contains(queryDefinition.query.createStepField(fieldDefinition.fieldName))) {
                     queryDefinition.query.addField(fieldDefinition.fieldName);
