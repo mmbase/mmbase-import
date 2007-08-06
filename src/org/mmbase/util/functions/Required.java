@@ -14,12 +14,12 @@ import java.lang.annotation.*;
  * 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Required.java,v 1.1 2007-07-20 13:21:43 michiel Exp $
+ * @version $Id: Required.java,v 1.2 2007-08-06 13:01:11 michiel Exp $
  * @since MMBase-1.9
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Required {
-    boolean value();
+
 
 }
