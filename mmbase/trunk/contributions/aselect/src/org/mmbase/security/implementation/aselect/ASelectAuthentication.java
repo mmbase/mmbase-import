@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.13 2007-07-30 08:55:14 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.14 2007-08-06 07:49:07 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -1141,7 +1141,8 @@ public class ASelectAuthentication extends Authentication {
     }
 
     public int getDefaultMethod(String protocol) {
-        if (protocol == null || protocol.equalsIgnoreCase("HTTP") || protocol.substring(0, 3).equalsIgnoreCase("HTTP")) {
+        log.debug("protocol : " + protocol);
+        if (protocol == null || protocol.substring(0, 4).equalsIgnoreCase("HTTP")) {
             return AuthenticationData.METHOD_SESSIONDELEGATE;
         } else {
             return AuthenticationData.METHOD_DELEGATE;
