@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.21 2007-08-03 14:45:45 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.22 2007-08-06 13:01:11 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -197,13 +197,9 @@ public class BeanFunction extends AbstractFunction<Object> {
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
                 boolean required = false;
-                try {
-                    Method setter = claz.getMethod(methodName);
-                    Required requiredAnnotation = setter.getAnnotation(Required.class);
-                    if (requiredAnnotation != null) required = requiredAnnotation.value();
-                } catch (NoSuchMethodException nsme) {
-                    log.error(nsme);
-                }
+                Required requiredAnnotation = m.getAnnotation(Required.class);
+                required = requiredAnnotation != null;
+
                 // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
