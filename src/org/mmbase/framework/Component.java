@@ -1,5 +1,4 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -17,7 +16,7 @@ import org.mmbase.util.LocalizedString;
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.14 2007-07-30 23:01:42 michiel Exp $
+ * @version $Id: Component.java,v 1.15 2007-08-06 16:57:25 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -29,20 +28,29 @@ public interface Component {
 
 
     /**
-     * A component can have a version number.
+     * A component has a version number.
      */
     int getVersion();
 
     /**
+     * All (satisfied) depedencies of this Component. See als {@link
+     * #getUnsatisfiedDependencies}. 
      * 
      */
     Collection<Component> getDependencies();
 
     /**
-     *
+     * The unsatisfied dependencies, so this should return an empty collection. Unless the framework
+     * is still initialing, because initially dependencies can be temporary added as 'unsatisfied'
+     * because perhaps this other component is simply <em>not yet</em> loaded. The
+     * ComponentRepository will call {@link #resolve(VirtualComponent, Component)} when a
+     * dependency is satisfied after all.
      */
     Collection<VirtualComponent> getUnsatisfiedDependencies();
 
+    /**
+     * Used during bootstrapping. See also {@link #getUnsatisfiedDependencies()}
+     */
     void resolve(VirtualComponent unsatified, Component satisfied);
 
     /**
@@ -52,7 +60,7 @@ public interface Component {
     LocalizedString getDescription();
 
     /**
-     * An URI which may identify the configuration of this Component
+     * An URI which may identify the configuration of this Component. 
      */
     URI getUri();
 
@@ -68,7 +76,9 @@ public interface Component {
     Collection<Block> getBlocks();
 
     /**
-     * Gets a specific block
+     * Gets a specific block. If there is no such block, then <code>null</code> is returned.
+     * @param name The name of the block. If this parameter is <code>null</code>, then {@link #getDefaultBlock} can
+     * be returned. 
      */
     Block getBlock(String name);
 
@@ -79,15 +89,21 @@ public interface Component {
 
 
     /**
-     * A resource bundle associated with i18n messages for this component.
+     * The baseName of the resource bundle associated with i18n messages for this component.
+     * See {@link java.util.ResourceBundle#getBundle(String, Locale)}.
      */
     String getBundle();
 
     /**
-     * An unmodifiable collection of all blocks associated with the component
+     * An unmodifiable collection of all settings associated with this component
      */
     Collection<Setting<?>> getSettings();
 
+    /**
+     * Retrieves a setting (a definition, not a value, for that, use 
+     * {@link Framework#getSettingValue(Setting, Parameters)}) with a certain name. Or
+     * <code>null</code> if no such setting in this component.
+     */
     Setting<?> getSetting(String name);
 
 }
