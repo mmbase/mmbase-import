@@ -35,7 +35,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.60 2007-07-30 23:01:42 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.61 2007-08-06 16:58:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -43,14 +43,14 @@ public class BasicFramework implements Framework {
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
-    public static final String XSD_FRAMEWORK = "framework.xsd";
+    public static final String XSD = "framework.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
     static {
-        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_FRAMEWORK, BasicFramework.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, BasicFramework.class);
     }
 
     /**
-     * A framewok must be able to provide a node to the rendered blocks. This parameter could
+     * A framework must be able to provide a node to the rendered blocks. This parameter could
      * indicate _which_ node.
      * @todo Not yet suported, so basic framework cannot yet support block which require a framework
      * provided node.
@@ -69,7 +69,7 @@ public class BasicFramework implements Framework {
         configure(el);
     }
     public BasicFramework() {
-        urlConverter.add(new BasicUrlConverter());
+        urlConverter.add(new BasicUrlConverter(this));
     }
 
 
@@ -112,7 +112,7 @@ public class BasicFramework implements Framework {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        BasicUrlConverter buc = new BasicUrlConverter();
+        BasicUrlConverter buc = new BasicUrlConverter(this);
         if (! urlConverter.contains(buc)) {
             urlConverter.add(buc);
         }
@@ -169,7 +169,7 @@ public class BasicFramework implements Framework {
 
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
 
-            state.startBlock(frameworkParameters, renderer.getType());
+            renderer = state.startBlock(frameworkParameters, renderer);
 
             if (state.needsProcess()) {
                 Processor processor = renderer.getBlock().getProcessor();
@@ -195,7 +195,7 @@ public class BasicFramework implements Framework {
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
-        state.startBlock(frameworkParameters, Renderer.Type.NOT);
+        state.startBlock(frameworkParameters, null);
         setBlockParametersForProcess(state, blockParameters);
         processor.process(blockParameters, frameworkParameters);
     }
@@ -286,4 +286,7 @@ public class BasicFramework implements Framework {
             }
         }
     }
+
+
+
 }

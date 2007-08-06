@@ -28,7 +28,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.15 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.16 2007-08-06 16:58:56 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -36,10 +36,9 @@ public final class BasicUrlConverter implements UrlConverter {
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
-
     /**
      * General utility function to create an Url
-     * 
+     *
      * @param page servletPath
      * @param params The query to be added
      * @param req A request object is needed to determin context-paths and so on.
@@ -48,16 +47,11 @@ public final class BasicUrlConverter implements UrlConverter {
      */
     public static StringBuilder getUrl(String page, Collection<Map.Entry<String, Object>> params, HttpServletRequest req, boolean escapeamp) {
         StringBuilder show = new StringBuilder();
-        if (escapeamp) {
+        if (escapeamp && page != null) {
             page = page.replaceAll("&", "&amp;");
         }
-        if (page.equals("")) { // means _this_ page
-            String requestURI = req.getRequestURI();
-            if (requestURI.endsWith("/")) {
-                page = ".";
-            } else {
-                page = new File(requestURI).getName();
-            }
+        if (page == null || page.equals("")) { // means _this_ page
+            page = FrameworkFilter.getPath(req);
         }
         show.append(page);
 
@@ -87,6 +81,13 @@ public final class BasicUrlConverter implements UrlConverter {
         return show;
     }
 
+    private final Framework framework;
+
+    public BasicUrlConverter(Framework fw) {
+        framework = fw;
+
+    }
+
     /**
      * @todo Actually these paremters are only added here, because this urlconverter is always in
      * BasicFramework. Actually BasicFramework should add them itself.
@@ -94,11 +95,38 @@ public final class BasicUrlConverter implements UrlConverter {
     public Parameter[] getParameterDefinition() {
         return new Parameter[] {Parameter.REQUEST, State.ACTION, Framework.PROCESS};
     }
-    public StringBuilder getUrl(String path, 
+    public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        return BasicUrlConverter.getUrl(path, parameters, request, escapeAmps);
+        State state = State.getState(request);
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for (Map.Entry<String, Object> e : parameters) {
+            map.put(e.getKey(), e.getValue());
+        }
+        if (state.isRendering()) {
+            map = new HashMap<String, Object>(framework.prefix(state, map));
+            for (Object e : request.getParameterMap().entrySet()) {
+                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                String k = entry.getKey();
+                // TODO: this is ad hoc (and incoorect if more than 9 blocks)
+                if (k.startsWith("_" + state.getId())) continue; // for this block, don't add that,
+                                                                 // because should be in parameters then
+                if (! map.containsKey(k)) {
+                    map.put(k, entry.getValue()[0]);
+                }
+            }
+            Block block = state.getBlock();
+            Block toBlock = block.getComponent().getBlock(path);
+            if (toBlock != null) {
+                path = null;
+                if (! toBlock.equals(block)) {
+                    state.setBlock(map, toBlock);
+                }
+            }
+        }
+        return BasicUrlConverter.getUrl(path, map.entrySet(), request, escapeAmps);
     }
     public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
@@ -106,7 +134,7 @@ public final class BasicUrlConverter implements UrlConverter {
     }
 
     public boolean equals(Object o) {
-        return o instanceof BasicUrlConverter;
+        return o instanceof BasicUrlConverter && ((BasicUrlConverter) o).framework.equals(framework);
     }
     public String toString() {
         return "COPY";
