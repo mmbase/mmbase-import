@@ -17,8 +17,11 @@ import org.mmbase.util.functions.*;
  * which are identified by the renderer 'type' (see {@link #getType }). Every block also has a
  * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
  * handles interaction.
+ *
+ * A Renderer is stateless.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.17 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: Renderer.java,v 1.18 2007-08-06 16:57:45 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -35,7 +38,7 @@ public interface Renderer {
         NOT,
         /**
          * Rendering for 'HEAD' typically happens in the &lt;head&gt; block of HTML, and can
-         * e.g. produces links to javascript.
+         * e.g. produce links to javascript.
          */
         HEAD,
        /**
