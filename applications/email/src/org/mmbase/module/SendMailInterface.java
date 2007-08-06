@@ -14,7 +14,7 @@ import javax.mail.internet.*;
 import org.mmbase.util.Mail;
 
 /**
- * This extension of SendMailInterface also support multipart-mails.
+ * This interface has only one implementation.
  */
 
 public interface SendMailInterface {
