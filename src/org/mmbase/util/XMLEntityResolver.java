@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.65 2007-04-16 08:41:06 nklasens Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.66 2007-08-06 16:15:38 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -192,6 +192,7 @@ public class XMLEntityResolver implements EntityResolver {
     }
     protected static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
         os.add(o);
+        org.mmbase.util.transformers.Identifier identifier = new org.mmbase.util.transformers.Identifier();
         if (o instanceof Map) {
             Set<Map.Entry<?,?>> map = ((Map) o).entrySet();
             for (Map.Entry<?,?> entry : map) {
@@ -200,7 +201,7 @@ public class XMLEntityResolver implements EntityResolver {
                     sb.append("<!ENTITY ");
                     sb.append(prefix);
                     sb.append('.');
-                    String k = (String) entry.getKey();
+                    String k = identifier.transform((String) entry.getKey());
                     k = k.replaceAll("\\s", "");
                     sb.append(k);
                     sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
@@ -213,7 +214,9 @@ public class XMLEntityResolver implements EntityResolver {
             for (Method m : o.getClass().getMethods()) {
                 String name = m.getName();
                 if (m.getParameterTypes().length == 0 && 
-                    ! name.equals("getNodes") &&
+                    ! name.equals("getNodes")  &&
+                    ! name.equals("getConnection") && // see  	 MMB-1490, we should not call
+                                                      // getConnection, while we won't close it.
                     name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
                     try {
                         Class<?> rt = m.getReturnType();
@@ -239,13 +242,15 @@ public class XMLEntityResolver implements EntityResolver {
                         log.debug(ia);
                     } catch (InvocationTargetException ite) {
                         log.debug(ite);
+                    } catch (AbstractMethodError ame) {
+                        log.debug(ame);
                     }
                 }
             }
         }
     }
     protected static String ents = null;
-    protected static boolean logEnts = false;
+    protected static boolean logEnts = true;
     protected static synchronized String getMMEntities() {
         if (ents == null) {
             StringBuilder sb = new StringBuilder();
