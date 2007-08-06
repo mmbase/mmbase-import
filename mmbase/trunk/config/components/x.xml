@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="x"
+    defaultblock="index"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+
+  <block name="index"
+         classification="mmbase.edit"
+         mimetype="text/html">
+    <description xml:lang="en">Generic editors</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/edit/x/style.css.jspx"
+              type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="index.jspx">
+      <param name="pagesize" />
+    </body>
+  </block>
+
+  <block name="change"
+         mimetype="text/html">
+    <description xml:lang="en">Generic editors</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/edit/x/style.css.jspx"
+              type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="change.jspx">
+      <param name="node" />
+      <param name="nodemanager" />
+      <param name="pagesize" />
+    </body>
+  </block>
+
+  <block name="create"
+         mimetype="text/html">
+    <description xml:lang="en">Generic editors</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/edit/x/style.css.jspx"
+              type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="create.jspx">
+      <param name="nodemanager" />
+      <param name="pagesize" />
+    </body>
+  </block>
+
+</component>
