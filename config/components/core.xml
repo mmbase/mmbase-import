@@ -22,53 +22,62 @@
     </datatype>
   </setting>
 
+  <action name="testaction" rank="basic user">
+    <description xml:lang="en">Just to test actions</description>
+  </action>
+
   <!-- about etc. -->
-  <block name="welcome" 
+  <block name="welcome"
          classification="mmbase.about"
          mimetype="text/html">
     <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
     <body jsp="about.jspx" />
   </block>
 
-  <block name="license" 
+  <block name="license"
          classification="mmbase.about"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase licence</description>
     <description xml:lang="nl">Laat de licentie van MMBase zien</description>
     <body jsp="mpl-1.0.jspx" />
   </block>
-  
+
   <!-- admin -->
-  <block name="servers" 
+  <block name="servers"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/edit/x/style.css.jspx" type="text/css" />]]></param>
+      </class>
+    </head>
     <body jsp="servers.jspx">
       <param name="server" type="String" />
     </body>
   </block>
-  
-  <block name="databases" 
+
+  <block name="databases"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Information about the database and its connections</description>
     <body jsp="/mmbase/admin/admin/databases.div.jsp" />
   </block>
 
-  <block name="databases-connections" 
+  <block name="databases-connections"
          mimetype="text/html">
     <description xml:lang="en">View of the database connections</description>
     <body jsp="/mmbase/admin/admin/database/connections.jsp" />
   </block>
-  
-  <block name="modules" 
+
+  <block name="modules"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Information about the installed modules</description>
     <body jsp="/mmbase/admin/admin/modules.div.jsp" />
   </block>
-  
-  <block name="modules-actions" 
+
+  <block name="modules-actions"
          mimetype="text/html">
     <description xml:lang="en">View, edit or add module properties</description>
     <body jsp="/mmbase/admin/admin/module/actions.jsp">
@@ -80,8 +89,8 @@
       <param name="path"     type="String" />
     </body>
   </block>
-  
-  <block name="applications" 
+
+  <block name="applications"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all MMBase apps 1 applications</description>
@@ -89,11 +98,11 @@
       <param name="application" type="String" />
     </body>
   </block>
-  
-  <block name="applications-actions" 
+
+  <block name="applications-actions"
          mimetype="text/html">
     <description xml:lang="en">
-      Is the follow-up for the application installation page and shows the results of actions 
+      Is the follow-up for the application installation page and shows the results of actions
       that can be taken.
     </description>
     <body jsp="/mmbase/admin/admin/application/actions.jsp">
@@ -103,8 +112,8 @@
       <param name="path" type="String" />
     </body>
   </block>
-  
-  <block name="builders" 
+
+  <block name="builders"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
@@ -114,8 +123,8 @@
   </block>
 
 
-  
-  <block name="builders-actions" 
+
+  <block name="builders-actions"
          mimetype="text/html">
     <description xml:lang="en">
       Folow-up for the first builders block, shows a builders fields.
@@ -127,7 +136,7 @@
     </body>
   </block>
 
-  <block name="builders-field" 
+  <block name="builders-field"
          mimetype="text/html">
     <description xml:lang="en">
       Folow-up for the second builders block, shows the various attributes of a field.
@@ -137,22 +146,22 @@
       <param name="field"   type="String" />
     </body>
   </block>
-  
-  <block name="security" 
+
+  <block name="security"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows details of security configuration</description>
     <body jsp="security.jspx" />
   </block>
 
-  <block name="authenticate" 
+  <block name="authenticate"
          classification="mmbase.examples"
          mimetype="text/html">
     <description xml:lang="en">Shows details of security configuration</description>
     <body jsp="authenticate.jspx" />
   </block>
 
-  <block name="transactions" 
+  <block name="transactions"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
@@ -162,11 +171,11 @@
   </block>
 
   <!-- tools -->
-  <block name="cache" 
+  <block name="cache"
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">This tools hows the performance of the various MMBase
-    caches. You can also (temporary) turn on/off the cache here. For a persistant 
+    caches. You can also (temporary) turn on/off the cache here. For a persistant
     change you should change caches.xml.</description>
     <body jsp="/mmbase/admin/tools/cache.jsp">
       <param name="active" type="String" />
@@ -177,7 +186,7 @@
       <param name="rs_name"  type="String" />
     </body>
   </block>
-  <block name="showcache" 
+  <block name="showcache"
          mimetype="text/html">
     <body jsp="cache/show.jspx">
       <param name="cache"        type="String" required="true"/>
@@ -187,8 +196,8 @@
       <param name="value"        type="String" />
     </body>
   </block>
-  
-  <block name="blobs" 
+
+  <block name="blobs"
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">The blobs</description>
@@ -196,7 +205,7 @@
     </body>
   </block>
 
-  <block name="email" 
+  <block name="email"
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">Tool to monitor emails that are scheduled and/or send with the email application.</description>
@@ -204,35 +213,35 @@
     </body>
   </block>
 
-  <block name="sqltool" 
+  <block name="sqltool"
          classification="mmbase.tools"
          mimetype="text/html">
-    <description xml:lang="en">A tool to directly edit your SQL database. 
+    <description xml:lang="en">A tool to directly edit your SQL database.
      We prefer you don't use this so it is disabled by default. Better to use your own database tools.</description>
     <body jsp="/mmbase/admin/tools/querytool.jsp">
 
     </body>
   </block>
-    
-  <block name="events" 
+
+  <block name="events"
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
     <body jsp="events.jspx">
-      <param name="id" type="String" />      
+      <param name="id" type="String" />
       <param name="type" type="Integer" />
     </body>
   </block>
 
-  <block name="entities" 
+  <block name="entities"
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">A tool to view all 'mmbase entities' which are avaiable in config-files.</description>
     <body jsp="/mmbase/admin/entities.div.jspx" />
   </block>
-  
+
   <!-- components -->
-  <block name="components" 
+  <block name="components"
          classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
@@ -242,7 +251,7 @@
     </body>
   </block>
 
-  <block name="component-block-tree" 
+  <block name="component-block-tree"
          classification=""
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
@@ -250,7 +259,7 @@
     </body>
   </block>
 
-  <block name="test" 
+  <block name="test"
          classification="mmbase.components,mmbase.examples"
          mimetype="text/html">
     <description xml:lang="en">TEST</description>
@@ -263,7 +272,7 @@
   </block>
 
 
-  <block name="login" 
+  <block name="login"
          classification=""
          mimetype="text/html">
     <description xml:lang="en">Generic mmbase login box</description>
@@ -273,13 +282,12 @@
 
 
   <!-- examples -->
-  <block name="mmexamples" 
+  <block name="mmexamples"
          classification="mmbase.examples"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase example pages</description>
     <body jsp="/mmbase/admin/mmexamples.div.jsp">
     </body>
   </block>
-
 
 </component>
