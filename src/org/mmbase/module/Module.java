@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.92 2007-08-03 08:41:53 michiel Exp $
+ * @version $Id: Module.java,v 1.93 2007-08-06 13:00:26 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -521,8 +521,8 @@ public abstract class Module extends DescribedFunctionProvider {
                             Constructor constructor = newClass.getConstructor(String.class);
                             mod =  (Module) constructor.newInstance(moduleName);
                         } catch (NoSuchMethodException nsme) {
-                            log.warn(nsme);
-                            mod = (Module) newClass.newInstance();
+                            log.service("Constructor with no name-argument is deprecated", nsme); 
+                            mod = (Module) newClass.newInstance(); 
                             mod.setName(moduleName); // I think a module has one name.
                         }
                     }
