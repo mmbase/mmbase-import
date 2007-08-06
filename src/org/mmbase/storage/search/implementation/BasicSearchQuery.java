@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.41 2007-05-08 08:29:08 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.42 2007-08-06 08:42:03 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -406,7 +406,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
-        assert ! fields.contains(field);
+        assert ! fields.contains(field) : "" + field + " is not one of " + fields; 
         fields.add(field);
         hasChangedHashcode = true;
         return field;
