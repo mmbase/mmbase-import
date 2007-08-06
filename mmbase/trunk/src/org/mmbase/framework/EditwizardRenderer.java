@@ -19,8 +19,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * Currently this generates a link to an editwizard list page.
  *
+ * @todo Needs to produce a div, not an url.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.12 2007-07-26 23:35:50 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.13 2007-08-06 16:56:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -44,6 +46,8 @@ public class EditwizardRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
     }
 
+    /**
+     */
     public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
         try {
             HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
