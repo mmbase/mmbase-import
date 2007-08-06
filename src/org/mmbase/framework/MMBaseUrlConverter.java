@@ -10,24 +10,17 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 import java.util.*;
 import org.mmbase.util.*;
-import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.transformers.Url;
-import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * The URLConverter which deals with urls in /mmbase
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.7 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.8 2007-08-06 16:58:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -69,7 +62,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
-            log.debug(" framework parameters " + frameworkParameters);
+            log.debug("path '" + path + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
         }
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
@@ -98,57 +91,66 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         assert component != null;
 
-        boolean filteredMode = request.getServletPath().startsWith(dir);
+        boolean filteredMode = FrameworkFilter.getPath(request).startsWith(dir);
+        
+
+        if (state.isRendering() && (! filteredMode || state.getDepth() > 0)) {
+            log.debug("we are rendering a sub-component, deal with that as if  no mmbaseurlconverter. " + filteredMode);
+            return null;
+        }
 
 
-        Map<String, Object> map = new TreeMap<String, Object>();
-
-        // now determin the block:
         Block block;
-        String blockParam = frameworkParameters.get(BLOCK);
-        if (blockParam != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("found block " + blockParam + " trying it on " + component);
-            }
-
-            if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
-            block = component.getBlock(blockParam);
-            if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");
-        } else {
-            block = component.getBlock(path);
-            if (block != null) {
-                if (! filteredMode) {
-                    path = null; // used, determin path with block name
+        {  // determin the block:
+            String blockParam = frameworkParameters.get(BLOCK);
+            if (blockParam != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("found block " + blockParam + " trying it on " + component);
                 }
+
+                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
+                block = component.getBlock(blockParam);
+                if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");
             } else {
-                // no such block
-                if (path != null && ! "".equals(path)) {
-                    log.debug("No block '" + path + "' found");
-                    return null;
-                }
-
-            }
-            if (block == null) {
-                if(state.isRendering()) {
-                    // current block
-                    block = state.getRenderer().getBlock();
+                block = component.getBlock(path);
+                if (block != null) {
+                    if (! filteredMode) {
+                        path = null; // used, determin path with block name
+                    }
                 } else {
-                    // default block
-                    block = component.getDefaultBlock();
+                    // no such block
+                    if (path != null && ! "".equals(path)) {
+                        log.debug("No block '" + path + "' found");
+                        return null;
+                    }
+                }
+                if (block == null) {
+                    if(state.isRendering()) {
+                        // current block
+                        block = state.getRenderer().getBlock();
+                    } else {
+                        // default block
+                        block = component.getDefaultBlock();
+                    }
                 }
             }
         }
+
+        assert block != null;
+
+
+        Map<String, Object> map = new TreeMap<String, Object>();
 
         if (log.isDebugEnabled()) {
             log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
         }
         boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
         if (processUrl) {
-            // get current compoennts ids
+            // get current components ids
             if (state.isRendering()) {
                 map.put("action", state.getId());
             } else {
-                log.warn("Needing state, but no state found ");
+                map.put("action", state.getUpcomingId());
             }
         }
 
@@ -175,12 +177,15 @@ public class MMBaseUrlConverter implements UrlConverter {
             map.putAll(framework.prefix(state, blockParameters.toMap()));
         }
 
+        // TODO, if no category specified somehow, then guess when, using the avaiable
+        // classifications for the specified block.
+
         if (category == null) {
             Block.Type[] classification = block.getClassification();
         }
         //boolean subComponent = state.getDepth() > 0;
 
-       
+
         String page;
         if (state.isRendering() && state.getBlock().equals(block)) {
             page = FrameworkFilter.getPath(request);
@@ -188,7 +193,7 @@ public class MMBaseUrlConverter implements UrlConverter {
             page = dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
         }
 
-        //path == null || subComponent ? 
+        //path == null || subComponent ?
 
         StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
         return sb;
