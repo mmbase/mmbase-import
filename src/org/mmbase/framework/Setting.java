@@ -20,13 +20,13 @@ import org.mmbase.util.logging.Logging;
  * Representation of component related settings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.2 2007-07-26 21:03:11 michiel Exp $
+ * @version $Id: Setting.java,v 1.3 2007-08-06 16:56:32 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
 
     private static final Logger log = Logging.getLoggerInstance(Setting.class);
-    protected final DataTypeCollector dataTypeCollector = new DataTypeCollector(BasicComponent.class);
+    protected final DataTypeCollector dataTypeCollector = new DataTypeCollector(new Object());
 
     private final String name;
     private final LocalizedString description;
