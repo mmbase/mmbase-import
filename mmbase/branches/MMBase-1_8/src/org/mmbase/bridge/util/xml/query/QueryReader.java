@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8 2006-05-17 11:30:22 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.8.2.1 2007-08-06 10:00:12 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -78,7 +78,9 @@ public class QueryReader {
             queryDefinition.fields.add(fieldDefinition);
             if (queryDefinition.isMultiLevel) {
                 // have to add field for multilevel queries
-                queryDefinition.query.addField(fieldDefinition.fieldName);
+                if (! queryDefinition.query.getFields().contains(queryDefinition.query.createStepField(fieldDefinition.fieldName))) {
+                    queryDefinition.query.addField(fieldDefinition.fieldName);
+                }
             }
         } else {
              throw new IllegalArgumentException("field tag has no 'name' attribute");

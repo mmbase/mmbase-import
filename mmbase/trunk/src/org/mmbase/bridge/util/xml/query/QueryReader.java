@@ -20,13 +20,13 @@ import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.*;
 
 /**
+ * This class contains static methods related to creating a Query object using a (fragment of an) XML.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.14 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.15 2007-08-06 10:03:09 michiel Exp $
  * @since MMBase-1.8
- * @javadoc
  **/
-public class QueryReader {
+public abstract class QueryReader {
 
     public static final String XSD_SEARCHQUERY_1_0 = "searchquery.xsd";
     public static final String NAMESPACE_SEARCHQUERY_1_0 = "http://www.mmbase.org/xmlns/searchquery";
@@ -64,7 +64,7 @@ public class QueryReader {
 
 
     protected static void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
-        if (hasAttribute(fieldElement,"name")) {
+        if (hasAttribute(fieldElement, "name")) {
             FieldDefinition fieldDefinition = configurer.getFieldDefinition();
             fieldDefinition.fieldName = fieldElement.getAttribute("name");
 
@@ -86,7 +86,9 @@ public class QueryReader {
             queryDefinition.fields.add(fieldDefinition);
             if (queryDefinition.isMultiLevel && fieldDefinition.optional == null) {
                 // have to add field for multilevel queries
-                queryDefinition.query.addField(fieldDefinition.fieldName);
+                if (! queryDefinition.query.getFields().contains(queryDefinition.query.createStepField(fieldDefinition.fieldName))) {
+                    queryDefinition.query.addField(fieldDefinition.fieldName);
+                }
             }
         } else {
              throw new IllegalArgumentException("field tag has no 'name' attribute");
