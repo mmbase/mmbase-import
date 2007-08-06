@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.4 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: LinkChecker.java,v 1.5 2007-08-06 11:49:16 michiel Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -38,6 +38,10 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     private static long WAIT_TIME_BETWEEN_CHECKS = 5 * 1000; // wait time bewteen individual checks, default 5 seconds
 
     private MMBase mmbase;
+
+    public LinkChecker(String name) { 
+        super(name);
+    }
 
     public void init() {
         super.init();
