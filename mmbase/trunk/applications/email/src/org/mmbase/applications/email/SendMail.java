@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.27 2007-08-06 12:03:12 michiel Exp $
+ * @version $Id: SendMail.java,v 1.28 2007-08-06 12:12:57 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -56,7 +56,8 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      */
     protected Set<String> getDomains() {
         Set<String> domains = new HashSet<String>();
-        SMTPModule smtpModule = org.mmbase.module.Module.getModule(SMTPModule.class);
+        //SMTPModule smtpModule = org.mmbase.module.Module.getModule(SMTPModule.class);
+        SMTPModule smtpModule = (SMTPModule) org.mmbase.module.Module.getModule("smtp");
         if (smtpModule != null) {
             String sdomains = smtpModule.getLocalEmailDomains();
             StringTokenizer st = new StringTokenizer(sdomains, ",");
