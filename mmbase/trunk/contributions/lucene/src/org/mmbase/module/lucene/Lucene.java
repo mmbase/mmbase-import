@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.87 2007-07-23 21:02:51 michiel Exp $
+ * @version $Id: Lucene.java,v 1.88 2007-08-06 09:14:31 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -497,6 +497,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(new AbstractFunction("config",Parameter.EMPTY, ReturnType.UNKNOWN) {
             public Date getFunctionValue(Parameters arguments) {
                 return configReadTime;
+            }
+            });
+        addFunction(new AbstractFunction("reload",Parameter.EMPTY, ReturnType.UNKNOWN) {
+            public Void getFunctionValue(Parameters arguments) {
+                Lucene.this.reload();
+                return null;
             }
             });
     }
