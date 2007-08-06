@@ -3,20 +3,18 @@
     class="org.mmbase.framework.BasicFramework"
     xmlns="http://www.mmbase.org/xmlns/framework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework 
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.4 2007-07-07 11:59:23 michiel Exp $
+      version: $Id: framework.xml,v 1.5 2007-08-06 17:00:26 michiel Exp $
   -->
-  <!-- 
+  <!--
       In this file the classes of the UrlConverters need to be listed in the order
       in which they are to be chained.
   -->
   <description xml:lang="en">
     Short description of this framework. This is the BasicFramework.
   </description>
-
-  <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter" />
 
 
   <urlconverter class="org.mmbase.framework.MMBaseUrlConverter">
@@ -25,5 +23,10 @@
     </description>
     <param name="dir">/mmbase/</param>
   </urlconverter>
+  <!--
+  <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter" />
+  -->
+
+  <urlconverter class="org.mmbase.framework.BasicUrlConverter" />
 
 </framework>
