@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.26 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: Block.java,v 1.27 2007-08-06 16:55:16 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -76,6 +76,9 @@ public class Block {
         return classification;
     }
 
+    /**
+     * @todo
+     */
     public Type[] getClassification(String filter) {
         String[] parts = filter.split("\\s*?[,\\s]\\s*");
         for (Type type : classification) {
@@ -163,6 +166,9 @@ public class Block {
          */
         public static final Type NO   = new Type("");
 
+        /**
+         * @javadoc
+         */
         public static Type[] getClassification(String p, boolean create) {
             if (p == null || "".equals(p)) return new Type[] {NO};
             List<Type> r = new ArrayList<Type>();
@@ -213,6 +219,9 @@ public class Block {
             return name;
         }
 
+        /**
+         * @todo
+         */
         public boolean contains(String test) {
             return false;
         }
