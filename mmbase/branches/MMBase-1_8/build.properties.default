@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.26.2.2 2007-06-18 20:12:53 michiel Exp $
+# $Id: build.properties.default,v 1.26.2.3 2007-08-06 12:13:42 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -72,8 +72,8 @@ jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
 mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
 
 # ----- javamail ----
-javamail.version=javamail-1.3
-javamail.fileversion=javamail-1_3
+javamail.version=javamail-1.4
+javamail.fileversion=javamail-1_4
 javamail.file=${javamail.fileversion}.zip
 javamail.dest=${download.dir}/${javamail.file}
 javamail.loc=${mmbase.loc}/javamail/${javamail.file}
