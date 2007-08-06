@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.10 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: State.java,v 1.11 2007-08-06 16:58:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -41,7 +41,7 @@ public class State {
 
     /**
      * Returns the framework 'State' object for the given request.
-     * @return a State. Never <code>null</code>
+     * @return a State. Never <code>null</code>.
      */
     public static State getState(ServletRequest request) {
         State state = (State) request.getAttribute(KEY);
@@ -53,7 +53,7 @@ public class State {
 
 
     private int count = 1;
-    private String id;
+    private String id = "";
     private final int depth;
     private Renderer renderer = null;
     private Renderer.Type type = Renderer.Type.NOT;
@@ -63,6 +63,18 @@ public class State {
     private final State previousState;
     private Object originalLocalizationContext = null;
 
+    /**
+     * Use this constructor, if you want to explicitely create a new State object. E.g. when
+     * starting a <em>sub</com>component.
+     * <code>
+     *   state = getState(req); 
+     *   if (state.isRendering()) {
+     *      state = new State(req);
+     *   }
+     * </code>
+     * But this is only used by code which want to initiate a new component itself. Normally {@link
+     * #getState(ServletRequest)} should suffice.
+     */
     public State(ServletRequest r) {
         request = r;
         previousState = (State) r.getAttribute(KEY);
@@ -91,15 +103,16 @@ public class State {
     }
 
     /**
-     * At the end of the request, this method must be called, to indicate that
+     * At the end of the request (or subcomponent), this method must be called, to indicate that
      * this state is no longer in use.
      */
     public void end() {
         request.setAttribute(KEY, previousState);
         count = 0;
+        id = "";
     }
 
-    /**
+     /**
      * After rendering (a certain renderer of) a block, the state must be informed about that.
      */
     public void endBlock() {
@@ -131,6 +144,12 @@ public class State {
         return renderer != null ? renderer.getBlock() :
             (processor != null ? processor.getBlock() : null);
     }
+
+    /**
+     * Sets up a LocalizationContext attributes based on {@link Component#getBundle()}and puts in on
+     * the request. This is recognized by fmt:message-tag, which in a JspRenderer can therefore be
+     * used without fmt:bundle or fmt:setbundle.
+     */
     protected void localizeContext() {
         String b = getBlock().getComponent().getBundle();
         if (b != null) {
@@ -161,25 +180,47 @@ public class State {
 
     /**
      * @return Whether action must be performed.
+     * @renderer Proposed renderer (State may decide to render another one, and return that)
      * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
      * or when the belonging request was already 'ended'.
 
      */
-    public void startBlock(Parameters frameworkParameters, Renderer.Type t) {
+    public Renderer startBlock(Parameters frameworkParameters, Renderer renderer) {
         if (count == 0) {
             throw new IllegalStateException("State " + this + " was already marked for end.");
         }
-        count++;
-
-        setType(t);
+        ++count;
+        setType(renderer != null ? renderer.getType() : Renderer.Type.NOT);
 
         this.frameworkParameters = frameworkParameters;
         log.info("Start rendering for " + frameworkParameters);
 
-        id = previousState == null ? "" + count : previousState.getId() + '.' + count;
+        id = generateId(count);
+
         request.setAttribute(Framework.COMPONENT_ID_KEY, "mm_" + getId());
 
+        return renderer != null ? getRenderer(renderer) : null;
     }
+
+    /**
+     * Determins what should be rendered now.
+     * @param block a proposal
+     */
+    protected Renderer getRenderer(Renderer r) {
+        String blockName = request.getParameter("__b" + getId());
+        Block block = r.getBlock();
+        if (blockName == null) {
+            return r;
+        } else {
+            return block.getComponent().getBlock(blockName).getRenderer(r.getType());
+        }
+    }
+
+    public void setBlock(Map<String, Object> map, Block toBlock) {
+        map.put("__b" + getId(), toBlock.getName());
+    }
+
+
 
 
     /**
@@ -217,6 +258,17 @@ public class State {
     public String getId() {
         return id;
     }
+
+    protected String generateId(int c) {
+        return previousState == null ? "" + c : previousState.getId() + '.' + c;
+    }
+    /**
+     * If rendering not yet started, this returns the id of a component which would begin now.
+     */
+    public String getUpcomingId() {
+        return generateId(count + 1);
+    }
+
     public String toString() {
         return "state:" + getId() + (isRendering() ? (":" + (renderer != null ? renderer : processor)) : "");
     }
