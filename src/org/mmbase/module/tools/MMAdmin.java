@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.156 2007-06-19 13:59:30 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.157 2007-08-06 16:54:15 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -878,10 +878,11 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private String getBuilderField(String buildername, String fieldname, String key) {
-        MMObjectBuilder bul = getBuilder(buildername);
+    private String getBuilderField(String builderName, String fieldName, String key) {
+        MMObjectBuilder bul = getBuilder(builderName);
         if (bul != null) {
-            CoreField def = bul.getField(fieldname);
+            CoreField def = bul.getField(fieldName);
+            if (def == null) throw new RuntimeException("No such field '" + fieldName + "' in builder '" + builderName + "'");
             if (key.equals("dbkey")) {
                 if (def.isUnique()) {
                     return "true";
