@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.28 2007-08-06 12:12:57 michiel Exp $
+ * @version $Id: SendMail.java,v 1.29 2007-08-06 12:31:58 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -264,7 +264,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             String context = getInitParameter("context");
             String dataSource = getInitParameter("datasource");
             session = null;
-            if (dataSource == null) {
+            if (dataSource != null) {
                 if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
