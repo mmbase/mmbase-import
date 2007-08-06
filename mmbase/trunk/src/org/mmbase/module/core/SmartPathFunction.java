@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 import org.mmbase.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.Required;
+
 
 /**
  * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.9 2007-08-06 13:01:39 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.10 2007-08-06 13:04:13 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -93,8 +95,7 @@ public class SmartPathFunction {
     /**
      * The subpath of the path to search
      */
-    @org.mmbase.util.functions.Required()
-    public void setPath(String p) {
+    @Required public void setPath(String p) {
         path = p;
     }
 
