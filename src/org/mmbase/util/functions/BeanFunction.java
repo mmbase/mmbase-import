@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.5 2007-08-03 14:45:11 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.6 2007-08-07 15:38:56 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -195,6 +195,7 @@ public class BeanFunction extends AbstractFunction {
         if (sampleInstance == null) throw new RuntimeException("Producer " + producer + " did not produce an instance");
 
         List parameters = new ArrayList();
+        Method nodeParameter = null;
         for (int i = 0 ; i < methods.length; i++) {
             Method method = methods[i];
             String methodName = method.getName();
@@ -219,12 +220,17 @@ public class BeanFunction extends AbstractFunction {
                     }
                 }
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
-                    parameters.add(Parameter.NODE);
+                    nodeParameter = method;
                 } else {
                     parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
+                    setMethods.add(method);
                 }
-                setMethods.add(method);
+
             }
+        }
+        if (nodeParameter != null) {
+            parameters.add(Parameter.NODE);
+            setMethods.add(nodeParameter);
         }
         setParameterDefinition((Parameter[]) parameters.toArray(new Parameter[0]));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
