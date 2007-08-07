@@ -9,7 +9,7 @@
 		<description></description>
 	</node>
 	<node number="146" owner="system">
-		<name>collection</name>
+		<name>link</name>
 		<description></description>
 	</node>
 	<node number="69" owner="system">
