@@ -47,7 +47,14 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 int c = r.read();
                 if (c == -1) break;
                 if(c == escapeChar) w.write('\\');
-                w.write(c);
+
+
+                if (c == '\n') {
+                    w.write("\\n");
+                } else if (c == '\r') {
+                } else {
+                    w.write(c);
+                }
             }
         } catch (java.io.IOException e) {
         }
