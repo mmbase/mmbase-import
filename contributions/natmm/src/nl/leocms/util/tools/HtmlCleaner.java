@@ -374,6 +374,27 @@ public class HtmlCleaner {
        text = replace(text, "\'","&rsquo;"); // problem with '\u0027' ;-)
        return text;
    }
+   
+   public static String filterEntitiesEvents(String text) {
+      // translatedChar --> rawString
+      // Excluded are:
+      // ,"&lt;","&gt;","&amp;"
+      // ,'\u003c','\u003e','\u0026'
+      String rawString[] = rawString();
+      char translatedChar[] = translatedChar();
+      for(int c= 0; c<translatedChar.length; c++) {
+          int cpos = text.indexOf(translatedChar[c]);
+          while(cpos>-1) {
+              if(!insideTag(text,cpos,"<",">")) { // *** not inside a tag ***
+                  text =  text.substring(0,cpos) + rawString[c] + text.substring(cpos+1);
+              }
+              cpos = text.indexOf(translatedChar[c],cpos+rawString[c].length());
+          }
+      }
+      text = replace(text, "\'","&rsquo;");
+      text = replace(text, "\"","&quot;");
+      return text;
+  }   
 
    public static String filterTextEntities(String text) {
        // rawString --> translatedChar
