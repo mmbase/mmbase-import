@@ -1263,6 +1263,12 @@ The var to write it to.
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>For type 'normal', the name of the counter can be prefixed with prefix.</description>
+			<name>prefix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>The name of the counter. The current location is taken (replacing the '/' for a '.') if no countername is given.</description>
 			<name>counterName</name>
 			<required>false</required>
@@ -1271,6 +1277,24 @@ The var to write it to.
 		<attribute>
 			<description>The urltext, only used when a link is generated (e.g. clickin and clickout measurements).</description>
 			<name>urlText</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The nodenumber of the node. It's mandatory if type is 'content'.</description>
+			<name>nodeNumber</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The pagenumber for the banner. It's mandatory if type is 'banner'.</description>
+			<name>pageNumber</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The pagepos for the banner. It's mandatory if type is 'banner'.</description>
+			<name>pagePos</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
