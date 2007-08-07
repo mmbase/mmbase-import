@@ -25,7 +25,7 @@ public class NelisReader
     private Map natGebMap;
     private Map gebiedMap;
     private long timeStamp;
-    private final static long  EXPIRE_INTERVAL = 2 * 60 * 60 * 1000; //two hours of refresh interval since last read 
+    private final static long  EXPIRE_INTERVAL = 24 * 60 * 60 * 1000; //two hours of refresh interval since last read 
     private static final Logger log = Logging.getLoggerInstance(NelisReader.class);
     
     
