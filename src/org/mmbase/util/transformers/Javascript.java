@@ -74,7 +74,6 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 } else {
                     w.write(c);
                 }
-                w.write(c);
             }
         } catch (java.io.IOException e) {
         }
