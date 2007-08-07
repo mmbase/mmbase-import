@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.43 2007-06-19 09:23:27 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.44 2007-08-07 11:56:29 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -178,13 +178,13 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         if (typeCounters.containsKey(roleName)) {
             return true;
         }
-        MMObjectBuilder srcbuilder = mmb.getMMObject(event.getRelationSourceType());
+        MMObjectBuilder srcbuilder = mmb.getBuilder(event.getRelationSourceType());
         for (MMObjectBuilder parent : srcbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
         }
-        MMObjectBuilder destbuilder = mmb.getMMObject(event.getRelationDestinationType());
+        MMObjectBuilder destbuilder = mmb.getBuilder(event.getRelationDestinationType());
         for (MMObjectBuilder parent : destbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
@@ -210,8 +210,11 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             return true;
         }
         MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder destbuilder = mmb.getMMObject(event.getBuilderName());
-        for (MMObjectBuilder parent : destbuilder.getAncestors()) {
+        MMObjectBuilder destBuilder = mmb.getBuilder(event.getBuilderName());
+        if (destBuilder == null) {  // builder is not even available
+            return false;
+        }
+        for (MMObjectBuilder parent : destBuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
