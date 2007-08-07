@@ -21,11 +21,11 @@ import org.mmbase.util.logging.Logging;
 /**
  * Keeps track of several UrlConverters and chains them one after another.
  * If the outcome of an UrlConverter is not <code>null</code> its result is returned. The
- * question is whether we want UrlConverters to be realy chained so that the
+ * question remains whether we want UrlConverters to be realy chained so that the
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.6 2007-08-06 16:55:34 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.7 2007-08-07 19:33:27 andre Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
