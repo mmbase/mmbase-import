@@ -16,11 +16,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The URLConverter which deals with urls in /mmbase
+ * The UrlConverter which deals in urls and filters links that start with '/mmbase/'.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.8 2007-08-06 16:58:56 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.9 2007-08-07 19:33:27 andre Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {

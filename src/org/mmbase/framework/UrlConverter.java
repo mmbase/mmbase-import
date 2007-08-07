@@ -16,10 +16,12 @@ import org.mmbase.util.functions.*;
  * Responsible for the proper handling of urls within the framework. 
  * Called by FrameworkFilter to resolve userfriendly links into technical urls.
  * You should implement UrlConverter if you want to create and resolve your own
- * userfriendly links within your framework.
+ * userfriendly links within your framework. 
+ * You can configure several UrlConverters in your framework's 'framework.xml'.
+ * They will be chained one after another.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.4 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.5 2007-08-07 19:33:27 andre Exp $
  * @since MMBase-1.9
  * @todo Parameters are passed as Collections of Map.Entry. Not sure that is handy/correct. The main
  * reason is that you can create such objects easily from both Parameters as from Maps, and that you
