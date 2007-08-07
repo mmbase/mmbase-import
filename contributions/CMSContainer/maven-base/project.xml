@@ -293,30 +293,6 @@
 			</properties>
 		</dependency>
 
-		<!--
-			- Both xerces and xmlApis should be located in
-			- your common/endorsed directory in Tomcat
-			- or the equivalent directory for your servlet container
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.6.2</version>
-			<properties>
-				<war.bundle>false</war.bundle>
-				<tomcat.common.endorsed>true</tomcat.common.endorsed>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xmlParserAPIs</artifactId>
-			<version>2.6.2</version>
-			<properties>
-				<war.bundle>false</war.bundle>
-				<tomcat.common.endorsed>true</tomcat.common.endorsed>
-			</properties>
-		</dependency>
-		-->
-
 		<dependency>
 			<groupId>struts</groupId>
 			<artifactId>struts</artifactId>
@@ -482,28 +458,6 @@
 			</properties>
 		</dependency>
 
-		<!-- tomcat deploy plugin -->
-		<dependency>
-			<groupId>codeczar-tomcat</groupId>
-			<artifactId>maven-tomcat-plugin</artifactId>
-			<version>1.1</version>
-			<type>plugin</type>
-			<url>http://www.codeczar.com/products/maven-tomcat-plugin/</url>
-		</dependency>
-		<dependency>
-			<groupId>maven-plugins</groupId>
-			<artifactId>maven-findbugs-plugin</artifactId>
-			<version>0.8.4</version>
-			<type>plugin</type>
-		</dependency>
-		<dependency>
-			<groupId>maven-taglib</groupId>
-			<artifactId>maven-taglib-plugin</artifactId>
-			<version>1.2.2</version>
-			<type>plugin</type>
-			<url>http://maven-taglib.sourceforge.net</url>
-		</dependency>
-
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>maven-mmbase-module-plugin</artifactId>
@@ -570,7 +524,6 @@
 		<report>maven-tasklist-plugin</report>
 		<!-- report>maven-clover-plugin</report -->
 		<report>maven-simian-plugin</report>
-		<report>maven-findbugs-plugin</report>
 	</reports>
 </project>
 
