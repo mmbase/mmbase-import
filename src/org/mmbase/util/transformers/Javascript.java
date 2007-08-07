@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Encodings related Javascript It can escape single quotes, by replacing them by \\', as is needed in document.write actions.
 
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7.4
  */
 
@@ -26,9 +26,9 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
     private final static String SINGLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
     private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_DOUBLE_QUOTES";
     private final static String BOTH_QUOTES     = "JAVASCRIPT_ESCAPE_BOTH_QUOTES";
-    public final static int ESCAPE_SINGLE_QUOTES    = 1;     
-    public final static int ESCAPE_DOUBLE_QUOTES    = 2;     
-    public final static int ESCAPE_BOTH_QUOTES      = 3;     
+    public final static int ESCAPE_SINGLE_QUOTES    = 1;
+    public final static int ESCAPE_DOUBLE_QUOTES    = 2;
+    public final static int ESCAPE_BOTH_QUOTES      = 3;
 
     public Javascript() {
         super(ESCAPE_SINGLE_QUOTES);
@@ -50,7 +50,12 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
                 if (c == -1) break;
                 if(c == escapeChar) w.write('\\');
                 if(c == '\\') w.write('\\');
-                w.write(c);
+                if (c == '\n') {
+                    w.write("\\n");
+                } else if (c == '\r') {
+                } else {
+                    w.write(c);
+                }
             }
         } catch (java.io.IOException e) {
         }
@@ -62,9 +67,14 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if(c == '\'' || c == '"') w.write('\\'); 
+                if(c == '\'' || c == '"') w.write('\\');
                 if(c == '\\') w.write('\\');
-                w.write(c);
+                if (c == '\n') {
+                    w.write("\\n");
+                } else if (c == '\r') {
+                } else {
+                    w.write(c);
+                }
             }
         } catch (java.io.IOException e) {
         }
@@ -116,25 +126,25 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         case ESCAPE_BOTH_QUOTES:           return escapeChar(r, w);
 
         default: throw new UnsupportedOperationException("Cannot transform");
-        }    
+        }
     }
 
     public Writer transformBack(Reader r, Writer w) {
         switch(to){
         case ESCAPE_SINGLE_QUOTES:
-        case ESCAPE_DOUBLE_QUOTES:           
+        case ESCAPE_DOUBLE_QUOTES:
         case ESCAPE_BOTH_QUOTES:
             return escapeCharBack(r, w);
         default: throw new UnsupportedOperationException("Cannot transform");
         }
-    } 
+    }
 
     public String getEncoding() {
         switch(to){
-        case ESCAPE_SINGLE_QUOTES: return SINGLE_QUOTES;            
+        case ESCAPE_SINGLE_QUOTES: return SINGLE_QUOTES;
         case ESCAPE_DOUBLE_QUOTES: return DOUBLE_QUOTES;
         case ESCAPE_BOTH_QUOTES: return BOTH_QUOTES;
-        default: return "UNKNOWN";            
+        default: return "UNKNOWN";
         }
     }
 }
