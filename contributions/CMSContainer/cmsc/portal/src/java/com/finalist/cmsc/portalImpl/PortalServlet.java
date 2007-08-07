@@ -148,23 +148,38 @@ public class PortalServlet extends HttpServlet {
         
 		PortalControlParameter control = new PortalControlParameter(currentURL);
 		PortletWindow actionWindow = getPortletWindowOfAction(registry, control);
-		if (actionWindow != null) {
-			log.debug("===>CONTROL='" + control.toString() + "'");
-			log.debug("===>WINDOW='" + actionWindow.toString() + "'");
-
-			try {
-				PortletContainerFactory.getPortletContainer().processPortletAction(actionWindow,
-						ServletObjectAccess.getServletRequest(request, actionWindow),
-						ServletObjectAccess.getServletResponse(response));
-			} catch (PortletException e) {
-				log.fatal("process portlet raised an exception", e);
-			} catch (PortletContainerException e) {
-				log.fatal("portlet container raised an exception", e);
-			}
+		if (isActiuonUrl(actionWindow)) {
+			processActionPhase(request, response, control, actionWindow);
 			return; // we issued an redirect, so return directly
 		}
 
-		try {
+		processRenderPhase(request, response, registry, currentURL);
+		log.debug("===>PortalServlet.doGet EXIT!");
+	}
+
+    private void processActionPhase(HttpServletRequest request, HttpServletResponse response,
+            PortalControlParameter control, PortletWindow actionWindow) throws IOException {
+        log.debug("===>CONTROL='" + control.toString() + "'");
+        log.debug("===>WINDOW='" + actionWindow.toString() + "'");
+
+        try {
+        	PortletContainerFactory.getPortletContainer().processPortletAction(actionWindow,
+        			ServletObjectAccess.getServletRequest(request, actionWindow),
+        			ServletObjectAccess.getServletResponse(response));
+        } catch (PortletException e) {
+        	log.fatal("process portlet raised an exception", e);
+        } catch (PortletContainerException e) {
+        	log.fatal("portlet container raised an exception", e);
+        }
+    }
+
+    private boolean isActiuonUrl(PortletWindow actionWindow) {
+        return actionWindow != null;
+    }
+
+    private void processRenderPhase(HttpServletRequest request, HttpServletResponse response,
+            PortalRegistry registry, PortalURL currentURL) {
+        try {
             String path = extractPath(request, currentURL);
             log.debug("===>getScreen:'" + path + "'");
             // NIJ-519: language can be defined per site, read by CmscPortlet
@@ -177,21 +192,20 @@ public class PortalServlet extends HttpServlet {
                     request.setAttribute("siteLocale", locale);
                 }
             }
-			ScreenFragment screen = getScreen(path);
-			if (screen != null) {
-				registry.setScreen(screen);
-				log.debug("===>SERVICE");
-				screen.service(request, response);
-				log.debug("===>SERVICE DONE");
-			} else {
-				log.error("Failed to find screen for: " + currentURL.getGlobalNavigationAsString());
-			}
-		} catch (Throwable t) {
-			log.fatal("Error processing", t);
-		}
-		log.debug("===>PortalServlet.doGet EXIT!");
-	}
-
+            ScreenFragment screen = getScreen(path);
+            if (screen != null) {
+                registry.setScreen(screen);
+                log.debug("===>SERVICE");
+                screen.service(request, response);
+                log.debug("===>SERVICE DONE");
+            } else {
+                log.error("Failed to find screen for: " + currentURL.getGlobalNavigationAsString());
+            }
+        } catch (Throwable t) {
+            log.fatal("Error processing", t);
+        }
+    }
+    
     protected ScreenFragment getScreen(String path) {
         try {
             Page page = SiteManagement.getPageFromPath(path);
