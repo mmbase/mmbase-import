@@ -19,6 +19,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.security.Rank;
 
 import org.mmbase.module.builders.Images;
+import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.2 2007-02-12 17:22:45 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.3 2007-08-07 08:11:59 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -105,6 +106,8 @@ public class ImageServlet extends HandleServlet {
         return true;
     }
 
+
+    private static final UrlEscaper URL_ESCAPER = new UrlEscaper();
     /**
      * ImageServlet can serve a icache node in stead (using the 'extra parameters)'
      *
@@ -139,11 +142,7 @@ public class ImageServlet extends HandleServlet {
                 if (convert) {
                     Parameters args = new Parameters(Images.CACHE_PARAMETERS);
                     String template = nodeIdentifier.substring(nodeNumber.length() + 1);
-                    try {
-                        template = java.net.URLDecoder.decode(template, "UTF-8");
-                    } catch (IllegalArgumentException iae) {
-                        // never mind
-                    }
+                    template = URL_ESCAPER.transformBack(template);
                     args.set("template", template);
                     int icacheNodeNumber = node.getFunctionValue("cache", args).toInt();
                     if (icacheNodeNumber < 0) {
